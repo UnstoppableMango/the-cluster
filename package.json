@@ -1,1 +1,15 @@
-{"name":"the-cluster","devDependencies":{"@types/node":"*","@typescript-eslint/eslint-plugin":"*","@typescript-eslint/parser":"*","eslint":"*","eslint-config-prettier":"*","prettier":"*","yaml":"*"},"dependencies":{"@pulumi/pulumi":"*"}}
+{
+  "name": "the-cluster",
+  "devDependencies": {
+    "@types/node": "*",
+    "@typescript-eslint/eslint-plugin": "*",
+    "@typescript-eslint/parser": "*",
+    "eslint": "*",
+    "eslint-config-prettier": "*",
+    "prettier": "*",
+    "yaml": "*"
+  },
+  "dependencies": {
+    "@pulumi/pulumi": "*"
+  }
+}
