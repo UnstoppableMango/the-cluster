@@ -1,0 +1,20 @@
+config:
+  azure:clientCredentials:
+    secure: AAABAI7qyA9d0FcOPbNEb+FLK1GNfEfJ7B7XuokEaCecURgspFL8Ef9jRQvxsG0YHnQRjVI07qbCujLyEDbIePspNOCaqCW/+uFhC0V5cQ10uJSyUg3siaL+76bdAyLsuCqnUkoJdPCL5QDKNi/9ax2IYZPPS/gCX4CktLy5dQ2PtIsPJsn9aITAgsO6eceqoXQ6OVqJ9n1Iq+31YNWpno3LryqQmCMRlWusGfFM5OGDkuW+wW/rgJloaEVxwILOheQkT4MsFRUvHjt5msaQ5UnSTsWM1D927+ABhxzDRPBygwCddcp81RiEq5lnk5pFyao3gBZk4PgAx28edyCRmj77Mm5DjbdU/P4pPK2IClw5JU02ZfkZAzrUh/kZ+IP977dmR3vxcIRB4cPW3yyvNgalWVpdS6TmHklJh/J8mSUa9dg1Zk1GJ9NXKm5xOtXYsZ37FbkNl87zjwY9hLk7fH6qFyg5G6s1RxwUYNya5bBN9MrR+ym+g+45rTlxiiNmy3ip/0lltpQtjfv5hqVb3wtKGGPh/gv9XQEIOME0MPSchSW97uAN2/44Hh5qspkmwV5tOrEo2h0EVyrYQBaGQPpQIj7KIZoH+HMEjC5KEes2fz5iFVqn8V8WrpNoLVFdMUT4NFV4+7ul+plqeM8q/11ztDN0K7jJ6QL0EXm5bW9TdjQtwksgqRvS7Qngl/DfTS8hYYoI1JfIgHaysKZjwYY21l4EVmG4OWRifShKBkWa6NaWXkuaVCVTAyT+zI9kWHIH0DIb9BqrF103by7ehck+D80Py0mjncKkbwZ1h5IDV3gFnQ==
+  azure:resourceManagerEndpointUrl: https://management.azure.com/
+  azure:sqlManagementEndpointUrl: https://management.core.windows.net:8443/
+  azure:subscriptionId: 331fb30f-0da7-4da5-8ec0-3b34c1747e42
+  cloudflare:apiKey:
+    secure: AAABAABToFdbHC7XLIb3Wfu1/lNz5dTbatOQEE5Zq3SVtjRcReIpF0OCq2FWJ9+cGKQ/ihT17GW924ZtFd6K6htujihP
+  cloudflare:email: ecr.referee@hotmail.com
+  rancher2:accessKey:
+    secure: AAABABq+xkgKOp1WEU3OiJjt6GH1Ed2AqgWorJbAJodcD6titQinCwQ5IA==
+  rancher2:apiUrl: https://rancher.int.unmango.net/v3
+  rancher2:insecure: "true"
+  rancher2:secretKey:
+    secure: AAABAKrdU5wWF2Plj4o/wXqnhmJY5Fnh4cw3+tH1lH+MYSpGGiUY87bACqdU6RNbqfmW2XQw42DQ+FQBlWL49SCK9JHo6eCh4zuJHdTu+wvWp27lcuc=
+  the-cluster:githubStack: UnstoppableMango/github-unstoppablemango/prod
+  the-cluster:operatorVersion: v0.0.7
+  the-cluster:pulumiAccessToken:
+    secure: AAABAKq/YFLL7XyuM9RwD9/bG5U6uM78lECmOk+V/OcDPdrAYsxksoyild8RBR2lSN2+nV2ok8UW8Ia6Y5XlGu9MvxWc2JV9SD73Tw==
+  the-cluster:rancherStack: UnstoppableMango/rancher/prod
