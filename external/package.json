@@ -1,0 +1,26 @@
+{
+  "name": "@unmango/the-cluster",
+  "version": "1.0.0",
+  "description": "Helpers for deploying to THECLUSTER",
+  "main": "index.ts",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/UnstoppableMango/the-cluster/external"
+  },
+  "keywords": [
+    "THECLUSTER",
+    "the-cluster",
+    "helper",
+    "pulumi",
+    "kubernetes",
+    "rancher",
+    "rancher2",
+    "rke",
+    "typescript"
+  ],
+  "author": "UnstoppableMango",
+  "license": "WTFPL"
+}
