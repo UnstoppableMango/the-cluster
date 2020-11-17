@@ -20,31 +20,31 @@ const cluster = new rancher.Cluster('the-cluster', {
   },
 });
 
-// const k8sProvider = new k8s.Provider('the-cluster', {
-//   kubeconfig: cluster.kubeConfig,
-// });
+const k8sProvider = new k8s.Provider('the-cluster', {
+  kubeconfig: cluster.kubeConfig,
+});
 
-// const {
-//   bitnami,
-//   codecentric,
-//   k8sAtHome,
-//   library,
-//   portainer,
-//   traefik,
-//   unstoppableMango,
-// } = new Catalogs('catalogs', cluster.id);
-// const stacks = new OperatorStacks('the-cluster', { provider: k8sProvider });
+const {
+  bitnami,
+  codecentric,
+  k8sAtHome,
+  library,
+  portainer,
+  traefik,
+  unstoppableMango,
+} = new Catalogs('catalogs', cluster.id);
+const stacks = new OperatorStacks('the-cluster', { provider: k8sProvider });
 
-// export const kubeconfig = cluster.kubeConfig;
-// export const clusterId = cluster.id;
+export const kubeconfig = pulumi.secret(cluster.kubeConfig);
+export const clusterId = cluster.id;
 
-// export const defaultProjectId = cluster.defaultProjectId;
-// export const systemProjectId = cluster.systemProjectId;
+export const defaultProjectId = cluster.defaultProjectId;
+export const systemProjectId = cluster.systemProjectId;
 
-// export const bitnamiCatalogId = bitnami.id;
-// export const codecentricCatalogId = codecentric.id;
-// export const k8sAtHomeCatalogId = k8sAtHome.id;
-// export const libraryCatalogId = library.id;
-// export const portainerCatalogId = portainer.id;
-// export const traefikCatalogId = traefik.id;
-// export const unstoppableMangoCatalogId = unstoppableMango.id;
+export const bitnamiCatalogId = bitnami.id;
+export const codecentricCatalogId = codecentric.id;
+export const k8sAtHomeCatalogId = k8sAtHome.id;
+export const libraryCatalogId = library.id;
+export const portainerCatalogId = portainer.id;
+export const traefikCatalogId = traefik.id;
+export const unstoppableMangoCatalogId = unstoppableMango.id;
