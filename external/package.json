@@ -1,6 +1,6 @@
 {
   "name": "@unmango/the-cluster",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Helpers for deploying to THECLUSTER",
   "main": "index.ts",
   "scripts": {
@@ -22,5 +22,10 @@
     "typescript"
   ],
   "author": "UnstoppableMango",
-  "license": "WTFPL"
+  "license": "WTFPL",
+  "dependencies": {
+    "@pulumi/kubernetes": "^2.7.0",
+    "@pulumi/pulumi": "^2.13.2",
+    "@pulumi/rancher2": "^2.5.1"
+  }
 }
