@@ -26,12 +26,19 @@ const k8sProvider = new k8s.Provider('the-cluster', {
 
 const {
   bitnami,
+  bitnamiV2,
+  chartCenter,
+  chartCenterV2,
   codecentric,
+  codecentricV2,
+  helm,
   k8sAtHome,
+  k8sAtHomeV2,
   library,
-  portainer,
-  traefik,
+  partners,
+  rancher: rancherCatalog,
   unstoppableMango,
+  unstoppableMangoV2,
 } = new Catalogs('catalogs', cluster.id);
 const stacks = new OperatorStacks('the-cluster', { provider: k8sProvider });
 
@@ -42,9 +49,16 @@ export const defaultProjectId = cluster.defaultProjectId;
 export const systemProjectId = cluster.systemProjectId;
 
 export const bitnamiCatalogId = bitnami.id;
+export const bitnamiV2CatalogId = bitnamiV2.id;
+export const chartCenterCatalogId = chartCenter.id;
+export const chartCenterV2CatalogId = chartCenterV2.id;
 export const codecentricCatalogId = codecentric.id;
+export const codecentricV2CatalogId = codecentricV2.id;
+export const helmCatalogId = helm.id;
 export const k8sAtHomeCatalogId = k8sAtHome.id;
+export const k8sAtHomeV2CatalogId = k8sAtHomeV2.id;
 export const libraryCatalogId = library.id;
-export const portainerCatalogId = portainer.id;
-export const traefikCatalogId = traefik.id;
+export const partnersCatalogId = partners.id;
+export const rancherCatalogId = rancherCatalog.id;
 export const unstoppableMangoCatalogId = unstoppableMango.id;
+export const unstoppableMangoV2CatalogId = unstoppableMangoV2.id;
