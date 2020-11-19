@@ -1,18 +1,31 @@
 {
-  "name": "the-cluster",
-  "devDependencies": {
-    "@types/node": "^14.14.8",
-    "@typescript-eslint/eslint-plugin": "^4.8.1",
-    "@typescript-eslint/parser": "^4.8.1",
-    "eslint": "^7.13.0",
-    "eslint-config-prettier": "^6.15.0",
-    "prettier": "^2.1.2",
-    "yaml": "^1.10.0"
+  "name": "@unmango/the-cluster",
+  "version": "0.1.0",
+  "description": "Helpers for deploying to THECLUSTER",
+  "main": "index.ts",
+  "scripts": {
+    "test": "test"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/UnstoppableMango/the-cluster/external"
+  },
+  "keywords": [
+    "THECLUSTER",
+    "the-cluster",
+    "helper",
+    "pulumi",
+    "kubernetes",
+    "rancher",
+    "rancher2",
+    "rke",
+    "typescript"
+  ],
+  "author": "UnstoppableMango",
+  "license": "WTFPL",
   "dependencies": {
     "@pulumi/kubernetes": "^2.7.0",
-    "@pulumi/kubernetesx": "^0.1.3",
     "@pulumi/pulumi": "^2.13.2",
-    "@pulumi/rancher2": "^2.5.2"
+    "@pulumi/rancher2": "^2.5.1"
   }
 }
