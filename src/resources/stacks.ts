@@ -1,6 +1,6 @@
 import { ComponentResource, ComponentResourceOptions, Config } from '@pulumi/pulumi';
 import { Secret } from '@pulumi/kubernetes/core/v1';
-import * as base64 from '../../pkg/base64';
+import * as base64 from '../external/base64';
 
 export class OperatorStacks extends ComponentResource {
 
