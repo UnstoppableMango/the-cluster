@@ -26,6 +26,6 @@
   "dependencies": {
     "@pulumi/kubernetes": "^2.7.1",
     "@pulumi/pulumi": "^2.13.2",
-    "@pulumi/rancher2": "^2.5.1"
+    "@pulumi/rancher2": "^2.5.2"
   }
 }
