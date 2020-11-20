@@ -24,7 +24,7 @@
   "author": "UnstoppableMango",
   "license": "WTFPL",
   "dependencies": {
-    "@pulumi/kubernetes": "^2.7.0",
+    "@pulumi/kubernetes": "^2.7.1",
     "@pulumi/pulumi": "^2.13.2",
     "@pulumi/rancher2": "^2.5.1"
   }
