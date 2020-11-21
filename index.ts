@@ -12,7 +12,7 @@ const cluster = new rancher.Cluster('the-cluster', {
     services: {
       kubelet: {
         // Hopefully should ensure consistency across nodes
-        extraArgs: { 'root-dir': '/var/lib/kubelet'},
+        extraArgs: { 'root-dir': '/var/lib/kubelet' },
         // Above is apparently not enough to provide consistency across nodes
         extraBinds: ['/var/lib/kubelet:/var/lib/kubelet:shared,z'],
       },
