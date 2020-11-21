@@ -6,6 +6,7 @@ import { toKebabCase } from '../external';
 
 export class Utils extends ComponentResource {
 
+  private readonly _ignoredFiles = ['node_modules'];
   private readonly _opts = { parent: this };
   private readonly _rootDir = path.join(__dirname, '..');
   private readonly _srcDir = path.join(this._rootDir, 'external');
@@ -37,7 +38,7 @@ export class Utils extends ComponentResource {
   }
 
   private getRepoFiles(dir: string, parts?: string[]): github.RepositoryFile[] {
-    const files = fs.readdirSync(dir);
+    const files = fs.readdirSync(dir).filter(x => !this._ignoredFiles.includes(x));
     const results: github.RepositoryFile[] = [];
 
     files.forEach(file => {
