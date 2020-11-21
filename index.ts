@@ -25,20 +25,15 @@ const k8sProvider = new k8s.Provider('the-cluster', {
 });
 
 const {
-  bitnami,
-  bitnamiV2,
-  chartCenter,
-  chartCenterV2,
-  codecentric,
-  codecentricV2,
+  bitnami, bitnamiV2,
+  chartCenter, chartCenterV2,
+  codecentric, codecentricV2,
   helm,
-  k8sAtHome,
-  k8sAtHomeV2,
+  k8sAtHome, k8sAtHomeV2,
   library,
   partners,
   rancher: rancherCatalog,
-  unstoppableMango,
-  unstoppableMangoV2,
+  unstoppableMango, unstoppableMangoV2,
 } = new Catalogs('catalogs', cluster.id);
 const stacks = new OperatorStacks('the-cluster', { provider: k8sProvider });
 
