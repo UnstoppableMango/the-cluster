@@ -57,7 +57,7 @@ export class Utils extends ComponentResource {
   }
 
   private toName(file: string, parts?: string[]): string {
-    return toKebabCase(...(parts ?? []), path.basename(file, path.extname(file)));
+    return toKebabCase(...(parts ?? []), path.basename(file));
   }
 
   private toRepoFile(file: string, parts?: string[]): github.RepositoryFile {
