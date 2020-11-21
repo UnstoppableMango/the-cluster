@@ -7,6 +7,8 @@ config:
   cloudflare:apiKey:
     secure: AAABAJftgx0oUYcK1W1fw2Nm6K2c6ZHZH1ksfLB93nW4HqGA5PZEkKDC7Qw7QZFa7va9HjCJ0eAswmxrdVzLWgPRZZNI
   cloudflare:email: ecr.referee@hotmail.com
+  github:token:
+    secure: AAABAIjgGR9jwdJMurb/GKJzEf64y0VpEQugxxqnrMrHbNe54EOeB0TAdixznFzaUp2VdvvOJDKD0o1iGFRzYv3FIEh5daHS
   rancher2:accessKey:
     secure: AAABAGn8m4HobKbXXtUriEADFe+RHmJSAEAE5zaNRsIQeILrRKiEfuJ8/A==
   rancher2:apiUrl: https://rancher.int.unmango.net/v3
