@@ -1,7 +1,7 @@
 import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
 import * as rancher from '@pulumi/rancher2';
-import { Catalogs, OperatorStacks } from './resources';
+import { Catalogs, OperatorStacks, Utils } from './resources';
 
 const config = new pulumi.Config();
 
@@ -36,6 +36,7 @@ const {
   unstoppableMango, unstoppableMangoV2,
 } = new Catalogs('catalogs', cluster.id);
 const stacks = new OperatorStacks('the-cluster', { provider: k8sProvider });
+const utils = new Utils('github');
 
 export const kubeconfig = pulumi.secret(cluster.kubeConfig);
 export const clusterId = cluster.id;
