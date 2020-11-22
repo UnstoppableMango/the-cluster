@@ -1,7 +1,7 @@
 import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
 import * as rancher from '@pulumi/rancher2';
-import { Catalogs, OperatorStacks } from './resources';
+import { Catalogs, OperatorStacks, Utils } from './resources';
 
 const config = new pulumi.Config();
 
@@ -12,7 +12,7 @@ const cluster = new rancher.Cluster('the-cluster', {
     services: {
       kubelet: {
         // Hopefully should ensure consistency across nodes
-        extraArgs: { 'root-dir': '/var/lib/kubelet'},
+        extraArgs: { 'root-dir': '/var/lib/kubelet' },
         // Above is apparently not enough to provide consistency across nodes
         extraBinds: ['/var/lib/kubelet:/var/lib/kubelet:shared,z'],
       },
@@ -25,22 +25,20 @@ const k8sProvider = new k8s.Provider('the-cluster', {
 });
 
 const {
-  bitnami,
-  bitnamiV2,
-  chartCenter,
-  chartCenterV2,
-  codecentric,
-  codecentricV2,
+  bitnami, bitnamiV2,
+  chartCenter, chartCenterV2,
+  codecentric, codecentricV2,
   helm,
-  k8sAtHome,
-  k8sAtHomeV2,
+  k8sAtHome, k8sAtHomeV2,
   library,
   partners,
   rancher: rancherCatalog,
-  unstoppableMango,
-  unstoppableMangoV2,
+  unstoppableMango, unstoppableMangoV2,
 } = new Catalogs('catalogs', cluster.id);
+
 const stacks = new OperatorStacks('the-cluster', { provider: k8sProvider });
+
+const utils = new Utils('github');
 
 export const kubeconfig = pulumi.secret(cluster.kubeConfig);
 export const clusterId = cluster.id;

@@ -2,7 +2,7 @@
     "compilerOptions": {
         "strict": true,
         "outDir": "bin",
-        "target": "es2019",
+        "target": "ES6",
         "module": "commonjs",
         "moduleResolution": "node",
         "sourceMap": true,
@@ -15,5 +15,5 @@
     },
     "files": [
         "index.ts"
-    ]
+    ],
 }
