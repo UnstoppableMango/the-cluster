@@ -57,6 +57,6 @@ export const getCatalogs = (
     partners: getCatalogV2('partners'),
     rancher: getCatalogV2('rancher'),
     unstoppableMango: getCatalog('unstoppableMango'),
-    unstoppableMangoV2: getCatalogV2('unstoppableMango'),
+    unstoppableMangoV2: getCatalogV2('unstoppableMangoV2'),
   };
 };
