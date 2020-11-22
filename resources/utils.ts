@@ -9,8 +9,8 @@ export class Utils extends ComponentResource {
 
   private readonly _ignoredFiles = ['node_modules'];
   private readonly _opts = { parent: this };
-  private static _rootDir = path.join(__dirname, '..');
-  private static _srcDir = path.join(Utils._rootDir, 'external');
+  private readonly _rootDir = path.join(__dirname, '..');
+  private readonly _srcDir = path.join(this._rootDir, 'external');
 
   public readonly repo = new github.Repository('util', {
     name: 'the-cluster-util',
@@ -30,16 +30,13 @@ export class Utils extends ComponentResource {
     vulnerabilityAlerts: true,
   }, this._opts);
 
-  public readonly files: github.RepositoryFile[] = [
-    ...this.getRepoFiles(Utils._srcDir),
-  ];
+  public readonly files: github.RepositoryFile[];
 
   constructor(name: string, opts?: ComponentResourceOptions) {
     super('unmango:the-cluster:util', name, undefined, opts);
-  }
 
-  public static initialize(): void {
     cp.execSync('npm run build', { cwd: this._srcDir });
+    this.files = this.getRepoFiles(this._srcDir);
   }
 
   private getRepoFiles(dir: string, parts?: string[]): github.RepositoryFile[] {
@@ -70,7 +67,7 @@ export class Utils extends ComponentResource {
 
   private toRepoFile(file: string, parts?: string[]): github.RepositoryFile {
     return new github.RepositoryFile(this.toName(file, parts), {
-      // Put /bin files at the root of the repo
+      // Filter out /bin so files in it get put at the root of the repo
       file: path.join(...(parts ?? []).filter(x => x !== 'bin'), path.basename(file)),
       repository: this.repo.name,
       branch: this.repo.defaultBranch,

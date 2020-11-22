@@ -38,7 +38,6 @@ const {
 
 const stacks = new OperatorStacks('the-cluster', { provider: k8sProvider });
 
-Utils.initialize();
 const utils = new Utils('github');
 
 export const kubeconfig = pulumi.secret(cluster.kubeConfig);
