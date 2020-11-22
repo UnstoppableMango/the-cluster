@@ -35,7 +35,10 @@ const {
   rancher: rancherCatalog,
   unstoppableMango, unstoppableMangoV2,
 } = new Catalogs('catalogs', cluster.id);
+
 const stacks = new OperatorStacks('the-cluster', { provider: k8sProvider });
+
+Utils.initialize();
 const utils = new Utils('github');
 
 export const kubeconfig = pulumi.secret(cluster.kubeConfig);
