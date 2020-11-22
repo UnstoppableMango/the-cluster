@@ -1,3 +1,4 @@
+import * as cp from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as github from '@pulumi/github';
@@ -8,8 +9,8 @@ export class Utils extends ComponentResource {
 
   private readonly _ignoredFiles = ['node_modules'];
   private readonly _opts = { parent: this };
-  private readonly _rootDir = path.join(__dirname, '..');
-  private readonly _srcDir = path.join(this._rootDir, 'external');
+  private static _rootDir = path.join(__dirname, '..');
+  private static _srcDir = path.join(Utils._rootDir, 'external');
 
   public readonly repo = new github.Repository('util', {
     name: 'the-cluster-util',
@@ -30,15 +31,22 @@ export class Utils extends ComponentResource {
   }, this._opts);
 
   public readonly files: github.RepositoryFile[] = [
-    ...this.getRepoFiles(this._srcDir),
+    ...this.getRepoFiles(Utils._srcDir),
   ];
 
   constructor(name: string, opts?: ComponentResourceOptions) {
     super('unmango:the-cluster:util', name, undefined, opts);
   }
 
+  public static initialize(): void {
+    cp.execSync('npm run build', { cwd: this._srcDir });
+  }
+
   private getRepoFiles(dir: string, parts?: string[]): github.RepositoryFile[] {
-    const files = fs.readdirSync(dir).filter(x => !this._ignoredFiles.includes(x));
+    const files = fs.readdirSync(dir)
+      .filter(x => !this._ignoredFiles.includes(x))
+      .filter(x => !x.match(/^[a-zA-Z]+\.{1}ts/gm));
+
     const results: github.RepositoryFile[] = [];
 
     files.forEach(file => {
@@ -62,9 +70,12 @@ export class Utils extends ComponentResource {
 
   private toRepoFile(file: string, parts?: string[]): github.RepositoryFile {
     return new github.RepositoryFile(this.toName(file, parts), {
-      file: path.join(...(parts ?? []), path.basename(file)),
+      // Put /bin files at the root of the repo
+      file: path.join(...(parts ?? []).filter(x => x !== 'bin'), path.basename(file)),
       repository: this.repo.name,
+      branch: this.repo.defaultBranch,
       content: fs.readFileSync(file).toString(),
+      // overwriteOnCreate: true,
     }, { parent: this.repo });
   }
 
