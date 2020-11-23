@@ -15,6 +15,7 @@ export class Catalogs extends ComponentResource implements external.Catalogs {
 
   public readonly bitnami = new Catalog('bitnami', {
     url: 'https://charts.bitnami.com/bitnami',
+    version: 'helm_v3',
   }, this._opts);
 
   public readonly bitnamiV2 = new CatalogV2('bitnami', {
@@ -24,6 +25,7 @@ export class Catalogs extends ComponentResource implements external.Catalogs {
 
   public readonly chartCenter = new Catalog('chart-center', {
     url: 'https://repo.chartcenter.io',
+    version: 'helm_v3',
   }, this._opts);
 
   public readonly chartCenterV2 = new CatalogV2('chart-center', {
@@ -33,6 +35,7 @@ export class Catalogs extends ComponentResource implements external.Catalogs {
 
   public readonly codecentric = new Catalog('codecentric', {
     url: 'https://codecentric.github.io/helm-charts',
+    version: 'helm_v3',
   }, this._opts);
 
   public readonly codecentricV2 = new CatalogV2('codecentric', {
@@ -57,6 +60,7 @@ export class Catalogs extends ComponentResource implements external.Catalogs {
 
   public readonly jfrog = new Catalog('jfrog', {
     url: 'https://github.com/jfrog/charts',
+    version: 'helm_v3',
   }, this._opts);
 
   public readonly jfrogV2 = new CatalogV2('jfrog', {
@@ -66,6 +70,7 @@ export class Catalogs extends ComponentResource implements external.Catalogs {
 
   public readonly k8sAtHome = new Catalog('k8s-at-home', {
     url: 'https://k8s-at-home.com/charts/',
+    version: 'helm_v3',
   }, this._opts);
 
   public readonly k8sAtHomeV2 = new CatalogV2('k8s-at-home', {
@@ -77,20 +82,11 @@ export class Catalogs extends ComponentResource implements external.Catalogs {
 
   public readonly partners = CatalogV2.get('partners', 'rancher-partner-charts', this._state, this._opts);
 
-  public readonly portainer = new CatalogV2('portainer', {
-    clusterId: this._clusterId,
-    url: 'https://portainer.github.io/k8s',
-  }, this._opts);
-
   public readonly rancher = CatalogV2.get('rancher', 'rancher-charts', this._state, this._opts);
-
-  public readonly traefik = new CatalogV2('traefik', {
-    clusterId: this._clusterId,
-    url: 'https://helm.traefik.io/traefik',
-  }, this._opts);
 
   public readonly unstoppableMango = new Catalog('unstoppablemango', {
     url: this._githubRef.requireOutput('helmChartsRepoUrl'),
+    version: 'helm_v3',
   }, this._opts);
 
   public readonly unstoppableMangoV2 = new CatalogV2('unstoppablemango', {
