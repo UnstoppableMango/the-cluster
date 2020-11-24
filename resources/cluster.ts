@@ -7,15 +7,18 @@ export interface CreateClusterArgs {
 
 export function createCluster(args?: CreateClusterArgs): rancher.Cluster {
   const config = new pulumi.Config();
-  const opts = args ?? {};
+  const opts = (args ?? {}) as pulumi.CustomResourceOptions;
 
   if (config.getBoolean('useLocalCluster')) {
     return rancher.Cluster.get('local', 'local', undefined, opts);
   }
 
-  // return new rancher.Cluster('minikube', {
-  //   name: 'minikube',
-  // });
+  if (config.getBoolean('useMinikube')) {
+    return new rancher.Cluster('minikube', {
+      name: 'minikube',
+      driver: 'imported',
+    }, opts);
+  }
 
   return new rancher.Cluster('the-cluster', {
     name: 'the-cluster',
