@@ -11,6 +11,7 @@ const rancherRef = getRancherRef(remoteStack);
 const rancherProvider = new rancher.Provider('rancher', {
   apiUrl: rancherRef.requireOutput('apiUrl'),
   tokenKey: rancherRef.requireOutput('tokenKey'),
+  insecure: true,
 });
 
 const cluster = createCluster({ provider: rancherProvider });
@@ -29,11 +30,13 @@ const {
   partners,
   rancher: rancherCatalog,
   unstoppableMango, unstoppableMangoV2,
-} = new Catalogs('catalogs', cluster.id);
+} = new Catalogs('catalogs', cluster.id, { provider: rancherProvider });
 
 const stacks = new OperatorStacks('the-cluster', { provider: k8sProvider });
 
-const utils = new Utils('github');
+if (config.getBoolean('createUtils')) {
+  const utils = new Utils('github');
+}
 
 export const kubeconfig = pulumi.secret(cluster.kubeConfig);
 export const clusterId = cluster.id;
