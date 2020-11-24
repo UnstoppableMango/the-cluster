@@ -20,4 +20,3 @@ config:
   the-cluster:pulumiAccessToken:
     secure: AAABACGrir372Vq/zcK+fzM/Cm/Pd4e5x8it6v2h1ULVG501O8YxFFWaazKGSj2bVy3PLamLOjzb/rs4mLW14mPHDxy0GVdzK0vSYQ==
   the-cluster:rancherStack: UnstoppableMango/rancher/prod
-  the-cluster:useLocalCluster: "true"

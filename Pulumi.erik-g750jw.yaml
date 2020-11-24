@@ -7,6 +7,7 @@ config:
   cloudflare:apiKey:
     secure: AAABAAN4Xhp5AuVY7TJucUVEPXZ+xUO1JT6DuDmeLim2ddfRKj95a1DXr98n5WUfbuCv5nvD4H021uKwxScSdKfHi8nD
   cloudflare:email: ecr.referee@hotmail.com
-  github:token:
-    secure: AAABAAUb0ZTi58svgMlrBwmEWCgJNrTJ0FOeUw3oBPOpX/ayMCMyIjcHL6OdO+sZz9eKkDvCpLZID0in5W9gFILY1BLHGidk
-  rancher2:insecure: "true"
+  the-cluster:pulumiAccessToken:
+    secure: AAABAEfCm8MMe0OgAeggdZj0ms2n0NLa9nXxGdwCwDet4yqg1PSsE4ZlAX6TIWtv12c9Yn3FH/s8NwhEHkwZJghe7F8lMPg9zzvZKw==
+  the-cluster:remoteStack: erik-g750jw
+  the-cluster:useMinikube: "true"
