@@ -1,0 +1,12 @@
+config:
+  azure:clientCredentials:
+    secure: AAABALzgEMdIZ1F+Xl9zZTSmpuQVt56ZuEyYHgjeYBbigH8++GUxpM7mDXD34pBkgMomPRFJ2PCv97vjafT5u2jCb9W9PdR5J7qqPRZcfAElDZIlUnIQuXHbIah7zOa2Quu8YvCMBpKbDX5MVefbb/asombt1jSWU5WL7D0PT9Isdkm/BimxHZqLbHqJ+3pGKPDYNvxOwXKh3Vwq/zvSMWJhO4Ogd70Vy79gocW+5+wChhBIInSRXVWpSl//RuEJEoAAvqcN3pU6ZBBEF4YE6+KqU7Af9WcQbdCqHY3ee4rpGy2jHCsUY7zIej5ARJPlNGoxuH5OXujVZuOdAGGDbCX/LfZn0dx+1VhvFa4NhCSrFfmh0N2JCN6kp2Gabq43O3GDnrt6VXZ5hYJs4ujN1moWhyGD2wfbpYPBArXe04AubcV8tYu36LJUKxAlCdYv/UbqfxkVlR/PXi/BEN34nwlRRBWfJFf8v9e8Tmp9UkT51EhmQROgrDOjaAQO2t/h//Jozg9/2hhyhH9HWsnEfIN7ZQ+n3zCzuJS8NLeVwXDr+aVR+LMzacmQ9Q5AWEYSqp5832JF+Yd78XYvBnPVvj+lAjUG6nI42SWBqijmucBrp6S+zyxyltN83gKgAFiiwPEOXH7AmtEylcBMbMpC6fcvKFPZYkVaXlZfG/cy973yRCiroSdIaKahb0d5sSO9x5lOCWTFAZwknt7jlSRiwbTySGOxztgAkqhHoOMkS5vXijIdDGCim+tHqSAnM/hR/v0SazDzbC6gzTTocViNkGmm6171gzVQXVm9dl7fukiAcJJ+sg==
+  azure:resourceManagerEndpointUrl: https://management.azure.com/
+  azure:sqlManagementEndpointUrl: https://management.core.windows.net:8443/
+  azure:subscriptionId: 331fb30f-0da7-4da5-8ec0-3b34c1747e42
+  cloudflare:apiKey:
+    secure: AAABAAN4Xhp5AuVY7TJucUVEPXZ+xUO1JT6DuDmeLim2ddfRKj95a1DXr98n5WUfbuCv5nvD4H021uKwxScSdKfHi8nD
+  cloudflare:email: ecr.referee@hotmail.com
+  github:token:
+    secure: AAABAAUb0ZTi58svgMlrBwmEWCgJNrTJ0FOeUw3oBPOpX/ayMCMyIjcHL6OdO+sZz9eKkDvCpLZID0in5W9gFILY1BLHGidk
+  rancher2:insecure: "true"

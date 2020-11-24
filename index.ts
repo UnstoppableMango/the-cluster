@@ -1,24 +1,19 @@
 import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
 import * as rancher from '@pulumi/rancher2';
-import { Catalogs, OperatorStacks, Utils } from './resources';
+import { getRancherRef } from './external';
+import { createCluster, Catalogs, OperatorStacks, Utils } from './resources';
 
 const config = new pulumi.Config();
+const remoteStack = config.require('remoteStack');
 
-const cluster = new rancher.Cluster('the-cluster', {
-  name: 'the-cluster',
-  rkeConfig: {
-    kubernetesVersion: 'v1.19.4-rancher1-1',
-    services: {
-      kubelet: {
-        // Hopefully should ensure consistency across nodes
-        extraArgs: { 'root-dir': '/var/lib/kubelet' },
-        // Above is apparently not enough to provide consistency across nodes
-        extraBinds: ['/var/lib/kubelet:/var/lib/kubelet:shared,z'],
-      },
-    },
-  },
+const rancherRef = getRancherRef(remoteStack);
+const rancherProvider = new rancher.Provider('rancher', {
+  apiUrl: rancherRef.requireOutput('apiUrl'),
+  tokenKey: rancherRef.requireOutput('tokenKey'),
 });
+
+const cluster = createCluster({ provider: rancherProvider });
 
 const k8sProvider = new k8s.Provider('the-cluster', {
   kubeconfig: cluster.kubeConfig,
