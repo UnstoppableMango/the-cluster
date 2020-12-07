@@ -42,7 +42,8 @@ export class Utils extends ComponentResource {
   private getRepoFiles(dir: string, parts?: string[]): github.RepositoryFile[] {
     const files = fs.readdirSync(dir)
       .filter(x => !this._ignoredFiles.includes(x))
-      .filter(x => !x.match(/^[a-zA-Z]+\.{1}ts/gm));
+      .filter(x => !x.match(/^[a-zA-Z]+\.{1}ts/gm))
+      .filter(x => !x.match(/.*spec.*/gm));
 
     const results: github.RepositoryFile[] = [];
 
