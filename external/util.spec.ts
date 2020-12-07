@@ -35,7 +35,7 @@ describe('util', () => {
 
       const result = util.flatten(obj);
 
-      expect(result.test).to.equal('true');
+      expect(result.test).to.equal(true);
     });
   });
 });
