@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { describe } from 'mocha';
+import 'mocha';
 import * as util from './util';
 
 describe('util', () => {
