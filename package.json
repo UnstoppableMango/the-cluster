@@ -12,7 +12,7 @@
   "dependencies": {
     "@pulumi/github": "^2.3.0",
     "@pulumi/kubernetes": "^2.7.3",
-    "@pulumi/pulumi": "^2.15.1",
+    "@pulumi/pulumi": "^2.15.4",
     "@pulumi/rancher2": "^2.5.3"
   }
 }
