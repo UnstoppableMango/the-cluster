@@ -19,7 +19,6 @@ export class Utils extends ComponentResource {
     allowRebaseMerge: true,
     allowSquashMerge: true,
     autoInit: true,
-    defaultBranch: 'master',
     deleteBranchOnMerge: true,
     gitignoreTemplate: 'Node',
     hasIssues: true,
@@ -28,6 +27,11 @@ export class Utils extends ComponentResource {
     licenseTemplate: 'WTFPL',
     visibility: 'public',
     vulnerabilityAlerts: true,
+  }, this._opts);
+
+  public readonly defaultBranch = new github.BranchDefault('main', {
+    branch: 'main',
+    repository: this.repo.name,
   }, this._opts);
 
   public readonly files: github.RepositoryFile[];
@@ -71,9 +75,9 @@ export class Utils extends ComponentResource {
       // Filter out /bin so files in it get put at the root of the repo
       file: path.join(...(parts ?? []).filter(x => x !== 'bin'), path.basename(file)),
       repository: this.repo.name,
-      branch: this.repo.defaultBranch,
+      branch: this.defaultBranch.branch,
       content: fs.readFileSync(file).toString(),
-      // overwriteOnCreate: true,
+      overwriteOnCreate: true,
     }, { parent: this.repo });
   }
 
