@@ -1,0 +1,8 @@
+- hosts: "*"
+  become: yes
+  tasks:
+  - name: Uninstall RKE2
+    shell:
+      cmd: /usr/local/bin/rke2-uninstall.sh
+      removes: /usr/local/bin/rke2-uninstall.sh
+
