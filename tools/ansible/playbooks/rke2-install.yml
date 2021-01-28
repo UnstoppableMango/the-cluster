@@ -34,16 +34,11 @@
     command: systemctl start rke2-server.service
 
   - name: Wait for server startup
-    pause: seconds=30
+    pause: seconds=15
 
   - name: Fetch token file
-    # fetch:
-    #   # Currently, node-token is symlinked to token
-    #   # src: /var/lib/rancher/rke2/server/node-token
-    #   src: /var/lib/rancher/rke2/server/token
-    #   dest: ../templates/node-token
-    #   flat: true
     slurp:
+      # Currently, node-token is symlinked to token
       src: /var/lib/rancher/rke2/server/token
     register: node_token
 
@@ -52,26 +47,6 @@
       src: /etc/rancher/rke2/rke2.yaml
       dest: ~/.kube/the-cluster.yaml
       flat: true
-
-# - hosts: "*:!kube-ctrl-zeus"
-#   become: yes
-#   tasks:
-#   - name: Copy node token
-#     copy:
-#       src: ../templates/node-token
-#       dest: /etc/rancher/rke2/node-token
-
-#   - name: Set node token file env var on Ubuntu
-#     lineinfile:
-#       path: /etc/environment
-#       regexp: '^RKE2_TOKEN_FILE='
-#       line: RKE2_TOKEN_FILE="/etc/rancher/rke2/node-token"
-
-#   - name: Set node token env var on Ubuntu
-#     lineinfile:
-#       path: /etc/environment
-#       regexp: '^RKE2_TOKEN='
-#       line: RKE2_TOKEN="{{lookup('file', '../templates/node-token')}}"
 
 # Copy server config
 - hosts: "kube-ctrl-herra"
@@ -95,9 +70,6 @@
   become: yes
   tasks:
   - name: Run server installer
-    environment:
-      # Should be handled in /etc/environment above, but I'm paranoid
-      RKE2_TOKEN_FILE: /etc/rancher/rke2/node-token
     shell:
       cmd: /usr/local/bin/rke2-install.sh
       creates: /usr/local/bin/rke2
@@ -162,8 +134,6 @@
   - name: Run agent installer
     environment:
       INSTALL_RKE2_TYPE: agent
-      # Should be handled in /etc/environment above, but I'm paranoid
-      RKE2_TOKEN_FILE: /etc/rancher/rke2/node-token
     shell:
       cmd: /usr/local/bin/rke2-install.sh
       creates: /usr/local/bin/rke2
