@@ -86,7 +86,7 @@
   become: yes
   tasks:
   - name: Copy config
-    copy:
+    template:
       src: ../templates/rke2-server-config-apollo.yaml.j2
       dest: /etc/rancher/rke2/config.yaml
 
@@ -119,7 +119,7 @@
   become: yes
   tasks:
   - name: Copy config
-    copy:
+    template:
       src: ../templates/rke2-agent-config-zeus.yaml.j2
       dest: /etc/rancher/rke2/config.yaml
 
@@ -127,7 +127,7 @@
   become: yes
   tasks:
   - name: Copy config
-    copy:
+    template:
       src: ../templates/rke2-agent-config-herra.yaml.j2
       dest: /etc/rancher/rke2/config.yaml
 
@@ -135,7 +135,7 @@
   become: yes
   tasks:
   - name: Copy config
-    copy:
+    template:
       src: ../templates/rke2-agent-config-apollo.yaml.j2
       dest: /etc/rancher/rke2/config.yaml
 
@@ -143,7 +143,7 @@
   become: yes
   tasks:
   - name: Copy config
-    copy:
+    template:
       src: ../templates/rke2-agent-config-zeus-stor.yaml.j2
       dest: /etc/rancher/rke2/config.yaml
 
@@ -151,7 +151,7 @@
   become: yes
   tasks:
   - name: Copy config
-    copy:
+    template:
       src: ../templates/rke2-agent-config-apollo-stor.yaml.j2
       dest: /etc/rancher/rke2/config.yaml
 
