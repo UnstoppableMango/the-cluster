@@ -36,6 +36,7 @@
   - name: Wait for server startup
     pause: seconds=15
 
+  # TODO: https://stackoverflow.com/a/47811099/7341217
   - name: Fetch token file
     slurp:
       # Currently, node-token is symlinked to token
