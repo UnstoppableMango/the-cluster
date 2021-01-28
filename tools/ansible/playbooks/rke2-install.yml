@@ -48,6 +48,7 @@
       src: /etc/rancher/rke2/rke2.yaml
       dest: ~/.kube/the-cluster.yaml
       flat: true
+      mode: u+rwx
 
 # Copy server config
 - hosts: "kube-ctrl-herra"
