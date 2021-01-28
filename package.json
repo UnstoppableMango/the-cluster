@@ -10,7 +10,7 @@
     "yaml": "^1.10.0"
   },
   "dependencies": {
-    "@pulumi/github": "^2.5.0",
+    "@pulumi/github": "^2.5.1",
     "@pulumi/kubernetes": "^2.7.7",
     "@pulumi/pulumi": "^2.18.2",
     "@pulumi/rancher2": "^2.6.1"
