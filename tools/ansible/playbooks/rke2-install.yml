@@ -37,46 +37,49 @@
     pause: seconds=30
 
   - name: Fetch token file
-    fetch:
-      # Currently, node-token is symlinked to token
-      # src: /var/lib/rancher/rke2/server/node-token
+    # fetch:
+    #   # Currently, node-token is symlinked to token
+    #   # src: /var/lib/rancher/rke2/server/node-token
+    #   src: /var/lib/rancher/rke2/server/token
+    #   dest: ../templates/node-token
+    #   flat: true
+    slurp:
       src: /var/lib/rancher/rke2/server/token
-      dest: ../templates/node-token
-      flat: true
+    register: node-token
 
   - name: Fetch kubeconfig
     fetch:
       src: /etc/rancher/rke2/rke2.yaml
-      dest: ../../kubeconfig.yaml
+      dest: ~/.kube/the-cluster.yaml
       flat: true
 
-- hosts: "*:!kube-ctrl-zeus"
-  become: yes
-  tasks:
-  - name: Copy node token
-    copy:
-      src: ../templates/node-token
-      dest: /etc/rancher/rke2/node-token
+# - hosts: "*:!kube-ctrl-zeus"
+#   become: yes
+#   tasks:
+#   - name: Copy node token
+#     copy:
+#       src: ../templates/node-token
+#       dest: /etc/rancher/rke2/node-token
 
-  - name: Set node token file env var on Ubuntu
-    lineinfile:
-      path: /etc/environment
-      regexp: '^RKE2_TOKEN_FILE='
-      line: RKE2_TOKEN_FILE="/etc/rancher/rke2/node-token"
+#   - name: Set node token file env var on Ubuntu
+#     lineinfile:
+#       path: /etc/environment
+#       regexp: '^RKE2_TOKEN_FILE='
+#       line: RKE2_TOKEN_FILE="/etc/rancher/rke2/node-token"
 
-  - name: Set node token env var on Ubuntu
-    lineinfile:
-      path: /etc/environment
-      regexp: '^RKE2_TOKEN='
-      line: RKE2_TOKEN="{{lookup('file', '../templates/node-token')}}"
+#   - name: Set node token env var on Ubuntu
+#     lineinfile:
+#       path: /etc/environment
+#       regexp: '^RKE2_TOKEN='
+#       line: RKE2_TOKEN="{{lookup('file', '../templates/node-token')}}"
 
 # Copy server config
 - hosts: "kube-ctrl-herra"
   become: yes
   tasks:
   - name: Copy config
-    copy:
-      src: ../templates/rke2-server-config-herra.yaml
+    template:
+      src: ../templates/rke2-server-config-herra.yaml.j2
       dest: /etc/rancher/rke2/config.yaml
 
 - hosts: "kube-ctrl-apollo"
@@ -84,7 +87,7 @@
   tasks:
   - name: Copy config
     copy:
-      src: ../templates/rke2-server-config-apollo.yaml
+      src: ../templates/rke2-server-config-apollo.yaml.j2
       dest: /etc/rancher/rke2/config.yaml
 
 # Run installer, enable and start service
@@ -117,7 +120,7 @@
   tasks:
   - name: Copy config
     copy:
-      src: ../templates/rke2-agent-config-zeus.yaml
+      src: ../templates/rke2-agent-config-zeus.yaml.j2
       dest: /etc/rancher/rke2/config.yaml
 
 - hosts: "kube-worker-herra"
@@ -125,7 +128,7 @@
   tasks:
   - name: Copy config
     copy:
-      src: ../templates/rke2-agent-config-herra.yaml
+      src: ../templates/rke2-agent-config-herra.yaml.j2
       dest: /etc/rancher/rke2/config.yaml
 
 - hosts: "kube-worker-apollo"
@@ -133,7 +136,7 @@
   tasks:
   - name: Copy config
     copy:
-      src: ../templates/rke2-agent-config-apollo.yaml
+      src: ../templates/rke2-agent-config-apollo.yaml.j2
       dest: /etc/rancher/rke2/config.yaml
 
 - hosts: "kube-stor-zeus*"
@@ -141,7 +144,7 @@
   tasks:
   - name: Copy config
     copy:
-      src: ../templates/rke2-agent-config-zeus-stor.yaml
+      src: ../templates/rke2-agent-config-zeus-stor.yaml.j2
       dest: /etc/rancher/rke2/config.yaml
 
 - hosts: "kube-stor-apollo*"
@@ -149,7 +152,7 @@
   tasks:
   - name: Copy config
     copy:
-      src: ../templates/rke2-agent-config-apollo-stor.yaml
+      src: ../templates/rke2-agent-config-apollo-stor.yaml.j2
       dest: /etc/rancher/rke2/config.yaml
 
 # Run installer, enable and start service
