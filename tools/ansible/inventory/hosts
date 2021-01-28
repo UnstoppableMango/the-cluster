@@ -1,0 +1,15 @@
+[servers]
+kube-ctrl-zeus
+kube-ctrl-herra
+kube-ctrl-apollo
+
+[agents]
+kube-worker-zeus
+kube-worker-herra
+kube-worker-apollo
+
+[storage]
+kube-stor-zeus01
+kube-stor-zeus02
+kube-stor-apollo01
+kube-stor-apollo02
