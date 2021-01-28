@@ -1,0 +1,8 @@
+server: https://kube.int.unmango.net:9345
+tls-san:
+- kube.int.unmango.net
+- rancher.int.unmango.net
+node-taint:
+- "CriticalAddonsOnly=true:NoExecute"
+node-label:
+- "host=apollo"

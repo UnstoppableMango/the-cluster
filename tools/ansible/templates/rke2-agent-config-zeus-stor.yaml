@@ -1,0 +1,7 @@
+server: https://kube.int.unmango.net:9345
+node-taint:
+- "CriticalAddonsOnly=true:NoExecute"
+- "StorageOnly=true:NoExecute"
+node-label:
+- "host=zeus"
+- "wireguard=true"

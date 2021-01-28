@@ -1,0 +1,4 @@
+server: https://kube.int.unmango.net:9345
+node-label:
+- "host=herra"
+- "wireguard=true"
