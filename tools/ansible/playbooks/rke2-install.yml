@@ -18,7 +18,7 @@
   tasks:
   - name: Copy config
     copy:
-      src: ../templates/rke2-server-config-zeus.yaml
+      src: ../config/rke2-server-config-zeus.yaml
       dest: /etc/rancher/rke2/config.yaml
 
   - name: Run server installer
