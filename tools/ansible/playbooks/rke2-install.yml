@@ -45,7 +45,7 @@
     #   flat: true
     slurp:
       src: /var/lib/rancher/rke2/server/token
-    register: node-token
+    register: node_token
 
   - name: Fetch kubeconfig
     fetch:
