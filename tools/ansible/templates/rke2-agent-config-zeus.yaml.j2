@@ -1,5 +1,5 @@
 server: https://kube.int.unmango.net:9345
-token: {{ node_token['content'] | b64decode }}
+token: {{ hostvars['kube-ctrl-zeus']['node_token']['content'] | b64decode }}
 node-label:
 - "host=zeus"
 - "wireguard=true"
