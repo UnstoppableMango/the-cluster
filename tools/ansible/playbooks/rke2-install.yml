@@ -1,0 +1,178 @@
+- hosts: "*"
+  become: yes
+  tasks:
+  - name: Create /etc/rancher/rke2
+    file:
+      path: /etc/rancher/rke2
+      state: directory
+
+  - name: Get installer script
+    get_url:
+      url: https://get.rke2.io
+      dest: /usr/local/bin/rke2-install.sh
+      mode: u+rwx
+
+# Setup master server
+- hosts: "kube-ctrl-zeus"
+  become: yes
+  tasks:
+  - name: Copy config
+    copy:
+      src: ../templates/rke2-server-config-zeus.yaml
+      dest: /etc/rancher/rke2/config.yaml
+
+  - name: Run server installer
+    environment:
+    shell:
+      cmd: /usr/local/bin/rke2-install.sh
+      creates: /usr/local/bin/rke2
+
+  - name: Enable server service
+    command: systemctl enable rke2-server.service
+
+  - name: Start server service
+    command: systemctl start rke2-server.service
+
+  - name: Wait for server startup
+    pause: seconds=30
+
+  - name: Fetch token file
+    fetch:
+      # Currently, node-token is symlinked to token
+      # src: /var/lib/rancher/rke2/server/node-token
+      src: /var/lib/rancher/rke2/server/token
+      dest: ../templates/node-token
+      flat: true
+
+  - name: Fetch kubeconfig
+    fetch:
+      src: /etc/rancher/rke2/rke2.yaml
+      dest: ../../kubeconfig.yaml
+      flat: true
+
+- hosts: "*:!kube-ctrl-zeus"
+  become: yes
+  tasks:
+  - name: Copy node token
+    copy:
+      src: ../templates/node-token
+      dest: /etc/rancher/rke2/node-token
+
+  - name: Set node token file env var on Ubuntu
+    lineinfile:
+      path: /etc/environment
+      regexp: '^RKE2_TOKEN_FILE='
+      line: RKE2_TOKEN_FILE="/etc/rancher/rke2/node-token"
+
+  - name: Set node token env var on Ubuntu
+    lineinfile:
+      path: /etc/environment
+      regexp: '^RKE2_TOKEN='
+      line: RKE2_TOKEN="{{lookup('file', '../templates/node-token')}}"
+
+# Copy server config
+- hosts: "kube-ctrl-herra"
+  become: yes
+  tasks:
+  - name: Copy config
+    copy:
+      src: ../templates/rke2-server-config-herra.yaml
+      dest: /etc/rancher/rke2/config.yaml
+
+- hosts: "kube-ctrl-apollo"
+  become: yes
+  tasks:
+  - name: Copy config
+    copy:
+      src: ../templates/rke2-server-config-apollo.yaml
+      dest: /etc/rancher/rke2/config.yaml
+
+# Run installer, enable and start service
+- hosts: "servers:!kube-ctrl-zeus"
+  become: yes
+  tasks:
+  - name: Run server installer
+    environment:
+      # Should be handled in /etc/environment above, but I'm paranoid
+      RKE2_TOKEN_FILE: /etc/rancher/rke2/node-token
+    shell:
+      cmd: /usr/local/bin/rke2-install.sh
+      creates: /usr/local/bin/rke2
+
+  # https://github.com/ansible/ansible/issues/48786
+  # - name: Enable and start server service
+  #   service:
+  #     name: rke2-server
+  #     state: started
+  #     enabled: yes
+  - name: Enable server service
+    command: systemctl enable rke2-server.service
+
+  - name: Start server service
+    command: systemctl start rke2-server.service
+
+# Copy agent config
+- hosts: "kube-worker-zeus"
+  become: yes
+  tasks:
+  - name: Copy config
+    copy:
+      src: ../templates/rke2-agent-config-zeus.yaml
+      dest: /etc/rancher/rke2/config.yaml
+
+- hosts: "kube-worker-herra"
+  become: yes
+  tasks:
+  - name: Copy config
+    copy:
+      src: ../templates/rke2-agent-config-herra.yaml
+      dest: /etc/rancher/rke2/config.yaml
+
+- hosts: "kube-worker-apollo"
+  become: yes
+  tasks:
+  - name: Copy config
+    copy:
+      src: ../templates/rke2-agent-config-apollo.yaml
+      dest: /etc/rancher/rke2/config.yaml
+
+- hosts: "kube-stor-zeus*"
+  become: yes
+  tasks:
+  - name: Copy config
+    copy:
+      src: ../templates/rke2-agent-config-zeus-stor.yaml
+      dest: /etc/rancher/rke2/config.yaml
+
+- hosts: "kube-stor-apollo*"
+  become: yes
+  tasks:
+  - name: Copy config
+    copy:
+      src: ../templates/rke2-agent-config-apollo-stor.yaml
+      dest: /etc/rancher/rke2/config.yaml
+
+# Run installer, enable and start service
+- hosts: "agents,storage"
+  become: yes
+  tasks:
+  - name: Run agent installer
+    environment:
+      INSTALL_RKE2_TYPE: agent
+      # Should be handled in /etc/environment above, but I'm paranoid
+      RKE2_TOKEN_FILE: /etc/rancher/rke2/node-token
+    shell:
+      cmd: /usr/local/bin/rke2-install.sh
+      creates: /usr/local/bin/rke2
+
+  # https://github.com/ansible/ansible/issues/48786
+  # - name: Enable and start agent service
+  #   service:
+  #     name: rke2-agent
+  #     state: started
+  #     enabled: yes
+  - name: Enable agent service
+    command: systemctl enable rke2-agent.service
+
+  - name: Start agent service
+    command: systemctl start rke2-agent.service
