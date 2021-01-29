@@ -1,0 +1,59 @@
+- hosts: "*"
+  become: yes
+  tasks:
+  - name: "Fetch install script"
+    get_url:
+      url: "https://get.k3s.io"
+      dest: "/usr/local/bin/k3s-install.sh"
+      mode: u+rwx
+
+- hosts: "master"
+  become: yes
+  tasks:
+  - name: Install master
+    shell:
+      cmd: "/usr/local/bin/k3s-install.sh --cluster-init"
+      creates: "/usr/local/bin/k3s-uninstall.sh"
+
+  - name: Wait for server startup
+    pause: seconds=20
+
+  # TODO: https://stackoverflow.com/a/47811099/7341217
+  - name: Fetch token file
+    slurp:
+      # Currently, node-token is symlinked to token
+      src: /var/lib/rancher/k3s/server/token
+    register: node_token
+
+  - name: Fetch kubeconfig
+    fetch:
+      src: /etc/rancher/k3s/k3s.yaml
+      dest: ~/.kube/the-cluster.yaml
+      flat: true
+      mode: u+rwx
+  
+  - name: Add vars to dummy host
+    add_host:
+      name: "MASTER_VARS"
+      node_token: "{{ node_token }}"
+
+- hosts: "servers:!master"
+  become: yes
+  tasks:
+  - name: Install servers
+    shell:
+      cmd: "/usr/local/bin/k3s-install.sh --server https://kube.int.unmango.net:6443"
+      creates: "/usr/local/bin/k3s-uninstall.sh"
+    environment:
+      K3S_TOKEN: "{{ hostvars['MASTER_VARS']['node_token'] }}"
+
+- hosts: "agents"
+  become: yes
+  tasks:
+  - name: Install agents
+    shell:
+      cmd: "/usr/local/bin/k3s-install.sh"
+      creates: "/usr/local/bin/k3s-uninstall.sh"
+    environment:
+      K3S_URL: "https://kube.int.unmango.net:6443"
+      K3S_TOKEN: "{{ hostvars['MASTER_VARS']['node_token'] }}"
