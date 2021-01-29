@@ -1,2 +1,5 @@
 #!/bin/bash
-ansible-playbook ./playbooks/reboot.yml --user erik --ask-become-pass -i ./inventory/hosts
+
+dir="$(dirname "$0")"
+
+ansible-playbook $dir/playbooks/reboot.yml --user erik --ask-become-pass -i $dir/inventory/hosts
