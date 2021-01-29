@@ -18,7 +18,7 @@
   tasks:
   - name: Copy config
     copy:
-      src: ../config/rke2-server-config-zeus.yaml
+      src: ../config/rke2/server-config-zeus.yaml
       dest: /etc/rancher/rke2/config.yaml
 
   - name: Run server installer
@@ -56,7 +56,7 @@
   tasks:
   - name: Copy config
     template:
-      src: ../templates/rke2-server-config-herra.yaml.j2
+      src: ../templates/rke2/server-config-herra.yaml.j2
       dest: /etc/rancher/rke2/config.yaml
 
 - hosts: "kube-ctrl-apollo"
@@ -64,7 +64,7 @@
   tasks:
   - name: Copy config
     template:
-      src: ../templates/rke2-server-config-apollo.yaml.j2
+      src: ../templates/rke2/server-config-apollo.yaml.j2
       dest: /etc/rancher/rke2/config.yaml
 
 # Run installer, enable and start service
@@ -94,7 +94,7 @@
   tasks:
   - name: Copy config
     template:
-      src: ../templates/rke2-agent-config-zeus.yaml.j2
+      src: ../templates/rke2/agent-config-zeus.yaml.j2
       dest: /etc/rancher/rke2/config.yaml
 
 - hosts: "kube-worker-herra"
@@ -102,7 +102,7 @@
   tasks:
   - name: Copy config
     template:
-      src: ../templates/rke2-agent-config-herra.yaml.j2
+      src: ../templates/rke2/agent-config-herra.yaml.j2
       dest: /etc/rancher/rke2/config.yaml
 
 - hosts: "kube-worker-apollo"
@@ -110,7 +110,7 @@
   tasks:
   - name: Copy config
     template:
-      src: ../templates/rke2-agent-config-apollo.yaml.j2
+      src: ../templates/rke2/agent-config-apollo.yaml.j2
       dest: /etc/rancher/rke2/config.yaml
 
 - hosts: "kube-stor-zeus*"
@@ -118,7 +118,7 @@
   tasks:
   - name: Copy config
     template:
-      src: ../templates/rke2-agent-config-zeus-stor.yaml.j2
+      src: ../templates/rke2/agent-config-zeus-stor.yaml.j2
       dest: /etc/rancher/rke2/config.yaml
 
 - hosts: "kube-stor-apollo*"
@@ -126,7 +126,7 @@
   tasks:
   - name: Copy config
     template:
-      src: ../templates/rke2-agent-config-apollo-stor.yaml.j2
+      src: ../templates/rke2/agent-config-apollo-stor.yaml.j2
       dest: /etc/rancher/rke2/config.yaml
 
 # Run installer, enable and start service
