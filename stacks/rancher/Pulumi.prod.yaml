@@ -1,20 +1,11 @@
 config:
-  azure:clientCredentials:
-    secure: AAABADgAc/Ejgu0of264WxWzDYmrPCWzr/p+NxviSKQU87EM08P6VTId7ToMhRog7Us82KR7Vdv87s8Ld6W4aaW8C8cBLbLkOMx9A/ep/rbnjh/6cH/hzBnYqXeNlarAxzd3k9EYe+mKjoLNDIXIbOf6hhZRG/7DVRXqu6sRRekO+THkJMEMVzQme2yoj3+alXXasyM24Vm2CkONq58uxy6WCvm95rbCCjzqHnWPs0LC6L1OrLl4s2s/huw8nq5bS/bBrITP+Q6Aw7AS7/zOZTAXYSUlcD38tjoUtbT3iUgXiT4K1BV8V0/9GkcMWo2Lk/AaGiqnR5YxbXCeGFpgCyRDYyP+hRkR4r28mf0tREwAJXNwL+g/WiJjXaUiAL181gpW+3A0S+5FsCujjG1p46UfM3C317nttS8F/l3yr8MfoKh7yUc9LRolpkDFrrJeS1LPTh+9NliK4xs1cQzGf/e6Ww4SKqwBRZBsEH7UCxgJTorzHuyD1fg8IBAgbJzprmijsNPPhmqmTHGAkhOR9n7qErXJFFBMqcJC8ZTh8h0heOm76VlxKeziLTAE3KPxP1FdzJoOgbhAZFjuGoeaiV0prJdKNKn0w0Qzp4w308afYP5zoiQ81Ju/jZzEXfjpc3cKQ+neSVNAotETvkTJ3O5IwEXDclT69Y/Q29ffYrisP9TF8q4SLLDiKtauCclwt3LbpaaHIzy1eMFOgrRbn4Zq9EIb6fdBZ2c76FqEZDPSHbOi5maTvqbMKVpkLB5ahQYytAVEtusCIw4BNofNURL/m8dn4IRsRFOGTYl79tkayZ6a/A==
   azure:resourceManagerEndpointUrl: https://management.azure.com/
   azure:sqlManagementEndpointUrl: https://management.core.windows.net:8443/
   azure:subscriptionId: 331fb30f-0da7-4da5-8ec0-3b34c1747e42
-  cloudflare:apiKey:
-    secure: AAABAJftgx0oUYcK1W1fw2Nm6K2c6ZHZH1ksfLB93nW4HqGA5PZEkKDC7Qw7QZFa7va9HjCJ0eAswmxrdVzLWgPRZZNI
   cloudflare:email: ecr.referee@hotmail.com
-  github:token:
-    secure: AAABAIjgGR9jwdJMurb/GKJzEf64y0VpEQugxxqnrMrHbNe54EOeB0TAdixznFzaUp2VdvvOJDKD0o1iGFRzYv3FIEh5daHS
-  rancher2:accessKey:
-    secure: AAABAGn8m4HobKbXXtUriEADFe+RHmJSAEAE5zaNRsIQeILrRKiEfuJ8/A==
-  rancher2:apiUrl: https://rancher.int.unmango.net/v3
-  rancher2:secretKey:
-    secure: AAABADllI2CDzWgolP+tWJFsjbaMDjEx3JuY8YuQt7TWfeoyWu5WVltd7etGILi1XWj64VEhpFyGW549SgvSLBuosJQ5fSqodHkmNWQpNps1WOOvrx8=
   rancher:githubStack: UnstoppableMango/github-unstoppablemango/prod
   rancher:operatorVersion: v0.0.7
-  rancher:pulumiAccessToken:
-    secure: AAABACGrir372Vq/zcK+fzM/Cm/Pd4e5x8it6v2h1ULVG501O8YxFFWaazKGSj2bVy3PLamLOjzb/rs4mLW14mPHDxy0GVdzK0vSYQ==
+  rancher2:accessKey: token-bzkc6
+  rancher2:apiUrl: https://rancher.int.unmango.net/v3
+  rancher2:secretKey:
+    secure: AAABALN0cW2luUp6ovYBanmsgQuciwSLWjnn3DQEFlUIL879ZzOf7rk3EDMm+x/OuXO0aWzoLT6H4+wQHbS7Jt91zmZ0ihEvIbvfDrm7eeldJx6SWZQ=
