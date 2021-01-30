@@ -52,7 +52,7 @@ export class Catalogs extends ComponentResource implements external.Catalogs {
     gitRepo: 'https://github.com/rancher/community-catalog',
   }, this._opts);
 
-  public readonly helm = Catalog.get('helm', 'helm', undefined, this._opts);
+  // public readonly helm = Catalog.get('helm', 'helm', undefined, this._opts);
 
   public readonly inlets = new Catalog('inlets', {
     url: 'https://inlets.github.io/inlets-operator',

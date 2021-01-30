@@ -19,7 +19,7 @@ export interface Catalogs {
   chartCenterV2: rancher.CatalogV2;
   codecentric: rancher.Catalog;
   codecentricV2: rancher.CatalogV2;
-  helm: rancher.Catalog;
+  // helm: rancher.Catalog;
   k8sAtHome: rancher.Catalog;
   k8sAtHomeV2: rancher.CatalogV2;
   library: rancher.Catalog;
@@ -50,7 +50,7 @@ export const getCatalogs = (
     chartCenterV2: getCatalogV2('chartCenterV2'),
     codecentric: getCatalog('codecentric'),
     codecentricV2: getCatalogV2('codecentricV2'),
-    helm: getCatalog('helm'),
+    // helm: getCatalog('helm'),
     k8sAtHome: getCatalog('k8sAtHome'),
     k8sAtHomeV2: getCatalogV2('k8sAtHomeV2'),
     library: getCatalog('library'),
