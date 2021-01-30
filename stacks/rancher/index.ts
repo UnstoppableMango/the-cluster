@@ -6,7 +6,7 @@ const config = new pulumi.Config();
 
 const cluster = rancher.Cluster.get('local', 'local');
 
-// const catalogs = new Catalogs('catalogs', cluster.id);
+const catalogs = new Catalogs('catalogs', { clusterId: cluster.id });
 // const stacks = new OperatorStacks('the-cluster');
 
 export const clusterId = cluster.id;

@@ -5,7 +5,7 @@ import * as external from '@unmango/shared';
 export class Catalogs extends ComponentResource implements external.Catalogs {
 
   private readonly _opts = { parent: this };
-  private readonly _state = { clusterId: this._clusterId };
+  private readonly _state = { clusterId: this.args.clusterId };
 
   private readonly _githubRef = new StackReference(
     'UnstoppableMango/github-unstoppablemango/prod',
@@ -19,7 +19,7 @@ export class Catalogs extends ComponentResource implements external.Catalogs {
   }, this._opts);
 
   public readonly bitnamiV2 = new CatalogV2('bitnami', {
-    clusterId: this._clusterId,
+    clusterId: this.args.clusterId,
     url: 'https://charts.bitnami.com/bitnami',
   }, this._opts);
 
@@ -29,7 +29,7 @@ export class Catalogs extends ComponentResource implements external.Catalogs {
   }, this._opts);
 
   public readonly chartCenterV2 = new CatalogV2('chart-center', {
-    clusterId: this._clusterId,
+    clusterId: this.args.clusterId,
     url: 'https://repo.chartcenter.io',
   }, this._opts);
 
@@ -39,7 +39,7 @@ export class Catalogs extends ComponentResource implements external.Catalogs {
   }, this._opts);
 
   public readonly codecentricV2 = new CatalogV2('codecentric', {
-    clusterId: this._clusterId,
+    clusterId: this.args.clusterId,
     url: 'https://codecentric.github.io/helm-charts',
   }, this._opts);
 
@@ -48,7 +48,7 @@ export class Catalogs extends ComponentResource implements external.Catalogs {
   }, this._opts);
 
   public readonly communityV2 = new CatalogV2('rancher-community', {
-    clusterId: this._clusterId,
+    clusterId: this.args.clusterId,
     gitRepo: 'https://github.com/rancher/community-catalog',
   }, this._opts);
 
@@ -64,7 +64,7 @@ export class Catalogs extends ComponentResource implements external.Catalogs {
   }, this._opts);
 
   public readonly jfrogV2 = new CatalogV2('jfrog', {
-    clusterId: this._clusterId,
+    clusterId: this.args.clusterId,
     gitRepo: 'https://github.com/jfrog/charts',
   }, this._opts);
 
@@ -74,7 +74,7 @@ export class Catalogs extends ComponentResource implements external.Catalogs {
   }, this._opts);
 
   public readonly k8sAtHomeV2 = new CatalogV2('k8s-at-home', {
-    clusterId: this._clusterId,
+    clusterId: this.args.clusterId,
     url: 'https://k8s-at-home.com/charts/',
   }, this._opts);
 
@@ -90,12 +90,16 @@ export class Catalogs extends ComponentResource implements external.Catalogs {
   }, this._opts);
 
   public readonly unstoppableMangoV2 = new CatalogV2('unstoppablemango', {
-    clusterId: this._clusterId,
+    clusterId: this.args.clusterId,
     gitRepo: this._githubRef.requireOutput('helmChartsRepoUrl'),
   }, this._opts);
 
-  constructor(name: string, private _clusterId: Input<string>, opts?: ComponentResourceOptions) {
+  constructor(name: string, private args: CatalogsArgs, opts?: ComponentResourceOptions) {
     super('unmango:rancher:Catalogs', name, undefined, opts);
   }
 
+}
+
+export interface CatalogsArgs {
+  clusterId: Input<string>;
 }
