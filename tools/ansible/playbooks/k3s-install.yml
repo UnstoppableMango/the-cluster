@@ -24,6 +24,8 @@
     shell:
       cmd: "/usr/local/bin/k3s-install.sh server --cluster-init"
       creates: "/usr/local/bin/k3s-uninstall.sh"
+    environment:
+      INSTALL_K3S_VERSION: "v1.19.7+k3s1"
 
   - name: Wait for server startup
     pause: seconds=20
@@ -40,7 +42,7 @@
       src: /etc/rancher/k3s/k3s.yaml
       dest: ~/.kube/the-cluster.yaml
       flat: true
-      mode: u+rwx
+      mode: u=rwx
   
   - name: Add vars to dummy host
     add_host:
@@ -59,6 +61,8 @@
 
 - hosts: "servers:!master"
   become: yes
+  environment:
+    INSTALL_K3S_VERSION: "v1.19.7+k3s1"
   tasks:
   - name: Install servers
     shell:
@@ -67,6 +71,8 @@
 
 - hosts: "agents"
   become: yes
+  environment:
+    INSTALL_K3S_VERSION: "v1.19.7+k3s1"
   tasks:
   - name: Install agents
     shell:
