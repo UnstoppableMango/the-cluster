@@ -12,11 +12,9 @@ config:
   rancher2:accessKey:
     secure: AAABAGn8m4HobKbXXtUriEADFe+RHmJSAEAE5zaNRsIQeILrRKiEfuJ8/A==
   rancher2:apiUrl: https://rancher.int.unmango.net/v3
-  rancher2:insecure: "true"
   rancher2:secretKey:
     secure: AAABADllI2CDzWgolP+tWJFsjbaMDjEx3JuY8YuQt7TWfeoyWu5WVltd7etGILi1XWj64VEhpFyGW549SgvSLBuosJQ5fSqodHkmNWQpNps1WOOvrx8=
-  the-cluster:githubStack: UnstoppableMango/github-unstoppablemango/prod
-  the-cluster:operatorVersion: v0.0.7
-  the-cluster:pulumiAccessToken:
+  rancher:githubStack: UnstoppableMango/github-unstoppablemango/prod
+  rancher:operatorVersion: v0.0.7
+  rancher:pulumiAccessToken:
     secure: AAABACGrir372Vq/zcK+fzM/Cm/Pd4e5x8it6v2h1ULVG501O8YxFFWaazKGSj2bVy3PLamLOjzb/rs4mLW14mPHDxy0GVdzK0vSYQ==
-  the-cluster:rancherStack: UnstoppableMango/rancher/prod
