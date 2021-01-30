@@ -1,0 +1,8 @@
+server: https://kube.int.unmango.net:9345
+token: {{ hostvars['kube-ctrl-zeus']['node_token']['content'] | b64decode }}
+node-taint:
+- "CriticalAddonsOnly=true:NoExecute"
+- "StorageOnly=true:NoExecute"
+node-label:
+- "host=apollo"
+- "wireguard=true"

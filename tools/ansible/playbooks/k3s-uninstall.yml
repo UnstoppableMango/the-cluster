@@ -1,0 +1,15 @@
+- hosts: "*"
+  become: yes
+  tasks:
+  - name: Uninstall k3s
+    shell:
+      cmd: /usr/local/bin/k3s-uninstall.sh
+      removes: /usr/local/bin/k3s-uninstall.sh
+    when: server | d(false)
+
+  - name: Uninstall k3s
+    shell:
+      cmd: /usr/local/bin/k3s-agent-uninstall.sh
+      removes: /usr/local/bin/k3s-agent-uninstall.sh
+    when: agent | d(false)
+

@@ -1,0 +1,9 @@
+server: https://kube.int.unmango.net:9345
+token: {{ hostvars['kube-ctrl-zeus']['node_token']['content'] | b64decode }}
+tls-san:
+- kube.int.unmango.net
+- rancher.int.unmango.net
+node-taint:
+- "CriticalAddonsOnly=true:NoExecute"
+node-label:
+- "host=herra"
