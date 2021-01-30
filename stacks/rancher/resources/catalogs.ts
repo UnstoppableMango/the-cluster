@@ -1,6 +1,6 @@
 import { ComponentResource, ComponentResourceOptions, Input, StackReference } from '@pulumi/pulumi';
 import { Catalog, CatalogV2 } from '@pulumi/rancher2';
-import * as external from '../external/catalogs';
+import * as external from '@unmango/shared';
 
 export class Catalogs extends ComponentResource implements external.Catalogs {
 

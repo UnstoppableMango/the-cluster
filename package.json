@@ -1,5 +1,9 @@
 {
   "workspaces": [
+    "./lib/*",
     "./stacks/*"
-  ]
+  ],
+  "dependencies": {
+    "@unmango/shared": "^0.1.4"
+  }
 }
