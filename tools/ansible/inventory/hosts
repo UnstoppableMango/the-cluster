@@ -1,49 +1,50 @@
 [master]
-kube-ctrl-zeus
+kcz
 
 [servers]
-kube-ctrl-zeus
-kube-ctrl-herra
-kube-ctrl-apollo
+kcz
+kch
+kca
 
 [servers:vars]
 server=true
-agent=false
 
 [agents]
-kube-worker-zeus
-kube-worker-herra
-kube-worker-apollo
-kube-stor-zeus[01:02]
-kube-stor-apollo[01:02]
+kwz[01:02]
+kwh[01:02]
+kwa[01:02]
+ksz[01:02]
+ksa[01:02]
 
 [agents:vars]
 agent=true
-server=false
 
 [storage]
-kube-stor-zeus[01:02]
-kube-stor-apollo[01:02]
+ksz[01:02]
+ksa[01:02]
+
+[storage:vars]
+storage=true
 
 [zeus]
-kube-ctrl-zeus
-kube-worker-zeus
-kube-stor-zeus[01:02]
+kcz
+kwz[01:02]
+ksz[01:02]
 
 [zeus:vars]
 host=zeus
 
 [herra]
-kube-ctrl-herra
-kube-worker-herra
+kch
+kwh[01:02]
 
 [herra:vars]
 host=herra
 
 [apollo]
-kube-ctrl-apollo
-kube-worker-apollo
-kube-stor-apollo[01:02]
+kca
+kwa[01:02]
+ksa[01:02]
 
 [apollo:vars]
 host=apollo
