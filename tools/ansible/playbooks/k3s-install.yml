@@ -1,18 +1,28 @@
 - hosts: "*"
   become: yes
   tasks:
-  - name: "Fetch install script"
+  - name: Fetch install script
     get_url:
       url: "https://get.k3s.io"
       dest: "/usr/local/bin/k3s-install.sh"
       mode: u+rwx
 
+  - name: Create /etc/rancher/k3s
+    file:
+      path: /etc/rancher/k3s
+      state: directory
+
 - hosts: "master"
   become: yes
   tasks:
+  - name: Copy master config
+    template:
+      src: ../templates/k3s/config.yaml.j2
+      dest: /etc/rancher/k3s/config.yaml
+
   - name: Install master
     shell:
-      cmd: "/usr/local/bin/k3s-install.sh --cluster-init"
+      cmd: "/usr/local/bin/k3s-install.sh server --cluster-init"
       creates: "/usr/local/bin/k3s-uninstall.sh"
 
   - name: Wait for server startup
@@ -35,25 +45,30 @@
   - name: Add vars to dummy host
     add_host:
       name: "MASTER_VARS"
-      node_token: "{{ node_token }}"
+      groups: master
+      master_host: "{{ groups['master'][0] }}"
+      node_token: "{{ node_token['content'] | b64decode }}"
+
+- hosts: "*:!master"
+  become: yes
+  tasks:
+  - name: Copy config
+    template:
+      src: ../templates/k3s/config.yaml.j2
+      dest: /etc/rancher/k3s/config.yaml
 
 - hosts: "servers:!master"
   become: yes
   tasks:
   - name: Install servers
     shell:
-      cmd: "/usr/local/bin/k3s-install.sh --server https://kube.int.unmango.net:6443"
+      cmd: "/usr/local/bin/k3s-install.sh server"
       creates: "/usr/local/bin/k3s-uninstall.sh"
-    environment:
-      K3S_TOKEN: "{{ hostvars['MASTER_VARS']['node_token'] }}"
 
 - hosts: "agents"
   become: yes
   tasks:
   - name: Install agents
     shell:
-      cmd: "/usr/local/bin/k3s-install.sh"
-      creates: "/usr/local/bin/k3s-uninstall.sh"
-    environment:
-      K3S_URL: "https://kube.int.unmango.net:6443"
-      K3S_TOKEN: "{{ hostvars['MASTER_VARS']['node_token'] }}"
+      cmd: "/usr/local/bin/k3s-install.sh agent"
+      creates: "/usr/local/bin/k3s-agent-uninstall.sh"
