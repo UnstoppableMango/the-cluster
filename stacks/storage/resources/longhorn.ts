@@ -1,10 +1,11 @@
 import { ComponentResource, ComponentResourceOptions, Input } from '@pulumi/pulumi';
-import { App, Namespace } from '@pulumi/rancher2';
+import { AppV2, Namespace } from '@pulumi/rancher2';
+import * as yaml from 'yaml';
 
 export class Longhorn extends ComponentResource {
 
   public readonly namespace: Namespace;
-  public readonly app: App;
+  public readonly app: AppV2;
 
   constructor(name: string, args: LonghornArgs, opts?: ComponentResourceOptions) {
     super('unmango:apps:longhorn', name, undefined, opts);
@@ -14,18 +15,24 @@ export class Longhorn extends ComponentResource {
       projectId: args.projectId,
     }, { parent: this });
 
-    this.app = new App('longhorn', {
-      catalogName: 'library',
+    this.app = new AppV2('longhorn', {
+      clusterId: args.clusterId,
       projectId: args.projectId,
-      targetNamespace: this.namespace.name,
-      templateName: 'longhorn',
-      answers: {
-        // 'service.ui.type': 'Rancher-Proxy',
-        'ingress.enabled': true,
-        'ingress.host': 'longhorn.int.unmango.net',
-        'defaultSettings.backupTarget': 'nfs://zeus:/tank1/rancher/longhorn/backup',
-        'defaultSettings.taintToleration': 'StorageOnly=true:NoExecute;CriticalAddonsOnly=true:NoExecute',
-      },
+      namespace: this.namespace.name,
+      repoName: 'rancher-charts',
+      chartName: 'longhorn',
+      chartVersion: args.version,
+      values: yaml.stringify({
+        // service: { ui: { type: 'Rancher-Proxy' } },
+        ingress: {
+          enabled: true,
+          host: 'longhorn.int.unmango.net',
+        },
+        defaultSettings: {
+          backupTarget: 'nfs://zeus:/tank1/rancher/longhorn/backup',
+          taintToleration: 'StorageOnly=true:NoExecute;CriticalAddonsOnly=true:NoExecute',
+        },
+      }),
     }, { parent: this });
 
     this.registerOutputs();
@@ -34,5 +41,7 @@ export class Longhorn extends ComponentResource {
 }
 
 export interface LonghornArgs {
+  clusterId: Input<string>;
   projectId: Input<string>;
+  version: Input<string>;
 }
