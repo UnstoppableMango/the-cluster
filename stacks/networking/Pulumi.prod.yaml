@@ -1,10 +1,6 @@
 config:
-  cloudflare:apiKey:
-    secure: AAABAP9xWIGonIpPV5Xar9TLtOtKNfN5874cVPHYv9tXUHesfjGoQnxKf5yaxE9fpUcnyVIv0K/sb5TQzJYEI6jKVrAU
-  cloudflare:email:
-    secure: AAABADnrIW4x/VOkU373VSXrvDrkNnfHDfCKNyXFl29RBYtKhQM6NOrQAHA6edA5JUKsU/JBZg==
-  the-cluster-networking:remoteStack: prod
-  the-cluster-networking:traefik:
+  networking:remoteStack: prod
+  networking:traefik:
     pilot:
       token:
-        secure: AAABABfZP4/tY7hwZzkbdgNtV30rBfXfCs2rOMLE/YDJmEg9YGvz5QZn9OsbVrQkN2K2EuihycMCyFCiR50z+lLxXlc=
+        secure: AAABACQzoIoWKxq3mEb/EE9bmrsu1Q6OnGcWg0E9sTdAzH/FYd8+qKMlHahsu/dHsJBCEi3AbzoAG659gea4dAje6L4=
