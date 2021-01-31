@@ -29,6 +29,26 @@ export interface Catalogs {
   unstoppableMangoV2: rancher.CatalogV2;
 }
 
+export type CatalogsExport<T = Catalogs> = {
+  [P in keyof T as `${string & P}Id`]: pulumi.Output<string>
+};
+
+export const createExport = (catalogs: Catalogs): CatalogsExport => ({
+  bitnamiId: catalogs.bitnami.id,
+  bitnamiV2Id: catalogs.bitnamiV2.id,
+  chartCenterId: catalogs.chartCenter.id,
+  chartCenterV2Id: catalogs.chartCenterV2.id,
+  codecentricId: catalogs.codecentric.id,
+  codecentricV2Id: catalogs.codecentricV2.id,
+  k8sAtHomeId: catalogs.k8sAtHome.id,
+  k8sAtHomeV2Id: catalogs.k8sAtHomeV2.id,
+  libraryId: catalogs.library.id,
+  partnersId: catalogs.partners.id,
+  rancherId: catalogs.rancher.id,
+  unstoppableMangoId: catalogs.unstoppableMango.id,
+  unstoppableMangoV2Id: catalogs.unstoppableMangoV2.id
+});
+
 export const getCatalogs = (
   clusterId: pulumi.Input<string>,
   ref: pulumi.StackReference,
