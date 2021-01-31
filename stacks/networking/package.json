@@ -13,7 +13,6 @@
         "@pulumi/kubernetesx": "^0.1.3",
         "@pulumi/pulumi": "^2.18.2",
         "@pulumi/rancher2": "^2.6.1",
-        "@unmango/the-cluster": "github:UnstoppableMango/the-cluster-util",
         "yaml": "^1.10.0"
     }
 }
