@@ -17,3 +17,6 @@ node-taint:
 node-label:
 - "host={{ host }}"
 - "wireguard=true"
+{% if storage | d(false) %}
+- "node.longhorn.io/create-default-disk=true"
+{% endif %}

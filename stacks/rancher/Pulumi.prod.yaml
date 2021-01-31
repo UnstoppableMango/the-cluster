@@ -5,7 +5,7 @@ config:
   cloudflare:email: ecr.referee@hotmail.com
   rancher:githubStack: UnstoppableMango/github-unstoppablemango/prod
   rancher:operatorVersion: v0.0.7
-  rancher2:accessKey: token-bzkc6
+  rancher2:accessKey: token-v9wrz
   rancher2:apiUrl: https://rancher.int.unmango.net/v3
   rancher2:secretKey:
-    secure: AAABALN0cW2luUp6ovYBanmsgQuciwSLWjnn3DQEFlUIL879ZzOf7rk3EDMm+x/OuXO0aWzoLT6H4+wQHbS7Jt91zmZ0ihEvIbvfDrm7eeldJx6SWZQ=
+    secure: AAABAKlQ/5NmkdCwcfi7ZYBaw8iWxr2Eyo9zBmW+8/owhh0gP6jNNdUNblRatp1C0l+95+nZNkoqDZqNyvnIvwm5hMZmzKHYWZHf45jLgdUojORxkv0=
