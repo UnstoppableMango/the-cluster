@@ -72,7 +72,7 @@ export class Traefik extends ComponentResource {
   });
 
   constructor(name: string, private args: TraefikArgs, opts?: ComponentResourceOptions) {
-    super('unmango:k8s:apps', name, undefined, opts);
+    super('unmango:apps:traefik', name, undefined, opts);
   }
 
 }
