@@ -5,5 +5,8 @@
   ],
   "dependencies": {
     "@unmango/shared": "^0.1.4"
+  },
+  "devDependencies": {
+    "typescript": "^4.1.3"
   }
 }
