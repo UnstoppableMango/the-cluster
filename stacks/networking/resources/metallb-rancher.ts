@@ -1,20 +1,26 @@
 import { ComponentResource, ComponentResourceOptions, Input } from '@pulumi/pulumi';
-import { App } from '@pulumi/rancher2';
+import { App, Namespace } from '@pulumi/rancher2';
 import * as yaml from 'yaml';
 
 export class MetalLb extends ComponentResource {
 
+  public readonly ns: Namespace;
   public readonly app: App;
 
   constructor(name: string, args: MetalLbArgs, opts?: ComponentResourceOptions) {
     super('unmango:apps:metallb', name, undefined, opts);
+
+    this.ns = new Namespace('metallb', {
+      name: 'metallb-system',
+      projectId: args.projectId,
+    }, { parent: this });
 
     this.app = new App(name, {
       projectId: args.projectId,
       catalogName: args.catalogName,
       templateName: 'metallb',
       templateVersion: args.version,
-      targetNamespace: args.namespace,
+      targetNamespace: this.ns.name,
       forceUpgrade: true,
       answers: {
         configInline: yaml.stringify({
@@ -34,7 +40,6 @@ export class MetalLb extends ComponentResource {
 export interface MetalLbArgs {
   projectId: Input<string>;
   catalogName: Input<string>;
-  namespace: Input<string>;
   version: Input<string>;
   addresses: string[];
 }
