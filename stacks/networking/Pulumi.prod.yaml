@@ -3,4 +3,4 @@ config:
   networking:traefik:
     pilot:
       token:
-        secure: AAABACQzoIoWKxq3mEb/EE9bmrsu1Q6OnGcWg0E9sTdAzH/FYd8+qKMlHahsu/dHsJBCEi3AbzoAG659gea4dAje6L4=
+        secure: AAABAB+pOte2DPjwuN1cOusCO52ZSPtXMg/OKaIAd3pymzzjRwqEngtffGJvTK/uMq7J4I9HZRLPd04+ICsOjNyH69E=
