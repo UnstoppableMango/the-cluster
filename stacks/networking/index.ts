@@ -1,7 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as rancher from '@pulumi/rancher2';
 import * as yaml from 'yaml';
-import { getTheCluster, getTheClusterRef, getRancherRef } from '@unmango/the-cluster';
+import { getTheCluster, getTheClusterRef, getRancherRef } from '@unmango/shared';
 import { Traefik } from './resources';
 
 const config = new pulumi.Config();

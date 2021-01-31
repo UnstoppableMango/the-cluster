@@ -2,7 +2,7 @@ import { CustomResource } from '@pulumi/kubernetes/apiextensions';
 import { ComponentResource, ComponentResourceOptions, Config, Input } from '@pulumi/pulumi';
 import { App, CatalogV2 } from '@pulumi/rancher2';
 import { Catalog, Namespace } from '@pulumi/rancher2';
-import * as util from '@unmango/the-cluster';
+import * as util from '@unmango/shared';
 
 export class Traefik extends ComponentResource {
 
