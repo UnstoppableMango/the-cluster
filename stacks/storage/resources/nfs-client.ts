@@ -23,9 +23,9 @@ export class NfsClient extends ComponentResource {
 
     this.app = new AppV2('nfs-client', {
       clusterId: args.clusterId,
-      repoName: this.catalog.name,
       projectId: args.projectId,
       namespace: this.namespace.name,
+      repoName: this.catalog.name,
       chartName: 'nfs-client-provisioner',
       chartVersion: args.version,
       values: yaml.stringify({
