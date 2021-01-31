@@ -22,7 +22,8 @@
 
   - name: Install master
     shell:
-      cmd: "/usr/local/bin/k3s-install.sh server --cluster-init --disable servicelb"
+      # cmd: "/usr/local/bin/k3s-install.sh server --cluster-init --disable servicelb"
+      cmd: "/usr/local/bin/k3s-install.sh server --cluster-init"
       creates: "/usr/local/bin/k3s-uninstall.sh"
     environment:
       INSTALL_K3S_VERSION: "v1.19.7+k3s1"
@@ -62,11 +63,13 @@
 - hosts: "servers:!master"
   become: yes
   environment:
+    # Latest version supported by rancher
     INSTALL_K3S_VERSION: "v1.19.7+k3s1"
   tasks:
   - name: Install servers
     shell:
-      cmd: "/usr/local/bin/k3s-install.sh server --disable servicelb"
+      # cmd: "/usr/local/bin/k3s-install.sh server --disable servicelb"
+      cmd: "/usr/local/bin/k3s-install.sh server"
       creates: "/usr/local/bin/k3s-uninstall.sh"
 
 - hosts: "agents"
