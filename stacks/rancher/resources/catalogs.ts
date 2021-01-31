@@ -1,8 +1,8 @@
 import { ComponentResource, ComponentResourceOptions, Input, StackReference } from '@pulumi/pulumi';
 import { Catalog, CatalogV2 } from '@pulumi/rancher2';
-import * as external from '@unmango/shared';
+import * as shared from '@unmango/shared';
 
-export class Catalogs extends ComponentResource implements external.Catalogs {
+export class Catalogs extends ComponentResource implements shared.Catalogs {
 
   private readonly _opts = { parent: this };
   private readonly _state = { clusterId: this.args.clusterId };
