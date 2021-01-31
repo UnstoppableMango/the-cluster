@@ -14,7 +14,9 @@ const project = new rancher.Project('storage', {
 });
 
 const longhorn = new Longhorn('longhorn', {
+  clusterId: clusterId,
   projectId: project.id,
+  version: '1.1.000',
 });
 
 const nfsClient = new NfsClient('nfs-client', {
