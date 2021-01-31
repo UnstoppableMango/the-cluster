@@ -16,13 +16,13 @@ const remoteStack = config.require('remoteStack');
 //   clusterId: theCluster.id,
 // });
 
-const metallb = new MetalLb('metallb', {
-  // projectId: project.id,
-  // catalogName: bitnamiCatalog.name,
-  // version: '2.1.2',
-  version: '0.9.5',
-  addresses: ['192.168.1.75-192.168.1.99'],
-});
+// const metallb = new MetalLb('metallb', {
+//   // projectId: project.id,
+//   // catalogName: bitnamiCatalog.name,
+//   // version: '2.1.2',
+//   version: '0.9.5',
+//   addresses: ['192.168.1.75-192.168.1.99'],
+// });
 
 // const traefik = new Traefik('traefik', {
 //   clusterId: theCluster.id,
