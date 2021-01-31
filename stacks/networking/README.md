@@ -1,2 +1,2 @@
-# the-cluster-networking
+# networking
 Networking stack for THECLUSTER

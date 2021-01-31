@@ -1,3 +1,3 @@
-name: the-cluster-networking
+name: networking
 runtime: nodejs
 description: Networking resources for THECLUSTER
