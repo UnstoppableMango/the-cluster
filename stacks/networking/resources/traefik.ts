@@ -73,6 +73,20 @@ export class Traefik extends ComponentResource {
 
   constructor(name: string, private args: TraefikArgs, opts?: ComponentResourceOptions) {
     super('unmango:apps:traefik', name, undefined, opts);
+
+    // const traefikValues = pulumi.all({
+    //   id: theCluster.id,
+    //   name: theCluster.name,
+    // }).apply(({ id, name }) => yaml.stringify({
+    //   global: {
+    //     cattle: {
+    //       clusterId: id,
+    //       clusterName: name,
+    //     },
+    //   },
+    //   persistence: { enabled: true },
+    //   ports: { traefik: { expose: true } },
+    // }));
   }
 
 }

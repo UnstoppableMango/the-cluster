@@ -30,21 +30,7 @@ const metallb = new MetalLb('metallb', {
   addresses: ['192.168.1.75-192.168.1.99'],
 });
 
-const traefikValues = pulumi.all({
-  id: theCluster.id,
-  name: theCluster.name,
-}).apply(({ id, name }) => yaml.stringify({
-  global: {
-    cattle: {
-      clusterId: id,
-      clusterName: name,
-    },
-  },
-  persistence: { enabled: true },
-  ports: { traefik: { expose: true } },
-}));
-
-const traefik = new Traefik('traefik', {
-  clusterId: theCluster.id,
-  projectId: project.id,
-});
+// const traefik = new Traefik('traefik', {
+//   clusterId: theCluster.id,
+//   projectId: project.id,
+// });
