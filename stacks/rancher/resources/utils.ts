@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as github from '@pulumi/github';
 import { ComponentResource, ComponentResourceOptions } from '@pulumi/pulumi';
-import { toKebabCase } from '../external';
+import { toKebabCase } from '@unmango/shared';
 
 export class Utils extends ComponentResource {
 

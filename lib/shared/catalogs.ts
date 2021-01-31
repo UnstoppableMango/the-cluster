@@ -19,7 +19,7 @@ export interface Catalogs {
   chartCenterV2: rancher.CatalogV2;
   codecentric: rancher.Catalog;
   codecentricV2: rancher.CatalogV2;
-  helm: rancher.Catalog;
+  // helm: rancher.Catalog;
   k8sAtHome: rancher.Catalog;
   k8sAtHomeV2: rancher.CatalogV2;
   library: rancher.Catalog;
@@ -28,6 +28,26 @@ export interface Catalogs {
   unstoppableMango: rancher.Catalog;
   unstoppableMangoV2: rancher.CatalogV2;
 }
+
+export type CatalogsExport<T = Catalogs> = {
+  [P in keyof T as `${string & P}Id`]: pulumi.Output<string>
+};
+
+export const createExport = (catalogs: Catalogs): CatalogsExport => ({
+  bitnamiId: catalogs.bitnami.id,
+  bitnamiV2Id: catalogs.bitnamiV2.id,
+  chartCenterId: catalogs.chartCenter.id,
+  chartCenterV2Id: catalogs.chartCenterV2.id,
+  codecentricId: catalogs.codecentric.id,
+  codecentricV2Id: catalogs.codecentricV2.id,
+  k8sAtHomeId: catalogs.k8sAtHome.id,
+  k8sAtHomeV2Id: catalogs.k8sAtHomeV2.id,
+  libraryId: catalogs.library.id,
+  partnersId: catalogs.partners.id,
+  rancherId: catalogs.rancher.id,
+  unstoppableMangoId: catalogs.unstoppableMango.id,
+  unstoppableMangoV2Id: catalogs.unstoppableMangoV2.id
+});
 
 export const getCatalogs = (
   clusterId: pulumi.Input<string>,
@@ -50,7 +70,7 @@ export const getCatalogs = (
     chartCenterV2: getCatalogV2('chartCenterV2'),
     codecentric: getCatalog('codecentric'),
     codecentricV2: getCatalogV2('codecentricV2'),
-    helm: getCatalog('helm'),
+    // helm: getCatalog('helm'),
     k8sAtHome: getCatalog('k8sAtHome'),
     k8sAtHomeV2: getCatalogV2('k8sAtHomeV2'),
     library: getCatalog('library'),

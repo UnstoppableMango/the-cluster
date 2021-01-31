@@ -1,14 +1,10 @@
 {
-  "name": "@unmango/the-cluster",
+  "name": "@unmango/shared",
   "version": "0.1.4",
   "description": "Utils for deploying to THECLUSTER",
   "scripts": {
     "build": "tsc -d --sourceMap false",
     "test": "mocha -r ts-node/register ./**/*.spec.ts"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/UnstoppableMango/the-cluster/external"
   },
   "keywords": [
     "THECLUSTER",
