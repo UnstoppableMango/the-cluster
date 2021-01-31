@@ -34,7 +34,7 @@ export class MetalLb extends ComponentResource {
     }, { parent: this, dependsOn: this.namespace });
 
     this.config = new k8s.core.v1.ConfigMap('metallb', {
-      metadata: { name: 'metallb-config', namespace: ns },
+      metadata: { name: 'config', namespace: ns },
       data: {
         config: yaml.stringify({
           'address-pools': [{
