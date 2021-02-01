@@ -1,0 +1,3 @@
+name: management
+runtime: nodejs
+description: Management resources for THECLUSTER
