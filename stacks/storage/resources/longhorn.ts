@@ -29,7 +29,7 @@ export class Longhorn extends ComponentResource {
           host: 'longhorn.int.unmango.net',
         },
         defaultSettings: {
-          backupTarget: 'nfs://zeus:/tank1/rancher/longhorn/backup',
+          backupTarget: 'nfs://zeus:/tank1/rancher/longhorn',
           createDefaultDiskLabeledNodes: true,
           // Bug (maybe?): https://github.com/longhorn/longhorn/issues/1833
           taintToleration: 'StorageOnly=true:NoExecute;CriticalAddonsOnly=true:NoExecute',
