@@ -1,0 +1,19 @@
+config:
+  the-cluster-media:deluge:
+    password:
+      secure: AAABAJ+eGCTKRdUQdmTzHCooMJCw8kRfcKVHxUmi5J4mbLQcOxBd6v8=
+    username: unstoppablemango
+  the-cluster-media:linuxserver:
+    pgid: 0
+    puid: 0
+    tz: America/Chicago
+  the-cluster-media:pia:
+    nameservers:
+    - 209.222.18.222
+    - 209.222.18.218
+    openvpn: https://www.privateinternetaccess.com/openvpn/openvpn-nextgen.zip
+    ovpnFile: ./resources/openvpn-nextgen.zip
+    password:
+      secure: AAABAMccUnrQDQYpKvVZi5iIuWBhINgr7HnN0Bngm+g+LJGRRpqiwrjjKyej/qE=
+    user: p7531788
+  the-cluster-media:remoteStack: prod
