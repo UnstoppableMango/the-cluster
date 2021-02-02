@@ -9,7 +9,7 @@ kubectl create namespace cattle-system --dry-run=client -o yaml | kubectl apply 
 helm install rancher rancher-latest/rancher \
     --namespace cattle-system \
     --set hostname=rancher.int.unmango.net \
-    --set tls=external \
+    # --set tls=external \
     # --set ingress.tls.source=letsEncrypt \
     # --set letsEncrypt.email=ecr.referee@hotmail.com
 
