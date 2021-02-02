@@ -1,108 +1,138 @@
 import * as k8s from '@pulumi/kubernetes';
 import * as kx from '@pulumi/kubernetesx';
 import * as pulumi from '@pulumi/pulumi';
-import * as rancher from '@pulumi/rancher2';
-import { getTheClusterRef, getRancherRef, getTheCluster } from '@unmango/the-cluster';
-import { Deluge, DelugeConfig, Jackett, Lidarr, LinuxServerConfig, Pia, Radarr, Sonarr } from './resources';
+import { Namespace, Project } from '@pulumi/rancher2';
+
+import {
+  Deluge,
+  DelugeConfig,
+  Jackett,
+  Lidarr,
+  LinuxServerConfig,
+  Pia,
+  Radarr,
+  Sonarr,
+} from './resources';
 
 const config = new pulumi.Config();
 const remoteStack = config.require('remoteStack');
 
-const {
-  k8sProvider,
-  rancherProvider,
-  defaultProject,
-} = getTheCluster({
-  theClusterRef: getTheClusterRef(remoteStack),
-  rancherRef: getRancherRef(remoteStack),
+const rancherRef = new pulumi.StackReference(`UnstoppableMango/rancher/${remoteStack}`);
+const clusterId = rancherRef.requireOutput('clusterId');
+
+const project = new Project('media', {
+  name: 'Media',
+  clusterId: clusterId,
 });
 
-const k8sOptions: pulumi.CustomResourceOptions = { provider: k8sProvider };
-const rancherOptions: pulumi.CustomResourceOptions = { provider: rancherProvider };
-
-const ns = new rancher.Namespace('media', {
+const namespace = new Namespace('media', {
   name: 'media',
-  projectId: defaultProject.id,
-}, rancherOptions);
+  projectId: project.id,
+});
 
 const pia = config.requireObject<Pia>('pia');
 const delugeConfig = config.requireObject<DelugeConfig>('deluge');
 
 const { puid, pgid, tz } = config.requireObject<LinuxServerConfig>('linuxserver');
 const linuxServerShared = new kx.ConfigMap('linuxserver-shared', {
-  metadata: { namespace: ns.name },
+  metadata: { namespace: namespace.name },
   data: {
     PUID: `${puid}`,
     PGID: `${pgid}`,
     TZ: tz,
   },
-}, k8sOptions);
+});
+
+const delugeNs = new Namespace('deluge', {
+  name: 'deluge',
+  projectId: project.id,
+});
 
 const deluge = new Deluge('deluge', {
   deluge: delugeConfig,
-  namespace: ns.name,
+  namespace: delugeNs.name,
   pia,
-  projectId: defaultProject.id,
-}, { providers: [k8sProvider] });
+  projectId: project.id,
+});
+
+const jackettNs = new Namespace('jackett', {
+  name: 'jackett',
+  projectId: project.id,
+});
 
 const jackett = new Jackett('jackett', {
-  namespace: ns.name,
+  namespace: jackettNs.name,
   linuxServer: linuxServerShared,
-}, { providers: [k8sProvider] });
+});
 
 // Sonarr
+const sonarrNs = new Namespace('sonarr', {
+  name: 'sonarr',
+  projectId: project.id,
+});
+
 const tv = new Sonarr('tv', {
-  namespace: ns.name,
+  namespace: sonarrNs.name,
   linuxServer: linuxServerShared,
   downloads: deluge.downloads,
-  tvVolume: createMediaVolume('tv', '/tank1/media/tv'),
-}, { providers: [k8sProvider] });
+  tvVolume: createMediaVolume('tv', sonarrNs.name, '/tank1/media/tv'),
+});
 
 const tv4k = new Sonarr('tv4k', {
-  namespace: ns.name,
+  namespace: sonarrNs.name,
   linuxServer: linuxServerShared,
   downloads: deluge.downloads,
-  tvVolume: createMediaVolume('tv4k', '/tank1/media/tv4k'),
-}, { providers: [k8sProvider] });
+  tvVolume: createMediaVolume('tv4k', sonarrNs.name, '/tank1/media/tv4k'),
+});
 
 const anime = new Sonarr('anime', {
-  namespace: ns.name,
+  namespace: sonarrNs.name,
   linuxServer: linuxServerShared,
   downloads: deluge.downloads,
-  tvVolume: createMediaVolume('anime', '/tank1/media/anime'),
-}, { providers: [k8sProvider] });
+  tvVolume: createMediaVolume('anime', sonarrNs.name, '/tank1/media/anime'),
+});
 
 // Radarr
+const radarrNs = new Namespace('radarr', {
+  name: 'radarr',
+  projectId: project.id,
+});
+
 const movies = new Radarr('movies', {
-  namespace: ns.name,
+  namespace: radarrNs.name,
   linuxServer: linuxServerShared,
   downloads: deluge.downloads,
-  moviesVolume: createMediaVolume('movies', '/tank1/media/movies'),
-}, { providers: [k8sProvider] });
+  moviesVolume: createMediaVolume('movies', radarrNs.name, '/tank1/media/movies'),
+});
 
 const movies4k = new Radarr('movies4k', {
-  namespace: ns.name,
+  namespace: radarrNs.name,
   linuxServer: linuxServerShared,
   downloads: deluge.downloads,
-  moviesVolume: createMediaVolume('movies4k', '/tank1/media/movies4k'),
-}, { providers: [k8sProvider] });
+  moviesVolume: createMediaVolume('movies4k', radarrNs.name, '/tank1/media/movies4k'),
+});
 
 // Lidarr
+const lidarrNs = new Namespace('lidarr', {
+  name: 'lidarr',
+  projectId: project.id,
+});
+
 const lidarr = new Lidarr('lidarr', {
-  namespace: ns.name,
+  namespace: lidarrNs.name,
   linuxServer: linuxServerShared,
   downloads: deluge.downloads,
-  musicVolume: createMediaVolume('music', '/tank1/media/music'),
-}, { providers: [k8sProvider] });
+  musicVolume: createMediaVolume('music', lidarrNs.name, '/tank1/media/music'),
+});
 
-function createMediaVolume(name: string, nfsPath: string): k8s.core.v1.PersistentVolume {
+function createMediaVolume(name: string, ns: pulumi.Input<string>, nfsPath: string): k8s.core.v1.PersistentVolume {
   return new k8s.core.v1.PersistentVolume(name, {
-    metadata: { namespace: ns.name },
+    metadata: { namespace: ns },
     spec: {
       accessModes: ['ReadWriteOnce', 'ReadOnlyMany'],
       capacity: { storage: '5000Gi' },
       storageClassName: 'nfs',
       nfs: { server: 'zeus', path: nfsPath },
     },
-  }, k8sOptions);
+  });
 }
