@@ -1,9 +1,9 @@
-import { CustomResource } from '@pulumi/kubernetes/apiextensions';
-import { CustomResourceOptions, Input } from '@pulumi/pulumi';
+import * as k8s from '@pulumi/kubernetes/apiextensions';
+import * as pulumi from '@pulumi/pulumi';
 
-export class IngressRoute extends CustomResource {
+export class IngressRoute extends k8s.CustomResource {
   
-  constructor(name: string, args: IngressRouteArgs, opts?: CustomResourceOptions) {
+  constructor(name: string, args: IngressRouteArgs, opts?: pulumi.CustomResourceOptions) {
     super(name, {
       apiVersion: 'traefik.containo.us/v1alpha1',
       kind: 'IngressRoute',
@@ -13,10 +13,7 @@ export class IngressRoute extends CustomResource {
         routes: [{
           match: args.match || IngressRoute.createMatch(args.hosts),
           kind: 'Rule',
-          services: [{
-            name: 'api@internal',
-            kind: 'TraefikService',
-          }],
+          services: args.services,
         }],
       },
     }, opts);
@@ -24,22 +21,30 @@ export class IngressRoute extends CustomResource {
 
   private static createMatch(hosts: string | string[]): string {
     if (Array.isArray(hosts)) {
-      return hosts.map(x => `Host('${x}')`).join(' || ');
+      return hosts.map(x => `Host(\`${x}\`)`).join(' || ');
     } else {
-      return `Host('${hosts}')`;
+      return `Host(\`${hosts}\`)`;
     }
   }
 
 }
 
+type Entrypoint = 'web' | 'websecure';
+
 interface ObjectMeta {
-  name?: Input<string>;
-  namespace?: Input<string>;
+  name?: pulumi.Input<string>;
+  namespace?: pulumi.Input<string>;
+}
+
+interface IngressRouteService {
+  name: pulumi.Input<string>;
+  kind: pulumi.Input<string>;
 }
 
 export interface IngressRouteArgs {
   metadata?: ObjectMeta;
-  entrypoints: Array<'web' | 'websecure'>;
+  entrypoints: Entrypoint[];
   hosts: string | string[];
   match?: string;
+  services: IngressRouteService[];
 }
