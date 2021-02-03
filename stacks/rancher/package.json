@@ -11,7 +11,7 @@
     "yaml": "^1.10.0"
   },
   "dependencies": {
-    "@pulumi/docker": "^2.7.0",
+    "@pulumi/docker": "^2.8.0",
     "@pulumi/github": "^3.0.1",
     "@pulumi/kubernetes": "^2.7.8",
     "@pulumi/pulumi": "^2.19.0",
