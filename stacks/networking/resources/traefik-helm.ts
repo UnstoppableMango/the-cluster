@@ -34,6 +34,7 @@ export class Traefik extends ComponentResource {
 
     this.chart = new k8s.helm.v2.Chart('traefik', {
       // TODO: Why TF does helm not put the service in the ns with everything else...
+      // Also, does traefik have an unwritten requirement to be in the default ns?
       // namespace: this.namespace.metadata.name,
       chart: 'traefik',
       version: args.version,
