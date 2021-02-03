@@ -7,7 +7,7 @@ import { IngressRoute } from './ingress-route';
 export class Traefik extends ComponentResource {
 
   public readonly chartUrl = 'https://helm.traefik.io/traefik';
-  public readonly namespace: k8s.core.v1.Namespace;
+  // public readonly namespace: k8s.core.v1.Namespace;
   public readonly chart: k8s.helm.v2.Chart;
   public readonly dashboard?: IngressRoute;
 
@@ -28,9 +28,9 @@ export class Traefik extends ComponentResource {
     //   ports: { traefik: { expose: true } },
     // }));
 
-    this.namespace = new k8s.core.v1.Namespace('traefik', {
-      metadata: { name: 'traefik-system' },
-    }, { parent: this });
+    // this.namespace = new k8s.core.v1.Namespace('traefik', {
+    //   metadata: { name: 'traefik-system' },
+    // }, { parent: this });
 
     this.chart = new k8s.helm.v2.Chart('traefik', {
       // TODO: Why TF does helm not put the service in the ns with everything else...
