@@ -10,7 +10,7 @@
     },
     "dependencies": {
         "@pulumi/pulumi": "^2.18.1",
-        "@pulumi/rancher2": "^2.6.1",
+        "@pulumi/rancher2": "^2.7.0",
         "yaml": "^1.10.0"
     }
 }
