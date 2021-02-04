@@ -39,6 +39,10 @@ interface ObjectMeta {
 interface IngressRouteService {
   name: pulumi.Input<string>;
   kind: pulumi.Input<string>;
+  namespace?: pulumi.Input<string>;
+  port?: pulumi.Input<number>;
+  passHostHeader?: pulumi.Input<boolean>;
+  scheme?: pulumi.Input<string>;
 }
 
 export interface IngressRouteArgs {
