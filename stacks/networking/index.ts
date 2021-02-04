@@ -15,7 +15,7 @@ const metallb = new MetalLb('metallb', {
 
 const traefikConfig = config.requireObject<TraefikConfig>('traefik');
 
-const traefik = new Traefik('traefik', {
-  version: '9.14.1',
-  pilotToken: traefikConfig.pilot.token,
-}, { dependsOn: metallb });
+// const traefik = new Traefik('traefik', {
+//   version: '9.14.1',
+//   pilotToken: traefikConfig.pilot.token,
+// }, { dependsOn: metallb });
