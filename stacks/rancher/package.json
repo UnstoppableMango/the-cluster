@@ -14,7 +14,7 @@
     "@pulumi/docker": "^2.8.0",
     "@pulumi/github": "^3.0.1",
     "@pulumi/kubernetes": "^2.7.8",
-    "@pulumi/pulumi": "^2.19.0",
+    "@pulumi/pulumi": "^2.20.0",
     "@pulumi/rancher2": "^2.7.0"
   }
 }
