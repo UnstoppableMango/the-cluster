@@ -1,6 +1,21 @@
 config:
+  networking:cloudflare:
+    apiKey:
+      secure: AAABAB9rWuvb3ZD1pcenVDHtoye1tDj+/fkWuAfOpLidlBwbmr9pz7KLZNM64ZMn63OT71suGH7+ZwqEIh3xDWJIZqM0
+    apiToken:
+      secure: AAABAErlkvKiTgLEmQlnRMW+EeDkUiUBkjwUUJdx1wR9CjBtEa9pyvGE461DKdGQnryoZ1z3+7Y4cFXmOojz5CVAjseA9DQc
+  networking:letsEncrypt:
+    email:
+      secure: AAABAN4+HBxBBB40mVqjDNUwpT6zDlojK8qI1EEey0FvQrBjGvWlk18cpPexcnikWg7lJFo5vg==
+    prod:
+      accountKeyName: le-account-key
+      server: https://acme-v02.api.letsencrypt.org/directory
+    staging:
+      accountKeyName: le-stage-account-key
+      server: https://acme-staging-v02.api.letsencrypt.org/directory
+    useProd: true
   networking:remoteStack: prod
   networking:traefik:
     pilot:
       token:
-        secure: AAABAB+pOte2DPjwuN1cOusCO52ZSPtXMg/OKaIAd3pymzzjRwqEngtffGJvTK/uMq7J4I9HZRLPd04+ICsOjNyH69E=
+        secure: AAABAKooKa8Ms/ke1UenclXyrIsak8EUCwafq3wKBD0/QKBQXf2qeAW9xLPfajvOfT9bLxLBGG4LWWANS46+cTaWKtI=
