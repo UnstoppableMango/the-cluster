@@ -19,7 +19,7 @@ export class Jackett extends ComponentResource {
       metadata: { namespace: this.args.namespace },
       spec: {
         storageClassName: 'longhorn',
-        accessModes: ['ReadWriteOnce'],
+        accessModes: ['ReadWriteOnce', 'ReadWriteMany'],
         resources: { requests: { storage: '1Gi' } },
       },
     }, { parent: this });
@@ -63,7 +63,7 @@ export class Jackett extends ComponentResource {
       ports: [{ name: 'http', port: 9117, targetPort: 9117 }],
     });
 
-    this.ingress = new k8s.networking.v1.Ingress('heimdall', {
+    this.ingress = new k8s.networking.v1.Ingress(this.getName('ingress'), {
       metadata: { namespace: args.namespace },
       spec: {
         rules: [{
