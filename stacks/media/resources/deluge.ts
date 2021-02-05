@@ -132,7 +132,7 @@ export class Deluge extends ComponentResource {
     }, { parent: this });
   
     this.service = this.deployment.createService({
-      type: kx.types.ServiceType.LoadBalancer,
+      type: kx.types.ServiceType.ClusterIP,
       ports: [
         { name: 'http', port: 8112, targetPort: 8112 },
         // { name: 'privoxy', port: 8118, targetPort: 8118 },

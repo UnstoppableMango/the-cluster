@@ -76,7 +76,7 @@ export class Lidarr extends ComponentResource {
     }, { parent: this });
   
     this.service = this.deployment.createService({
-      type: kx.types.ServiceType.LoadBalancer,
+      type: kx.types.ServiceType.ClusterIP,
       ports: [{ name: 'http', port: 8686, targetPort: 8686 }],
     });
 

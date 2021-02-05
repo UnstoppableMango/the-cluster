@@ -76,7 +76,7 @@ export class Radarr extends ComponentResource {
     }, { parent: this });
   
     this.service = this.deployment.createService({
-      type: kx.types.ServiceType.LoadBalancer,
+      type: kx.types.ServiceType.ClusterIP,
       ports: [{ name: 'http', port: 7878, targetPort: 7878 }],
     });
 

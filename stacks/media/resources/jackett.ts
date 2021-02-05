@@ -70,7 +70,7 @@ export class Jackett extends ComponentResource {
     }, { parent: this });
   
     this.service = this.deployment.createService({
-      type: kx.types.ServiceType.LoadBalancer,
+      type: kx.types.ServiceType.ClusterIP,
       ports: [{ name: 'http', port: 9117, targetPort: 9117 }],
     });
 
