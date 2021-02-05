@@ -10,7 +10,7 @@
     },
     "dependencies": {
         "@pulumi/kubernetes": "^2.8.0",
-        "@pulumi/kubernetesx": "^0.1.3",
+        "@pulumi/kubernetesx": "^0.1.4",
         "@pulumi/pulumi": "^2.20.0",
         "@pulumi/rancher2": "^2.7.0",
         "yaml": "^1.10.0"
