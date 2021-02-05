@@ -1,17 +1,4 @@
 {
-  "compilerOptions": {
-    "strict": true,
-    "outDir": "bin",
-    "target": "es2020",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "experimentalDecorators": true,
-    "pretty": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
-    "forceConsistentCasingInFileNames": true,
-    "lib": ["ES2019"]
-  },
+  "extends": "../../tsconfig.json",
   "files": ["index.ts"]
 }

@@ -1,19 +1,4 @@
 {
-    "compilerOptions": {
-        "strict": true,
-        "outDir": "bin",
-        "target": "es2019",
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "sourceMap": true,
-        "experimentalDecorators": true,
-        "pretty": true,
-        "noFallthroughCasesInSwitch": true,
-        "noImplicitReturns": true,
-        "forceConsistentCasingInFileNames": true,
-        "lib": ["ES2019"]
-    },
-    "files": [
-        "index.ts"
-    ]
+  "extends": "../../tsconfig.json",
+  "files": ["index.ts"]
 }
