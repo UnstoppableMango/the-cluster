@@ -44,87 +44,87 @@ const linuxServerShared = new kx.ConfigMap('linuxserver-shared', {
 });
 
 // Deluge
-const delugeNs = new Namespace('deluge', {
-  name: 'deluge',
-  projectId: project.id,
-});
+// const delugeNs = new Namespace('deluge', {
+//   name: 'deluge',
+//   projectId: project.id,
+// });
 
 const deluge = new Deluge('deluge', {
   deluge: delugeConfig,
-  namespace: delugeNs.name,
+  namespace: namespace.name,
   pia,
   projectId: project.id,
 });
 
 // Jackett
-const jackettNs = new Namespace('jackett', {
-  name: 'jackett',
-  projectId: project.id,
-});
+// const jackettNs = new Namespace('jackett', {
+//   name: 'jackett',
+//   projectId: project.id,
+// });
 
 const jackett = new Jackett('jackett', {
-  namespace: jackettNs.name,
+  namespace: namespace.name,
   linuxServer: linuxServerShared,
 });
 
 // Sonarr
-const sonarrNs = new Namespace('sonarr', {
-  name: 'sonarr',
-  projectId: project.id,
-});
+// const sonarrNs = new Namespace('sonarr', {
+//   name: 'sonarr',
+//   projectId: project.id,
+// });
 
 const tv = new Sonarr('tv', {
-  namespace: sonarrNs.name,
+  namespace: namespace.name,
   linuxServer: linuxServerShared,
   downloads: deluge.downloads,
-  tvVolume: createMediaVolume('tv', sonarrNs.name, '/tank1/media/tv'),
+  tvVolume: createMediaVolume('tv', namespace.name, '/tank1/media/tv'),
 });
 
 const tv4k = new Sonarr('tv4k', {
-  namespace: sonarrNs.name,
+  namespace: namespace.name,
   linuxServer: linuxServerShared,
   downloads: deluge.downloads,
-  tvVolume: createMediaVolume('tv4k', sonarrNs.name, '/tank1/media/tv4k'),
+  tvVolume: createMediaVolume('tv4k', namespace.name, '/tank1/media/tv4k'),
 });
 
 const anime = new Sonarr('anime', {
-  namespace: sonarrNs.name,
+  namespace: namespace.name,
   linuxServer: linuxServerShared,
   downloads: deluge.downloads,
-  tvVolume: createMediaVolume('anime', sonarrNs.name, '/tank1/media/anime'),
+  tvVolume: createMediaVolume('anime', namespace.name, '/tank1/media/anime'),
 });
 
 // Radarr
-const radarrNs = new Namespace('radarr', {
-  name: 'radarr',
-  projectId: project.id,
-});
+// const radarrNs = new Namespace('radarr', {
+//   name: 'radarr',
+//   projectId: project.id,
+// });
 
 const movies = new Radarr('movies', {
-  namespace: radarrNs.name,
+  namespace: namespace.name,
   linuxServer: linuxServerShared,
   downloads: deluge.downloads,
-  moviesVolume: createMediaVolume('movies', radarrNs.name, '/tank1/media/movies'),
+  moviesVolume: createMediaVolume('movies', namespace.name, '/tank1/media/movies'),
 });
 
 const movies4k = new Radarr('movies4k', {
-  namespace: radarrNs.name,
+  namespace: namespace.name,
   linuxServer: linuxServerShared,
   downloads: deluge.downloads,
-  moviesVolume: createMediaVolume('movies4k', radarrNs.name, '/tank1/media/movies4k'),
+  moviesVolume: createMediaVolume('movies4k', namespace.name, '/tank1/media/movies4k'),
 });
 
 // Lidarr
-const lidarrNs = new Namespace('lidarr', {
-  name: 'lidarr',
-  projectId: project.id,
-});
+// const lidarrNs = new Namespace('lidarr', {
+//   name: 'lidarr',
+//   projectId: project.id,
+// });
 
 const lidarr = new Lidarr('lidarr', {
-  namespace: lidarrNs.name,
+  namespace: namespace.name,
   linuxServer: linuxServerShared,
   downloads: deluge.downloads,
-  musicVolume: createMediaVolume('music', lidarrNs.name, '/tank1/media/music'),
+  musicVolume: createMediaVolume('music', namespace.name, '/tank1/media/music'),
 });
 
 function createMediaVolume(name: string, ns: pulumi.Input<string>, nfsPath: string): k8s.core.v1.PersistentVolume {
