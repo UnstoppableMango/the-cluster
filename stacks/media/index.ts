@@ -43,6 +43,7 @@ const linuxServerShared = new kx.ConfigMap('linuxserver-shared', {
   },
 });
 
+// Deluge
 const delugeNs = new Namespace('deluge', {
   name: 'deluge',
   projectId: project.id,
@@ -55,6 +56,7 @@ const deluge = new Deluge('deluge', {
   projectId: project.id,
 });
 
+// Jackett
 const jackettNs = new Namespace('jackett', {
   name: 'jackett',
   projectId: project.id,
