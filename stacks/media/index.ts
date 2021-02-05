@@ -25,9 +25,23 @@ const project = new Project('media', {
   clusterId: clusterId,
 });
 
+const namespace = new Namespace('media', {
+  name: 'media',
+  projectId: project.id,
+});
+
 const pia = config.requireObject<Pia>('pia');
 const delugeConfig = config.requireObject<DelugeConfig>('deluge');
-const linuxServerShared = config.requireObject<LinuxServerConfig>('linuxserver');
+
+const { puid, pgid, tz } = config.requireObject<LinuxServerConfig>('linuxserver');
+const linuxServerShared = new kx.ConfigMap('linuxserver-shared', {
+  metadata: { namespace: namespace.name },
+  data: {
+    PUID: `${puid}`,
+    PGID: `${pgid}`,
+    TZ: tz,
+  },
+});
 
 // Deluge
 const delugeNs = new Namespace('deluge', {
