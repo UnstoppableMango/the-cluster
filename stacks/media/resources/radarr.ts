@@ -2,12 +2,14 @@ import * as k8s from '@pulumi/kubernetes';
 import * as kx from '@pulumi/kubernetesx';
 import { ComponentResource, ComponentResourceOptions, Input } from '@pulumi/pulumi';
 import { getNameResolver } from '@unmango/shared/util';
+import { LinuxServerConfig } from './linuxserver';
 
 export class Radarr extends ComponentResource {
 
   private readonly getName = getNameResolver('radarr', this.name);
 
-  public readonly config: kx.PersistentVolumeClaim;
+  public readonly config: kx.ConfigMap;
+  public readonly configPvc: kx.PersistentVolumeClaim;
   public readonly media: kx.PersistentVolumeClaim;
   public readonly deployment: kx.Deployment;
   public readonly service: kx.Service;
@@ -16,7 +18,16 @@ export class Radarr extends ComponentResource {
   constructor(private name: string, private args: RadarrArgs, opts?: ComponentResourceOptions) {
     super('unmango:apps:radarr', name, undefined, opts);
 
-    this.config = new kx.PersistentVolumeClaim(this.getName('config'), {
+    this.config = new kx.ConfigMap(this.getName(), {
+      metadata: { namespace: args.namespace },
+      data: {
+        PUID: `${args.linuxServer.puid}`,
+        PGID: `${args.linuxServer.pgid}`,
+        TZ: args.linuxServer.tz,
+      },
+    });
+
+    this.configPvc = new kx.PersistentVolumeClaim(this.getName('config'), {
       metadata: { namespace: this.args.namespace },
       spec: {
         storageClassName: 'longhorn',
@@ -46,20 +57,20 @@ export class Radarr extends ComponentResource {
         },
         image: 'linuxserver/radarr',
         envFrom: [{
-          configMapRef: { name: this.args.linuxServer.metadata.name },
+          configMapRef: { name: this.config.metadata.name },
         }],
         ports: {
           http: 7878,
         },
         volumeMounts: [
-          this.config.mount('/config'),
+          this.configPvc.mount('/config'),
           this.media.mount('/movies'),
           this.args.downloads.mount('/downloads', 'completed'),
         ],
       }],
     });
   
-    this.deployment = new kx.Deployment(this.getName('deployment'), {
+    this.deployment = new kx.Deployment(this.getName(), {
       metadata: { namespace: this.args.namespace },
       spec: pb.asDeploymentSpec(),
     }, { parent: this });
@@ -69,7 +80,7 @@ export class Radarr extends ComponentResource {
       ports: [{ name: 'http', port: 7878, targetPort: 7878 }],
     });
 
-    this.ingress = new k8s.networking.v1.Ingress(this.getName('ingress'), {
+    this.ingress = new k8s.networking.v1.Ingress(this.getName(), {
       metadata: { namespace: args.namespace },
       spec: {
         rules: [{
@@ -97,7 +108,7 @@ export class Radarr extends ComponentResource {
 
 export interface RadarrArgs {
   namespace: Input<string>;
-  linuxServer: kx.ConfigMap;
+  linuxServer: LinuxServerConfig;
   downloads: kx.PersistentVolumeClaim;
   moviesVolume: k8s.core.v1.PersistentVolume;
 }
