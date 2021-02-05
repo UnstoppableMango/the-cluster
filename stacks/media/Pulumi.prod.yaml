@@ -1,0 +1,19 @@
+config:
+  media:deluge:
+    password:
+      secure: AAABAFFP4PhGuX8JPKDm+7cKpRKxscaK8y6SlggrldhAf93h/8IxrQc=
+    username: unstoppablemango
+  media:linuxserver:
+    pgid: 0
+    puid: 0
+    tz: America/Chicago
+  media:pia:
+    nameservers:
+    - 209.222.18.222
+    - 209.222.18.218
+    openvpn: https://www.privateinternetaccess.com/openvpn/openvpn-nextgen.zip
+    ovpnFile: ./resources/openvpn-nextgen.zip
+    password:
+      secure: AAABANiKoQRbtfpHGHhfmFEi9TQHH1lAlfZVYwaGoMg2Pe4SkiNRzq+sh9+TphQ=
+    user: p7531788
+  media:remoteStack: prod

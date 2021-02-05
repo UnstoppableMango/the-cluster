@@ -79,5 +79,5 @@
   tasks:
   - name: Install agents
     shell:
-      cmd: "/usr/local/bin/k3s-install.sh agent"
+      cmd: '/usr/local/bin/k3s-install.sh agent --kubelet-arg allowed-unsafe-sysctls="net.ipv4.conf.all.src_valid_mark"'
       creates: "/usr/local/bin/k3s-agent-uninstall.sh"
