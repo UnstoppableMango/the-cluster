@@ -23,8 +23,8 @@ export class Heimdall extends ComponentResource {
     this.config = new kx.ConfigMap('heimdall', {
       metadata: { namespace: this.namespace.name },
       data: {
-        puid: args.puid ?? '1001',
-        pgid: args.pgid ?? '1001',
+        // puid: args.puid ?? '0',
+        // pgid: args.pgid ?? '0',
         tz: args.tz ?? 'America/Chicago',
       },
     }, { parent: this });
@@ -32,7 +32,7 @@ export class Heimdall extends ComponentResource {
     this.pvc = new kx.PersistentVolumeClaim('heimdall', {
       metadata: { namespace: this.namespace.name },
       spec: {
-        accessModes: ['ReadWriteOnce'],
+        accessModes: ['ReadWriteOnce', 'ReadWriteMany'],
         resources: { requests: { storage: '1Gi' } },
       },
     }, { parent: this });
@@ -41,13 +41,14 @@ export class Heimdall extends ComponentResource {
       containers: [{
         image: 'linuxserver/heimdall',
         env: {
-          PUID: this.config.asEnvValue('puid'),
-          PGID: this.config.asEnvValue('pgid'),
+          // PUID: this.config.asEnvValue('puid'),
+          // PGID: this.config.asEnvValue('pgid'),
           TZ: this.config.asEnvValue('tz'),
         },
         ports: {
           http: 80,
-          https: 443,
+          // Let Traefik handle TLS
+          // https: 443,
         },
         volumeMounts: [this.pvc.mount('/config')],
       }],
