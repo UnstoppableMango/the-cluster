@@ -13,7 +13,7 @@ export const flatten = (data: Record<string, unknown>): Record<string, unknown> 
       result[prop] = cur;
     } else if (Array.isArray(cur)) {
       let l = 0;
-      for(let i = 0, l = cur.length; i < l; i++)
+      for (let i = 0, l = cur.length; i < l; i++)
         recurse(cur[i], prop + '[' + i + ']');
       if (l == 0)
         result[prop] = [];
@@ -21,6 +21,8 @@ export const flatten = (data: Record<string, unknown>): Record<string, unknown> 
       let isEmpty = true;
       for (const p in cur) {
         isEmpty = false;
+        
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         recurse(cur[p], prop ? prop + '.' + p : p);
       }
@@ -31,3 +33,12 @@ export const flatten = (data: Record<string, unknown>): Record<string, unknown> 
   recurse(data, '');
   return result;
 };
+
+export function pluck<T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const ret: any = {};
+  for (const key of keys) {
+    ret[key] = obj[key];
+  }
+  return ret;
+}
