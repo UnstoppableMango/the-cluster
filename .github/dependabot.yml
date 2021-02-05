@@ -11,12 +11,27 @@ updates:
     interval: daily
   open-pull-requests-limit: 10
 - package-ecosystem: npm
+  directory: '/stacks/management'
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+- package-ecosystem: npm
+  directory: '/stacks/media'
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+- package-ecosystem: npm
   directory: '/stacks/networking'
   schedule:
     interval: daily
   open-pull-requests-limit: 10
 - package-ecosystem: npm
   directory: '/stacks/rancher'
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+- package-ecosystem: npm
+  directory: '/stacks/storage'
   schedule:
     interval: daily
   open-pull-requests-limit: 10
