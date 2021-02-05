@@ -15,6 +15,7 @@ export class Deluge extends ComponentResource {
   public readonly downloads: kx.PersistentVolumeClaim;
   public readonly deployment: kx.Deployment;
   public readonly service: kx.Service;
+  public readonly daemonService: kx.Service;
   public readonly ingress: k8s.networking.v1.Ingress;
 
   constructor(private name: string, private args: DelugeArgs, private opts?: ComponentResourceOptions) {
@@ -136,6 +137,12 @@ export class Deluge extends ComponentResource {
       ports: [
         { name: 'http', port: 8112, targetPort: 8112 },
         // { name: 'privoxy', port: 8118, targetPort: 8118 },
+      ],
+    });
+  
+    this.daemonService = this.deployment.createService({
+      type: kx.types.ServiceType.LoadBalancer,
+      ports: [
         { name: 'daemon', port: 58846, targetPort: 58846 },
         { name: 'daemon2', port: 58946, targetPort: 58946 },
       ],
