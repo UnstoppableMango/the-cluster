@@ -1,6 +1,8 @@
+import * as fs from 'fs/promises';
 import * as k8s from '@pulumi/kubernetes';
 import * as kx from '@pulumi/kubernetesx';
 import { ComponentResource, ComponentResourceOptions, Input, Output } from '@pulumi/pulumi';
+import * as pulumi from '@pulumi/pulumi';
 import * as util from '@unmango/shared/util';
 import { Pia } from './pia';
 
@@ -8,20 +10,22 @@ export class Deluge extends ComponentResource {
 
   private readonly getName = util.getNameResolver('deluge', this.name);
 
-  public readonly config: kx.PersistentVolumeClaim;
+  public readonly configPvc: kx.PersistentVolumeClaim;
   public readonly auth: kx.Secret;
   public readonly env: kx.ConfigMap;
+  public readonly confOverride: kx.ConfigMap;
   public readonly piaSecret: kx.Secret;
   public readonly downloads: kx.PersistentVolumeClaim;
   public readonly deployment: kx.Deployment;
   public readonly service: k8s.core.v1.Service;
   public readonly daemonService: k8s.core.v1.Service;
   public readonly ingress: k8s.networking.v1.Ingress;
+  public readonly updateConfig?: k8s.batch.v1.Job;
 
   constructor(private name: string, private args: DelugeArgs, private opts?: ComponentResourceOptions) {
     super('unmango:apps:deluge', name, undefined, opts);
 
-    this.config = new kx.PersistentVolumeClaim(this.getName('config'), {
+    this.configPvc = new kx.PersistentVolumeClaim(this.getName('config'), {
       metadata: { namespace: this.args.namespace },
       spec: {
         storageClassName: 'longhorn',
@@ -54,6 +58,18 @@ export class Deluge extends ComponentResource {
         UMASK: '000',
         PUID: '0',
         PGID: '0',
+      },
+    }, { parent: this });
+
+    const coreConf = fs.readFile('./resources/deluge/core.conf', { encoding: 'utf8' });
+    const baseConf = fs.readFile('./resources/deluge/base.conf', { encoding: 'utf8' });
+    const mergeSh = fs.readFile('./resources/deluge/merge.sh', { encoding: 'utf8' });
+    this.confOverride = new kx.ConfigMap(this.getName('conf-override'), {
+      metadata: { namespace: args.namespace },
+      data: {
+        'core.conf': pulumi.output(coreConf),
+        'base.conf': pulumi.output(baseConf),
+        'merge.sh': pulumi.output(mergeSh),
       },
     }, { parent: this });
   
@@ -96,7 +112,7 @@ export class Deluge extends ComponentResource {
           mountPath: '/auth',
           subPath: 'auth',
         }, {
-          name: this.config.metadata.name,
+          name: this.configPvc.metadata.name,
           mountPath: '/config',
         }],
       }],
@@ -121,7 +137,7 @@ export class Deluge extends ComponentResource {
           daemon2: 58946,
         },
         volumeMounts: [
-          this.config.mount('/config'),
+          this.configPvc.mount('/config'),
           this.downloads.mount('/data'),
         ],
       }],
@@ -178,6 +194,45 @@ export class Deluge extends ComponentResource {
         }],
       },
     }, { parent: this });
+
+    // this.updateConfig = new k8s.batch.v1.Job(this.getName('config'), {
+    //   metadata: { namespace: args.namespace },
+    //   spec: {
+    //     completions: 1,
+    //     template: {
+    //       spec: {
+    //         restartPolicy: 'Never',
+    //         volumes: [{
+    //           name: 'config',
+    //           persistentVolumeClaim: {
+    //             claimName: this.configPvc.metadata.name,
+    //           },
+    //         }, {
+    //           name: 'override',
+    //           configMap: {
+    //             name: this.confOverride.metadata.name,
+    //           },
+    //         }],
+    //         containers: [{
+    //           name: this.getName(),
+    //           // image: 'stedolan/jq',
+    //           image: 'realguess/jq',
+    //           command: [
+    //             '/bin/sh',
+    //             '/override/merge.sh',
+    //           ],
+    //           volumeMounts: [{
+    //             name: 'config',
+    //             mountPath: '/config',
+    //           }, {
+    //             name: 'override',
+    //             mountPath: '/override',
+    //           }],
+    //         }],
+    //       },
+    //     },
+    //   },
+    // }, { parent: this });
 
     this.registerOutputs();
   }
