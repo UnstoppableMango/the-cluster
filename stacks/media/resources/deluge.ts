@@ -134,7 +134,7 @@ export class Deluge extends ComponentResource {
           http: 8112,
           // privoxy: 8118,
           daemon: 58846,
-          daemon2: 58946,
+          // incoming: 58946,
         },
         volumeMounts: [
           this.configPvc.mount('/config'),
@@ -195,44 +195,48 @@ export class Deluge extends ComponentResource {
       },
     }, { parent: this });
 
-    // this.updateConfig = new k8s.batch.v1.Job(this.getName('config'), {
-    //   metadata: { namespace: args.namespace },
-    //   spec: {
-    //     completions: 1,
-    //     template: {
-    //       spec: {
-    //         restartPolicy: 'Never',
-    //         volumes: [{
-    //           name: 'config',
-    //           persistentVolumeClaim: {
-    //             claimName: this.configPvc.metadata.name,
-    //           },
-    //         }, {
-    //           name: 'override',
-    //           configMap: {
-    //             name: this.confOverride.metadata.name,
-    //           },
-    //         }],
-    //         containers: [{
-    //           name: this.getName(),
-    //           // image: 'stedolan/jq',
-    //           image: 'realguess/jq',
-    //           command: [
-    //             '/bin/sh',
-    //             '/override/merge.sh',
-    //           ],
-    //           volumeMounts: [{
-    //             name: 'config',
-    //             mountPath: '/config',
-    //           }, {
-    //             name: 'override',
-    //             mountPath: '/override',
-    //           }],
-    //         }],
-    //       },
-    //     },
-    //   },
-    // }, { parent: this });
+    this.updateConfig = new k8s.batch.v1.Job(this.getName('config'), {
+      metadata: { namespace: args.namespace },
+      spec: {
+        completions: 1,
+        ttlSecondsAfterFinished: 60,
+        template: {
+          spec: {
+            restartPolicy: 'Never',
+            volumes: [{
+              name: 'config',
+              persistentVolumeClaim: {
+                claimName: this.configPvc.metadata.name,
+              },
+            }, {
+              name: 'override',
+              configMap: {
+                name: this.confOverride.metadata.name,
+              },
+            }],
+            containers: [{
+              name: this.getName(),
+              // image: 'stedolan/jq',
+              image: 'realguess/jq',
+              command: [
+                '/bin/sh',
+                '/override/merge.sh',
+                './config/core.conf',
+                './override/core.conf',
+                './override/base.conf',
+              ],
+              volumeMounts: [{
+                name: 'config',
+                mountPath: '/config',
+              }, {
+                name: 'override',
+                mountPath: '/override',
+              }],
+            }],
+          },
+        },
+      },
+    }, { parent: this });
 
     this.registerOutputs();
   }
