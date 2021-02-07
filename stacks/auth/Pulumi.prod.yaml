@@ -1,0 +1,2 @@
+config:
+  auth:remoteStack: prod
