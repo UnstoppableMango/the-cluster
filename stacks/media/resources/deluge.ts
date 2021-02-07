@@ -156,6 +156,8 @@ export class Deluge extends ComponentResource {
         ports: [
           { name: 'http', port: 8112, targetPort: 8112 },
           // { name: 'privoxy', port: 8118, targetPort: 8118 },
+          // For the Web UI
+          { name: 'daemon', port: 58846, targetPort: 58846 },
         ],
       },
     }, { parent: this });
