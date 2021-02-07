@@ -17,6 +17,7 @@ helm install \
   --namespace traefik-system \
   --version v$VERSION \
   --set logs.general.level="DEBUG" \
+  --set deployment.kind="DaemonSet" \
   --set pilot.enabled=true \
   --set pilot.token=$(pulumi config get --path traefik.pilot.token -C ../stacks/networking) \
   --set "ports.web.redirectTo=websecure" \
