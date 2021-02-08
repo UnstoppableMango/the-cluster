@@ -58,6 +58,7 @@ export class Catalogs extends ComponentResource implements shared.Catalogs {
     }, this._opts);
 
     this.chartCenter = new Catalog('chart-center', {
+      name: 'chart-center',
       url: 'https://repo.chartcenter.io',
       version: 'helm_v3',
     }, this._opts);
@@ -81,34 +82,41 @@ export class Catalogs extends ComponentResource implements shared.Catalogs {
     }, this._opts);
 
     this.community = new Catalog('rancher-community', {
+      name: 'rancher-community',
       url: 'https://github.com/rancher/community-catalog',
     }, this._opts);
   
     this.communityV2 = new CatalogV2('rancher-community', {
+      name: 'rancher-community',
       clusterId: this.args.clusterId,
       gitRepo: 'https://github.com/rancher/community-catalog',
     }, this._opts);
 
     this.inlets = new Catalog('inlets', {
+      name: 'inlets',
       url: 'https://inlets.github.io/inlets-operator',
     }, this._opts);
 
     this.jfrog = new Catalog('jfrog', {
+      name: 'jfrog',
       url: 'https://github.com/jfrog/charts',
       version: 'helm_v3',
     }, this._opts);
   
     this.jfrogV2 = new CatalogV2('jfrog', {
+      name: 'jfrog',
       clusterId: this.args.clusterId,
       gitRepo: 'https://github.com/jfrog/charts',
     }, this._opts);
 
     this.k8sAtHome = new Catalog('k8s-at-home', {
+      name: 'k8s-at-home',
       url: 'https://k8s-at-home.com/charts/',
       version: 'helm_v3',
     }, this._opts);
   
     this.k8sAtHomeV2 = new CatalogV2('k8s-at-home', {
+      name: 'k8s-at-home',
       clusterId: this.args.clusterId,
       url: 'https://k8s-at-home.com/charts/',
     }, this._opts);
@@ -118,11 +126,13 @@ export class Catalogs extends ComponentResource implements shared.Catalogs {
     this.rancher = CatalogV2.get('rancher', 'rancher-charts', this._state, this._opts);
 
     this.unstoppableMango = new Catalog('unstoppablemango', {
+      name: 'unstoppablemango',
       url: this._githubRef.requireOutput('helmChartsRepoUrl'),
       version: 'helm_v3',
     }, this._opts);
   
     this.unstoppableMangoV2 = new CatalogV2('unstoppablemango', {
+      name: 'unstoppablemango',
       clusterId: this.args.clusterId,
       gitRepo: this._githubRef.requireOutput('helmChartsRepoUrl'),
     }, this._opts);
