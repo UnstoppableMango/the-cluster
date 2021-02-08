@@ -16,6 +16,7 @@ export class Longhorn extends ComponentResource {
     }, { parent: this });
 
     this.app = new AppV2('longhorn', {
+      name: 'longhorn',
       clusterId: args.clusterId,
       projectId: args.projectId,
       namespace: this.namespace.name,

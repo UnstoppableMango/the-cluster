@@ -1,6 +1,6 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as rancher from '@pulumi/rancher2';
-import { Longhorn, NfsClient } from './resources';
+import { Harbor, Longhorn, NfsClient } from './resources';
 
 const config = new pulumi.Config();
 const remoteStack = config.require('remoteStack');
@@ -24,3 +24,11 @@ const nfsClient = new NfsClient('nfs-client', {
   projectId: project.id,
   version: '1.0.2',
 });
+
+const harbor = new Harbor('harbor', {
+  projectId: project.id,
+  version: '9.4.4',
+});
+
+export const harborAdminPassword = pulumi.secret(harbor.harborAdminPassword.result);
+export const registryPassword = pulumi.secret(harbor.registryPassword.result);
