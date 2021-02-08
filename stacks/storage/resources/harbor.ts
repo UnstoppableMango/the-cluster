@@ -1,19 +1,18 @@
-import * as k8s from '@pulumi/kubernetes';
 import { ComponentResource, ComponentResourceOptions, Input } from '@pulumi/pulumi';
-import { Namespace } from '@pulumi/rancher2';
+import { AppV2, Namespace } from '@pulumi/rancher2';
 import { RandomPassword } from '@pulumi/random';
 import { getNameResolver } from '@unmango/shared/util';
+import * as yaml from 'yaml';
 
 export class Harbor extends ComponentResource {
 
   private readonly getName = getNameResolver('harbor', this.name);
 
-  public readonly chartUrl = 'https://charts.bitnami.com/bitnami';
   public readonly namespace: Namespace;
   public readonly harborAdminPassword: RandomPassword;
   public readonly registryPassword: RandomPassword;
   public readonly postgresqlPassword: RandomPassword;
-  public readonly chart: k8s.helm.v3.Chart;
+  public readonly app: AppV2;
 
   constructor(private name: string, args: HarborArgs, opts?: ComponentResourceOptions) {
     super('unmango:apps:harbor', name, undefined, opts);
@@ -36,12 +35,14 @@ export class Harbor extends ComponentResource {
       length: 24,
     }, { parent: this });
 
-    this.chart = new k8s.helm.v3.Chart(this.getName(), {
+    this.app = new AppV2(this.getName(), {
       namespace: this.namespace.name,
-      fetchOpts: { repo: this.chartUrl },
-      chart: 'harbor',
-      version: args.version,
-      values: {
+      clusterId: args.clusterId,
+      projectId: args.projectId,
+      repoName: 'bitnami',
+      chartName: 'harbor',
+      chartVersion: args.version,
+      values: yaml.stringify({
         harborAdminPassword: this.harborAdminPassword.result,
         service: {
           type: 'ClusterIP',
@@ -87,7 +88,7 @@ export class Harbor extends ComponentResource {
         postgresql: {
           postgresqlPassword: this.postgresqlPassword.result,
         },
-      },
+      }),
     }, { parent: this });
 
     this.registerOutputs();
