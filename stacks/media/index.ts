@@ -6,6 +6,7 @@ import { Namespace, Project } from '@pulumi/rancher2';
 import {
   Deluge,
   DelugeConfig,
+  FlareSolverr,
   Jackett,
   Lidarr,
   LinuxServerConfig,
@@ -65,6 +66,11 @@ const deluge = new Deluge('deluge', {
 const jackett = new Jackett('jackett', {
   namespace: namespace.name,
   linuxServer: linuxServerShared,
+});
+
+const flareSolverr = new FlareSolverr('flare-solverr', {
+  namespace: namespace.name,
+  version: 'latest',
 });
 
 // Sonarr
