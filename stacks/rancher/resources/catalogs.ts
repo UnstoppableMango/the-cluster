@@ -46,11 +46,13 @@ export class Catalogs extends ComponentResource implements shared.Catalogs {
     super('unmango:rancher:Catalogs', name, undefined, opts);
 
     this.bitnami = new Catalog('bitnami', {
+      name: 'bitnami',
       url: 'https://charts.bitnami.com/bitnami',
       version: 'helm_v3',
     }, this._opts);
 
     this.bitnamiV2 = new CatalogV2('bitnami', {
+      name: 'bitnami',
       clusterId: this.args.clusterId,
       url: 'https://charts.bitnami.com/bitnami',
     }, this._opts);
@@ -61,16 +63,19 @@ export class Catalogs extends ComponentResource implements shared.Catalogs {
     }, this._opts);
   
     this.chartCenterV2 = new CatalogV2('chart-center', {
+      name: 'chart-center',
       clusterId: this.args.clusterId,
       url: 'https://repo.chartcenter.io',
     }, this._opts);
 
     this.codecentric = new Catalog('codecentric', {
+      name: 'codecentric',
       url: 'https://codecentric.github.io/helm-charts',
       version: 'helm_v3',
     }, this._opts);
   
     this.codecentricV2 = new CatalogV2('codecentric', {
+      name: 'codecentric',
       clusterId: this.args.clusterId,
       url: 'https://codecentric.github.io/helm-charts',
     }, this._opts);
