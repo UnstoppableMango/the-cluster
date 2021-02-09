@@ -1,2 +1,7 @@
 config:
+  storage:registry:
+    htpasswd:
+      secure: AAABAHnCcWkEPaxvCRTq+6dYxV1cIPL9DE0x6PnDdjRFbbkfi06kDR1GNrCZ2VrWdYfHJbp2e2mB9e2MbnCP0GcAPLNvQlT0T0aCjtKAp4Zz+G5231EW9HYevBRZnouVXd5P71dGhMloEBGhJg==
+    password:
+      secure: AAABAJnsGbH+eDcn+fv0r0iQITB5bGDK1m9YGdUaVILN5iOBpznLRY/vQpet1Vp0Kr0fqp7+iZw=
   storage:remoteStack: prod

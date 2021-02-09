@@ -12,7 +12,6 @@ export class Harbor extends ComponentResource {
 
   public readonly namespace: Namespace;
   public readonly harborAdminPassword: RandomPassword;
-  public readonly registryPassword: RandomPassword;
   public readonly postgresqlPassword: RandomPassword;
   public readonly app: AppV2;
 
@@ -25,23 +24,14 @@ export class Harbor extends ComponentResource {
     }, { parent: this });
 
     // Only for first launch
+    // ...or not? Docs are misleading
     this.harborAdminPassword = new RandomPassword(this.getName('harbor-admin'), {
       length: 10,
-    }, { parent: this });
-
-    this.registryPassword = new RandomPassword(this.getName('registry'), {
-      length: 24,
     }, { parent: this });
 
     this.postgresqlPassword = new RandomPassword(this.getName('postgresql'), {
       length: 24,
     }, { parent: this });
-
-    const passwords = {
-      harborAdminPassword: this.harborAdminPassword.result,
-      registryPassword: this.registryPassword.result,
-      postgresqlPassword: this.postgresqlPassword.result,
-    };
 
     this.app = new AppV2(this.getName(), {
       namespace: this.namespace.name,
@@ -50,8 +40,13 @@ export class Harbor extends ComponentResource {
       repoName: 'bitnami',
       chartName: 'harbor',
       chartVersion: args.version,
-      values: pulumi.all(passwords).apply(p => yaml.stringify({
-        harborAdminPassword: p.harborAdminPassword,
+      values: pulumi.all([
+        this.harborAdminPassword.result,
+        this.postgresqlPassword.result,
+        args.registryPassword,
+        args.registryHtpasswd,
+      ]).apply(([harborPass, postgresPass, registryPass, htpasswd]) => yaml.stringify({
+        harborAdminPassword: harborPass,
         externalURL: 'https://harbor.int.unmango.net',
         service: {
           type: 'ClusterIP',
@@ -74,9 +69,9 @@ export class Harbor extends ComponentResource {
               size: '100Gi',
               // accessMode: 'ReadWriteMany',
             },
-            jobservice: {
-              // accessMode: 'ReadWriteMany',
-            },
+            // jobservice: {
+            //   accessMode: 'ReadWriteMany',
+            // },
             chartmuseum: {
               storageClass: 'nfs-client',
               size: '25Gi',
@@ -90,12 +85,12 @@ export class Harbor extends ComponentResource {
         registry: {
           credentials: {
             username: 'unstoppablemango',
-            password: p.registryPassword,
-            htpasswd: this.getHtpasswd('unstoppablemango', p.registryPassword)
+            password: registryPass,
+            htpasswd: htpasswd,
           },
         },
         postgresql: {
-          postgresqlPassword: p.postgresqlPassword,
+          postgresqlPassword: postgresPass,
         },
       })),
     }, { parent: this });
@@ -107,7 +102,7 @@ export class Harbor extends ComponentResource {
     return pulumi.output(new Promise((resolve, reject) => {
       const result = exec(`htpasswd -nbBC10 '${username}' '${password}'`, (err, stdout, stderr) => {
         if (err || stderr) reject(err ?? stderr);
-        resolve(stdout);
+        resolve(stdout.trim());
       });
     }));
   }
@@ -118,4 +113,6 @@ export interface HarborArgs {
   clusterId: Input<string>;
   projectId: Input<string>;
   version: Input<string>;
+  registryPassword: Input<string>;
+  registryHtpasswd: Input<string>;
 }

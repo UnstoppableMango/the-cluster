@@ -25,11 +25,16 @@ const nfsClient = new NfsClient('nfs-client', {
   version: '1.0.2',
 });
 
+const { password, htpasswd } = config.requireObject<{
+  password: string, htpasswd: string,
+}>('registry');
+
 const harbor = new Harbor('harbor', {
   clusterId: clusterId,
   projectId: project.id,
   version: '9.4.4',
+  registryPassword: password,
+  registryHtpasswd: htpasswd,
 });
 
-export const harborAdminPassword = pulumi.secret(harbor.harborAdminPassword.result);
-export const registryPassword = pulumi.secret(harbor.registryPassword.result);
+export const harborAdminPassword = harbor.harborAdminPassword.result;
