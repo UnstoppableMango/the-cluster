@@ -16,4 +16,8 @@ config:
     password:
       secure: AAABANiKoQRbtfpHGHhfmFEi9TQHH1lAlfZVYwaGoMg2Pe4SkiNRzq+sh9+TphQ=
     user: p7531788
+  media:registry:
+    password:
+      secure: AAABAM3b5OWKyNeD6g8eGYE6pfBg/iicslYNbymFVEKVdqwfGwyWS5sEgHcPPRQ=
+    username: UnstoppableMango
   media:remoteStack: prod

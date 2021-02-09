@@ -12,6 +12,7 @@ import {
   LinuxServerConfig,
   Pia,
   Radarr,
+  ServiceConnector,
   Sonarr,
 } from './resources';
 
@@ -131,6 +132,24 @@ const lidarr = new Lidarr('lidarr', {
   linuxServer: linuxServerShared,
   downloads: deluge.downloads,
   musicVolume: createMediaVolume('music', namespace.name, '/tank1/media/music'),
+});
+
+const { username, password } = config.requireObject<{
+  username: string, password: string,
+}>('registry');
+
+const serviceConnector = new ServiceConnector('connector', {
+  version: 'latest',
+  configClaims: [
+    jackett.config,
+    lidarr.config,
+    movies.config,
+    movies4k.config,
+    tv.config,
+    tv4k.config,
+  ],
+  registryUsername: username,
+  registryPassword: password,
 });
 
 function createMediaVolume(name: string, ns: pulumi.Input<string>, nfsPath: string): k8s.core.v1.PersistentVolume {
