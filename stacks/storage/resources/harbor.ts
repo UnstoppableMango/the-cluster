@@ -1,4 +1,6 @@
-import { ComponentResource, ComponentResourceOptions, Input } from '@pulumi/pulumi';
+import { exec } from 'child_process';
+import { ComponentResource, ComponentResourceOptions, Input, Output } from '@pulumi/pulumi';
+import * as pulumi from '@pulumi/pulumi';
 import { AppV2, Namespace } from '@pulumi/rancher2';
 import { RandomPassword } from '@pulumi/random';
 import { getNameResolver } from '@unmango/shared/util';
@@ -35,6 +37,12 @@ export class Harbor extends ComponentResource {
       length: 24,
     }, { parent: this });
 
+    const passwords = {
+      harborAdminPassword: this.harborAdminPassword.result,
+      registryPassword: this.registryPassword.result,
+      postgresqlPassword: this.postgresqlPassword.result,
+    };
+
     this.app = new AppV2(this.getName(), {
       namespace: this.namespace.name,
       clusterId: args.clusterId,
@@ -42,8 +50,8 @@ export class Harbor extends ComponentResource {
       repoName: 'bitnami',
       chartName: 'harbor',
       chartVersion: args.version,
-      values: yaml.stringify({
-        harborAdminPassword: this.harborAdminPassword.result,
+      values: pulumi.all(passwords).apply(p => yaml.stringify({
+        harborAdminPassword: p.harborAdminPassword,
         service: {
           type: 'ClusterIP',
           tls: {
@@ -59,43 +67,54 @@ export class Harbor extends ComponentResource {
           },
         },
         persistence: {
-          persistentVolumeClaime: {
+          persistentVolumeClaim: {
             registry: {
-              // storageClass: 'nfs-client',
+              storageClass: 'nfs-client',
               size: '100Gi',
-              accessMode: 'ReadWriteMany',
+              // accessMode: 'ReadWriteMany',
             },
             jobservice: {
-              accessMode: 'ReadWriteMany',
+              // accessMode: 'ReadWriteMany',
             },
             chartmuseum: {
-              // storageClass: 'nfs-client',
+              storageClass: 'nfs-client',
               size: '25Gi',
-              accessMode: 'ReadWriteMany',
+              // accessMode: 'ReadWriteMany',
             },
             trivy: {
-              // storageClass: 'nfs-client',
               size: '25Gi',
             },
           },
         },
         registry: {
           credentials: {
-            user: 'unstoppablemango',
-            password: this.registryPassword.result,
+            username: 'unstoppablemango',
+            password: p.registryPassword,
+            htpasswd: this.getHtpasswd('unstoppablemango', p.registryPassword)
           },
         },
         postgresql: {
-          postgresqlPassword: this.postgresqlPassword.result,
+          postgresqlPassword: p.postgresqlPassword,
         },
-      }),
+      })),
     }, { parent: this });
 
     this.registerOutputs();
   }
+
+  private getHtpasswd(username: string, password: string): Output<string> {
+    return pulumi.output(new Promise((resolve, reject) => {
+      const result = exec(`htpasswd -nbBC10 '${username}' '${password}'`, (err, stdout, stderr) => {
+        if (err || stderr) reject(err ?? stderr);
+        resolve(stdout);
+      });
+    }));
+  }
+
 }
 
 export interface HarborArgs {
+  clusterId: Input<string>;
   projectId: Input<string>;
   version: Input<string>;
 }

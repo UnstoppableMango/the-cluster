@@ -26,6 +26,7 @@ const nfsClient = new NfsClient('nfs-client', {
 });
 
 const harbor = new Harbor('harbor', {
+  clusterId: clusterId,
   projectId: project.id,
   version: '9.4.4',
 });
