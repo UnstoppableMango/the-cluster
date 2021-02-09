@@ -52,6 +52,7 @@ export class Harbor extends ComponentResource {
       chartVersion: args.version,
       values: pulumi.all(passwords).apply(p => yaml.stringify({
         harborAdminPassword: p.harborAdminPassword,
+        externalURL: 'https://harbor.int.unmango.net',
         service: {
           type: 'ClusterIP',
           tls: {
