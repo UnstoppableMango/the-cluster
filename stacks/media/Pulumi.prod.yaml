@@ -4,8 +4,8 @@ config:
       secure: AAABAFFP4PhGuX8JPKDm+7cKpRKxscaK8y6SlggrldhAf93h/8IxrQc=
     username: unstoppablemango
   media:linuxserver:
-    pgid: 0
-    puid: 0
+    pgid: 1000
+    puid: 1000
     tz: America/Chicago
   media:pia:
     nameservers:

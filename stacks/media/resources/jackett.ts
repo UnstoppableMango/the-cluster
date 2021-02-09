@@ -19,7 +19,7 @@ export class Jackett extends ComponentResource {
       metadata: { namespace: this.args.namespace },
       spec: {
         storageClassName: 'longhorn',
-        accessModes: ['ReadWriteOnce', 'ReadWriteMany'],
+        accessModes: ['ReadWriteOnce'],
         resources: { requests: { storage: '1Gi' } },
       },
     }, { parent: this });
@@ -55,7 +55,9 @@ export class Jackett extends ComponentResource {
   
     this.deployment = new kx.Deployment(this.getName(), {
       metadata: { namespace: this.args.namespace },
-      spec: pb.asDeploymentSpec(),
+      spec: pb.asDeploymentSpec({
+        strategy: { type: 'Recreate' },
+      }),
     }, { parent: this });
   
     this.service = this.deployment.createService({
