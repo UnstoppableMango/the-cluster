@@ -1,7 +1,7 @@
 // ReSharper disable IdentifierTypo
 // ReSharper disable InconsistentNaming
 
-namespace ServiceConnector.Models.Jackett
+namespace IndexPublisher.Models.Jackett
 {
     public class ServerConfig
     {

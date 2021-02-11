@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+#pragma warning disable 8618
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable IdentifierTypo
 // ReSharper disable InconsistentNaming
 
-namespace ServiceConnector.Models.Jackett
+namespace IndexPublisher.Models.Jackett
 {
     // A Dictionary allowing the same key multiple times
     public class KeyValuePairList : List<KeyValuePair<string, selectorBlock>>, IDictionary<string, selectorBlock>

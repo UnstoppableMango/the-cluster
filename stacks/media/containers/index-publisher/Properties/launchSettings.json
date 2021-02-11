@@ -1,0 +1,13 @@
+﻿{
+  "profiles": {
+    "IndexPublisher": {
+      "commandName": "Project",
+      "dotnetRunMessages": "true",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "INDEXER_JackettUrl": "https://jackett.int.unmango.net",
+        "INDEXER_ConnectorUrl": "https://test.int.unmango.net"
+      }
+    }
+  }
+}
