@@ -10,14 +10,18 @@ export class ServiceConnector extends ComponentResource {
 
   public readonly imageName = 'media-service-connector';
   public readonly image: Image;
-  public readonly deployment?: kx.Deployment;
+  public readonly deployment: kx.Deployment;
+  public readonly service: kx.Service;
 
   constructor(private name: string, args: ServiceConnectorArgs, opts?: ComponentResourceOptions) {
     super('unmango:apps:service-connector', name, undefined, opts);
 
     this.image = new Image(this.getName(), {
       // Relative to dir pulumi command was run in
-      build: './containers/service-connector',
+      build: {
+        context: './containers',
+        dockerfile: './containers/service-connector/Dockerfile',
+      },
       imageName: pulumi.output(args.version).apply(version => {
         return `harbor.int.unmango.net/library/${this.imageName}:${version}`;
       }),
@@ -30,19 +34,25 @@ export class ServiceConnector extends ComponentResource {
 
     const pb = new kx.PodBuilder({
       containers: [{
-        image: this.image.imageName,
-        volumeMounts: pulumi.output(args.configClaims)
-          .apply(dirs => dirs.map(x => ({
-            name: x.metadata.name,
-            mountPath: '/config',
-          }))),
+        image: this.image.baseImageName,
+        ports: { http: 80 },
+        livenessProbe: {
+          httpGet: {
+            path: '/healthz',
+            port: 80,
+          },
+        },
       }],
     });
 
-    // this.deployment = new kx.Deployment(this.getName(), {
-    //   metadata: { namespace: 'TODO' },
-    //   spec: pb.asDeploymentSpec(),
-    // });
+    this.deployment = new kx.Deployment(this.getName(), {
+      metadata: { namespace: args.namespace },
+      spec: pb.asDeploymentSpec(),
+    });
+
+    this.service = this.deployment.createService({
+      type: kx.types.ServiceType.ClusterIP,
+    });
 
     this.registerOutputs();
   }
@@ -50,8 +60,8 @@ export class ServiceConnector extends ComponentResource {
 }
 
 export interface ServiceConnectorArgs {
+  namespace: Input<string>;
   version: Input<string>;
-  configClaims: Input<Input<kx.PersistentVolumeClaim>[]>;
   registryUsername: Input<string>;
   registryPassword: Input<string>;
 }

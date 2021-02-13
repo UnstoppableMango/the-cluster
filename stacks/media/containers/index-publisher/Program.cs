@@ -7,6 +7,7 @@ using IndexPublisher.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 using ServiceConnector.Client;
 
 namespace IndexPublisher
@@ -34,12 +35,20 @@ namespace IndexPublisher
                     services.AddHttpClient<IJackettClient, JackettClient>(client => {
                         var serverUrl = hostContext.Configuration["JackettUrl"];
                         client.BaseAddress = new Uri($"{serverUrl}/api/v2.0/");
+                        client.Timeout = TimeSpan.FromSeconds(5);
                     });
                     services.AddServiceConnectorClient(options => {
                         var serverUrl = hostContext.Configuration["ConnectorUrl"];
                         options.Address = new Uri(serverUrl);
                     });
                     services.AddHostedService<ConfigWatcher>();
-                });
+                    services.AddHostedService<TestService>();
+                })
+                .UseSerilog(new LoggerConfiguration()
+                    .Enrich.FromLogContext()
+                    .WriteTo.Console()
+                    .WriteTo.Async(x => x.File("/config/publisher/log.txt"))
+                    .MinimumLevel.Verbose()
+                    .CreateLogger());
     }
 }

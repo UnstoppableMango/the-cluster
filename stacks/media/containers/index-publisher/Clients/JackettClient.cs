@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace IndexPublisher.Clients
 {
-    public class JackettClient : IJackettClient
+    internal class JackettClient : IJackettClient
     {
         private readonly HttpClient _client;
         private readonly ILogger<JackettClient> _logger;

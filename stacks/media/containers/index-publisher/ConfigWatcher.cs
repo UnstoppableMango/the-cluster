@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,6 +24,7 @@ namespace IndexPublisher
 
         private readonly IJackettClient _jackettClient;
         private readonly IIndexerClient _indexerClient;
+        private readonly IHttpClientFactory _clientFactory;
         private readonly ILogger<ConfigWatcher> _logger;
         private readonly IDisposable _reloadToken;
 
@@ -32,11 +34,13 @@ namespace IndexPublisher
         public ConfigWatcher(
             IJackettClient jackettClient,
             IIndexerClient indexerClient,
+            IHttpClientFactory clientFactory,
             IOptionsMonitor<PublisherOptions> optionsMonitor,
             ILogger<ConfigWatcher> logger)
         {
             _jackettClient = jackettClient;
             _indexerClient = indexerClient;
+            _clientFactory = clientFactory;
             _options = optionsMonitor.CurrentValue;
             _reloadToken = optionsMonitor.OnChange(ReloadOptions);
             _logger = logger;
@@ -63,6 +67,14 @@ namespace IndexPublisher
             _logger.LogInformation("Assuming ServerConfig.json location");
             var serverConfigFile = Path.Combine(configDir, JackettConfigFile);
 
+            while (!File.Exists(serverConfigFile))
+            {
+                _logger.LogError("Unable to locate config file at {ServerConfigFile}", serverConfigFile);
+                _logger.LogInformation("Sleeping for 10s");
+                await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
+                stoppingToken.ThrowIfCancellationRequested();
+            }
+
             _logger.LogInformation("Loading server config from {ServerConfigFile}", serverConfigFile);
             var serverConfigStream = File.OpenRead(serverConfigFile);
 
@@ -81,14 +93,15 @@ namespace IndexPublisher
                 stoppingToken.ThrowIfCancellationRequested();
             } while (serverConfig == null);
 
-            _logger.LogInformation("Creating indexer dir");
+            _logger.LogInformation("Combining paths for indexer dir");
             var indexerDir = Path.Combine(configDir, IndexersDir);
+            _logger.LogInformation("Using {IndexerDir} as indexer dir", indexerDir);
 
             _logger.LogInformation("Performing initial indexer load");
             await LoadAllIndexers(stoppingToken);
 
             var indexers = _indexers.Select(x => x.Value);
-            _logger.LogInformation("Performing initial indexer load");
+            _logger.LogInformation("Performing initial indexer publish");
             // Nullable forgiveness reasoning:
             // We know JackettUrl will not be null because the HttpClient will have thrown on initialization otherwise
             await Task.WhenAll(indexers.Select(x => LoadIndexer(x, serverConfig, _options.JackettUrl!, stoppingToken)));
@@ -99,7 +112,6 @@ namespace IndexPublisher
                                | NotifyFilters.FileName
                                | NotifyFilters.LastAccess
                                | NotifyFilters.LastWrite,
-                IncludeSubdirectories = true
             };
 
             _logger.LogInformation("Entering watch loop");
@@ -143,6 +155,7 @@ namespace IndexPublisher
             _logger.LogInformation("Fetching all indexers");
             var indexers = (await _jackettClient.GetIndexers(configured: true, cancellationToken)).ToList();
             _logger.LogInformation("Successfully fetched {Count} indexers", indexers.Count);
+            throw new Exception("The fucking request completed but it's not logging shit");
             
             _logger.LogInformation("Saving all indexers as dictionary");
             _indexers = indexers.ToDictionary(x => x.name);

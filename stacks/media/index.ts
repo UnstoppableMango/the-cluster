@@ -1,3 +1,4 @@
+import { Image } from '@pulumi/docker';
 import * as k8s from '@pulumi/kubernetes';
 import * as kx from '@pulumi/kubernetesx';
 import * as pulumi from '@pulumi/pulumi';
@@ -45,6 +46,17 @@ const linuxServerShared = new kx.ConfigMap('linuxserver-shared', {
   },
 });
 
+const { username, password } = config.requireObject<{
+  username: string, password: string,
+}>('registry');
+
+const serviceConnector = new ServiceConnector('service-connector', {
+  namespace: namespace.name,
+  version: 'latest',
+  registryUsername: username,
+  registryPassword: password,
+});
+
 // Deluge
 // const delugeNs = new Namespace('deluge', {
 //   name: 'deluge',
@@ -64,9 +76,26 @@ const deluge = new Deluge('deluge', {
 //   projectId: project.id,
 // });
 
+const indexPublisher = new Image('index-publisher', {
+  build: {
+    context: './containers',
+    dockerfile: './containers/index-publisher/Dockerfile',
+  },
+  imageName: 'harbor.int.unmango.net/library/index-publisher:latest',
+  registry: {
+    server: 'https://harbor.int.unmango.net',
+    username,
+    password,
+  },
+});
+
 const jackett = new Jackett('jackett', {
   namespace: namespace.name,
   linuxServer: linuxServerShared,
+  publisherImageName: indexPublisher.imageName,
+  connectorUrl: serviceConnector.service.spec.clusterIP.apply(x => {
+    return `http://${x}`;
+  }),
 });
 
 const flareSolverr = new FlareSolverr('flare-solverr', {
@@ -132,24 +161,6 @@ const lidarr = new Lidarr('lidarr', {
   linuxServer: linuxServerShared,
   downloads: deluge.downloads,
   musicVolume: createMediaVolume('music', namespace.name, '/tank1/media/music'),
-});
-
-const { username, password } = config.requireObject<{
-  username: string, password: string,
-}>('registry');
-
-const serviceConnector = new ServiceConnector('connector', {
-  version: 'latest',
-  configClaims: [
-    jackett.config,
-    lidarr.config,
-    movies.config,
-    movies4k.config,
-    tv.config,
-    tv4k.config,
-  ],
-  registryUsername: username,
-  registryPassword: password,
 });
 
 function createMediaVolume(name: string, ns: pulumi.Input<string>, nfsPath: string): k8s.core.v1.PersistentVolume {
