@@ -32,6 +32,7 @@ export class Longhorn extends ComponentResource {
         defaultSettings: {
           backupTarget: 'nfs://zeus:/tank1/rancher/longhorn',
           createDefaultDiskLabeledNodes: true,
+          defaultDataLocality: 'best-effort',
           // Bug (maybe?): https://github.com/longhorn/longhorn/issues/1833
           taintToleration: 'StorageOnly=true:NoExecute;CriticalAddonsOnly=true:NoExecute',
         },

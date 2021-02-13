@@ -19,7 +19,7 @@ export class Jackett extends ComponentResource {
       metadata: { namespace: this.args.namespace },
       spec: {
         storageClassName: 'longhorn',
-        accessModes: ['ReadWriteOnce', 'ReadWriteMany'],
+        accessModes: ['ReadWriteOnce'],
         resources: { requests: { storage: '1Gi' } },
       },
     }, { parent: this });
@@ -50,12 +50,26 @@ export class Jackett extends ComponentResource {
           // the download client... add back if needed?
           // this.args.downloads.mount('/downloads'),
         ],
+      }, {
+        name: this.getName('publisher'),
+        image: args.publisherImageName,
+        env: {
+          INDEXER_JackettUrl: 'http://10.43.175.77:9117',
+          // INDEXER_JackettUrl: 'https://jackett.int.unmango.net',
+          INDEXER_ConnectorUrl: args.connectorUrl,
+        },
+        volumeMounts: [
+          this.config.mount('/config'),
+        ],
+        imagePullPolicy: 'Always',
       }],
     });
   
     this.deployment = new kx.Deployment(this.getName(), {
       metadata: { namespace: this.args.namespace },
-      spec: pb.asDeploymentSpec(),
+      spec: pb.asDeploymentSpec({
+        strategy: { type: 'Recreate' },
+      }),
     }, { parent: this });
   
     this.service = this.deployment.createService({
@@ -92,4 +106,6 @@ export class Jackett extends ComponentResource {
 export interface JackettArgs {
   namespace: Input<string>;
   linuxServer: kx.ConfigMap;
+  publisherImageName: Input<string>;
+  connectorUrl: Input<string>;
 }

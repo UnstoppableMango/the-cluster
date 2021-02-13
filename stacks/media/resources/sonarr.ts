@@ -16,11 +16,11 @@ export class Sonarr extends ComponentResource {
   constructor(private name: string, private args: SonarrArgs, opts?: ComponentResourceOptions) {
     super('unmango:apps:sonarr', name, undefined, opts);
 
-    this.config = new kx.PersistentVolumeClaim(this.getName('config'), {
+    this.config = new kx.PersistentVolumeClaim(this.getName('data'), {
       metadata: { namespace: this.args.namespace },
       spec: {
         storageClassName: 'longhorn',
-        accessModes: ['ReadWriteOnce', 'ReadWriteMany'],
+        accessModes: ['ReadWriteOnce'],
         resources: { requests: { storage: '2Gi' } },
       },
     }, { parent: this });
@@ -61,7 +61,9 @@ export class Sonarr extends ComponentResource {
   
     this.deployment = new kx.Deployment(this.getName('deployment'), {
       metadata: { namespace: this.args.namespace },
-      spec: pb.asDeploymentSpec(),
+      spec: pb.asDeploymentSpec({
+        strategy: { type: 'Recreate' },
+      }),
     }, { parent: this });
   
     this.service = this.deployment.createService({

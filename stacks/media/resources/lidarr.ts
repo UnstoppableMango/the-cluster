@@ -16,12 +16,12 @@ export class Lidarr extends ComponentResource {
   constructor(private name: string, private args: LidarrArgs, opts?: ComponentResourceOptions) {
     super('unmango:apps:lidarr', name, undefined, opts);
 
-    this.config = new kx.PersistentVolumeClaim(this.getName('config'), {
+    this.config = new kx.PersistentVolumeClaim(this.getName('data'), {
       metadata: { namespace: this.args.namespace },
       spec: {
         storageClassName: 'longhorn',
-        accessModes: ['ReadWriteOnce', 'ReadWriteMany'],
-        resources: { requests: { storage: '2Gi' } },
+        accessModes: ['ReadWriteOnce'],
+        resources: { requests: { storage: '10Gi' } },
       },
     }, { parent: this });
   
@@ -61,7 +61,9 @@ export class Lidarr extends ComponentResource {
   
     this.deployment = new kx.Deployment(this.getName(), {
       metadata: { namespace: this.args.namespace },
-      spec: pb.asDeploymentSpec(),
+      spec: pb.asDeploymentSpec({
+        strategy: { type: 'Recreate' },
+      }),
     }, { parent: this });
   
     this.service = this.deployment.createService({

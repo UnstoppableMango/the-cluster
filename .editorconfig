@@ -4,6 +4,9 @@ indent_size = 4
 [*.ts]
 indent_size = 2
 
+[*.{*proj,props,targets}]
+indent_size = 2
+
 [*.json]
 indent_size = 2
 
