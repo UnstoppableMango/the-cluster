@@ -1,6 +1,7 @@
 import { Secret } from '@pulumi/kubernetes/core/v1';
 import * as pulumi from '@pulumi/pulumi';
-import { IngressRoute, MetalLb, TlsStore, Traefik, TraefikConfig } from './resources';
+import { IngressRoute } from '@unmango/custom-resources';
+import { MetalLb, TlsStore, Traefik, TraefikConfig } from './resources';
 import * as certManager from './resources/cert-manager/certmanager/v1';
 
 const config = new pulumi.Config();

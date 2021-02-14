@@ -10,12 +10,13 @@ const clusterId = rancherRef.requireOutput('clusterId');
 
 const project = new Project('auth', {
   name: 'Auth',
-  clusterId: clusterId,
+  clusterId,
 });
 
 const keycloak = new KeyCloak('keycloak', {
+  clusterId,
   projectId: project.id,
-  version: '2.0.0',
+  version: '2.0.1',
 });
 
 export const keycloakAdminPassword = pulumi.secret(keycloak.adminPassword.result);

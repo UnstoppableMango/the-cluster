@@ -16,11 +16,19 @@ const project = new Project('management', {
 });
 
 const portainer = new Portainer('portainer', {
-  chartVersion: '1.0.8',
+  chartVersion: '1.0.10',
   clusterId: clusterId,
   projectId: project.id,
 });
 
 const heimdall = new Heimdall('heimdall', {
   projectId: project.id,
+  hostname: 'heimdall.int.unmango.net',
+  titlebarText: 'Test',
 });
+
+// I just discovered tags and I guess I don't need this now
+// const media = new Heimdall('media', {
+//   projectId: project.id,
+//   hostname: 'media.int.unmango.net',
+// });

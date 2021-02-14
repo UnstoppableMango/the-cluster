@@ -32,7 +32,7 @@ const { password, htpasswd } = config.requireObject<{
 const harbor = new Harbor('harbor', {
   clusterId: clusterId,
   projectId: project.id,
-  version: '9.4.4',
+  version: '9.4.6',
   registryPassword: password,
   registryHtpasswd: htpasswd,
 });
