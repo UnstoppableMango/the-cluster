@@ -1,6 +1,6 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as rancher from '@pulumi/rancher2';
-import { Harbor, Longhorn, NfsClient } from './resources';
+import { Harbor, Longhorn, Minio, NfsClient } from './resources';
 
 const config = new pulumi.Config();
 const remoteStack = config.require('remoteStack');
@@ -36,6 +36,14 @@ const harbor = new Harbor('harbor', {
   registryPassword: password,
   registryHtpasswd: htpasswd,
 });
+
+const minio = new Minio('minio', {
+  clusterId,
+  projectId: project.id,
+});
+
+export const minioAccessKey = minio.accessKey.result;
+export const minioSecretKey = minio.secretKey.result;
 
 export const harborAdminPassword = harbor.harborAdminPassword.result;
 // export const harborValues = harbor.app.values;
