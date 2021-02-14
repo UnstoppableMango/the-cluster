@@ -1,3 +1,4 @@
+export * from './duplicati';
 export * from './harbor';
 export * from './longhorn';
 export * from './minio';

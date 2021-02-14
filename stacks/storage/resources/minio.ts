@@ -1,4 +1,4 @@
-import { ComponentResource, ComponentResourceOptions, Input, } from '@pulumi/pulumi';
+import { ComponentResource, ComponentResourceOptions, Input } from '@pulumi/pulumi';
 import { AppV2, Namespace } from '@pulumi/rancher2';
 import { RandomPassword } from '@pulumi/random';
 import { getNameResolver } from '@unmango/shared/util';
@@ -47,6 +47,10 @@ export class Minio extends ComponentResource {
         mode: 'distributed',
         accessKey: { password: this.accessKey.result },
         secretKey: { password: this.secretKey.result },
+        persistence: {
+          storageClass: args.storageClass,
+          size: '500Gi',
+        },
         ingress:  {
           enabled: true,
           hostname: 'minio.int.unmango.net',
@@ -62,4 +66,5 @@ export class Minio extends ComponentResource {
 export interface MinioArgs {
   clusterId: Input<string>;
   projectId: Input<string>;
+  storageClass: Input<string>;
 }
