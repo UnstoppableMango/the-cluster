@@ -92,6 +92,10 @@ export class Harbor extends ComponentResource {
         postgresql: {
           postgresqlPassword: postgresPass,
         },
+        jobservice: {
+          // So PVC doesn't get locked
+          updateStrategy: { type: 'Recreate' },
+        },
       })),
     }, { parent: this });
 

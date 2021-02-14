@@ -1,39 +1,40 @@
 import { ComponentResource, ComponentResourceOptions, Input } from '@pulumi/pulumi';
-import { AppV2, CatalogV2, Namespace } from '@pulumi/rancher2';
-import * as yaml from 'yaml';
+import * as pulumi from '@pulumi/pulumi';
+import { AppV2, Namespace } from '@pulumi/rancher2';
+import { getNameResolver, toYaml } from '@unmango/shared';
 
 export class NfsClient extends ComponentResource {
 
-  public readonly catalog: CatalogV2;
+  private readonly getName = getNameResolver('nfs-client', this.name);
+
   public readonly namespace: Namespace;
   public readonly app: AppV2;
 
-  constructor(name: string, args: NfsClientArgs, opts?: ComponentResourceOptions) {
+  constructor(private name: string, args: NfsClientArgs, opts?: ComponentResourceOptions) {
     super('unmango:apps:nfs-client', name, undefined, opts);
 
-    this.catalog = new CatalogV2('ckotzbauer', {
-      clusterId: args.clusterId,
-      url: 'https://ckotzbauer.github.io/helm-charts',
-    }, { parent: this });
-
-    this.namespace = new Namespace('nfs-client', {
-      name: 'nfs-client',
+    this.namespace = new Namespace(this.getName(), {
+      name: this.getName(),
       projectId: args.projectId,
     }, { parent: this });
 
-    this.app = new AppV2('nfs-client', {
+    this.app = new AppV2(this.getName(), {
       clusterId: args.clusterId,
       projectId: args.projectId,
       namespace: this.namespace.name,
-      repoName: this.catalog.name,
+      repoName: 'ckotzbauer',
       chartName: 'nfs-client-provisioner',
-      chartVersion: args.version,
-      values: yaml.stringify({
+      chartVersion: '1.0.2',
+      values: toYaml({
         nfs: {
           server: 'zeus',
-          path: '/tank1/rancher',
+          path: pulumi.output(args.subPath).apply(subPath => {
+            return `/tank1/${subPath}`;
+          }),
         },
-        // storageClass: { name: '' }.
+        storageClass: {
+          name: args.storageClass ?? 'nfs-client',
+        },
       }),
     }, { parent: this });
 
@@ -44,5 +45,6 @@ export class NfsClient extends ComponentResource {
 export interface NfsClientArgs {
   clusterId: Input<string>;
   projectId: Input<string>;
-  version: Input<string>;
+  subPath: Input<string>;
+  storageClass?: Input<string>;
 }
