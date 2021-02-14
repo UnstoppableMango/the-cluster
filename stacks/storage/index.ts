@@ -38,3 +38,4 @@ const harbor = new Harbor('harbor', {
 });
 
 export const harborAdminPassword = harbor.harborAdminPassword.result;
+// export const harborValues = harbor.app.values;
