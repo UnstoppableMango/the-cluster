@@ -39,6 +39,10 @@ export class Portainer extends ComponentResource {
       chartVersion: args.chartVersion,
       // https://portainer.github.io/k8s/charts/portainer/
       values: yaml.stringify({
+        image: {
+          repository: 'harbor.int.unmango.net/docker.io/portainer/portainer-ce',
+          tag: '2.1.1',
+        },
         service: { type: 'ClusterIP' },
         ingress: {
           enabled: true,

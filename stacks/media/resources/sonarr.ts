@@ -44,7 +44,7 @@ export class Sonarr extends ComponentResource {
         securityContext: {
           privileged: true,
         },
-        image: 'linuxserver/sonarr',
+        image: 'harbor.int.unmango.net/docker.io/linuxserver/sonarr:version-2.0.0.5344',
         envFrom: [{
           configMapRef: { name: this.args.linuxServer.metadata.name },
         }],

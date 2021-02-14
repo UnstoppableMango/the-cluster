@@ -1,19 +1,18 @@
-import * as k8s from '@pulumi/kubernetes';
 import { ComponentResource, ComponentResourceOptions, Input } from '@pulumi/pulumi';
-import { Namespace } from '@pulumi/rancher2';
+import { AppV2, Namespace } from '@pulumi/rancher2';
 import { RandomPassword } from '@pulumi/random';
+import { toYaml } from '@unmango/shared';
 import { getNameResolver } from '@unmango/shared/util';
 
 export class KeyCloak extends ComponentResource {
 
   private readonly getName = getNameResolver('keycloak', this.name);
 
-  public readonly chartUrl = 'https://charts.bitnami.com/bitnami';
   public readonly namespace: Namespace;
   public readonly adminPassword: RandomPassword;
   public readonly managementPassword: RandomPassword;
   public readonly postgresPassword: RandomPassword;
-  public readonly app: k8s.helm.v3.Chart;
+  public readonly app: AppV2;
 
   constructor(private name: string, args: KeyCloakArgs, opts?: ComponentResourceOptions) {
     super('unmango:apps:keycloak', name, undefined, opts);
@@ -34,12 +33,17 @@ export class KeyCloak extends ComponentResource {
       length: 24,
     }, { parent: this });
 
-    this.app = new k8s.helm.v3.Chart(this.getName(), {
+    this.app = new AppV2(this.getName(), {
+      clusterId: args.clusterId,
+      projectId: args.projectId,
       namespace: this.namespace.name,
-      fetchOpts: { repo: this.chartUrl },
-      chart: 'keycloak',
-      version: args.version,
-      values: {
+      repoName: 'bitnami',
+      chartName: 'keycloak',
+      chartVersion: args.version,
+      values: toYaml({
+        global: {
+          imageRegistry: 'harbor.int.unmango.net/docker.io',
+        },
         replicaCount: 3,
         affinity: {
           podAntiAffinity: {
@@ -79,7 +83,7 @@ export class KeyCloak extends ComponentResource {
           // Setting manually so the chart doesn't generate a new value every time.
           postgresqlPassword: this.postgresPassword.result,
         },
-      },
+      }),
     }, { parent: this });
 
     this.registerOutputs();
@@ -88,6 +92,7 @@ export class KeyCloak extends ComponentResource {
 }
 
 export interface KeyCloakArgs {
+  clusterId: Input<string>;
   projectId: Input<string>;
   version: Input<string>;
 }
