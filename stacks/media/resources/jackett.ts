@@ -54,8 +54,7 @@ export class Jackett extends ComponentResource {
         name: this.getName('publisher'),
         image: args.publisherImageName,
         env: {
-          INDEXER_JackettUrl: 'http://10.43.175.77:9117',
-          // INDEXER_JackettUrl: 'https://jackett.int.unmango.net',
+          INDEXER_JackettUrl: 'http://localhost:9117',
           INDEXER_ConnectorUrl: args.connectorUrl,
         },
         volumeMounts: [

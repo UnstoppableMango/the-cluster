@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using IndexPublisher.Clients;
 using IndexPublisher.Models;
+using IndexPublisher.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -41,8 +42,10 @@ namespace IndexPublisher
                         var serverUrl = hostContext.Configuration["ConnectorUrl"];
                         options.Address = new Uri(serverUrl);
                     });
-                    // services.AddHostedService<ConfigWatcher>();
-                    services.AddHostedService<TestService>();
+                    services.AddSingleton<IIndexWatcher, IndexWatcher>();
+                    services.AddHostedService<TimedIndexWatcherService>();
+                    services.AddHostedService<FileIndexWatcherService>();
+                    services.AddHostedService<Worker>();
                 })
                 .UseSerilog(new LoggerConfiguration()
                     .Enrich.FromLogContext()

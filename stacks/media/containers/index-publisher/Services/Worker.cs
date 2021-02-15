@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net.Http;
+using System.Reactive.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using IndexPublisher.Clients;
 using IndexPublisher.Models;
 using IndexPublisher.Models.Jackett;
 using Microsoft.Extensions.Hosting;
@@ -15,32 +13,28 @@ using Microsoft.Extensions.Options;
 using ServiceConnector.Client;
 using Index = ServiceConnector.Protos.Index;
 
-namespace IndexPublisher
+namespace IndexPublisher.Services
 {
-    internal class ConfigWatcher : BackgroundService
+    internal class Worker : BackgroundService
     {
         private const string JackettConfigFile = "ServerConfig.json";
-        private const string IndexersDir = "Indexers";
 
-        private readonly IJackettClient _jackettClient;
         private readonly IIndexerClient _indexerClient;
-        private readonly IHttpClientFactory _clientFactory;
-        private readonly ILogger<ConfigWatcher> _logger;
+        private readonly IIndexWatcher _watcher;
+        private readonly ILogger<Worker> _logger;
         private readonly IDisposable _reloadToken;
 
         private PublisherOptions _options;
         private Dictionary<string, Indexer> _indexers = new(StringComparer.OrdinalIgnoreCase);
 
-        public ConfigWatcher(
-            IJackettClient jackettClient,
+        public Worker(
             IIndexerClient indexerClient,
-            IHttpClientFactory clientFactory,
+            IIndexWatcher watcher,
             IOptionsMonitor<PublisherOptions> optionsMonitor,
-            ILogger<ConfigWatcher> logger)
+            ILogger<Worker> logger)
         {
-            _jackettClient = jackettClient;
             _indexerClient = indexerClient;
-            _clientFactory = clientFactory;
+            _watcher = watcher;
             _options = optionsMonitor.CurrentValue;
             _reloadToken = optionsMonitor.OnChange(ReloadOptions);
             _logger = logger;
@@ -93,91 +87,33 @@ namespace IndexPublisher
                 stoppingToken.ThrowIfCancellationRequested();
             } while (serverConfig == null);
 
-            _logger.LogInformation("Combining paths for indexer dir");
-            var indexerDir = Path.Combine(configDir, IndexersDir);
-            _logger.LogInformation("Using {IndexerDir} as indexer dir", indexerDir);
-
-            _logger.LogInformation("Performing initial indexer load");
-            await LoadAllIndexers(stoppingToken);
-
-            var indexers = _indexers.Select(x => x.Value);
-            _logger.LogInformation("Performing initial indexer publish");
-            // Nullable forgiveness reasoning:
-            // We know JackettUrl will not be null because the HttpClient will have thrown on initialization otherwise
-            await Task.WhenAll(indexers.Select(x => LoadIndexer(x, serverConfig, _options.JackettUrl!, stoppingToken)));
-
-            _logger.LogInformation("Creating file watcher at {IndexerDir}", indexerDir);
-            using var watcher = new FileSystemWatcher(configDir) {
-                NotifyFilter = NotifyFilters.Size
-                               | NotifyFilters.FileName
-                               | NotifyFilters.LastAccess
-                               | NotifyFilters.LastWrite,
-            };
-
-            _logger.LogInformation("Entering watch loop");
-            while (!stoppingToken.IsCancellationRequested)
+            // Should loop until the watcher completes
+            _logger.LogInformation("Beginning watcher enumeration");
+            foreach (var indexer in _watcher.Next())
             {
-                _logger.LogInformation("Waiting for filesystem changes");
-                var result = watcher.WaitForChanged(WatcherChangeTypes.All);
-                _logger.LogInformation("Got change for {Name} - Type: {ChangeType}", result.Name, result.ChangeType);
-
-                _logger.LogInformation("Trying to get file name without extension");
-                var changedName = Path.GetFileNameWithoutExtension(result.Name) ?? string.Empty;
-                _logger.LogInformation("Filename without extension - {ChangedName}", changedName);
+                _logger.LogInformation("Creating torznab feed");
+                // We know the url isn't null because the HttpClient would have thrown otherwise
+                var feed = GetTorznabFeed(_options.JackettUrl!, indexer.id);
+                _logger.LogInformation("Created torznab feed: {Feed}", feed);
                 
-                _logger.LogInformation("Checking if changed indexer has been cached");
-                if (!_indexers.TryGetValue(changedName, out var indexer))
-                {
-                    _logger.LogInformation("Changed indexer was not cached");
-                    
-                    _logger.LogInformation("Reloading all indexers");
-                    await LoadAllIndexers(stoppingToken);
-
-                    indexer = _indexers[changedName];
-
-                    if (indexer == null)
-                    {
-                        _logger.LogInformation("Still unable to find changed indexer, short-circuiting");
-                        continue;
-                    }
-                }
-                
-                _logger.LogInformation("Loading new indexer");
-                await LoadIndexer(indexer, serverConfig, _options.JackettUrl!, stoppingToken);
-                
-                _logger.LogInformation("Sleeping for 5s");
-                await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+                await LoadIndexer(indexer, serverConfig, feed, stoppingToken);
             }
-        }
-
-        private async Task LoadAllIndexers(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Fetching all indexers");
-            var indexers = (await _jackettClient.GetIndexers(configured: true, cancellationToken)).ToList();
-            _logger.LogInformation("Successfully fetched {Count} indexers", indexers.Count);
-            throw new Exception("The fucking request completed but it's not logging shit");
-            
-            _logger.LogInformation("Saving all indexers as dictionary");
-            _indexers = indexers.ToDictionary(x => x.name);
+            _logger.LogInformation("Exiting watcher enumeration");
         }
 
         private async Task LoadIndexer(
             Indexer indexer,
             ServerConfig serverConfig,
-            string jackettUrl,
+            string torznabFeed,
             CancellationToken cancellationToken)
         {
             _logger.LogInformation("Loading indexer {Name}", indexer.name);
-
-            _logger.LogInformation("Creating torznab feed");
-            var feed = GetTorznabFeed(jackettUrl, indexer.id);
-            _logger.LogInformation("Created torznab feed: {Feed}", feed);
 
             _logger.LogInformation("Creating index message");
             var index = new Index {
                 Name = indexer.name,
                 ApiKey = serverConfig.APIKey,
-                TorznabFeed = feed,
+                TorznabFeed = torznabFeed,
             };
 
             try
