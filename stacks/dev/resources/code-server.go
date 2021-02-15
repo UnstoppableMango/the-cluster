@@ -14,7 +14,7 @@ type CodeServerArgs struct {
 // CodeServer resource
 type CodeServer struct {
 	pulumi.ResourceState
-	k8s.Deployment
+	deployment k8s.Deployment
 }
 
 // NewCodeServer Create a new CodeServer component resource
