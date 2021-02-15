@@ -1,6 +1,8 @@
 package main
 
 import (
+	resources "github.com/UnstoppableMango/the-cluster/stacks/dev/resources"
+
 	"github.com/pulumi/pulumi-rancher2/sdk/v2/go/rancher2"
 	"github.com/pulumi/pulumi/sdk/v2/go/pulumi"
 )
@@ -11,7 +13,7 @@ func main() {
 			ClusterId: pulumi.String("local"),
 		})
 
-		codeServer, err := NewCodeServer(ctx, "code-server", &CodeServerArgs{
+		codeServer, err := resources.NewCodeServer(ctx, "code-server", &resources.CodeServerArgs{
 			projectID: project.ID(),
 		})
 
