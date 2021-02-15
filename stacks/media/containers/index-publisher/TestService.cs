@@ -1,3 +1,5 @@
+using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,12 +21,42 @@ namespace IndexPublisher
         
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await Task.WhenAll(
-                Get1(),
-                Get2(stoppingToken),
-                Get3(stoppingToken));
+            // await Task.WhenAll(
+            //     Get1(),
+            //     Get2(stoppingToken),
+            //     Get3(stoppingToken));
+            await Get("https://google.com");
+            await Get("http://localhost:9117");
             
             _logger.LogInformation("Exiting test service");
+        }
+
+        private async Task<string> Get(string url)
+        {
+            var client = _clientFactory.CreateClient();
+
+            try
+            {
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
+
+                var response = await client.GetAsync(url);
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    stopwatch.Stop();
+                    _logger.LogInformation("Time: {Elapsed}", stopwatch.Elapsed);
+                    return content;
+                }
+
+                _logger.LogInformation("Unable to retrieve data from url");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation(ex, "Exception");
+            }
+
+            return string.Empty;
         }
 
         private async Task Get1()

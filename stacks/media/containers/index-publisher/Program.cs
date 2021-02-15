@@ -41,7 +41,7 @@ namespace IndexPublisher
                         var serverUrl = hostContext.Configuration["ConnectorUrl"];
                         options.Address = new Uri(serverUrl);
                     });
-                    services.AddHostedService<ConfigWatcher>();
+                    // services.AddHostedService<ConfigWatcher>();
                     services.AddHostedService<TestService>();
                 })
                 .UseSerilog(new LoggerConfiguration()
