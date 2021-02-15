@@ -42,7 +42,7 @@ export class CodeServer extends ComponentResource {
     this.deployment = new kx.Deployment(this.getName(), {
       metadata: { namespace: args.namespace },
       spec: pb.asDeploymentSpec({
-        replicas: 6,
+        // replicas: 6,
         // For RWO longhorn PVC
         strategy: stopStartNewStrategy(),
       }),
