@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ServiceConnector.Services;
 
 // ReSharper disable CA1822
 
@@ -19,6 +20,9 @@ namespace ServiceConnector
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHealthChecks();
+            services.AddGrpc();
+            services.AddGrpcReflection();
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -33,6 +37,13 @@ namespace ServiceConnector
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapHealthChecks("/healthz");
+                endpoints.MapGrpcService<IndexReceiverService>();
+                endpoints.MapHub<ServarrHub>("/servarr");
+
+                if (env.IsDevelopment())
+                {
+                    endpoints.MapGrpcReflectionService();
+                }
             });
         }
     }

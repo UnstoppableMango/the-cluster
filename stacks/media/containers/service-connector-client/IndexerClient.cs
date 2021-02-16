@@ -6,14 +6,14 @@ namespace ServiceConnector.Client
 {
     internal class IndexerClient : IIndexerClient
     {
-        private readonly Indexer.IndexerClient _client;
+        private readonly IndexService.IndexServiceClient _client;
 
-        public IndexerClient(Indexer.IndexerClient client)
+        public IndexerClient(IndexService.IndexServiceClient client)
         {
             _client = client;
         }
         
-        public async Task<IndexReply> PublishAsync(Index index, CancellationToken cancellationToken = default)
+        public async Task<IndexReply> PublishAsync(IndexRequest index, CancellationToken cancellationToken = default)
         {
             return await _client.PublishAsync(index, null, null, cancellationToken);
         }

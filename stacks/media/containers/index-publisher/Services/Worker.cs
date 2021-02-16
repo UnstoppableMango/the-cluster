@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reactive.Linq;
 using System.Text.Json;
@@ -11,7 +10,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ServiceConnector.Client;
-using Index = ServiceConnector.Protos.Index;
 
 namespace IndexPublisher.Services
 {
@@ -25,7 +23,6 @@ namespace IndexPublisher.Services
         private readonly IDisposable _reloadToken;
 
         private PublisherOptions _options;
-        private Dictionary<string, Indexer> _indexers = new(StringComparer.OrdinalIgnoreCase);
 
         public Worker(
             IIndexerClient indexerClient,
@@ -109,22 +106,19 @@ namespace IndexPublisher.Services
         {
             _logger.LogInformation("Loading indexer {Name}", indexer.name);
 
-            _logger.LogInformation("Creating index message");
-            var index = new Index {
-                Name = indexer.name,
-                ApiKey = serverConfig.APIKey,
-                TorznabFeed = torznabFeed,
-            };
-
             try
             {
                 _logger.LogInformation("Publishing index to connector");
-                var reply = await _indexerClient.PublishAsync(index, cancellationToken);
+                var reply = await _indexerClient.PublishAsync(
+                    indexer.name,
+                    torznabFeed,
+                    serverConfig.APIKey,
+                    cancellationToken);
                 _logger.LogInformation("Received reply from connector: {Message}", reply.Message);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Unable to publish index {Name}", index.Name);
+                _logger.LogError(e, "Unable to publish index {Name}", indexer.name);
             }
         }
 

@@ -2,14 +2,18 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\service-connector-protos\ServiceConnector.Protos.csproj" />
+      <PackageReference Include="Grpc.Net.ClientFactory" Version="2.35.0" />
+      <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="5.0.3" />
+      <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Grpc.Net.ClientFactory" Version="2.35.0" />
+      <ProjectReference Include="..\service-connector-common\ServiceConnector.Common.csproj" />
     </ItemGroup>
 
 </Project>

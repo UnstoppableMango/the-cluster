@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env
 
-COPY ./service-connector-protos/*.csproj ./service-connector-protos/
+COPY ./service-connector-common/*.csproj ./service-connector-common/
 COPY ./service-connector-client/*.csproj ./service-connector-client/
 
 WORKDIR /app
@@ -10,7 +10,7 @@ COPY ./index-publisher/*.csproj ./
 RUN dotnet restore
 
 WORKDIR /
-COPY ./service-connector-protos ./service-connector-protos/
+COPY ./service-connector-common ./service-connector-common/
 COPY ./service-connector-client ./service-connector-client/
 
 WORKDIR /app

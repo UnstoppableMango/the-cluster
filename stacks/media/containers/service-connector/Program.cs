@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace ServiceConnector
 {
@@ -18,6 +19,12 @@ namespace ServiceConnector
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .UseSerilog(new LoggerConfiguration()
+                    .Enrich.FromLogContext()
+                    .WriteTo.Console(outputTemplate: "[{SourceContext:1} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+                    .WriteTo.Async(x => x.File("/config/publisher/log.txt"))
+                    // .MinimumLevel.Verbose()
+                    .CreateLogger());
     }
 }
