@@ -103,6 +103,20 @@ const flareSolverr = new FlareSolverr('flare-solverr', {
   version: 'latest',
 });
 
+// Servarr
+const advertiserImage = new Image('servarr-advertiser', {
+  build: {
+    context: './containers',
+    dockerfile: './containers/servarr-advertiser/Dockerfile',
+  },
+  imageName: 'harbor.int.unmango.net/library/servarr-advertiser:latest',
+  registry: {
+    server: 'https://harbor.int.unmango.net',
+    username,
+    password,
+  },
+});
+
 // Sonarr
 // const sonarrNs = new Namespace('sonarr', {
 //   name: 'sonarr',
