@@ -149,7 +149,10 @@ export class Deluge extends ComponentResource {
     }, { parent: this });
   
     this.service = new k8s.core.v1.Service(this.getName('http'), {
-      metadata: { namespace: args.namespace },
+      metadata: {
+        name: 'deluge',
+        namespace: args.namespace,
+      },
       spec: {
         type: kx.types.ServiceType.ClusterIP,
         selector: this.deployment.spec.selector.matchLabels,
@@ -163,7 +166,10 @@ export class Deluge extends ComponentResource {
     }, { parent: this });
   
     this.daemonService = new k8s.core.v1.Service(this.getName('daemon'), {
-      metadata: { namespace: args.namespace },
+      metadata: {
+        name: 'deluge-daemon',
+        namespace: args.namespace,
+      },
       spec: {
         type: kx.types.ServiceType.LoadBalancer,
         selector: this.deployment.spec.selector.matchLabels,

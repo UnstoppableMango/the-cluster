@@ -9,7 +9,7 @@ export class Jackett extends ComponentResource {
 
   public readonly config: kx.PersistentVolumeClaim;
   public readonly deployment: kx.Deployment;
-  public readonly service: kx.Service;
+  public readonly service: k8s.core.v1.Service;
   public readonly ingress: k8s.networking.v1.Ingress;
 
   constructor(private name: string, private args: JackettArgs, opts?: ComponentResourceOptions) {
@@ -71,10 +71,24 @@ export class Jackett extends ComponentResource {
       }),
     }, { parent: this });
   
-    this.service = this.deployment.createService({
-      type: kx.types.ServiceType.ClusterIP,
-      ports: [{ name: 'http', port: 9117, targetPort: 9117 }],
-    });
+    // this.service = this.deployment.createService({
+    //   type: kx.types.ServiceType.ClusterIP,
+    //   ports: [{ name: 'http', port: 9117, targetPort: 9117 }],
+    // });
+
+    this.service = new k8s.core.v1.Service(this.getName(), {
+      metadata: {
+        name: 'jackett',
+        namespace: args.namespace,
+      },
+      spec: {
+        type: kx.types.ServiceType.ClusterIP,
+        selector: this.deployment.spec.selector.matchLabels,
+        ports: [
+          { name: 'http', port: 9117, targetPort: 9117 },
+        ],
+      },
+    }, { parent: this });
 
     this.ingress = new k8s.networking.v1.Ingress(this.getName('ingress'), {
       metadata: { namespace: args.namespace },

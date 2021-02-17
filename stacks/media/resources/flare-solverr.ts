@@ -28,6 +28,10 @@ export class FlareSolverr extends ComponentResource {
             },
           },
           spec: {
+            // Refs about this BS:
+            // https://stackoverflow.com/a/65593511/7341217
+            // Some motherfucking bullshit
+            dnsConfig: { options: [{ name: 'ndots', value: '2' }] },
             containers: [{
               name: this.getName(),
               image: pulumi.output(args.version).apply(version => {
@@ -49,7 +53,10 @@ export class FlareSolverr extends ComponentResource {
     }, { parent: this });
 
     this.service = new k8s.core.v1.Service(this.getName(), {
-      metadata: { namespace: args.namespace },
+      metadata: {
+        name: 'flare-solverr',
+        namespace: args.namespace,
+      },
       spec: {
         type: 'ClusterIP',
         selector: this.deployment.spec.selector.matchLabels,
