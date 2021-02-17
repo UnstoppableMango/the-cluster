@@ -22,10 +22,10 @@
     <ProjectReference Include="..\service-connector-client\ServiceConnector.Client.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <OpenApiReference Include="radarr-swagger.json" Namespace="Clients">
-      <ClassName>RadarrClient</ClassName>
-      <OutputPath>RadarrClient.cs</OutputPath>
-    </OpenApiReference>
-  </ItemGroup>
+<!--  <ItemGroup>-->
+<!--    <OpenApiReference Include="radarr-swagger.json" Namespace="Clients">-->
+<!--      <ClassName>RadarrClient</ClassName>-->
+<!--      <OutputPath>RadarrClient.cs</OutputPath>-->
+<!--    </OpenApiReference>-->
+<!--  </ItemGroup>-->
 </Project>

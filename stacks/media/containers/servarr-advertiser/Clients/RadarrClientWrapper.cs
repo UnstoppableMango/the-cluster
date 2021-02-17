@@ -1,5 +1,5 @@
 using System.Net.Http;
-using Clients;
+// using Clients;
 
 namespace ServarrAdvertiser.Clients
 {
@@ -7,8 +7,7 @@ namespace ServarrAdvertiser.Clients
     {
         public RadarrClientWrapper()
         {
-            var temp = new RadarrClient(new HttpClient());
-            temp.PutconfigUiAsync(new Body())
+            // var temp = new RadarrClient(new HttpClient());
         }
     }
 }
