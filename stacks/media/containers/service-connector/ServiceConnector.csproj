@@ -6,11 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\service-connector-protos\ServiceConnector.Protos.csproj" />
+    <PackageReference Include="Grpc.AspNetCore.Server" Version="2.35.0" />
+    <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.35.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
+    <PackageReference Include="Serilog.Sinks.Async" Version="1.4.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Grpc.AspNetCore.Server" Version="2.35.0" />
+    <ProjectReference Include="..\service-connector-common\ServiceConnector.Common.csproj" />
   </ItemGroup>
 
 </Project>

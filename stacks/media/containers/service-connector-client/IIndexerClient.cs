@@ -6,6 +6,6 @@ namespace ServiceConnector.Client
 {
     public interface IIndexerClient
     {
-        Task<IndexReply> PublishAsync(Index index, CancellationToken cancellationToken = default);
+        Task<IndexReply> PublishAsync(IndexRequest request, CancellationToken cancellationToken = default);
     }
 }

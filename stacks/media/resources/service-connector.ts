@@ -34,14 +34,14 @@ export class ServiceConnector extends ComponentResource {
 
     const pb = new kx.PodBuilder({
       containers: [{
-        image: this.image.baseImageName,
-        ports: { http: 80 },
-        livenessProbe: {
-          httpGet: {
-            path: '/healthz',
-            port: 80,
-          },
-        },
+        image: this.image.imageName,
+        ports: { http: 80, https: 443 },
+        // livenessProbe: {
+        //   httpGet: {
+        //     path: '/healthz',
+        //     port: 80,
+        //   },
+        // },
       }],
     });
 

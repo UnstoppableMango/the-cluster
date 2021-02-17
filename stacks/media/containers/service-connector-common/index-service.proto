@@ -2,16 +2,16 @@ syntax = "proto3";
 
 option csharp_namespace = "ServiceConnector.Protos";
 
-message Index {
+message IndexRequest {
   string name = 1;
-  string apiKey = 2;
-  string torznabFeed = 3;
+  string torznabFeed = 2;
+  string apiKey = 3;
 }
 
 message IndexReply {
   string message = 1;
 }
 
-service Indexer {
-  rpc Publish (Index) returns (IndexReply);
+service IndexService {
+  rpc Publish (IndexRequest) returns (IndexReply);
 }

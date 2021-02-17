@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using IndexPublisher.Clients;
 using IndexPublisher.Models;
+using IndexPublisher.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -38,17 +37,19 @@ namespace IndexPublisher
                         client.Timeout = TimeSpan.FromSeconds(5);
                     });
                     services.AddServiceConnectorClient(options => {
-                        var serverUrl = hostContext.Configuration["ConnectorUrl"];
-                        options.Address = new Uri(serverUrl);
+                        options.Url = hostContext.Configuration["ConnectorUrl"];
                     });
-                    services.AddHostedService<ConfigWatcher>();
-                    services.AddHostedService<TestService>();
+                    services.AddSingleton<IIndexWatcher, IndexWatcher>();
+                    services.AddHostedService<TimedIndexWatcherService>();
+                    // TODO: Blocks startup
+                    // services.AddHostedService<FileIndexWatcherService>();
+                    services.AddHostedService<Worker>();
                 })
                 .UseSerilog(new LoggerConfiguration()
                     .Enrich.FromLogContext()
-                    .WriteTo.Console()
+                    .WriteTo.Console(outputTemplate: "[{SourceContext:1} {Level:u3}] {Message:lj}{NewLine}{Exception}")
                     .WriteTo.Async(x => x.File("/config/publisher/log.txt"))
-                    .MinimumLevel.Verbose()
+                    // .MinimumLevel.Verbose()
                     .CreateLogger());
     }
 }
