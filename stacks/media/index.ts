@@ -5,6 +5,7 @@ import * as pulumi from '@pulumi/pulumi';
 import { Namespace, Project } from '@pulumi/rancher2';
 
 import {
+  Deemix,
   Deluge,
   DelugeConfig,
   FlareSolverr,
@@ -175,6 +176,13 @@ const lidarr = new Lidarr('lidarr', {
   linuxServer: linuxServerShared,
   downloads: deluge.downloads,
   musicVolume: createMediaVolume('music', namespace.name, '/tank1/media/music'),
+});
+
+const deemixConfig = config.requireObject<{ arl: string }>('deemix');
+
+const deemix = new Deemix('deemix', {
+  namespace: namespace.name,
+  arl: deemixConfig.arl,
 });
 
 function createMediaVolume(name: string, ns: pulumi.Input<string>, nfsPath: string): k8s.core.v1.PersistentVolume {

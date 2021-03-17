@@ -1,3 +1,4 @@
+export * from './deemix';
 export * from './deluge';
 export * from './flare-solverr';
 export * from './jackett';
