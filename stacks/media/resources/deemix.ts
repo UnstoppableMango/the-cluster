@@ -48,8 +48,8 @@ export class Deemix extends ComponentResource {
       containers: [{
         image: 'registry.gitlab.com/bockiii/deemix-docker',
         env: {
-          PUID: '1001',
-          PGID: '1001',
+          PUID: '1000',
+          PGID: '1000',
           ARL: args.arl,
           // UMASK_SET: '022',
           DEEZUI: 'false', // Enables Deezloader UI
