@@ -1,7 +1,7 @@
 config:
   media:deemix:
     arl:
-      secure: AAABAIJeSMD0rvFn0y/5+78Fjqu2ZQwHIh4JZ0WbwuMrhp+Ms3BwSfR+Jv6r6da2kRygqIaASOOdGzc4u54CVHdHwMt6C/pr1UqLFwes6Uw1Sg9z6TdAK1mg0PYa32T/BtX8th/fEknbK1Ns8Xuv8WD0eZ6XL7+A6l5Cn5r2IfWDEWeBU8p2VuOPKQJ+HknOidNy0VvKsbSNclv1CtjCPPj3JtzWZV101y2D9H7VDpBwwDKyehJqPgO37mTTCGuFd1UIWWMCVntu4muYYiChJmYSOPTGUGPBH/EtHA+diHo=
+      secure: AAABAN2L+UtAx762mFNnD0wSh8E+2xudGW51X2ytA3v3zqaZSAKaLWp6/aUa41eYqr/v9m0u+yg0/jkk15w4jMdxoa97TT8RmsO2zlqn5qp3EgO44bIHtB6Y8uxxPtsld3wTzLtIFtA/+HncgllikYhMNmxoSxLKIuVO9lqaYUjGdiofzZuQZgk5UfmTAhfoHuU3al+aXsmIyhT7MhwWy1VAu7Hq7lJXngOzhsZ7DUitp4Ii/ELQCN+4MQhhhBzR+M/iMbMOYeq56McE5x+t8cX0WunMOnzEkzFKpqeXNm0=
   media:deluge:
     password:
       secure: AAABAFFP4PhGuX8JPKDm+7cKpRKxscaK8y6SlggrldhAf93h/8IxrQc=
