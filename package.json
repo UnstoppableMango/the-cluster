@@ -8,7 +8,7 @@
     "@pulumi/kubernetes": "^2.8.1",
     "@pulumi/kubernetesx": "^0.1.4",
     "@pulumi/pulumi": "^2.20.0",
-    "@pulumi/rancher2": "^2.7.0",
+    "@pulumi/rancher2": "^2.9.0",
     "@unmango/shared": "^0.1.4",
     "yaml": "^1.10.0"
   },
