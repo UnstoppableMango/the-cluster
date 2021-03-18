@@ -11,4 +11,4 @@ jobs:
         with:
           target: minor
           command: squash and merge
-          github-token: ${{ secrets.DEPENDABOT }}
+          github-token: ${{ secrets.Dependabot }}
