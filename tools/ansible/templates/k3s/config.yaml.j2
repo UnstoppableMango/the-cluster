@@ -6,6 +6,9 @@ token: {{ hostvars['MASTER_VARS']['node_token'] }}
 tls-san:
 - kube.int.unmango.net
 - rancher.int.unmango.net
+disable:
+- "servicelb"
+- "traefik"
 {% endif %}
 {% if server | d(false) or storage | d(false) %}
 node-taint:
@@ -20,3 +23,7 @@ node-label:
 {% if storage | d(false) %}
 - "node.longhorn.io/create-default-disk=true"
 {% endif %}
+{% if agent | d(false) %}
+kubelet-arg:
+- "allowed-unsafe-sysctls=net.ipv4.conf.all.src_valid_mark"
+{%endif%}

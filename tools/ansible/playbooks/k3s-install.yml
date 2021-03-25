@@ -25,7 +25,7 @@
       cmd: "/usr/local/bin/k3s-install.sh server --cluster-init --disable servicelb --disable traefik"
       creates: "/usr/local/bin/k3s-uninstall.sh"
     environment:
-      INSTALL_K3S_VERSION: "v1.19.7+k3s1"
+      INSTALL_K3S_VERSION: "v1.20.4+k3s1"
 
   - name: Wait for server startup
     pause: seconds=20
@@ -63,7 +63,7 @@
   become: yes
   environment:
     # Latest version supported by rancher
-    INSTALL_K3S_VERSION: "v1.19.7+k3s1"
+    INSTALL_K3S_VERSION: "v1.20.4+k3s1"
   tasks:
   - name: Install servers
     shell:
@@ -75,7 +75,7 @@
 - hosts: "agents"
   become: yes
   environment:
-    INSTALL_K3S_VERSION: "v1.19.7+k3s1"
+    INSTALL_K3S_VERSION: "v1.20.4+k3s1"
   tasks:
   - name: Install agents
     shell:
