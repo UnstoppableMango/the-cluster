@@ -125,7 +125,7 @@ export class Deluge extends ComponentResource {
           privileged: true,
         },
         // TODO: Allow passing version
-        image: 'harbor.int.unmango.net/docker.io/binhex/arch-delugevpn:2.0.4.dev38_g23a48dd01-3-01',
+        image: 'harbor.int.unmango.net/docker.io/binhex/arch-delugevpn:2.0.4.dev38-g23a48dd01-3-06',
         envFrom: [{ configMapRef: { name: this.env.metadata.name } }],
         env: {
           VPN_PASS: this.piaSecret.asEnvValue('password'),
