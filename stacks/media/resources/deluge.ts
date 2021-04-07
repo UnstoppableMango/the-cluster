@@ -29,7 +29,7 @@ export class Deluge extends ComponentResource {
       metadata: { namespace: this.args.namespace },
       spec: {
         storageClassName: 'longhorn',
-        accessModes: ['ReadWriteOnce', 'ReadWriteMany'],
+        accessModes: ['ReadWriteOnce'],
         resources: { requests: { storage: '1Gi' } },
       },
     }, { parent: this });
