@@ -22,7 +22,7 @@
   "dependencies": {
     "@pulumi/kubernetes": "^2.9.0",
     "@pulumi/pulumi": "^2.24.1",
-    "@pulumi/rancher2": "^2.9.1"
+    "@pulumi/rancher2": "^2.10.0"
   },
   "devDependencies": {
     "@types/chai": "^4.2.16",
