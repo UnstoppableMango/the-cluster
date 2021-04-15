@@ -1,6 +1,6 @@
 {
   "name": "rancher",
   "dependencies": {
-    "@pulumi/github": "^3.5.0"
+    "@pulumi/github": "^3.6.0"
   }
 }
