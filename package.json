@@ -6,7 +6,7 @@
   "dependencies": {
     "@pulumi/docker": "^2.10.0",
     "@pulumi/kubernetes": "^2.9.1",
-    "@pulumi/kubernetesx": "^0.1.4",
+    "@pulumi/kubernetesx": "^0.1.5",
     "@pulumi/pulumi": "^2.25.2",
     "@pulumi/rancher2": "^2.10.0",
     "@unmango/shared": "^0.1.4",
