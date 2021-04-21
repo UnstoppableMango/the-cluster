@@ -21,7 +21,7 @@
   "license": "WTFPL",
   "dependencies": {
     "@pulumi/kubernetes": "^2.9.1",
-    "@pulumi/pulumi": "^2.25.2",
+    "@pulumi/pulumi": "^3.0.0",
     "@pulumi/rancher2": "^2.10.0"
   },
   "devDependencies": {
