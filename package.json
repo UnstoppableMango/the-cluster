@@ -13,7 +13,7 @@
     "yaml": "^1.10.2"
   },
   "devDependencies": {
-    "@types/node": "^15.12.5",
+    "@types/node": "^15.14.0",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
     "eslint": "^7.29.0",
