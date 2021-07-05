@@ -2,7 +2,7 @@
     "name": "media",
     "devDependencies": {
         "@types/mkdirp": "^1.0.1",
-        "@types/unzipper": "^0.10.3"
+        "@types/unzipper": "^0.10.4"
     },
     "dependencies": {
         "@pulumi/docker": "^3.0.0",
