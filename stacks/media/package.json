@@ -1,7 +1,7 @@
 {
     "name": "media",
     "devDependencies": {
-        "@types/mkdirp": "^1.0.1",
+        "@types/mkdirp": "^1.0.2",
         "@types/unzipper": "^0.10.4"
     },
     "dependencies": {
