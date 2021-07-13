@@ -50,9 +50,10 @@ export class Deemix extends ComponentResource {
         env: {
           PUID: '1000',
           PGID: '1000',
-          ARL: args.arl,
+          // ARL: args.arl, // Not working in the current version
           // UMASK_SET: '022',
           DEEZUI: 'false', // Enables Deezloader UI
+          REVERSEPROXY: 'true'
         },
         ports: {
           http: 6595,
