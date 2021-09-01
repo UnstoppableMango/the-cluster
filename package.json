@@ -4,7 +4,7 @@
     "./stacks/*"
   ],
   "dependencies": {
-    "@pulumi/docker": "^3.0.0",
+    "@pulumi/docker": "^3.1.0",
     "@pulumi/kubernetes": "^3.6.3",
     "@pulumi/kubernetesx": "^0.1.6",
     "@pulumi/pulumi": "^3.11.0",
