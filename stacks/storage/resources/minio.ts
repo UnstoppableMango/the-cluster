@@ -38,7 +38,6 @@ export class Minio extends ComponentResource {
       chartVersion: '6.1.7',
       values: toYaml({
         global: {
-          imageRegistry: 'harbor.int.unmango.net/docker.io',
           // minio: {
           //   accessKey: '',
           //   secretKey: '',

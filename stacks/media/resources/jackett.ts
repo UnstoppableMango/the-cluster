@@ -33,7 +33,7 @@ export class Jackett extends ComponentResource {
         securityContext: {
           privileged: true,
         },
-        image: 'harbor.int.unmango.net/docker.io/linuxserver/jackett:version-v0.17.513',
+        image: 'linuxserver/jackett:version-v0.17.513',
         envFrom: [{
           configMapRef: { name: this.args.linuxServer.metadata.name },
         }],
@@ -50,17 +50,6 @@ export class Jackett extends ComponentResource {
           // the download client... add back if needed?
           // this.args.downloads.mount('/downloads'),
         ],
-      }, {
-        name: this.getName('publisher'),
-        image: args.publisherImageName,
-        env: {
-          INDEXER_JackettUrl: 'http://localhost:9117',
-          INDEXER_ConnectorUrl: args.connectorUrl,
-        },
-        volumeMounts: [
-          this.config.mount('/config'),
-        ],
-        imagePullPolicy: 'Always',
       }],
     });
   
@@ -119,6 +108,4 @@ export class Jackett extends ComponentResource {
 export interface JackettArgs {
   namespace: Input<string>;
   linuxServer: kx.ConfigMap;
-  publisherImageName: Input<string>;
-  connectorUrl: Input<string>;
 }

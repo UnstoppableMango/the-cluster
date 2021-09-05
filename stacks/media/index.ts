@@ -51,12 +51,12 @@ const { username, password } = config.requireObject<{
   username: string, password: string,
 }>('registry');
 
-const serviceConnector = new ServiceConnector('service-connector', {
-  namespace: namespace.name,
-  version: 'latest',
-  registryUsername: username,
-  registryPassword: password,
-});
+// const serviceConnector = new ServiceConnector('service-connector', {
+//   namespace: namespace.name,
+//   version: 'latest',
+//   registryUsername: username,
+//   registryPassword: password,
+// });
 
 // Deluge
 // const delugeNs = new Namespace('deluge', {
@@ -77,26 +77,22 @@ const deluge = new Deluge('deluge', {
 //   projectId: project.id,
 // });
 
-const indexPublisher = new Image('index-publisher', {
-  build: {
-    context: './containers',
-    dockerfile: './containers/index-publisher/Dockerfile',
-  },
-  imageName: 'harbor.int.unmango.net/library/index-publisher:latest',
-  registry: {
-    server: 'https://harbor.int.unmango.net',
-    username,
-    password,
-  },
-});
+// const indexPublisher = new Image('index-publisher', {
+//   build: {
+//     context: './containers',
+//     dockerfile: './containers/index-publisher/Dockerfile',
+//   },
+//   imageName: 'harbor.int.unmango.net/library/index-publisher:latest',
+//   registry: {
+//     server: 'https://harbor.int.unmango.net',
+//     username,
+//     password,
+//   },
+// });
 
 const jackett = new Jackett('jackett', {
   namespace: namespace.name,
   linuxServer: linuxServerShared,
-  publisherImageName: indexPublisher.imageName,
-  connectorUrl: serviceConnector.service.spec.clusterIP.apply(x => {
-    return `http://${x}`;
-  }),
 });
 
 const flareSolverr = new FlareSolverr('flare-solverr', {
@@ -105,18 +101,18 @@ const flareSolverr = new FlareSolverr('flare-solverr', {
 });
 
 // Servarr
-const advertiserImage = new Image('servarr-advertiser', {
-  build: {
-    context: './containers',
-    dockerfile: './containers/servarr-advertiser/Dockerfile',
-  },
-  imageName: 'harbor.int.unmango.net/library/servarr-advertiser:latest',
-  registry: {
-    server: 'https://harbor.int.unmango.net',
-    username,
-    password,
-  },
-});
+// const advertiserImage = new Image('servarr-advertiser', {
+//   build: {
+//     context: './containers',
+//     dockerfile: './containers/servarr-advertiser/Dockerfile',
+//   },
+//   imageName: 'harbor.int.unmango.net/library/servarr-advertiser:latest',
+//   registry: {
+//     server: 'https://harbor.int.unmango.net',
+//     username,
+//     password,
+//   },
+// });
 
 // Sonarr
 // const sonarrNs = new Namespace('sonarr', {
