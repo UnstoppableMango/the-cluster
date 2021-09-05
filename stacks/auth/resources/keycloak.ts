@@ -41,9 +41,6 @@ export class KeyCloak extends ComponentResource {
       chartName: 'keycloak',
       chartVersion: args.version,
       values: toYaml({
-        global: {
-          imageRegistry: 'harbor.int.unmango.net/docker.io',
-        },
         replicaCount: 3,
         affinity: {
           podAntiAffinity: {

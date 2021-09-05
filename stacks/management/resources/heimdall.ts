@@ -47,7 +47,7 @@ export class Heimdall extends ComponentResource {
       // Some motherfucking bullshit
       dnsConfig: { options: [{ name: 'ndots', value: '2' }] },
       containers: [{
-        image: 'harbor.int.unmango.net/docker.io/linuxserver/heimdall:version-2.2.2',
+        image: 'linuxserver/heimdall:version-2.2.2',
         env: {
           // TODO: Need to overwrite in .env file (/config/www/.env)
           // https://github.com/linuxserver/Heimdall/issues/132#issuecomment-490436167

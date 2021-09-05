@@ -26,7 +26,7 @@ export class Duplicati extends ComponentResource {
       chartVersion: '2.0.1',
       values: toYaml({
         image: {
-          repository: 'harbor.int.unmango.net/docker.io/linuxserver/duplicati',
+          repository: 'linuxserver/duplicati',
         },
         timezone: 'America/Chicago',
         ingress: {

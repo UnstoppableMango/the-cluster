@@ -29,7 +29,7 @@ export class CodeServer extends ComponentResource {
 
     const pb = new kx.PodBuilder({
       containers: [{
-        image: 'harbor.int.unmango.net/docker.io/linuxserver/code-server:version-v3.9.0',
+        image: 'linuxserver/code-server:version-v3.9.0',
         env: {
           TZ: 'America/Chicago',
           PROXY_DOMAIN: hostname,

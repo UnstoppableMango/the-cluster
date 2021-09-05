@@ -33,7 +33,7 @@ export class Jackett extends ComponentResource {
         securityContext: {
           privileged: true,
         },
-        image: 'harbor.int.unmango.net/docker.io/linuxserver/jackett:version-v0.17.513',
+        image: 'linuxserver/jackett:version-v0.17.513',
         envFrom: [{
           configMapRef: { name: this.args.linuxServer.metadata.name },
         }],

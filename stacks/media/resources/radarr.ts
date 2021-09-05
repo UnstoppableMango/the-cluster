@@ -44,7 +44,7 @@ export class Radarr extends ComponentResource {
         securityContext: {
           privileged: true,
         },
-        image: 'harbor.int.unmango.net/docker.io/linuxserver/radarr:version-3.0.2.4552',
+        image: 'linuxserver/radarr:version-3.0.2.4552',
         envFrom: [{
           configMapRef: { name: this.args.linuxServer.metadata.name },
         }],
