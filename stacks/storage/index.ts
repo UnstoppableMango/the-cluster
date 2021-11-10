@@ -22,7 +22,7 @@ const ckotzbauer = new rancher.CatalogV2('ckotzbauer', {
 const longhorn = new Longhorn('longhorn', {
   clusterId: clusterId,
   projectId: project.id,
-  version: '1.2.200',
+  version: '1.2.200+up1.2.2',
 });
 
 const nfsClient = new NfsClient('nfs-client', {
