@@ -63,10 +63,10 @@ const minio = new Minio('minio', {
   storageClass: 'minio',
 });
 
-const duplicati = new Duplicati('duplicati', {
-  clusterId,
-  projectId: project.id,
-});
+// const duplicati = new Duplicati('duplicati', {
+//   clusterId,
+//   projectId: project.id,
+// });
 
 export const minioAccessKey = minio.accessKey.result;
 export const minioSecretKey = minio.secretKey.result;
