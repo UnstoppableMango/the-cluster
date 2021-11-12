@@ -39,9 +39,6 @@ export class Catalogs extends ComponentResource implements shared.Catalogs {
   public readonly partners: CatalogV2;
   public readonly rancher: CatalogV2;
 
-  public readonly unstoppableMango: Catalog;
-  public readonly unstoppableMangoV2: CatalogV2;
-
   constructor(name: string, private args: CatalogsArgs, opts?: ComponentResourceOptions) {
     super('unmango:rancher:Catalogs', name, undefined, opts);
 
@@ -124,18 +121,6 @@ export class Catalogs extends ComponentResource implements shared.Catalogs {
     this.library = Catalog.get('library', 'library', undefined, this._opts);
     this.partners = CatalogV2.get('partners', 'rancher-partner-charts', this._state, this._opts);
     this.rancher = CatalogV2.get('rancher', 'rancher-charts', this._state, this._opts);
-
-    this.unstoppableMango = new Catalog('unstoppablemango', {
-      name: 'unstoppablemango',
-      url: this._githubRef.requireOutput('helmChartsRepoUrl'),
-      version: 'helm_v3',
-    }, this._opts);
-  
-    this.unstoppableMangoV2 = new CatalogV2('unstoppablemango', {
-      name: 'unstoppablemango',
-      clusterId: this.args.clusterId,
-      gitRepo: this._githubRef.requireOutput('helmChartsRepoUrl'),
-    }, this._opts);
 
     this.registerOutputs();
   }

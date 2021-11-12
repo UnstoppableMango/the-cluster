@@ -25,8 +25,6 @@ export interface Catalogs {
   library: rancher.Catalog;
   partners: rancher.CatalogV2;
   rancher: rancher.CatalogV2;
-  unstoppableMango: rancher.Catalog;
-  unstoppableMangoV2: rancher.CatalogV2;
 }
 
 // export type CatalogsExport<T = Catalogs> = {
@@ -76,7 +74,5 @@ export const getCatalogs = (
     library: getCatalog('library'),
     partners: getCatalogV2('partners'),
     rancher: getCatalogV2('rancher'),
-    unstoppableMango: getCatalog('unstoppableMango'),
-    unstoppableMangoV2: getCatalogV2('unstoppableMangoV2'),
   };
 };
