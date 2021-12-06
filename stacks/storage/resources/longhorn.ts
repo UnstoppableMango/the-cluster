@@ -24,16 +24,17 @@ export class Longhorn extends ComponentResource {
       chartName: 'longhorn',
       chartVersion: args.version,
       values: yaml.stringify({
+        // service: { ui: { type: 'Rancher-Proxy' } },
         ingress: {
           enabled: true,
           host: 'longhorn.int.unmango.net',
         },
         defaultSettings: {
-          backupTarget: 'nfs://zeus:/tank1/backup',
-          createDefaultDiskLabeledNodes: false,
+          backupTarget: 'nfs://zeus:/tank1/rancher/longhorn',
+          createDefaultDiskLabeledNodes: true,
           defaultDataLocality: 'best-effort',
           // Bug (maybe?): https://github.com/longhorn/longhorn/issues/1833
-          // taintToleration: 'StorageOnly=true:NoExecute;CriticalAddonsOnly=true:NoExecute',
+          taintToleration: 'StorageOnly=true:NoExecute;CriticalAddonsOnly=true:NoExecute',
         },
       }),
     }, { parent: this });
