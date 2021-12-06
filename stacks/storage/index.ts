@@ -13,11 +13,11 @@ const project = new rancher.Project('storage', {
   clusterId: clusterId,
 });
 
-const ckotzbauer = new rancher.CatalogV2('ckotzbauer', {
-  clusterId,
-  name: 'ckotzbauer',
-  url: 'https://ckotzbauer.github.io/helm-charts',
-});
+// const ckotzbauer = new rancher.CatalogV2('ckotzbauer', {
+//   clusterId,
+//   name: 'ckotzbauer',
+//   url: 'https://ckotzbauer.github.io/helm-charts',
+// });
 
 const longhorn = new Longhorn('longhorn', {
   clusterId: clusterId,
@@ -25,18 +25,18 @@ const longhorn = new Longhorn('longhorn', {
   version: '1.2.200+up1.2.2',
 });
 
-const nfsClient = new NfsClient('nfs-client', {
-  clusterId: clusterId,
-  projectId: project.id,
-  subPath: 'rancher',
-});
+// const nfsClient = new NfsClient('nfs-client', {
+//   clusterId: clusterId,
+//   projectId: project.id,
+//   subPath: 'rancher',
+// });
 
-const nfsBackup = new NfsClient('backup', {
-  clusterId,
-  projectId: project.id,
-  subPath: 'backup',
-  storageClass: 'nfs-backup',
-});
+// const nfsBackup = new NfsClient('backup', {
+//   clusterId,
+//   projectId: project.id,
+//   subPath: 'backup',
+//   storageClass: 'nfs-backup',
+// });
 
 const { password, htpasswd } = config.requireObject<{
   password: string, htpasswd: string,
@@ -50,18 +50,18 @@ const { password, htpasswd } = config.requireObject<{
 //   registryHtpasswd: htpasswd,
 // });
 
-const minioBackup = new NfsClient('minio', {
-  clusterId,
-  projectId: project.id,
-  subPath: 'backup/minio',
-  storageClass: 'minio',
-});
+// const minioBackup = new NfsClient('minio', {
+//   clusterId,
+//   projectId: project.id,
+//   subPath: 'backup/minio',
+//   storageClass: 'minio',
+// });
 
-const minio = new Minio('minio', {
-  clusterId,
-  projectId: project.id,
-  storageClass: 'minio',
-});
+// const minio = new Minio('minio', {
+//   clusterId,
+//   projectId: project.id,
+//   storageClass: 'minio',
+// });
 
 // const duplicati = new Duplicati('duplicati', {
 //   clusterId,
