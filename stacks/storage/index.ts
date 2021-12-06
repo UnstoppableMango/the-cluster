@@ -68,8 +68,8 @@ const { password, htpasswd } = config.requireObject<{
 //   projectId: project.id,
 // });
 
-export const minioAccessKey = minio.accessKey.result;
-export const minioSecretKey = minio.secretKey.result;
+// export const minioAccessKey = minio.accessKey.result;
+// export const minioSecretKey = minio.secretKey.result;
 
 // export const harborAdminPassword = harbor.harborAdminPassword.result;
 // export const harborValues = harbor.app.values;
