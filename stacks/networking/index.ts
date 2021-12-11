@@ -16,13 +16,6 @@ const config = new pulumi.Config();
 //   addresses: ['192.168.1.75-192.168.1.99'],
 // });
 
-// const traefikConfig = config.requireObject<TraefikConfig>('traefik');
-
-// const traefik = new Traefik('traefik', {
-//   version: '9.14.2',
-//   pilotToken: traefikConfig.pilot.token,
-// }, { dependsOn: metallb.chart });
-
 const traefikChart = new k8s.helm.v3.Chart('traefik', {
   namespace: 'traefik-system',
   chart: 'traefik',
@@ -30,13 +23,36 @@ const traefikChart = new k8s.helm.v3.Chart('traefik', {
     repo: 'https://helm.traefik.io/traefik',
   },
   values: {
-    logs: { general: { level: 'DEBUG' } },
+    deployment: { kind: 'DaemonSet' },
+    ingressRoute: { dashboard: { enabled: false } },
+    ports: { websecure: { tls: { enabled: true } } },
+    // logs: { general: { level: 'DEBUG' } },
     // pilot: {
     //   enabled: true,
     //   token: args.pilotToken,
     // },
-  }
-}, { id: 'traefik' });
+  },
+  transformations: [(obj) => {
+    // Either Helm or Pulumi doesn't want to put ALL
+    // resources in the namespace above so do that here
+    obj.metadata.namespace = 'traefik-system';
+  }],
+});
+
+const dashboard = new traefik.IngressRoute('dashboard', {
+  metadata: { namespace: 'traefik-system' },
+  spec: {
+    entryPoints: ['websecure'],
+    routes: [{
+      match: 'Host(`traefik.int.unmango.net`)',
+      kind: 'Rule',
+      services: [{
+        name: 'api@internal',
+        kind: 'TraefikService',
+      }],
+    }],
+  },
+}, { dependsOn: traefikChart.ready });
 
 const cfConfig = config.requireObject<CloudflareConfig>('cloudflare');
 
@@ -98,22 +114,7 @@ const tlsStore = new traefik.TLSStore('default', {
       secretName: defaultCert.spec.secretName,
     },
   },
-});
-
-const dashboard = new traefik.IngressRoute('dashboard', {
-  // metadata: { namespace: this.namespace.metadata.name },
-  spec: {
-    entryPoints: ['websecure'],
-    routes: [{
-      match: 'Host(`traefik.int.unmango.net`) || Host(`traefik`)',
-      kind: 'Rule',
-      services: [{
-        name: 'api@internal',
-        kind: 'TraefikService',
-      }],
-    }],
-  },
-});
+}, { dependsOn: traefikChart.ready });
 
 interface CloudflareConfig {
   apiToken: string;
