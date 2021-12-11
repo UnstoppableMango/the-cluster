@@ -1,3 +1,6 @@
 [submodule "submodules/cert-manager"]
 	path = submodules/cert-manager
 	url = https://github.com/jetstack/cert-manager
+[submodule "submodules/traefik-helm-chart"]
+	path = submodules/traefik-helm-chart
+	url = git@github.com:traefik/traefik-helm-chart.git

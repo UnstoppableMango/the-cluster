@@ -2,8 +2,7 @@
 // *** Do not edit by hand unless you're certain you know what you are doing! ***
 
 import * as pulumi from "@pulumi/pulumi";
-import * as inputs from "../types/input";
-import * as outputs from "../types/output";
+import { input as inputs, output as outputs } from "../types";
 
 import {ObjectMeta} from "../meta/v1";
 
@@ -228,9 +227,25 @@ export namespace acme {
              * if both this and ClientID are left unset MSI will be used
              */
             clientSecretSecretRef?: outputs.acme.v1.ChallengeSpecSolverDns01AzureDNSClientSecretSecretRef;
+            /**
+             * name of the Azure environment (default AzurePublicCloud)
+             */
             environment?: string;
+            /**
+             * name of the DNS zone that should be used
+             */
             hostedZoneName?: string;
+            /**
+             * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+             */
+            managedIdentity?: outputs.acme.v1.ChallengeSpecSolverDns01AzureDNSManagedIdentity;
+            /**
+             * resource group the DNS zone is located in
+             */
             resourceGroupName: string;
+            /**
+             * ID of the Azure subscription
+             */
             subscriptionID: string;
             /**
              * when specifying ClientID and ClientSecret then this field is also needed
@@ -250,6 +265,20 @@ export namespace acme {
              * Name of the resource being referred to. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
              */
             name: string;
+        }
+
+        /**
+         * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+         */
+        export interface ChallengeSpecSolverDns01AzureDNSManagedIdentity {
+            /**
+             * client ID of the managed identity, can not be used at the same time as resourceID
+             */
+            clientID?: string;
+            /**
+             * resource ID of the managed identity, can not be used at the same time as clientID
+             */
+            resourceID?: string;
         }
 
         /**
@@ -450,9 +479,27 @@ export namespace acme {
          */
         export interface ChallengeSpecSolverHttp01 {
             /**
+             * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+             */
+            gatewayHTTPRoute?: outputs.acme.v1.ChallengeSpecSolverHttp01GatewayHTTPRoute;
+            /**
              * The ingress based HTTP01 challenge solver will solve challenges by creating or modifying Ingress resources in order to route requests for '/.well-known/acme-challenge/XYZ' to 'challenge solver' pods that are provisioned by cert-manager for each Challenge to be completed.
              */
             ingress?: outputs.acme.v1.ChallengeSpecSolverHttp01Ingress;
+        }
+
+        /**
+         * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+         */
+        export interface ChallengeSpecSolverHttp01GatewayHTTPRoute {
+            /**
+             * The labels that cert-manager will use when creating the temporary HTTPRoute needed for solving the HTTP-01 challenge. These labels must match the label selector of at least one Gateway.
+             */
+            labels?: {[key: string]: string};
+            /**
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
+             */
+            serviceType?: string;
         }
 
         /**
@@ -464,7 +511,7 @@ export namespace acme {
              */
             class?: string;
             /**
-             * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges
+             * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges.
              */
             ingressTemplate?: outputs.acme.v1.ChallengeSpecSolverHttp01IngressIngressTemplate;
             /**
@@ -472,17 +519,17 @@ export namespace acme {
              */
             name?: string;
             /**
-             * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges
+             * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges.
              */
             podTemplate?: outputs.acme.v1.ChallengeSpecSolverHttp01IngressPodTemplate;
             /**
-             * Optional service type for Kubernetes solver service
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
              */
             serviceType?: string;
         }
 
         /**
-         * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges
+         * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges.
          */
         export interface ChallengeSpecSolverHttp01IngressIngressTemplate {
             /**
@@ -506,7 +553,7 @@ export namespace acme {
         }
 
         /**
-         * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges
+         * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges.
          */
         export interface ChallengeSpecSolverHttp01IngressPodTemplate {
             /**
@@ -752,7 +799,11 @@ export namespace acme {
              */
             labelSelector?: outputs.acme.v1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.acme.v1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -794,6 +845,38 @@ export namespace acme {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.acme.v1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -802,7 +885,11 @@ export namespace acme {
              */
             labelSelector?: outputs.acme.v1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.acme.v1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -829,6 +916,38 @@ export namespace acme {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.acme.v1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -880,7 +999,11 @@ export namespace acme {
              */
             labelSelector?: outputs.acme.v1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.acme.v1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -922,6 +1045,38 @@ export namespace acme {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.acme.v1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -930,7 +1085,11 @@ export namespace acme {
              */
             labelSelector?: outputs.acme.v1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.acme.v1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -957,6 +1116,38 @@ export namespace acme {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.acme.v1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -1375,9 +1566,25 @@ export namespace acme {
              * if both this and ClientID are left unset MSI will be used
              */
             clientSecretSecretRef?: outputs.acme.v1alpha2.ChallengeSpecSolverDns01AzurednsClientSecretSecretRef;
+            /**
+             * name of the Azure environment (default AzurePublicCloud)
+             */
             environment?: string;
+            /**
+             * name of the DNS zone that should be used
+             */
             hostedZoneName?: string;
+            /**
+             * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+             */
+            managedIdentity?: outputs.acme.v1alpha2.ChallengeSpecSolverDns01AzurednsManagedIdentity;
+            /**
+             * resource group the DNS zone is located in
+             */
             resourceGroupName: string;
+            /**
+             * ID of the Azure subscription
+             */
             subscriptionID: string;
             /**
              * when specifying ClientID and ClientSecret then this field is also needed
@@ -1397,6 +1604,20 @@ export namespace acme {
              * Name of the resource being referred to. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
              */
             name: string;
+        }
+
+        /**
+         * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+         */
+        export interface ChallengeSpecSolverDns01AzurednsManagedIdentity {
+            /**
+             * client ID of the managed identity, can not be used at the same time as resourceID
+             */
+            clientID?: string;
+            /**
+             * resource ID of the managed identity, can not be used at the same time as clientID
+             */
+            resourceID?: string;
         }
 
         /**
@@ -1597,9 +1818,27 @@ export namespace acme {
          */
         export interface ChallengeSpecSolverHttp01 {
             /**
+             * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+             */
+            gatewayHTTPRoute?: outputs.acme.v1alpha2.ChallengeSpecSolverHttp01GatewayHTTPRoute;
+            /**
              * The ingress based HTTP01 challenge solver will solve challenges by creating or modifying Ingress resources in order to route requests for '/.well-known/acme-challenge/XYZ' to 'challenge solver' pods that are provisioned by cert-manager for each Challenge to be completed.
              */
             ingress?: outputs.acme.v1alpha2.ChallengeSpecSolverHttp01Ingress;
+        }
+
+        /**
+         * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+         */
+        export interface ChallengeSpecSolverHttp01GatewayHTTPRoute {
+            /**
+             * The labels that cert-manager will use when creating the temporary HTTPRoute needed for solving the HTTP-01 challenge. These labels must match the label selector of at least one Gateway.
+             */
+            labels?: {[key: string]: string};
+            /**
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
+             */
+            serviceType?: string;
         }
 
         /**
@@ -1619,11 +1858,11 @@ export namespace acme {
              */
             name?: string;
             /**
-             * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges
+             * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges.
              */
             podTemplate?: outputs.acme.v1alpha2.ChallengeSpecSolverHttp01IngressPodTemplate;
             /**
-             * Optional service type for Kubernetes solver service
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
              */
             serviceType?: string;
         }
@@ -1653,7 +1892,7 @@ export namespace acme {
         }
 
         /**
-         * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges
+         * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges.
          */
         export interface ChallengeSpecSolverHttp01IngressPodTemplate {
             /**
@@ -1899,7 +2138,11 @@ export namespace acme {
              */
             labelSelector?: outputs.acme.v1alpha2.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.acme.v1alpha2.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -1941,6 +2184,38 @@ export namespace acme {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.acme.v1alpha2.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -1949,7 +2224,11 @@ export namespace acme {
              */
             labelSelector?: outputs.acme.v1alpha2.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.acme.v1alpha2.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -1976,6 +2255,38 @@ export namespace acme {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.acme.v1alpha2.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -2027,7 +2338,11 @@ export namespace acme {
              */
             labelSelector?: outputs.acme.v1alpha2.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.acme.v1alpha2.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -2069,6 +2384,38 @@ export namespace acme {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.acme.v1alpha2.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -2077,7 +2424,11 @@ export namespace acme {
              */
             labelSelector?: outputs.acme.v1alpha2.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.acme.v1alpha2.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -2104,6 +2455,38 @@ export namespace acme {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.acme.v1alpha2.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -2522,9 +2905,25 @@ export namespace acme {
              * if both this and ClientID are left unset MSI will be used
              */
             clientSecretSecretRef?: outputs.acme.v1alpha3.ChallengeSpecSolverDns01AzurednsClientSecretSecretRef;
+            /**
+             * name of the Azure environment (default AzurePublicCloud)
+             */
             environment?: string;
+            /**
+             * name of the DNS zone that should be used
+             */
             hostedZoneName?: string;
+            /**
+             * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+             */
+            managedIdentity?: outputs.acme.v1alpha3.ChallengeSpecSolverDns01AzurednsManagedIdentity;
+            /**
+             * resource group the DNS zone is located in
+             */
             resourceGroupName: string;
+            /**
+             * ID of the Azure subscription
+             */
             subscriptionID: string;
             /**
              * when specifying ClientID and ClientSecret then this field is also needed
@@ -2544,6 +2943,20 @@ export namespace acme {
              * Name of the resource being referred to. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
              */
             name: string;
+        }
+
+        /**
+         * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+         */
+        export interface ChallengeSpecSolverDns01AzurednsManagedIdentity {
+            /**
+             * client ID of the managed identity, can not be used at the same time as resourceID
+             */
+            clientID?: string;
+            /**
+             * resource ID of the managed identity, can not be used at the same time as clientID
+             */
+            resourceID?: string;
         }
 
         /**
@@ -2744,9 +3157,27 @@ export namespace acme {
          */
         export interface ChallengeSpecSolverHttp01 {
             /**
+             * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+             */
+            gatewayHTTPRoute?: outputs.acme.v1alpha3.ChallengeSpecSolverHttp01GatewayHTTPRoute;
+            /**
              * The ingress based HTTP01 challenge solver will solve challenges by creating or modifying Ingress resources in order to route requests for '/.well-known/acme-challenge/XYZ' to 'challenge solver' pods that are provisioned by cert-manager for each Challenge to be completed.
              */
             ingress?: outputs.acme.v1alpha3.ChallengeSpecSolverHttp01Ingress;
+        }
+
+        /**
+         * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+         */
+        export interface ChallengeSpecSolverHttp01GatewayHTTPRoute {
+            /**
+             * The labels that cert-manager will use when creating the temporary HTTPRoute needed for solving the HTTP-01 challenge. These labels must match the label selector of at least one Gateway.
+             */
+            labels?: {[key: string]: string};
+            /**
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
+             */
+            serviceType?: string;
         }
 
         /**
@@ -2766,11 +3197,11 @@ export namespace acme {
              */
             name?: string;
             /**
-             * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges
+             * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges.
              */
             podTemplate?: outputs.acme.v1alpha3.ChallengeSpecSolverHttp01IngressPodTemplate;
             /**
-             * Optional service type for Kubernetes solver service
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
              */
             serviceType?: string;
         }
@@ -2800,7 +3231,7 @@ export namespace acme {
         }
 
         /**
-         * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges
+         * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges.
          */
         export interface ChallengeSpecSolverHttp01IngressPodTemplate {
             /**
@@ -3046,7 +3477,11 @@ export namespace acme {
              */
             labelSelector?: outputs.acme.v1alpha3.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.acme.v1alpha3.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -3088,6 +3523,38 @@ export namespace acme {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.acme.v1alpha3.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -3096,7 +3563,11 @@ export namespace acme {
              */
             labelSelector?: outputs.acme.v1alpha3.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.acme.v1alpha3.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -3123,6 +3594,38 @@ export namespace acme {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.acme.v1alpha3.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -3174,7 +3677,11 @@ export namespace acme {
              */
             labelSelector?: outputs.acme.v1alpha3.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.acme.v1alpha3.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -3216,6 +3723,38 @@ export namespace acme {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.acme.v1alpha3.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -3224,7 +3763,11 @@ export namespace acme {
              */
             labelSelector?: outputs.acme.v1alpha3.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.acme.v1alpha3.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -3251,6 +3794,38 @@ export namespace acme {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.acme.v1alpha3.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -3669,9 +4244,25 @@ export namespace acme {
              * if both this and ClientID are left unset MSI will be used
              */
             clientSecretSecretRef?: outputs.acme.v1beta1.ChallengeSpecSolverDns01AzureDNSClientSecretSecretRef;
+            /**
+             * name of the Azure environment (default AzurePublicCloud)
+             */
             environment?: string;
+            /**
+             * name of the DNS zone that should be used
+             */
             hostedZoneName?: string;
+            /**
+             * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+             */
+            managedIdentity?: outputs.acme.v1beta1.ChallengeSpecSolverDns01AzureDNSManagedIdentity;
+            /**
+             * resource group the DNS zone is located in
+             */
             resourceGroupName: string;
+            /**
+             * ID of the Azure subscription
+             */
             subscriptionID: string;
             /**
              * when specifying ClientID and ClientSecret then this field is also needed
@@ -3691,6 +4282,20 @@ export namespace acme {
              * Name of the resource being referred to. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
              */
             name: string;
+        }
+
+        /**
+         * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+         */
+        export interface ChallengeSpecSolverDns01AzureDNSManagedIdentity {
+            /**
+             * client ID of the managed identity, can not be used at the same time as resourceID
+             */
+            clientID?: string;
+            /**
+             * resource ID of the managed identity, can not be used at the same time as clientID
+             */
+            resourceID?: string;
         }
 
         /**
@@ -3891,9 +4496,27 @@ export namespace acme {
          */
         export interface ChallengeSpecSolverHttp01 {
             /**
+             * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+             */
+            gatewayHTTPRoute?: outputs.acme.v1beta1.ChallengeSpecSolverHttp01GatewayHTTPRoute;
+            /**
              * The ingress based HTTP01 challenge solver will solve challenges by creating or modifying Ingress resources in order to route requests for '/.well-known/acme-challenge/XYZ' to 'challenge solver' pods that are provisioned by cert-manager for each Challenge to be completed.
              */
             ingress?: outputs.acme.v1beta1.ChallengeSpecSolverHttp01Ingress;
+        }
+
+        /**
+         * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+         */
+        export interface ChallengeSpecSolverHttp01GatewayHTTPRoute {
+            /**
+             * The labels that cert-manager will use when creating the temporary HTTPRoute needed for solving the HTTP-01 challenge. These labels must match the label selector of at least one Gateway.
+             */
+            labels?: {[key: string]: string};
+            /**
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
+             */
+            serviceType?: string;
         }
 
         /**
@@ -3905,7 +4528,7 @@ export namespace acme {
              */
             class?: string;
             /**
-             * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges
+             * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges.
              */
             ingressTemplate?: outputs.acme.v1beta1.ChallengeSpecSolverHttp01IngressIngressTemplate;
             /**
@@ -3917,13 +4540,13 @@ export namespace acme {
              */
             podTemplate?: outputs.acme.v1beta1.ChallengeSpecSolverHttp01IngressPodTemplate;
             /**
-             * Optional service type for Kubernetes solver service
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
              */
             serviceType?: string;
         }
 
         /**
-         * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges
+         * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges.
          */
         export interface ChallengeSpecSolverHttp01IngressIngressTemplate {
             /**
@@ -4193,7 +4816,11 @@ export namespace acme {
              */
             labelSelector?: outputs.acme.v1beta1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.acme.v1beta1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -4235,6 +4862,38 @@ export namespace acme {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.acme.v1beta1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -4243,7 +4902,11 @@ export namespace acme {
              */
             labelSelector?: outputs.acme.v1beta1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.acme.v1beta1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -4270,6 +4933,38 @@ export namespace acme {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.acme.v1beta1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -4321,7 +5016,11 @@ export namespace acme {
              */
             labelSelector?: outputs.acme.v1beta1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.acme.v1beta1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -4363,6 +5062,38 @@ export namespace acme {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.acme.v1beta1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -4371,7 +5102,11 @@ export namespace acme {
              */
             labelSelector?: outputs.acme.v1beta1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.acme.v1beta1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -4398,6 +5133,38 @@ export namespace acme {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.acme.v1beta1.ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ChallengeSpecSolverHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -4608,6 +5375,14 @@ export namespace certmanager {
              */
             duration?: string;
             /**
+             * Extra contains extra attributes of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.
+             */
+            extra?: {[key: string]: string[]};
+            /**
+             * Groups contains group membership of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.
+             */
+            groups?: string[];
+            /**
              * IsCA will request to mark the certificate as valid for certificate signing when submitting to the issuer. This will automatically add the `cert sign` usage to the list of `usages`.
              */
             isCA?: boolean;
@@ -4620,9 +5395,17 @@ export namespace certmanager {
              */
             request: string;
             /**
+             * UID contains the uid of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.
+             */
+            uid?: string;
+            /**
              * Usages is the set of x509 usages that are requested for the certificate. If usages are set they SHOULD be encoded inside the CSR spec Defaults to `digital signature` and `key encipherment` if not specified.
              */
             usages?: string[];
+            /**
+             * Username contains the name of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.
+             */
+            username?: string;
         }
 
         /**
@@ -4686,7 +5469,7 @@ export namespace certmanager {
              */
             status: string;
             /**
-             * Type of the condition, known values are (`Ready`, `InvalidRequest`).
+             * Type of the condition, known values are (`Ready`, `InvalidRequest`, `Approved`, `Denied`).
              */
             type: string;
         }
@@ -4704,7 +5487,7 @@ export namespace certmanager {
              */
             dnsNames?: string[];
             /**
-             * The requested 'duration' (i.e. lifetime) of the Certificate. This option may be ignored/overridden by some issuer types. If overridden and `renewBefore` is greater than the actual certificate duration, the certificate will be automatically renewed 2/3rds of the way through the certificate's duration.
+             * The requested 'duration' (i.e. lifetime) of the Certificate. This option may be ignored/overridden by some issuer types. If unset this defaults to 90 days. Certificate will be renewed either 2/3 through its duration or `renewBefore` period before its expiry, whichever is later. Minimum accepted duration is 1 hour. Value must be in units accepted by Go time.ParseDuration https://golang.org/pkg/time/#ParseDuration
              */
             duration?: string;
             /**
@@ -4736,13 +5519,21 @@ export namespace certmanager {
              */
             privateKey?: outputs.certmanager.v1.CertificateSpecPrivateKey;
             /**
-             * The amount of time before the currently issued certificate's `notAfter` time that cert-manager will begin to attempt to renew the certificate. If this value is greater than the total duration of the certificate (i.e. notAfter - notBefore), it will be automatically renewed 2/3rds of the way through the certificate's duration.
+             * How long before the currently issued certificate's expiry cert-manager should renew the certificate. The default is 2/3 of the issued certificate's duration. Minimum accepted value is 5 minutes. Value must be in units accepted by Go time.ParseDuration https://golang.org/pkg/time/#ParseDuration
              */
             renewBefore?: string;
+            /**
+             * revisionHistoryLimit is the maximum number of CertificateRequest revisions that are maintained in the Certificate's history. Each revision represents a single `CertificateRequest` created by this Certificate, either when it was created, renewed, or Spec was changed. Revisions will be removed by oldest first if the number of revisions exceeds this number. If set, revisionHistoryLimit must be a value of `1` or greater. If unset (`nil`), revisions will not be garbage collected. Default value is `nil`.
+             */
+            revisionHistoryLimit?: number;
             /**
              * SecretName is the name of the secret resource that will be automatically created and managed by this Certificate resource. It will be populated with a private key and certificate, signed by the denoted issuer.
              */
             secretName: string;
+            /**
+             * SecretTemplate defines annotations and labels to be propagated to the Kubernetes Secret when it is created or updated. Once created, labels and annotations are not yet removed from the Secret when they are removed from the template. See https://github.com/jetstack/cert-manager/issues/4292
+             */
+            secretTemplate?: outputs.certmanager.v1.CertificateSpecSecretTemplate;
             /**
              * Full X509 name specification (https://golang.org/pkg/crypto/x509/pkix/#Name).
              */
@@ -4850,7 +5641,7 @@ export namespace certmanager {
          */
         export interface CertificateSpecPrivateKey {
             /**
-             * Algorithm is the private key algorithm of the corresponding private key for this certificate. If provided, allowed values are either `RSA` or `ECDSA` If `algorithm` is specified and `size` is not provided, key size of 256 will be used for `ECDSA` key algorithm and key size of 2048 will be used for `RSA` key algorithm.
+             * Algorithm is the private key algorithm of the corresponding private key for this certificate. If provided, allowed values are either `RSA`,`Ed25519` or `ECDSA` If `algorithm` is specified and `size` is not provided, key size of 256 will be used for `ECDSA` key algorithm and key size of 2048 will be used for `RSA` key algorithm. key size is ignored when using the `Ed25519` key algorithm.
              */
             algorithm?: string;
             /**
@@ -4862,9 +5653,23 @@ export namespace certmanager {
              */
             rotationPolicy?: string;
             /**
-             * Size is the key bit size of the corresponding private key for this certificate. If `algorithm` is set to `RSA`, valid values are `2048`, `4096` or `8192`, and will default to `2048` if not specified. If `algorithm` is set to `ECDSA`, valid values are `256`, `384` or `521`, and will default to `256` if not specified. No other values are allowed.
+             * Size is the key bit size of the corresponding private key for this certificate. If `algorithm` is set to `RSA`, valid values are `2048`, `4096` or `8192`, and will default to `2048` if not specified. If `algorithm` is set to `ECDSA`, valid values are `256`, `384` or `521`, and will default to `256` if not specified. If `algorithm` is set to `Ed25519`, Size is ignored. No other values are allowed.
              */
             size?: number;
+        }
+
+        /**
+         * SecretTemplate defines annotations and labels to be propagated to the Kubernetes Secret when it is created or updated. Once created, labels and annotations are not yet removed from the Secret when they are removed from the template. See https://github.com/jetstack/cert-manager/issues/4292
+         */
+        export interface CertificateSpecSecretTemplate {
+            /**
+             * Annotations is a key value map to be copied to the target Kubernetes Secret.
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * Labels is a key value map to be copied to the target Kubernetes Secret.
+             */
+            labels?: {[key: string]: string};
         }
 
         /**
@@ -4955,6 +5760,10 @@ export namespace certmanager {
              */
             message?: string;
             /**
+             * If set, this represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.condition[x].observedGeneration is 9, the condition is out of date with respect to the current state of the Certificate.
+             */
+            observedGeneration?: number;
+            /**
              * Reason is a brief machine readable explanation for the condition's last transition.
              */
             reason?: string;
@@ -5041,9 +5850,9 @@ export namespace certmanager {
          */
         export interface ClusterIssuerSpecAcmeExternalAccountBinding {
             /**
-             * keyAlgorithm is the MAC key algorithm that the key is used for. Valid values are "HS256", "HS384" and "HS512".
+             * Deprecated: keyAlgorithm field exists for historical compatibility reasons and should not be used. The algorithm is now hardcoded to HS256 in golang/x/crypto/acme.
              */
-            keyAlgorithm: string;
+            keyAlgorithm?: string;
             /**
              * keyID is the ID of the CA key that the External Account is bound to.
              */
@@ -5083,7 +5892,7 @@ export namespace certmanager {
         }
 
         /**
-         * Configures an issuer to solve challenges using the specified options. Only one of HTTP01 or DNS01 may be provided.
+         * An ACMEChallengeSolver describes how to solve ACME challenges for the issuer it is part of. A selector may be provided to use different solving strategies for different DNS names. Only one of HTTP01 or DNS01 must be provided.
          */
         export interface ClusterIssuerSpecAcmeSolvers {
             /**
@@ -5244,9 +6053,25 @@ export namespace certmanager {
              * if both this and ClientID are left unset MSI will be used
              */
             clientSecretSecretRef?: outputs.certmanager.v1.ClusterIssuerSpecAcmeSolversDns01AzureDNSClientSecretSecretRef;
+            /**
+             * name of the Azure environment (default AzurePublicCloud)
+             */
             environment?: string;
+            /**
+             * name of the DNS zone that should be used
+             */
             hostedZoneName?: string;
+            /**
+             * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+             */
+            managedIdentity?: outputs.certmanager.v1.ClusterIssuerSpecAcmeSolversDns01AzureDNSManagedIdentity;
+            /**
+             * resource group the DNS zone is located in
+             */
             resourceGroupName: string;
+            /**
+             * ID of the Azure subscription
+             */
             subscriptionID: string;
             /**
              * when specifying ClientID and ClientSecret then this field is also needed
@@ -5266,6 +6091,20 @@ export namespace certmanager {
              * Name of the resource being referred to. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
              */
             name: string;
+        }
+
+        /**
+         * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+         */
+        export interface ClusterIssuerSpecAcmeSolversDns01AzureDNSManagedIdentity {
+            /**
+             * client ID of the managed identity, can not be used at the same time as resourceID
+             */
+            clientID?: string;
+            /**
+             * resource ID of the managed identity, can not be used at the same time as clientID
+             */
+            resourceID?: string;
         }
 
         /**
@@ -5466,9 +6305,27 @@ export namespace certmanager {
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01 {
             /**
+             * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+             */
+            gatewayHTTPRoute?: outputs.certmanager.v1.ClusterIssuerSpecAcmeSolversHttp01GatewayHTTPRoute;
+            /**
              * The ingress based HTTP01 challenge solver will solve challenges by creating or modifying Ingress resources in order to route requests for '/.well-known/acme-challenge/XYZ' to 'challenge solver' pods that are provisioned by cert-manager for each Challenge to be completed.
              */
             ingress?: outputs.certmanager.v1.ClusterIssuerSpecAcmeSolversHttp01Ingress;
+        }
+
+        /**
+         * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01GatewayHTTPRoute {
+            /**
+             * The labels that cert-manager will use when creating the temporary HTTPRoute needed for solving the HTTP-01 challenge. These labels must match the label selector of at least one Gateway.
+             */
+            labels?: {[key: string]: string};
+            /**
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
+             */
+            serviceType?: string;
         }
 
         /**
@@ -5480,7 +6337,7 @@ export namespace certmanager {
              */
             class?: string;
             /**
-             * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges
+             * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges.
              */
             ingressTemplate?: outputs.certmanager.v1.ClusterIssuerSpecAcmeSolversHttp01IngressIngressTemplate;
             /**
@@ -5488,17 +6345,17 @@ export namespace certmanager {
              */
             name?: string;
             /**
-             * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges
+             * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges.
              */
             podTemplate?: outputs.certmanager.v1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplate;
             /**
-             * Optional service type for Kubernetes solver service
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
              */
             serviceType?: string;
         }
 
         /**
-         * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges
+         * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges.
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressIngressTemplate {
             /**
@@ -5522,7 +6379,7 @@ export namespace certmanager {
         }
 
         /**
-         * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges
+         * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges.
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplate {
             /**
@@ -5768,7 +6625,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -5810,6 +6671,38 @@ export namespace certmanager {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -5818,7 +6711,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -5845,6 +6742,38 @@ export namespace certmanager {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -5896,7 +6825,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -5938,6 +6871,38 @@ export namespace certmanager {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -5946,7 +6911,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -5973,6 +6942,38 @@ export namespace certmanager {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -6040,6 +7041,10 @@ export namespace certmanager {
              */
             crlDistributionPoints?: string[];
             /**
+             * The OCSP server list is an X.509 v3 extension that defines a list of URLs of OCSP responders. The OCSP responders can be queried for the revocation status of an issued certificate. If not set, the certificate will be issued with no OCSP servers set. For example, an OCSP server URL could be "http://ocsp.int-x3.letsencrypt.org".
+             */
+            ocspServers?: string[];
+            /**
              * SecretName is the name of the secret used to sign Certificates issued by this Issuer.
              */
             secretName: string;
@@ -6064,7 +7069,7 @@ export namespace certmanager {
              */
             auth: outputs.certmanager.v1.ClusterIssuerSpecVaultAuth;
             /**
-             * PEM encoded CA bundle used to validate Vault server certificate. Only used if the Server URL is using HTTPS protocol. This parameter is ignored for plain HTTP protocol connection. If not set the system root certificates are used to validate the TLS connection.
+             * PEM-encoded CA bundle (base64-encoded) used to validate Vault server certificate. Only used if the Server URL is using HTTPS protocol. This parameter is ignored for plain HTTP protocol connection. If not set the system root certificates are used to validate the TLS connection.
              */
             caBundle?: string;
             /**
@@ -6292,6 +7297,10 @@ export namespace certmanager {
              */
             message?: string;
             /**
+             * If set, this represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.condition[x].observedGeneration is 9, the condition is out of date with respect to the current state of the Issuer.
+             */
+            observedGeneration?: number;
+            /**
              * Reason is a brief machine readable explanation for the condition's last transition.
              */
             reason?: string;
@@ -6378,9 +7387,9 @@ export namespace certmanager {
          */
         export interface IssuerSpecAcmeExternalAccountBinding {
             /**
-             * keyAlgorithm is the MAC key algorithm that the key is used for. Valid values are "HS256", "HS384" and "HS512".
+             * Deprecated: keyAlgorithm field exists for historical compatibility reasons and should not be used. The algorithm is now hardcoded to HS256 in golang/x/crypto/acme.
              */
-            keyAlgorithm: string;
+            keyAlgorithm?: string;
             /**
              * keyID is the ID of the CA key that the External Account is bound to.
              */
@@ -6420,7 +7429,7 @@ export namespace certmanager {
         }
 
         /**
-         * Configures an issuer to solve challenges using the specified options. Only one of HTTP01 or DNS01 may be provided.
+         * An ACMEChallengeSolver describes how to solve ACME challenges for the issuer it is part of. A selector may be provided to use different solving strategies for different DNS names. Only one of HTTP01 or DNS01 must be provided.
          */
         export interface IssuerSpecAcmeSolvers {
             /**
@@ -6581,9 +7590,25 @@ export namespace certmanager {
              * if both this and ClientID are left unset MSI will be used
              */
             clientSecretSecretRef?: outputs.certmanager.v1.IssuerSpecAcmeSolversDns01AzureDNSClientSecretSecretRef;
+            /**
+             * name of the Azure environment (default AzurePublicCloud)
+             */
             environment?: string;
+            /**
+             * name of the DNS zone that should be used
+             */
             hostedZoneName?: string;
+            /**
+             * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+             */
+            managedIdentity?: outputs.certmanager.v1.IssuerSpecAcmeSolversDns01AzureDNSManagedIdentity;
+            /**
+             * resource group the DNS zone is located in
+             */
             resourceGroupName: string;
+            /**
+             * ID of the Azure subscription
+             */
             subscriptionID: string;
             /**
              * when specifying ClientID and ClientSecret then this field is also needed
@@ -6603,6 +7628,20 @@ export namespace certmanager {
              * Name of the resource being referred to. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
              */
             name: string;
+        }
+
+        /**
+         * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+         */
+        export interface IssuerSpecAcmeSolversDns01AzureDNSManagedIdentity {
+            /**
+             * client ID of the managed identity, can not be used at the same time as resourceID
+             */
+            clientID?: string;
+            /**
+             * resource ID of the managed identity, can not be used at the same time as clientID
+             */
+            resourceID?: string;
         }
 
         /**
@@ -6803,9 +7842,27 @@ export namespace certmanager {
          */
         export interface IssuerSpecAcmeSolversHttp01 {
             /**
+             * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+             */
+            gatewayHTTPRoute?: outputs.certmanager.v1.IssuerSpecAcmeSolversHttp01GatewayHTTPRoute;
+            /**
              * The ingress based HTTP01 challenge solver will solve challenges by creating or modifying Ingress resources in order to route requests for '/.well-known/acme-challenge/XYZ' to 'challenge solver' pods that are provisioned by cert-manager for each Challenge to be completed.
              */
             ingress?: outputs.certmanager.v1.IssuerSpecAcmeSolversHttp01Ingress;
+        }
+
+        /**
+         * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+         */
+        export interface IssuerSpecAcmeSolversHttp01GatewayHTTPRoute {
+            /**
+             * The labels that cert-manager will use when creating the temporary HTTPRoute needed for solving the HTTP-01 challenge. These labels must match the label selector of at least one Gateway.
+             */
+            labels?: {[key: string]: string};
+            /**
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
+             */
+            serviceType?: string;
         }
 
         /**
@@ -6817,7 +7874,7 @@ export namespace certmanager {
              */
             class?: string;
             /**
-             * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges
+             * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges.
              */
             ingressTemplate?: outputs.certmanager.v1.IssuerSpecAcmeSolversHttp01IngressIngressTemplate;
             /**
@@ -6825,17 +7882,17 @@ export namespace certmanager {
              */
             name?: string;
             /**
-             * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges
+             * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges.
              */
             podTemplate?: outputs.certmanager.v1.IssuerSpecAcmeSolversHttp01IngressPodTemplate;
             /**
-             * Optional service type for Kubernetes solver service
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
              */
             serviceType?: string;
         }
 
         /**
-         * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges
+         * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges.
          */
         export interface IssuerSpecAcmeSolversHttp01IngressIngressTemplate {
             /**
@@ -6859,7 +7916,7 @@ export namespace certmanager {
         }
 
         /**
-         * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges
+         * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges.
          */
         export interface IssuerSpecAcmeSolversHttp01IngressPodTemplate {
             /**
@@ -7105,7 +8162,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -7147,6 +8208,38 @@ export namespace certmanager {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -7155,7 +8248,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -7182,6 +8279,38 @@ export namespace certmanager {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -7233,7 +8362,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -7275,6 +8408,38 @@ export namespace certmanager {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -7283,7 +8448,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -7310,6 +8479,38 @@ export namespace certmanager {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -7377,6 +8578,10 @@ export namespace certmanager {
              */
             crlDistributionPoints?: string[];
             /**
+             * The OCSP server list is an X.509 v3 extension that defines a list of URLs of OCSP responders. The OCSP responders can be queried for the revocation status of an issued certificate. If not set, the certificate will be issued with no OCSP servers set. For example, an OCSP server URL could be "http://ocsp.int-x3.letsencrypt.org".
+             */
+            ocspServers?: string[];
+            /**
              * SecretName is the name of the secret used to sign Certificates issued by this Issuer.
              */
             secretName: string;
@@ -7401,7 +8606,7 @@ export namespace certmanager {
              */
             auth: outputs.certmanager.v1.IssuerSpecVaultAuth;
             /**
-             * PEM encoded CA bundle used to validate Vault server certificate. Only used if the Server URL is using HTTPS protocol. This parameter is ignored for plain HTTP protocol connection. If not set the system root certificates are used to validate the TLS connection.
+             * PEM-encoded CA bundle (base64-encoded) used to validate Vault server certificate. Only used if the Server URL is using HTTPS protocol. This parameter is ignored for plain HTTP protocol connection. If not set the system root certificates are used to validate the TLS connection.
              */
             caBundle?: string;
             /**
@@ -7629,6 +8834,10 @@ export namespace certmanager {
              */
             message?: string;
             /**
+             * If set, this represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.condition[x].observedGeneration is 9, the condition is out of date with respect to the current state of the Issuer.
+             */
+            observedGeneration?: number;
+            /**
              * Reason is a brief machine readable explanation for the condition's last transition.
              */
             reason?: string;
@@ -7657,6 +8866,14 @@ export namespace certmanager {
              */
             duration?: string;
             /**
+             * Extra contains extra attributes of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.
+             */
+            extra?: {[key: string]: string[]};
+            /**
+             * Groups contains group membership of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.
+             */
+            groups?: string[];
+            /**
              * IsCA will request to mark the certificate as valid for certificate signing when submitting to the issuer. This will automatically add the `cert sign` usage to the list of `usages`.
              */
             isCA?: boolean;
@@ -7665,9 +8882,17 @@ export namespace certmanager {
              */
             issuerRef: outputs.certmanager.v1alpha2.CertificateRequestSpecIssuerRef;
             /**
+             * UID contains the uid of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.
+             */
+            uid?: string;
+            /**
              * Usages is the set of x509 usages that are requested for the certificate. Defaults to `digital signature` and `key encipherment` if not specified.
              */
             usages?: string[];
+            /**
+             * Username contains the name of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.
+             */
+            username?: string;
         }
 
         /**
@@ -7731,7 +8956,7 @@ export namespace certmanager {
              */
             status: string;
             /**
-             * Type of the condition, known values are (`Ready`, `InvalidRequest`).
+             * Type of the condition, known values are (`Ready`, `InvalidRequest`, `Approved`, `Denied`).
              */
             type: string;
         }
@@ -7749,7 +8974,7 @@ export namespace certmanager {
              */
             dnsNames?: string[];
             /**
-             * The requested 'duration' (i.e. lifetime) of the Certificate. This option may be ignored/overridden by some issuer types. If overridden and `renewBefore` is greater than the actual certificate duration, the certificate will be automatically renewed 2/3rds of the way through the certificate's duration.
+             * The requested 'duration' (i.e. lifetime) of the Certificate. This option may be ignored/overridden by some issuer types. If unset this defaults to 90 days. Certificate will be renewed either 2/3 through its duration or `renewBefore` period before its expiry, whichever is later. Minimum accepted duration is 1 hour. Value must be in units accepted by Go time.ParseDuration https://golang.org/pkg/time/#ParseDuration
              */
             duration?: string;
             /**
@@ -7797,13 +9022,21 @@ export namespace certmanager {
              */
             privateKey?: outputs.certmanager.v1alpha2.CertificateSpecPrivateKey;
             /**
-             * The amount of time before the currently issued certificate's `notAfter` time that cert-manager will begin to attempt to renew the certificate. If this value is greater than the total duration of the certificate (i.e. notAfter - notBefore), it will be automatically renewed 2/3rds of the way through the certificate's duration.
+             * How long before the currently issued certificate's expiry cert-manager should renew the certificate. The default is 2/3 of the issued certificate's duration. Minimum accepted value is 5 minutes. Value must be in units accepted by Go time.ParseDuration https://golang.org/pkg/time/#ParseDuration
              */
             renewBefore?: string;
+            /**
+             * revisionHistoryLimit is the maximum number of CertificateRequest revisions that are maintained in the Certificate's history. Each revision represents a single `CertificateRequest` created by this Certificate, either when it was created, renewed, or Spec was changed. Revisions will be removed by oldest first if the number of revisions exceeds this number. If set, revisionHistoryLimit must be a value of `1` or greater. If unset (`nil`), revisions will not be garbage collected. Default value is `nil`.
+             */
+            revisionHistoryLimit?: number;
             /**
              * SecretName is the name of the secret resource that will be automatically created and managed by this Certificate resource. It will be populated with a private key and certificate, signed by the denoted issuer.
              */
             secretName: string;
+            /**
+             * SecretTemplate defines annotations and labels to be propagated to the Kubernetes Secret when it is created or updated. Once created, labels and annotations are not yet removed from the Secret when they are removed from the template. See https://github.com/jetstack/cert-manager/issues/4292
+             */
+            secretTemplate?: outputs.certmanager.v1alpha2.CertificateSpecSecretTemplate;
             /**
              * Full X509 name specification (https://golang.org/pkg/crypto/x509/pkix/#Name).
              */
@@ -7917,6 +9150,20 @@ export namespace certmanager {
         }
 
         /**
+         * SecretTemplate defines annotations and labels to be propagated to the Kubernetes Secret when it is created or updated. Once created, labels and annotations are not yet removed from the Secret when they are removed from the template. See https://github.com/jetstack/cert-manager/issues/4292
+         */
+        export interface CertificateSpecSecretTemplate {
+            /**
+             * Annotations is a key value map to be copied to the target Kubernetes Secret.
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * Labels is a key value map to be copied to the target Kubernetes Secret.
+             */
+            labels?: {[key: string]: string};
+        }
+
+        /**
          * Full X509 name specification (https://golang.org/pkg/crypto/x509/pkix/#Name).
          */
         export interface CertificateSpecSubject {
@@ -7999,6 +9246,10 @@ export namespace certmanager {
              * Message is a human readable description of the details of the last transition, complementing reason.
              */
             message?: string;
+            /**
+             * If set, this represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.condition[x].observedGeneration is 9, the condition is out of date with respect to the current state of the Certificate.
+             */
+            observedGeneration?: number;
             /**
              * Reason is a brief machine readable explanation for the condition's last transition.
              */
@@ -8086,9 +9337,9 @@ export namespace certmanager {
          */
         export interface ClusterIssuerSpecAcmeExternalAccountBinding {
             /**
-             * keyAlgorithm is the MAC key algorithm that the key is used for. Valid values are "HS256", "HS384" and "HS512".
+             * Deprecated: keyAlgorithm field exists for historical compatibility reasons and should not be used. The algorithm is now hardcoded to HS256 in golang/x/crypto/acme.
              */
-            keyAlgorithm: string;
+            keyAlgorithm?: string;
             /**
              * keyID is the ID of the CA key that the External Account is bound to.
              */
@@ -8289,9 +9540,25 @@ export namespace certmanager {
              * if both this and ClientID are left unset MSI will be used
              */
             clientSecretSecretRef?: outputs.certmanager.v1alpha2.ClusterIssuerSpecAcmeSolversDns01AzurednsClientSecretSecretRef;
+            /**
+             * name of the Azure environment (default AzurePublicCloud)
+             */
             environment?: string;
+            /**
+             * name of the DNS zone that should be used
+             */
             hostedZoneName?: string;
+            /**
+             * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+             */
+            managedIdentity?: outputs.certmanager.v1alpha2.ClusterIssuerSpecAcmeSolversDns01AzurednsManagedIdentity;
+            /**
+             * resource group the DNS zone is located in
+             */
             resourceGroupName: string;
+            /**
+             * ID of the Azure subscription
+             */
             subscriptionID: string;
             /**
              * when specifying ClientID and ClientSecret then this field is also needed
@@ -8311,6 +9578,20 @@ export namespace certmanager {
              * Name of the resource being referred to. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
              */
             name: string;
+        }
+
+        /**
+         * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+         */
+        export interface ClusterIssuerSpecAcmeSolversDns01AzurednsManagedIdentity {
+            /**
+             * client ID of the managed identity, can not be used at the same time as resourceID
+             */
+            clientID?: string;
+            /**
+             * resource ID of the managed identity, can not be used at the same time as clientID
+             */
+            resourceID?: string;
         }
 
         /**
@@ -8511,9 +9792,27 @@ export namespace certmanager {
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01 {
             /**
+             * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+             */
+            gatewayHTTPRoute?: outputs.certmanager.v1alpha2.ClusterIssuerSpecAcmeSolversHttp01GatewayHTTPRoute;
+            /**
              * The ingress based HTTP01 challenge solver will solve challenges by creating or modifying Ingress resources in order to route requests for '/.well-known/acme-challenge/XYZ' to 'challenge solver' pods that are provisioned by cert-manager for each Challenge to be completed.
              */
             ingress?: outputs.certmanager.v1alpha2.ClusterIssuerSpecAcmeSolversHttp01Ingress;
+        }
+
+        /**
+         * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01GatewayHTTPRoute {
+            /**
+             * The labels that cert-manager will use when creating the temporary HTTPRoute needed for solving the HTTP-01 challenge. These labels must match the label selector of at least one Gateway.
+             */
+            labels?: {[key: string]: string};
+            /**
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
+             */
+            serviceType?: string;
         }
 
         /**
@@ -8533,11 +9832,11 @@ export namespace certmanager {
              */
             name?: string;
             /**
-             * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges
+             * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges.
              */
             podTemplate?: outputs.certmanager.v1alpha2.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplate;
             /**
-             * Optional service type for Kubernetes solver service
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
              */
             serviceType?: string;
         }
@@ -8567,7 +9866,7 @@ export namespace certmanager {
         }
 
         /**
-         * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges
+         * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges.
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplate {
             /**
@@ -8813,7 +10112,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1alpha2.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1alpha2.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -8855,6 +10158,38 @@ export namespace certmanager {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1alpha2.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -8863,7 +10198,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1alpha2.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1alpha2.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -8890,6 +10229,38 @@ export namespace certmanager {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1alpha2.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -8941,7 +10312,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1alpha2.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1alpha2.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -8983,6 +10358,38 @@ export namespace certmanager {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1alpha2.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -8991,7 +10398,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1alpha2.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1alpha2.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -9018,6 +10429,38 @@ export namespace certmanager {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1alpha2.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -9085,6 +10528,10 @@ export namespace certmanager {
              */
             crlDistributionPoints?: string[];
             /**
+             * The OCSP server list is an X.509 v3 extension that defines a list of URLs of OCSP responders. The OCSP responders can be queried for the revocation status of an issued certificate. If not set, the certificate will be issued with no OCSP servers set. For example, an OCSP server URL could be "http://ocsp.int-x3.letsencrypt.org".
+             */
+            ocspServers?: string[];
+            /**
              * SecretName is the name of the secret used to sign Certificates issued by this Issuer.
              */
             secretName: string;
@@ -9109,7 +10556,7 @@ export namespace certmanager {
              */
             auth: outputs.certmanager.v1alpha2.ClusterIssuerSpecVaultAuth;
             /**
-             * PEM encoded CA bundle used to validate Vault server certificate. Only used if the Server URL is using HTTPS protocol. This parameter is ignored for plain HTTP protocol connection. If not set the system root certificates are used to validate the TLS connection.
+             * PEM-encoded CA bundle (base64-encoded) used to validate Vault server certificate. Only used if the Server URL is using HTTPS protocol. This parameter is ignored for plain HTTP protocol connection. If not set the system root certificates are used to validate the TLS connection.
              */
             caBundle?: string;
             /**
@@ -9337,6 +10784,10 @@ export namespace certmanager {
              */
             message?: string;
             /**
+             * If set, this represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.condition[x].observedGeneration is 9, the condition is out of date with respect to the current state of the Issuer.
+             */
+            observedGeneration?: number;
+            /**
              * Reason is a brief machine readable explanation for the condition's last transition.
              */
             reason?: string;
@@ -9423,9 +10874,9 @@ export namespace certmanager {
          */
         export interface IssuerSpecAcmeExternalAccountBinding {
             /**
-             * keyAlgorithm is the MAC key algorithm that the key is used for. Valid values are "HS256", "HS384" and "HS512".
+             * Deprecated: keyAlgorithm field exists for historical compatibility reasons and should not be used. The algorithm is now hardcoded to HS256 in golang/x/crypto/acme.
              */
-            keyAlgorithm: string;
+            keyAlgorithm?: string;
             /**
              * keyID is the ID of the CA key that the External Account is bound to.
              */
@@ -9626,9 +11077,25 @@ export namespace certmanager {
              * if both this and ClientID are left unset MSI will be used
              */
             clientSecretSecretRef?: outputs.certmanager.v1alpha2.IssuerSpecAcmeSolversDns01AzurednsClientSecretSecretRef;
+            /**
+             * name of the Azure environment (default AzurePublicCloud)
+             */
             environment?: string;
+            /**
+             * name of the DNS zone that should be used
+             */
             hostedZoneName?: string;
+            /**
+             * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+             */
+            managedIdentity?: outputs.certmanager.v1alpha2.IssuerSpecAcmeSolversDns01AzurednsManagedIdentity;
+            /**
+             * resource group the DNS zone is located in
+             */
             resourceGroupName: string;
+            /**
+             * ID of the Azure subscription
+             */
             subscriptionID: string;
             /**
              * when specifying ClientID and ClientSecret then this field is also needed
@@ -9648,6 +11115,20 @@ export namespace certmanager {
              * Name of the resource being referred to. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
              */
             name: string;
+        }
+
+        /**
+         * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+         */
+        export interface IssuerSpecAcmeSolversDns01AzurednsManagedIdentity {
+            /**
+             * client ID of the managed identity, can not be used at the same time as resourceID
+             */
+            clientID?: string;
+            /**
+             * resource ID of the managed identity, can not be used at the same time as clientID
+             */
+            resourceID?: string;
         }
 
         /**
@@ -9848,9 +11329,27 @@ export namespace certmanager {
          */
         export interface IssuerSpecAcmeSolversHttp01 {
             /**
+             * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+             */
+            gatewayHTTPRoute?: outputs.certmanager.v1alpha2.IssuerSpecAcmeSolversHttp01GatewayHTTPRoute;
+            /**
              * The ingress based HTTP01 challenge solver will solve challenges by creating or modifying Ingress resources in order to route requests for '/.well-known/acme-challenge/XYZ' to 'challenge solver' pods that are provisioned by cert-manager for each Challenge to be completed.
              */
             ingress?: outputs.certmanager.v1alpha2.IssuerSpecAcmeSolversHttp01Ingress;
+        }
+
+        /**
+         * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+         */
+        export interface IssuerSpecAcmeSolversHttp01GatewayHTTPRoute {
+            /**
+             * The labels that cert-manager will use when creating the temporary HTTPRoute needed for solving the HTTP-01 challenge. These labels must match the label selector of at least one Gateway.
+             */
+            labels?: {[key: string]: string};
+            /**
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
+             */
+            serviceType?: string;
         }
 
         /**
@@ -9870,11 +11369,11 @@ export namespace certmanager {
              */
             name?: string;
             /**
-             * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges
+             * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges.
              */
             podTemplate?: outputs.certmanager.v1alpha2.IssuerSpecAcmeSolversHttp01IngressPodTemplate;
             /**
-             * Optional service type for Kubernetes solver service
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
              */
             serviceType?: string;
         }
@@ -9904,7 +11403,7 @@ export namespace certmanager {
         }
 
         /**
-         * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges
+         * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges.
          */
         export interface IssuerSpecAcmeSolversHttp01IngressPodTemplate {
             /**
@@ -10150,7 +11649,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1alpha2.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1alpha2.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -10192,6 +11695,38 @@ export namespace certmanager {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1alpha2.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -10200,7 +11735,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1alpha2.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1alpha2.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -10227,6 +11766,38 @@ export namespace certmanager {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1alpha2.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -10278,7 +11849,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1alpha2.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1alpha2.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -10320,6 +11895,38 @@ export namespace certmanager {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1alpha2.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -10328,7 +11935,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1alpha2.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1alpha2.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -10355,6 +11966,38 @@ export namespace certmanager {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1alpha2.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -10422,6 +12065,10 @@ export namespace certmanager {
              */
             crlDistributionPoints?: string[];
             /**
+             * The OCSP server list is an X.509 v3 extension that defines a list of URLs of OCSP responders. The OCSP responders can be queried for the revocation status of an issued certificate. If not set, the certificate will be issued with no OCSP servers set. For example, an OCSP server URL could be "http://ocsp.int-x3.letsencrypt.org".
+             */
+            ocspServers?: string[];
+            /**
              * SecretName is the name of the secret used to sign Certificates issued by this Issuer.
              */
             secretName: string;
@@ -10446,7 +12093,7 @@ export namespace certmanager {
              */
             auth: outputs.certmanager.v1alpha2.IssuerSpecVaultAuth;
             /**
-             * PEM encoded CA bundle used to validate Vault server certificate. Only used if the Server URL is using HTTPS protocol. This parameter is ignored for plain HTTP protocol connection. If not set the system root certificates are used to validate the TLS connection.
+             * PEM-encoded CA bundle (base64-encoded) used to validate Vault server certificate. Only used if the Server URL is using HTTPS protocol. This parameter is ignored for plain HTTP protocol connection. If not set the system root certificates are used to validate the TLS connection.
              */
             caBundle?: string;
             /**
@@ -10674,6 +12321,10 @@ export namespace certmanager {
              */
             message?: string;
             /**
+             * If set, this represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.condition[x].observedGeneration is 9, the condition is out of date with respect to the current state of the Issuer.
+             */
+            observedGeneration?: number;
+            /**
              * Reason is a brief machine readable explanation for the condition's last transition.
              */
             reason?: string;
@@ -10702,6 +12353,14 @@ export namespace certmanager {
              */
             duration?: string;
             /**
+             * Extra contains extra attributes of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.
+             */
+            extra?: {[key: string]: string[]};
+            /**
+             * Groups contains group membership of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.
+             */
+            groups?: string[];
+            /**
              * IsCA will request to mark the certificate as valid for certificate signing when submitting to the issuer. This will automatically add the `cert sign` usage to the list of `usages`.
              */
             isCA?: boolean;
@@ -10710,9 +12369,17 @@ export namespace certmanager {
              */
             issuerRef: outputs.certmanager.v1alpha3.CertificateRequestSpecIssuerRef;
             /**
+             * UID contains the uid of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.
+             */
+            uid?: string;
+            /**
              * Usages is the set of x509 usages that are requested for the certificate. Defaults to `digital signature` and `key encipherment` if not specified.
              */
             usages?: string[];
+            /**
+             * Username contains the name of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.
+             */
+            username?: string;
         }
 
         /**
@@ -10776,7 +12443,7 @@ export namespace certmanager {
              */
             status: string;
             /**
-             * Type of the condition, known values are (`Ready`, `InvalidRequest`).
+             * Type of the condition, known values are (`Ready`, `InvalidRequest`, `Approved`, `Denied`).
              */
             type: string;
         }
@@ -10794,7 +12461,7 @@ export namespace certmanager {
              */
             dnsNames?: string[];
             /**
-             * The requested 'duration' (i.e. lifetime) of the Certificate. This option may be ignored/overridden by some issuer types. If overridden and `renewBefore` is greater than the actual certificate duration, the certificate will be automatically renewed 2/3rds of the way through the certificate's duration.
+             * The requested 'duration' (i.e. lifetime) of the Certificate. This option may be ignored/overridden by some issuer types. If unset this defaults to 90 days. Certificate will be renewed either 2/3 through its duration or `renewBefore` period before its expiry, whichever is later. Minimum accepted duration is 1 hour. Value must be in units accepted by Go time.ParseDuration https://golang.org/pkg/time/#ParseDuration
              */
             duration?: string;
             /**
@@ -10838,13 +12505,21 @@ export namespace certmanager {
              */
             privateKey?: outputs.certmanager.v1alpha3.CertificateSpecPrivateKey;
             /**
-             * The amount of time before the currently issued certificate's `notAfter` time that cert-manager will begin to attempt to renew the certificate. If this value is greater than the total duration of the certificate (i.e. notAfter - notBefore), it will be automatically renewed 2/3rds of the way through the certificate's duration.
+             * How long before the currently issued certificate's expiry cert-manager should renew the certificate. The default is 2/3 of the issued certificate's duration. Minimum accepted value is 5 minutes. Value must be in units accepted by Go time.ParseDuration https://golang.org/pkg/time/#ParseDuration
              */
             renewBefore?: string;
+            /**
+             * revisionHistoryLimit is the maximum number of CertificateRequest revisions that are maintained in the Certificate's history. Each revision represents a single `CertificateRequest` created by this Certificate, either when it was created, renewed, or Spec was changed. Revisions will be removed by oldest first if the number of revisions exceeds this number. If set, revisionHistoryLimit must be a value of `1` or greater. If unset (`nil`), revisions will not be garbage collected. Default value is `nil`.
+             */
+            revisionHistoryLimit?: number;
             /**
              * SecretName is the name of the secret resource that will be automatically created and managed by this Certificate resource. It will be populated with a private key and certificate, signed by the denoted issuer.
              */
             secretName: string;
+            /**
+             * SecretTemplate defines annotations and labels to be propagated to the Kubernetes Secret when it is created or updated. Once created, labels and annotations are not yet removed from the Secret when they are removed from the template. See https://github.com/jetstack/cert-manager/issues/4292
+             */
+            secretTemplate?: outputs.certmanager.v1alpha3.CertificateSpecSecretTemplate;
             /**
              * Full X509 name specification (https://golang.org/pkg/crypto/x509/pkix/#Name).
              */
@@ -10958,6 +12633,20 @@ export namespace certmanager {
         }
 
         /**
+         * SecretTemplate defines annotations and labels to be propagated to the Kubernetes Secret when it is created or updated. Once created, labels and annotations are not yet removed from the Secret when they are removed from the template. See https://github.com/jetstack/cert-manager/issues/4292
+         */
+        export interface CertificateSpecSecretTemplate {
+            /**
+             * Annotations is a key value map to be copied to the target Kubernetes Secret.
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * Labels is a key value map to be copied to the target Kubernetes Secret.
+             */
+            labels?: {[key: string]: string};
+        }
+
+        /**
          * Full X509 name specification (https://golang.org/pkg/crypto/x509/pkix/#Name).
          */
         export interface CertificateSpecSubject {
@@ -11045,6 +12734,10 @@ export namespace certmanager {
              */
             message?: string;
             /**
+             * If set, this represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.condition[x].observedGeneration is 9, the condition is out of date with respect to the current state of the Certificate.
+             */
+            observedGeneration?: number;
+            /**
              * Reason is a brief machine readable explanation for the condition's last transition.
              */
             reason?: string;
@@ -11131,9 +12824,9 @@ export namespace certmanager {
          */
         export interface ClusterIssuerSpecAcmeExternalAccountBinding {
             /**
-             * keyAlgorithm is the MAC key algorithm that the key is used for. Valid values are "HS256", "HS384" and "HS512".
+             * Deprecated: keyAlgorithm field exists for historical compatibility reasons and should not be used. The algorithm is now hardcoded to HS256 in golang/x/crypto/acme.
              */
-            keyAlgorithm: string;
+            keyAlgorithm?: string;
             /**
              * keyID is the ID of the CA key that the External Account is bound to.
              */
@@ -11334,9 +13027,25 @@ export namespace certmanager {
              * if both this and ClientID are left unset MSI will be used
              */
             clientSecretSecretRef?: outputs.certmanager.v1alpha3.ClusterIssuerSpecAcmeSolversDns01AzurednsClientSecretSecretRef;
+            /**
+             * name of the Azure environment (default AzurePublicCloud)
+             */
             environment?: string;
+            /**
+             * name of the DNS zone that should be used
+             */
             hostedZoneName?: string;
+            /**
+             * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+             */
+            managedIdentity?: outputs.certmanager.v1alpha3.ClusterIssuerSpecAcmeSolversDns01AzurednsManagedIdentity;
+            /**
+             * resource group the DNS zone is located in
+             */
             resourceGroupName: string;
+            /**
+             * ID of the Azure subscription
+             */
             subscriptionID: string;
             /**
              * when specifying ClientID and ClientSecret then this field is also needed
@@ -11356,6 +13065,20 @@ export namespace certmanager {
              * Name of the resource being referred to. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
              */
             name: string;
+        }
+
+        /**
+         * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+         */
+        export interface ClusterIssuerSpecAcmeSolversDns01AzurednsManagedIdentity {
+            /**
+             * client ID of the managed identity, can not be used at the same time as resourceID
+             */
+            clientID?: string;
+            /**
+             * resource ID of the managed identity, can not be used at the same time as clientID
+             */
+            resourceID?: string;
         }
 
         /**
@@ -11556,9 +13279,27 @@ export namespace certmanager {
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01 {
             /**
+             * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+             */
+            gatewayHTTPRoute?: outputs.certmanager.v1alpha3.ClusterIssuerSpecAcmeSolversHttp01GatewayHTTPRoute;
+            /**
              * The ingress based HTTP01 challenge solver will solve challenges by creating or modifying Ingress resources in order to route requests for '/.well-known/acme-challenge/XYZ' to 'challenge solver' pods that are provisioned by cert-manager for each Challenge to be completed.
              */
             ingress?: outputs.certmanager.v1alpha3.ClusterIssuerSpecAcmeSolversHttp01Ingress;
+        }
+
+        /**
+         * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01GatewayHTTPRoute {
+            /**
+             * The labels that cert-manager will use when creating the temporary HTTPRoute needed for solving the HTTP-01 challenge. These labels must match the label selector of at least one Gateway.
+             */
+            labels?: {[key: string]: string};
+            /**
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
+             */
+            serviceType?: string;
         }
 
         /**
@@ -11578,11 +13319,11 @@ export namespace certmanager {
              */
             name?: string;
             /**
-             * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges
+             * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges.
              */
             podTemplate?: outputs.certmanager.v1alpha3.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplate;
             /**
-             * Optional service type for Kubernetes solver service
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
              */
             serviceType?: string;
         }
@@ -11612,7 +13353,7 @@ export namespace certmanager {
         }
 
         /**
-         * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges
+         * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges.
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplate {
             /**
@@ -11858,7 +13599,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1alpha3.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1alpha3.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -11900,6 +13645,38 @@ export namespace certmanager {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1alpha3.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -11908,7 +13685,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1alpha3.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1alpha3.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -11935,6 +13716,38 @@ export namespace certmanager {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1alpha3.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -11986,7 +13799,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1alpha3.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1alpha3.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -12028,6 +13845,38 @@ export namespace certmanager {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1alpha3.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -12036,7 +13885,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1alpha3.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1alpha3.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -12063,6 +13916,38 @@ export namespace certmanager {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1alpha3.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -12130,6 +14015,10 @@ export namespace certmanager {
              */
             crlDistributionPoints?: string[];
             /**
+             * The OCSP server list is an X.509 v3 extension that defines a list of URLs of OCSP responders. The OCSP responders can be queried for the revocation status of an issued certificate. If not set, the certificate will be issued with no OCSP servers set. For example, an OCSP server URL could be "http://ocsp.int-x3.letsencrypt.org".
+             */
+            ocspServers?: string[];
+            /**
              * SecretName is the name of the secret used to sign Certificates issued by this Issuer.
              */
             secretName: string;
@@ -12154,7 +14043,7 @@ export namespace certmanager {
              */
             auth: outputs.certmanager.v1alpha3.ClusterIssuerSpecVaultAuth;
             /**
-             * PEM encoded CA bundle used to validate Vault server certificate. Only used if the Server URL is using HTTPS protocol. This parameter is ignored for plain HTTP protocol connection. If not set the system root certificates are used to validate the TLS connection.
+             * PEM-encoded CA bundle (base64-encoded) used to validate Vault server certificate. Only used if the Server URL is using HTTPS protocol. This parameter is ignored for plain HTTP protocol connection. If not set the system root certificates are used to validate the TLS connection.
              */
             caBundle?: string;
             /**
@@ -12382,6 +14271,10 @@ export namespace certmanager {
              */
             message?: string;
             /**
+             * If set, this represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.condition[x].observedGeneration is 9, the condition is out of date with respect to the current state of the Issuer.
+             */
+            observedGeneration?: number;
+            /**
              * Reason is a brief machine readable explanation for the condition's last transition.
              */
             reason?: string;
@@ -12468,9 +14361,9 @@ export namespace certmanager {
          */
         export interface IssuerSpecAcmeExternalAccountBinding {
             /**
-             * keyAlgorithm is the MAC key algorithm that the key is used for. Valid values are "HS256", "HS384" and "HS512".
+             * Deprecated: keyAlgorithm field exists for historical compatibility reasons and should not be used. The algorithm is now hardcoded to HS256 in golang/x/crypto/acme.
              */
-            keyAlgorithm: string;
+            keyAlgorithm?: string;
             /**
              * keyID is the ID of the CA key that the External Account is bound to.
              */
@@ -12671,9 +14564,25 @@ export namespace certmanager {
              * if both this and ClientID are left unset MSI will be used
              */
             clientSecretSecretRef?: outputs.certmanager.v1alpha3.IssuerSpecAcmeSolversDns01AzurednsClientSecretSecretRef;
+            /**
+             * name of the Azure environment (default AzurePublicCloud)
+             */
             environment?: string;
+            /**
+             * name of the DNS zone that should be used
+             */
             hostedZoneName?: string;
+            /**
+             * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+             */
+            managedIdentity?: outputs.certmanager.v1alpha3.IssuerSpecAcmeSolversDns01AzurednsManagedIdentity;
+            /**
+             * resource group the DNS zone is located in
+             */
             resourceGroupName: string;
+            /**
+             * ID of the Azure subscription
+             */
             subscriptionID: string;
             /**
              * when specifying ClientID and ClientSecret then this field is also needed
@@ -12693,6 +14602,20 @@ export namespace certmanager {
              * Name of the resource being referred to. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
              */
             name: string;
+        }
+
+        /**
+         * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+         */
+        export interface IssuerSpecAcmeSolversDns01AzurednsManagedIdentity {
+            /**
+             * client ID of the managed identity, can not be used at the same time as resourceID
+             */
+            clientID?: string;
+            /**
+             * resource ID of the managed identity, can not be used at the same time as clientID
+             */
+            resourceID?: string;
         }
 
         /**
@@ -12893,9 +14816,27 @@ export namespace certmanager {
          */
         export interface IssuerSpecAcmeSolversHttp01 {
             /**
+             * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+             */
+            gatewayHTTPRoute?: outputs.certmanager.v1alpha3.IssuerSpecAcmeSolversHttp01GatewayHTTPRoute;
+            /**
              * The ingress based HTTP01 challenge solver will solve challenges by creating or modifying Ingress resources in order to route requests for '/.well-known/acme-challenge/XYZ' to 'challenge solver' pods that are provisioned by cert-manager for each Challenge to be completed.
              */
             ingress?: outputs.certmanager.v1alpha3.IssuerSpecAcmeSolversHttp01Ingress;
+        }
+
+        /**
+         * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+         */
+        export interface IssuerSpecAcmeSolversHttp01GatewayHTTPRoute {
+            /**
+             * The labels that cert-manager will use when creating the temporary HTTPRoute needed for solving the HTTP-01 challenge. These labels must match the label selector of at least one Gateway.
+             */
+            labels?: {[key: string]: string};
+            /**
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
+             */
+            serviceType?: string;
         }
 
         /**
@@ -12915,11 +14856,11 @@ export namespace certmanager {
              */
             name?: string;
             /**
-             * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges
+             * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges.
              */
             podTemplate?: outputs.certmanager.v1alpha3.IssuerSpecAcmeSolversHttp01IngressPodTemplate;
             /**
-             * Optional service type for Kubernetes solver service
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
              */
             serviceType?: string;
         }
@@ -12949,7 +14890,7 @@ export namespace certmanager {
         }
 
         /**
-         * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges
+         * Optional pod template used to configure the ACME challenge solver pods used for HTTP01 challenges.
          */
         export interface IssuerSpecAcmeSolversHttp01IngressPodTemplate {
             /**
@@ -13195,7 +15136,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1alpha3.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1alpha3.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -13237,6 +15182,38 @@ export namespace certmanager {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1alpha3.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -13245,7 +15222,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1alpha3.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1alpha3.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -13272,6 +15253,38 @@ export namespace certmanager {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1alpha3.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -13323,7 +15336,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1alpha3.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1alpha3.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -13365,6 +15382,38 @@ export namespace certmanager {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1alpha3.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -13373,7 +15422,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1alpha3.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1alpha3.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -13400,6 +15453,38 @@ export namespace certmanager {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1alpha3.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -13467,6 +15552,10 @@ export namespace certmanager {
              */
             crlDistributionPoints?: string[];
             /**
+             * The OCSP server list is an X.509 v3 extension that defines a list of URLs of OCSP responders. The OCSP responders can be queried for the revocation status of an issued certificate. If not set, the certificate will be issued with no OCSP servers set. For example, an OCSP server URL could be "http://ocsp.int-x3.letsencrypt.org".
+             */
+            ocspServers?: string[];
+            /**
              * SecretName is the name of the secret used to sign Certificates issued by this Issuer.
              */
             secretName: string;
@@ -13491,7 +15580,7 @@ export namespace certmanager {
              */
             auth: outputs.certmanager.v1alpha3.IssuerSpecVaultAuth;
             /**
-             * PEM encoded CA bundle used to validate Vault server certificate. Only used if the Server URL is using HTTPS protocol. This parameter is ignored for plain HTTP protocol connection. If not set the system root certificates are used to validate the TLS connection.
+             * PEM-encoded CA bundle (base64-encoded) used to validate Vault server certificate. Only used if the Server URL is using HTTPS protocol. This parameter is ignored for plain HTTP protocol connection. If not set the system root certificates are used to validate the TLS connection.
              */
             caBundle?: string;
             /**
@@ -13719,6 +15808,10 @@ export namespace certmanager {
              */
             message?: string;
             /**
+             * If set, this represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.condition[x].observedGeneration is 9, the condition is out of date with respect to the current state of the Issuer.
+             */
+            observedGeneration?: number;
+            /**
              * Reason is a brief machine readable explanation for the condition's last transition.
              */
             reason?: string;
@@ -13743,6 +15836,14 @@ export namespace certmanager {
              */
             duration?: string;
             /**
+             * Extra contains extra attributes of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.
+             */
+            extra?: {[key: string]: string[]};
+            /**
+             * Groups contains group membership of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.
+             */
+            groups?: string[];
+            /**
              * IsCA will request to mark the certificate as valid for certificate signing when submitting to the issuer. This will automatically add the `cert sign` usage to the list of `usages`.
              */
             isCA?: boolean;
@@ -13755,9 +15856,17 @@ export namespace certmanager {
              */
             request: string;
             /**
+             * UID contains the uid of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.
+             */
+            uid?: string;
+            /**
              * Usages is the set of x509 usages that are requested for the certificate. Defaults to `digital signature` and `key encipherment` if not specified.
              */
             usages?: string[];
+            /**
+             * Username contains the name of the user that created the CertificateRequest. Populated by the cert-manager webhook on creation and immutable.
+             */
+            username?: string;
         }
 
         /**
@@ -13821,7 +15930,7 @@ export namespace certmanager {
              */
             status: string;
             /**
-             * Type of the condition, known values are (`Ready`, `InvalidRequest`).
+             * Type of the condition, known values are (`Ready`, `InvalidRequest`, `Approved`, `Denied`).
              */
             type: string;
         }
@@ -13839,7 +15948,7 @@ export namespace certmanager {
              */
             dnsNames?: string[];
             /**
-             * The requested 'duration' (i.e. lifetime) of the Certificate. This option may be ignored/overridden by some issuer types. If overridden and `renewBefore` is greater than the actual certificate duration, the certificate will be automatically renewed 2/3rds of the way through the certificate's duration.
+             * The requested 'duration' (i.e. lifetime) of the Certificate. This option may be ignored/overridden by some issuer types. If unset this defaults to 90 days. Certificate will be renewed either 2/3 through its duration or `renewBefore` period before its expiry, whichever is later. Minimum accepted duration is 1 hour. Value must be in units accepted by Go time.ParseDuration https://golang.org/pkg/time/#ParseDuration
              */
             duration?: string;
             /**
@@ -13871,13 +15980,21 @@ export namespace certmanager {
              */
             privateKey?: outputs.certmanager.v1beta1.CertificateSpecPrivateKey;
             /**
-             * The amount of time before the currently issued certificate's `notAfter` time that cert-manager will begin to attempt to renew the certificate. If this value is greater than the total duration of the certificate (i.e. notAfter - notBefore), it will be automatically renewed 2/3rds of the way through the certificate's duration.
+             * How long before the currently issued certificate's expiry cert-manager should renew the certificate. The default is 2/3 of the issued certificate's duration. Minimum accepted value is 5 minutes. Value must be in units accepted by Go time.ParseDuration https://golang.org/pkg/time/#ParseDuration
              */
             renewBefore?: string;
+            /**
+             * revisionHistoryLimit is the maximum number of CertificateRequest revisions that are maintained in the Certificate's history. Each revision represents a single `CertificateRequest` created by this Certificate, either when it was created, renewed, or Spec was changed. Revisions will be removed by oldest first if the number of revisions exceeds this number. If set, revisionHistoryLimit must be a value of `1` or greater. If unset (`nil`), revisions will not be garbage collected. Default value is `nil`.
+             */
+            revisionHistoryLimit?: number;
             /**
              * SecretName is the name of the secret resource that will be automatically created and managed by this Certificate resource. It will be populated with a private key and certificate, signed by the denoted issuer.
              */
             secretName: string;
+            /**
+             * SecretTemplate defines annotations and labels to be propagated to the Kubernetes Secret when it is created or updated. Once created, labels and annotations are not yet removed from the Secret when they are removed from the template. See https://github.com/jetstack/cert-manager/issues/4292
+             */
+            secretTemplate?: outputs.certmanager.v1beta1.CertificateSpecSecretTemplate;
             /**
              * Full X509 name specification (https://golang.org/pkg/crypto/x509/pkix/#Name).
              */
@@ -14003,6 +16120,20 @@ export namespace certmanager {
         }
 
         /**
+         * SecretTemplate defines annotations and labels to be propagated to the Kubernetes Secret when it is created or updated. Once created, labels and annotations are not yet removed from the Secret when they are removed from the template. See https://github.com/jetstack/cert-manager/issues/4292
+         */
+        export interface CertificateSpecSecretTemplate {
+            /**
+             * Annotations is a key value map to be copied to the target Kubernetes Secret.
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * Labels is a key value map to be copied to the target Kubernetes Secret.
+             */
+            labels?: {[key: string]: string};
+        }
+
+        /**
          * Full X509 name specification (https://golang.org/pkg/crypto/x509/pkix/#Name).
          */
         export interface CertificateSpecSubject {
@@ -14090,6 +16221,10 @@ export namespace certmanager {
              */
             message?: string;
             /**
+             * If set, this represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.condition[x].observedGeneration is 9, the condition is out of date with respect to the current state of the Certificate.
+             */
+            observedGeneration?: number;
+            /**
              * Reason is a brief machine readable explanation for the condition's last transition.
              */
             reason?: string;
@@ -14176,9 +16311,9 @@ export namespace certmanager {
          */
         export interface ClusterIssuerSpecAcmeExternalAccountBinding {
             /**
-             * keyAlgorithm is the MAC key algorithm that the key is used for. Valid values are "HS256", "HS384" and "HS512".
+             * Deprecated: keyAlgorithm field exists for historical compatibility reasons and should not be used. The algorithm is now hardcoded to HS256 in golang/x/crypto/acme.
              */
-            keyAlgorithm: string;
+            keyAlgorithm?: string;
             /**
              * keyID is the ID of the CA key that the External Account is bound to.
              */
@@ -14379,9 +16514,25 @@ export namespace certmanager {
              * if both this and ClientID are left unset MSI will be used
              */
             clientSecretSecretRef?: outputs.certmanager.v1beta1.ClusterIssuerSpecAcmeSolversDns01AzureDNSClientSecretSecretRef;
+            /**
+             * name of the Azure environment (default AzurePublicCloud)
+             */
             environment?: string;
+            /**
+             * name of the DNS zone that should be used
+             */
             hostedZoneName?: string;
+            /**
+             * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+             */
+            managedIdentity?: outputs.certmanager.v1beta1.ClusterIssuerSpecAcmeSolversDns01AzureDNSManagedIdentity;
+            /**
+             * resource group the DNS zone is located in
+             */
             resourceGroupName: string;
+            /**
+             * ID of the Azure subscription
+             */
             subscriptionID: string;
             /**
              * when specifying ClientID and ClientSecret then this field is also needed
@@ -14401,6 +16552,20 @@ export namespace certmanager {
              * Name of the resource being referred to. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
              */
             name: string;
+        }
+
+        /**
+         * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+         */
+        export interface ClusterIssuerSpecAcmeSolversDns01AzureDNSManagedIdentity {
+            /**
+             * client ID of the managed identity, can not be used at the same time as resourceID
+             */
+            clientID?: string;
+            /**
+             * resource ID of the managed identity, can not be used at the same time as clientID
+             */
+            resourceID?: string;
         }
 
         /**
@@ -14601,9 +16766,27 @@ export namespace certmanager {
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01 {
             /**
+             * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+             */
+            gatewayHTTPRoute?: outputs.certmanager.v1beta1.ClusterIssuerSpecAcmeSolversHttp01GatewayHTTPRoute;
+            /**
              * The ingress based HTTP01 challenge solver will solve challenges by creating or modifying Ingress resources in order to route requests for '/.well-known/acme-challenge/XYZ' to 'challenge solver' pods that are provisioned by cert-manager for each Challenge to be completed.
              */
             ingress?: outputs.certmanager.v1beta1.ClusterIssuerSpecAcmeSolversHttp01Ingress;
+        }
+
+        /**
+         * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01GatewayHTTPRoute {
+            /**
+             * The labels that cert-manager will use when creating the temporary HTTPRoute needed for solving the HTTP-01 challenge. These labels must match the label selector of at least one Gateway.
+             */
+            labels?: {[key: string]: string};
+            /**
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
+             */
+            serviceType?: string;
         }
 
         /**
@@ -14615,7 +16798,7 @@ export namespace certmanager {
              */
             class?: string;
             /**
-             * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges
+             * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges.
              */
             ingressTemplate?: outputs.certmanager.v1beta1.ClusterIssuerSpecAcmeSolversHttp01IngressIngressTemplate;
             /**
@@ -14627,13 +16810,13 @@ export namespace certmanager {
              */
             podTemplate?: outputs.certmanager.v1beta1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplate;
             /**
-             * Optional service type for Kubernetes solver service
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
              */
             serviceType?: string;
         }
 
         /**
-         * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges
+         * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges.
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressIngressTemplate {
             /**
@@ -14903,7 +17086,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1beta1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1beta1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -14945,6 +17132,38 @@ export namespace certmanager {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1beta1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -14953,7 +17172,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1beta1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1beta1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -14980,6 +17203,38 @@ export namespace certmanager {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1beta1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -15031,7 +17286,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1beta1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1beta1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -15073,6 +17332,38 @@ export namespace certmanager {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1beta1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -15081,7 +17372,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1beta1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1beta1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -15108,6 +17403,38 @@ export namespace certmanager {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1beta1.ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterIssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -15175,6 +17502,10 @@ export namespace certmanager {
              */
             crlDistributionPoints?: string[];
             /**
+             * The OCSP server list is an X.509 v3 extension that defines a list of URLs of OCSP responders. The OCSP responders can be queried for the revocation status of an issued certificate. If not set, the certificate will be issued with no OCSP servers set. For example, an OCSP server URL could be "http://ocsp.int-x3.letsencrypt.org".
+             */
+            ocspServers?: string[];
+            /**
              * SecretName is the name of the secret used to sign Certificates issued by this Issuer.
              */
             secretName: string;
@@ -15199,7 +17530,7 @@ export namespace certmanager {
              */
             auth: outputs.certmanager.v1beta1.ClusterIssuerSpecVaultAuth;
             /**
-             * PEM encoded CA bundle used to validate Vault server certificate. Only used if the Server URL is using HTTPS protocol. This parameter is ignored for plain HTTP protocol connection. If not set the system root certificates are used to validate the TLS connection.
+             * PEM-encoded CA bundle (base64-encoded) used to validate Vault server certificate. Only used if the Server URL is using HTTPS protocol. This parameter is ignored for plain HTTP protocol connection. If not set the system root certificates are used to validate the TLS connection.
              */
             caBundle?: string;
             /**
@@ -15427,6 +17758,10 @@ export namespace certmanager {
              */
             message?: string;
             /**
+             * If set, this represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.condition[x].observedGeneration is 9, the condition is out of date with respect to the current state of the Issuer.
+             */
+            observedGeneration?: number;
+            /**
              * Reason is a brief machine readable explanation for the condition's last transition.
              */
             reason?: string;
@@ -15513,9 +17848,9 @@ export namespace certmanager {
          */
         export interface IssuerSpecAcmeExternalAccountBinding {
             /**
-             * keyAlgorithm is the MAC key algorithm that the key is used for. Valid values are "HS256", "HS384" and "HS512".
+             * Deprecated: keyAlgorithm field exists for historical compatibility reasons and should not be used. The algorithm is now hardcoded to HS256 in golang/x/crypto/acme.
              */
-            keyAlgorithm: string;
+            keyAlgorithm?: string;
             /**
              * keyID is the ID of the CA key that the External Account is bound to.
              */
@@ -15716,9 +18051,25 @@ export namespace certmanager {
              * if both this and ClientID are left unset MSI will be used
              */
             clientSecretSecretRef?: outputs.certmanager.v1beta1.IssuerSpecAcmeSolversDns01AzureDNSClientSecretSecretRef;
+            /**
+             * name of the Azure environment (default AzurePublicCloud)
+             */
             environment?: string;
+            /**
+             * name of the DNS zone that should be used
+             */
             hostedZoneName?: string;
+            /**
+             * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+             */
+            managedIdentity?: outputs.certmanager.v1beta1.IssuerSpecAcmeSolversDns01AzureDNSManagedIdentity;
+            /**
+             * resource group the DNS zone is located in
+             */
             resourceGroupName: string;
+            /**
+             * ID of the Azure subscription
+             */
             subscriptionID: string;
             /**
              * when specifying ClientID and ClientSecret then this field is also needed
@@ -15738,6 +18089,20 @@ export namespace certmanager {
              * Name of the resource being referred to. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
              */
             name: string;
+        }
+
+        /**
+         * managed identity configuration, can not be used at the same time as clientID, clientSecretSecretRef or tenantID
+         */
+        export interface IssuerSpecAcmeSolversDns01AzureDNSManagedIdentity {
+            /**
+             * client ID of the managed identity, can not be used at the same time as resourceID
+             */
+            clientID?: string;
+            /**
+             * resource ID of the managed identity, can not be used at the same time as clientID
+             */
+            resourceID?: string;
         }
 
         /**
@@ -15938,9 +18303,27 @@ export namespace certmanager {
          */
         export interface IssuerSpecAcmeSolversHttp01 {
             /**
+             * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+             */
+            gatewayHTTPRoute?: outputs.certmanager.v1beta1.IssuerSpecAcmeSolversHttp01GatewayHTTPRoute;
+            /**
              * The ingress based HTTP01 challenge solver will solve challenges by creating or modifying Ingress resources in order to route requests for '/.well-known/acme-challenge/XYZ' to 'challenge solver' pods that are provisioned by cert-manager for each Challenge to be completed.
              */
             ingress?: outputs.certmanager.v1beta1.IssuerSpecAcmeSolversHttp01Ingress;
+        }
+
+        /**
+         * The Gateway API is a sig-network community API that models service networking in Kubernetes (https://gateway-api.sigs.k8s.io/). The Gateway solver will create HTTPRoutes with the specified labels in the same namespace as the challenge. This solver is experimental, and fields / behaviour may change in the future.
+         */
+        export interface IssuerSpecAcmeSolversHttp01GatewayHTTPRoute {
+            /**
+             * The labels that cert-manager will use when creating the temporary HTTPRoute needed for solving the HTTP-01 challenge. These labels must match the label selector of at least one Gateway.
+             */
+            labels?: {[key: string]: string};
+            /**
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
+             */
+            serviceType?: string;
         }
 
         /**
@@ -15952,7 +18335,7 @@ export namespace certmanager {
              */
             class?: string;
             /**
-             * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges
+             * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges.
              */
             ingressTemplate?: outputs.certmanager.v1beta1.IssuerSpecAcmeSolversHttp01IngressIngressTemplate;
             /**
@@ -15964,13 +18347,13 @@ export namespace certmanager {
              */
             podTemplate?: outputs.certmanager.v1beta1.IssuerSpecAcmeSolversHttp01IngressPodTemplate;
             /**
-             * Optional service type for Kubernetes solver service
+             * Optional service type for Kubernetes solver service. Supported values are NodePort or ClusterIP. If unset, defaults to NodePort.
              */
             serviceType?: string;
         }
 
         /**
-         * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges
+         * Optional ingress template used to configure the ACME challenge solver ingress used for HTTP01 challenges.
          */
         export interface IssuerSpecAcmeSolversHttp01IngressIngressTemplate {
             /**
@@ -16240,7 +18623,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1beta1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1beta1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -16282,6 +18669,38 @@ export namespace certmanager {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1beta1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -16290,7 +18709,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1beta1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1beta1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -16317,6 +18740,38 @@ export namespace certmanager {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1beta1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -16368,7 +18823,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1beta1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1beta1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -16410,6 +18869,38 @@ export namespace certmanager {
         }
 
         /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1beta1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
          * Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
          */
         export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
@@ -16418,7 +18909,11 @@ export namespace certmanager {
              */
             labelSelector?: outputs.certmanager.v1beta1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector;
             /**
-             * namespaces specifies which namespaces the labelSelector applies to (matches against); null or empty list means "this pod's namespace"
+             * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+             */
+            namespaceSelector?: outputs.certmanager.v1beta1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector;
+            /**
+             * namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace"
              */
             namespaces?: string[];
             /**
@@ -16445,6 +18940,38 @@ export namespace certmanager {
          * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
          */
         export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces. This field is beta-level and is only honored when PodAffinityNamespaceSelector feature is enabled.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.certmanager.v1beta1.IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface IssuerSpecAcmeSolversHttp01IngressPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
             /**
              * key is the label key that the selector applies to.
              */
@@ -16512,6 +19039,10 @@ export namespace certmanager {
              */
             crlDistributionPoints?: string[];
             /**
+             * The OCSP server list is an X.509 v3 extension that defines a list of URLs of OCSP responders. The OCSP responders can be queried for the revocation status of an issued certificate. If not set, the certificate will be issued with no OCSP servers set. For example, an OCSP server URL could be "http://ocsp.int-x3.letsencrypt.org".
+             */
+            ocspServers?: string[];
+            /**
              * SecretName is the name of the secret used to sign Certificates issued by this Issuer.
              */
             secretName: string;
@@ -16536,7 +19067,7 @@ export namespace certmanager {
              */
             auth: outputs.certmanager.v1beta1.IssuerSpecVaultAuth;
             /**
-             * PEM encoded CA bundle used to validate Vault server certificate. Only used if the Server URL is using HTTPS protocol. This parameter is ignored for plain HTTP protocol connection. If not set the system root certificates are used to validate the TLS connection.
+             * PEM-encoded CA bundle (base64-encoded) used to validate Vault server certificate. Only used if the Server URL is using HTTPS protocol. This parameter is ignored for plain HTTP protocol connection. If not set the system root certificates are used to validate the TLS connection.
              */
             caBundle?: string;
             /**
@@ -16763,6 +19294,10 @@ export namespace certmanager {
              * Message is a human readable description of the details of the last transition, complementing reason.
              */
             message?: string;
+            /**
+             * If set, this represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.condition[x].observedGeneration is 9, the condition is out of date with respect to the current state of the Issuer.
+             */
+            observedGeneration?: number;
             /**
              * Reason is a brief machine readable explanation for the condition's last transition.
              */

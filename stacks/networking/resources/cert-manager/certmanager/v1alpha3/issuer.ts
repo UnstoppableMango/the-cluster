@@ -2,8 +2,7 @@
 // *** Do not edit by hand unless you're certain you know what you are doing! ***
 
 import * as pulumi from "@pulumi/pulumi";
-import * as inputs from "../../types/input";
-import * as outputs from "../../types/output";
+import { input as inputs, output as outputs } from "../../types";
 import * as utilities from "../../utilities";
 
 import {ObjectMeta} from "../../meta/v1";
@@ -59,7 +58,8 @@ export class Issuer extends pulumi.CustomResource {
      */
     constructor(name: string, args?: IssuerArgs, opts?: pulumi.CustomResourceOptions) {
         let inputs: pulumi.Inputs = {};
-        if (!(opts && opts.id)) {
+        opts = opts || {};
+        if (!opts.id) {
             inputs["apiVersion"] = "cert-manager.io/v1alpha3";
             inputs["kind"] = "Issuer";
             inputs["metadata"] = args ? args.metadata : undefined;
@@ -72,12 +72,8 @@ export class Issuer extends pulumi.CustomResource {
             inputs["spec"] = undefined /*out*/;
             inputs["status"] = undefined /*out*/;
         }
-        if (!opts) {
-            opts = {}
-        }
-
         if (!opts.version) {
-            opts.version = utilities.getVersion();
+            opts = pulumi.mergeOptions(opts, { version: utilities.getVersion()});
         }
         super(Issuer.__pulumiType, name, inputs, opts);
     }
@@ -93,9 +89,9 @@ export interface IssuerArgs {
     /**
      * Desired state of the Issuer resource.
      */
-    readonly spec?: pulumi.Input<inputs.certmanager.v1alpha3.IssuerSpec>;
+    readonly spec?: pulumi.Input<inputs.certmanager.v1alpha3.IssuerSpecArgs>;
     /**
      * Status of the Issuer. This is set and managed automatically.
      */
-    readonly status?: pulumi.Input<inputs.certmanager.v1alpha3.IssuerStatus>;
+    readonly status?: pulumi.Input<inputs.certmanager.v1alpha3.IssuerStatusArgs>;
 }

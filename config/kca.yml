@@ -1,0 +1,32 @@
+ssh_authorized_keys:
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC5MDYi9mr6eSnyaGpU0qUzMMzWVyUGG0q1skleVgcJrzFAFyjMmEJdziIWXuiP18kRrdzYB4mvtdtAe/gFjXk014DgBG1pqORh0NwHMIPg4ln6USVUtPw242e3oZfGoI6b31G8l0HqZF8aTMRNNjE7YM352rB9b7D6zpSWf7dKB309uaLhe4gTHw4BlBr0IvKtMYXL+iZHCXil+SANnpgDDQaFPr3jXNHWW1A9U7XgIpUbLCQfSdEhk2WZf9nWOjpvV8k8pWLzZHLTKC+7OBH7kLYeo/cxFqIZyx96wNImUPk0Qp6wbOqsU+Hp24903QUz+Zyw9CkNQ/SElcReZon7TCMhVsGAYKQMNl5LGdsve5BdKDm/XqCOb0uKw5/YGlC5TNWAqVc9hGy90zLs7iNZSLouQkK97HrUVOllLQ6TYx07KZEw1Yn8L/AnxJmLcNNoQKmZYx/ffcC+dq/fYE1Ko96Dt+BFoxpZK85WG8V6Lnr4jvSo9+RrWcJ5xcUC8mM= erik@erik-g750jw
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC/3rWl8Trcv7wpuAJvZWnSn8805hbSZ+0GlftEKkqBqvq63nfF/LFneNwpZX2HQZeIDJeoC51kK/+t8y5rm8ojgfLmvvAazpns0tNf0suE57uEXhHGvQ/zPG6ZkSM2Bt6Xlx7OQnDg7mmeqk5tNYAN3iXnMod94UZVOlzQ/QzE6jcmfEFTO7oYoxsMXtsac6qZO8pqn/SI298kriTABpSo2d4fgl4hTRNDoWrLLQz7oNn4dw7vF1gROIxPRTpqVFGA+eSF/Mwl6YnYKQht/9Z1dbrXvi29bLLNswp+hkOteGby31YBiRArU5zU89ryrizjg44YQOahqh+obDcSVq2SFXZfles6sP5sjs/X/w1w+AfPIBwsckj+NxOOVZltQVpjkrfDo8O2wUQfi3GEJ9ThEqqoo3FsWf3rR5IbQLn2+Fo9D32WMHcgFNujppePAyEdWXnyqAETko7VHBTX6tO+8a/J3Czpl+QKXYzPE+uF1Y5Cy70+8rAzDUgKxtmn4V0= erik@hades
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC+tggvMAcTblsec2IoacmHQ8o3KhMmQ0rImYXz1Sh6uR4Js+BEKAH7mMRQiJNpGwk6PwVm2zYCJOsgXBmJ6yZltdDxCIdqhh2Vg9RD/s2vqCklAG/Zznwz2a1uEbwes/YEB9Hq2+rcFny8qobpl1GcBQeM2QuXCg9eQToffplmfZDQmVvfptmHhGxxJqPCyL/OwIRZwJFkNUOn1AUeCWL5WgQDjH+ceThFeAoNS8Sq2b5VtfqGSY5GeVv7O8vd4uUSW9YWWzwxmCtU7YXMwQuGxFQDsTMShN7evsdbR6m3sQy+tk400M00Fn6zmwdPHWksJRzZGRTj29/iRKw8uKutZdVUmEpTxTh0cOSANw8tmxeFEmylb20b3Dg8cS1ZVUQIK0Fd2xwYp8Ho9YNF0qR5Cm4AHVq1ng3nh8uQrzWlNM79XWSU/d2Z8WWlbUAgjKmb+kjtt3FMDbMbNSfCgEtN4OUowkLofW4hfnTvtaSG7OgBWEPfa+bsp4aOABDl0R3/WtvSvRmf7TlsFAXBqrVwGPREzc58ZGgR7+wUTDcFQd0WQ+8OQJ7VkR3uBr9er5cNSKj9vdEF+bZYcnk0YGLUNGiV/ji/4DlV9i2zH0ONfHCgfr4rhOClK/lgnThyD4Zvlxjot068/MWO0Bj9G+BGcBMVoEAwWJCZXGsWxkpRvw== JuiceSSH
+hostname: kca
+
+k3os:
+  modules:
+    - wireguard
+  dns_nameservers:
+    - 192.168.1.20
+  ntp_servers:
+    - 0.us.pool.ntp.org
+    - 1.us.pool.ntp.org
+
+  server_url: https://kube.int.unmango.net:6443
+  token: K104a985b5ad1c7c887a085c174951f2d35b0d24d5e354df39a0cad4f3e156e03a7::server:2d4b766f0145b6300aa1c47180e70c96
+  labels:
+    k3os.io/upgrade: enabled
+    host: apollo
+    wireguard: true
+  taints:
+    - CriticalAddonsOnly=true:NoExecute
+  k3s_args:
+    - server
+    - "--kubelet-arg"
+    - allowed-unsafe-sysctls="net.ipv4.conf.all.src_valid_mark"
+    - "--disable=servicelb"
+    - "--disable=traefik"
+    - "--disable=local-storage"
+    - "--tls-san=kube.int.unmango.net"
+    - "--tls-san=rancher.int.unmango.net"
