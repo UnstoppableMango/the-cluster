@@ -1,9 +1,7 @@
 config:
   networking:cloudflare:
-    apiKey:
-      secure: AAABAB9rWuvb3ZD1pcenVDHtoye1tDj+/fkWuAfOpLidlBwbmr9pz7KLZNM64ZMn63OT71suGH7+ZwqEIh3xDWJIZqM0
     apiToken:
-      secure: AAABAErlkvKiTgLEmQlnRMW+EeDkUiUBkjwUUJdx1wR9CjBtEa9pyvGE461DKdGQnryoZ1z3+7Y4cFXmOojz5CVAjseA9DQc
+      secure: AAABAFDtLJw6Zl6eufzlrA2vEh6SjbtwfBJZ9DoQOxPXdxotyp7YTT92yJLaLXLIX2YQ1LNnb1w5zfKE9O4/3b3qMfVWTZwt
   networking:letsEncrypt:
     email:
       secure: AAABAN4+HBxBBB40mVqjDNUwpT6zDlojK8qI1EEey0FvQrBjGvWlk18cpPexcnikWg7lJFo5vg==
