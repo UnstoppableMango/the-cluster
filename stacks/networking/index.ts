@@ -1,4 +1,5 @@
 import { Secret } from '@pulumi/kubernetes/core/v1';
+import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
 import * as certManager from './resources/cert-manager/certmanager/v1';
 import * as traefik from './resources/traefik/traefik/v1alpha1';
@@ -21,6 +22,21 @@ const config = new pulumi.Config();
 //   version: '9.14.2',
 //   pilotToken: traefikConfig.pilot.token,
 // }, { dependsOn: metallb.chart });
+
+const traefikChart = new k8s.helm.v3.Chart('traefik', {
+  namespace: 'traefik-system',
+  chart: 'traefik',
+  fetchOpts: {
+    repo: 'https://helm.traefik.io/traefik',
+  },
+  values: {
+    logs: { general: { level: 'DEBUG' } },
+    // pilot: {
+    //   enabled: true,
+    //   token: args.pilotToken,
+    // },
+  }
+}, { id: 'traefik' });
 
 const cfConfig = config.requireObject<CloudflareConfig>('cloudflare');
 
