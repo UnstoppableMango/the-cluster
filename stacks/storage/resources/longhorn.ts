@@ -22,20 +22,44 @@ export class Longhorn extends ComponentResource {
       namespace: this.namespace.name,
       repoName: 'rancher-charts',
       chartName: 'longhorn',
-      chartVersion: args.version,
+      chartVersion: '100.1.0+up1.2.2',
       values: yaml.stringify({
-        // service: { ui: { type: 'Rancher-Proxy' } },
+        // These are the settings refreshed from the remote to satisfy
+        // that there are "no changes" when running `pulumi up`
+        defaultSettings: {
+          backupTarget: 'nfs://apollo:/tank1/backup/thecluster',
+          createDefaultDiskLabeledNodes: false,
+          defaultDataLocality: 'best-effort',
+        },
+        global: {
+          cattle: {
+            clusterId: 'local',
+            clusterName: 'local',
+            rkePathPrefix: '',
+            rkeWindowsPathPrefix: '',
+            systemDefaultRegistry: '',
+            url: 'https://rancher.int.unmango.net',
+          },
+          systemDefaultRegistry: '',
+        },
+        image: { defaultImage: true },
         ingress: {
           enabled: true,
           host: 'longhorn.int.unmango.net',
         },
-        defaultSettings: {
-          backupTarget: 'nfs://zeus:/tank1/rancher/longhorn',
-          createDefaultDiskLabeledNodes: true,
-          defaultDataLocality: 'best-effort',
-          // Bug (maybe?): https://github.com/longhorn/longhorn/issues/1833
-          taintToleration: 'StorageOnly=true:NoExecute;CriticalAddonsOnly=true:NoExecute',
-        },
+        longhorn: { default_setting: true },
+        persistence: { reclaimPolicy: 'Retain' },
+        // These are the settings I would prefer to have if I can
+        // get the damn "improper constraint" error worked out
+        // ingress: {
+        //   enabled: true,
+        //   host: 'longhorn.int.unmango.net',
+        // },
+        // defaultSettings: {
+        //   backupTarget: 'nfs://apollo:/tank1/backup/thecluster',
+        //   defaultDataLocality: 'best-effort',
+        // },
+        // persistence: { reclaimPolicy: 'Retain' }
       }),
     }, { parent: this });
 
@@ -47,5 +71,4 @@ export class Longhorn extends ComponentResource {
 export interface LonghornArgs {
   clusterId: Input<string>;
   projectId: Input<string>;
-  version: Input<string>;
 }
