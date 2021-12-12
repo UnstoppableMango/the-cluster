@@ -3,6 +3,7 @@ import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
 import * as certManager from './resources/cert-manager/certmanager/v1';
 import * as traefik from './resources/traefik/traefik/v1alpha1';
+import * as YAML from 'yaml';
 
 const config = new pulumi.Config();
 
@@ -15,6 +16,37 @@ const config = new pulumi.Config();
 //   version: '2.2.0',
 //   addresses: ['192.168.1.75-192.168.1.99'],
 // });
+
+const metallbRelease = new k8s.helm.v3.Release('metallb', {
+  name: 'metallb',
+  chart: 'metallb',
+  namespace: 'metallb-system',
+  // createNamespace: true,
+  // repositoryOpts: {
+  //   repo: 'https://charts.bitnami.com/bitnami',
+  // },
+  version: '2.3.0',
+  values: {
+    // configInline: YAML.stringify({
+    //   'address-pools': [{
+    //     name: 'default',
+    //     protocol: 'layer2',
+    //     addresses: [
+    //       '192.168.1.75-192.168.1.99',
+    //     ],
+    //   }]
+    // }),
+    configInline: 'address-pools:\n- name: default\n  protocol: layer2\n  addresses:\n  - \'192.168.1.75-192.168.1.99\'',
+    global: {
+      cattle: {
+        clusterId: 'local',
+        clusterName: 'the-cluster',
+        systemDefaultRegistry: '',
+      },
+      systemDefaultRegistry: '',
+    }
+  },
+}, { import: 'metallb' });
 
 const traefikChart = new k8s.helm.v3.Chart('traefik', {
   namespace: 'traefik-system',
