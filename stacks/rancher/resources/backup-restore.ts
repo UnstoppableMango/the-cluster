@@ -11,15 +11,16 @@ export class BackupRestore extends pulumi.ComponentResource {
     super('unmango:rancher:BackupRestore', name, undefined, opts);
 
     this.app = new rancher.AppV2(name, {
+      name: 'rancher-backup',
       chartName: 'rancher-backup',
       clusterId: args.clusterId,
       namespace: args.namespace,
       repoName: 'rancher-charts',
-      chartVersion: '1.2.0',
       values: pulumi
         .all([args.storageClass, args.volumeSize])
         .apply(([storageClass, volumeSize]) => YAML.stringify({
           persistence: {
+            enabled: true,
             storageClass,
             size: volumeSize,
           },
