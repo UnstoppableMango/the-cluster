@@ -10,7 +10,7 @@
     "@pulumi/pulumi": "^3.19.0",
     "@pulumi/rancher2": "^3.5.0",
     "@unmango/shared": "^0.1.4",
-    "yaml": "^1.10.2"
+    "yaml": "^2.0.0-9"
   },
   "devDependencies": {
     "@types/node": "^16.11.12",
