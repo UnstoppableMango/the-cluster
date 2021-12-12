@@ -1,7 +1,0 @@
-tls-san:
-- kube.int.unmango.net
-- rancher.int.unmango.net
-node-taint:
-- "CriticalAddonsOnly=true:NoExecute"
-node-label:
-- "host=zeus"
