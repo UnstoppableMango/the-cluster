@@ -1,4 +1,3 @@
-import { Secret } from '@pulumi/kubernetes/core/v1';
 import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
 import * as certManager from '@pulumi/crds/certmanager/v1';
@@ -72,7 +71,7 @@ const dashboard = new traefik.IngressRoute('dashboard', {
 
 const cfConfig = config.requireObject<CloudflareConfig>('cloudflare');
 
-const cloudflareSecret = new Secret('cloudflare', {
+const cloudflareSecret = new k8s.core.v1.Secret('cloudflare', {
   metadata: { namespace: 'cert-manager' },
   stringData: {
     apiToken: cfConfig.apiToken,
