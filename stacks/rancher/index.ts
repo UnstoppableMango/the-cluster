@@ -13,6 +13,8 @@ const rancherRelease = new k8s.helm.v3.Release('rancher', {
   values: {
     hostname: 'rancher.int.unmango.net',
     tls: 'external',
+    // Don't co-locate on the same physical host
+    topologyKey: 'host',
   },
 });
 
