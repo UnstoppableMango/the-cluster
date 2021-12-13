@@ -3,6 +3,9 @@
     "./lib/*",
     "./stacks/*"
   ],
+  "scripts": {
+    "gen-crds": "npx ts-node tools/gen-crds.ts"
+  },
   "dependencies": {
     "@pulumi/docker": "^3.1.0",
     "@pulumi/kubernetes": "^3.12.1",
