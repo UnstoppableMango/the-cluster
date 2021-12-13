@@ -1,24 +1,41 @@
-import { Config, StackReference } from '@pulumi/pulumi';
-import { Project } from '@pulumi/rancher2';
-import { Heimdall, Portainer } from './resources';
+import * as k8s from '@pulumi/kubernetes';
+import * as rancher from '@pulumi/rancher2';
+import { Heimdall } from './resources';
 
-const config = new Config();
-const remoteStack = config.require('remoteStack');
-
-const stack = (name: string): string => `UnstoppableMango/${name}/${remoteStack}`;
-
-const rancherRef = new StackReference(stack('rancher'));
-const clusterId = rancherRef.requireOutput('clusterId');
-
-const project = new Project('management', {
+const project = new rancher.Project('management', {
   name: 'Management',
-  clusterId: clusterId,
+  clusterId: 'local',
 });
 
-const portainer = new Portainer('portainer', {
-  chartVersion: '1.0.10',
-  clusterId: clusterId,
+const portainerNamespace = new rancher.Namespace('portainer', {
+  name: 'portainer',
   projectId: project.id,
+});
+
+const portainerRelease = new k8s.helm.v3.Release('portainer', {
+  name: 'portainer',
+  chart: 'portainer',
+  namespace: portainerNamespace.name,
+  repositoryOpts: {
+    repo: 'https://portainer.github.io/k8s',
+  },
+  values: {
+    service: { type: 'ClusterIP' },
+    ingress: {
+      enabled: true,
+      hosts: [{
+        host: 'portainer.int.unmango.net',
+        // Needs at least one array item, but keep the defaults on said item
+        // https://github.com/portainer/k8s/blob/master/charts/portainer/templates/ingress.yaml#L34-L39
+        paths: [{}],
+      }],
+    },
+    persistence: {
+      enabled: true,
+      size: '5Gi',
+      storageClass: 'longhorn',
+    },
+  },
 });
 
 const heimdall = new Heimdall('heimdall', {
@@ -26,9 +43,3 @@ const heimdall = new Heimdall('heimdall', {
   hostname: 'heimdall.int.unmango.net',
   titlebarText: 'Test',
 });
-
-// I just discovered tags and I guess I don't need this now
-// const media = new Heimdall('media', {
-//   projectId: project.id,
-//   hostname: 'media.int.unmango.net',
-// });
