@@ -12,6 +12,7 @@ export const flatten = (data: Record<string, unknown>): Record<string, unknown> 
     if (Object(cur) !== cur) {
       result[prop] = cur;
     } else if (Array.isArray(cur)) {
+      // eslint-disable-next-line prefer-const
       let l = 0;
       for (let i = 0, l = cur.length; i < l; i++)
         recurse(cur[i], prop + '[' + i + ']');
