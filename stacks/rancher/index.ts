@@ -1,9 +1,6 @@
-import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as rancher2 from '@pulumi/rancher2';
 import { BackupRestore, Catalogs } from './resources';
-
-const config = new pulumi.Config();
 
 const rancherRelease = new k8s.helm.v3.Release('rancher', {
   name: 'rancher',
