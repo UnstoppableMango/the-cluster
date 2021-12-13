@@ -12,5 +12,14 @@
         "noImplicitReturns": true,
         "forceConsistentCasingInFileNames": true,
         "lib": ["ES2019"]
+    },
+    "ts-node": {
+      "moduleTypes": {
+        "tools/*": "cjs"
+      },
+      "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext"
+      }
     }
 }
