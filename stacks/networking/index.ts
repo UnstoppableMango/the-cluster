@@ -12,11 +12,6 @@ const config = new pulumi.Config();
 //   clusterId: theCluster.id,
 // });
 
-// const metallb = new MetalLb('metallb', {
-//   version: '2.2.0',
-//   addresses: ['192.168.1.75-192.168.1.99'],
-// });
-
 const metallbRelease = new k8s.helm.v3.Release('metallb', {
   name: 'metallb',
   chart: 'metallb',
