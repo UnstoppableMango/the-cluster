@@ -1,9 +1,8 @@
 import * as k8s from '@pulumi/kubernetes';
 import * as rancher from '@pulumi/rancher2';
-import { Project } from '@pulumi/rancher2';
 import { Heimdall } from './resources';
 
-const project = new Project('management', {
+const project = new rancher.Project('management', {
   name: 'Management',
   clusterId: 'local',
 });
