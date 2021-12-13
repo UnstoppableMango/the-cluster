@@ -1,7 +1,8 @@
 import { Namespace } from '@pulumi/rancher2';
 import * as kx from '@pulumi/kubernetesx';
+import * as pulumi from '@pulumi/pulumi';
 import { ComponentResource, ComponentResourceOptions, Input } from '@pulumi/pulumi';
-import { IngressRoute } from '@unmango/custom-resources';
+import { IngressRoute } from '@pulumi/crds/traefik/v1alpha1';
 import { getNameResolver } from '@unmango/shared';
 
 export class Heimdall extends ComponentResource {
@@ -106,12 +107,17 @@ export class Heimdall extends ComponentResource {
 
     this.ingressRoute = new IngressRoute(this.getName(), {
       metadata: { namespace: this.namespace.name },
-      entrypoints: ['websecure'],
-      hosts: [args.hostname],
-      services: [{
-        name: this.service.metadata.name,
-        port: 80,
-      }],
+      spec: {
+        entryPoints: ['websecure'],
+        routes: [{
+          match: pulumi.interpolate`Host(\`${args.hostname}\`)`,
+          kind: 'Rule',
+          services: [{
+            name: this.service.metadata.name,
+            port: 80,
+          }],
+        }],
+      },
     }, { parent: this });
 
     this.registerOutputs();
