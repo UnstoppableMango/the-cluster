@@ -9,7 +9,7 @@ const rancherRelease = new k8s.helm.v3.Release('rancher', {
   name: 'rancher',
   chart: 'rancher',
   namespace: 'cattle-system',
-  version: '2.6.0',
+  version: '2.6.2',
   repositoryOpts: {
     repo: 'https://releases.rancher.com/server-charts/latest',
   },
