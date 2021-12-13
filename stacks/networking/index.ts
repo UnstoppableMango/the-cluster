@@ -32,7 +32,7 @@ const metallbRelease = new k8s.helm.v3.Release('metallb', {
         addresses: [
           '192.168.1.75-192.168.1.99',
         ],
-      }]
+      }],
     }),
   },
 });
