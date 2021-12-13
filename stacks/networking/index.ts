@@ -1,8 +1,8 @@
 import { Secret } from '@pulumi/kubernetes/core/v1';
 import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
-import * as certManager from './resources/cert-manager/certmanager/v1';
-import * as traefik from './resources/traefik/traefik/v1alpha1';
+import * as certManager from '@pulumi/crds/certmanager/v1';
+import * as traefik from '@pulumi/crds/traefik/v1alpha1';
 import * as YAML from 'yaml';
 
 const config = new pulumi.Config();

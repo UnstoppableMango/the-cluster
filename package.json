@@ -7,6 +7,7 @@
     "gen-crds": "npx ts-node tools/gen-crds.ts"
   },
   "dependencies": {
+    "@pulumi/crds": "file:lib/crds",
     "@pulumi/docker": "^3.1.0",
     "@pulumi/kubernetes": "^3.12.1",
     "@pulumi/kubernetesx": "^0.1.6",
