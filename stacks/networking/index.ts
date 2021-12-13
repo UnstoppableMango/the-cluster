@@ -43,11 +43,6 @@ const traefikChart = new k8s.helm.v3.Chart('traefik', {
     deployment: { kind: 'DaemonSet' },
     ingressRoute: { dashboard: { enabled: false } },
     ports: { websecure: { tls: { enabled: true } } },
-    // logs: { general: { level: 'DEBUG' } },
-    // pilot: {
-    //   enabled: true,
-    //   token: args.pilotToken,
-    // },
   },
   transformations: [(obj) => {
     // Either Helm or Pulumi doesn't want to put ALL
