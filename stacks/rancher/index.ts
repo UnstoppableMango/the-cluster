@@ -10,14 +10,14 @@ const rancherRelease = new k8s.helm.v3.Release('rancher', {
   chart: 'rancher',
   namespace: 'cattle-system',
   version: '2.6.0',
-  // repositoryOpts: {
-  //   repo: 'https://releases.rancher.com/server-charts/latest',
-  // },
+  repositoryOpts: {
+    repo: 'https://releases.rancher.com/server-charts/latest',
+  },
   values: {
     hostname: 'rancher.int.unmango.net',
     tls: 'external',
   },
-}, { import: 'rancher' });
+});
 
 const cluster = rancher2.Cluster.get('local', 'local');
 
