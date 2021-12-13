@@ -21,32 +21,21 @@ const metallbRelease = new k8s.helm.v3.Release('metallb', {
   name: 'metallb',
   chart: 'metallb',
   namespace: 'metallb-system',
-  // createNamespace: true,
-  // repositoryOpts: {
-  //   repo: 'https://charts.bitnami.com/bitnami',
-  // },
-  version: '2.3.0',
-  values: {
-    // configInline: YAML.stringify({
-    //   'address-pools': [{
-    //     name: 'default',
-    //     protocol: 'layer2',
-    //     addresses: [
-    //       '192.168.1.75-192.168.1.99',
-    //     ],
-    //   }]
-    // }),
-    configInline: 'address-pools:\n- name: default\n  protocol: layer2\n  addresses:\n  - \'192.168.1.75-192.168.1.99\'',
-    global: {
-      cattle: {
-        clusterId: 'local',
-        clusterName: 'the-cluster',
-        systemDefaultRegistry: '',
-      },
-      systemDefaultRegistry: '',
-    }
+  repositoryOpts: {
+    repo: 'https://charts.bitnami.com/bitnami',
   },
-}, { import: 'metallb' });
+  values: {
+    configInline: YAML.stringify({
+      'address-pools': [{
+        name: 'default',
+        protocol: 'layer2',
+        addresses: [
+          '192.168.1.75-192.168.1.99',
+        ],
+      }]
+    }),
+  },
+});
 
 const traefikChart = new k8s.helm.v3.Chart('traefik', {
   namespace: 'traefik-system',
