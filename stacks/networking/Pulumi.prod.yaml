@@ -12,8 +12,3 @@ config:
       accountKeyName: le-stage-account-key
       server: https://acme-staging-v02.api.letsencrypt.org/directory
     useProd: true
-  networking:remoteStack: prod
-  networking:traefik:
-    pilot:
-      token:
-        secure: AAABAKooKa8Ms/ke1UenclXyrIsak8EUCwafq3wKBD0/QKBQXf2qeAW9xLPfajvOfT9bLxLBGG4LWWANS46+cTaWKtI=
