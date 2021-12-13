@@ -1,15 +1,17 @@
-import * as k8s from '@pulumi/kubernetes';
 import * as pulumi from '@pulumi/pulumi';
+import * as k8s from '@pulumi/kubernetes';
 import * as certManager from '@pulumi/crds/certmanager/v1';
 import * as traefik from '@pulumi/crds/traefik/v1alpha1';
 import * as YAML from 'yaml';
 
 const config = new pulumi.Config();
 
+// TODO: Theres currently a bug importing this resource type (as repoted by the CLI).
+// I should probably file an issue, but I'm not really in a rush to do Project stuff.
 // const project = new rancher.Project('networking', {
 //   name: 'Networking',
-//   clusterId: theCluster.id,
-// });
+//   clusterId: 'the-cluster',
+// }, { import: 'Networking' });
 
 const metallbRelease = new k8s.helm.v3.Release('metallb', {
   name: 'metallb',
