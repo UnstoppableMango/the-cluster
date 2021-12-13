@@ -37,14 +37,13 @@ const certManagerRelease = new k8s.helm.v3.Release('cert-manager', {
   name: 'cert-manager',
   chart: 'cert-manager',
   namespace: 'cert-manager',
-  version: 'v1.6.1',
-  // repositoryOpts: {
-  //   repo: 'https://charts.jetstack.io',
-  // },
+  repositoryOpts: {
+    repo: 'https://charts.jetstack.io',
+  },
   values: {
     installCRDs: true,
   },
-}, { import: 'cert-manager' });
+});
 
 const traefikChart = new k8s.helm.v3.Chart('traefik', {
   namespace: 'traefik-system',
