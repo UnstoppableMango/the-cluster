@@ -7,6 +7,40 @@ const project = new rancher.Project('management', {
   clusterId: 'local',
 });
 
+const prometheusNamespace = new rancher.Namespace('prometheus', {
+  name: 'prometheus',
+  projectId: project.id,
+});
+
+const prometheusCrdsBaseUrl = 'https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack/crds';
+
+const prometheusCrds = new k8s.yaml.ConfigGroup('prometheus-crds', {
+  files: [
+    'crd-alertmanagerconfigs.yaml',
+    'crd-alertmanagers.yaml',
+    'crd-podmonitors.yaml',
+    'crd-probes.yaml',
+    'crd-prometheuses.yaml',
+    'crd-prometheusrules.yaml',
+    'crd-servicemonitores.yaml',
+    'crd-thanosrulers.yaml',
+  ].map(x => `${prometheusCrdsBaseUrl}/${x}`)
+});
+
+const prometheusRelease = new k8s.helm.v3.Release('prometheus', {
+  name: 'prometheus',
+  chart: 'kube-prometheus-stack',
+  repositoryOpts: {
+    repo: 'https://prometheus-community.github.io/helm-charts'
+  },
+  atomic: true,
+  cleanupOnFail: true,
+  createNamespace: false,
+  skipCrds: true,
+}, {
+  dependsOn: prometheusCrds.ready,
+});
+
 const portainerNamespace = new rancher.Namespace('portainer', {
   name: 'portainer',
   projectId: project.id,
