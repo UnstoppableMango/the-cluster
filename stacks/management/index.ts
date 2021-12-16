@@ -20,7 +20,8 @@ const prometheusCrds = new k8s.yaml.ConfigGroup('prometheus-crds', {
     'crd-alertmanagers.yaml',
     'crd-podmonitors.yaml',
     'crd-probes.yaml',
-    'crd-prometheuses.yaml',
+    // https://github.com/prometheus-operator/prometheus-operator/issues/4355
+    // 'crd-prometheuses.yaml',
     'crd-prometheusrules.yaml',
     'crd-servicemonitors.yaml',
     'crd-thanosrulers.yaml',
@@ -46,7 +47,7 @@ const prometheusRelease = new k8s.helm.v3.Release('prometheus', {
         hosts: ['alerts.int.unmango.net'],
         pathType: 'ImplementationSpecific',
       },
-      alertManagerSpec: {
+      alertmanagerSpec: {
         storage: {
           volumeClaimTemplate: {
             spec: {
@@ -61,7 +62,7 @@ const prometheusRelease = new k8s.helm.v3.Release('prometheus', {
         podAntiAffinityTopologyKey: 'host',
       },
     },
-    graphana: {
+    grafana: {
       ingress: {
         enabled: true,
         hosts: ['metrics.int.unmango.net'],
@@ -86,7 +87,7 @@ const prometheusRelease = new k8s.helm.v3.Release('prometheus', {
         pathType: 'ImplementationSpecific',
       },
       prometheusSpec: {
-        storage: {
+        storageSpec: {
           volumeClaimTemplate: {
             spec: {
               storageClassName: 'longhorn',
