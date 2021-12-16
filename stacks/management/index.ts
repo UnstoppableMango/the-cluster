@@ -29,14 +29,78 @@ const prometheusCrds = new k8s.yaml.ConfigGroup('prometheus-crds', {
 
 const prometheusRelease = new k8s.helm.v3.Release('prometheus', {
   name: 'prometheus',
+  namespace: prometheusNamespace.name,
   chart: 'kube-prometheus-stack',
   repositoryOpts: {
-    repo: 'https://prometheus-community.github.io/helm-charts'
+    repo: 'https://prometheus-community.github.io/helm-charts',
   },
   atomic: true,
   cleanupOnFail: true,
   createNamespace: false,
   skipCrds: true,
+  values: {
+    namespaceOverride: prometheusNamespace.name,
+    alertmanager: {
+      ingress: {
+        enabled: true,
+        hosts: ['alerts.int.unmango.net'],
+        pathType: 'ImplementationSpecific',
+      },
+      alertManagerSpec: {
+        storage: {
+          volumeClaimTemplate: {
+            spec: {
+              storageClassName: 'longhorn',
+              resources: {
+                requests: { storage: '50Gi' },
+              },
+            },
+          },
+        },
+        podAntiAffinity: 'soft',
+        podAntiAffinityTopologyKey: 'host',
+      },
+    },
+    graphana: {
+      ingress: {
+        enabled: true,
+        hosts: ['metrics.int.unmango.net'],
+      },
+    },
+    // prometheusOperator: {
+    //   admissionWebhooks: {
+    //     certManager: {
+    //       enabled: true,
+    //       issuerRef: {
+    //         // TODO: Actually reference this
+    //         name: 'letsencrypt-cqd120jq',
+    //         kind: 'ClusterIssuer',
+    //       },
+    //     },
+    //   },
+    // },
+    prometheus: {
+      ingress: {
+        enabled: true,
+        hosts: ['prometheus.int.unmango.net'],
+        pathType: 'ImplementationSpecific',
+      },
+      prometheusSpec: {
+        storage: {
+          volumeClaimTemplate: {
+            spec: {
+              storageClassName: 'longhorn',
+              resources: {
+                requests: { storage: '50Gi' },
+              },
+            },
+          },
+        },
+        podAntiAffinity: 'soft',
+        podAntiAffinityTopologyKey: 'host',
+      },
+    },
+  },
 }, {
   dependsOn: prometheusCrds.ready,
 });
