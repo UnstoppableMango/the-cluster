@@ -12,7 +12,7 @@ const prometheusNamespace = new rancher.Namespace('prometheus', {
   projectId: project.id,
 });
 
-const prometheusCrdsBaseUrl = 'https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack/crds';
+const prometheusCrdsBaseUrl = 'https://raw.githubusercontent.com/prometheus-community/helm-charts/main/charts/kube-prometheus-stack/crds';
 
 const prometheusCrds = new k8s.yaml.ConfigGroup('prometheus-crds', {
   files: [
@@ -22,9 +22,9 @@ const prometheusCrds = new k8s.yaml.ConfigGroup('prometheus-crds', {
     'crd-probes.yaml',
     'crd-prometheuses.yaml',
     'crd-prometheusrules.yaml',
-    'crd-servicemonitores.yaml',
+    'crd-servicemonitors.yaml',
     'crd-thanosrulers.yaml',
-  ].map(x => `${prometheusCrdsBaseUrl}/${x}`)
+  ].map(x => `${prometheusCrdsBaseUrl}/${x}`),
 });
 
 const prometheusRelease = new k8s.helm.v3.Release('prometheus', {
