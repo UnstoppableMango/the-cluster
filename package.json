@@ -7,12 +7,14 @@
     "gen-crds": "npx ts-node tools/gen-crds.ts"
   },
   "dependencies": {
+    "@pulumi/cloudflare": "^4.0.0",
     "@pulumi/crds": "file:lib/crds",
     "@pulumi/docker": "^3.1.0",
     "@pulumi/kubernetes": "^3.12.1",
     "@pulumi/kubernetesx": "^0.1.6",
     "@pulumi/pulumi": "^3.20.0",
     "@pulumi/rancher2": "^3.5.0",
+    "@pulumi/random": "^4.3.1",
     "@unmango/shared": "^0.1.4",
     "yaml": "^2.0.0-9"
   },

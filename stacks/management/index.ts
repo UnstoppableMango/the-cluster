@@ -1,4 +1,5 @@
 import * as k8s from '@pulumi/kubernetes';
+import * as kx from '@pulumi/kubernetesx';
 import * as rancher from '@pulumi/rancher2';
 import { Heimdall } from './resources';
 
@@ -47,4 +48,10 @@ const heimdall = new Heimdall('heimdall', {
 const heimdallExternal = new Heimdall('heimdall-ext', {
   projectId: project.id,
   hostname: 'heimdall.unmango.net',
+});
+
+const cloudflarePodBuilder = new kx.PodBuilder({
+  containers: [{
+    image: 'cloudflare/cloudflared:2021.12.1',
+  }],
 });
