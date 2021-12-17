@@ -11,7 +11,7 @@
     "@pulumi/docker": "^3.1.0",
     "@pulumi/kubernetes": "^3.12.1",
     "@pulumi/kubernetesx": "^0.1.6",
-    "@pulumi/pulumi": "^3.19.0",
+    "@pulumi/pulumi": "^3.20.0",
     "@pulumi/rancher2": "^3.5.0",
     "@unmango/shared": "^0.1.4",
     "yaml": "^2.0.0-9"
