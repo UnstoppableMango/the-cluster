@@ -43,3 +43,8 @@ const heimdall = new Heimdall('heimdall', {
   hostname: 'heimdall.int.unmango.net',
   titlebarText: 'Test',
 });
+
+const heimdallExternal = new Heimdall('heimdall-ext', {
+  projectId: project.id,
+  hostname: 'heimdall.unmango.net',
+});
