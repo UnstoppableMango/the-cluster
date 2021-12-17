@@ -47,11 +47,5 @@ const heimdall = new Heimdall('heimdall', {
 
 const heimdallExternal = new Heimdall('heimdall-ext', {
   projectId: project.id,
-  hostname: 'heimdall.unmango.net',
-});
-
-const cloudflarePodBuilder = new kx.PodBuilder({
-  containers: [{
-    image: 'cloudflare/cloudflared:2021.12.1',
-  }],
+  hostname: 'thecluster.io',
 });
