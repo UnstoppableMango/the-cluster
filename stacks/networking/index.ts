@@ -3,6 +3,7 @@ import * as k8s from '@pulumi/kubernetes';
 import * as certManager from '@pulumi/crds/certmanager/v1';
 import * as traefik from '@pulumi/crds/traefik/v1alpha1';
 import * as YAML from 'yaml';
+import { Tunnel } from './resources';
 
 const config = new pulumi.Config();
 
@@ -143,7 +144,18 @@ const tlsStore = new traefik.TLSStore('default', {
   },
 }, { dependsOn: traefikChart.ready });
 
+const tunnel = new Tunnel('thecluster-io', {
+  cloudflare: {
+    accountId: cfConfig.accountId,
+    zone: 'thecluster.io',
+  },
+  hostname: 'thecluster.io',
+  recordName: 'thecluster.io',
+  service: 'https://192.168.1.75',
+});
+
 interface CloudflareConfig {
+  accountId: string;
   apiToken: string;
 }
 
