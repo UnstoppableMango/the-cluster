@@ -84,27 +84,6 @@ export class Heimdall extends ComponentResource {
       type: kx.types.ServiceType.ClusterIP,
     });
 
-    // this.ingress = new Ingress('heimdall', {
-    //   metadata: { namespace: this.namespace.name },
-    //   spec: {
-    //     rules: [{
-    //       host: 'heimdall.int.unmango.net',
-    //       http: {
-    //         paths: [{
-    //           backend: {
-    //             service: {
-    //               name: this.service.metadata.name,
-    //               port: { name: 'https' },
-    //             },
-    //           },
-    //           // TODO: Required ✓, Correct?
-    //           pathType: 'ImplementationSpecific',
-    //         }],
-    //       },
-    //     }],
-    //   },
-    // }, { parent: this });
-
     this.ingressRoute = new IngressRoute(this.getName(), {
       metadata: { namespace: this.namespace.name },
       spec: {
