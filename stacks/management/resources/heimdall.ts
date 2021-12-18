@@ -88,6 +88,12 @@ export class Heimdall extends ComponentResource {
       metadata: { namespace: this.namespace.name },
       spec: {
         entryPoints: ['websecure'],
+        tls: {
+          store: {
+            name: args.tlsStore ?? 'default',
+            namespace: 'traefik-system',
+          },
+        },
         routes: [{
           match: pulumi.interpolate`Host(\`${args.hostname}\`)`,
           kind: 'Rule',
@@ -107,6 +113,7 @@ export class Heimdall extends ComponentResource {
 export interface HeimdallArgs {
   projectId: Input<string>;
   hostname: Input<string>;
+  tlsStore?: Input<string>;
   titlebarText?: Input<string>;
   puid?: Input<string>;
   pgid?: Input<string>;

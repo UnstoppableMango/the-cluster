@@ -1,6 +1,6 @@
 config:
   cloudflare:apiToken:
-    secure: AAABAK58/czx1ZzqkWfxRdiqzSXV98yPB8CNGtMeXn9d6JlSpRttjNiMpT5ezPa0Sd6H9mhOYkkv/0Ty4at1NB1sKWnVeX4T
+    secure: AAABAJMw8d7kA+3S8BQB/p8LDcffPRE5r3saHne04baN9QLpWhVj1WF1KzikhdAw91dipWycWtqMi4OVeUd1fXdssPX7PgyU
   networking:cloudflare:
     accountId: 265a046434c952eeecb9710cfd76617c
     apiToken:

@@ -9,6 +9,7 @@ export class Tunnel extends pulumi.ComponentResource {
 
   private readonly password!: pulumi.Output<random.RandomId>;
   private readonly secret!: pulumi.Output<kx.Secret>;
+  private readonly dnsRecord!: pulumi.Output<cf.Record>;
   private readonly config!: pulumi.Output<kx.ConfigMap>;
   private readonly deployment!: pulumi.Output<kx.Deployment>;
   private readonly tunnel!: pulumi.Output<cf.ArgoTunnel>;
@@ -17,7 +18,6 @@ export class Tunnel extends pulumi.ComponentResource {
     super('unmango:resources:tunnel', name, args, opts);
 
     const certMountPath = '/etc/cloudflared/cert.json';
-
     const cfArgs = pulumi.output(args.cloudflare);
 
     const password = new random.RandomId(name, {
@@ -44,10 +44,10 @@ export class Tunnel extends pulumi.ComponentResource {
       zoneId: zone.apply((x) => x.id ?? ''),
       value: pulumi.interpolate`${tunnel.id}.cfargotunnel.com`,
       proxied: true,
-      ttl: 60,
     }, { parent: this });
 
     const secret = new kx.Secret(name, {
+      metadata: { namespace: args.namespace },
       stringData: {
         'cert.json': pulumi
           .all([tunnel.accountId, tunnel.id, tunnel.name, tunnel.secret])
@@ -63,6 +63,7 @@ export class Tunnel extends pulumi.ComponentResource {
     }, { parent: this });
 
     const config = new kx.ConfigMap(name, {
+      metadata: { namespace: args.namespace },
       data: {
         'config.yml': pulumi
           .all([tunnel.id, args.hostname, args.service])
@@ -79,7 +80,8 @@ export class Tunnel extends pulumi.ComponentResource {
 
     const pb = new kx.PodBuilder({
       containers: [{
-        image: 'cloudflare/cloudflared:2021.12.0',
+        image: 'cloudflare/cloudflared:2021.12.1',
+        args: ['--config', '/etc/cloudflared/config.yml', '--no-autoupdate', 'tunnel', 'run'],
         volumeMounts: [
           secret.mount(certMountPath, 'cert.json'),
           config.mount('/etc/cloudflared/config.yml', 'config.yml'),
@@ -88,13 +90,14 @@ export class Tunnel extends pulumi.ComponentResource {
     });
 
     const deployment = new kx.Deployment(name, {
+      metadata: { namespace: args.namespace },
       spec: pb.asDeploymentSpec(),
     }, { parent: this });
 
     this.registerOutputs({
       password,
       tunnel,
-      dns,
+      dnsRecord: dns,
       secret,
       config,
       deployment,
@@ -109,6 +112,7 @@ export interface TunnelArgs {
     zone: pulumi.Input<string>;
   }>;
   hostname: pulumi.Input<string>;
+  namespace?: pulumi.Input<string>;
   recordName: pulumi.Input<string>;
   service: pulumi.Input<string>;
 }
