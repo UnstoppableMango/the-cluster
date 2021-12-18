@@ -1,6 +1,7 @@
 import * as k8s from '@pulumi/kubernetes';
 import * as rancher2 from '@pulumi/rancher2';
 import { BackupRestore, Catalogs } from './resources';
+import { IngressRoute } from '@pulumi/crds/traefik/v1alpha1';
 
 const rancherRelease = new k8s.helm.v3.Release('rancher', {
   name: 'rancher',
@@ -15,6 +16,21 @@ const rancherRelease = new k8s.helm.v3.Release('rancher', {
     tls: 'external',
     // Don't co-locate on the same physical host
     topologyKey: 'host',
+  },
+});
+
+const rancherClusterIo = new IngressRoute('rancher-thecluster-io', {
+  metadata: { namespace: 'cattle-system' },
+  spec: {
+    entryPoints: ['websecure'],
+    routes: [{
+      match: 'Host(`rancher.thecluster.io`)',
+      kind: 'Rule',
+      services: [{
+        name: 'rancher',
+        port: 80,
+      }],
+    }],
   },
 });
 
