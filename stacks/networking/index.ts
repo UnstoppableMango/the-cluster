@@ -187,12 +187,17 @@ const tunnel = new Tunnel('thecluster-io', {
     accountId: cfConfig.accountId,
     zone: 'thecluster.io',
   },
-  hostname: 'thecluster.io',
-  recordName: 'thecluster.io',
   // Point to the internal traefik url for two reasons:
   // - No hard dependency on an IP if it changes
   // - I didn't include an IP in the SAN of any of my certs...
-  service: 'https://traefik.int.unmango.net',
+  ingresses: [{
+    hostname: 'thecluster.io',
+    service: 'https://traefik.int.unmango.net',
+  }, {
+    hostname: 'rancher.thecluster.io',
+    service: 'https://traefik.int.unmango.net',
+  }],
+  recordName: 'thecluster.io',
 });
 
 interface CloudflareConfig {

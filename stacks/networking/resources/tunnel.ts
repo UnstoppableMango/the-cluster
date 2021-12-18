@@ -66,15 +66,15 @@ export class Tunnel extends pulumi.ComponentResource {
       metadata: { namespace: args.namespace },
       data: {
         'config.yml': pulumi
-          .all([tunnel.id, args.hostname, args.service])
-          .apply(([tunnelId, hostname, service]) => YAML.stringify({
-            tunnel: tunnelId,
+          .output({
+            tunnel: tunnel.id,
             'credentials-file': certMountPath,
             ingress: [
-              { hostname, service },
+              ...args.ingresses,
               { service: 'http_status:404' },
             ],
-          })),
+          })
+          .apply(YAML.stringify),
       },
     }, { parent: this });
 
@@ -111,8 +111,10 @@ export interface TunnelArgs {
     accountId: pulumi.Input<string>;
     zone: pulumi.Input<string>;
   }>;
-  hostname: pulumi.Input<string>;
+  ingresses: pulumi.Input<{
+    hostname: pulumi.Input<string>;
+    service: pulumi.Input<string>;
+  }>[];
   namespace?: pulumi.Input<string>;
   recordName: pulumi.Input<string>;
-  service: pulumi.Input<string>;
 }
