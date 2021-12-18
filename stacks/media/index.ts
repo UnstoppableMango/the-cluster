@@ -4,6 +4,7 @@ import * as kx from '@pulumi/kubernetesx';
 import * as pulumi from '@pulumi/pulumi';
 import * as traefik from '@pulumi/crds/traefik/v1alpha1';
 import { Namespace, Project } from '@pulumi/rancher2';
+import { IngressRoute, Middleware } from '@pulumi/crds/traefik/v1alpha1';
 import { matchBuilder } from '@unmango/shared/traefik';
 
 import {
@@ -442,6 +443,49 @@ const deemixConfig = config.requireObject<{ arl: string }>('deemix');
 const deemix = new Deemix('deemix', {
   namespace: namespace.name,
   arl: deemixConfig.arl,
+});
+
+const deemixInternalRoute = new IngressRoute('deemix-internal', {
+  metadata: { name: 'deemix-internal', namespace: namespace.name },
+  spec: {
+    entryPoints: ['websecure'],
+    routes: [{
+      kind: 'Rule',
+      match: 'Host(`deemix.int.unmango.net`)',
+      services: [{
+        name: deemix.service.metadata.name,
+        port: deemix.service.spec.ports[0].port,
+      }],
+    }],
+  },
+});
+
+const stripDeemix = new Middleware('strip-deemix', {
+  metadata: { name: 'strip-deemix', namespace: namespace.name },
+  spec: {
+    stripPrefix: {
+      prefixes: ['/deemix'],
+      forceSlash: false,
+    },
+  },
+});
+
+const deemixExternalRoute = new IngressRoute('deemix-external', {
+  metadata: { name: 'deemix-external', namespace: namespace.name },
+  spec: {
+    entryPoints: ['websecure'],
+    routes: [{
+      kind: 'Rule',
+      match: 'Host(`media.thecluster.io`) && PathPrefix(`/deemix`)',
+      services: [{
+        name: deemix.service.metadata.name,
+        port: deemix.service.spec.ports[0].port,
+      }],
+      middlewares: [{
+        name: 'strip-deemix',
+      }],
+    }],
+  },
 });
 
 const mediaMiddlewares = [{
