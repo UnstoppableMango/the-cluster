@@ -47,6 +47,6 @@ const heimdall = new Heimdall('heimdall', {
 
 const heimdallExternal = new Heimdall('heimdall-ext', {
   projectId: project.id,
-  hostname: 'thecluster.io',
+  hostname: 'dash.thecluster.io',
   tlsStore: 'thecluster-io',
 });

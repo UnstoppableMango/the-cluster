@@ -5,6 +5,7 @@ import * as certManager from '@pulumi/crds/certmanager/v1';
 import * as traefik from '@pulumi/crds/traefik/v1alpha1';
 import * as YAML from 'yaml';
 import { Tunnel } from './resources';
+import { IngressRoute, Middleware } from '@pulumi/crds/traefik/v1alpha1';
 
 const config = new pulumi.Config();
 
@@ -187,6 +188,7 @@ const tunnel = new Tunnel('thecluster-io', {
     accountId: cfConfig.accountId,
     zone: 'thecluster.io',
   },
+  dnsRecords: ['thecluster.io', 'dash', 'rancher'],
   // Point to the internal traefik url for two reasons:
   // - No hard dependency on an IP if it changes
   // - I didn't include an IP in the SAN of any of my certs...
@@ -194,10 +196,37 @@ const tunnel = new Tunnel('thecluster-io', {
     hostname: 'thecluster.io',
     service: 'https://traefik.int.unmango.net',
   }, {
-    hostname: 'rancher.thecluster.io',
+    hostname: '*.thecluster.io',
     service: 'https://traefik.int.unmango.net',
   }],
-  recordName: 'thecluster.io',
+});
+
+const redirectToDashMiddleware = new Middleware('redirect-dash', {
+  metadata: { name: 'redirect-dash', namespace: 'traefik-system' },
+  spec: {
+    redirectRegex: {
+      regex: '^https?://thecluster.io',
+      replacement: 'https://dash.thecluster.io',
+    },
+  },
+});
+
+const redirectToDash = new IngressRoute('redirect-dash', {
+  metadata: { name: 'redirect-dash', namespace: 'traefik-system' },
+  spec: {
+    entryPoints: ['websecure'],
+    routes: [{
+      kind: 'Rule',
+      match: 'Host(`thecluster.io`)',
+      middlewares: [{
+        name: 'redirect-dash',
+      }],
+      services: [{
+        name: 'noop@internal',
+        kind: 'TraefikService',
+      }],
+    }],
+  },
 });
 
 interface CloudflareConfig {

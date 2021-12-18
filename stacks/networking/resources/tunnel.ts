@@ -9,7 +9,7 @@ export class Tunnel extends pulumi.ComponentResource {
 
   private readonly password!: pulumi.Output<random.RandomId>;
   private readonly secret!: pulumi.Output<kx.Secret>;
-  private readonly dnsRecord!: pulumi.Output<cf.Record>;
+  private readonly dnsRecords!: pulumi.Output<cf.Record>[];
   private readonly config!: pulumi.Output<kx.ConfigMap>;
   private readonly deployment!: pulumi.Output<kx.Deployment>;
   private readonly tunnel!: pulumi.Output<cf.ArgoTunnel>;
@@ -38,13 +38,15 @@ export class Tunnel extends pulumi.ComponentResource {
       }))
       .apply(x => x.zones[0]);
 
-    const dns = new cf.Record(name, {
-      name: args.recordName,
-      type: 'CNAME',
-      zoneId: zone.apply((x) => x.id ?? ''),
-      value: pulumi.interpolate`${tunnel.id}.cfargotunnel.com`,
-      proxied: true,
-    }, { parent: this });
+    const dns = pulumi
+      .output(args.dnsRecords)
+      .apply(records => records.map((record) => new cf.Record(`${name}-${record}`, {
+        name: record,
+        type: 'CNAME',
+        zoneId: zone.apply((x) => x.id ?? ''),
+        value: pulumi.interpolate`${tunnel.id}.cfargotunnel.com`,
+        proxied: true,
+      }, { parent: this })));
 
     const secret = new kx.Secret(name, {
       metadata: { namespace: args.namespace },
@@ -97,7 +99,7 @@ export class Tunnel extends pulumi.ComponentResource {
     this.registerOutputs({
       password,
       tunnel,
-      dnsRecord: dns,
+      dnsRecords: dns,
       secret,
       config,
       deployment,
@@ -111,10 +113,10 @@ export interface TunnelArgs {
     accountId: pulumi.Input<string>;
     zone: pulumi.Input<string>;
   }>;
+  dnsRecords: pulumi.Input<string>[];
   ingresses: pulumi.Input<{
     hostname: pulumi.Input<string>;
     service: pulumi.Input<string>;
   }>[];
   namespace?: pulumi.Input<string>;
-  recordName: pulumi.Input<string>;
 }
