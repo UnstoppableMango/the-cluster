@@ -1,5 +1,8 @@
 config:
+  cloudflare:apiToken:
+    secure: AAABAJMw8d7kA+3S8BQB/p8LDcffPRE5r3saHne04baN9QLpWhVj1WF1KzikhdAw91dipWycWtqMi4OVeUd1fXdssPX7PgyU
   networking:cloudflare:
+    accountId: 265a046434c952eeecb9710cfd76617c
     apiToken:
       secure: AAABAFDtLJw6Zl6eufzlrA2vEh6SjbtwfBJZ9DoQOxPXdxotyp7YTT92yJLaLXLIX2YQ1LNnb1w5zfKE9O4/3b3qMfVWTZwt
   networking:letsEncrypt:

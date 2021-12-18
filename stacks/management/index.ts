@@ -1,4 +1,5 @@
 import * as k8s from '@pulumi/kubernetes';
+import * as kx from '@pulumi/kubernetesx';
 import * as rancher from '@pulumi/rancher2';
 import { Heimdall } from './resources';
 
@@ -42,4 +43,10 @@ const heimdall = new Heimdall('heimdall', {
   projectId: project.id,
   hostname: 'heimdall.int.unmango.net',
   titlebarText: 'Test',
+});
+
+const heimdallExternal = new Heimdall('heimdall-ext', {
+  projectId: project.id,
+  hostname: 'thecluster.io',
+  tlsStore: 'thecluster-io',
 });

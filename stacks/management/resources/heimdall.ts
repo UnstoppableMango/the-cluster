@@ -84,31 +84,16 @@ export class Heimdall extends ComponentResource {
       type: kx.types.ServiceType.ClusterIP,
     });
 
-    // this.ingress = new Ingress('heimdall', {
-    //   metadata: { namespace: this.namespace.name },
-    //   spec: {
-    //     rules: [{
-    //       host: 'heimdall.int.unmango.net',
-    //       http: {
-    //         paths: [{
-    //           backend: {
-    //             service: {
-    //               name: this.service.metadata.name,
-    //               port: { name: 'https' },
-    //             },
-    //           },
-    //           // TODO: Required ✓, Correct?
-    //           pathType: 'ImplementationSpecific',
-    //         }],
-    //       },
-    //     }],
-    //   },
-    // }, { parent: this });
-
     this.ingressRoute = new IngressRoute(this.getName(), {
       metadata: { namespace: this.namespace.name },
       spec: {
         entryPoints: ['websecure'],
+        tls: {
+          store: {
+            name: args.tlsStore ?? 'default',
+            namespace: 'traefik-system',
+          },
+        },
         routes: [{
           match: pulumi.interpolate`Host(\`${args.hostname}\`)`,
           kind: 'Rule',
@@ -128,6 +113,7 @@ export class Heimdall extends ComponentResource {
 export interface HeimdallArgs {
   projectId: Input<string>;
   hostname: Input<string>;
+  tlsStore?: Input<string>;
   titlebarText?: Input<string>;
   puid?: Input<string>;
   pgid?: Input<string>;

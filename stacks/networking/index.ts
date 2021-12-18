@@ -1,8 +1,10 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
+import * as rancher from '@pulumi/rancher2';
 import * as certManager from '@pulumi/crds/certmanager/v1';
 import * as traefik from '@pulumi/crds/traefik/v1alpha1';
 import * as YAML from 'yaml';
+import { Tunnel } from './resources';
 
 const config = new pulumi.Config();
 
@@ -116,7 +118,7 @@ const leIssuer = new certManager.ClusterIssuer('letsencrypt', {
   },
 });
 
-const defaultCert = new certManager.Certificate('default', {
+const unmangoNetCert = new certManager.Certificate('unmango-net', {
   metadata: { namespace: 'traefik-system' },
   spec: {
     secretName: 'default-tls-cert',
@@ -132,18 +134,69 @@ const defaultCert = new certManager.Certificate('default', {
       kind: leIssuer.kind.apply(x => x ?? ''),
     },
   },
+}, { aliases: [{ name: 'default' }] });
+
+// I don't think this cert is ultimately being used because:
+// - cloudflare provides their own TLS on the public end of the tunnel
+// - I have cloudflared pointed at a *.unmango.net domain, which will use the unmango.net cert.
+// - Traefik's docs on TLSStores are confusing, it sounds like non-default stores are ignored.
+const theclusterIoCert = new certManager.Certificate('thecluster-io', {
+  metadata: { name: 'thecluster-io', namespace: 'traefik-system' },
+  spec: {
+    secretName: 'thecluster-io-tls-cert',
+    duration: '2160h', // 90d
+    renewBefore: '360h', //15d
+    dnsNames: [
+      'thecluster.io',
+      '*.thecluster.io',
+      '*.int.thecluster.io',
+    ],
+    issuerRef: {
+      name: pulumi.output(leIssuer.metadata).apply(x => x?.name ?? ''),
+      kind: leIssuer.kind.apply(x => x ?? ''),
+    },
+  },
 });
 
-const tlsStore = new traefik.TLSStore('default', {
+const unmangoNetTlsStore = new traefik.TLSStore('default', {
   metadata: { name: 'default', namespace: 'traefik-system' },
   spec: {
     defaultCertificate: {
-      secretName: defaultCert.spec.secretName,
+      secretName: unmangoNetCert.spec.secretName,
     },
   },
 }, { dependsOn: traefikChart.ready });
 
+const theclusterIoTlsStore = new traefik.TLSStore('thecluster-io', {
+  metadata: { name: 'thecluster-io', namespace: 'traefik-system' },
+  spec: {
+    defaultCertificate: {
+      secretName: theclusterIoCert.spec.secretName,
+    },
+  },
+}, { dependsOn: traefikChart.ready });
+
+const tunnelNamespace = new rancher.Namespace('argo-tunnel', {
+  projectId: 'local:p-54lnv', // Networking
+  name: 'argo-tunnel',
+});
+
+const tunnel = new Tunnel('thecluster-io', {
+  namespace: tunnelNamespace.name,
+  cloudflare: {
+    accountId: cfConfig.accountId,
+    zone: 'thecluster.io',
+  },
+  hostname: 'thecluster.io',
+  recordName: 'thecluster.io',
+  // Point to the internal traefik url for two reasons:
+  // - No hard dependency on an IP if it changes
+  // - I didn't include an IP in the SAN of any of my certs...
+  service: 'https://traefik.int.unmango.net',
+});
+
 interface CloudflareConfig {
+  accountId: string;
   apiToken: string;
 }
 
