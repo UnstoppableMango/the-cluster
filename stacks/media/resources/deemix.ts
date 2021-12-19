@@ -11,7 +11,6 @@ export class Deemix extends ComponentResource {
   // public readonly downloadsPv: k8s.core.v1.PersistentVolume;
   public readonly deployment: kx.Deployment;
   public readonly service: kx.Service;
-  public readonly ingress: k8s.networking.v1.Ingress;
 
   constructor(private name: string, args: DeemixArgs, opts?: ComponentResourceOptions) {
     super('unmango:apps:deemix', name, undefined, opts);
@@ -77,26 +76,6 @@ export class Deemix extends ComponentResource {
     this.service = this.deployment.createService({
       type: kx.types.ServiceType.ClusterIP,
     });
-
-    this.ingress = new k8s.networking.v1.Ingress(this.getName(), {
-      metadata: { namespace: args.namespace },
-      spec: {
-        rules: [{
-          host: 'deemix.int.unmango.net',
-          http: {
-            paths: [{
-              pathType: 'ImplementationSpecific',
-              backend: {
-                service: {
-                  name: this.service.metadata.name,
-                  port: { name: 'http' },
-                },
-              },
-            }],
-          },
-        }],
-      },
-    }, { parent: this });
   }
 
 }
