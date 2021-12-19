@@ -25,12 +25,14 @@ export class Deluge extends ComponentResource {
   constructor(private name: string, private args: DelugeArgs, private opts?: ComponentResourceOptions) {
     super('unmango:apps:deluge', name, undefined, opts);
 
+    const storageArgs = pulumi.output(args.storage);
+
     this.configPvc = new kx.PersistentVolumeClaim(this.getName('config'), {
       metadata: { namespace: this.args.namespace },
       spec: {
-        storageClassName: 'longhorn',
-        accessModes: ['ReadWriteOnce'],
-        resources: { requests: { storage: '1Gi' } },
+        accessModes: storageArgs.accessModes,
+        resources: { requests: { storage: storageArgs.size } },
+        storageClassName: storageArgs.class,
       },
     }, { parent: this });
   
@@ -77,13 +79,15 @@ export class Deluge extends ComponentResource {
       metadata: { namespace: this.args.namespace },
       stringData: { password: this.args.pia.password },
     }, { parent: this });
+
+    const downloadArgs = pulumi.output(args.downloads);
   
     this.downloads = new kx.PersistentVolumeClaim(this.getName('downloads'), {
       metadata: { namespace: this.args.namespace },
       spec: {
-        accessModes: ['ReadWriteMany'],
-        resources: { requests: { storage: '1000Gi' } },
-        storageClassName: 'nfs-client',
+        accessModes: downloadArgs.storage.accessModes,
+        resources: { requests: { storage: downloadArgs.storage.size } },
+        storageClassName: downloadArgs.storage.class,
       },
     }, { parent: this });
   
@@ -267,7 +271,19 @@ export interface DelugeConfig {
 
 export interface DelugeArgs {
   deluge: DelugeConfig;
+  downloads: Input<{
+    storage: Input<{
+      accessModes: Input<string>[];
+      class: Input<string>;
+      size: Input<string>;
+    }>;
+  }>;
   namespace: Input<string>;
   pia: Pia;
   projectId: Input<string>;
+  storage: Input<{
+    accessModes: Input<string>[];
+    class: Input<string>;
+    size: Input<string>;
+  }>;
 }
