@@ -1,6 +1,5 @@
 import * as pulumi from '@pulumi/pulumi';
 import { Project } from '@pulumi/rancher2';
-import { KeyCloak } from './resources';
 
 const config = new pulumi.Config();
 const remoteStack = config.require('remoteStack');
@@ -13,12 +12,12 @@ const project = new Project('auth', {
   clusterId,
 });
 
-const keycloak = new KeyCloak('keycloak', {
-  clusterId,
-  projectId: project.id,
-  version: '2.0.1',
-});
+// const keycloak = new KeyCloak('keycloak', {
+//   clusterId,
+//   projectId: project.id,
+//   version: '2.0.1',
+// });
 
-export const keycloakAdminPassword = pulumi.secret(keycloak.adminPassword.result);
-export const keycloakManagementPassword = pulumi.secret(keycloak.managementPassword.result);
-export const keycloakPostgresqlPassword = pulumi.secret(keycloak.postgresPassword.result);
+// export const keycloakAdminPassword = pulumi.secret(keycloak.adminPassword.result);
+// export const keycloakManagementPassword = pulumi.secret(keycloak.managementPassword.result);
+// export const keycloakPostgresqlPassword = pulumi.secret(keycloak.postgresPassword.result);
