@@ -188,7 +188,12 @@ const tunnel = new Tunnel('thecluster-io', {
     accountId: cfConfig.accountId,
     zone: 'thecluster.io',
   },
-  dnsRecords: ['thecluster.io', 'dash', 'rancher'],
+  dnsRecords: [
+    'thecluster.io',
+    'dash',
+    'media',
+    'rancher',
+  ],
   // Point to the internal traefik url for two reasons:
   // - No hard dependency on an IP if it changes
   // - I didn't include an IP in the SAN of any of my certs...
