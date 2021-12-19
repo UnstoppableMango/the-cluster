@@ -1,4 +1,5 @@
 import * as kx from '@pulumi/kubernetesx';
+import * as traefik from '@pulumi/crds/traefik/v1alpha1';
 import { ComponentResource, ComponentResourceOptions, Input } from '@pulumi/pulumi';
 import { getNameResolver } from '@unmango/shared';
 
@@ -8,6 +9,7 @@ export class Deemix extends ComponentResource {
 
   public readonly configPvc: kx.PersistentVolumeClaim;
   public readonly deployment: kx.Deployment;
+  public readonly ingressRoute: traefik.IngressRoute;
   public readonly service: kx.Service;
 
   constructor(private name: string, args: DeemixArgs, opts?: ComponentResourceOptions) {
@@ -61,6 +63,21 @@ export class Deemix extends ComponentResource {
 
     this.service = this.deployment.createService({
       type: kx.types.ServiceType.ClusterIP,
+    });
+
+    this.ingressRoute = new traefik.IngressRoute(this.getName(), {
+      metadata: { namespace: args.namespace },
+      spec: {
+        entryPoints: ['websecure'],
+        routes: [{
+          kind: 'Rule',
+          match: 'Host(`deemix.int.unmango.net`)',
+          services: [{
+            name: this.service.metadata.name,
+            port: this.service.spec.ports[0].port,
+          }],
+        }],
+      },
     });
   }
 
