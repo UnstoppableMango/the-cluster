@@ -1,5 +1,5 @@
 import * as kx from '@pulumi/kubernetesx';
-import * as k8s from '@pulumi/kubernetes';
+import * as traefik from '@pulumi/crds/traefik/v1alpha1';
 import { ComponentResource, ComponentResourceOptions, Input } from '@pulumi/pulumi';
 import { getNameResolver } from '@unmango/shared';
 
@@ -8,10 +8,9 @@ export class Deemix extends ComponentResource {
   private readonly getName = getNameResolver('deemix', this.name);
 
   public readonly configPvc: kx.PersistentVolumeClaim;
-  // public readonly downloadsPv: k8s.core.v1.PersistentVolume;
   public readonly deployment: kx.Deployment;
+  public readonly ingressRoute: traefik.IngressRoute;
   public readonly service: kx.Service;
-  public readonly ingress: k8s.networking.v1.Ingress;
 
   constructor(private name: string, args: DeemixArgs, opts?: ComponentResourceOptions) {
     super('unmango:apps:deemix', name, undefined, opts);
@@ -23,17 +22,6 @@ export class Deemix extends ComponentResource {
         resources: { requests: { storage: '5Gi' } },
       },
     }, { parent: this });
-
-    // this.downloadsPv = new k8s.core.v1.PersistentVolume(this.getName(), {
-    //   metadata: { namespace: args.namespace },
-    //   spec: {
-    //     accessModes: ['ReadWriteOnce'],
-    //     nfs: {
-    //       server: 'zeus',
-    //       path: '/tank1/media/music',
-    //     },
-    //   },
-    // }, { parent: this });
 
     const pb = new kx.PodBuilder({
       // LSIO alpine based image
@@ -52,8 +40,7 @@ export class Deemix extends ComponentResource {
           PGID: '1000',
           // ARL: args.arl, // Not working in the current version
           // UMASK_SET: '022',
-          DEEZUI: 'false', // Enables Deezloader UI
-          REVERSEPROXY: 'true'
+          REVERSEPROXY: 'true',
         },
         ports: {
           http: 6595,
@@ -78,25 +65,20 @@ export class Deemix extends ComponentResource {
       type: kx.types.ServiceType.ClusterIP,
     });
 
-    this.ingress = new k8s.networking.v1.Ingress(this.getName(), {
+    this.ingressRoute = new traefik.IngressRoute(this.getName(), {
       metadata: { namespace: args.namespace },
       spec: {
-        rules: [{
-          host: 'deemix.int.unmango.net',
-          http: {
-            paths: [{
-              pathType: 'ImplementationSpecific',
-              backend: {
-                service: {
-                  name: this.service.metadata.name,
-                  port: { name: 'http' },
-                },
-              },
-            }],
-          },
+        entryPoints: ['websecure'],
+        routes: [{
+          kind: 'Rule',
+          match: 'Host(`deemix.int.unmango.net`)',
+          services: [{
+            name: this.service.metadata.name,
+            port: this.service.spec.ports[0].port,
+          }],
         }],
       },
-    }, { parent: this });
+    });
   }
 
 }
