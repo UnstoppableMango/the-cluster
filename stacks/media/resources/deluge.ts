@@ -4,6 +4,7 @@ import * as kx from '@pulumi/kubernetesx';
 import { ComponentResource, ComponentResourceOptions, Input, Output } from '@pulumi/pulumi';
 import * as pulumi from '@pulumi/pulumi';
 import * as util from '@unmango/shared/util';
+import * as traefik from '@pulumi/crds/traefik/v1alpha1';
 import { Pia } from './pia';
 
 export class Deluge extends ComponentResource {
@@ -18,7 +19,7 @@ export class Deluge extends ComponentResource {
   public readonly deployment: kx.Deployment;
   public readonly service: k8s.core.v1.Service;
   public readonly daemonService: k8s.core.v1.Service;
-  public readonly ingress: k8s.networking.v1.Ingress;
+  public readonly ingressRoute: traefik.IngressRoute;
   public readonly updateConfig?: k8s.batch.v1.Job;
 
   constructor(private name: string, private args: DelugeArgs, private opts?: ComponentResourceOptions) {
@@ -46,31 +47,18 @@ export class Deluge extends ComponentResource {
         VPN_ENABLED: 'yes',
         VPN_USER: this.args.pia.user,
         VPN_PROV: 'pia',
-        VPN_CLIENT: 'wireguard', // <openvpn,wireguard>
-        // VPN_OPTIONS=<additional openvpn cli options> \
+        VPN_CLIENT: 'wireguard',
         STRICT_PORT_FORWARD: 'yes',
         ENABLE_PRIVOXY: 'no',
         LAN_NETWORK: '192.168.1.0/24', // CIDR notation
-        NAME_SERVERS: this.args.pia.nameservers.join(','),
+        // TODO: Remove nameservers from config
+        NAME_SERVERS: '84.200.69.80,37.235.1.174,1.1.1.1,37.235.1.177,84.200.70.40,1.0.0.1',
         DELUGE_DAEMON_LOG_LEVEL: 'error', // <critical|error|warning|info|debug>
         DELUGE_WEB_LOG_LEVEL: 'error', // <critical|error|warning|info|debug>
-        // ADDITIONAL_PORTS: '',
         DEBUG: 'true',
         UMASK: '000',
         PUID: '0',
         PGID: '0',
-      },
-    }, { parent: this });
-
-    const coreConf = fs.readFile('./resources/deluge/core.conf', { encoding: 'utf8' });
-    const baseConf = fs.readFile('./resources/deluge/base.conf', { encoding: 'utf8' });
-    const mergeSh = fs.readFile('./resources/deluge/merge.sh', { encoding: 'utf8' });
-    this.confOverride = new kx.ConfigMap(this.getName('conf-override'), {
-      metadata: { namespace: args.namespace },
-      data: {
-        'core.conf': pulumi.output(coreConf),
-        'base.conf': pulumi.output(baseConf),
-        'merge.sh': pulumi.output(mergeSh),
       },
     }, { parent: this });
   
@@ -123,7 +111,7 @@ export class Deluge extends ComponentResource {
           privileged: true,
         },
         // TODO: Allow passing version
-        image: 'binhex/arch-delugevpn:2.0.4.dev38-g23a48dd01-3-06',
+        image: 'binhex/arch-delugevpn:2.0.5-1-01',
         envFrom: [{ configMapRef: { name: this.env.metadata.name } }],
         env: {
           VPN_PASS: this.piaSecret.asEnvValue('password'),
@@ -143,7 +131,9 @@ export class Deluge extends ComponentResource {
   
     this.deployment = new kx.Deployment(this.getName('deluge'), {
       metadata: { namespace: this.args.namespace },
-      spec: pb.asDeploymentSpec(),
+      spec: pb.asDeploymentSpec({
+        strategy: { type: 'Recreate' },
+      }),
     }, { parent: this });
   
     this.service = new k8s.core.v1.Service(this.getName('http'), {
@@ -180,26 +170,41 @@ export class Deluge extends ComponentResource {
       },
     }, { parent: this });
 
-    this.ingress = new k8s.networking.v1.Ingress(this.getName('ingress'), {
-      metadata: { namespace: args.namespace },
+    this.ingressRoute = new traefik.IngressRoute(this.getName(), {
+      metadata: { name: this.getName(), namespace: args.namespace },
       spec: {
-        rules: [{
-          host: `${this.name}.int.unmango.net`,
-          http: {
-            paths: [{
-              backend: {
-                service: {
-                  name: this.service.metadata.name,
-                  port: { name: 'http' },
-                },
-              },
-              // TODO: Required ✓, Correct?
-              pathType: 'ImplementationSpecific',
-            }],
-          },
+        entryPoints: ['websecure'],
+        routes: [{
+          kind: 'Rule',
+          match: 'Host(`deluge.int.unmango.net`)',
+          services: [{
+            name: this.service.metadata.name,
+            port: this.service.spec.ports[0].port,
+          }],
         }],
       },
     }, { parent: this });
+
+    // this.ingress = new k8s.networking.v1.Ingress(this.getName('ingress'), {
+    //   metadata: { namespace: args.namespace },
+    //   spec: {
+    //     rules: [{
+    //       host: `${this.name}.int.unmango.net`,
+    //       http: {
+    //         paths: [{
+    //           backend: {
+    //             service: {
+    //               name: this.service.metadata.name,
+    //               port: { name: 'http' },
+    //             },
+    //           },
+    //           // TODO: Required ✓, Correct?
+    //           pathType: 'ImplementationSpecific',
+    //         }],
+    //       },
+    //     }],
+    //   },
+    // }, { parent: this });
 
     // this.updateConfig = new k8s.batch.v1.Job(this.getName('config'), {
     //   metadata: { namespace: args.namespace },
