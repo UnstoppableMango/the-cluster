@@ -1,2 +1,6 @@
 config:
+  auth:github:
+    clientId: d1f065d7f2d33f3cfbd6
+    clientSecret:
+      secure: AAABAIGe3vFdN0Qi1JPkwSoj0CH3GP/bbn3LhwSFkQyLGv8bM8uIYYMlxRbqRCM4Eeztbn1nLhHPBnUqwIL0UFrAGjQ27yso
   auth:remoteStack: prod
