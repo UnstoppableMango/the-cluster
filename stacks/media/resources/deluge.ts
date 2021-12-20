@@ -15,7 +15,6 @@ export class Deluge extends ComponentResource {
   public readonly env: kx.ConfigMap;
   public readonly confOverride: kx.ConfigMap;
   public readonly piaSecret: kx.Secret;
-  public readonly downloads: kx.PersistentVolumeClaim;
   public readonly deployment: kx.Deployment;
   public readonly service: k8s.core.v1.Service;
   public readonly daemonService: k8s.core.v1.Service;
@@ -79,17 +78,6 @@ export class Deluge extends ComponentResource {
       metadata: { namespace: this.args.namespace },
       stringData: { password: this.args.pia.password },
     }, { parent: this });
-
-    const downloadArgs = pulumi.output(args.downloads);
-  
-    this.downloads = new kx.PersistentVolumeClaim(this.getName('downloads'), {
-      metadata: { namespace: this.args.namespace },
-      spec: {
-        accessModes: downloadArgs.storage.accessModes,
-        resources: { requests: { storage: downloadArgs.storage.size } },
-        storageClassName: downloadArgs.storage.class,
-      },
-    }, { parent: this });
   
     const pb = new kx.PodBuilder({
       securityContext: {
@@ -106,6 +94,12 @@ export class Deluge extends ComponentResource {
       volumes: [{
         name: this.getName('auth'),
         secret: { secretName: this.auth.metadata.name },
+      }, {
+        name: 'downloads',
+        nfs: {
+          server: 'zeus',
+          path: '/tank1/downloads',
+        },
       }],
       initContainers: [{
         name: this.getName('init'),
@@ -142,7 +136,7 @@ export class Deluge extends ComponentResource {
         },
         volumeMounts: [
           this.configPvc.mount('/config'),
-          this.downloads.mount('/data'),
+          { name: 'downloads',  mountPath: '/data' },
         ],
       }],
     });
@@ -271,13 +265,6 @@ export interface DelugeConfig {
 
 export interface DelugeArgs {
   deluge: DelugeConfig;
-  downloads: Input<{
-    storage: Input<{
-      accessModes: Input<string>[];
-      class: Input<string>;
-      size: Input<string>;
-    }>;
-  }>;
   namespace: Input<string>;
   pia: Pia;
   projectId: Input<string>;

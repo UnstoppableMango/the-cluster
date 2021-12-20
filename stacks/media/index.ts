@@ -66,13 +66,6 @@ const delugeConfig = config.requireObject<DelugeConfig>('deluge');
 
 const deluge = new Deluge('deluge', {
   deluge: delugeConfig,
-  downloads: {
-    storage: {
-      accessModes: ['ReadWriteOnce'],
-      class: 'longhorn',
-      size: '1000Gi',
-    },
-  },
   namespace: namespace.name,
   pia,
   projectId: project.id,
