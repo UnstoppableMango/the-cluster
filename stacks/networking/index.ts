@@ -61,6 +61,11 @@ const traefikChart = new k8s.helm.v3.Chart('traefik', {
       web: { redirectTo: 'websecure' },
       websecure: { tls: { enabled: true } },
     },
+    providers: {
+      kubernetesCRD: {
+        allowCrossNamespace: true,
+      },
+    },
   },
   transformations: [(obj) => {
     // Either Helm or Pulumi doesn't want to put ALL
@@ -190,6 +195,7 @@ const tunnel = new Tunnel('thecluster-io', {
   },
   dnsRecords: [
     'thecluster.io',
+    'auth',
     'dash',
     'media',
     'rancher',

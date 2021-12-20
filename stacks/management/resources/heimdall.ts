@@ -101,6 +101,7 @@ export class Heimdall extends ComponentResource {
             name: this.service.metadata.name,
             port: 80,
           }],
+          middlewares: args.middlewares,
         }],
       },
     }, { parent: this });
@@ -118,4 +119,8 @@ export interface HeimdallArgs {
   puid?: Input<string>;
   pgid?: Input<string>;
   tz?: Input<string>;
+  middlewares?: Input<{
+    name: Input<string>;
+    namespace?: Input<string>;
+  }>[];
 }

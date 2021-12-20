@@ -49,4 +49,8 @@ const heimdallExternal = new Heimdall('heimdall-ext', {
   projectId: project.id,
   hostname: 'dash.thecluster.io',
   tlsStore: 'thecluster-io',
+  // middlewares: [{
+  //   name: 'traefik-forward-auth',
+  //   namespace: 'traefik-forward-auth',
+  // }],
 });
