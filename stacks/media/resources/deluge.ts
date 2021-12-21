@@ -14,7 +14,6 @@ export class Deluge extends ComponentResource {
   public readonly configPvc: kx.PersistentVolumeClaim;
   public readonly auth: kx.Secret;
   public readonly env: kx.ConfigMap;
-  public readonly confOverride: kx.ConfigMap;
   public readonly piaSecret: kx.Secret;
   public readonly deployment: kx.Deployment;
   public readonly service: k8s.core.v1.Service;
@@ -56,7 +55,7 @@ export class Deluge extends ComponentResource {
         DELUGE_DAEMON_LOG_LEVEL: 'error', // <critical|error|warning|info|debug>
         DELUGE_WEB_LOG_LEVEL: 'error', // <critical|error|warning|info|debug>
         DEBUG: 'true',
-        UMASK: '000',
+        UMASK: '022',
         PUID: '0',
         PGID: '0',
       },
