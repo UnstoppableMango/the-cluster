@@ -185,27 +185,6 @@ export class Deluge extends ComponentResource {
       },
     }, { parent: this });
 
-    // this.ingress = new k8s.networking.v1.Ingress(this.getName('ingress'), {
-    //   metadata: { namespace: args.namespace },
-    //   spec: {
-    //     rules: [{
-    //       host: `${this.name}.int.unmango.net`,
-    //       http: {
-    //         paths: [{
-    //           backend: {
-    //             service: {
-    //               name: this.service.metadata.name,
-    //               port: { name: 'http' },
-    //             },
-    //           },
-    //           // TODO: Required ✓, Correct?
-    //           pathType: 'ImplementationSpecific',
-    //         }],
-    //       },
-    //     }],
-    //   },
-    // }, { parent: this });
-
     // this.updateConfig = new k8s.batch.v1.Job(this.getName('config'), {
     //   metadata: { namespace: args.namespace },
     //   spec: {
