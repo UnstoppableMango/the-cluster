@@ -87,7 +87,7 @@ export class Radarr extends ComponentResource {
         entryPoints: ['websecure'],
         routes: [{
           kind: 'Rule',
-          match: `Host(\`${this.name}.int.unmango.net\`)`,
+          match: `Host(\`media.int.unmango.net\`) && PathPrefix(\`/${this.name}\`)`,
           services: [{
             name: this.service.metadata.name,
             port: this.service.spec.ports[0].port,
