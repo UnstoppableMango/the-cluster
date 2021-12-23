@@ -2,7 +2,9 @@ import { Image } from '@pulumi/docker';
 import * as k8s from '@pulumi/kubernetes';
 import * as kx from '@pulumi/kubernetesx';
 import * as pulumi from '@pulumi/pulumi';
+import * as traefik from '@pulumi/crds/traefik/v1alpha1';
 import { Namespace, Project } from '@pulumi/rancher2';
+import { matchBuilder } from '@unmango/shared/traefik';
 
 import {
   Deemix,
@@ -32,6 +34,21 @@ const project = new Project('media', {
 const namespace = new Namespace('media', {
   name: 'media',
   projectId: project.id,
+});
+
+const stripMediaPrefixes = new traefik.Middleware('strip-prefixes', {
+  metadata: {
+    name: 'strip-prefixes',
+    namespace: namespace.name,
+  },
+  spec: {
+    stripPrefix: {
+      prefixes: [
+        '/deluge',
+      ],
+      forceSlash: false,
+    },
+  },
 });
 
 const { puid, pgid, tz } = config.requireObject<LinuxServerConfig>('linuxserver');
@@ -79,6 +96,35 @@ const deluge = new Deluge('deluge', {
   },
 });
 
+// TODO: Fix this
+const externalDelugeRoute = new traefik.IngressRoute('deluge-ext', {
+  metadata: {
+    name: 'deluge-ext',
+    namespace: namespace.name,
+  },
+  spec: {
+    entryPoints: ['websecure'],
+    routes: [{
+      kind: 'Rule',
+      match: matchBuilder()
+        .host('media.thecluster.io').and().pathPrefix('/deluge')
+        .build(),
+      services: [{
+        name: deluge.service.metadata.name,
+        port: deluge.service.spec.ports[0].port,
+        namespace: namespace.name,
+      }],
+      middlewares: [{
+        name: 'basic-auth',
+        namespace: 'traefik-system',
+      }, {
+        name: 'strip-prefixes',
+        namespace: namespace.name,
+      }],
+    }],
+  },
+});
+
 const completedDownloadsNfs: {
   server: pulumi.Input<string>;
   path: pulumi.Input<string>;
@@ -104,6 +150,31 @@ const completedDownloadsNfs: {
 const jackett = new Jackett('jackett', {
   namespace: namespace.name,
   linuxServer: linuxServerShared,
+});
+
+const externalJackettRoute = new traefik.IngressRoute('jackett-ext', {
+  metadata: {
+    name: 'jackett-ext',
+    namespace: namespace.name,
+  },
+  spec: {
+    entryPoints: ['websecure'],
+    routes: [{
+      kind: 'Rule',
+      match: matchBuilder()
+        .host('media.thecluster.io').and().pathPrefix('/jackett')
+        .build(),
+      services: [{
+        name: jackett.service.metadata.name,
+        port: jackett.service.spec.ports[0].port,
+        namespace: namespace.name,
+      }],
+      middlewares: [{
+        name: 'basic-auth',
+        namespace: 'traefik-system',
+      }],
+    }],
+  },
 });
 
 // const flareSolverr = new FlareSolverr('flare-solverr', {
@@ -163,6 +234,31 @@ const movies = new Radarr('movies', {
   },
 });
 
+const externalMoviesRoute = new traefik.IngressRoute('movies-ext', {
+  metadata: {
+    name: 'movies-ext',
+    namespace: namespace.name,
+  },
+  spec: {
+    entryPoints: ['websecure'],
+    routes: [{
+      kind: 'Rule',
+      match: matchBuilder()
+        .host('media.thecluster.io').and().pathPrefix('/movies')
+        .build(),
+      services: [{
+        name: movies.service.metadata.name,
+        port: movies.service.spec.ports[0].port,
+        namespace: namespace.name,
+      }],
+      middlewares: [{
+        name: 'basic-auth',
+        namespace: 'traefik-system',
+      }],
+    }],
+  },
+});
+
 const movies4k = new Radarr('movies4k', {
   namespace: namespace.name,
   linuxServer: linuxServerShared,
@@ -170,6 +266,31 @@ const movies4k = new Radarr('movies4k', {
   movies: {
     server: 'zeus',
     path: '/tank1/media/movies4k',
+  },
+});
+
+const externalMovies4kRoute = new traefik.IngressRoute('movies4k-ext', {
+  metadata: {
+    name: 'movies4k-ext',
+    namespace: namespace.name,
+  },
+  spec: {
+    entryPoints: ['websecure'],
+    routes: [{
+      kind: 'Rule',
+      match: matchBuilder()
+        .host('media.thecluster.io').and().pathPrefix('/movies4k')
+        .build(),
+      services: [{
+        name: movies4k.service.metadata.name,
+        port: movies4k.service.spec.ports[0].port,
+        namespace: namespace.name,
+      }],
+      middlewares: [{
+        name: 'basic-auth',
+        namespace: 'traefik-system',
+      }],
+    }],
   },
 });
 
