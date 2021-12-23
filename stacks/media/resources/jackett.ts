@@ -1,7 +1,9 @@
 import * as k8s from '@pulumi/kubernetes';
 import * as kx from '@pulumi/kubernetesx';
+import * as traefik from '@pulumi/crds/traefik/v1alpha1';
 import { ComponentResource, ComponentResourceOptions, Input } from '@pulumi/pulumi';
 import { getNameResolver } from '@unmango/shared/util';
+import { matchBuilder } from '@unmango/shared/traefik';
 
 export class Jackett extends ComponentResource {
 
@@ -10,13 +12,16 @@ export class Jackett extends ComponentResource {
   public readonly config: kx.PersistentVolumeClaim;
   public readonly deployment: kx.Deployment;
   public readonly service: k8s.core.v1.Service;
-  public readonly ingress: k8s.networking.v1.Ingress;
+  public readonly ingressRoute: traefik.IngressRoute;
 
   constructor(private name: string, private args: JackettArgs, opts?: ComponentResourceOptions) {
     super('unmango:apps:jackett', name, undefined, opts);
 
-    this.config = new kx.PersistentVolumeClaim(this.getName('config'), {
-      metadata: { namespace: this.args.namespace },
+    this.config = new kx.PersistentVolumeClaim(this.getName(), {
+      metadata: {
+        name: this.getName(),
+        namespace: this.args.namespace,
+      },
       spec: {
         storageClassName: 'longhorn',
         accessModes: ['ReadWriteOnce'],
@@ -33,41 +38,42 @@ export class Jackett extends ComponentResource {
         securityContext: {
           privileged: true,
         },
-        image: 'linuxserver/jackett:version-v0.17.513',
+        image: 'linuxserver/jackett:v0.20.195-ls54',
         envFrom: [{
           configMapRef: { name: this.args.linuxServer.metadata.name },
         }],
         env: {
+          // Currently recommended by Jackett
           AUTO_UPDATE: 'true', // Optional
           // RUN_OPTS: '', // Optional
+          DOCKER_MODS: 'ghcr.io/gilbn/theme.park:jackett',
+          TP_THEME: 'plex',
         },
         ports: {
           http: 9117,
         },
         volumeMounts: [
           this.config.mount('/config'),
-          // Docs mention needing a mount to pass .torrent files to
-          // the download client... add back if needed?
-          // this.args.downloads.mount('/downloads'),
+          // Location for torrent files for clients that dont' work
+          // with Servarrs and pick up torrent files manually
+          // this.downloads.mount('/downloads'),
         ],
       }],
     });
   
     this.deployment = new kx.Deployment(this.getName(), {
-      metadata: { namespace: this.args.namespace },
+      metadata: {
+        name: this.getName(),
+        namespace: this.args.namespace,
+      },
       spec: pb.asDeploymentSpec({
         strategy: { type: 'Recreate' },
       }),
     }, { parent: this });
-  
-    // this.service = this.deployment.createService({
-    //   type: kx.types.ServiceType.ClusterIP,
-    //   ports: [{ name: 'http', port: 9117, targetPort: 9117 }],
-    // });
 
     this.service = new k8s.core.v1.Service(this.getName(), {
       metadata: {
-        name: 'jackett',
+        name: this.getName(),
         namespace: args.namespace,
       },
       spec: {
@@ -79,23 +85,23 @@ export class Jackett extends ComponentResource {
       },
     }, { parent: this });
 
-    this.ingress = new k8s.networking.v1.Ingress(this.getName('ingress'), {
-      metadata: { namespace: args.namespace },
+    this.ingressRoute = new traefik.IngressRoute(this.getName(), {
+      metadata: {
+        name: this.getName(),
+        namespace: this.args.namespace,
+      },
       spec: {
-        rules: [{
-          host: `${this.name}.int.unmango.net`,
-          http: {
-            paths: [{
-              backend: {
-                service: {
-                  name: this.service.metadata.name,
-                  port: { name: 'http' },
-                },
-              },
-              // TODO: Required ✓, Correct?
-              pathType: 'ImplementationSpecific',
-            }],
-          },
+        entryPoints: ['websecure'],
+        routes: [{
+          kind: 'Rule',
+          match: matchBuilder()
+            .host('media.int.unmango.net').and().pathPrefix(`/${this.name}`)
+            .or().host(`${this.name}.int.unmango.net`)
+            .build(),
+          services: [{
+            name: this.service.metadata.name,
+            port: this.service.spec.ports[0].port,
+          }],
         }],
       },
     }, { parent: this });
