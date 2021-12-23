@@ -11,11 +11,6 @@ config:
     puid: 1000
     tz: America/Chicago
   media:pia:
-    nameservers:
-    - 209.222.18.222
-    - 209.222.18.218
-    openvpn: https://www.privateinternetaccess.com/openvpn/openvpn-nextgen.zip
-    ovpnFile: ./resources/openvpn-nextgen.zip
     password:
       secure: AAABANiKoQRbtfpHGHhfmFEi9TQHH1lAlfZVYwaGoMg2Pe4SkiNRzq+sh9+TphQ=
     user: p7531788

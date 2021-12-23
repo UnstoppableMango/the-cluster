@@ -12,7 +12,7 @@ import {
   Jackett,
   Lidarr,
   LinuxServerConfig,
-  Pia,
+  PiaConfig,
   Radarr,
   ServiceConnector,
   Sonarr,
@@ -33,9 +33,6 @@ const namespace = new Namespace('media', {
   name: 'media',
   projectId: project.id,
 });
-
-const pia = config.requireObject<Pia>('pia');
-const delugeConfig = config.requireObject<DelugeConfig>('deluge');
 
 // const { puid, pgid, tz } = config.requireObject<LinuxServerConfig>('linuxserver');
 // const linuxServerShared = new kx.ConfigMap('linuxserver-shared', {
@@ -63,6 +60,9 @@ const delugeConfig = config.requireObject<DelugeConfig>('deluge');
 //   name: 'deluge',
 //   projectId: project.id,
 // });
+
+const pia = config.requireObject<PiaConfig>('pia');
+const delugeConfig = config.requireObject<DelugeConfig>('deluge');
 
 const deluge = new Deluge('deluge', {
   deluge: delugeConfig,
