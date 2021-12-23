@@ -3,6 +3,7 @@ import * as kx from '@pulumi/kubernetesx';
 import * as traefik from '@pulumi/crds/traefik/v1alpha1';
 import { ComponentResource, ComponentResourceOptions, Input } from '@pulumi/pulumi';
 import { getNameResolver } from '@unmango/shared/util';
+import { matchBuilder } from '@unmango/shared/traefik';
 
 export class Jackett extends ComponentResource {
 
@@ -42,6 +43,7 @@ export class Jackett extends ComponentResource {
           configMapRef: { name: this.args.linuxServer.metadata.name },
         }],
         env: {
+          // Currently recommended by Jackett
           AUTO_UPDATE: 'true', // Optional
           // RUN_OPTS: '', // Optional
           DOCKER_MODS: 'ghcr.io/gilbn/theme.park:jackett',
@@ -52,9 +54,9 @@ export class Jackett extends ComponentResource {
         },
         volumeMounts: [
           this.config.mount('/config'),
-          // Docs mention needing a mount to pass .torrent files to
-          // the download client... add back if needed?
-          // this.args.downloads.mount('/downloads'),
+          // Location for torrent files for clients that dont' work
+          // with Servarrs and pick up torrent files manually
+          // this.downloads.mount('/downloads'),
         ],
       }],
     });
@@ -92,7 +94,10 @@ export class Jackett extends ComponentResource {
         entryPoints: ['websecure'],
         routes: [{
           kind: 'Rule',
-          match: `Host(\`media.int.unmango.net\`) && PathPrefix(\`/${this.name}\`) || Host(\`${this.name}.int.unmango.net\`)`,
+          match: matchBuilder()
+            .host('media.int.unmango.net').and().pathPrefix(`/${this.name}`)
+            .or().host(`${this.name}.int.unmango.net`)
+            .build(),
           services: [{
             name: this.service.metadata.name,
             port: this.service.spec.ports[0].port,
