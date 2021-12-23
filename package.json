@@ -7,7 +7,7 @@
     "gen-crds": "npx ts-node tools/gen-crds.ts"
   },
   "dependencies": {
-    "@pulumi/cloudflare": "^4.0.0",
+    "@pulumi/cloudflare": "^4.1.0",
     "@pulumi/crds": "file:lib/crds",
     "@pulumi/docker": "^3.1.0",
     "@pulumi/kubernetes": "^3.12.1",
