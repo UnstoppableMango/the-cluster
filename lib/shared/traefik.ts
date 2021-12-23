@@ -1,3 +1,5 @@
+import * as traefik from '@pulumi/crds/traefik/v1alpha1';
+
 interface CanBuild {
   build: () => string;
 }
@@ -53,3 +55,22 @@ class Builder implements MatchBuilder {
 }
 
 export const matchBuilder = (): MatchBuilder => new Builder();
+
+export type StripPrefixMiddleware = {
+  (prefix: string, forceSlash?: boolean): traefik.Middleware
+}
+
+export const stripPrefixMiddlewareBuilder = (name: string, namespace: string): StripPrefixMiddleware => {
+  return (prefix: string, forceSlash = false) => new traefik.Middleware(name, {
+    metadata: {
+      name,
+      namespace,
+    },
+    spec: {
+      stripPrefix: {
+        prefixes: [prefix],
+        forceSlash,
+      },
+    },
+  });
+};
