@@ -1,5 +1,5 @@
-import * as k8s from '@pulumi/kubernetes';
 import * as kx from '@pulumi/kubernetesx';
+import * as traefik from '@pulumi/crds/traefik/v1alpha1';
 import { ComponentResource, ComponentResourceOptions, Input } from '@pulumi/pulumi';
 import { getNameResolver } from '@unmango/shared/util';
 
@@ -8,34 +8,33 @@ export class Radarr extends ComponentResource {
   private readonly getName = getNameResolver('radarr', this.name);
 
   public readonly config: kx.PersistentVolumeClaim;
-  public readonly media: kx.PersistentVolumeClaim;
   public readonly deployment: kx.Deployment;
   public readonly service: kx.Service;
-  public readonly ingress: k8s.networking.v1.Ingress;
+  public readonly ingressRoute: traefik.IngressRoute;
 
   constructor(private name: string, private args: RadarrArgs, opts?: ComponentResourceOptions) {
     super('unmango:apps:radarr', name, undefined, opts);
 
-    this.config = new kx.PersistentVolumeClaim(this.getName('data'), {
-      metadata: { namespace: this.args.namespace },
+    this.config = new kx.PersistentVolumeClaim(this.getName(), {
+      metadata: {
+        name: this.getName(),
+        namespace: this.args.namespace,
+      },
       spec: {
         storageClassName: 'longhorn',
         accessModes: ['ReadWriteOnce'],
-        resources: { requests: { storage: '2Gi' } },
-      },
-    }, { parent: this });
-  
-    this.media = new kx.PersistentVolumeClaim(this.getName('media'), {
-      metadata: { namespace: this.args.namespace },
-      spec: {
-        accessModes: ['ReadWriteOnce', 'ReadOnlyMany'],
-        resources: { requests: { storage: '5000Gi' } },
-        storageClassName: 'nfs',
-        volumeName: this.args.moviesVolume.metadata.name,
+        resources: { requests: { storage: '5Gi' } },
       },
     }, { parent: this });
   
     const pb = new kx.PodBuilder({
+      volumes: [{
+        name: 'downloads',
+        nfs: this.args.downloads,
+      }, {
+        name: 'movies',
+        nfs: this.args.movies,
+      }],
       containers: [{
         // kx sets the selector to the container name.
         // With multiple resources, it won't match correctly, so
@@ -44,23 +43,32 @@ export class Radarr extends ComponentResource {
         securityContext: {
           privileged: true,
         },
-        image: 'linuxserver/radarr:version-3.0.2.4552',
+        image: 'linuxserver/radarr:3.2.2.5080-ls125',
         envFrom: [{
-          configMapRef: { name: this.args.linuxServer.metadata.name },
+          configMapRef: {
+            name: this.args.linuxServer.metadata.name,
+          },
         }],
+        env: {
+          DOCKER_MODS: 'ghcr.io/gilbn/theme.park:radarr',
+          TP_THEME: 'plex',
+        },
         ports: {
           http: 7878,
         },
         volumeMounts: [
           this.config.mount('/config'),
-          this.media.mount('/movies'),
-          this.args.downloads.mount('/downloads', 'completed'),
+          { name: 'movies', mountPath: '/movies' },
+          { name: 'downloads', mountPath: '/downloads' },
         ],
       }],
     });
   
-    this.deployment = new kx.Deployment(this.getName('deployment'), {
-      metadata: { namespace: this.args.namespace },
+    this.deployment = new kx.Deployment(this.getName(), {
+      metadata: {
+        name: this.getName(),
+        namespace: this.args.namespace,
+      },
       spec: pb.asDeploymentSpec({
         strategy: { type: 'Recreate' },
       }),
@@ -68,26 +76,22 @@ export class Radarr extends ComponentResource {
   
     this.service = this.deployment.createService({
       type: kx.types.ServiceType.ClusterIP,
-      ports: [{ name: 'http', port: 7878, targetPort: 7878 }],
     });
 
-    this.ingress = new k8s.networking.v1.Ingress(this.getName('ingress'), {
-      metadata: { namespace: args.namespace },
+    this.ingressRoute = new traefik.IngressRoute(this.getName(), {
+      metadata: {
+        name: this.getName(),
+        namespace: this.args.namespace,
+      },
       spec: {
-        rules: [{
-          host: `${this.name}.int.unmango.net`,
-          http: {
-            paths: [{
-              backend: {
-                service: {
-                  name: this.service.metadata.name,
-                  port: { name: 'http' },
-                },
-              },
-              // TODO: Required ✓, Correct?
-              pathType: 'ImplementationSpecific',
-            }],
-          },
+        entryPoints: ['websecure'],
+        routes: [{
+          kind: 'Rule',
+          match: `Host(\`media.int.unmango.net\`) && PathPrefix(\`/${this.name}\`)`,
+          services: [{
+            name: this.service.metadata.name,
+            port: this.service.spec.ports[0].port,
+          }],
         }],
       },
     }, { parent: this });
@@ -97,9 +101,14 @@ export class Radarr extends ComponentResource {
 
 }
 
+interface Nfs {
+  server: Input<string>;
+  path: Input<string>;
+}
+
 export interface RadarrArgs {
   namespace: Input<string>;
   linuxServer: kx.ConfigMap;
-  downloads: kx.PersistentVolumeClaim;
-  moviesVolume: k8s.core.v1.PersistentVolume;
+  downloads: Input<Nfs>;
+  movies: Input<Nfs>;
 }

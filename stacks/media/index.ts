@@ -34,15 +34,18 @@ const namespace = new Namespace('media', {
   projectId: project.id,
 });
 
-// const { puid, pgid, tz } = config.requireObject<LinuxServerConfig>('linuxserver');
-// const linuxServerShared = new kx.ConfigMap('linuxserver-shared', {
-//   metadata: { namespace: namespace.name },
-//   data: {
-//     PUID: `${puid}`,
-//     PGID: `${pgid}`,
-//     TZ: tz,
-//   },
-// });
+const { puid, pgid, tz } = config.requireObject<LinuxServerConfig>('linuxserver');
+const linuxServerShared = new kx.ConfigMap('linuxserver-shared', {
+  metadata: {
+    name: 'linuxserver-shared',
+    namespace: namespace.name,
+  },
+  data: {
+    PUID: `${puid}`,
+    PGID: `${pgid}`,
+    TZ: tz,
+  },
+});
 
 // const { username, password } = config.requireObject<{
 //   username: string, password: string,
@@ -75,6 +78,14 @@ const deluge = new Deluge('deluge', {
     size: '1Gi',
   },
 });
+
+const completedDownloadsNfs: {
+  server: pulumi.Input<string>;
+  path: pulumi.Input<string>;
+} = {
+  server: 'zeus',
+  path: '/tank1/downloads/completed',
+};
 
 // // Jackett
 // // const jackettNs = new Namespace('jackett', {
@@ -146,25 +157,26 @@ const deluge = new Deluge('deluge', {
 //   tvVolume: createMediaVolume('anime', namespace.name, '/tank1/media/anime'),
 // });
 
-// // Radarr
-// // const radarrNs = new Namespace('radarr', {
-// //   name: 'radarr',
-// //   projectId: project.id,
-// // });
+// Radarr
+const movies = new Radarr('movies', {
+  namespace: namespace.name,
+  linuxServer: linuxServerShared,
+  downloads: completedDownloadsNfs,
+  movies: {
+    server: 'apollo',
+    path: '/tank1/media/movies',
+  },
+});
 
-// const movies = new Radarr('movies', {
-//   namespace: namespace.name,
-//   linuxServer: linuxServerShared,
-//   downloads: deluge.downloads,
-//   moviesVolume: createMediaVolume('movies', namespace.name, '/tank1/media/movies'),
-// });
-
-// const movies4k = new Radarr('movies4k', {
-//   namespace: namespace.name,
-//   linuxServer: linuxServerShared,
-//   downloads: deluge.downloads,
-//   moviesVolume: createMediaVolume('movies4k', namespace.name, '/tank1/media/movies4k'),
-// });
+const movies4k = new Radarr('movies4k', {
+  namespace: namespace.name,
+  linuxServer: linuxServerShared,
+  downloads: completedDownloadsNfs,
+  movies: {
+    server: 'zeus',
+    path: '/tank1/media/movies4k',
+  },
+});
 
 // // Lidarr
 // // const lidarrNs = new Namespace('lidarr', {
