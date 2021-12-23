@@ -87,29 +87,24 @@ const completedDownloadsNfs: {
   path: '/tank1/downloads/completed',
 };
 
-// // Jackett
-// // const jackettNs = new Namespace('jackett', {
-// //   name: 'jackett',
-// //   projectId: project.id,
-// // });
-
-// // const indexPublisher = new Image('index-publisher', {
-// //   build: {
-// //     context: './containers',
-// //     dockerfile: './containers/index-publisher/Dockerfile',
-// //   },
-// //   imageName: 'harbor.int.unmango.net/library/index-publisher:latest',
-// //   registry: {
-// //     server: 'https://harbor.int.unmango.net',
-// //     username,
-// //     password,
-// //   },
-// // });
-
-// const jackett = new Jackett('jackett', {
-//   namespace: namespace.name,
-//   linuxServer: linuxServerShared,
+// Jackett
+// const indexPublisher = new Image('index-publisher', {
+//   build: {
+//     context: './containers',
+//     dockerfile: './containers/index-publisher/Dockerfile',
+//   },
+//   imageName: 'harbor.int.unmango.net/library/index-publisher:latest',
+//   registry: {
+//     server: 'https://harbor.int.unmango.net',
+//     username,
+//     password,
+//   },
 // });
+
+const jackett = new Jackett('jackett', {
+  namespace: namespace.name,
+  linuxServer: linuxServerShared,
+});
 
 // const flareSolverr = new FlareSolverr('flare-solverr', {
 //   namespace: namespace.name,
