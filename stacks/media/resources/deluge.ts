@@ -4,7 +4,7 @@ import * as kx from '@pulumi/kubernetesx';
 import { ComponentResource, ComponentResourceOptions, Input, Output } from '@pulumi/pulumi';
 import * as pulumi from '@pulumi/pulumi';
 import * as util from '@unmango/shared/util';
-import { Pia } from './pia';
+import * as traefik from '@pulumi/crds/traefik/v1alpha1';
 
 export class Deluge extends ComponentResource {
 
@@ -12,87 +12,50 @@ export class Deluge extends ComponentResource {
 
   public readonly configPvc: kx.PersistentVolumeClaim;
   public readonly auth: kx.Secret;
-  public readonly env: kx.ConfigMap;
-  public readonly confOverride: kx.ConfigMap;
   public readonly piaSecret: kx.Secret;
-  public readonly downloads: kx.PersistentVolumeClaim;
   public readonly deployment: kx.Deployment;
   public readonly service: k8s.core.v1.Service;
   public readonly daemonService: k8s.core.v1.Service;
-  public readonly ingress: k8s.networking.v1.Ingress;
+  public readonly ingressRoute: traefik.IngressRoute;
   public readonly updateConfig?: k8s.batch.v1.Job;
 
   constructor(private name: string, private args: DelugeArgs, private opts?: ComponentResourceOptions) {
     super('unmango:apps:deluge', name, undefined, opts);
 
+    const storageArgs = pulumi.output(args.storage);
+
     this.configPvc = new kx.PersistentVolumeClaim(this.getName('config'), {
-      metadata: { namespace: this.args.namespace },
+      metadata: {
+        name: this.getName('config'),
+        namespace: this.args.namespace,
+      },
       spec: {
-        storageClassName: 'longhorn',
-        accessModes: ['ReadWriteOnce'],
-        resources: { requests: { storage: '1Gi' } },
+        accessModes: storageArgs.accessModes,
+        resources: { requests: { storage: storageArgs.size } },
+        storageClassName: storageArgs.class,
       },
     }, { parent: this });
   
     this.auth = new kx.Secret(this.getName('auth'), {
-      metadata: { namespace: this.args.namespace },
+      metadata: {
+        name: this.getName('auth'),
+        namespace: this.args.namespace,
+      },
       stringData: { auth: this.getAuthValue() },
     }, { parent: this });
   
-    this.env = new kx.ConfigMap(this.getName('deluge'), {
-      metadata: { namespace: this.args.namespace },
-      data: {
-        VPN_ENABLED: 'yes',
-        VPN_USER: this.args.pia.user,
-        VPN_PROV: 'pia',
-        VPN_CLIENT: 'wireguard', // <openvpn,wireguard>
-        // VPN_OPTIONS=<additional openvpn cli options> \
-        STRICT_PORT_FORWARD: 'yes',
-        ENABLE_PRIVOXY: 'no',
-        LAN_NETWORK: '192.168.1.0/24', // CIDR notation
-        NAME_SERVERS: this.args.pia.nameservers.join(','),
-        DELUGE_DAEMON_LOG_LEVEL: 'error', // <critical|error|warning|info|debug>
-        DELUGE_WEB_LOG_LEVEL: 'error', // <critical|error|warning|info|debug>
-        // ADDITIONAL_PORTS: '',
-        DEBUG: 'true',
-        UMASK: '000',
-        PUID: '0',
-        PGID: '0',
-      },
-    }, { parent: this });
-
-    const coreConf = fs.readFile('./resources/deluge/core.conf', { encoding: 'utf8' });
-    const baseConf = fs.readFile('./resources/deluge/base.conf', { encoding: 'utf8' });
-    const mergeSh = fs.readFile('./resources/deluge/merge.sh', { encoding: 'utf8' });
-    this.confOverride = new kx.ConfigMap(this.getName('conf-override'), {
-      metadata: { namespace: args.namespace },
-      data: {
-        'core.conf': pulumi.output(coreConf),
-        'base.conf': pulumi.output(baseConf),
-        'merge.sh': pulumi.output(mergeSh),
-      },
-    }, { parent: this });
-  
     this.piaSecret = new kx.Secret(this.getName('pia'), {
-      metadata: { namespace: this.args.namespace },
-      stringData: { password: this.args.pia.password },
-    }, { parent: this });
-  
-    this.downloads = new kx.PersistentVolumeClaim(this.getName('downloads'), {
-      metadata: { namespace: this.args.namespace },
-      spec: {
-        accessModes: ['ReadWriteMany'],
-        resources: { requests: { storage: '1000Gi' } },
-        storageClassName: 'nfs-client',
+      metadata: {
+        name: this.getName('pia'),
+        namespace: this.args.namespace,
       },
+      stringData: { password: this.args.pia.password },
     }, { parent: this });
   
     const pb = new kx.PodBuilder({
       securityContext: {
         sysctls: [{
-          // Need to update cluster config to pass
-          // --allowed-unsafe-sysctls 'net.ipv4.conf.all.src_valid_mark'
-          // to kubelet in order for this to work
+          // Requires kubelet arg --allowed-unsafe-sysctls 'net.ipv4.conf.all.src_valid_mark'
           name: 'net.ipv4.conf.all.src_valid_mark', value: '1',
         }],
       },
@@ -102,9 +65,16 @@ export class Deluge extends ComponentResource {
       volumes: [{
         name: this.getName('auth'),
         secret: { secretName: this.auth.metadata.name },
+      }, {
+        name: 'downloads',
+        nfs: {
+          server: 'zeus',
+          path: '/tank1/downloads',
+        },
       }],
       initContainers: [{
-        name: this.getName('init'),
+        // Create a user for remote connections
+        name: this.getName('copy-auth'),
         image: 'busybox',
         command: ['cp', '/auth', '/config/auth'],
         volumeMounts: [{
@@ -112,6 +82,16 @@ export class Deluge extends ComponentResource {
           mountPath: '/auth',
           subPath: 'auth',
         }, {
+          name: this.configPvc.metadata.name,
+          mountPath: '/config',
+        }],
+      }, {
+        // Fixes an issue that seems to come up in
+        // the WebUI when re-creating the pod
+        name: this.getName('clear-hostlist'),
+        image: 'busybox',
+        command: ['rm', '-f', '--', '/config/hostlist.conf'],
+        volumeMounts: [{
           name: this.configPvc.metadata.name,
           mountPath: '/config',
         }],
@@ -124,11 +104,24 @@ export class Deluge extends ComponentResource {
         securityContext: {
           privileged: true,
         },
-        // TODO: Allow passing version
-        image: 'binhex/arch-delugevpn:2.0.4.dev38-g23a48dd01-3-06',
-        envFrom: [{ configMapRef: { name: this.env.metadata.name } }],
+        image: 'binhex/arch-delugevpn:2.0.5-1-02',
         env: {
+          VPN_ENABLED: 'yes',
+          VPN_USER: this.args.pia.user,
           VPN_PASS: this.piaSecret.asEnvValue('password'),
+          VPN_PROV: 'pia',
+          VPN_CLIENT: 'wireguard',
+          STRICT_PORT_FORWARD: 'yes',
+          ENABLE_PRIVOXY: 'no',
+          LAN_NETWORK: '192.168.1.0/24', // CIDR notation
+          // TODO: Remove nameservers from config
+          NAME_SERVERS: '84.200.69.80,37.235.1.174,1.1.1.1,37.235.1.177,84.200.70.40,1.0.0.1',
+          DELUGE_DAEMON_LOG_LEVEL: 'error', // <critical|error|warning|info|debug>
+          DELUGE_WEB_LOG_LEVEL: 'error', // <critical|error|warning|info|debug>
+          DEBUG: 'false',
+          UMASK: '022', // 0755
+          PUID: '1000', // erik on hades
+          PGID: '1001', // erik on hades
         },
         ports: {
           http: 8112,
@@ -138,19 +131,24 @@ export class Deluge extends ComponentResource {
         },
         volumeMounts: [
           this.configPvc.mount('/config'),
-          this.downloads.mount('/data'),
+          { name: 'downloads',  mountPath: '/data' },
         ],
       }],
     });
   
     this.deployment = new kx.Deployment(this.getName('deluge'), {
-      metadata: { namespace: this.args.namespace },
-      spec: pb.asDeploymentSpec(),
+      metadata: {
+        name: this.getName('deluge'),
+        namespace: this.args.namespace,
+      },
+      spec: pb.asDeploymentSpec({
+        strategy: { type: 'Recreate' },
+      }),
     }, { parent: this });
   
     this.service = new k8s.core.v1.Service(this.getName('http'), {
       metadata: {
-        name: 'deluge',
+        name: this.getName('deluge'),
         namespace: args.namespace,
       },
       spec: {
@@ -182,69 +180,20 @@ export class Deluge extends ComponentResource {
       },
     }, { parent: this });
 
-    this.ingress = new k8s.networking.v1.Ingress(this.getName('ingress'), {
-      metadata: { namespace: args.namespace },
+    this.ingressRoute = new traefik.IngressRoute(this.getName(), {
+      metadata: { name: this.getName(), namespace: args.namespace },
       spec: {
-        rules: [{
-          host: `${this.name}.int.unmango.net`,
-          http: {
-            paths: [{
-              backend: {
-                service: {
-                  name: this.service.metadata.name,
-                  port: { name: 'http' },
-                },
-              },
-              // TODO: Required ✓, Correct?
-              pathType: 'ImplementationSpecific',
-            }],
-          },
+        entryPoints: ['websecure'],
+        routes: [{
+          kind: 'Rule',
+          match: 'Host(`deluge.int.unmango.net`)',
+          services: [{
+            name: this.service.metadata.name,
+            port: this.service.spec.ports[0].port,
+          }],
         }],
       },
     }, { parent: this });
-
-    // this.updateConfig = new k8s.batch.v1.Job(this.getName('config'), {
-    //   metadata: { namespace: args.namespace },
-    //   spec: {
-    //     completions: 1,
-    //     ttlSecondsAfterFinished: 60,
-    //     template: {
-    //       spec: {
-    //         restartPolicy: 'Never',
-    //         volumes: [{
-    //           name: 'config',
-    //           persistentVolumeClaim: {
-    //             claimName: this.configPvc.metadata.name,
-    //           },
-    //         }, {
-    //           name: 'override',
-    //           configMap: {
-    //             name: this.confOverride.metadata.name,
-    //           },
-    //         }],
-    //         containers: [{
-    //           name: this.getName(),
-    //           // image: 'stedolan/jq',
-    //           image: 'realguess/jq',
-    //           command: [
-    //             '/bin/sh',
-    //             '/override/merge.sh',
-    //             './config/core.conf',
-    //             './override/core.conf',
-    //             './override/base.conf',
-    //           ],
-    //           volumeMounts: [{
-    //             name: 'config',
-    //             mountPath: '/config',
-    //           }, {
-    //             name: 'override',
-    //             mountPath: '/override',
-    //           }],
-    //         }],
-    //       },
-    //     },
-    //   },
-    // }, { parent: this });
 
     this.registerOutputs();
   }
@@ -265,9 +214,19 @@ export interface DelugeConfig {
   password: string;
 }
 
+export interface PiaConfig {
+  user: string;
+  password: string;
+}
+
 export interface DelugeArgs {
   deluge: DelugeConfig;
   namespace: Input<string>;
-  pia: Pia;
+  pia: PiaConfig;
   projectId: Input<string>;
+  storage: Input<{
+    accessModes: Input<string>[];
+    class: Input<string>;
+    size: Input<string>;
+  }>;
 }
