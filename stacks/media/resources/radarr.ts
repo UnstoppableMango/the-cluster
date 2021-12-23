@@ -49,6 +49,10 @@ export class Radarr extends ComponentResource {
             name: this.args.linuxServer.metadata.name,
           },
         }],
+        env: {
+          DOCKER_MODS: 'ghcr.io/gilbn/theme.park:radarr',
+          TP_THEME: 'plex',
+        },
         ports: {
           http: 7878,
         },
