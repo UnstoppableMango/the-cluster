@@ -96,7 +96,9 @@ const deluge = new Deluge('deluge', {
   },
 });
 
-// TODO: Fix this
+// Deluge supports a url base property for the webui in the conf file,
+// but it sounds like it may get wonky with Servarrs so gonna leave it
+// for now. Worth testing for myself though.
 const externalDelugeRoute = new traefik.IngressRoute('deluge-ext', {
   metadata: {
     name: 'deluge-ext',
@@ -107,7 +109,7 @@ const externalDelugeRoute = new traefik.IngressRoute('deluge-ext', {
     routes: [{
       kind: 'Rule',
       match: matchBuilder()
-        .host('media.thecluster.io').and().pathPrefix('/deluge')
+        .host('deluge.thecluster.io')
         .build(),
       services: [{
         name: deluge.service.metadata.name,
@@ -117,9 +119,6 @@ const externalDelugeRoute = new traefik.IngressRoute('deluge-ext', {
       middlewares: [{
         name: 'basic-auth',
         namespace: 'traefik-system',
-      }, {
-        name: 'strip-prefixes',
-        namespace: namespace.name,
       }],
     }],
   },

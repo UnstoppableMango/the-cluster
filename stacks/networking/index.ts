@@ -197,8 +197,11 @@ const tunnel = new Tunnel('thecluster-io', {
     'thecluster.io',
     'auth',
     'dash',
+    'deluge',
     'media',
     'rancher',
+    'satisfactory',
+    'minecraft',
   ],
   // Point to the internal traefik url for two reasons:
   // - No hard dependency on an IP if it changes
