@@ -38,13 +38,13 @@ export class Jackett extends ComponentResource {
         securityContext: {
           privileged: true,
         },
-        image: 'linuxserver/jackett:v0.20.195-ls54',
+        image: 'linuxserver/jackett:v0.20.197-ls54',
         envFrom: [{
           configMapRef: { name: this.args.linuxServer.metadata.name },
         }],
         env: {
-          // Currently recommended by Jackett
-          AUTO_UPDATE: 'true', // Optional
+          // Recommended to enable by Jackett, but breaks the theme
+          AUTO_UPDATE: 'false', // Optional
           // RUN_OPTS: '', // Optional
           DOCKER_MODS: 'ghcr.io/gilbn/theme.park:jackett',
           TP_THEME: 'plex',
