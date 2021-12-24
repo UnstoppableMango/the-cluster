@@ -195,32 +195,116 @@ const externalJackettRoute = new traefik.IngressRoute('jackett-ext', {
 // //   },
 // // });
 
-// // Sonarr
-// // const sonarrNs = new Namespace('sonarr', {
-// //   name: 'sonarr',
-// //   projectId: project.id,
-// // });
-
-// const tv = new Sonarr('tv', {
-//   namespace: namespace.name,
-//   linuxServer: linuxServerShared,
-//   downloads: deluge.downloads,
-//   tvVolume: createMediaVolume('tv', namespace.name, '/tank1/media/tv'),
+// Sonarr
+// const sonarrNs = new Namespace('sonarr', {
+//   name: 'sonarr',
+//   projectId: project.id,
 // });
 
-// const tv4k = new Sonarr('tv4k', {
-//   namespace: namespace.name,
-//   linuxServer: linuxServerShared,
-//   downloads: deluge.downloads,
-//   tvVolume: createMediaVolume('tv4k', namespace.name, '/tank1/media/tv4k'),
-// });
+const tv = new Sonarr('tv', {
+  namespace: namespace.name,
+  linuxServer: linuxServerShared,
+  downloads: completedDownloadsNfs,
+  tv: {
+    server: 'apollo',
+    path: '/tank1/media/tv',
+  },
+});
 
-// const anime = new Sonarr('anime', {
-//   namespace: namespace.name,
-//   linuxServer: linuxServerShared,
-//   downloads: deluge.downloads,
-//   tvVolume: createMediaVolume('anime', namespace.name, '/tank1/media/anime'),
-// });
+const externalTvRoute = new traefik.IngressRoute('tv-ext', {
+  metadata: {
+    name: 'tv-ext',
+    namespace: namespace.name,
+  },
+  spec: {
+    entryPoints: ['websecure'],
+    routes: [{
+      kind: 'Rule',
+      match: matchBuilder()
+        .host('media.thecluster.io').and().pathPrefix('/tv')
+        .build(),
+      services: [{
+        name: tv.service.metadata.name,
+        port: tv.service.spec.ports[0].port,
+        namespace: namespace.name,
+      }],
+      middlewares: [{
+        name: 'basic-auth',
+        namespace: 'traefik-system',
+      }],
+    }],
+  },
+});
+
+const tv4k = new Sonarr('tv4k', {
+  namespace: namespace.name,
+  linuxServer: linuxServerShared,
+  downloads: completedDownloadsNfs,
+  tv: {
+    server: 'zeus',
+    path: '/tank1/media/tv4k',
+  },
+});
+
+const externalTv4kRoute = new traefik.IngressRoute('tv4k-ext', {
+  metadata: {
+    name: 'tv4k-ext',
+    namespace: namespace.name,
+  },
+  spec: {
+    entryPoints: ['websecure'],
+    routes: [{
+      kind: 'Rule',
+      match: matchBuilder()
+        .host('media.thecluster.io').and().pathPrefix('/tv4k')
+        .build(),
+      services: [{
+        name: tv4k.service.metadata.name,
+        port: tv4k.service.spec.ports[0].port,
+        namespace: namespace.name,
+      }],
+      middlewares: [{
+        name: 'basic-auth',
+        namespace: 'traefik-system',
+      }],
+    }],
+  },
+});
+
+const anime = new Sonarr('anime', {
+  namespace: namespace.name,
+  linuxServer: linuxServerShared,
+  downloads: completedDownloadsNfs,
+  tv: {
+    server: 'zeus',
+    path: '/tank1/media/anime',
+  },
+});
+
+const externalAnimeRoute = new traefik.IngressRoute('anime-ext', {
+  metadata: {
+    name: 'anime-ext',
+    namespace: namespace.name,
+  },
+  spec: {
+    entryPoints: ['websecure'],
+    routes: [{
+      kind: 'Rule',
+      match: matchBuilder()
+        .host('media.thecluster.io').and().pathPrefix('/anime')
+        .build(),
+      services: [{
+        name: anime.service.metadata.name,
+        port: anime.service.spec.ports[0].port,
+        namespace: namespace.name,
+      }],
+      middlewares: [{
+        name: 'basic-auth',
+        namespace: 'traefik-system',
+      }],
+    }],
+  },
+});
 
 // Radarr
 const movies = new Radarr('movies', {
