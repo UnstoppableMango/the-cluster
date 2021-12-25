@@ -19,6 +19,26 @@ const longhorn = new Longhorn('longhorn', {
   projectId: project.id,
 });
 
+// TODO: Import, but provisioner doesn't match so "import will fail"
+// but provisioner is a required propery (and import is create not diff)
+// so I can't just not specify it
+// const longhornSc = new k8s.storage.v1.StorageClass('longhorn', {
+//   metadata: {
+//     name: 'longhorn',
+//     namespace: longhorn.namespace.name,
+//   },
+//   provisioner: 'driver.longhorn.io',
+//   // allowVolumeExpansion: true,
+//   // reclaimPolicy: 'Retain',
+//   // volumeBindingMode: 'Immediate',
+//   // parameters: {
+//   //   numberOfReplicas: '3',
+//   //   staleReplicaTimeout: '30',
+//   //   fromBackup: '',
+//   //   fsType: 'ext4',
+//   // },
+// }, { import: 'longhorn' });
+
 const longhornXl = new k8s.storage.v1.StorageClass('longhorn-xl', {
   metadata: {
     name: 'longhorn-xl',
