@@ -50,5 +50,21 @@ const longhornXl = new k8s.storage.v1.StorageClass('longhorn-xl', {
     numberOfReplicas: '1',
     staleReplicaTimeout: '30', // Minutes
     fsType: 'ext4',
+    diskSelector: 'hdd',
+  },
+});
+
+const longhornSsd = new k8s.storage.v1.StorageClass('longhorn-ssd', {
+  metadata: {
+    name: 'longhorn-ssd',
+    namespace: longhorn.namespace.name,
+  },
+  provisioner: 'driver.longhorn.io',
+  allowVolumeExpansion: true,
+  parameters: {
+    numberOfReplicas: '3',
+    staleReplicaTimeout: '30', // Minutes
+    fsType: 'ext4',
+    diskSelector: 'ssd',
   },
 });
