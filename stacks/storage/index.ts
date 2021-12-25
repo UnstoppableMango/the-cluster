@@ -1,4 +1,5 @@
 import * as pulumi from '@pulumi/pulumi';
+import * as k8s from '@pulumi/kubernetes';
 import * as rancher from '@pulumi/rancher2';
 import { Longhorn } from './resources';
 
@@ -18,17 +19,16 @@ const longhorn = new Longhorn('longhorn', {
   projectId: project.id,
 });
 
-const { password, htpasswd } = config.requireObject<{
-  password: string, htpasswd: string,
-}>('registry');
-
-// const harbor = new Harbor('harbor', {
-//   clusterId: clusterId,
-//   projectId: project.id,
-//   version: '9.4.6',
-//   registryPassword: password,
-//   registryHtpasswd: htpasswd,
-// });
-
-// export const harborAdminPassword = harbor.harborAdminPassword.result;
-// export const harborValues = harbor.app.values;
+const longhornXl = new k8s.storage.v1.StorageClass('longhorn-xl', {
+  metadata: {
+    name: 'longhorn-xl',
+    namespace: longhorn.namespace.name,
+  },
+  provisioner: 'driver.longhorn.io',
+  allowVolumeExpansion: true,
+  parameters: {
+    numberOfReplicas: '1',
+    staleReplicaTimeout: '30', // Minutes
+    fsType: 'ext4',
+  },
+});
