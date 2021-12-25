@@ -22,6 +22,8 @@ const longhorn = new Longhorn('longhorn', {
 // TODO: Import, but provisioner doesn't match so "import will fail"
 // but provisioner is a required propery (and import is create not diff)
 // so I can't just not specify it
+// BUT: Longhorn does not recommend changing the default storage class
+// https://longhorn.io/docs/1.2.3/best-practices/#storageclass
 // const longhornSc = new k8s.storage.v1.StorageClass('longhorn', {
 //   metadata: {
 //     name: 'longhorn',
