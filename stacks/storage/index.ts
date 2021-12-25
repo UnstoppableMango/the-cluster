@@ -1,4 +1,5 @@
 import * as pulumi from '@pulumi/pulumi';
+import * as k8s from '@pulumi/kubernetes';
 import * as rancher from '@pulumi/rancher2';
 import { Longhorn } from './resources';
 
@@ -18,17 +19,54 @@ const longhorn = new Longhorn('longhorn', {
   projectId: project.id,
 });
 
-const { password, htpasswd } = config.requireObject<{
-  password: string, htpasswd: string,
-}>('registry');
+// TODO: Import, but provisioner doesn't match so "import will fail"
+// but provisioner is a required propery (and import is create not diff)
+// so I can't just not specify it
+// BUT: Longhorn does not recommend changing the default storage class
+// https://longhorn.io/docs/1.2.3/best-practices/#storageclass
+// const longhornSc = new k8s.storage.v1.StorageClass('longhorn', {
+//   metadata: {
+//     name: 'longhorn',
+//     namespace: longhorn.namespace.name,
+//   },
+//   provisioner: 'driver.longhorn.io',
+//   // allowVolumeExpansion: true,
+//   // reclaimPolicy: 'Retain',
+//   // volumeBindingMode: 'Immediate',
+//   // parameters: {
+//   //   numberOfReplicas: '3',
+//   //   staleReplicaTimeout: '30',
+//   //   fromBackup: '',
+//   //   fsType: 'ext4',
+//   // },
+// }, { import: 'longhorn' });
 
-// const harbor = new Harbor('harbor', {
-//   clusterId: clusterId,
-//   projectId: project.id,
-//   version: '9.4.6',
-//   registryPassword: password,
-//   registryHtpasswd: htpasswd,
-// });
+const longhornXl = new k8s.storage.v1.StorageClass('longhorn-xl', {
+  metadata: {
+    name: 'longhorn-xl',
+    namespace: longhorn.namespace.name,
+  },
+  provisioner: 'driver.longhorn.io',
+  allowVolumeExpansion: true,
+  parameters: {
+    numberOfReplicas: '1',
+    staleReplicaTimeout: '30', // Minutes
+    fsType: 'ext4',
+    diskSelector: 'hdd',
+  },
+});
 
-// export const harborAdminPassword = harbor.harborAdminPassword.result;
-// export const harborValues = harbor.app.values;
+const longhornSsd = new k8s.storage.v1.StorageClass('longhorn-ssd', {
+  metadata: {
+    name: 'longhorn-ssd',
+    namespace: longhorn.namespace.name,
+  },
+  provisioner: 'driver.longhorn.io',
+  allowVolumeExpansion: true,
+  parameters: {
+    numberOfReplicas: '3',
+    staleReplicaTimeout: '30', // Minutes
+    fsType: 'ext4',
+    diskSelector: 'ssd',
+  },
+});
