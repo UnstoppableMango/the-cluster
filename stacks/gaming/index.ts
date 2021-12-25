@@ -52,11 +52,11 @@ const sfpb = new kx.PodBuilder({
   containers: [{
     name: 'satisfactory',
     image: 'wolveix/satisfactory-server',
-    ports: [
-      { containerPort: 7777 }, // Game port
-      { containerPort: 15000 }, // Beacon port
-      { containerPort: 15777 }, // Query port
-    ],
+    ports: {
+      game: 7777,
+      beacon: 15000,
+      query: 15777,
+    },
     env: {
       AUTOPAUSE: 'true', // Default 'true'
       AUTOSAVEINTERVAL: '300', // In seconds. Default 300
@@ -102,9 +102,7 @@ const sfIngress = new traefik.IngressRoute('satisfactory', {
       match: matchBuilder()
         .host('satisfactory.thecluster.io')
         .build(),
-      services: [{
-        name: sfService.metadata.name,
-      }],
+      services: sfService.spec.ports,
     }],
   },
 });
