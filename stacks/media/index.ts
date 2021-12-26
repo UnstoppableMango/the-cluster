@@ -15,6 +15,7 @@ import {
   Lidarr,
   LinuxServerConfig,
   PiaConfig,
+  Prowlarr,
   Radarr,
   ServiceConnector,
   Sonarr,
@@ -194,6 +195,12 @@ const externalJackettRoute = new traefik.IngressRoute('jackett-ext', {
 // //     password,
 // //   },
 // // });
+
+// Prowlarr
+const prowlarr = new Prowlarr('prowlarr', {
+  namespace: namespace.name,
+  linuxServer: linuxServerShared,
+});
 
 // Sonarr
 // const sonarrNs = new Namespace('sonarr', {
@@ -395,6 +402,32 @@ const deemixConfig = config.requireObject<{ arl: string }>('deemix');
 const deemix = new Deemix('deemix', {
   namespace: namespace.name,
   arl: deemixConfig.arl,
+});
+
+const mediaMiddlewares = [{
+  name: 'basic-auth',
+  namespace: 'traefik-system',
+}];
+
+const mediaRoutes = new traefik.IngressRoute('media', {
+  metadata: {
+    name: 'media',
+    namespace: namespace.name,
+  },
+  spec: {
+    entryPoints: ['websecure'],
+    routes: [{
+      kind: 'Rule',
+      match: matchBuilder()
+        .host('media.thecluster.io').and().pathPrefix('/prowlarr')
+        .build(),
+      services: [{
+        name: prowlarr.service.metadata.name,
+        port: prowlarr.service.spec.ports[0].port,
+      }],
+      middlewares: mediaMiddlewares,
+    }],
+  },
 });
 
 function createMediaVolume(name: string, ns: pulumi.Input<string>, nfsPath: string): k8s.core.v1.PersistentVolume {

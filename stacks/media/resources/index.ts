@@ -5,6 +5,7 @@ export * from './jackett';
 export * from './lidarr';
 export * from './linuxserver';
 export * from './openvpn';
+export * from './prowlarr';
 export * from './radarr';
 export * from './service-connector';
 export * from './sonarr';
