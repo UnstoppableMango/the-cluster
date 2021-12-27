@@ -1,3 +1,4 @@
+export * from './bazarr';
 export * from './deemix';
 export * from './deluge';
 export * from './flare-solverr';

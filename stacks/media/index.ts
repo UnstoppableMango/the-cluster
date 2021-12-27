@@ -7,6 +7,7 @@ import { Namespace, Project } from '@pulumi/rancher2';
 import { matchBuilder } from '@unmango/shared/traefik';
 
 import {
+  Bazarr,
   Deemix,
   Deluge,
   DelugeConfig,
@@ -384,6 +385,38 @@ const externalMovies4kRoute = new traefik.IngressRoute('movies4k-ext', {
   },
 });
 
+// Bazarr
+const bazarr = new Bazarr('bazarr', {
+  linuxServer: linuxServerShared,
+  namespace: namespace.name,
+  nfsMounts: [{
+    name: 'anime',
+    server: 'zeus',
+    sourcePath: '/tank1/media/anime',
+    destPath: '/anime',
+  }, {
+    name: 'movies',
+    server: 'apollo',
+    sourcePath: '/tank1/media/movies',
+    destPath: '/movies',
+  }, {
+    name: 'movies4k',
+    server: 'zeus',
+    sourcePath: '/tank1/media/movies4k',
+    destPath: '/movies4k',
+  }, {
+    name: 'tv',
+    server: 'apollo',
+    sourcePath: '/tank1/media/tv',
+    destPath: '/tv',
+  }, {
+    name: 'tv4k',
+    server: 'zeus',
+    sourcePath: '/tank1/media/tv4k',
+    destPath: '/tv4k',
+  }],
+});
+
 // // Lidarr
 // // const lidarrNs = new Namespace('lidarr', {
 // //   name: 'lidarr',
@@ -424,6 +457,16 @@ const mediaRoutes = new traefik.IngressRoute('media', {
       services: [{
         name: prowlarr.service.metadata.name,
         port: prowlarr.service.spec.ports[0].port,
+      }],
+      middlewares: mediaMiddlewares,
+    }, {
+      kind: 'Rule',
+      match: matchBuilder()
+        .host('media.thecluster.io').and().pathPrefix('/bazarr')
+        .build(),
+      services: [{
+        name: bazarr.service.metadata.name,
+        port: bazarr.service.spec.ports[0].port,
       }],
       middlewares: mediaMiddlewares,
     }],
