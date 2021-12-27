@@ -37,9 +37,8 @@ export class Deemix extends ComponentResource {
         image: 'registry.gitlab.com/bockiii/deemix-docker',
         env: {
           PUID: '1000',
-          PGID: '1000',
-          // ARL: args.arl, // Not working in the current version
-          // UMASK_SET: '022',
+          PGID: '1001',
+          UMASK_SET: '022', // 0755
           REVERSEPROXY: 'true',
         },
         ports: {
