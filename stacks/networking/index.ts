@@ -200,6 +200,7 @@ const tunnel = new Tunnel('thecluster-io', {
     'deluge',
     'media',
     'rancher',
+    'requests',
     'satisfactory',
     'minecraft',
   ],

@@ -479,13 +479,12 @@ const mediaRoutes = new traefik.IngressRoute('media', {
     }, {
       kind: 'Rule',
       match: matchBuilder()
-        .host('media.thecluster.io').and().pathPrefix('/overseer')
+        .host('requests.thecluster.io')
         .build(),
       services: [{
         name: overseer.service.metadata.name,
         port: overseer.service.spec.ports[0].port,
       }],
-      middlewares: mediaMiddlewares,
     }],
   },
 });
