@@ -30,22 +30,18 @@ export class Overseerr extends ComponentResource {
     }, { parent: this });
   
     const pb = new kx.PodBuilder({
+      // Uses alpine base image with ndots problem, and needs to
+      // be able to resolve 'plex.tv'
+      dnsConfig: { options: [{ name: 'ndots', value: '1' }] },
       containers: [{
         // kx sets the selector to the container name.
         // With multiple resources, it won't match correctly, so
         // this is mostly a hack to get service discovery to work.
         name: this.getName(),
-        securityContext: {
-          privileged: true,
-        },
-        image: 'linuxserver/overseerr:v1.27.0-ls22',
+        image: 'lscr.io/linuxserver/overseerr:v1.27.0-ls22',
         envFrom: [{
           configMapRef: { name: this.args.linuxServer.metadata.name },
         }],
-        // env: {
-        //   DOCKER_MODS: 'ghcr.io/gilbn/theme.park:overseerr',
-        //   TP_THEME: 'plex',
-        // },
         ports: {
           http: 5055,
         },
