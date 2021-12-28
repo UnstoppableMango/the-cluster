@@ -438,54 +438,8 @@ const overseer = new Overseerr('overseerr', {
   namespace: namespace.name,
 });
 
-const deemixConfig = config.requireObject<{ arl: string }>('deemix');
-
 const deemix = new Deemix('deemix', {
   namespace: namespace.name,
-  arl: deemixConfig.arl,
-});
-
-const deemixInternalRoute = new IngressRoute('deemix-internal', {
-  metadata: { name: 'deemix-internal', namespace: namespace.name },
-  spec: {
-    entryPoints: ['websecure'],
-    routes: [{
-      kind: 'Rule',
-      match: 'Host(`deemix.int.unmango.net`)',
-      services: [{
-        name: deemix.service.metadata.name,
-        port: deemix.service.spec.ports[0].port,
-      }],
-    }],
-  },
-});
-
-const stripDeemix = new Middleware('strip-deemix', {
-  metadata: { name: 'strip-deemix', namespace: namespace.name },
-  spec: {
-    stripPrefix: {
-      prefixes: ['/deemix'],
-      forceSlash: false,
-    },
-  },
-});
-
-const deemixExternalRoute = new IngressRoute('deemix-external', {
-  metadata: { name: 'deemix-external', namespace: namespace.name },
-  spec: {
-    entryPoints: ['websecure'],
-    routes: [{
-      kind: 'Rule',
-      match: 'Host(`media.thecluster.io`) && PathPrefix(`/deemix`)',
-      services: [{
-        name: deemix.service.metadata.name,
-        port: deemix.service.spec.ports[0].port,
-      }],
-      middlewares: [{
-        name: 'strip-deemix',
-      }],
-    }],
-  },
 });
 
 const mediaMiddlewares = [{
@@ -501,6 +455,16 @@ const mediaRoutes = new traefik.IngressRoute('media', {
   spec: {
     entryPoints: ['websecure'],
     routes: [{
+      kind: 'Rule',
+      match: matchBuilder()
+        .host('deemix.thecluster.io')
+        .build(),
+      services: [{
+        name: deemix.service.metadata.name,
+        port: deemix.service.spec.ports[0].port,
+      }],
+      middlewares: mediaMiddlewares,
+    }, {
       kind: 'Rule',
       match: matchBuilder()
         .host('media.thecluster.io').and().pathPrefix('/prowlarr')

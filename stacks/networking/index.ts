@@ -197,6 +197,7 @@ const tunnel = new Tunnel('thecluster-io', {
     'thecluster.io',
     'auth',
     'dash',
+    'deemix',
     'deluge',
     'media',
     'rancher',

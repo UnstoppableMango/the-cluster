@@ -84,5 +84,4 @@ export class Deemix extends ComponentResource {
 
 export interface DeemixArgs {
   namespace: Input<string>;
-  arl: Input<string>;
 }
