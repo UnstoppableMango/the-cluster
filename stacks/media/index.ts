@@ -15,6 +15,7 @@ import {
   Jackett,
   Lidarr,
   LinuxServerConfig,
+  Overseerr,
   PiaConfig,
   Prowlarr,
   Radarr,
@@ -430,6 +431,12 @@ const bazarr = new Bazarr('bazarr', {
 //   musicVolume: createMediaVolume('music', namespace.name, '/tank1/media/music'),
 // });
 
+// Overseer
+const overseer = new Overseerr('overseerr', {
+  linuxServer: linuxServerShared,
+  namespace: namespace.name,
+});
+
 const deemixConfig = config.requireObject<{ arl: string }>('deemix');
 
 const deemix = new Deemix('deemix', {
@@ -469,6 +476,15 @@ const mediaRoutes = new traefik.IngressRoute('media', {
         port: bazarr.service.spec.ports[0].port,
       }],
       middlewares: mediaMiddlewares,
+    }, {
+      kind: 'Rule',
+      match: matchBuilder()
+        .host('requests.thecluster.io')
+        .build(),
+      services: [{
+        name: overseer.service.metadata.name,
+        port: overseer.service.spec.ports[0].port,
+      }],
     }],
   },
 });
