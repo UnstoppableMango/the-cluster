@@ -4,6 +4,7 @@ import * as kx from '@pulumi/kubernetesx';
 import * as pulumi from '@pulumi/pulumi';
 import * as traefik from '@pulumi/crds/traefik/v1alpha1';
 import { Namespace, Project } from '@pulumi/rancher2';
+import { IngressRoute, Middleware } from '@pulumi/crds/traefik/v1alpha1';
 import { matchBuilder } from '@unmango/shared/traefik';
 
 import {
@@ -437,11 +438,8 @@ const overseer = new Overseerr('overseerr', {
   namespace: namespace.name,
 });
 
-const deemixConfig = config.requireObject<{ arl: string }>('deemix');
-
 const deemix = new Deemix('deemix', {
   namespace: namespace.name,
-  arl: deemixConfig.arl,
 });
 
 const mediaMiddlewares = [{
@@ -457,6 +455,16 @@ const mediaRoutes = new traefik.IngressRoute('media', {
   spec: {
     entryPoints: ['websecure'],
     routes: [{
+      kind: 'Rule',
+      match: matchBuilder()
+        .host('deemix.thecluster.io')
+        .build(),
+      services: [{
+        name: deemix.service.metadata.name,
+        port: deemix.service.spec.ports[0].port,
+      }],
+      middlewares: mediaMiddlewares,
+    }, {
       kind: 'Rule',
       match: matchBuilder()
         .host('media.thecluster.io').and().pathPrefix('/prowlarr')
