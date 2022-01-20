@@ -104,7 +104,7 @@ export class Deluge extends ComponentResource {
         securityContext: {
           privileged: true,
         },
-        image: 'binhex/arch-delugevpn:2.0.5-1-02',
+        image: 'binhex/arch-delugevpn:2.0.5-1-04',
         env: {
           VPN_ENABLED: 'yes',
           VPN_USER: this.args.pia.user,
