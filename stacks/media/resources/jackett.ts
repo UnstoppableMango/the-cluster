@@ -38,7 +38,7 @@ export class Jackett extends ComponentResource {
         securityContext: {
           privileged: true,
         },
-        image: 'linuxserver/jackett:v0.20.197-ls54',
+        image: 'linuxserver/jackett:v0.20.399-ls55',
         envFrom: [{
           configMapRef: { name: this.args.linuxServer.metadata.name },
         }],

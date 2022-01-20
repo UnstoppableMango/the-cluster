@@ -38,7 +38,7 @@ export class Overseerr extends ComponentResource {
         // With multiple resources, it won't match correctly, so
         // this is mostly a hack to get service discovery to work.
         name: this.getName(),
-        image: 'lscr.io/linuxserver/overseerr:v1.27.0-ls22',
+        image: 'lscr.io/linuxserver/overseerr:v1.28.0-ls23',
         envFrom: [{
           configMapRef: { name: this.args.linuxServer.metadata.name },
         }],
