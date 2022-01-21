@@ -23,6 +23,7 @@ export class Deluge extends ComponentResource {
     super('unmango:apps:deluge', name, undefined, opts);
 
     const storageArgs = pulumi.output(args.storage);
+    const uid = '1000', gid = '1001'; // erik:erik on hades
 
     this.configPvc = new kx.PersistentVolumeClaim(this.getName('config'), {
       metadata: {
@@ -35,7 +36,7 @@ export class Deluge extends ComponentResource {
         storageClassName: storageArgs.class,
       },
     }, { parent: this });
-  
+
     this.auth = new kx.Secret(this.getName('auth'), {
       metadata: {
         name: this.getName('auth'),
@@ -43,7 +44,7 @@ export class Deluge extends ComponentResource {
       },
       stringData: { auth: this.getAuthValue() },
     }, { parent: this });
-  
+
     this.piaSecret = new kx.Secret(this.getName('pia'), {
       metadata: {
         name: this.getName('pia'),
@@ -51,7 +52,7 @@ export class Deluge extends ComponentResource {
       },
       stringData: { password: this.args.pia.password },
     }, { parent: this });
-  
+
     const pb = new kx.PodBuilder({
       securityContext: {
         sysctls: [{
@@ -76,7 +77,8 @@ export class Deluge extends ComponentResource {
         // Create a user for remote connections
         name: this.getName('copy-auth'),
         image: 'busybox',
-        command: ['cp', '/auth', '/config/auth'],
+        command: ['/bin/sh', '-c'],
+        args: [`cp /auth /config/auth && chown ${uid}:${gid} /config/auth`],
         volumeMounts: [{
           name: this.getName('auth'),
           mountPath: '/auth',
@@ -104,7 +106,7 @@ export class Deluge extends ComponentResource {
         securityContext: {
           privileged: true,
         },
-        image: 'binhex/arch-delugevpn:2.0.5-1-02',
+        image: 'binhex/arch-delugevpn:2.0.5-1-04',
         env: {
           VPN_ENABLED: 'yes',
           VPN_USER: this.args.pia.user,
@@ -120,8 +122,8 @@ export class Deluge extends ComponentResource {
           DELUGE_WEB_LOG_LEVEL: 'error', // <critical|error|warning|info|debug>
           DEBUG: 'false',
           UMASK: '022', // 0755
-          PUID: '1000', // erik on hades
-          PGID: '1001', // erik on hades
+          PUID: uid,
+          PGID: gid,
         },
         ports: {
           http: 8112,
@@ -131,11 +133,11 @@ export class Deluge extends ComponentResource {
         },
         volumeMounts: [
           this.configPvc.mount('/config'),
-          { name: 'downloads',  mountPath: '/data' },
+          { name: 'downloads', mountPath: '/data' },
         ],
       }],
     });
-  
+
     this.deployment = new kx.Deployment(this.getName('deluge'), {
       metadata: {
         name: this.getName('deluge'),
@@ -145,7 +147,7 @@ export class Deluge extends ComponentResource {
         strategy: { type: 'Recreate' },
       }),
     }, { parent: this });
-  
+
     this.service = new k8s.core.v1.Service(this.getName('http'), {
       metadata: {
         name: this.getName('deluge'),
@@ -162,7 +164,7 @@ export class Deluge extends ComponentResource {
         ],
       },
     }, { parent: this });
-  
+
     this.daemonService = new k8s.core.v1.Service(this.getName('daemon'), {
       metadata: {
         name: 'deluge-daemon',

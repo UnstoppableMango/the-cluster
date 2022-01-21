@@ -38,7 +38,7 @@ export class Prowlarr extends ComponentResource {
         securityContext: {
           privileged: true,
         },
-        image: 'linuxserver/prowlarr:0.1.8-develop',
+        image: 'linuxserver/prowlarr:0.2.0-nightly',
         envFrom: [{
           configMapRef: { name: this.args.linuxServer.metadata.name },
         }],

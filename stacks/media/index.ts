@@ -1,4 +1,3 @@
-import { Image } from '@pulumi/docker';
 import * as k8s from '@pulumi/kubernetes';
 import * as kx from '@pulumi/kubernetesx';
 import * as pulumi from '@pulumi/pulumi';
@@ -7,22 +6,7 @@ import { Namespace, Project } from '@pulumi/rancher2';
 import { IngressRoute, Middleware } from '@pulumi/crds/traefik/v1alpha1';
 import { matchBuilder } from '@unmango/shared/traefik';
 
-import {
-  Bazarr,
-  Deemix,
-  Deluge,
-  DelugeConfig,
-  FlareSolverr,
-  Jackett,
-  Lidarr,
-  LinuxServerConfig,
-  Overseerr,
-  PiaConfig,
-  Prowlarr,
-  Radarr,
-  ServiceConnector,
-  Sonarr,
-} from './resources';
+import * as resources from './resources';
 
 const config = new pulumi.Config();
 const remoteStack = config.require('remoteStack');
@@ -55,7 +39,7 @@ const stripMediaPrefixes = new traefik.Middleware('strip-prefixes', {
   },
 });
 
-const { puid, pgid, tz } = config.requireObject<LinuxServerConfig>('linuxserver');
+const { puid, pgid, tz } = config.requireObject<resources.LinuxServerConfig>('linuxserver');
 const linuxServerShared = new kx.ConfigMap('linuxserver-shared', {
   metadata: {
     name: 'linuxserver-shared',
@@ -85,10 +69,10 @@ const linuxServerShared = new kx.ConfigMap('linuxserver-shared', {
 //   projectId: project.id,
 // });
 
-const pia = config.requireObject<PiaConfig>('pia');
-const delugeConfig = config.requireObject<DelugeConfig>('deluge');
+const pia = config.requireObject<resources.PiaConfig>('pia');
+const delugeConfig = config.requireObject<resources.DelugeConfig>('deluge');
 
-const deluge = new Deluge('deluge', {
+const deluge = new resources.Deluge('deluge', {
   deluge: delugeConfig,
   namespace: namespace.name,
   pia,
@@ -150,7 +134,7 @@ const completedDownloadsNfs: {
 //   },
 // });
 
-const jackett = new Jackett('jackett', {
+const jackett = new resources.Jackett('jackett', {
   namespace: namespace.name,
   linuxServer: linuxServerShared,
 });
@@ -200,7 +184,7 @@ const externalJackettRoute = new traefik.IngressRoute('jackett-ext', {
 // // });
 
 // Prowlarr
-const prowlarr = new Prowlarr('prowlarr', {
+const prowlarr = new resources.Prowlarr('prowlarr', {
   namespace: namespace.name,
   linuxServer: linuxServerShared,
 });
@@ -211,7 +195,7 @@ const prowlarr = new Prowlarr('prowlarr', {
 //   projectId: project.id,
 // });
 
-const tv = new Sonarr('tv', {
+const tv = new resources.Sonarr('tv', {
   namespace: namespace.name,
   linuxServer: linuxServerShared,
   downloads: completedDownloadsNfs,
@@ -246,7 +230,7 @@ const externalTvRoute = new traefik.IngressRoute('tv-ext', {
   },
 });
 
-const tv4k = new Sonarr('tv4k', {
+const tv4k = new resources.Sonarr('tv4k', {
   namespace: namespace.name,
   linuxServer: linuxServerShared,
   downloads: completedDownloadsNfs,
@@ -281,7 +265,7 @@ const externalTv4kRoute = new traefik.IngressRoute('tv4k-ext', {
   },
 });
 
-const anime = new Sonarr('anime', {
+const anime = new resources.Sonarr('anime', {
   namespace: namespace.name,
   linuxServer: linuxServerShared,
   downloads: completedDownloadsNfs,
@@ -317,7 +301,7 @@ const externalAnimeRoute = new traefik.IngressRoute('anime-ext', {
 });
 
 // Radarr
-const movies = new Radarr('movies', {
+const movies = new resources.Radarr('movies', {
   namespace: namespace.name,
   linuxServer: linuxServerShared,
   downloads: completedDownloadsNfs,
@@ -352,7 +336,7 @@ const externalMoviesRoute = new traefik.IngressRoute('movies-ext', {
   },
 });
 
-const movies4k = new Radarr('movies4k', {
+const movies4k = new resources.Radarr('movies4k', {
   namespace: namespace.name,
   linuxServer: linuxServerShared,
   downloads: completedDownloadsNfs,
@@ -388,7 +372,7 @@ const externalMovies4kRoute = new traefik.IngressRoute('movies4k-ext', {
 });
 
 // Bazarr
-const bazarr = new Bazarr('bazarr', {
+const bazarr = new resources.Bazarr('bazarr', {
   linuxServer: linuxServerShared,
   namespace: namespace.name,
   nfsMounts: [{
@@ -433,12 +417,12 @@ const bazarr = new Bazarr('bazarr', {
 // });
 
 // Overseer
-const overseer = new Overseerr('overseerr', {
+const overseer = new resources.Overseerr('overseerr', {
   linuxServer: linuxServerShared,
   namespace: namespace.name,
 });
 
-const deemix = new Deemix('deemix', {
+const deemix = new resources.Deemix('deemix', {
   namespace: namespace.name,
 });
 
