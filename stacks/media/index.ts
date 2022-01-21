@@ -134,36 +134,6 @@ const completedDownloadsNfs: {
 //   },
 // });
 
-const jackett = new resources.Jackett('jackett', {
-  namespace: namespace.name,
-  linuxServer: linuxServerShared,
-});
-
-const externalJackettRoute = new traefik.IngressRoute('jackett-ext', {
-  metadata: {
-    name: 'jackett-ext',
-    namespace: namespace.name,
-  },
-  spec: {
-    entryPoints: ['websecure'],
-    routes: [{
-      kind: 'Rule',
-      match: matchBuilder()
-        .host('media.thecluster.io').and().pathPrefix('/jackett')
-        .build(),
-      services: [{
-        name: jackett.service.metadata.name,
-        port: jackett.service.spec.ports[0].port,
-        namespace: namespace.name,
-      }],
-      middlewares: [{
-        name: 'basic-auth',
-        namespace: 'traefik-system',
-      }],
-    }],
-  },
-});
-
 // const flareSolverr = new FlareSolverr('flare-solverr', {
 //   namespace: namespace.name,
 //   version: 'latest',
@@ -480,15 +450,3 @@ const mediaRoutes = new traefik.IngressRoute('media', {
     }],
   },
 });
-
-function createMediaVolume(name: string, ns: pulumi.Input<string>, nfsPath: string): k8s.core.v1.PersistentVolume {
-  return new k8s.core.v1.PersistentVolume(name, {
-    metadata: { namespace: ns },
-    spec: {
-      accessModes: ['ReadWriteOnce', 'ReadOnlyMany'],
-      capacity: { storage: '5000Gi' },
-      storageClassName: 'nfs',
-      nfs: { server: 'zeus', path: nfsPath },
-    },
-  });
-}
