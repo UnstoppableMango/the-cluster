@@ -10,7 +10,7 @@
     "@pulumi/cloudflare": "^4.3.0",
     "@pulumi/crds": "file:lib/crds",
     "@pulumi/docker": "^3.1.0",
-    "@pulumi/kubernetes": "^3.14.1",
+    "@pulumi/kubernetes": "^3.15.0",
     "@pulumi/kubernetesx": "^0.1.6",
     "@pulumi/pulumi": "^3.22.1",
     "@pulumi/rancher2": "^3.6.1",
