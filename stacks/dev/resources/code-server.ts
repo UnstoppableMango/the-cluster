@@ -1,6 +1,6 @@
 import * as kx from '@pulumi/kubernetesx';
 import { ComponentResource, ComponentResourceOptions, Input } from '@pulumi/pulumi';
-import { IngressRoute } from '@unmango/custom-resources';
+import { IngressRoute } from '@pulumi/crds/traefik/v1alpha1';
 import { getNameResolver } from '@unmango/shared';
 import { stopStartNewStrategy } from '@unmango/shared/deployment';
 
@@ -54,9 +54,17 @@ export class CodeServer extends ComponentResource {
 
     this.ingressRoute = new IngressRoute(this.getName(), {
       metadata: { namespace: args.namespace },
-      entrypoints: ['websecure'],
-      hosts: [hostname],
-      services: [{ name: this.service.metadata.name, port: 8443 }],
+      spec: {
+        entryPoints: ['websecure'],
+        routes: [{
+          kind: 'Route',
+          match: `Host(\`${hostname}\`)`,
+          services: [{
+            name: this.service.metadata.name,
+            port: 8443,
+          }],
+        }],
+      },
     }, { parent: this });
 
     this.registerOutputs();
