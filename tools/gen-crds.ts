@@ -46,7 +46,7 @@ const globAsync = util.promisify(glob);
     try {
       await fs.promises.rm(outdir, {
         force: true,
-        recursive: true
+        recursive: true,
       });
     } catch (e) {
       console.log('Failed to clean outdir');
