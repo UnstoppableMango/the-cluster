@@ -39,14 +39,20 @@ const actionsRunnerControllerRelease = new helm.Release('actions-runner-controll
   },
   values: {
     replicaCount: 3,
-    syncPeriod: '3m',
+    syncPeriod: '2m',
     authSecret: {
       name: actionsRunnerControllerSecret.metadata.name,
     },
+    ephemeral: false,
     topologySpreadConstraints: [{
       maxSkew: 1,
       topologyKey: 'host',
       whenUnsatisfiable: 'ScheduleAnyway',
+      labelSelector: {
+        matchLabels: {
+          'runner-deployment-name': 'actions-runner',
+        },
+      },
     }],
   },
 });
