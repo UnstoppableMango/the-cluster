@@ -25,7 +25,7 @@ const actionsRunnerControllerSecret = new k8s.core.v1.Secret('actions-runner-con
   },
   stringData: {
     github_app_id: githubConfig.actionsRunner.appId,
-    github_app_installation_id: githubConfig.actionsRunner.installtionId,
+    github_app_installation_id: githubConfig.actionsRunner.installationId,
     github_app_private_key: githubConfig.actionsRunner.privateKey,
   },
 });
@@ -60,7 +60,7 @@ const theclusterRunnerDeployment = new arc.RunnerDeployment('thecluster', {
   spec: {
     template: {
       spec: {
-        repository: 'UnstoppableMango/thecluster',
+        repository: 'UnstoppableMango/the-cluster',
       },
     },
   },
@@ -99,7 +99,7 @@ interface GithubConfig {
   actionsRunner: {
     appId: string;
     clientSecret: string;
-    installtionId: string;
+    installationId: string;
     privateKey: string;
   }
 }
