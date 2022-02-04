@@ -16,6 +16,10 @@ jobs:
 
     - run: npm ci
 
+    - run: echo "RANCHER_URL=$(pulumi config get rancher2:apiUrl -C ./stacks/rancher)" >> $GITHUB_ENV
+    - run: echo "RANCHER_ACCESS_KEY=$(pulumi config get rancher2:accessKey -C ./stacks/rancher)" >> $GITHUB_ENV
+    - run: echo "RANCHER_SECRET_KEY=$(pulumi config get rancher2:secretKey -C ./stacks/rancher)" >> $GITHUB_ENV
+
     - uses: pulumi/actions@v3
       with:
         command: preview
