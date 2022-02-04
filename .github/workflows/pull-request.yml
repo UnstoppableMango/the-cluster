@@ -1,0 +1,25 @@
+name: Pull Request
+
+on:
+  pull_request:
+
+jobs:
+  media:
+    name: Preview Media
+    runs-on: self-hosted
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v2
+      with:
+        node-version-file: '.nvmrc'
+
+    - run: npm ci
+
+    - uses: pulumi/actions@v3
+      with:
+        command: preview
+        stack-name: prod
+        work-dir: stacks/media
+      env:
+        PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
