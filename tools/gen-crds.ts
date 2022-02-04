@@ -24,8 +24,9 @@ const globAsync = util.promisify(glob);
   }
 
   const crdGlobs = [
-      'submodules/cert-manager/deploy/crds/*.yaml',
-      'submodules/traefik-helm-chart/traefik/crds/*.yaml'
+    'submodules/actions-runner-controller/charts/actions-runner-controller/crds/*.yaml',
+    'submodules/cert-manager/deploy/crds/*.yaml',
+    'submodules/traefik-helm-chart/traefik/crds/*.yaml',
   ];
   
   const crds = await Promise.all(crdGlobs.map(g => globAsync(g))).then(x => x.flat());
@@ -45,7 +46,7 @@ const globAsync = util.promisify(glob);
     try {
       await fs.promises.rm(outdir, {
         force: true,
-        recursive: true
+        recursive: true,
       });
     } catch (e) {
       console.log('Failed to clean outdir');

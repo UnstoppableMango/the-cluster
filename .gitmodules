@@ -4,3 +4,6 @@
 [submodule "submodules/traefik-helm-chart"]
 	path = submodules/traefik-helm-chart
 	url = git@github.com:traefik/traefik-helm-chart.git
+[submodule "submodules/actions-runner-controller"]
+	path = submodules/actions-runner-controller
+	url = https://github.com/actions-runner-controller/actions-runner-controller.git
