@@ -5,8 +5,19 @@ on:
 
 jobs:
   media:
-    name: Preview Media
+    name: Preview
     runs-on: self-hosted
+    strategy:
+      matrix:
+        stack:
+        - auth
+        - dev
+        - management
+        - media
+        - networking
+        - rancher
+        - storage
+
     steps:
     - uses: actions/checkout@v2
 
@@ -20,6 +31,7 @@ jobs:
     - run: npm ci
 
     - name: Set environment variables
+      if: matrix.stack != 'rancher'
       working-directory: stacks/rancher
       run: |
         pulumi stack select prod
@@ -33,6 +45,6 @@ jobs:
       with:
         command: preview
         stack-name: prod
-        work-dir: stacks/media
+        work-dir: stacks/${{ matrix.stack }}
       env:
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
