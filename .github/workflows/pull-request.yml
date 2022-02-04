@@ -20,10 +20,12 @@ jobs:
     - run: npm ci
 
     - name: Set environment variables
+      working-directory: stacks/rancher
       run: |
-        echo "RANCHER_URL=$(pulumi config get rancher2:apiUrl -C ./stacks/rancher)" >> $GITHUB_ENV
-        echo "RANCHER_ACCESS_KEY=$(pulumi config get rancher2:accessKey -C ./stacks/rancher)" >> $GITHUB_ENV
-        echo "RANCHER_SECRET_KEY=$(pulumi config get rancher2:secretKey -C ./stacks/rancher)" >> $GITHUB_ENV
+        pulumi stack select prod
+        echo "RANCHER_URL=$(pulumi config get rancher2:apiUrl)" >> $GITHUB_ENV
+        echo "RANCHER_ACCESS_KEY=$(pulumi config get rancher2:accessKey)" >> $GITHUB_ENV
+        echo "RANCHER_SECRET_KEY=$(pulumi config get rancher2:secretKey)" >> $GITHUB_ENV
       env:
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
