@@ -46,5 +46,6 @@ jobs:
         command: preview
         stack-name: prod
         work-dir: stacks/${{ matrix.stack }}
+        expect-no-changes: ${{ github.actor == 'dependabot[bot]' }}
       env:
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

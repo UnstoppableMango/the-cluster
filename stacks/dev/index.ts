@@ -38,6 +38,8 @@ const actionsRunnerControllerRelease = new helm.Release('actions-runner-controll
     repo: 'https://actions-runner-controller.github.io/actions-runner-controller',
   },
   values: {
+    replicaCount: 3,
+    syncPeriod: '3m',
     authSecret: {
       name: actionsRunnerControllerSecret.metadata.name,
     },
@@ -87,8 +89,8 @@ const theclusterRunnerAutoScaler = new arc.HorizontalRunnerAutoscaler('thecluste
       type: 'PercentageRunnersBusy',
       scaleUpThreshold: '0.75',
       scaleDownThreshold: '0.3',
-      scaleUpFactor: '1.4',
-      scaleDownFactor: '0.7',
+      scaleUpAdjustment: 2,
+      scaleDownAdjustment: 1,
     }],
   },
 }, {
