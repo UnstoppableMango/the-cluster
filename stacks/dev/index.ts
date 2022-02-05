@@ -150,6 +150,10 @@ const theclusterRunnerName = pulumi
   .output(theclusterRunnerSet.metadata)
   .apply(x => x?.name ?? '');
 
+const theclusterRunnerKind = pulumi
+  .output(theclusterRunnerSet.kind)
+  .apply(x => x ?? '');
+
 const theclusterRunnerAutoScaler = new arc.HorizontalRunnerAutoscaler('thecluster', {
   metadata: {
     name: 'thecluster',
@@ -158,8 +162,9 @@ const theclusterRunnerAutoScaler = new arc.HorizontalRunnerAutoscaler('thecluste
   spec: {
     scaleTargetRef: {
       name: theclusterRunnerName,
+      kind: theclusterRunnerKind,
     },
-    minReplicas: 1,
+    minReplicas: 0,
     maxReplicas: 10,
     scaleUpTriggers: [{
       // Scales up on workflow_job "queued"
