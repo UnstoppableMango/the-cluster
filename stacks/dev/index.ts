@@ -77,7 +77,7 @@ const actionsRunnerControllerRelease = new helm.Release('actions-runner-controll
   },
 });
 
-const theclusterRunnerDeployment = new arc.RunnerDeployment('thecluster', {
+const theclusterRunnerSet = new arc.RunnerSet('thecluster', {
   metadata: {
     name: 'thecluster',
     namespace: githubNs.name,
@@ -86,19 +86,41 @@ const theclusterRunnerDeployment = new arc.RunnerDeployment('thecluster', {
     },
   },
   spec: {
-    template: {
+    repository: 'UnstoppableMango/the-cluster',
+    ephemeral: false,
+    selector: {
+      matchLabels: {
+        app: 'the-cluster-runner',
+      },
+    },
+    serviceName: 'the-cluster-runner',
+    volumeClaimTemplates: [{
+      metadata: {
+        name: 'the-cluster-runner',
+      },
       spec: {
-        repository: 'UnstoppableMango/the-cluster',
-        ephemeral: false,
-        topologySpreadConstraint: [{
-          maxSkew: 1,
-          topologyKey: 'host',
-          whenUnsatisfiable: 'ScheduleAnyway',
-          labelSelector: {
-            matchLabels: {
-              'runner-deployment-name': 'thecluster',
-            },
+        accessModes: ['ReadWriteOnce'],
+        storageClassName: 'longhorn',
+        resources: {
+          requests: {
+            storage: '10Gi',
           },
+        },
+      },
+    }],
+    template: {
+      metadata: {
+        labels: {
+          app: 'the-cluster-runner',
+        },
+      },
+      spec: {
+        containers: [{
+          name: 'runner',
+          volumeMounts: [{
+            name: 'the-cluster-runner',
+            mountPath: '/home/runner/work/.cache',
+          }],
         }],
       },
     },
@@ -108,7 +130,7 @@ const theclusterRunnerDeployment = new arc.RunnerDeployment('thecluster', {
 });
 
 const theclusterRunnerName = pulumi
-  .output(theclusterRunnerDeployment.metadata)
+  .output(theclusterRunnerSet.metadata)
   .apply(x => x?.name ?? '');
 
 const theclusterRunnerAutoScaler = new arc.HorizontalRunnerAutoscaler('thecluster', {
