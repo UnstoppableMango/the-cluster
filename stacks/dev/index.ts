@@ -77,6 +77,7 @@ const actionsRunnerControllerRelease = new helm.Release('actions-runner-controll
   },
 });
 
+const runnerCacheDir = '/runner/.cache';
 const theclusterRunnerSet = new arc.RunnerSet('thecluster', {
   metadata: {
     name: 'thecluster',
@@ -118,21 +119,24 @@ const theclusterRunnerSet = new arc.RunnerSet('thecluster', {
         initContainers: [{
           name: 'cache-permissions',
           image: 'busybox',
-          command: ['chown', '-R', 'runner:runner', '/runner/.cache'],
+          // I'm not 100% sure what the `runner`s group is, but 1000 seems to be `docker`.
+          // At the very least I can confirm that 1000 is the uid of `runner`, see below:
+          // https://github.com/actions-runner-controller/actions-runner-controller/blob/cc25dd7926909a6c2bd300440016559d695453c3/runner/Dockerfile#L63
+          command: ['chown', '-R', '1000:1000', runnerCacheDir],
           volumeMounts: [{
             name: 'the-cluster-runner',
-            mountPath: '/runner/.cache',
+            mountPath: runnerCacheDir,
           }],
         }],
         containers: [{
           name: 'runner',
           volumeMounts: [{
             name: 'the-cluster-runner',
-            mountPath: '/runner/.cache',
+            mountPath: runnerCacheDir,
           }],
           env: [{
             name: 'THECLUSTER_CACHE',
-            value: '/runner/.cache',
+            value: runnerCacheDir,
           }],
         }],
       },
