@@ -42,7 +42,6 @@ const actionsRunnerControllerRelease = new helm.Release('actions-runner-controll
   },
   values: {
     replicaCount: 3,
-    syncPeriod: '2m',
     authSecret: {
       name: actionsRunnerControllerSecret.metadata.name,
     },
