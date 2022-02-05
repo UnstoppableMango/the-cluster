@@ -51,7 +51,7 @@ const actionsRunnerControllerRelease = new helm.Release('actions-runner-controll
       whenUnsatisfiable: 'ScheduleAnyway',
       labelSelector: {
         matchLabels: {
-          'app.kubernetes.io/name': 'actions-runner-controller',
+          'app.kubernetes.io/instance': 'actions-runner-controller',
         },
       },
     }],
@@ -69,7 +69,7 @@ const actionsRunnerControllerRelease = new helm.Release('actions-runner-controll
         whenUnsatisfiable: 'ScheduleAnyway',
         labelSelector: {
           matchLabels: {
-            'app.kubernetes.io/name': 'actions-runner-controller',
+            'app.kubernetes.io/instance': 'actions-runner-controller',
           },
         },
       }],
@@ -77,10 +77,10 @@ const actionsRunnerControllerRelease = new helm.Release('actions-runner-controll
   },
 });
 
-const runnerCacheDir = '/runner/.cache';
-const theclusterRunnerSet = new arc.RunnerSet('thecluster', {
+const runnerCacheDir = '/runner/cache';
+const theclusterRunnerSet = new arc.RunnerSet('the-cluster', {
   metadata: {
-    name: 'thecluster',
+    name: 'the-cluster',
     namespace: githubNs.name,
     annotations: {
       'cluster-autoscaler.kubernetes.io/safe-to-evict': 'true',
@@ -116,18 +116,10 @@ const theclusterRunnerSet = new arc.RunnerSet('thecluster', {
         },
       },
       spec: {
-        initContainers: [{
-          name: 'cache-permissions',
-          image: 'busybox',
-          // I'm not 100% sure what the `runner`s group is, but 1000 seems to be `docker`.
-          // At the very least I can confirm that 1000 is the uid of `runner`, see below:
+        securityContext: {
           // https://github.com/actions-runner-controller/actions-runner-controller/blob/cc25dd7926909a6c2bd300440016559d695453c3/runner/Dockerfile#L63
-          command: ['chown', '-R', '1000:1000', runnerCacheDir],
-          volumeMounts: [{
-            name: 'the-cluster-runner',
-            mountPath: runnerCacheDir,
-          }],
-        }],
+          fsGroup: 1000,
+        },
         containers: [{
           name: 'runner',
           volumeMounts: [{
@@ -154,9 +146,9 @@ const theclusterRunnerKind = pulumi
   .output(theclusterRunnerSet.kind)
   .apply(x => x ?? '');
 
-const theclusterRunnerAutoScaler = new arc.HorizontalRunnerAutoscaler('thecluster', {
+const theclusterRunnerAutoScaler = new arc.HorizontalRunnerAutoscaler('the-cluster', {
   metadata: {
-    name: 'thecluster',
+    name: 'the-cluster',
     namespace: githubNs.name,
   },
   spec: {
@@ -177,9 +169,9 @@ const theclusterRunnerAutoScaler = new arc.HorizontalRunnerAutoscaler('thecluste
   dependsOn: [actionsRunnerControllerRelease],
 });
 
-const mediaRoutes = new traefik.IngressRoute('github', {
+const mediaRoutes = new traefik.IngressRoute('actions-runner-controller', {
   metadata: {
-    name: 'github',
+    name: 'actions-runner-controller',
     namespace: githubNs.name,
   },
   spec: {
@@ -190,13 +182,13 @@ const mediaRoutes = new traefik.IngressRoute('github', {
         .host('actions-runner-controller.thecluster.io')
         .build(),
       services: [{
+        // Retrieved by running and seeing what it was created as
         name: 'actions-runner-controller-github-webhook-server',
         port: 80,
       }],
     }],
   },
 });
-
 
 interface GithubConfig {
   actionsRunner: {
