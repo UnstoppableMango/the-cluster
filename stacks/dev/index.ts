@@ -115,6 +115,15 @@ const theclusterRunnerSet = new arc.RunnerSet('thecluster', {
         },
       },
       spec: {
+        initContainers: [{
+          name: 'cache-permissions',
+          image: 'busybox',
+          command: ['chown', '-R', 'runner:runner', '/runner/.cache'],
+          volumeMounts: [{
+            name: 'the-cluster-runner',
+            mountPath: '/runner/.cache',
+          }],
+        }],
         containers: [{
           name: 'runner',
           volumeMounts: [{
