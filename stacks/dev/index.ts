@@ -2,7 +2,9 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as helm from '@pulumi/kubernetes/helm/v3';
 import * as arc from '@pulumi/crds/actions/v1alpha1';
+import * as traefik from '@pulumi/crds/traefik/v1alpha1';
 import { Namespace, Project } from '@pulumi/rancher2';
+import { matchBuilder } from '@unmango/shared/traefik';
 
 const config = new pulumi.Config();
 
@@ -27,6 +29,7 @@ const actionsRunnerControllerSecret = new k8s.core.v1.Secret('actions-runner-con
     github_app_id: githubConfig.actionsRunner.appId,
     github_app_installation_id: githubConfig.actionsRunner.installationId,
     github_app_private_key: githubConfig.actionsRunner.privateKey,
+    github_webhook_secret_token: githubConfig.webhook.secretToken,
   },
 });
 
@@ -39,21 +42,38 @@ const actionsRunnerControllerRelease = new helm.Release('actions-runner-controll
   },
   values: {
     replicaCount: 3,
-    syncPeriod: '2m',
     authSecret: {
       name: actionsRunnerControllerSecret.metadata.name,
     },
-    ephemeral: false,
     topologySpreadConstraints: [{
       maxSkew: 1,
       topologyKey: 'host',
       whenUnsatisfiable: 'ScheduleAnyway',
       labelSelector: {
         matchLabels: {
-          'runner-deployment-name': 'actions-runner',
+          'app.kubernetes.io/name': 'actions-runner-controller',
         },
       },
     }],
+    githubWebhookServer: {
+      enabled: true,
+      secret: {
+        name: actionsRunnerControllerSecret.metadata.name,
+      },
+      service: {
+        type: 'ClusterIP',
+      },
+      topologySpreadConstraints: [{
+        maxSkew: 1,
+        topologyKey: 'host',
+        whenUnsatisfiable: 'ScheduleAnyway',
+        labelSelector: {
+          matchLabels: {
+            'app.kubernetes.io/name': 'actions-runner-controller',
+          },
+        },
+      }],
+    },
   },
 });
 
@@ -69,6 +89,17 @@ const theclusterRunnerDeployment = new arc.RunnerDeployment('thecluster', {
     template: {
       spec: {
         repository: 'UnstoppableMango/the-cluster',
+        ephemeral: false,
+        topologySpreadConstraint: [{
+          maxSkew: 1,
+          topologyKey: 'host',
+          whenUnsatisfiable: 'ScheduleAnyway',
+          labelSelector: {
+            matchLabels: {
+              'runner-deployment-name': 'thecluster',
+            },
+          },
+        }],
       },
     },
   },
@@ -89,19 +120,39 @@ const theclusterRunnerAutoScaler = new arc.HorizontalRunnerAutoscaler('thecluste
     scaleTargetRef: {
       name: theclusterRunnerName,
     },
-    minReplicas: 1,
+    minReplicas: 0,
     maxReplicas: 10,
-    metrics: [{
-      type: 'PercentageRunnersBusy',
-      scaleUpThreshold: '0.75',
-      scaleDownThreshold: '0.3',
-      scaleUpAdjustment: 2,
-      scaleDownAdjustment: 1,
+    scaleUpTriggers: [{
+      // Scales up on workflow_job "queued"
+      // Scales down on workflow_job "completed"
+      githubEvent: {},
+      duration: '30m',
     }],
   },
 }, {
   dependsOn: [actionsRunnerControllerRelease],
 });
+
+const mediaRoutes = new traefik.IngressRoute('github', {
+  metadata: {
+    name: 'github',
+    namespace: githubNs.name,
+  },
+  spec: {
+    entryPoints: ['websecure'],
+    routes: [{
+      kind: 'Rule',
+      match: matchBuilder()
+        .host('actions-runner-controller.thecluster.io')
+        .build(),
+      services: [{
+        name: 'actions-runner-controller-github-webhook-server',
+        port: 80,
+      }],
+    }],
+  },
+});
+
 
 interface GithubConfig {
   actionsRunner: {
@@ -109,5 +160,8 @@ interface GithubConfig {
     clientSecret: string;
     installationId: string;
     privateKey: string;
-  }
+  };
+  webhook: {
+    secretToken: string;
+  };
 }
