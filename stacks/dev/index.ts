@@ -159,7 +159,7 @@ const theclusterRunnerAutoScaler = new arc.HorizontalRunnerAutoscaler('thecluste
     scaleTargetRef: {
       name: theclusterRunnerName,
     },
-    minReplicas: 0,
+    minReplicas: 1,
     maxReplicas: 10,
     scaleUpTriggers: [{
       // Scales up on workflow_job "queued"
