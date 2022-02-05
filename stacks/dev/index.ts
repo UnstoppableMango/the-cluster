@@ -69,7 +69,7 @@ const actionsRunnerControllerRelease = new helm.Release('actions-runner-controll
         whenUnsatisfiable: 'ScheduleAnyway',
         labelSelector: {
           matchLabels: {
-            'app.kubernetes.io/name': 'actions-runner-controller', // TODO
+            'app.kubernetes.io/name': 'actions-runner-controller',
           },
         },
       }],
