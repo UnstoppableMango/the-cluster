@@ -43,14 +43,13 @@ const actionsRunnerControllerRelease = new helm.Release('actions-runner-controll
     authSecret: {
       name: actionsRunnerControllerSecret.metadata.name,
     },
-    ephemeral: false,
     topologySpreadConstraints: [{
       maxSkew: 1,
       topologyKey: 'host',
       whenUnsatisfiable: 'ScheduleAnyway',
       labelSelector: {
         matchLabels: {
-          'runner-deployment-name': 'actions-runner',
+          'app.kubernetes.io/name': 'actions-runner-controller',
         },
       },
     }],
@@ -69,6 +68,17 @@ const theclusterRunnerDeployment = new arc.RunnerDeployment('thecluster', {
     template: {
       spec: {
         repository: 'UnstoppableMango/the-cluster',
+        ephemeral: false,
+        topologySpreadConstraint: [{
+          maxSkew: 1,
+          topologyKey: 'host',
+          whenUnsatisfiable: 'ScheduleAnyway',
+          labelSelector: {
+            matchLabels: {
+              'runner-deployment-name': 'thecluster',
+            },
+          },
+        }],
       },
     },
   },
