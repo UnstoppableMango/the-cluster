@@ -119,7 +119,11 @@ const theclusterRunnerSet = new arc.RunnerSet('thecluster', {
           name: 'runner',
           volumeMounts: [{
             name: 'the-cluster-runner',
-            mountPath: '/home/runner/work/.cache',
+            mountPath: '/runner/.cache',
+          }],
+          env: [{
+            name: 'THECLUSTER_CACHE',
+            value: '/runner/.cache',
           }],
         }],
       },
