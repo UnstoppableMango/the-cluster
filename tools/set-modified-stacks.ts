@@ -1,4 +1,5 @@
 import * as exec from 'child_process';
+import * as os from 'os';
 import * as util from 'util';
 
 const execAsync = util.promisify(exec.exec);
@@ -29,7 +30,7 @@ const execAsync = util.promisify(exec.exec);
   if (changedFiles.some(f => triggerAllFiles.some(t => f.startsWith(t)))) {
     const setOutputCommand = createSetOutputCommand(stacks);
     console.log('Running command: ' + setOutputCommand);
-    await execAsync(setOutputCommand);
+    process.stdout.write(setOutputCommand + os.EOL);
     process.exit(0);
   }
 
@@ -38,7 +39,7 @@ const execAsync = util.promisify(exec.exec);
   if (filteredStacks.length >= 0) {
     const setOutputCommand = createSetOutputCommand(filteredStacks);
     console.log('Running command: ' + setOutputCommand);
-    await execAsync(setOutputCommand);
+    process.stdout.write(setOutputCommand + os.EOL);
   }
 
 })();
