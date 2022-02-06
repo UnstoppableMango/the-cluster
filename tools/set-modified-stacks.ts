@@ -45,6 +45,5 @@ const execAsync = util.promisify(exec.exec);
 })();
 
 function createSetOutputCommand(stacks: string[]): string {
-  const escapedStacks = JSON.stringify(JSON.stringify(stacks));
-  return `::set-output name=value::${escapedStacks}`;
+  return `::set-output name=value::${JSON.stringify(stacks)}`;
 }
