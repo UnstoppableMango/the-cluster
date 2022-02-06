@@ -4,7 +4,8 @@
     "./stacks/*"
   ],
   "scripts": {
-    "gen-crds": "npx ts-node tools/gen-crds.ts"
+    "gen-crds": "npx ts-node tools/gen-crds.ts",
+    "set-modified-stacks": "npx ts-node tools/set-modified-stacks.ts"
   },
   "dependencies": {
     "@pulumi/cloudflare": "^4.3.0",
