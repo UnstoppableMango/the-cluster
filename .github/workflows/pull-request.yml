@@ -9,7 +9,7 @@ jobs:
     name: Setup Workflows
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.stacks.outputs.value }}
+      stacks: ${{ steps.stacks.outputs.value }}
 
     steps:
     - uses: actions/checkout@v2
