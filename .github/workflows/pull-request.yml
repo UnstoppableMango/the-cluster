@@ -50,9 +50,18 @@ jobs:
       working-directory: stacks/rancher
       run: |
         pulumi stack select prod
-        echo "RANCHER_URL=$(pulumi config get rancher2:apiUrl)" >> $GITHUB_ENV
-        echo "RANCHER_ACCESS_KEY=$(pulumi config get rancher2:accessKey)" >> $GITHUB_ENV
-        echo "RANCHER_SECRET_KEY=$(pulumi config get rancher2:secretKey)" >> $GITHUB_ENV
+        
+        RANCHER_URL=$(pulumi config get rancher2:apiUrl)
+        RANCHER_ACCESS_KEY=$(pulumi config get rancher2:accessKey)
+        RANCHER_SECRET_KEY=$(pulumi config get rancher2:secretKey)
+
+        echo "::add-mask::$RANCHER_URL"
+        echo "::add-mask::$RANCHER_ACCESS_KEY"
+        echo "::add-mask::$RANCHER_SECRET_KEY"
+
+        echo "RANCHER_URL=$RANCHER_URL" >> $GITHUB_ENV
+        echo "RANCHER_ACCESS_KEY=$RANCHER_ACCESS_KEY" >> $GITHUB_ENV
+        echo "RANCHER_SECRET_KEY=$RANCHER_SECRET_KEY" >> $GITHUB_ENV
       env:
         PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
