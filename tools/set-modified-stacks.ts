@@ -5,7 +5,7 @@ const execAsync = util.promisify(exec.exec);
 
 (async () => {
   const diffCommand = [
-    'git', 'diff', '--name-only', 'main',
+    'git', 'diff', '--name-only', 'origin/main',
   ].join(' ');
 
   const changedFiles = await execAsync(diffCommand).then(x => x.stdout.split('\n'));
