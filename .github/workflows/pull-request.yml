@@ -2,21 +2,34 @@ name: Pull Request
 
 on:
   pull_request:
+    branches: [main]
 
 jobs:
+  setup:
+    name: Setup Workflows
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.stacks.outputs.value }}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/setup-node@v2
+      with:
+        node-version-file: '.nvmrc'
+
+    - run: npm ci
+
+    - id: stacks
+      run: npm run set-modified-stacks
+
   media:
     name: Preview
+    needs: [setup]
     runs-on: self-hosted
     strategy:
       matrix:
-        stack:
-        - auth
-        - dev
-        - management
-        - media
-        - networking
-        - rancher
-        - storage
+        stack: ${{ fromJson(needs.setup.outputs.stacks) }}
 
     steps:
     - uses: actions/checkout@v2
