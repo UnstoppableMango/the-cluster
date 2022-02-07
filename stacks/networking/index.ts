@@ -205,6 +205,8 @@ const tunnel = new Tunnel('thecluster-io', {
     'satisfactory',
     'minecraft',
     'actions-runner-controller',
+    'unstoppablemango-actions',
+    'unmango-actions',
   ],
   // Point to the internal traefik url for two reasons:
   // - No hard dependency on an IP if it changes
