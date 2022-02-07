@@ -204,7 +204,6 @@ const tunnel = new Tunnel('thecluster-io', {
     'requests',
     'satisfactory',
     'minecraft',
-    'actions-runner-controller',
     'unstoppablemango-actions',
     'unmango-actions',
   ],
