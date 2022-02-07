@@ -3,65 +3,66 @@ import * as k8s from '@pulumi/kubernetes';
 import * as helm from '@pulumi/kubernetes/helm/v3';
 import * as arc from '@pulumi/crds/actions/v1alpha1';
 import * as traefik from '@pulumi/crds/traefik/v1alpha1';
-import { Namespace, Project } from '@pulumi/rancher2';
 import { matchBuilder } from '@unmango/shared/traefik';
 
-const config = new pulumi.Config();
-
-const project = new Project('dev', {
-  name: 'Dev',
-  clusterId: 'local',
-});
-
-const githubNs = new Namespace('github', {
-  name: 'github',
-  projectId: project.id,
-});
-
-const githubConfig = config.requireObject<GithubConfig>('github');
-
-const actionsRunnerControllerSecret = new k8s.core.v1.Secret('actions-runner-controller', {
+const unstoppableMangoActionsNs = new k8s.core.v1.Namespace('unstoppablemango-actions', {
   metadata: {
-    name: 'actions-runner-controller',
-    namespace: githubNs.name,
-  },
-  stringData: {
-    github_app_id: githubConfig.actionsRunner.appId,
-    github_app_installation_id: githubConfig.actionsRunner.installationId,
-    github_app_private_key: githubConfig.actionsRunner.privateKey,
-    github_webhook_secret_token: githubConfig.webhook.secretToken,
+    name: 'unstoppablemango-actions',
   },
 });
 
-const actionsRunnerControllerRelease = new helm.Release('actions-runner-controller', {
-  name: 'actions-runner-controller',
-  chart: 'actions-runner-controller',
-  namespace: githubNs.name,
-  repositoryOpts: {
-    repo: 'https://actions-runner-controller.github.io/actions-runner-controller',
-  },
-  values: {
-    replicaCount: 3,
-    authSecret: {
-      name: actionsRunnerControllerSecret.metadata.name,
+const config = new pulumi.Config();
+const unstoppableMangoConfig = config.requireObject<GithubEntity>('unstoppableMango');
+
+const unstoppableMangoArc = createActionsRunnerController(
+  unstoppableMangoActionsNs,
+  unstoppableMangoConfig.github,
+  'unstoppablemango-actions.thecluster.io',
+  ['the-cluster'],
+  'UnstoppableMango',
+);
+
+function createActionsRunnerController(
+  namespace: k8s.core.v1.Namespace,
+  config: GithubConfig,
+  hostname: string,
+  repositories: string[],
+  user?: string,
+): {
+  secret: k8s.core.v1.Secret;
+  release: helm.Release;
+  runnerSets: arc.RunnerSet[];
+  autoScalers: arc.HorizontalRunnerAutoscaler[];
+  ingressRoute: traefik.IngressRoute;
+} {
+  const secret = new k8s.core.v1.Secret('actions-runner-controller', {
+    metadata: {
+      name: 'actions-runner-controller',
+      namespace: namespace.metadata.name,
     },
-    topologySpreadConstraints: [{
-      maxSkew: 1,
-      topologyKey: 'host',
-      whenUnsatisfiable: 'ScheduleAnyway',
-      labelSelector: {
-        matchLabels: {
-          'app.kubernetes.io/instance': 'actions-runner-controller',
-        },
+    stringData: {
+      github_app_id: config.actionsRunner.appId,
+      github_app_installation_id: config.actionsRunner.installationId,
+      github_app_private_key: config.actionsRunner.privateKey,
+      github_webhook_secret_token: config.webhook.secretToken,
+    },
+  });
+
+  const release = new helm.Release('actions-runner-controller', {
+    name: 'actions-runner-controller',
+    chart: 'actions-runner-controller',
+    namespace: namespace.metadata.name,
+    repositoryOpts: {
+      repo: 'https://actions-runner-controller.github.io/actions-runner-controller',
+    },
+    values: {
+      replicaCount: 3,
+      authSecret: {
+        name: secret.metadata.name,
       },
-    }],
-    githubWebhookServer: {
-      enabled: true,
-      secret: {
-        name: actionsRunnerControllerSecret.metadata.name,
-      },
-      service: {
-        type: 'ClusterIP',
+      scope: {
+        watchNamespace: namespace.metadata.name,
+        singleNamespace: true,
       },
       topologySpreadConstraints: [{
         maxSkew: 1,
@@ -73,124 +74,158 @@ const actionsRunnerControllerRelease = new helm.Release('actions-runner-controll
           },
         },
       }],
-    },
-  },
-});
-
-// Test Change
-
-const runnerCacheDir = '/runner/cache';
-const theclusterRunnerSet = new arc.RunnerSet('the-cluster', {
-  metadata: {
-    name: 'the-cluster',
-    namespace: githubNs.name,
-    annotations: {
-      'cluster-autoscaler.kubernetes.io/safe-to-evict': 'true',
-    },
-  },
-  spec: {
-    repository: 'UnstoppableMango/the-cluster',
-    ephemeral: false,
-    selector: {
-      matchLabels: {
-        app: 'the-cluster-runner',
-      },
-    },
-    serviceName: 'the-cluster-runner',
-    volumeClaimTemplates: [{
-      metadata: {
-        name: 'the-cluster-runner',
-      },
-      spec: {
-        accessModes: ['ReadWriteOnce'],
-        storageClassName: 'longhorn',
-        resources: {
-          requests: {
-            storage: '10Gi',
+      githubWebhookServer: {
+        enabled: true,
+        secret: {
+          name: secret.metadata.name,
+        },
+        service: {
+          type: 'ClusterIP',
+        },
+        topologySpreadConstraints: [{
+          maxSkew: 1,
+          topologyKey: 'host',
+          whenUnsatisfiable: 'ScheduleAnyway',
+          labelSelector: {
+            matchLabels: {
+              'app.kubernetes.io/instance': 'actions-runner-controller',
+            },
           },
-        },
-      },
-    }],
-    template: {
-      metadata: {
-        labels: {
-          app: 'the-cluster-runner',
-        },
-      },
-      spec: {
-        securityContext: {
-          // https://github.com/actions-runner-controller/actions-runner-controller/blob/cc25dd7926909a6c2bd300440016559d695453c3/runner/Dockerfile#L63
-          fsGroup: 1000,
-        },
-        containers: [{
-          name: 'runner',
-          volumeMounts: [{
-            name: 'the-cluster-runner',
-            mountPath: runnerCacheDir,
-          }],
-          env: [{
-            name: 'THECLUSTER_CACHE',
-            value: runnerCacheDir,
-          }],
         }],
       },
     },
-  },
-}, {
-  dependsOn: [actionsRunnerControllerRelease],
-});
+  });
 
-const theclusterRunnerName = pulumi
-  .output(theclusterRunnerSet.metadata)
-  .apply(x => x?.name ?? '');
+  const runnerCacheDir = '/runner/cache';
 
-const theclusterRunnerKind = pulumi
-  .output(theclusterRunnerSet.kind)
-  .apply(x => x ?? '');
+  const runnerSets: arc.RunnerSet[] = [];
+  const autoScalers: arc.HorizontalRunnerAutoscaler[] = [];
 
-const theclusterRunnerAutoScaler = new arc.HorizontalRunnerAutoscaler('the-cluster', {
-  metadata: {
-    name: 'the-cluster',
-    namespace: githubNs.name,
-  },
-  spec: {
-    scaleTargetRef: {
-      name: theclusterRunnerName,
-      kind: theclusterRunnerKind,
+  repositories.forEach(repository => {
+    const runnerSet = new arc.RunnerSet(repository, {
+      metadata: {
+        name: repository,
+        namespace: namespace.metadata.name,
+        annotations: {
+          'cluster-autoscaler.kubernetes.io/safe-to-evict': 'true',
+        },
+      },
+      spec: {
+        organization: user === undefined ? repository : undefined,
+        repository: user === undefined ? undefined : `${user}/${repository}`,
+        ephemeral: false,
+        selector: {
+          matchLabels: {
+            app: `${repository}-runner`,
+          },
+        },
+        serviceName: `${repository}-runner`,
+        volumeClaimTemplates: [{
+          metadata: {
+            name: `${repository}-runner`,
+          },
+          spec: {
+            accessModes: ['ReadWriteOnce'],
+            storageClassName: 'longhorn',
+            resources: {
+              requests: {
+                storage: '10Gi',
+              },
+            },
+          },
+        }],
+        template: {
+          metadata: {
+            labels: {
+              app: `${repository}-runner`,
+            },
+          },
+          spec: {
+            securityContext: {
+              // https://github.com/actions-runner-controller/actions-runner-controller/blob/cc25dd7926909a6c2bd300440016559d695453c3/runner/Dockerfile#L63
+              fsGroup: 1000,
+            },
+            containers: [{
+              name: 'runner',
+              volumeMounts: [{
+                name: `${repository}-runner`,
+                mountPath: runnerCacheDir,
+              }],
+              env: [{
+                name: 'RUNNER_CACHE',
+                value: runnerCacheDir,
+              }],
+            }],
+          },
+        },
+      },
+    }, {
+      dependsOn: [release],
+    });
+
+    const runnerName = pulumi.output(runnerSet.metadata).apply(x => x?.name ?? '');
+    const runnerKind = pulumi.output(runnerSet.kind).apply(x => x ?? '');
+
+    const autoScaler = new arc.HorizontalRunnerAutoscaler(repository, {
+      metadata: {
+        name: repository,
+        namespace: namespace.metadata.name,
+      },
+      spec: {
+        scaleTargetRef: {
+          name: runnerName,
+          kind: runnerKind,
+        },
+        minReplicas: 0,
+        maxReplicas: 10,
+        scaleUpTriggers: [{
+          // Scales up on workflow_job "queued"
+          // Scales down on workflow_job "completed"
+          githubEvent: {},
+          duration: '30m',
+        }],
+      },
+    }, {
+      dependsOn: [release],
+    });
+
+    runnerSets.push(runnerSet);
+    autoScalers.push(autoScaler);
+  });
+
+  const ingressRoute = new traefik.IngressRoute('actions-runner-controller', {
+    metadata: {
+      name: 'actions-runner-controller',
+      namespace: namespace.metadata.name,
     },
-    minReplicas: 0,
-    maxReplicas: 10,
-    scaleUpTriggers: [{
-      // Scales up on workflow_job "queued"
-      // Scales down on workflow_job "completed"
-      githubEvent: {},
-      duration: '30m',
-    }],
-  },
-}, {
-  dependsOn: [actionsRunnerControllerRelease],
-});
-
-const mediaRoutes = new traefik.IngressRoute('actions-runner-controller', {
-  metadata: {
-    name: 'actions-runner-controller',
-    namespace: githubNs.name,
-  },
-  spec: {
-    entryPoints: ['websecure'],
-    routes: [{
-      kind: 'Rule',
-      match: matchBuilder()
-        .host('actions-runner-controller.thecluster.io')
-        .build(),
-      services: [{
-        // Retrieved by running and seeing what it was created as
-        name: 'actions-runner-controller-github-webhook-server',
-        port: 80,
+    spec: {
+      entryPoints: ['websecure'],
+      routes: [{
+        kind: 'Rule',
+        match: matchBuilder().host(hostname).build(),
+        services: [{
+          // Retrieved by running and seeing what it was created as
+          name: 'actions-runner-controller-github-webhook-server',
+          port: 80,
+        }],
       }],
-    }],
-  },
-});
+    },
+  }, {
+    dependsOn: [release],
+  });
+
+  return {
+    secret,
+    autoScalers,
+    ingressRoute,
+    release,
+    runnerSets,
+  };
+}
+
+interface GithubEntity {
+  github: GithubConfig;
+}
 
 interface GithubConfig {
   actionsRunner: {
