@@ -196,7 +196,7 @@ function createActionsRunnerController(
           name: runnerName,
           kind: runnerKind,
         },
-        minReplicas: 0,
+        minReplicas: 1,
         maxReplicas: 10,
         scaleUpTriggers: [{
           // Scales up on workflow_job "queued"
