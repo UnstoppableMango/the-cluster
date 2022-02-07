@@ -49,9 +49,10 @@ function createActionsRunnerController(
   autoScalers: arc.HorizontalRunnerAutoscaler[];
   ingressRoute: traefik.IngressRoute;
 } {
-  const secret = new k8s.core.v1.Secret(`${user}-actions-runner-controller`, {
+  const prefix = user.toLowerCase();
+  const secret = new k8s.core.v1.Secret(`${prefix}-arc`, {
     metadata: {
-      name: 'actions-runner-controller',
+      name: `${prefix}-arc`,
       namespace: namespace.metadata.name,
     },
     stringData: {
@@ -62,8 +63,8 @@ function createActionsRunnerController(
     },
   });
 
-  const release = new helm.Release(`${user}-actions-runner-controller`, {
-    name: 'actions-runner-controller',
+  const release = new helm.Release(`${prefix}-arc`, {
+    name: `${prefix}-arc`,
     chart: 'actions-runner-controller',
     namespace: namespace.metadata.name,
     repositoryOpts: {
@@ -117,9 +118,9 @@ function createActionsRunnerController(
 
   const repoOrOrg = repositories ?? [user];
   repoOrOrg.forEach(repository => {
-    const runnerSet = new arc.RunnerSet(`${user}-${repository}`, {
+    const runnerSet = new arc.RunnerSet(`${prefix}-${repository}`, {
       metadata: {
-        name: repository,
+        name: `${prefix}-${repository}`,
         namespace: namespace.metadata.name,
         annotations: {
           'cluster-autoscaler.kubernetes.io/safe-to-evict': 'true',
@@ -181,9 +182,9 @@ function createActionsRunnerController(
     const runnerName = pulumi.output(runnerSet.metadata).apply(x => x?.name ?? '');
     const runnerKind = pulumi.output(runnerSet.kind).apply(x => x ?? '');
 
-    const autoScaler = new arc.HorizontalRunnerAutoscaler(`${user}-${repository}`, {
+    const autoScaler = new arc.HorizontalRunnerAutoscaler(`${prefix}-${repository}`, {
       metadata: {
-        name: repository,
+        name: `${prefix}-${repository}`,
         namespace: namespace.metadata.name,
       },
       spec: {
@@ -208,9 +209,9 @@ function createActionsRunnerController(
     autoScalers.push(autoScaler);
   });
 
-  const ingressRoute = new traefik.IngressRoute(`${user}-actions-runner-controller`, {
+  const ingressRoute = new traefik.IngressRoute(`${prefix}-arc`, {
     metadata: {
-      name: 'actions-runner-controller',
+      name: `${prefix}-arc`,
       namespace: namespace.metadata.name,
     },
     spec: {
