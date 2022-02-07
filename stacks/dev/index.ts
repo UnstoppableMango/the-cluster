@@ -12,11 +12,11 @@ const unstoppableMangoActionsNs = new k8s.core.v1.Namespace('unstoppablemango-ac
 });
 
 const config = new pulumi.Config();
-const githubConfig = config.requireObject<GithubConfig>('github');
+const unstoppableMangoConfig = config.requireObject<GithubEntity>('unstoppableMango');
 
 const unstoppableMangoArc = createActionsRunnerController(
   unstoppableMangoActionsNs,
-  githubConfig,
+  unstoppableMangoConfig.github,
   'unstoppablemango-actions.thecluster.io',
   ['the-cluster'],
   'UnstoppableMango',
@@ -221,6 +221,10 @@ function createActionsRunnerController(
     release,
     runnerSets,
   };
+}
+
+interface GithubEntity {
+  github: GithubConfig;
 }
 
 interface GithubConfig {
