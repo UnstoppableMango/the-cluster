@@ -25,23 +25,23 @@ const unstoppableMangoArc = createActionsRunnerController(
   unstoppableMangoActionsNs,
   unstoppableMangoConfig.github,
   'unstoppablemango-actions.thecluster.io',
-  ['the-cluster'],
   'UnstoppableMango',
+  ['the-cluster'],
 );
 
 const unmangoArc = createActionsRunnerController(
   unmangoActionsNs,
   unmangoConfig.github,
   'unmango-actions.thecluster.io',
-  ['unmango'],
+  'unmango',
 );
 
 function createActionsRunnerController(
   namespace: k8s.core.v1.Namespace,
   config: GithubConfig,
   hostname: string,
-  repositories: string[],
-  user?: string,
+  user: string,
+  repositories?: string[],
 ): {
   secret: k8s.core.v1.Secret;
   release: helm.Release;
@@ -49,7 +49,7 @@ function createActionsRunnerController(
   autoScalers: arc.HorizontalRunnerAutoscaler[];
   ingressRoute: traefik.IngressRoute;
 } {
-  const secret = new k8s.core.v1.Secret('actions-runner-controller', {
+  const secret = new k8s.core.v1.Secret(`${user}-actions-runner-controller`, {
     metadata: {
       name: 'actions-runner-controller',
       namespace: namespace.metadata.name,
@@ -62,7 +62,7 @@ function createActionsRunnerController(
     },
   });
 
-  const release = new helm.Release('actions-runner-controller', {
+  const release = new helm.Release(`${user}-actions-runner-controller`, {
     name: 'actions-runner-controller',
     chart: 'actions-runner-controller',
     namespace: namespace.metadata.name,
@@ -115,8 +115,9 @@ function createActionsRunnerController(
   const runnerSets: arc.RunnerSet[] = [];
   const autoScalers: arc.HorizontalRunnerAutoscaler[] = [];
 
-  repositories.forEach(repository => {
-    const runnerSet = new arc.RunnerSet(repository, {
+  const repoOrOrg = repositories ?? [user];
+  repoOrOrg.forEach(repository => {
+    const runnerSet = new arc.RunnerSet(`${user}-${repository}`, {
       metadata: {
         name: repository,
         namespace: namespace.metadata.name,
@@ -125,8 +126,8 @@ function createActionsRunnerController(
         },
       },
       spec: {
-        organization: user === undefined ? repository : undefined,
-        repository: user === undefined ? undefined : `${user}/${repository}`,
+        organization: repositories === undefined ? user : undefined,
+        repository: repositories === undefined ? undefined : `${user}/${repository}`,
         ephemeral: false,
         selector: {
           matchLabels: {
@@ -180,7 +181,7 @@ function createActionsRunnerController(
     const runnerName = pulumi.output(runnerSet.metadata).apply(x => x?.name ?? '');
     const runnerKind = pulumi.output(runnerSet.kind).apply(x => x ?? '');
 
-    const autoScaler = new arc.HorizontalRunnerAutoscaler(repository, {
+    const autoScaler = new arc.HorizontalRunnerAutoscaler(`${user}-${repository}`, {
       metadata: {
         name: repository,
         namespace: namespace.metadata.name,
@@ -207,7 +208,7 @@ function createActionsRunnerController(
     autoScalers.push(autoScaler);
   });
 
-  const ingressRoute = new traefik.IngressRoute('actions-runner-controller', {
+  const ingressRoute = new traefik.IngressRoute(`${user}-actions-runner-controller`, {
     metadata: {
       name: 'actions-runner-controller',
       namespace: namespace.metadata.name,
