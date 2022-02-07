@@ -1,6 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as helm from '@pulumi/kubernetes/helm/v3';
+import * as random from '@pulumi/random';
 import * as arc from '@pulumi/crds/actions/v1alpha1';
 import * as traefik from '@pulumi/crds/traefik/v1alpha1';
 import { matchBuilder } from '@unmango/shared/traefik';
@@ -63,6 +64,8 @@ function createActionsRunnerController(
     },
   });
 
+  const leaderElectionId = new random.RandomUuid(`${prefix}-leader-election`);
+
   const release = new helm.Release(`${prefix}-arc`, {
     name: `${prefix}-arc`,
     chart: 'actions-runner-controller',
@@ -75,6 +78,7 @@ function createActionsRunnerController(
       authSecret: {
         name: secret.metadata.name,
       },
+      leaderElectionId: leaderElectionId.result,
       scope: {
         watchNamespace: namespace.metadata.name,
         singleNamespace: true,
