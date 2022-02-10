@@ -20,7 +20,7 @@ const unmangoActionsNs = new k8s.core.v1.Namespace('unmango-actions', {
 
 const config = new pulumi.Config();
 const unstoppableMangoConfig = config.requireObject<GithubEntity>('unstoppableMango');
-const unmangoConfig = config.requireObject<GithubEntity>('unmango');
+// const unmangoConfig = config.requireObject<GithubEntity>('unmango');
 
 const unstoppableMangoArc = createActionsRunnerController(
   unstoppableMangoActionsNs,
@@ -30,12 +30,12 @@ const unstoppableMangoArc = createActionsRunnerController(
   ['the-cluster'],
 );
 
-const unmangoArc = createActionsRunnerController(
-  unmangoActionsNs,
-  unmangoConfig.github,
-  'unmango-actions.thecluster.io',
-  { type: 'org', organization: 'unmango' },
-);
+// const unmangoArc = createActionsRunnerController(
+//   unmangoActionsNs,
+//   unmangoConfig.github,
+//   'unmango-actions.thecluster.io',
+//   { type: 'org', organization: 'unmango' },
+// );
 
 function createActionsRunnerController(
   namespace: k8s.core.v1.Namespace,
