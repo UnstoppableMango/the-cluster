@@ -74,6 +74,7 @@ function createActionsRunnerController(
       repo: 'https://actions-runner-controller.github.io/actions-runner-controller',
     },
     values: {
+      fullnameOverride: `${prefix}-arc`,
       replicaCount: 3,
       authSecret: {
         name: secret.metadata.name,
@@ -95,6 +96,7 @@ function createActionsRunnerController(
       }],
       githubWebhookServer: {
         enabled: true,
+        fullnameOverride: `${prefix}-arc-ghws`,
         secret: {
           name: secret.metadata.name,
         },
@@ -225,7 +227,7 @@ function createActionsRunnerController(
         match: matchBuilder().host(hostname).build(),
         services: [{
           // Retrieved by running and seeing what it was created as
-          name: 'actions-runner-controller-github-webhook-server',
+          name: `${prefix}-arc-ghws`,
           port: 80,
         }],
       }],
