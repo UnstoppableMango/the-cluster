@@ -26,7 +26,7 @@ const unstoppableMangoArc = createActionsRunnerController(
   unstoppableMangoActionsNs,
   unstoppableMangoConfig.github,
   'unstoppablemango-actions.thecluster.io',
-  'UnstoppableMango',
+  { type: 'user', user: 'UnstoppableMango' },
   ['the-cluster'],
 );
 
@@ -34,14 +34,14 @@ const unmangoArc = createActionsRunnerController(
   unmangoActionsNs,
   unmangoConfig.github,
   'unmango-actions.thecluster.io',
-  'unmango',
+  { type: 'org', organization: 'unmango' },
 );
 
 function createActionsRunnerController(
   namespace: k8s.core.v1.Namespace,
   config: GithubConfig,
   hostname: string,
-  user: string,
+  owner: Owner,
   repositories?: string[],
 ): {
   secret: k8s.core.v1.Secret;
@@ -50,7 +50,7 @@ function createActionsRunnerController(
   autoScalers: arc.HorizontalRunnerAutoscaler[];
   ingressRoute: traefik.IngressRoute;
 } {
-  const prefix = user.toLowerCase();
+  const prefix = (owner.type === 'org' ? owner.organization : owner.user).toLowerCase();
   const secret = new k8s.core.v1.Secret(`${prefix}-arc`, {
     metadata: {
       name: `${prefix}-arc`,
@@ -122,29 +122,36 @@ function createActionsRunnerController(
   const runnerSets: arc.RunnerSet[] = [];
   const autoScalers: arc.HorizontalRunnerAutoscaler[] = [];
 
-  const repoOrOrg = repositories ?? [user];
-  repoOrOrg.forEach(repository => {
-    const runnerSet = new arc.RunnerSet(`${prefix}-${repository}`, {
+  if (owner.type === 'org') {
+    repositories = ['all'];
+  }
+
+  (repositories ?? []).forEach(repository => {
+    const resourceName = owner.type === 'org' ? owner.organization : `${prefix}-${repository}`;
+    const runnerPrefix = owner.type === 'org' ? owner.organization : repositories;
+    const runnerName = `${runnerPrefix}-runner`;
+
+    const runnerSet = new arc.RunnerSet(resourceName, {
       metadata: {
-        name: `${prefix}-${repository}`,
+        name: resourceName,
         namespace: namespace.metadata.name,
         annotations: {
           'cluster-autoscaler.kubernetes.io/safe-to-evict': 'true',
         },
       },
       spec: {
-        organization: repositories === undefined ? user : undefined,
-        repository: repositories === undefined ? undefined : `${user}/${repository}`,
+        organization: owner.type === 'org' ? owner.organization : undefined,
+        repository: owner.type === 'user' ? `${owner.user}/${repository}` : undefined,
         ephemeral: false,
         selector: {
           matchLabels: {
-            app: `${repository}-runner`,
+            app: runnerName,
           },
         },
-        serviceName: `${repository}-runner`,
+        serviceName: runnerName,
         volumeClaimTemplates: [{
           metadata: {
-            name: `${repository}-runner`,
+            name: runnerName,
           },
           spec: {
             accessModes: ['ReadWriteOnce'],
@@ -159,7 +166,7 @@ function createActionsRunnerController(
         template: {
           metadata: {
             labels: {
-              app: `${repository}-runner`,
+              app: runnerName,
             },
           },
           spec: {
@@ -170,7 +177,7 @@ function createActionsRunnerController(
             containers: [{
               name: 'runner',
               volumeMounts: [{
-                name: `${repository}-runner`,
+                name: runnerName,
                 mountPath: runnerCacheDir,
               }],
               env: [{
@@ -185,17 +192,17 @@ function createActionsRunnerController(
       dependsOn: [release],
     });
 
-    const runnerName = pulumi.output(runnerSet.metadata).apply(x => x?.name ?? '');
+    const runnerSetName = pulumi.output(runnerSet.metadata).apply(x => x?.name ?? '');
     const runnerKind = pulumi.output(runnerSet.kind).apply(x => x ?? '');
 
-    const autoScaler = new arc.HorizontalRunnerAutoscaler(`${prefix}-${repository}`, {
+    const autoScaler = new arc.HorizontalRunnerAutoscaler(resourceName, {
       metadata: {
-        name: `${prefix}-${repository}`,
+        name: resourceName,
         namespace: namespace.metadata.name,
       },
       spec: {
         scaleTargetRef: {
-          name: runnerName,
+          name: runnerSetName,
           kind: runnerKind,
         },
         minReplicas: 1,
@@ -244,6 +251,10 @@ function createActionsRunnerController(
     runnerSets,
   };
 }
+
+type Owner =
+  | { type: 'user', user: string }
+  | { type: 'org', organization: string };
 
 interface GithubEntity {
   github: GithubConfig;
