@@ -38,7 +38,17 @@ const execAsync = util.promisify(exec.exec);
   }
 
   if (changedFiles.some(f => f === 'package.json' || f === 'package-lock.json')) {
+    const command = [
+      'git', 'diff', '-U0', 'origin/main', 'package.json',
+    ].join(' ');
 
+    const packageJsonDiff = await execAsync(command).then(x => x.stdout.split(os.EOL));
+
+    const modified = packageJsonDiff
+      .filter(l => /^[+]/gm.test(l))
+      .filter(l => /^(--- a\/|\+\+\+ b\/)/gm.test(l));
+
+    console.log(modified);
   }
 
   const filteredStacks = stacks.filter(s => changedFiles.some(f => f.startsWith(`stacks/${s}`)));
