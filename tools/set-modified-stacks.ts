@@ -14,10 +14,10 @@ const execAsync = util.promisify(exec.exec);
   const triggerAllFiles = ['lib'];
 
   const triggerAllDependencies = [
-    '@pulumi/*',
-    '@unmango/*',
-    'typescript',
-    'yaml',
+    /"@pulumi\/.*"/gm,
+    /"@unmango\/.*"/gm,
+    /"typescript"/gm,
+    /"yaml"/gm,
   ];
 
   const stacks = [
@@ -46,9 +46,14 @@ const execAsync = util.promisify(exec.exec);
 
     const modified = packageJsonDiff
       .filter(l => /^[+]/gm.test(l))
-      .filter(l => /^(--- a\/|\+\+\+ b\/)/gm.test(l));
+      .filter(l => !/^(--- a\/|\+\+\+ b\/)/gm.test(l));
 
-    console.log(modified);
+    if (modified.some(x => triggerAllDependencies.some(t => t.test(x)))) {
+      const setOutputCommand = createSetOutputCommand(stacks);
+      console.log('Running command: ' + setOutputCommand);
+      process.stdout.write(setOutputCommand + os.EOL);
+      process.exit(0);
+    }
   }
 
   const filteredStacks = stacks.filter(s => changedFiles.some(f => f.startsWith(`stacks/${s}`)));
