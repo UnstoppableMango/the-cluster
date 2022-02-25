@@ -65,6 +65,7 @@ const execAsync = util.promisify(exec.exec);
     process.exit(0);
   }
 
+  // TODO: Github does not like empty arrays for the strategy matrix
   // Workflow expects valid json
   const setOutputCommand = createSetOutputCommand([]);
   process.stdout.write(setOutputCommand + os.EOL);
