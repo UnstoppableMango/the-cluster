@@ -53,7 +53,7 @@ const execAsync = util.promisify(exec.exec);
 
   const filteredStacks = stacks.filter(s => changedFiles.some(f => f.startsWith(`stacks/${s}`)));
 
-  if (filteredStacks.length >= 0) {
+  if (filteredStacks.length > 0) {
     const setOutputCommand = createSetOutputCommand(filteredStacks);
     console.log('Running command: ' + setOutputCommand);
     process.stdout.write(setOutputCommand + os.EOL);
