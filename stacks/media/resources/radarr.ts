@@ -43,7 +43,7 @@ export class Radarr extends ComponentResource {
         securityContext: {
           privileged: true,
         },
-        image: 'linuxserver/radarr:3.2.2.5080-ls128',
+        image: 'linuxserver/radarr:4.0.4.5922-ls132',
         envFrom: [{
           configMapRef: {
             name: this.args.linuxServer.metadata.name,
