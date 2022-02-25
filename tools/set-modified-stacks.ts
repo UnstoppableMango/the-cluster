@@ -11,10 +11,13 @@ const execAsync = util.promisify(exec.exec);
 
   const changedFiles = await execAsync(diffCommand).then(x => x.stdout.split('\n'));
 
-  const triggerAllFiles = [
-    'lib',
-    'package-lock.json',
-    'package.json',
+  const triggerAllFiles = ['lib'];
+
+  const triggerAllDependencies = [
+    '@pulumi/*',
+    '@unmango/*',
+    'typescript',
+    'yaml',
   ];
 
   const stacks = [
@@ -32,6 +35,10 @@ const execAsync = util.promisify(exec.exec);
     console.log('Running command: ' + setOutputCommand);
     process.stdout.write(setOutputCommand + os.EOL);
     process.exit(0);
+  }
+
+  if (changedFiles.some(f => f === 'package.json' || f === 'package-lock.json')) {
+
   }
 
   const filteredStacks = stacks.filter(s => changedFiles.some(f => f.startsWith(`stacks/${s}`)));
