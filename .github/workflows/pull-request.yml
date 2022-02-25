@@ -29,6 +29,7 @@ jobs:
     name: Preview
     needs: [setup]
     runs-on: self-hosted
+    if: needs.setup.outputs.stacks != '[]'
     strategy:
       matrix:
         stack: ${{ fromJson(needs.setup.outputs.stacks) }}
