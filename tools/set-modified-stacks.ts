@@ -9,7 +9,7 @@ const execAsync = util.promisify(exec.exec);
     'git', 'diff', '--name-only', 'origin/main',
   ].join(' ');
 
-  const changedFiles = await execAsync(diffCommand).then(x => x.stdout.split('\n'));
+  const changedFiles = await execAsync(diffCommand).then(x => x.stdout.split(os.EOL));
 
   const triggerAllFiles = ['lib'];
 
@@ -62,8 +62,12 @@ const execAsync = util.promisify(exec.exec);
     const setOutputCommand = createSetOutputCommand(filteredStacks);
     console.log('Running command: ' + setOutputCommand);
     process.stdout.write(setOutputCommand + os.EOL);
+    process.exit(0);
   }
 
+  // Workflow expects valid json
+  const setOutputCommand = createSetOutputCommand([]);
+  process.stdout.write(setOutputCommand + os.EOL);
 })();
 
 function createSetOutputCommand(stacks: string[]): string {
