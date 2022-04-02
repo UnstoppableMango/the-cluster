@@ -30,6 +30,7 @@ export class Prowlarr extends ComponentResource {
     }, { parent: this });
   
     const pb = new kx.PodBuilder({
+      dnsConfig: { options: [{ name: 'ndots', value: '1' }] },
       containers: [{
         // kx sets the selector to the container name.
         // With multiple resources, it won't match correctly, so
@@ -38,7 +39,7 @@ export class Prowlarr extends ComponentResource {
         securityContext: {
           privileged: true,
         },
-        image: 'linuxserver/prowlarr:0.2.0-nightly',
+        image: 'linuxserver/prowlarr:develop-0.2.0.1448-ls47',
         envFrom: [{
           configMapRef: { name: this.args.linuxServer.metadata.name },
         }],
