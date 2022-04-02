@@ -41,7 +41,7 @@ export class Sonarr extends ComponentResource {
         securityContext: {
           privileged: true,
         },
-        image: 'linuxserver/sonarr:3.0.6.1342-ls132',
+        image: 'linuxserver/sonarr:3.0.7.1477-ls139',
         envFrom: [{
           configMapRef: {
             name: this.args.linuxServer.metadata.name,
