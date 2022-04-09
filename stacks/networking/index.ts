@@ -187,6 +187,19 @@ const tunnelNamespace = new rancher.Namespace('argo-tunnel', {
   name: 'argo-tunnel',
 });
 
+const unmangoTunnel = new Tunnel('unmango-net', {
+  namespace: tunnelNamespace.name,
+  cloudflare: {
+    accountId: cfConfig.accountId,
+    zone: 'unmango.net',
+  },
+  dnsRecords: ['plex'],
+  ingresses: [{
+    hostname: 'plex.unmango.net',
+    service: 'http://192.168.1.70:32400',
+  }],
+});
+
 const tunnel = new Tunnel('thecluster-io', {
   namespace: tunnelNamespace.name,
   cloudflare: {
