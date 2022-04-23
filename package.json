@@ -17,7 +17,7 @@
     "@pulumi/rancher2": "^3.6.1",
     "@pulumi/random": "^4.4.2",
     "@unmango/shared": "^0.1.4",
-    "yaml": "^2.0.0"
+    "yaml": "^2.0.1"
   },
   "devDependencies": {
     "@types/node": "^17.0.24",
