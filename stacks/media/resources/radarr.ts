@@ -35,6 +35,7 @@ export class Radarr extends ComponentResource {
         name: 'movies',
         nfs: this.args.movies,
       }],
+      dnsConfig: { options: [{ name: 'ndots', value: '2' }] },
       containers: [{
         // kx sets the selector to the container name.
         // With multiple resources, it won't match correctly, so
