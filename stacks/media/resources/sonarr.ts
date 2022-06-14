@@ -33,6 +33,7 @@ export class Sonarr extends ComponentResource {
         { name: 'downloads', nfs: args.downloads },
         { name: 'tv', nfs: args.tv },
       ],
+      dnsConfig: { options: [{ name: 'ndots', value: '1' }] },
       containers: [{
         // kx sets the selector to the container name.
         // With multiple resources, it won't match correctly, so
@@ -41,7 +42,7 @@ export class Sonarr extends ComponentResource {
         securityContext: {
           privileged: true,
         },
-        image: 'linuxserver/sonarr:3.0.7.1477-ls139',
+        image: 'linuxserver/sonarr:3.0.8.1507-ls148',
         envFrom: [{
           configMapRef: {
             name: this.args.linuxServer.metadata.name,
