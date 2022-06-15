@@ -35,6 +35,7 @@ export class Radarr extends ComponentResource {
         name: 'movies',
         nfs: this.args.movies,
       }],
+      dnsConfig: { options: [{ name: 'ndots', value: '1' }] },
       containers: [{
         // kx sets the selector to the container name.
         // With multiple resources, it won't match correctly, so
@@ -43,7 +44,7 @@ export class Radarr extends ComponentResource {
         securityContext: {
           privileged: true,
         },
-        image: 'linuxserver/radarr:4.0.5.5981-ls135',
+        image: 'linuxserver/radarr:4.1.0.6175-ls143',
         envFrom: [{
           configMapRef: {
             name: this.args.linuxServer.metadata.name,
