@@ -66,6 +66,12 @@ const traefikChart = new k8s.helm.v3.Chart('traefik', {
         allowCrossNamespace: true,
       },
     },
+    service: {
+      spec: {
+        // Static IP so we can safely port-forward
+        loadBalancerIP: '192.168.1.75',
+      },
+    },
   },
   transformations: [(obj) => {
     // Either Helm or Pulumi doesn't want to put ALL
