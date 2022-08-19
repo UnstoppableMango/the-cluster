@@ -213,7 +213,6 @@ const tunnel = new Tunnel('thecluster-io', {
     zone: 'thecluster.io',
   },
   dnsRecords: [
-    'thecluster.io',
     'auth',
     'dash',
     'deemix',
