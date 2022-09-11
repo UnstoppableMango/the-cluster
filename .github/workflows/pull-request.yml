@@ -41,7 +41,11 @@ jobs:
       with:
         node-version-file: '.nvmrc'
 
-    - run: echo "$NPM_CONFIG_CACHE"
+    - run: |
+        echo "$NPM_CONFIG_CACHE"
+        ls $NPM_CONFIG_CACHE
+        ls /runner/cache/npm
+        ls /runner/_work/_tool
 
     - run: npm ci
 
