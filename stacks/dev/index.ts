@@ -117,8 +117,6 @@ function createActionsRunnerController(
     },
   });
 
-  const runnerCacheDir = '/runner/cache';
-
   const runnerSets: arc.RunnerSet[] = [];
   const autoScalers: arc.HorizontalRunnerAutoscaler[] = [];
 
@@ -130,6 +128,8 @@ function createActionsRunnerController(
     const resourceName = owner.type === 'org' ? owner.organization : `${prefix}-${repository}`;
     const runnerPrefix = owner.type === 'org' ? owner.organization : repositories;
     const runnerName = `${runnerPrefix}-runner`;
+
+    const pulumiMountName = `${runnerName}-pulumi`;
 
     const runnerSet = new arc.RunnerSet(resourceName, {
       metadata: {
@@ -162,6 +162,19 @@ function createActionsRunnerController(
               },
             },
           },
+        }, {
+          metadata: {
+            name: pulumiMountName,
+          },
+          spec: {
+            accessModes: ['ReadWriteOnce'],
+            storageClassName: 'longhorn',
+            resources: {
+              requests: {
+                storage: '10Gi',
+              },
+            },
+          },
         }],
         template: {
           metadata: {
@@ -178,11 +191,15 @@ function createActionsRunnerController(
               name: 'runner',
               volumeMounts: [{
                 name: runnerName,
-                mountPath: runnerCacheDir,
+                mountPath: '/runner/cache',
+              }, {
+                // https://github.com/pulumi/setup-pulumi#setup-github-action
+                name: pulumiMountName,
+                mountPath: '/home/runner/.pulumi',
               }],
               env: [{
-                name: 'RUNNER_CACHE',
-                value: runnerCacheDir,
+                name: 'NPM_CONFIG_CACHE',
+                value: '/runner/cache/npm',
               }],
             }],
           },

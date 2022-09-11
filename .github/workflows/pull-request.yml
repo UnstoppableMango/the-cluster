@@ -20,8 +20,7 @@ jobs:
       with:
         node-version-file: '.nvmrc'
 
-    - run: npm ci
-
+    # Currently only node deps, so no need to `npm ci`
     - id: stacks
       run: npm run set-modified-stacks
 
@@ -37,10 +36,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         node-version-file: '.nvmrc'
-        
+
     - name: Install Pulumi CLI
       uses: pulumi/setup-pulumi@v2
 
