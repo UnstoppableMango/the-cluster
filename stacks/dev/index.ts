@@ -130,6 +130,7 @@ function createActionsRunnerController(
     const runnerName = `${runnerPrefix}-runner`;
 
     const pulumiMountName = `${runnerName}-pulumi`;
+    const toolMountName = `${runnerName}-tool`;
 
     const runnerSet = new arc.RunnerSet(resourceName, {
       metadata: {
@@ -175,6 +176,19 @@ function createActionsRunnerController(
               },
             },
           },
+        }, {
+          metadata: {
+            name: toolMountName,
+          },
+          spec: {
+            accessModes: ['ReadWriteOnce'],
+            storageClassName: 'longhorn',
+            resources: {
+              requests: {
+                storage: '5Gi',
+              },
+            },
+          },
         }],
         template: {
           metadata: {
@@ -196,6 +210,11 @@ function createActionsRunnerController(
                 // https://github.com/pulumi/setup-pulumi#setup-github-action
                 name: pulumiMountName,
                 mountPath: '/home/runner/.pulumi',
+              }, {
+                // https://github.com/actions-runner-controller/actions-runner-controller#pv-backed-runner-work-directory
+                // https://docs.github.com/en/github-ae@latest/admin/github-actions/managing-access-to-actions-from-githubcom/setting-up-the-tool-cache-on-self-hosted-runners-without-internet-access
+                name: toolMountName,
+                mountPath: '/runner/_work/_tool',
               }],
               env: [{
                 name: 'NPM_CONFIG_CACHE',
