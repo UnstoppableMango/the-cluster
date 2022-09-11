@@ -44,13 +44,6 @@ jobs:
     - name: Install Pulumi CLI
       uses: pulumi/setup-pulumi@v2
 
-    - run: |
-        echo "$NPM_CONFIG_CACHE"
-        echo "listing config cache"
-        ls $NPM_CONFIG_CACHE
-        echo "listing tool dir"
-        ls /runner/_work/_tool
-
     - run: npm ci
 
     - name: Set environment variables
