@@ -20,7 +20,8 @@ jobs:
       with:
         node-version-file: '.nvmrc'
 
-    # Currently only node deps, so no need to `npm ci`
+    - run: npm ci
+
     - id: stacks
       run: npm run set-modified-stacks
 
