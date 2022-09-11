@@ -156,7 +156,7 @@ function createActionsRunnerController(
             storageClassName: 'longhorn',
             resources: {
               requests: {
-                storage: '10Gi',
+                storage: '15Gi',
               },
             },
           },
