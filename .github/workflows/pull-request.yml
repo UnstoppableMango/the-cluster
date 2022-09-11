@@ -46,8 +46,9 @@ jobs:
 
     - run: |
         echo "$NPM_CONFIG_CACHE"
+        echo "listing config cache"
         ls $NPM_CONFIG_CACHE
-        ls /runner/cache/npm
+        echo "listing tool dir"
         ls /runner/_work/_tool
 
     - run: npm ci
