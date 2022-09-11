@@ -208,8 +208,13 @@ function createActionsRunnerController(
                 mountPath: '/runner/cache',
               }, {
                 // https://github.com/pulumi/setup-pulumi#setup-github-action
+                // The pulumi action will use the tool cache behind the scenes,
+                // but we should still be able to benefit from caching plugins.
+                // We explicitly *don't* want to cache all of .pulumi, because
+                // the pulumi action will delete bin on every run, and credentials
+                // are stored in a json file in that dir.
                 name: pulumiMountName,
-                mountPath: '/home/runner/.pulumi',
+                mountPath: '/home/runner/.pulumi/plugins',
               }, {
                 // https://github.com/actions-runner-controller/actions-runner-controller#pv-backed-runner-work-directory
                 // https://docs.github.com/en/github-ae@latest/admin/github-actions/managing-access-to-actions-from-githubcom/setting-up-the-tool-cache-on-self-hosted-runners-without-internet-access
