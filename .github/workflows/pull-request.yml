@@ -41,6 +41,9 @@ jobs:
       with:
         node-version-file: '.nvmrc'
 
+    - name: Install Pulumi CLI
+      uses: pulumi/setup-pulumi@v2
+
     - run: |
         echo "$NPM_CONFIG_CACHE"
         ls $NPM_CONFIG_CACHE
