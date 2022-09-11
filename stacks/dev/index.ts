@@ -129,8 +129,6 @@ function createActionsRunnerController(
     const runnerPrefix = owner.type === 'org' ? owner.organization : repositories;
     const runnerName = `${runnerPrefix}-runner`;
 
-    const pulumiMountName = `${runnerName}-pulumi`;
-
     const runnerSet = new arc.RunnerSet(resourceName, {
       metadata: {
         name: resourceName,
@@ -162,19 +160,6 @@ function createActionsRunnerController(
               },
             },
           },
-        }, {
-          metadata: {
-            name: pulumiMountName,
-          },
-          spec: {
-            accessModes: ['ReadWriteOnce'],
-            storageClassName: 'longhorn',
-            resources: {
-              requests: {
-                storage: '10Gi',
-              },
-            },
-          },
         }],
         template: {
           metadata: {
@@ -187,11 +172,19 @@ function createActionsRunnerController(
               // https://github.com/actions-runner-controller/actions-runner-controller/blob/cc25dd7926909a6c2bd300440016559d695453c3/runner/Dockerfile#L63
               fsGroup: 1000,
             },
+            volumes: [{
+              name: 'pulumi-home',
+              emptyDir: {},
+            }],
             containers: [{
               name: 'runner',
               volumeMounts: [{
                 name: runnerName,
                 mountPath: '/runner/cache',
+              }, {
+                // Hopefully we can create this with the correct perms this way
+                name: 'pulumi-home',
+                mountPath: '/home/runner/.pulumi',
               }, {
                 // https://github.com/pulumi/setup-pulumi#setup-github-action
                 // The pulumi action will use the tool cache behind the scenes,
@@ -199,8 +192,9 @@ function createActionsRunnerController(
                 // We explicitly *don't* want to cache all of .pulumi, because
                 // the pulumi action will delete bin on every run, and credentials
                 // are stored in a json file in that dir.
-                name: pulumiMountName,
+                name: runnerName,
                 mountPath: '/home/runner/.pulumi/plugins',
+                subPath: 'pulumi-plugins',
               }],
               env: [{
                 name: 'NPM_CONFIG_CACHE',
