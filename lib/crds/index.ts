@@ -11,6 +11,7 @@ export * from "./provider";
 import * as acme from "./acme";
 import * as actions from "./actions";
 import * as certmanager from "./certmanager";
+import * as metallb from "./metallb";
 import * as traefik from "./traefik";
 import * as types from "./types";
 
@@ -18,6 +19,7 @@ export {
     acme,
     actions,
     certmanager,
+    metallb,
     traefik,
     types,
 };

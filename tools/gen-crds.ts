@@ -26,6 +26,7 @@ const globAsync = util.promisify(glob);
   const crdGlobs = [
     'submodules/actions-runner-controller/charts/actions-runner-controller/crds/*.yaml',
     'submodules/cert-manager/deploy/crds/*.yaml',
+    'submodules/metallb/config/crd/bases/*.yaml',
     'submodules/traefik-helm-chart/traefik/crds/*.yaml',
   ];
   

@@ -7,3 +7,6 @@
 [submodule "submodules/actions-runner-controller"]
 	path = submodules/actions-runner-controller
 	url = https://github.com/actions-runner-controller/actions-runner-controller.git
+[submodule "submodules/metallb"]
+	path = submodules/metallb
+	url = git@github.com:metallb/metallb.git
