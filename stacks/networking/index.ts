@@ -2,8 +2,8 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as rancher from '@pulumi/rancher2';
 import * as certManager from '@pulumi/crds/certmanager/v1';
+import * as metallb from '@pulumi/crds/metallb/v1beta1';
 import * as traefik from '@pulumi/crds/traefik/v1alpha1';
-import * as YAML from 'yaml';
 import { Tunnel } from './resources';
 import { IngressRoute, Middleware } from '@pulumi/crds/traefik/v1alpha1';
 
@@ -23,16 +23,23 @@ const metallbRelease = new k8s.helm.v3.Release('metallb', {
   repositoryOpts: {
     repo: 'https://charts.bitnami.com/bitnami',
   },
-  values: {
-    configInline: YAML.stringify({
-      'address-pools': [{
-        name: 'default',
-        protocol: 'layer2',
-        addresses: [
-          '192.168.1.75-192.168.1.99',
-        ],
-      }],
-    }),
+});
+
+const metallbPool = new metallb.IPAddressPool('default', {
+  metadata: {
+    namespace: 'metallb-system',
+  },
+  spec: {
+    addresses: [
+      '192.168.1.75-192.168.1.99',
+    ],
+  },
+});
+
+// When not specifying a pool, advertises for all pools
+const metallbL2 = new metallb.L2Advertisement('default', {
+  metadata: {
+    namespace: 'metallb-system',
   },
 });
 
