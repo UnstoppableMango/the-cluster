@@ -36,6 +36,13 @@ const metallbPool = new metallb.IPAddressPool('default', {
   },
 });
 
+// When not specifying a pool, advertises for all pools
+const metallbL2 = new metallb.L2Advertisement('default', {
+  metadata: {
+    namespace: 'metallb-system',
+  },
+});
+
 const certManagerRelease = new k8s.helm.v3.Release('cert-manager', {
   name: 'cert-manager',
   chart: 'cert-manager',
