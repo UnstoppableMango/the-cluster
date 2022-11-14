@@ -10,7 +10,7 @@
   "dependencies": {
     "@pulumi/cloudflare": "^4.12.1",
     "@pulumi/crds": "file:lib/crds",
-    "@pulumi/docker": "^3.4.1",
+    "@pulumi/docker": "^3.5.0",
     "@pulumi/kubernetes": "^3.21.2",
     "@pulumi/kubernetesx": "^0.1.6",
     "@pulumi/pulumi": "^3.40.0",
