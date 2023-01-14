@@ -32089,7 +32089,7 @@ export namespace traefik {
          */
         export interface IngressRouteSpecArgs {
             /**
-             * EntryPoints defines the list of entry point names to bind to. Entry points have to be configured in the static configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/entrypoints/ Default: all.
+             * EntryPoints defines the list of entry point names to bind to. Entry points have to be configured in the static configuration. More info: https://doc.traefik.io/traefik/v2.9/routing/entrypoints/ Default: all.
              */
             entryPoints?: pulumi.Input<pulumi.Input<string>[]>;
             /**
@@ -32097,7 +32097,7 @@ export namespace traefik {
              */
             routes: pulumi.Input<pulumi.Input<inputs.traefik.v1alpha1.IngressRouteSpecRoutesArgs>[]>;
             /**
-             * TLS defines the TLS configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/routers/#tls
+             * TLS defines the TLS configuration. More info: https://doc.traefik.io/traefik/v2.9/routing/routers/#tls
              */
             tls?: pulumi.Input<inputs.traefik.v1alpha1.IngressRouteSpecTlsArgs>;
         }
@@ -32111,15 +32111,15 @@ export namespace traefik {
              */
             kind: pulumi.Input<string>;
             /**
-             * Match defines the router's rule. More info: https://doc.traefik.io/traefik/v2.8/routing/routers/#rule
+             * Match defines the router's rule. More info: https://doc.traefik.io/traefik/v2.9/routing/routers/#rule
              */
             match: pulumi.Input<string>;
             /**
-             * Middlewares defines the list of references to Middleware resources. More info: https://doc.traefik.io/traefik/v2.8/routing/providers/kubernetes-crd/#kind-middleware
+             * Middlewares defines the list of references to Middleware resources. More info: https://doc.traefik.io/traefik/v2.9/routing/providers/kubernetes-crd/#kind-middleware
              */
             middlewares?: pulumi.Input<pulumi.Input<inputs.traefik.v1alpha1.IngressRouteSpecRoutesMiddlewaresArgs>[]>;
             /**
-             * Priority defines the router's priority. More info: https://doc.traefik.io/traefik/v2.8/routing/routers/#priority
+             * Priority defines the router's priority. More info: https://doc.traefik.io/traefik/v2.9/routing/routers/#priority
              */
             priority?: pulumi.Input<number>;
             /**
@@ -32179,7 +32179,7 @@ export namespace traefik {
              */
             serversTransport?: pulumi.Input<string>;
             /**
-             * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#sticky-sessions
+             * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.9/routing/services/#sticky-sessions
              */
             sticky?: pulumi.Input<inputs.traefik.v1alpha1.IngressRouteSpecRoutesServicesStickyArgs>;
             /**
@@ -32206,7 +32206,7 @@ export namespace traefik {
         }
 
         /**
-         * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#sticky-sessions
+         * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.9/routing/services/#sticky-sessions
          */
         export interface IngressRouteSpecRoutesServicesStickyArgs {
             /**
@@ -32238,19 +32238,19 @@ export namespace traefik {
         }
 
         /**
-         * TLS defines the TLS configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/routers/#tls
+         * TLS defines the TLS configuration. More info: https://doc.traefik.io/traefik/v2.9/routing/routers/#tls
          */
         export interface IngressRouteSpecTlsArgs {
             /**
-             * CertResolver defines the name of the certificate resolver to use. Cert resolvers have to be configured in the static configuration. More info: https://doc.traefik.io/traefik/v2.8/https/acme/#certificate-resolvers
+             * CertResolver defines the name of the certificate resolver to use. Cert resolvers have to be configured in the static configuration. More info: https://doc.traefik.io/traefik/v2.9/https/acme/#certificate-resolvers
              */
             certResolver?: pulumi.Input<string>;
             /**
-             * Domains defines the list of domains that will be used to issue certificates. More info: https://doc.traefik.io/traefik/v2.8/routing/routers/#domains
+             * Domains defines the list of domains that will be used to issue certificates. More info: https://doc.traefik.io/traefik/v2.9/routing/routers/#domains
              */
             domains?: pulumi.Input<pulumi.Input<inputs.traefik.v1alpha1.IngressRouteSpecTlsDomainsArgs>[]>;
             /**
-             * Options defines the reference to a TLSOption, that specifies the parameters of the TLS connection. If not defined, the `default` TLSOption is used. More info: https://doc.traefik.io/traefik/v2.8/https/tls/#tls-options
+             * Options defines the reference to a TLSOption, that specifies the parameters of the TLS connection. If not defined, the `default` TLSOption is used. More info: https://doc.traefik.io/traefik/v2.9/https/tls/#tls-options
              */
             options?: pulumi.Input<inputs.traefik.v1alpha1.IngressRouteSpecTlsOptionsArgs>;
             /**
@@ -32278,15 +32278,15 @@ export namespace traefik {
         }
 
         /**
-         * Options defines the reference to a TLSOption, that specifies the parameters of the TLS connection. If not defined, the `default` TLSOption is used. More info: https://doc.traefik.io/traefik/v2.8/https/tls/#tls-options
+         * Options defines the reference to a TLSOption, that specifies the parameters of the TLS connection. If not defined, the `default` TLSOption is used. More info: https://doc.traefik.io/traefik/v2.9/https/tls/#tls-options
          */
         export interface IngressRouteSpecTlsOptionsArgs {
             /**
-             * Name defines the name of the referenced TLSOption. More info: https://doc.traefik.io/traefik/v2.8/routing/providers/kubernetes-crd/#kind-tlsoption
+             * Name defines the name of the referenced TLSOption. More info: https://doc.traefik.io/traefik/v2.9/routing/providers/kubernetes-crd/#kind-tlsoption
              */
             name: pulumi.Input<string>;
             /**
-             * Namespace defines the namespace of the referenced TLSOption. More info: https://doc.traefik.io/traefik/v2.8/routing/providers/kubernetes-crd/#kind-tlsoption
+             * Namespace defines the namespace of the referenced TLSOption. More info: https://doc.traefik.io/traefik/v2.9/routing/providers/kubernetes-crd/#kind-tlsoption
              */
             namespace?: pulumi.Input<string>;
         }
@@ -32296,11 +32296,11 @@ export namespace traefik {
          */
         export interface IngressRouteSpecTlsStoreArgs {
             /**
-             * Name defines the name of the referenced TLSStore. More info: https://doc.traefik.io/traefik/v2.8/routing/providers/kubernetes-crd/#kind-tlsstore
+             * Name defines the name of the referenced TLSStore. More info: https://doc.traefik.io/traefik/v2.9/routing/providers/kubernetes-crd/#kind-tlsstore
              */
             name: pulumi.Input<string>;
             /**
-             * Namespace defines the namespace of the referenced TLSStore. More info: https://doc.traefik.io/traefik/v2.8/routing/providers/kubernetes-crd/#kind-tlsstore
+             * Namespace defines the namespace of the referenced TLSStore. More info: https://doc.traefik.io/traefik/v2.9/routing/providers/kubernetes-crd/#kind-tlsstore
              */
             namespace?: pulumi.Input<string>;
         }
@@ -32310,7 +32310,7 @@ export namespace traefik {
          */
         export interface IngressRouteTCPSpecArgs {
             /**
-             * EntryPoints defines the list of entry point names to bind to. Entry points have to be configured in the static configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/entrypoints/ Default: all.
+             * EntryPoints defines the list of entry point names to bind to. Entry points have to be configured in the static configuration. More info: https://doc.traefik.io/traefik/v2.9/routing/entrypoints/ Default: all.
              */
             entryPoints?: pulumi.Input<pulumi.Input<string>[]>;
             /**
@@ -32318,7 +32318,7 @@ export namespace traefik {
              */
             routes: pulumi.Input<pulumi.Input<inputs.traefik.v1alpha1.IngressRouteTCPSpecRoutesArgs>[]>;
             /**
-             * TLS defines the TLS configuration on a layer 4 / TCP Route. More info: https://doc.traefik.io/traefik/v2.8/routing/routers/#tls_1
+             * TLS defines the TLS configuration on a layer 4 / TCP Route. More info: https://doc.traefik.io/traefik/v2.9/routing/routers/#tls_1
              */
             tls?: pulumi.Input<inputs.traefik.v1alpha1.IngressRouteTCPSpecTlsArgs>;
         }
@@ -32328,7 +32328,7 @@ export namespace traefik {
          */
         export interface IngressRouteTCPSpecRoutesArgs {
             /**
-             * Match defines the router's rule. More info: https://doc.traefik.io/traefik/v2.8/routing/routers/#rule_1
+             * Match defines the router's rule. More info: https://doc.traefik.io/traefik/v2.9/routing/routers/#rule_1
              */
             match: pulumi.Input<string>;
             /**
@@ -32336,7 +32336,7 @@ export namespace traefik {
              */
             middlewares?: pulumi.Input<pulumi.Input<inputs.traefik.v1alpha1.IngressRouteTCPSpecRoutesMiddlewaresArgs>[]>;
             /**
-             * Priority defines the router's priority. More info: https://doc.traefik.io/traefik/v2.8/routing/routers/#priority_1
+             * Priority defines the router's priority. More info: https://doc.traefik.io/traefik/v2.9/routing/routers/#priority_1
              */
             priority?: pulumi.Input<number>;
             /**
@@ -32376,7 +32376,7 @@ export namespace traefik {
              */
             port: pulumi.Input<inputs.traefik.v1alpha1.IngressRouteTCPSpecRoutesServicesPortArgs>;
             /**
-             * ProxyProtocol defines the PROXY protocol configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#proxy-protocol
+             * ProxyProtocol defines the PROXY protocol configuration. More info: https://doc.traefik.io/traefik/v2.9/routing/services/#proxy-protocol
              */
             proxyProtocol?: pulumi.Input<inputs.traefik.v1alpha1.IngressRouteTCPSpecRoutesServicesProxyProtocolArgs>;
             /**
@@ -32393,7 +32393,7 @@ export namespace traefik {
         }
 
         /**
-         * ProxyProtocol defines the PROXY protocol configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#proxy-protocol
+         * ProxyProtocol defines the PROXY protocol configuration. More info: https://doc.traefik.io/traefik/v2.9/routing/services/#proxy-protocol
          */
         export interface IngressRouteTCPSpecRoutesServicesProxyProtocolArgs {
             /**
@@ -32403,19 +32403,19 @@ export namespace traefik {
         }
 
         /**
-         * TLS defines the TLS configuration on a layer 4 / TCP Route. More info: https://doc.traefik.io/traefik/v2.8/routing/routers/#tls_1
+         * TLS defines the TLS configuration on a layer 4 / TCP Route. More info: https://doc.traefik.io/traefik/v2.9/routing/routers/#tls_1
          */
         export interface IngressRouteTCPSpecTlsArgs {
             /**
-             * CertResolver defines the name of the certificate resolver to use. Cert resolvers have to be configured in the static configuration. More info: https://doc.traefik.io/traefik/v2.8/https/acme/#certificate-resolvers
+             * CertResolver defines the name of the certificate resolver to use. Cert resolvers have to be configured in the static configuration. More info: https://doc.traefik.io/traefik/v2.9/https/acme/#certificate-resolvers
              */
             certResolver?: pulumi.Input<string>;
             /**
-             * Domains defines the list of domains that will be used to issue certificates. More info: https://doc.traefik.io/traefik/v2.8/routing/routers/#domains
+             * Domains defines the list of domains that will be used to issue certificates. More info: https://doc.traefik.io/traefik/v2.9/routing/routers/#domains
              */
             domains?: pulumi.Input<pulumi.Input<inputs.traefik.v1alpha1.IngressRouteTCPSpecTlsDomainsArgs>[]>;
             /**
-             * Options defines the reference to a TLSOption, that specifies the parameters of the TLS connection. If not defined, the `default` TLSOption is used. More info: https://doc.traefik.io/traefik/v2.8/https/tls/#tls-options
+             * Options defines the reference to a TLSOption, that specifies the parameters of the TLS connection. If not defined, the `default` TLSOption is used. More info: https://doc.traefik.io/traefik/v2.9/https/tls/#tls-options
              */
             options?: pulumi.Input<inputs.traefik.v1alpha1.IngressRouteTCPSpecTlsOptionsArgs>;
             /**
@@ -32447,7 +32447,7 @@ export namespace traefik {
         }
 
         /**
-         * Options defines the reference to a TLSOption, that specifies the parameters of the TLS connection. If not defined, the `default` TLSOption is used. More info: https://doc.traefik.io/traefik/v2.8/https/tls/#tls-options
+         * Options defines the reference to a TLSOption, that specifies the parameters of the TLS connection. If not defined, the `default` TLSOption is used. More info: https://doc.traefik.io/traefik/v2.9/https/tls/#tls-options
          */
         export interface IngressRouteTCPSpecTlsOptionsArgs {
             /**
@@ -32479,7 +32479,7 @@ export namespace traefik {
          */
         export interface IngressRouteUDPSpecArgs {
             /**
-             * EntryPoints defines the list of entry point names to bind to. Entry points have to be configured in the static configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/entrypoints/ Default: all.
+             * EntryPoints defines the list of entry point names to bind to. Entry points have to be configured in the static configuration. More info: https://doc.traefik.io/traefik/v2.9/routing/entrypoints/ Default: all.
              */
             entryPoints?: pulumi.Input<pulumi.Input<string>[]>;
             /**
@@ -32528,19 +32528,19 @@ export namespace traefik {
          */
         export interface MiddlewareSpecArgs {
             /**
-             * AddPrefix holds the add prefix middleware configuration. This middleware updates the path of a request before forwarding it. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/addprefix/
+             * AddPrefix holds the add prefix middleware configuration. This middleware updates the path of a request before forwarding it. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/addprefix/
              */
             addPrefix?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecAddPrefixArgs>;
             /**
-             * BasicAuth holds the basic auth middleware configuration. This middleware restricts access to your services to known users. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/basicauth/
+             * BasicAuth holds the basic auth middleware configuration. This middleware restricts access to your services to known users. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/basicauth/
              */
             basicAuth?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecBasicAuthArgs>;
             /**
-             * Buffering holds the buffering middleware configuration. This middleware retries or limits the size of requests that can be forwarded to backends. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/buffering/#maxrequestbodybytes
+             * Buffering holds the buffering middleware configuration. This middleware retries or limits the size of requests that can be forwarded to backends. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/buffering/#maxrequestbodybytes
              */
             buffering?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecBufferingArgs>;
             /**
-             * Chain holds the configuration of the chain middleware. This middleware enables to define reusable combinations of other pieces of middleware. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/chain/
+             * Chain holds the configuration of the chain middleware. This middleware enables to define reusable combinations of other pieces of middleware. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/chain/
              */
             chain?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecChainArgs>;
             /**
@@ -32548,7 +32548,7 @@ export namespace traefik {
              */
             circuitBreaker?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecCircuitBreakerArgs>;
             /**
-             * Compress holds the compress middleware configuration. This middleware compresses responses before sending them to the client, using gzip compression. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/compress/
+             * Compress holds the compress middleware configuration. This middleware compresses responses before sending them to the client, using gzip compression. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/compress/
              */
             compress?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecCompressArgs>;
             /**
@@ -32556,31 +32556,31 @@ export namespace traefik {
              */
             contentType?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecContentTypeArgs>;
             /**
-             * DigestAuth holds the digest auth middleware configuration. This middleware restricts access to your services to known users. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/digestauth/
+             * DigestAuth holds the digest auth middleware configuration. This middleware restricts access to your services to known users. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/digestauth/
              */
             digestAuth?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecDigestAuthArgs>;
             /**
-             * ErrorPage holds the custom error middleware configuration. This middleware returns a custom page in lieu of the default, according to configured ranges of HTTP Status codes. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/errorpages/
+             * ErrorPage holds the custom error middleware configuration. This middleware returns a custom page in lieu of the default, according to configured ranges of HTTP Status codes. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/errorpages/
              */
             errors?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecErrorsArgs>;
             /**
-             * ForwardAuth holds the forward auth middleware configuration. This middleware delegates the request authentication to a Service. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/forwardauth/
+             * ForwardAuth holds the forward auth middleware configuration. This middleware delegates the request authentication to a Service. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/forwardauth/
              */
             forwardAuth?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecForwardAuthArgs>;
             /**
-             * Headers holds the headers middleware configuration. This middleware manages the requests and responses headers. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/headers/#customrequestheaders
+             * Headers holds the headers middleware configuration. This middleware manages the requests and responses headers. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/headers/#customrequestheaders
              */
             headers?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecHeadersArgs>;
             /**
-             * InFlightReq holds the in-flight request middleware configuration. This middleware limits the number of requests being processed and served concurrently. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/inflightreq/
+             * InFlightReq holds the in-flight request middleware configuration. This middleware limits the number of requests being processed and served concurrently. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/inflightreq/
              */
             inFlightReq?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecInFlightReqArgs>;
             /**
-             * IPWhiteList holds the IP whitelist middleware configuration. This middleware accepts / refuses requests based on the client IP. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/ipwhitelist/
+             * IPWhiteList holds the IP whitelist middleware configuration. This middleware accepts / refuses requests based on the client IP. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/ipwhitelist/
              */
             ipWhiteList?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecIpWhiteListArgs>;
             /**
-             * PassTLSClientCert holds the pass TLS client cert middleware configuration. This middleware adds the selected data from the passed client TLS certificate to a header. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/passtlsclientcert/
+             * PassTLSClientCert holds the pass TLS client cert middleware configuration. This middleware adds the selected data from the passed client TLS certificate to a header. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/passtlsclientcert/
              */
             passTLSClientCert?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecPassTLSClientCertArgs>;
             /**
@@ -32588,41 +32588,41 @@ export namespace traefik {
              */
             plugin?: pulumi.Input<{[key: string]: pulumi.Input<{[key: string]: any}>}>;
             /**
-             * RateLimit holds the rate limit configuration. This middleware ensures that services will receive a fair amount of requests, and allows one to define what fair is. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/ratelimit/
+             * RateLimit holds the rate limit configuration. This middleware ensures that services will receive a fair amount of requests, and allows one to define what fair is. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/ratelimit/
              */
             rateLimit?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecRateLimitArgs>;
             /**
-             * RedirectRegex holds the redirect regex middleware configuration. This middleware redirects a request using regex matching and replacement. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/redirectregex/#regex
+             * RedirectRegex holds the redirect regex middleware configuration. This middleware redirects a request using regex matching and replacement. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/redirectregex/#regex
              */
             redirectRegex?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecRedirectRegexArgs>;
             /**
-             * RedirectScheme holds the redirect scheme middleware configuration. This middleware redirects requests from a scheme/port to another. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/redirectscheme/
+             * RedirectScheme holds the redirect scheme middleware configuration. This middleware redirects requests from a scheme/port to another. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/redirectscheme/
              */
             redirectScheme?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecRedirectSchemeArgs>;
             /**
-             * ReplacePath holds the replace path middleware configuration. This middleware replaces the path of the request URL and store the original path in an X-Replaced-Path header. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/replacepath/
+             * ReplacePath holds the replace path middleware configuration. This middleware replaces the path of the request URL and store the original path in an X-Replaced-Path header. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/replacepath/
              */
             replacePath?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecReplacePathArgs>;
             /**
-             * ReplacePathRegex holds the replace path regex middleware configuration. This middleware replaces the path of a URL using regex matching and replacement. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/replacepathregex/
+             * ReplacePathRegex holds the replace path regex middleware configuration. This middleware replaces the path of a URL using regex matching and replacement. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/replacepathregex/
              */
             replacePathRegex?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecReplacePathRegexArgs>;
             /**
-             * Retry holds the retry middleware configuration. This middleware reissues requests a given number of times to a backend server if that server does not reply. As soon as the server answers, the middleware stops retrying, regardless of the response status. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/retry/
+             * Retry holds the retry middleware configuration. This middleware reissues requests a given number of times to a backend server if that server does not reply. As soon as the server answers, the middleware stops retrying, regardless of the response status. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/retry/
              */
             retry?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecRetryArgs>;
             /**
-             * StripPrefix holds the strip prefix middleware configuration. This middleware removes the specified prefixes from the URL path. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/stripprefix/
+             * StripPrefix holds the strip prefix middleware configuration. This middleware removes the specified prefixes from the URL path. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/stripprefix/
              */
             stripPrefix?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecStripPrefixArgs>;
             /**
-             * StripPrefixRegex holds the strip prefix regex middleware configuration. This middleware removes the matching prefixes from the URL path. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/stripprefixregex/
+             * StripPrefixRegex holds the strip prefix regex middleware configuration. This middleware removes the matching prefixes from the URL path. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/stripprefixregex/
              */
             stripPrefixRegex?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecStripPrefixRegexArgs>;
         }
 
         /**
-         * AddPrefix holds the add prefix middleware configuration. This middleware updates the path of a request before forwarding it. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/addprefix/
+         * AddPrefix holds the add prefix middleware configuration. This middleware updates the path of a request before forwarding it. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/addprefix/
          */
         export interface MiddlewareSpecAddPrefixArgs {
             /**
@@ -32632,11 +32632,11 @@ export namespace traefik {
         }
 
         /**
-         * BasicAuth holds the basic auth middleware configuration. This middleware restricts access to your services to known users. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/basicauth/
+         * BasicAuth holds the basic auth middleware configuration. This middleware restricts access to your services to known users. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/basicauth/
          */
         export interface MiddlewareSpecBasicAuthArgs {
             /**
-             * HeaderField defines a header field to store the authenticated user. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/basicauth/#headerfield
+             * HeaderField defines a header field to store the authenticated user. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/basicauth/#headerfield
              */
             headerField?: pulumi.Input<string>;
             /**
@@ -32654,7 +32654,7 @@ export namespace traefik {
         }
 
         /**
-         * Buffering holds the buffering middleware configuration. This middleware retries or limits the size of requests that can be forwarded to backends. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/buffering/#maxrequestbodybytes
+         * Buffering holds the buffering middleware configuration. This middleware retries or limits the size of requests that can be forwarded to backends. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/buffering/#maxrequestbodybytes
          */
         export interface MiddlewareSpecBufferingArgs {
             /**
@@ -32674,13 +32674,13 @@ export namespace traefik {
              */
             memResponseBodyBytes?: pulumi.Input<number>;
             /**
-             * RetryExpression defines the retry conditions. It is a logical combination of functions with operators AND (&&) and OR (||). More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/buffering/#retryexpression
+             * RetryExpression defines the retry conditions. It is a logical combination of functions with operators AND (&&) and OR (||). More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/buffering/#retryexpression
              */
             retryExpression?: pulumi.Input<string>;
         }
 
         /**
-         * Chain holds the configuration of the chain middleware. This middleware enables to define reusable combinations of other pieces of middleware. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/chain/
+         * Chain holds the configuration of the chain middleware. This middleware enables to define reusable combinations of other pieces of middleware. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/chain/
          */
         export interface MiddlewareSpecChainArgs {
             /**
@@ -32735,7 +32735,7 @@ export namespace traefik {
         }
 
         /**
-         * Compress holds the compress middleware configuration. This middleware compresses responses before sending them to the client, using gzip compression. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/compress/
+         * Compress holds the compress middleware configuration. This middleware compresses responses before sending them to the client, using gzip compression. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/compress/
          */
         export interface MiddlewareSpecCompressArgs {
             /**
@@ -32759,11 +32759,11 @@ export namespace traefik {
         }
 
         /**
-         * DigestAuth holds the digest auth middleware configuration. This middleware restricts access to your services to known users. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/digestauth/
+         * DigestAuth holds the digest auth middleware configuration. This middleware restricts access to your services to known users. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/digestauth/
          */
         export interface MiddlewareSpecDigestAuthArgs {
             /**
-             * HeaderField defines a header field to store the authenticated user. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/basicauth/#headerfield
+             * HeaderField defines a header field to store the authenticated user. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/basicauth/#headerfield
              */
             headerField?: pulumi.Input<string>;
             /**
@@ -32781,7 +32781,7 @@ export namespace traefik {
         }
 
         /**
-         * ErrorPage holds the custom error middleware configuration. This middleware returns a custom page in lieu of the default, according to configured ranges of HTTP Status codes. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/errorpages/
+         * ErrorPage holds the custom error middleware configuration. This middleware returns a custom page in lieu of the default, according to configured ranges of HTTP Status codes. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/errorpages/
          */
         export interface MiddlewareSpecErrorsArgs {
             /**
@@ -32789,7 +32789,7 @@ export namespace traefik {
              */
             query?: pulumi.Input<string>;
             /**
-             * Service defines the reference to a Kubernetes Service that will serve the error page. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/errorpages/#service
+             * Service defines the reference to a Kubernetes Service that will serve the error page. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/errorpages/#service
              */
             service?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecErrorsServiceArgs>;
             /**
@@ -32799,7 +32799,7 @@ export namespace traefik {
         }
 
         /**
-         * Service defines the reference to a Kubernetes Service that will serve the error page. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/errorpages/#service
+         * Service defines the reference to a Kubernetes Service that will serve the error page. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/errorpages/#service
          */
         export interface MiddlewareSpecErrorsServiceArgs {
             /**
@@ -32835,7 +32835,7 @@ export namespace traefik {
              */
             serversTransport?: pulumi.Input<string>;
             /**
-             * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#sticky-sessions
+             * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.9/routing/services/#sticky-sessions
              */
             sticky?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecErrorsServiceStickyArgs>;
             /**
@@ -32862,7 +32862,7 @@ export namespace traefik {
         }
 
         /**
-         * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#sticky-sessions
+         * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.9/routing/services/#sticky-sessions
          */
         export interface MiddlewareSpecErrorsServiceStickyArgs {
             /**
@@ -32894,7 +32894,7 @@ export namespace traefik {
         }
 
         /**
-         * ForwardAuth holds the forward auth middleware configuration. This middleware delegates the request authentication to a Service. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/forwardauth/
+         * ForwardAuth holds the forward auth middleware configuration. This middleware delegates the request authentication to a Service. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/forwardauth/
          */
         export interface MiddlewareSpecForwardAuthArgs {
             /**
@@ -32910,7 +32910,7 @@ export namespace traefik {
              */
             authResponseHeaders?: pulumi.Input<pulumi.Input<string>[]>;
             /**
-             * AuthResponseHeadersRegex defines the regex to match headers to copy from the authentication server response and set on forwarded request, after stripping all headers that match the regex. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/forwardauth/#authresponseheadersregex
+             * AuthResponseHeadersRegex defines the regex to match headers to copy from the authentication server response and set on forwarded request, after stripping all headers that match the regex. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/forwardauth/#authresponseheadersregex
              */
             authResponseHeadersRegex?: pulumi.Input<string>;
             /**
@@ -32943,7 +32943,7 @@ export namespace traefik {
         }
 
         /**
-         * Headers holds the headers middleware configuration. This middleware manages the requests and responses headers. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/headers/#customrequestheaders
+         * Headers holds the headers middleware configuration. This middleware manages the requests and responses headers. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/headers/#customrequestheaders
          */
         export interface MiddlewareSpecHeadersArgs {
             /**
@@ -33077,7 +33077,7 @@ export namespace traefik {
         }
 
         /**
-         * InFlightReq holds the in-flight request middleware configuration. This middleware limits the number of requests being processed and served concurrently. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/inflightreq/
+         * InFlightReq holds the in-flight request middleware configuration. This middleware limits the number of requests being processed and served concurrently. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/inflightreq/
          */
         export interface MiddlewareSpecInFlightReqArgs {
             /**
@@ -33085,17 +33085,17 @@ export namespace traefik {
              */
             amount?: pulumi.Input<number>;
             /**
-             * SourceCriterion defines what criterion is used to group requests as originating from a common source. If several strategies are defined at the same time, an error will be raised. If none are set, the default is to use the requestHost. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/inflightreq/#sourcecriterion
+             * SourceCriterion defines what criterion is used to group requests as originating from a common source. If several strategies are defined at the same time, an error will be raised. If none are set, the default is to use the requestHost. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/inflightreq/#sourcecriterion
              */
             sourceCriterion?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecInFlightReqSourceCriterionArgs>;
         }
 
         /**
-         * SourceCriterion defines what criterion is used to group requests as originating from a common source. If several strategies are defined at the same time, an error will be raised. If none are set, the default is to use the requestHost. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/inflightreq/#sourcecriterion
+         * SourceCriterion defines what criterion is used to group requests as originating from a common source. If several strategies are defined at the same time, an error will be raised. If none are set, the default is to use the requestHost. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/inflightreq/#sourcecriterion
          */
         export interface MiddlewareSpecInFlightReqSourceCriterionArgs {
             /**
-             * IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/ipwhitelist/#ipstrategy
+             * IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/ipwhitelist/#ipstrategy
              */
             ipStrategy?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecInFlightReqSourceCriterionIpStrategyArgs>;
             /**
@@ -33109,7 +33109,7 @@ export namespace traefik {
         }
 
         /**
-         * IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/ipwhitelist/#ipstrategy
+         * IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/ipwhitelist/#ipstrategy
          */
         export interface MiddlewareSpecInFlightReqSourceCriterionIpStrategyArgs {
             /**
@@ -33123,11 +33123,11 @@ export namespace traefik {
         }
 
         /**
-         * IPWhiteList holds the IP whitelist middleware configuration. This middleware accepts / refuses requests based on the client IP. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/ipwhitelist/
+         * IPWhiteList holds the IP whitelist middleware configuration. This middleware accepts / refuses requests based on the client IP. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/ipwhitelist/
          */
         export interface MiddlewareSpecIpWhiteListArgs {
             /**
-             * IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/ipwhitelist/#ipstrategy
+             * IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/ipwhitelist/#ipstrategy
              */
             ipStrategy?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecIpWhiteListIpStrategyArgs>;
             /**
@@ -33137,7 +33137,7 @@ export namespace traefik {
         }
 
         /**
-         * IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/ipwhitelist/#ipstrategy
+         * IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/ipwhitelist/#ipstrategy
          */
         export interface MiddlewareSpecIpWhiteListIpStrategyArgs {
             /**
@@ -33151,7 +33151,7 @@ export namespace traefik {
         }
 
         /**
-         * PassTLSClientCert holds the pass TLS client cert middleware configuration. This middleware adds the selected data from the passed client TLS certificate to a header. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/passtlsclientcert/
+         * PassTLSClientCert holds the pass TLS client cert middleware configuration. This middleware adds the selected data from the passed client TLS certificate to a header. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/passtlsclientcert/
          */
         export interface MiddlewareSpecPassTLSClientCertArgs {
             /**
@@ -33267,7 +33267,7 @@ export namespace traefik {
         }
 
         /**
-         * RateLimit holds the rate limit configuration. This middleware ensures that services will receive a fair amount of requests, and allows one to define what fair is. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/ratelimit/
+         * RateLimit holds the rate limit configuration. This middleware ensures that services will receive a fair amount of requests, and allows one to define what fair is. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/ratelimit/
          */
         export interface MiddlewareSpecRateLimitArgs {
             /**
@@ -33296,7 +33296,7 @@ export namespace traefik {
          */
         export interface MiddlewareSpecRateLimitSourceCriterionArgs {
             /**
-             * IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/ipwhitelist/#ipstrategy
+             * IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/ipwhitelist/#ipstrategy
              */
             ipStrategy?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecRateLimitSourceCriterionIpStrategyArgs>;
             /**
@@ -33310,7 +33310,7 @@ export namespace traefik {
         }
 
         /**
-         * IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/ipwhitelist/#ipstrategy
+         * IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/ipwhitelist/#ipstrategy
          */
         export interface MiddlewareSpecRateLimitSourceCriterionIpStrategyArgs {
             /**
@@ -33324,7 +33324,7 @@ export namespace traefik {
         }
 
         /**
-         * RedirectRegex holds the redirect regex middleware configuration. This middleware redirects a request using regex matching and replacement. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/redirectregex/#regex
+         * RedirectRegex holds the redirect regex middleware configuration. This middleware redirects a request using regex matching and replacement. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/redirectregex/#regex
          */
         export interface MiddlewareSpecRedirectRegexArgs {
             /**
@@ -33342,7 +33342,7 @@ export namespace traefik {
         }
 
         /**
-         * RedirectScheme holds the redirect scheme middleware configuration. This middleware redirects requests from a scheme/port to another. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/redirectscheme/
+         * RedirectScheme holds the redirect scheme middleware configuration. This middleware redirects requests from a scheme/port to another. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/redirectscheme/
          */
         export interface MiddlewareSpecRedirectSchemeArgs {
             /**
@@ -33360,7 +33360,7 @@ export namespace traefik {
         }
 
         /**
-         * ReplacePath holds the replace path middleware configuration. This middleware replaces the path of the request URL and store the original path in an X-Replaced-Path header. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/replacepath/
+         * ReplacePath holds the replace path middleware configuration. This middleware replaces the path of the request URL and store the original path in an X-Replaced-Path header. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/replacepath/
          */
         export interface MiddlewareSpecReplacePathArgs {
             /**
@@ -33370,7 +33370,7 @@ export namespace traefik {
         }
 
         /**
-         * ReplacePathRegex holds the replace path regex middleware configuration. This middleware replaces the path of a URL using regex matching and replacement. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/replacepathregex/
+         * ReplacePathRegex holds the replace path regex middleware configuration. This middleware replaces the path of a URL using regex matching and replacement. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/replacepathregex/
          */
         export interface MiddlewareSpecReplacePathRegexArgs {
             /**
@@ -33384,7 +33384,7 @@ export namespace traefik {
         }
 
         /**
-         * Retry holds the retry middleware configuration. This middleware reissues requests a given number of times to a backend server if that server does not reply. As soon as the server answers, the middleware stops retrying, regardless of the response status. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/retry/
+         * Retry holds the retry middleware configuration. This middleware reissues requests a given number of times to a backend server if that server does not reply. As soon as the server answers, the middleware stops retrying, regardless of the response status. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/retry/
          */
         export interface MiddlewareSpecRetryArgs {
             /**
@@ -33401,7 +33401,7 @@ export namespace traefik {
         }
 
         /**
-         * StripPrefix holds the strip prefix middleware configuration. This middleware removes the specified prefixes from the URL path. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/stripprefix/
+         * StripPrefix holds the strip prefix middleware configuration. This middleware removes the specified prefixes from the URL path. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/stripprefix/
          */
         export interface MiddlewareSpecStripPrefixArgs {
             /**
@@ -33415,7 +33415,7 @@ export namespace traefik {
         }
 
         /**
-         * StripPrefixRegex holds the strip prefix regex middleware configuration. This middleware removes the matching prefixes from the URL path. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/stripprefixregex/
+         * StripPrefixRegex holds the strip prefix regex middleware configuration. This middleware removes the matching prefixes from the URL path. More info: https://doc.traefik.io/traefik/v2.9/middlewares/http/stripprefixregex/
          */
         export interface MiddlewareSpecStripPrefixRegexArgs {
             /**
@@ -33542,11 +33542,11 @@ export namespace traefik {
          */
         export interface TLSOptionSpecArgs {
             /**
-             * ALPNProtocols defines the list of supported application level protocols for the TLS handshake, in order of preference. More info: https://doc.traefik.io/traefik/v2.8/https/tls/#alpn-protocols
+             * ALPNProtocols defines the list of supported application level protocols for the TLS handshake, in order of preference. More info: https://doc.traefik.io/traefik/v2.9/https/tls/#alpn-protocols
              */
             alpnProtocols?: pulumi.Input<pulumi.Input<string>[]>;
             /**
-             * CipherSuites defines the list of supported cipher suites for TLS versions up to TLS 1.2. More info: https://doc.traefik.io/traefik/v2.8/https/tls/#cipher-suites
+             * CipherSuites defines the list of supported cipher suites for TLS versions up to TLS 1.2. More info: https://doc.traefik.io/traefik/v2.9/https/tls/#cipher-suites
              */
             cipherSuites?: pulumi.Input<pulumi.Input<string>[]>;
             /**
@@ -33554,7 +33554,7 @@ export namespace traefik {
              */
             clientAuth?: pulumi.Input<inputs.traefik.v1alpha1.TLSOptionSpecClientAuthArgs>;
             /**
-             * CurvePreferences defines the preferred elliptic curves in a specific order. More info: https://doc.traefik.io/traefik/v2.8/https/tls/#curve-preferences
+             * CurvePreferences defines the preferred elliptic curves in a specific order. More info: https://doc.traefik.io/traefik/v2.9/https/tls/#curve-preferences
              */
             curvePreferences?: pulumi.Input<pulumi.Input<string>[]>;
             /**
@@ -33566,7 +33566,7 @@ export namespace traefik {
              */
             minVersion?: pulumi.Input<string>;
             /**
-             * PreferServerCipherSuites defines whether the server chooses a cipher suite among his own instead of among the client's. It is enabled automatically when minVersion or maxVersion are set.
+             * PreferServerCipherSuites defines whether the server chooses a cipher suite among his own instead of among the client's. It is enabled automatically when minVersion or maxVersion is set. Deprecated: https://github.com/golang/go/issues/45430
              */
             preferServerCipherSuites?: pulumi.Input<boolean>;
             /**
@@ -33601,6 +33601,10 @@ export namespace traefik {
              * DefaultCertificate defines the default certificate configuration.
              */
             defaultCertificate?: pulumi.Input<inputs.traefik.v1alpha1.TLSStoreSpecDefaultCertificateArgs>;
+            /**
+             * DefaultGeneratedCert defines the default generated certificate configuration.
+             */
+            defaultGeneratedCert?: pulumi.Input<inputs.traefik.v1alpha1.TLSStoreSpecDefaultGeneratedCertArgs>;
         }
 
         /**
@@ -33621,6 +33625,34 @@ export namespace traefik {
              * SecretName is the name of the referenced Kubernetes Secret to specify the certificate details.
              */
             secretName: pulumi.Input<string>;
+        }
+
+        /**
+         * DefaultGeneratedCert defines the default generated certificate configuration.
+         */
+        export interface TLSStoreSpecDefaultGeneratedCertArgs {
+            /**
+             * Domain is the domain definition for the DefaultCertificate.
+             */
+            domain?: pulumi.Input<inputs.traefik.v1alpha1.TLSStoreSpecDefaultGeneratedCertDomainArgs>;
+            /**
+             * Resolver is the name of the resolver that will be used to issue the DefaultCertificate.
+             */
+            resolver?: pulumi.Input<string>;
+        }
+
+        /**
+         * Domain is the domain definition for the DefaultCertificate.
+         */
+        export interface TLSStoreSpecDefaultGeneratedCertDomainArgs {
+            /**
+             * Main defines the main domain name.
+             */
+            main?: pulumi.Input<string>;
+            /**
+             * SANs defines the subject alternative domain names.
+             */
+            sans?: pulumi.Input<pulumi.Input<string>[]>;
         }
 
         /**
@@ -33682,7 +33714,7 @@ export namespace traefik {
              */
             serversTransport?: pulumi.Input<string>;
             /**
-             * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#sticky-sessions
+             * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.9/routing/services/#sticky-sessions
              */
             sticky?: pulumi.Input<inputs.traefik.v1alpha1.TraefikServiceSpecMirroringStickyArgs>;
             /**
@@ -33736,7 +33768,7 @@ export namespace traefik {
              */
             serversTransport?: pulumi.Input<string>;
             /**
-             * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#sticky-sessions
+             * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.9/routing/services/#sticky-sessions
              */
             sticky?: pulumi.Input<inputs.traefik.v1alpha1.TraefikServiceSpecMirroringMirrorsStickyArgs>;
             /**
@@ -33763,7 +33795,7 @@ export namespace traefik {
         }
 
         /**
-         * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#sticky-sessions
+         * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.9/routing/services/#sticky-sessions
          */
         export interface TraefikServiceSpecMirroringMirrorsStickyArgs {
             /**
@@ -33808,7 +33840,7 @@ export namespace traefik {
         }
 
         /**
-         * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#sticky-sessions
+         * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.9/routing/services/#sticky-sessions
          */
         export interface TraefikServiceSpecMirroringStickyArgs {
             /**
@@ -33848,7 +33880,7 @@ export namespace traefik {
              */
             services?: pulumi.Input<pulumi.Input<inputs.traefik.v1alpha1.TraefikServiceSpecWeightedServicesArgs>[]>;
             /**
-             * Sticky defines whether sticky sessions are enabled. More info: https://doc.traefik.io/traefik/v2.8/routing/providers/kubernetes-crd/#stickiness-and-load-balancing
+             * Sticky defines whether sticky sessions are enabled. More info: https://doc.traefik.io/traefik/v2.9/routing/providers/kubernetes-crd/#stickiness-and-load-balancing
              */
             sticky?: pulumi.Input<inputs.traefik.v1alpha1.TraefikServiceSpecWeightedStickyArgs>;
         }
@@ -33890,7 +33922,7 @@ export namespace traefik {
              */
             serversTransport?: pulumi.Input<string>;
             /**
-             * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#sticky-sessions
+             * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.9/routing/services/#sticky-sessions
              */
             sticky?: pulumi.Input<inputs.traefik.v1alpha1.TraefikServiceSpecWeightedServicesStickyArgs>;
             /**
@@ -33917,7 +33949,7 @@ export namespace traefik {
         }
 
         /**
-         * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#sticky-sessions
+         * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.9/routing/services/#sticky-sessions
          */
         export interface TraefikServiceSpecWeightedServicesStickyArgs {
             /**
@@ -33949,7 +33981,7 @@ export namespace traefik {
         }
 
         /**
-         * Sticky defines whether sticky sessions are enabled. More info: https://doc.traefik.io/traefik/v2.8/routing/providers/kubernetes-crd/#stickiness-and-load-balancing
+         * Sticky defines whether sticky sessions are enabled. More info: https://doc.traefik.io/traefik/v2.9/routing/providers/kubernetes-crd/#stickiness-and-load-balancing
          */
         export interface TraefikServiceSpecWeightedStickyArgs {
             /**
