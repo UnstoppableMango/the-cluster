@@ -79,6 +79,13 @@ const traefikChart = new k8s.helm.v3.Chart('traefik', {
         loadBalancerIP: '192.168.1.75',
       },
     },
+    // Some BS error with the helm chart. The default value is 0, but zero can't be used for daemonsets
+    // https://github.com/traefik/traefik-helm-chart/blob/45d4f76bd31143a9eaaa84ca451a260a98fdbdb6/traefik/values.yaml#L150
+    updateStrategy: {
+      rollingUpdate: {
+        maxUnavailable: 1,
+      },
+    },
   },
   transformations: [(obj) => {
     // Either Helm or Pulumi doesn't want to put ALL
