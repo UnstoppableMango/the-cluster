@@ -8,7 +8,7 @@ import * as utilities from "../../utilities";
 import {ObjectMeta} from "../../meta/v1";
 
 /**
- * Middleware is a specification for a Middleware resource.
+ * Middleware is the CRD implementation of a Traefik Middleware. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/overview/
  */
 export class Middleware extends pulumi.CustomResource {
     /**
@@ -41,7 +41,7 @@ export class Middleware extends pulumi.CustomResource {
     public readonly kind!: pulumi.Output<"Middleware" | undefined>;
     public readonly metadata!: pulumi.Output<ObjectMeta>;
     /**
-     * MiddlewareSpec holds the Middleware configuration.
+     * MiddlewareSpec defines the desired state of a Middleware.
      */
     public readonly spec!: pulumi.Output<outputs.traefik.v1alpha1.MiddlewareSpec>;
 
@@ -81,7 +81,7 @@ export interface MiddlewareArgs {
     readonly kind?: pulumi.Input<"Middleware">;
     readonly metadata?: pulumi.Input<ObjectMeta>;
     /**
-     * MiddlewareSpec holds the Middleware configuration.
+     * MiddlewareSpec defines the desired state of a Middleware.
      */
     readonly spec?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareSpecArgs>;
 }

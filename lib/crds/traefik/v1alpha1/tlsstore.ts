@@ -8,7 +8,7 @@ import * as utilities from "../../utilities";
 import {ObjectMeta} from "../../meta/v1";
 
 /**
- * TLSStore is a specification for a TLSStore resource.
+ * TLSStore is the CRD implementation of a Traefik TLS Store. For the time being, only the TLSStore named default is supported. This means that you cannot have two stores that are named default in different Kubernetes namespaces. More info: https://doc.traefik.io/traefik/v2.8/https/tls/#certificates-stores
  */
 export class TLSStore extends pulumi.CustomResource {
     /**
@@ -41,7 +41,7 @@ export class TLSStore extends pulumi.CustomResource {
     public readonly kind!: pulumi.Output<"TLSStore" | undefined>;
     public readonly metadata!: pulumi.Output<ObjectMeta>;
     /**
-     * TLSStoreSpec configures a TLSStore resource.
+     * TLSStoreSpec defines the desired state of a TLSStore.
      */
     public readonly spec!: pulumi.Output<outputs.traefik.v1alpha1.TLSStoreSpec>;
 
@@ -81,7 +81,7 @@ export interface TLSStoreArgs {
     readonly kind?: pulumi.Input<"TLSStore">;
     readonly metadata?: pulumi.Input<ObjectMeta>;
     /**
-     * TLSStoreSpec configures a TLSStore resource.
+     * TLSStoreSpec defines the desired state of a TLSStore.
      */
     readonly spec?: pulumi.Input<inputs.traefik.v1alpha1.TLSStoreSpecArgs>;
 }

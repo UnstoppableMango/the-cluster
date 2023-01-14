@@ -8,7 +8,7 @@ import * as utilities from "../../utilities";
 import {ObjectMeta} from "../../meta/v1";
 
 /**
- * IngressRoute is an Ingress CRD specification.
+ * IngressRoute is the CRD implementation of a Traefik HTTP Router.
  */
 export class IngressRoute extends pulumi.CustomResource {
     /**
@@ -41,7 +41,7 @@ export class IngressRoute extends pulumi.CustomResource {
     public readonly kind!: pulumi.Output<"IngressRoute" | undefined>;
     public readonly metadata!: pulumi.Output<ObjectMeta>;
     /**
-     * IngressRouteSpec is a specification for a IngressRouteSpec resource.
+     * IngressRouteSpec defines the desired state of IngressRoute.
      */
     public readonly spec!: pulumi.Output<outputs.traefik.v1alpha1.IngressRouteSpec>;
 
@@ -81,7 +81,7 @@ export interface IngressRouteArgs {
     readonly kind?: pulumi.Input<"IngressRoute">;
     readonly metadata?: pulumi.Input<ObjectMeta>;
     /**
-     * IngressRouteSpec is a specification for a IngressRouteSpec resource.
+     * IngressRouteSpec defines the desired state of IngressRoute.
      */
     readonly spec?: pulumi.Input<inputs.traefik.v1alpha1.IngressRouteSpecArgs>;
 }

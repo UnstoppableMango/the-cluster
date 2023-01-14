@@ -32085,63 +32085,109 @@ export namespace metallb {
 export namespace traefik {
     export namespace v1alpha1 {
         /**
-         * IngressRouteSpec is a specification for a IngressRouteSpec resource.
+         * IngressRouteSpec defines the desired state of IngressRoute.
          */
         export interface IngressRouteSpec {
+            /**
+             * EntryPoints defines the list of entry point names to bind to. Entry points have to be configured in the static configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/entrypoints/ Default: all.
+             */
             entryPoints?: string[];
+            /**
+             * Routes defines the list of routes.
+             */
             routes: outputs.traefik.v1alpha1.IngressRouteSpecRoutes[];
             /**
-             * TLS contains the TLS certificates configuration of the routes. To enable Let's Encrypt, use an empty TLS struct, e.g. in YAML: 
-             *  	 tls: {} # inline format 
-             *  	 tls: 	   secretName: # block format
+             * TLS defines the TLS configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/routers/#tls
              */
             tls?: outputs.traefik.v1alpha1.IngressRouteSpecTls;
         }
 
         /**
-         * Route contains the set of routes.
+         * Route holds the HTTP route configuration.
          */
         export interface IngressRouteSpecRoutes {
+            /**
+             * Kind defines the kind of the route. Rule is the only supported kind.
+             */
             kind: string;
+            /**
+             * Match defines the router's rule. More info: https://doc.traefik.io/traefik/v2.8/routing/routers/#rule
+             */
             match: string;
+            /**
+             * Middlewares defines the list of references to Middleware resources. More info: https://doc.traefik.io/traefik/v2.8/routing/providers/kubernetes-crd/#kind-middleware
+             */
             middlewares?: outputs.traefik.v1alpha1.IngressRouteSpecRoutesMiddlewares[];
+            /**
+             * Priority defines the router's priority. More info: https://doc.traefik.io/traefik/v2.8/routing/routers/#priority
+             */
             priority?: number;
+            /**
+             * Services defines the list of Service. It can contain any combination of TraefikService and/or reference to a Kubernetes Service.
+             */
             services?: outputs.traefik.v1alpha1.IngressRouteSpecRoutesServices[];
         }
 
         /**
-         * MiddlewareRef is a ref to the Middleware resources.
+         * MiddlewareRef is a reference to a Middleware resource.
          */
         export interface IngressRouteSpecRoutesMiddlewares {
+            /**
+             * Name defines the name of the referenced Middleware resource.
+             */
             name: string;
+            /**
+             * Namespace defines the namespace of the referenced Middleware resource.
+             */
             namespace?: string;
         }
 
         /**
-         * Service defines an upstream to proxy traffic.
+         * Service defines an upstream HTTP service to proxy traffic to.
          */
         export interface IngressRouteSpecRoutesServices {
+            /**
+             * Kind defines the kind of the Service.
+             */
             kind?: string;
             /**
-             * Name is a reference to a Kubernetes Service object (for a load-balancer of servers), or to a TraefikService object (service load-balancer, mirroring, etc). The differentiation between the two is specified in the Kind field.
+             * Name defines the name of the referenced Kubernetes Service or TraefikService. The differentiation between the two is specified in the Kind field.
              */
             name: string;
+            /**
+             * Namespace defines the namespace of the referenced Kubernetes Service or TraefikService.
+             */
             namespace?: string;
+            /**
+             * PassHostHeader defines whether the client Host header is forwarded to the upstream Kubernetes Service. By default, passHostHeader is true.
+             */
             passHostHeader?: boolean;
+            /**
+             * Port defines the port of a Kubernetes Service. This can be a reference to a named port.
+             */
             port?: outputs.traefik.v1alpha1.IngressRouteSpecRoutesServicesPort;
             /**
-             * ResponseForwarding holds configuration for the forward of the response.
+             * ResponseForwarding defines how Traefik forwards the response from the upstream Kubernetes Service to the client.
              */
             responseForwarding?: outputs.traefik.v1alpha1.IngressRouteSpecRoutesServicesResponseForwarding;
+            /**
+             * Scheme defines the scheme to use for the request to the upstream Kubernetes Service. It defaults to https when Kubernetes Service port is 443, http otherwise.
+             */
             scheme?: string;
+            /**
+             * ServersTransport defines the name of ServersTransport resource to use. It allows to configure the transport between Traefik and your servers. Can only be used on a Kubernetes Service.
+             */
             serversTransport?: string;
             /**
-             * Sticky holds the sticky configuration.
+             * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#sticky-sessions
              */
             sticky?: outputs.traefik.v1alpha1.IngressRouteSpecRoutesServicesSticky;
+            /**
+             * Strategy defines the load balancing strategy between the servers. RoundRobin is the only supported value at the moment.
+             */
             strategy?: string;
             /**
-             * Weight should only be specified when Name references a TraefikService object (and to be precise, one that embeds a Weighted Round Robin).
+             * Weight defines the weight and should only be specified when Name references a TraefikService object (and to be precise, one that embeds a Weighted Round Robin).
              */
             weight?: number;
         }
@@ -32150,42 +32196,61 @@ export namespace traefik {
         }
 
         /**
-         * ResponseForwarding holds configuration for the forward of the response.
+         * ResponseForwarding defines how Traefik forwards the response from the upstream Kubernetes Service to the client.
          */
         export interface IngressRouteSpecRoutesServicesResponseForwarding {
+            /**
+             * FlushInterval defines the interval, in milliseconds, in between flushes to the client while copying the response body. A negative value means to flush immediately after each write to the client. This configuration is ignored when ReverseProxy recognizes a response as a streaming response; for such responses, writes are flushed to the client immediately. Default: 100ms
+             */
             flushInterval?: string;
         }
 
         /**
-         * Sticky holds the sticky configuration.
+         * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#sticky-sessions
          */
         export interface IngressRouteSpecRoutesServicesSticky {
             /**
-             * Cookie holds the sticky configuration based on cookie.
+             * Cookie defines the sticky cookie configuration.
              */
             cookie?: outputs.traefik.v1alpha1.IngressRouteSpecRoutesServicesStickyCookie;
         }
 
         /**
-         * Cookie holds the sticky configuration based on cookie.
+         * Cookie defines the sticky cookie configuration.
          */
         export interface IngressRouteSpecRoutesServicesStickyCookie {
+            /**
+             * HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript.
+             */
             httpOnly?: boolean;
+            /**
+             * Name defines the Cookie name.
+             */
             name?: string;
+            /**
+             * SameSite defines the same site policy. More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
+             */
             sameSite?: string;
+            /**
+             * Secure defines whether the cookie can only be transmitted over an encrypted connection (i.e. HTTPS).
+             */
             secure?: boolean;
         }
 
         /**
-         * TLS contains the TLS certificates configuration of the routes. To enable Let's Encrypt, use an empty TLS struct, e.g. in YAML: 
-         *  	 tls: {} # inline format 
-         *  	 tls: 	   secretName: # block format
+         * TLS defines the TLS configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/routers/#tls
          */
         export interface IngressRouteSpecTls {
+            /**
+             * CertResolver defines the name of the certificate resolver to use. Cert resolvers have to be configured in the static configuration. More info: https://doc.traefik.io/traefik/v2.8/https/acme/#certificate-resolvers
+             */
             certResolver?: string;
+            /**
+             * Domains defines the list of domains that will be used to issue certificates. More info: https://doc.traefik.io/traefik/v2.8/routing/routers/#domains
+             */
             domains?: outputs.traefik.v1alpha1.IngressRouteSpecTlsDomains[];
             /**
-             * Options is a reference to a TLSOption, that specifies the parameters of the TLS connection.
+             * Options defines the reference to a TLSOption, that specifies the parameters of the TLS connection. If not defined, the `default` TLSOption is used. More info: https://doc.traefik.io/traefik/v2.8/https/tls/#tls-options
              */
             options?: outputs.traefik.v1alpha1.IngressRouteSpecTlsOptions;
             /**
@@ -32193,7 +32258,7 @@ export namespace traefik {
              */
             secretName?: string;
             /**
-             * Store is a reference to a TLSStore, that specifies the parameters of the TLS store.
+             * Store defines the reference to the TLSStore, that will be used to store certificates. Please note that only `default` TLSStore can be used.
              */
             store?: outputs.traefik.v1alpha1.IngressRouteSpecTlsStore;
         }
@@ -32202,49 +32267,81 @@ export namespace traefik {
          * Domain holds a domain name with SANs.
          */
         export interface IngressRouteSpecTlsDomains {
+            /**
+             * Main defines the main domain name.
+             */
             main?: string;
+            /**
+             * SANs defines the subject alternative domain names.
+             */
             sans?: string[];
         }
 
         /**
-         * Options is a reference to a TLSOption, that specifies the parameters of the TLS connection.
+         * Options defines the reference to a TLSOption, that specifies the parameters of the TLS connection. If not defined, the `default` TLSOption is used. More info: https://doc.traefik.io/traefik/v2.8/https/tls/#tls-options
          */
         export interface IngressRouteSpecTlsOptions {
+            /**
+             * Name defines the name of the referenced TLSOption. More info: https://doc.traefik.io/traefik/v2.8/routing/providers/kubernetes-crd/#kind-tlsoption
+             */
             name: string;
+            /**
+             * Namespace defines the namespace of the referenced TLSOption. More info: https://doc.traefik.io/traefik/v2.8/routing/providers/kubernetes-crd/#kind-tlsoption
+             */
             namespace?: string;
         }
 
         /**
-         * Store is a reference to a TLSStore, that specifies the parameters of the TLS store.
+         * Store defines the reference to the TLSStore, that will be used to store certificates. Please note that only `default` TLSStore can be used.
          */
         export interface IngressRouteSpecTlsStore {
+            /**
+             * Name defines the name of the referenced TLSStore. More info: https://doc.traefik.io/traefik/v2.8/routing/providers/kubernetes-crd/#kind-tlsstore
+             */
             name: string;
+            /**
+             * Namespace defines the namespace of the referenced TLSStore. More info: https://doc.traefik.io/traefik/v2.8/routing/providers/kubernetes-crd/#kind-tlsstore
+             */
             namespace?: string;
         }
 
         /**
-         * IngressRouteTCPSpec is a specification for a IngressRouteTCPSpec resource.
+         * IngressRouteTCPSpec defines the desired state of IngressRouteTCP.
          */
         export interface IngressRouteTCPSpec {
+            /**
+             * EntryPoints defines the list of entry point names to bind to. Entry points have to be configured in the static configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/entrypoints/ Default: all.
+             */
             entryPoints?: string[];
+            /**
+             * Routes defines the list of routes.
+             */
             routes: outputs.traefik.v1alpha1.IngressRouteTCPSpecRoutes[];
             /**
-             * TLSTCP contains the TLS certificates configuration of the routes. To enable Let's Encrypt, use an empty TLS struct, e.g. in YAML: 
-             *  	 tls: {} # inline format 
-             *  	 tls: 	   secretName: # block format
+             * TLS defines the TLS configuration on a layer 4 / TCP Route. More info: https://doc.traefik.io/traefik/v2.8/routing/routers/#tls_1
              */
             tls?: outputs.traefik.v1alpha1.IngressRouteTCPSpecTls;
         }
 
         /**
-         * RouteTCP contains the set of routes.
+         * RouteTCP holds the TCP route configuration.
          */
         export interface IngressRouteTCPSpecRoutes {
+            /**
+             * Match defines the router's rule. More info: https://doc.traefik.io/traefik/v2.8/routing/routers/#rule_1
+             */
             match: string;
             /**
-             * Middlewares contains references to MiddlewareTCP resources.
+             * Middlewares defines the list of references to MiddlewareTCP resources.
              */
             middlewares?: outputs.traefik.v1alpha1.IngressRouteTCPSpecRoutesMiddlewares[];
+            /**
+             * Priority defines the router's priority. More info: https://doc.traefik.io/traefik/v2.8/routing/routers/#priority_1
+             */
+            priority?: number;
+            /**
+             * Services defines the list of TCP services.
+             */
             services?: outputs.traefik.v1alpha1.IngressRouteTCPSpecRoutesServices[];
         }
 
@@ -32252,22 +32349,43 @@ export namespace traefik {
          * ObjectReference is a generic reference to a Traefik resource.
          */
         export interface IngressRouteTCPSpecRoutesMiddlewares {
+            /**
+             * Name defines the name of the referenced Traefik resource.
+             */
             name: string;
+            /**
+             * Namespace defines the namespace of the referenced Traefik resource.
+             */
             namespace?: string;
         }
 
         /**
-         * ServiceTCP defines an upstream to proxy traffic.
+         * ServiceTCP defines an upstream TCP service to proxy traffic to.
          */
         export interface IngressRouteTCPSpecRoutesServices {
+            /**
+             * Name defines the name of the referenced Kubernetes Service.
+             */
             name: string;
+            /**
+             * Namespace defines the namespace of the referenced Kubernetes Service.
+             */
             namespace?: string;
+            /**
+             * Port defines the port of a Kubernetes Service. This can be a reference to a named port.
+             */
             port: outputs.traefik.v1alpha1.IngressRouteTCPSpecRoutesServicesPort;
             /**
-             * ProxyProtocol holds the ProxyProtocol configuration.
+             * ProxyProtocol defines the PROXY protocol configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#proxy-protocol
              */
             proxyProtocol?: outputs.traefik.v1alpha1.IngressRouteTCPSpecRoutesServicesProxyProtocol;
+            /**
+             * TerminationDelay defines the deadline that the proxy sets, after one of its connected peers indicates it has closed the writing capability of its connection, to close the reading capability as well, hence fully terminating the connection. It is a duration in milliseconds, defaulting to 100. A negative value means an infinite deadline (i.e. the reading capability is never closed).
+             */
             terminationDelay?: number;
+            /**
+             * Weight defines the weight used when balancing requests between multiple Kubernetes Service.
+             */
             weight?: number;
         }
 
@@ -32275,31 +32393,41 @@ export namespace traefik {
         }
 
         /**
-         * ProxyProtocol holds the ProxyProtocol configuration.
+         * ProxyProtocol defines the PROXY protocol configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#proxy-protocol
          */
         export interface IngressRouteTCPSpecRoutesServicesProxyProtocol {
+            /**
+             * Version defines the PROXY Protocol version to use.
+             */
             version?: number;
         }
 
         /**
-         * TLSTCP contains the TLS certificates configuration of the routes. To enable Let's Encrypt, use an empty TLS struct, e.g. in YAML: 
-         *  	 tls: {} # inline format 
-         *  	 tls: 	   secretName: # block format
+         * TLS defines the TLS configuration on a layer 4 / TCP Route. More info: https://doc.traefik.io/traefik/v2.8/routing/routers/#tls_1
          */
         export interface IngressRouteTCPSpecTls {
+            /**
+             * CertResolver defines the name of the certificate resolver to use. Cert resolvers have to be configured in the static configuration. More info: https://doc.traefik.io/traefik/v2.8/https/acme/#certificate-resolvers
+             */
             certResolver?: string;
+            /**
+             * Domains defines the list of domains that will be used to issue certificates. More info: https://doc.traefik.io/traefik/v2.8/routing/routers/#domains
+             */
             domains?: outputs.traefik.v1alpha1.IngressRouteTCPSpecTlsDomains[];
             /**
-             * Options is a reference to a TLSOption, that specifies the parameters of the TLS connection.
+             * Options defines the reference to a TLSOption, that specifies the parameters of the TLS connection. If not defined, the `default` TLSOption is used. More info: https://doc.traefik.io/traefik/v2.8/https/tls/#tls-options
              */
             options?: outputs.traefik.v1alpha1.IngressRouteTCPSpecTlsOptions;
+            /**
+             * Passthrough defines whether a TLS router will terminate the TLS connection.
+             */
             passthrough?: boolean;
             /**
              * SecretName is the name of the referenced Kubernetes Secret to specify the certificate details.
              */
             secretName?: string;
             /**
-             * Store is a reference to a TLSStore, that specifies the parameters of the TLS store.
+             * Store defines the reference to the TLSStore, that will be used to store certificates. Please note that only `default` TLSStore can be used.
              */
             store?: outputs.traefik.v1alpha1.IngressRouteTCPSpecTlsStore;
         }
@@ -32308,48 +32436,87 @@ export namespace traefik {
          * Domain holds a domain name with SANs.
          */
         export interface IngressRouteTCPSpecTlsDomains {
+            /**
+             * Main defines the main domain name.
+             */
             main?: string;
+            /**
+             * SANs defines the subject alternative domain names.
+             */
             sans?: string[];
         }
 
         /**
-         * Options is a reference to a TLSOption, that specifies the parameters of the TLS connection.
+         * Options defines the reference to a TLSOption, that specifies the parameters of the TLS connection. If not defined, the `default` TLSOption is used. More info: https://doc.traefik.io/traefik/v2.8/https/tls/#tls-options
          */
         export interface IngressRouteTCPSpecTlsOptions {
+            /**
+             * Name defines the name of the referenced Traefik resource.
+             */
             name: string;
+            /**
+             * Namespace defines the namespace of the referenced Traefik resource.
+             */
             namespace?: string;
         }
 
         /**
-         * Store is a reference to a TLSStore, that specifies the parameters of the TLS store.
+         * Store defines the reference to the TLSStore, that will be used to store certificates. Please note that only `default` TLSStore can be used.
          */
         export interface IngressRouteTCPSpecTlsStore {
+            /**
+             * Name defines the name of the referenced Traefik resource.
+             */
             name: string;
+            /**
+             * Namespace defines the namespace of the referenced Traefik resource.
+             */
             namespace?: string;
         }
 
         /**
-         * IngressRouteUDPSpec is a specification for a IngressRouteUDPSpec resource.
+         * IngressRouteUDPSpec defines the desired state of a IngressRouteUDP.
          */
         export interface IngressRouteUDPSpec {
+            /**
+             * EntryPoints defines the list of entry point names to bind to. Entry points have to be configured in the static configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/entrypoints/ Default: all.
+             */
             entryPoints?: string[];
+            /**
+             * Routes defines the list of routes.
+             */
             routes: outputs.traefik.v1alpha1.IngressRouteUDPSpecRoutes[];
         }
 
         /**
-         * RouteUDP contains the set of routes.
+         * RouteUDP holds the UDP route configuration.
          */
         export interface IngressRouteUDPSpecRoutes {
+            /**
+             * Services defines the list of UDP services.
+             */
             services?: outputs.traefik.v1alpha1.IngressRouteUDPSpecRoutesServices[];
         }
 
         /**
-         * ServiceUDP defines an upstream to proxy traffic.
+         * ServiceUDP defines an upstream UDP service to proxy traffic to.
          */
         export interface IngressRouteUDPSpecRoutesServices {
+            /**
+             * Name defines the name of the referenced Kubernetes Service.
+             */
             name: string;
+            /**
+             * Namespace defines the namespace of the referenced Kubernetes Service.
+             */
             namespace?: string;
+            /**
+             * Port defines the port of a Kubernetes Service. This can be a reference to a named port.
+             */
             port: outputs.traefik.v1alpha1.IngressRouteUDPSpecRoutesServicesPort;
+            /**
+             * Weight defines the weight used when balancing requests between multiple Kubernetes Service.
+             */
             weight?: number;
         }
 
@@ -32357,23 +32524,23 @@ export namespace traefik {
         }
 
         /**
-         * MiddlewareSpec holds the Middleware configuration.
+         * MiddlewareSpec defines the desired state of a Middleware.
          */
         export interface MiddlewareSpec {
             /**
-             * AddPrefix holds the AddPrefix configuration.
+             * AddPrefix holds the add prefix middleware configuration. This middleware updates the path of a request before forwarding it. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/addprefix/
              */
             addPrefix?: outputs.traefik.v1alpha1.MiddlewareSpecAddPrefix;
             /**
-             * BasicAuth holds the HTTP basic authentication configuration.
+             * BasicAuth holds the basic auth middleware configuration. This middleware restricts access to your services to known users. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/basicauth/
              */
             basicAuth?: outputs.traefik.v1alpha1.MiddlewareSpecBasicAuth;
             /**
-             * Buffering holds the request/response buffering configuration.
+             * Buffering holds the buffering middleware configuration. This middleware retries or limits the size of requests that can be forwarded to backends. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/buffering/#maxrequestbodybytes
              */
             buffering?: outputs.traefik.v1alpha1.MiddlewareSpecBuffering;
             /**
-             * Chain holds a chain of middlewares.
+             * Chain holds the configuration of the chain middleware. This middleware enables to define reusable combinations of other pieces of middleware. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/chain/
              */
             chain?: outputs.traefik.v1alpha1.MiddlewareSpecChain;
             /**
@@ -32381,116 +32548,158 @@ export namespace traefik {
              */
             circuitBreaker?: outputs.traefik.v1alpha1.MiddlewareSpecCircuitBreaker;
             /**
-             * Compress holds the compress configuration.
+             * Compress holds the compress middleware configuration. This middleware compresses responses before sending them to the client, using gzip compression. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/compress/
              */
             compress?: outputs.traefik.v1alpha1.MiddlewareSpecCompress;
             /**
-             * ContentType middleware - or rather its unique `autoDetect` option - specifies whether to let the `Content-Type` header, if it has not been set by the backend, be automatically set to a value derived from the contents of the response. As a proxy, the default behavior should be to leave the header alone, regardless of what the backend did with it. However, the historic default was to always auto-detect and set the header if it was nil, and it is going to be kept that way in order to support users currently relying on it. This middleware exists to enable the correct behavior until at least the default one can be changed in a future version.
+             * ContentType holds the content-type middleware configuration. This middleware exists to enable the correct behavior until at least the default one can be changed in a future version.
              */
             contentType?: outputs.traefik.v1alpha1.MiddlewareSpecContentType;
             /**
-             * DigestAuth holds the Digest HTTP authentication configuration.
+             * DigestAuth holds the digest auth middleware configuration. This middleware restricts access to your services to known users. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/digestauth/
              */
             digestAuth?: outputs.traefik.v1alpha1.MiddlewareSpecDigestAuth;
             /**
-             * ErrorPage holds the custom error page configuration.
+             * ErrorPage holds the custom error middleware configuration. This middleware returns a custom page in lieu of the default, according to configured ranges of HTTP Status codes. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/errorpages/
              */
             errors?: outputs.traefik.v1alpha1.MiddlewareSpecErrors;
             /**
-             * ForwardAuth holds the http forward authentication configuration.
+             * ForwardAuth holds the forward auth middleware configuration. This middleware delegates the request authentication to a Service. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/forwardauth/
              */
             forwardAuth?: outputs.traefik.v1alpha1.MiddlewareSpecForwardAuth;
             /**
-             * Headers holds the custom header configuration.
+             * Headers holds the headers middleware configuration. This middleware manages the requests and responses headers. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/headers/#customrequestheaders
              */
             headers?: outputs.traefik.v1alpha1.MiddlewareSpecHeaders;
             /**
-             * InFlightReq limits the number of requests being processed and served concurrently.
+             * InFlightReq holds the in-flight request middleware configuration. This middleware limits the number of requests being processed and served concurrently. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/inflightreq/
              */
             inFlightReq?: outputs.traefik.v1alpha1.MiddlewareSpecInFlightReq;
             /**
-             * IPWhiteList holds the ip white list configuration.
+             * IPWhiteList holds the IP whitelist middleware configuration. This middleware accepts / refuses requests based on the client IP. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/ipwhitelist/
              */
             ipWhiteList?: outputs.traefik.v1alpha1.MiddlewareSpecIpWhiteList;
             /**
-             * PassTLSClientCert holds the TLS client cert headers configuration.
+             * PassTLSClientCert holds the pass TLS client cert middleware configuration. This middleware adds the selected data from the passed client TLS certificate to a header. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/passtlsclientcert/
              */
             passTLSClientCert?: outputs.traefik.v1alpha1.MiddlewareSpecPassTLSClientCert;
+            /**
+             * Plugin defines the middleware plugin configuration. More info: https://doc.traefik.io/traefik/plugins/
+             */
             plugin?: {[key: string]: {[key: string]: any}};
             /**
-             * RateLimit holds the rate limiting configuration for a given router.
+             * RateLimit holds the rate limit configuration. This middleware ensures that services will receive a fair amount of requests, and allows one to define what fair is. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/ratelimit/
              */
             rateLimit?: outputs.traefik.v1alpha1.MiddlewareSpecRateLimit;
             /**
-             * RedirectRegex holds the redirection configuration.
+             * RedirectRegex holds the redirect regex middleware configuration. This middleware redirects a request using regex matching and replacement. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/redirectregex/#regex
              */
             redirectRegex?: outputs.traefik.v1alpha1.MiddlewareSpecRedirectRegex;
             /**
-             * RedirectScheme holds the scheme redirection configuration.
+             * RedirectScheme holds the redirect scheme middleware configuration. This middleware redirects requests from a scheme/port to another. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/redirectscheme/
              */
             redirectScheme?: outputs.traefik.v1alpha1.MiddlewareSpecRedirectScheme;
             /**
-             * ReplacePath holds the ReplacePath configuration.
+             * ReplacePath holds the replace path middleware configuration. This middleware replaces the path of the request URL and store the original path in an X-Replaced-Path header. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/replacepath/
              */
             replacePath?: outputs.traefik.v1alpha1.MiddlewareSpecReplacePath;
             /**
-             * ReplacePathRegex holds the ReplacePathRegex configuration.
+             * ReplacePathRegex holds the replace path regex middleware configuration. This middleware replaces the path of a URL using regex matching and replacement. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/replacepathregex/
              */
             replacePathRegex?: outputs.traefik.v1alpha1.MiddlewareSpecReplacePathRegex;
             /**
-             * Retry holds the retry configuration.
+             * Retry holds the retry middleware configuration. This middleware reissues requests a given number of times to a backend server if that server does not reply. As soon as the server answers, the middleware stops retrying, regardless of the response status. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/retry/
              */
             retry?: outputs.traefik.v1alpha1.MiddlewareSpecRetry;
             /**
-             * StripPrefix holds the StripPrefix configuration.
+             * StripPrefix holds the strip prefix middleware configuration. This middleware removes the specified prefixes from the URL path. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/stripprefix/
              */
             stripPrefix?: outputs.traefik.v1alpha1.MiddlewareSpecStripPrefix;
             /**
-             * StripPrefixRegex holds the StripPrefixRegex configuration.
+             * StripPrefixRegex holds the strip prefix regex middleware configuration. This middleware removes the matching prefixes from the URL path. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/stripprefixregex/
              */
             stripPrefixRegex?: outputs.traefik.v1alpha1.MiddlewareSpecStripPrefixRegex;
         }
 
         /**
-         * AddPrefix holds the AddPrefix configuration.
+         * AddPrefix holds the add prefix middleware configuration. This middleware updates the path of a request before forwarding it. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/addprefix/
          */
         export interface MiddlewareSpecAddPrefix {
+            /**
+             * Prefix is the string to add before the current path in the requested URL. It should include a leading slash (/).
+             */
             prefix?: string;
         }
 
         /**
-         * BasicAuth holds the HTTP basic authentication configuration.
+         * BasicAuth holds the basic auth middleware configuration. This middleware restricts access to your services to known users. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/basicauth/
          */
         export interface MiddlewareSpecBasicAuth {
+            /**
+             * HeaderField defines a header field to store the authenticated user. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/basicauth/#headerfield
+             */
             headerField?: string;
+            /**
+             * Realm allows the protected resources on a server to be partitioned into a set of protection spaces, each with its own authentication scheme. Default: traefik.
+             */
             realm?: string;
+            /**
+             * RemoveHeader sets the removeHeader option to true to remove the authorization header before forwarding the request to your service. Default: false.
+             */
             removeHeader?: boolean;
+            /**
+             * Secret is the name of the referenced Kubernetes Secret containing user credentials.
+             */
             secret?: string;
         }
 
         /**
-         * Buffering holds the request/response buffering configuration.
+         * Buffering holds the buffering middleware configuration. This middleware retries or limits the size of requests that can be forwarded to backends. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/buffering/#maxrequestbodybytes
          */
         export interface MiddlewareSpecBuffering {
+            /**
+             * MaxRequestBodyBytes defines the maximum allowed body size for the request (in bytes). If the request exceeds the allowed size, it is not forwarded to the service, and the client gets a 413 (Request Entity Too Large) response. Default: 0 (no maximum).
+             */
             maxRequestBodyBytes?: number;
+            /**
+             * MaxResponseBodyBytes defines the maximum allowed response size from the service (in bytes). If the response exceeds the allowed size, it is not forwarded to the client. The client gets a 500 (Internal Server Error) response instead. Default: 0 (no maximum).
+             */
             maxResponseBodyBytes?: number;
+            /**
+             * MemRequestBodyBytes defines the threshold (in bytes) from which the request will be buffered on disk instead of in memory. Default: 1048576 (1Mi).
+             */
             memRequestBodyBytes?: number;
+            /**
+             * MemResponseBodyBytes defines the threshold (in bytes) from which the response will be buffered on disk instead of in memory. Default: 1048576 (1Mi).
+             */
             memResponseBodyBytes?: number;
+            /**
+             * RetryExpression defines the retry conditions. It is a logical combination of functions with operators AND (&&) and OR (||). More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/buffering/#retryexpression
+             */
             retryExpression?: string;
         }
 
         /**
-         * Chain holds a chain of middlewares.
+         * Chain holds the configuration of the chain middleware. This middleware enables to define reusable combinations of other pieces of middleware. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/chain/
          */
         export interface MiddlewareSpecChain {
+            /**
+             * Middlewares is the list of MiddlewareRef which composes the chain.
+             */
             middlewares?: outputs.traefik.v1alpha1.MiddlewareSpecChainMiddlewares[];
         }
 
         /**
-         * MiddlewareRef is a ref to the Middleware resources.
+         * MiddlewareRef is a reference to a Middleware resource.
          */
         export interface MiddlewareSpecChainMiddlewares {
+            /**
+             * Name defines the name of the referenced Middleware resource.
+             */
             name: string;
+            /**
+             * Namespace defines the namespace of the referenced Middleware resource.
+             */
             namespace?: string;
         }
 
@@ -32498,70 +32707,143 @@ export namespace traefik {
          * CircuitBreaker holds the circuit breaker configuration.
          */
         export interface MiddlewareSpecCircuitBreaker {
+            /**
+             * CheckPeriod is the interval between successive checks of the circuit breaker condition (when in standby state).
+             */
+            checkPeriod?: outputs.traefik.v1alpha1.MiddlewareSpecCircuitBreakerCheckPeriod;
+            /**
+             * Expression is the condition that triggers the tripped state.
+             */
             expression?: string;
+            /**
+             * FallbackDuration is the duration for which the circuit breaker will wait before trying to recover (from a tripped state).
+             */
+            fallbackDuration?: outputs.traefik.v1alpha1.MiddlewareSpecCircuitBreakerFallbackDuration;
+            /**
+             * RecoveryDuration is the duration for which the circuit breaker will try to recover (as soon as it is in recovering state).
+             */
+            recoveryDuration?: outputs.traefik.v1alpha1.MiddlewareSpecCircuitBreakerRecoveryDuration;
+        }
+
+        export interface MiddlewareSpecCircuitBreakerCheckPeriod {
+        }
+
+        export interface MiddlewareSpecCircuitBreakerFallbackDuration {
+        }
+
+        export interface MiddlewareSpecCircuitBreakerRecoveryDuration {
         }
 
         /**
-         * Compress holds the compress configuration.
+         * Compress holds the compress middleware configuration. This middleware compresses responses before sending them to the client, using gzip compression. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/compress/
          */
         export interface MiddlewareSpecCompress {
+            /**
+             * ExcludedContentTypes defines the list of content types to compare the Content-Type header of the incoming requests and responses before compressing.
+             */
             excludedContentTypes?: string[];
+            /**
+             * MinResponseBodyBytes defines the minimum amount of bytes a response body must have to be compressed. Default: 1024.
+             */
+            minResponseBodyBytes?: number;
         }
 
         /**
-         * ContentType middleware - or rather its unique `autoDetect` option - specifies whether to let the `Content-Type` header, if it has not been set by the backend, be automatically set to a value derived from the contents of the response. As a proxy, the default behavior should be to leave the header alone, regardless of what the backend did with it. However, the historic default was to always auto-detect and set the header if it was nil, and it is going to be kept that way in order to support users currently relying on it. This middleware exists to enable the correct behavior until at least the default one can be changed in a future version.
+         * ContentType holds the content-type middleware configuration. This middleware exists to enable the correct behavior until at least the default one can be changed in a future version.
          */
         export interface MiddlewareSpecContentType {
+            /**
+             * AutoDetect specifies whether to let the `Content-Type` header, if it has not been set by the backend, be automatically set to a value derived from the contents of the response. As a proxy, the default behavior should be to leave the header alone, regardless of what the backend did with it. However, the historic default was to always auto-detect and set the header if it was nil, and it is going to be kept that way in order to support users currently relying on it.
+             */
             autoDetect?: boolean;
         }
 
         /**
-         * DigestAuth holds the Digest HTTP authentication configuration.
+         * DigestAuth holds the digest auth middleware configuration. This middleware restricts access to your services to known users. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/digestauth/
          */
         export interface MiddlewareSpecDigestAuth {
+            /**
+             * HeaderField defines a header field to store the authenticated user. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/basicauth/#headerfield
+             */
             headerField?: string;
+            /**
+             * Realm allows the protected resources on a server to be partitioned into a set of protection spaces, each with its own authentication scheme. Default: traefik.
+             */
             realm?: string;
+            /**
+             * RemoveHeader defines whether to remove the authorization header before forwarding the request to the backend.
+             */
             removeHeader?: boolean;
+            /**
+             * Secret is the name of the referenced Kubernetes Secret containing user credentials.
+             */
             secret?: string;
         }
 
         /**
-         * ErrorPage holds the custom error page configuration.
+         * ErrorPage holds the custom error middleware configuration. This middleware returns a custom page in lieu of the default, according to configured ranges of HTTP Status codes. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/errorpages/
          */
         export interface MiddlewareSpecErrors {
+            /**
+             * Query defines the URL for the error page (hosted by service). The {status} variable can be used in order to insert the status code in the URL.
+             */
             query?: string;
             /**
-             * Service defines an upstream to proxy traffic.
+             * Service defines the reference to a Kubernetes Service that will serve the error page. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/errorpages/#service
              */
             service?: outputs.traefik.v1alpha1.MiddlewareSpecErrorsService;
+            /**
+             * Status defines which status or range of statuses should result in an error page. It can be either a status code as a number (500), as multiple comma-separated numbers (500,502), as ranges by separating two codes with a dash (500-599), or a combination of the two (404,418,500-599).
+             */
             status?: string[];
         }
 
         /**
-         * Service defines an upstream to proxy traffic.
+         * Service defines the reference to a Kubernetes Service that will serve the error page. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/errorpages/#service
          */
         export interface MiddlewareSpecErrorsService {
+            /**
+             * Kind defines the kind of the Service.
+             */
             kind?: string;
             /**
-             * Name is a reference to a Kubernetes Service object (for a load-balancer of servers), or to a TraefikService object (service load-balancer, mirroring, etc). The differentiation between the two is specified in the Kind field.
+             * Name defines the name of the referenced Kubernetes Service or TraefikService. The differentiation between the two is specified in the Kind field.
              */
             name: string;
+            /**
+             * Namespace defines the namespace of the referenced Kubernetes Service or TraefikService.
+             */
             namespace?: string;
+            /**
+             * PassHostHeader defines whether the client Host header is forwarded to the upstream Kubernetes Service. By default, passHostHeader is true.
+             */
             passHostHeader?: boolean;
+            /**
+             * Port defines the port of a Kubernetes Service. This can be a reference to a named port.
+             */
             port?: outputs.traefik.v1alpha1.MiddlewareSpecErrorsServicePort;
             /**
-             * ResponseForwarding holds configuration for the forward of the response.
+             * ResponseForwarding defines how Traefik forwards the response from the upstream Kubernetes Service to the client.
              */
             responseForwarding?: outputs.traefik.v1alpha1.MiddlewareSpecErrorsServiceResponseForwarding;
+            /**
+             * Scheme defines the scheme to use for the request to the upstream Kubernetes Service. It defaults to https when Kubernetes Service port is 443, http otherwise.
+             */
             scheme?: string;
+            /**
+             * ServersTransport defines the name of ServersTransport resource to use. It allows to configure the transport between Traefik and your servers. Can only be used on a Kubernetes Service.
+             */
             serversTransport?: string;
             /**
-             * Sticky holds the sticky configuration.
+             * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#sticky-sessions
              */
             sticky?: outputs.traefik.v1alpha1.MiddlewareSpecErrorsServiceSticky;
+            /**
+             * Strategy defines the load balancing strategy between the servers. RoundRobin is the only supported value at the moment.
+             */
             strategy?: string;
             /**
-             * Weight should only be specified when Name references a TraefikService object (and to be precise, one that embeds a Weighted Round Robin).
+             * Weight defines the weight and should only be specified when Name references a TraefikService object (and to be precise, one that embeds a Weighted Round Robin).
              */
             weight?: number;
         }
@@ -32570,71 +32852,110 @@ export namespace traefik {
         }
 
         /**
-         * ResponseForwarding holds configuration for the forward of the response.
+         * ResponseForwarding defines how Traefik forwards the response from the upstream Kubernetes Service to the client.
          */
         export interface MiddlewareSpecErrorsServiceResponseForwarding {
+            /**
+             * FlushInterval defines the interval, in milliseconds, in between flushes to the client while copying the response body. A negative value means to flush immediately after each write to the client. This configuration is ignored when ReverseProxy recognizes a response as a streaming response; for such responses, writes are flushed to the client immediately. Default: 100ms
+             */
             flushInterval?: string;
         }
 
         /**
-         * Sticky holds the sticky configuration.
+         * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#sticky-sessions
          */
         export interface MiddlewareSpecErrorsServiceSticky {
             /**
-             * Cookie holds the sticky configuration based on cookie.
+             * Cookie defines the sticky cookie configuration.
              */
             cookie?: outputs.traefik.v1alpha1.MiddlewareSpecErrorsServiceStickyCookie;
         }
 
         /**
-         * Cookie holds the sticky configuration based on cookie.
+         * Cookie defines the sticky cookie configuration.
          */
         export interface MiddlewareSpecErrorsServiceStickyCookie {
+            /**
+             * HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript.
+             */
             httpOnly?: boolean;
+            /**
+             * Name defines the Cookie name.
+             */
             name?: string;
+            /**
+             * SameSite defines the same site policy. More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
+             */
             sameSite?: string;
+            /**
+             * Secure defines whether the cookie can only be transmitted over an encrypted connection (i.e. HTTPS).
+             */
             secure?: boolean;
         }
 
         /**
-         * ForwardAuth holds the http forward authentication configuration.
+         * ForwardAuth holds the forward auth middleware configuration. This middleware delegates the request authentication to a Service. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/forwardauth/
          */
         export interface MiddlewareSpecForwardAuth {
+            /**
+             * Address defines the authentication server address.
+             */
             address?: string;
+            /**
+             * AuthRequestHeaders defines the list of the headers to copy from the request to the authentication server. If not set or empty then all request headers are passed.
+             */
             authRequestHeaders?: string[];
+            /**
+             * AuthResponseHeaders defines the list of headers to copy from the authentication server response and set on forwarded request, replacing any existing conflicting headers.
+             */
             authResponseHeaders?: string[];
+            /**
+             * AuthResponseHeadersRegex defines the regex to match headers to copy from the authentication server response and set on forwarded request, after stripping all headers that match the regex. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/forwardauth/#authresponseheadersregex
+             */
             authResponseHeadersRegex?: string;
             /**
-             * ClientTLS holds TLS specific configurations as client.
+             * TLS defines the configuration used to secure the connection to the authentication server.
              */
             tls?: outputs.traefik.v1alpha1.MiddlewareSpecForwardAuthTls;
+            /**
+             * TrustForwardHeader defines whether to trust (ie: forward) all X-Forwarded-* headers.
+             */
             trustForwardHeader?: boolean;
         }
 
         /**
-         * ClientTLS holds TLS specific configurations as client.
+         * TLS defines the configuration used to secure the connection to the authentication server.
          */
         export interface MiddlewareSpecForwardAuthTls {
             caOptional?: boolean;
+            /**
+             * CASecret is the name of the referenced Kubernetes Secret containing the CA to validate the server certificate. The CA certificate is extracted from key `tls.ca` or `ca.crt`.
+             */
             caSecret?: string;
+            /**
+             * CertSecret is the name of the referenced Kubernetes Secret containing the client certificate. The client certificate is extracted from the keys `tls.crt` and `tls.key`.
+             */
             certSecret?: string;
+            /**
+             * InsecureSkipVerify defines whether the server certificates should be validated.
+             */
             insecureSkipVerify?: boolean;
         }
 
         /**
-         * Headers holds the custom header configuration.
+         * Headers holds the headers middleware configuration. This middleware manages the requests and responses headers. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/headers/#customrequestheaders
          */
         export interface MiddlewareSpecHeaders {
             /**
-             * AccessControlAllowCredentials is only valid if true. false is ignored.
+             * AccessControlAllowCredentials defines whether the request can include user credentials.
              */
             accessControlAllowCredentials?: boolean;
             /**
-             * AccessControlAllowHeaders must be used in response to a preflight request with Access-Control-Request-Headers set.
+             * AccessControlAllowHeaders defines the Access-Control-Request-Headers values sent in preflight response.
              */
             accessControlAllowHeaders?: string[];
             /**
-             * AccessControlAllowMethods must be used in response to a preflight request with Access-Control-Request-Method set.
+             * AccessControlAllowMethods defines the Access-Control-Request-Method values sent in preflight response.
              */
             accessControlAllowMethods?: string[];
             /**
@@ -32646,35 +32967,80 @@ export namespace traefik {
              */
             accessControlAllowOriginListRegex?: string[];
             /**
-             * AccessControlExposeHeaders sets valid headers for the response.
+             * AccessControlExposeHeaders defines the Access-Control-Expose-Headers values sent in preflight response.
              */
             accessControlExposeHeaders?: string[];
             /**
-             * AccessControlMaxAge sets the time that a preflight request may be cached.
+             * AccessControlMaxAge defines the time that a preflight request may be cached.
              */
             accessControlMaxAge?: number;
             /**
-             * AddVaryHeader controls if the Vary header is automatically added/updated when the AccessControlAllowOriginList is set.
+             * AddVaryHeader defines whether the Vary header is automatically added/updated when the AccessControlAllowOriginList is set.
              */
             addVaryHeader?: boolean;
+            /**
+             * AllowedHosts defines the fully qualified list of allowed domain names.
+             */
             allowedHosts?: string[];
+            /**
+             * BrowserXSSFilter defines whether to add the X-XSS-Protection header with the value 1; mode=block.
+             */
             browserXssFilter?: boolean;
+            /**
+             * ContentSecurityPolicy defines the Content-Security-Policy header value.
+             */
             contentSecurityPolicy?: string;
+            /**
+             * ContentTypeNosniff defines whether to add the X-Content-Type-Options header with the nosniff value.
+             */
             contentTypeNosniff?: boolean;
+            /**
+             * CustomBrowserXSSValue defines the X-XSS-Protection header value. This overrides the BrowserXssFilter option.
+             */
             customBrowserXSSValue?: string;
+            /**
+             * CustomFrameOptionsValue defines the X-Frame-Options header value. This overrides the FrameDeny option.
+             */
             customFrameOptionsValue?: string;
+            /**
+             * CustomRequestHeaders defines the header names and values to apply to the request.
+             */
             customRequestHeaders?: {[key: string]: string};
+            /**
+             * CustomResponseHeaders defines the header names and values to apply to the response.
+             */
             customResponseHeaders?: {[key: string]: string};
             /**
              * Deprecated: use PermissionsPolicy instead.
              */
             featurePolicy?: string;
+            /**
+             * ForceSTSHeader defines whether to add the STS header even when the connection is HTTP.
+             */
             forceSTSHeader?: boolean;
+            /**
+             * FrameDeny defines whether to add the X-Frame-Options header with the DENY value.
+             */
             frameDeny?: boolean;
+            /**
+             * HostsProxyHeaders defines the header keys that may hold a proxied hostname value for the request.
+             */
             hostsProxyHeaders?: string[];
+            /**
+             * IsDevelopment defines whether to mitigate the unwanted effects of the AllowedHosts, SSL, and STS options when developing. Usually testing takes place using HTTP, not HTTPS, and on localhost, not your production domain. If you would like your development environment to mimic production with complete Host blocking, SSL redirects, and STS headers, leave this as false.
+             */
             isDevelopment?: boolean;
+            /**
+             * PermissionsPolicy defines the Permissions-Policy header value. This allows sites to control browser features.
+             */
             permissionsPolicy?: string;
+            /**
+             * PublicKey is the public key that implements HPKP to prevent MITM attacks with forged certificates.
+             */
             publicKey?: string;
+            /**
+             * ReferrerPolicy defines the Referrer-Policy header value. This allows sites to control whether browsers forward the Referer header to other sites.
+             */
             referrerPolicy?: string;
             /**
              * Deprecated: use RedirectRegex instead.
@@ -32684,6 +33050,9 @@ export namespace traefik {
              * Deprecated: use RedirectRegex instead.
              */
             sslHost?: string;
+            /**
+             * SSLProxyHeaders defines the header keys with associated values that would indicate a valid HTTPS request. It can be useful when using other proxies (example: "X-Forwarded-Proto": "https").
+             */
             sslProxyHeaders?: {[key: string]: string};
             /**
              * Deprecated: use EntryPoint redirection or RedirectScheme instead.
@@ -32693,125 +33062,228 @@ export namespace traefik {
              * Deprecated: use EntryPoint redirection or RedirectScheme instead.
              */
             sslTemporaryRedirect?: boolean;
+            /**
+             * STSIncludeSubdomains defines whether the includeSubDomains directive is appended to the Strict-Transport-Security header.
+             */
             stsIncludeSubdomains?: boolean;
+            /**
+             * STSPreload defines whether the preload flag is appended to the Strict-Transport-Security header.
+             */
             stsPreload?: boolean;
+            /**
+             * STSSeconds defines the max-age of the Strict-Transport-Security header. If set to 0, the header is not set.
+             */
             stsSeconds?: number;
         }
 
         /**
-         * InFlightReq limits the number of requests being processed and served concurrently.
+         * InFlightReq holds the in-flight request middleware configuration. This middleware limits the number of requests being processed and served concurrently. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/inflightreq/
          */
         export interface MiddlewareSpecInFlightReq {
+            /**
+             * Amount defines the maximum amount of allowed simultaneous in-flight request. The middleware responds with HTTP 429 Too Many Requests if there are already amount requests in progress (based on the same sourceCriterion strategy).
+             */
             amount?: number;
             /**
-             * SourceCriterion defines what criterion is used to group requests as originating from a common source. If none are set, the default is to use the request's remote address field. All fields are mutually exclusive.
+             * SourceCriterion defines what criterion is used to group requests as originating from a common source. If several strategies are defined at the same time, an error will be raised. If none are set, the default is to use the requestHost. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/inflightreq/#sourcecriterion
              */
             sourceCriterion?: outputs.traefik.v1alpha1.MiddlewareSpecInFlightReqSourceCriterion;
         }
 
         /**
-         * SourceCriterion defines what criterion is used to group requests as originating from a common source. If none are set, the default is to use the request's remote address field. All fields are mutually exclusive.
+         * SourceCriterion defines what criterion is used to group requests as originating from a common source. If several strategies are defined at the same time, an error will be raised. If none are set, the default is to use the requestHost. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/inflightreq/#sourcecriterion
          */
         export interface MiddlewareSpecInFlightReqSourceCriterion {
             /**
-             * IPStrategy holds the ip strategy configuration.
+             * IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/ipwhitelist/#ipstrategy
              */
             ipStrategy?: outputs.traefik.v1alpha1.MiddlewareSpecInFlightReqSourceCriterionIpStrategy;
+            /**
+             * RequestHeaderName defines the name of the header used to group incoming requests.
+             */
             requestHeaderName?: string;
+            /**
+             * RequestHost defines whether to consider the request Host as the source.
+             */
             requestHost?: boolean;
         }
 
         /**
-         * IPStrategy holds the ip strategy configuration.
+         * IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/ipwhitelist/#ipstrategy
          */
         export interface MiddlewareSpecInFlightReqSourceCriterionIpStrategy {
+            /**
+             * Depth tells Traefik to use the X-Forwarded-For header and take the IP located at the depth position (starting from the right).
+             */
             depth?: number;
+            /**
+             * ExcludedIPs configures Traefik to scan the X-Forwarded-For header and select the first IP not in the list.
+             */
             excludedIPs?: string[];
         }
 
         /**
-         * IPWhiteList holds the ip white list configuration.
+         * IPWhiteList holds the IP whitelist middleware configuration. This middleware accepts / refuses requests based on the client IP. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/ipwhitelist/
          */
         export interface MiddlewareSpecIpWhiteList {
             /**
-             * IPStrategy holds the ip strategy configuration.
+             * IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/ipwhitelist/#ipstrategy
              */
             ipStrategy?: outputs.traefik.v1alpha1.MiddlewareSpecIpWhiteListIpStrategy;
+            /**
+             * SourceRange defines the set of allowed IPs (or ranges of allowed IPs by using CIDR notation).
+             */
             sourceRange?: string[];
         }
 
         /**
-         * IPStrategy holds the ip strategy configuration.
+         * IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/ipwhitelist/#ipstrategy
          */
         export interface MiddlewareSpecIpWhiteListIpStrategy {
+            /**
+             * Depth tells Traefik to use the X-Forwarded-For header and take the IP located at the depth position (starting from the right).
+             */
             depth?: number;
+            /**
+             * ExcludedIPs configures Traefik to scan the X-Forwarded-For header and select the first IP not in the list.
+             */
             excludedIPs?: string[];
         }
 
         /**
-         * PassTLSClientCert holds the TLS client cert headers configuration.
+         * PassTLSClientCert holds the pass TLS client cert middleware configuration. This middleware adds the selected data from the passed client TLS certificate to a header. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/passtlsclientcert/
          */
         export interface MiddlewareSpecPassTLSClientCert {
             /**
-             * TLSClientCertificateInfo holds the client TLS certificate info configuration.
+             * Info selects the specific client certificate details you want to add to the X-Forwarded-Tls-Client-Cert-Info header.
              */
             info?: outputs.traefik.v1alpha1.MiddlewareSpecPassTLSClientCertInfo;
+            /**
+             * PEM sets the X-Forwarded-Tls-Client-Cert header with the escaped certificate.
+             */
             pem?: boolean;
         }
 
         /**
-         * TLSClientCertificateInfo holds the client TLS certificate info configuration.
+         * Info selects the specific client certificate details you want to add to the X-Forwarded-Tls-Client-Cert-Info header.
          */
         export interface MiddlewareSpecPassTLSClientCertInfo {
             /**
-             * TLSCLientCertificateDNInfo holds the client TLS certificate distinguished name info configuration. cf https://tools.ietf.org/html/rfc3739
+             * Issuer defines the client certificate issuer details to add to the X-Forwarded-Tls-Client-Cert-Info header.
              */
             issuer?: outputs.traefik.v1alpha1.MiddlewareSpecPassTLSClientCertInfoIssuer;
+            /**
+             * NotAfter defines whether to add the Not After information from the Validity part.
+             */
             notAfter?: boolean;
+            /**
+             * NotBefore defines whether to add the Not Before information from the Validity part.
+             */
             notBefore?: boolean;
+            /**
+             * Sans defines whether to add the Subject Alternative Name information from the Subject Alternative Name part.
+             */
             sans?: boolean;
+            /**
+             * SerialNumber defines whether to add the client serialNumber information.
+             */
             serialNumber?: boolean;
             /**
-             * TLSCLientCertificateDNInfo holds the client TLS certificate distinguished name info configuration. cf https://tools.ietf.org/html/rfc3739
+             * Subject defines the client certificate subject details to add to the X-Forwarded-Tls-Client-Cert-Info header.
              */
             subject?: outputs.traefik.v1alpha1.MiddlewareSpecPassTLSClientCertInfoSubject;
         }
 
         /**
-         * TLSCLientCertificateDNInfo holds the client TLS certificate distinguished name info configuration. cf https://tools.ietf.org/html/rfc3739
+         * Issuer defines the client certificate issuer details to add to the X-Forwarded-Tls-Client-Cert-Info header.
          */
         export interface MiddlewareSpecPassTLSClientCertInfoIssuer {
+            /**
+             * CommonName defines whether to add the organizationalUnit information into the issuer.
+             */
             commonName?: boolean;
+            /**
+             * Country defines whether to add the country information into the issuer.
+             */
             country?: boolean;
+            /**
+             * DomainComponent defines whether to add the domainComponent information into the issuer.
+             */
             domainComponent?: boolean;
+            /**
+             * Locality defines whether to add the locality information into the issuer.
+             */
             locality?: boolean;
+            /**
+             * Organization defines whether to add the organization information into the issuer.
+             */
             organization?: boolean;
+            /**
+             * Province defines whether to add the province information into the issuer.
+             */
             province?: boolean;
+            /**
+             * SerialNumber defines whether to add the serialNumber information into the issuer.
+             */
             serialNumber?: boolean;
         }
 
         /**
-         * TLSCLientCertificateDNInfo holds the client TLS certificate distinguished name info configuration. cf https://tools.ietf.org/html/rfc3739
+         * Subject defines the client certificate subject details to add to the X-Forwarded-Tls-Client-Cert-Info header.
          */
         export interface MiddlewareSpecPassTLSClientCertInfoSubject {
+            /**
+             * CommonName defines whether to add the organizationalUnit information into the subject.
+             */
             commonName?: boolean;
+            /**
+             * Country defines whether to add the country information into the subject.
+             */
             country?: boolean;
+            /**
+             * DomainComponent defines whether to add the domainComponent information into the subject.
+             */
             domainComponent?: boolean;
+            /**
+             * Locality defines whether to add the locality information into the subject.
+             */
             locality?: boolean;
+            /**
+             * Organization defines whether to add the organization information into the subject.
+             */
             organization?: boolean;
+            /**
+             * OrganizationalUnit defines whether to add the organizationalUnit information into the subject.
+             */
+            organizationalUnit?: boolean;
+            /**
+             * Province defines whether to add the province information into the subject.
+             */
             province?: boolean;
+            /**
+             * SerialNumber defines whether to add the serialNumber information into the subject.
+             */
             serialNumber?: boolean;
         }
 
         /**
-         * RateLimit holds the rate limiting configuration for a given router.
+         * RateLimit holds the rate limit configuration. This middleware ensures that services will receive a fair amount of requests, and allows one to define what fair is. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/ratelimit/
          */
         export interface MiddlewareSpecRateLimit {
+            /**
+             * Average is the maximum rate, by default in requests/s, allowed for the given source. It defaults to 0, which means no rate limiting. The rate is actually defined by dividing Average by Period. So for a rate below 1req/s, one needs to define a Period larger than a second.
+             */
             average?: number;
+            /**
+             * Burst is the maximum number of requests allowed to arrive in the same arbitrarily small period of time. It defaults to 1.
+             */
             burst?: number;
+            /**
+             * Period, in combination with Average, defines the actual maximum rate, such as: r = Average / Period. It defaults to a second.
+             */
             period?: outputs.traefik.v1alpha1.MiddlewareSpecRateLimitPeriod;
             /**
-             * SourceCriterion defines what criterion is used to group requests as originating from a common source. If none are set, the default is to use the request's remote address field. All fields are mutually exclusive.
+             * SourceCriterion defines what criterion is used to group requests as originating from a common source. If several strategies are defined at the same time, an error will be raised. If none are set, the default is to use the request's remote address field (as an ipStrategy).
              */
             sourceCriterion?: outputs.traefik.v1alpha1.MiddlewareSpecRateLimitSourceCriterion;
         }
@@ -32820,63 +33292,108 @@ export namespace traefik {
         }
 
         /**
-         * SourceCriterion defines what criterion is used to group requests as originating from a common source. If none are set, the default is to use the request's remote address field. All fields are mutually exclusive.
+         * SourceCriterion defines what criterion is used to group requests as originating from a common source. If several strategies are defined at the same time, an error will be raised. If none are set, the default is to use the request's remote address field (as an ipStrategy).
          */
         export interface MiddlewareSpecRateLimitSourceCriterion {
             /**
-             * IPStrategy holds the ip strategy configuration.
+             * IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/ipwhitelist/#ipstrategy
              */
             ipStrategy?: outputs.traefik.v1alpha1.MiddlewareSpecRateLimitSourceCriterionIpStrategy;
+            /**
+             * RequestHeaderName defines the name of the header used to group incoming requests.
+             */
             requestHeaderName?: string;
+            /**
+             * RequestHost defines whether to consider the request Host as the source.
+             */
             requestHost?: boolean;
         }
 
         /**
-         * IPStrategy holds the ip strategy configuration.
+         * IPStrategy holds the IP strategy configuration used by Traefik to determine the client IP. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/ipwhitelist/#ipstrategy
          */
         export interface MiddlewareSpecRateLimitSourceCriterionIpStrategy {
+            /**
+             * Depth tells Traefik to use the X-Forwarded-For header and take the IP located at the depth position (starting from the right).
+             */
             depth?: number;
+            /**
+             * ExcludedIPs configures Traefik to scan the X-Forwarded-For header and select the first IP not in the list.
+             */
             excludedIPs?: string[];
         }
 
         /**
-         * RedirectRegex holds the redirection configuration.
+         * RedirectRegex holds the redirect regex middleware configuration. This middleware redirects a request using regex matching and replacement. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/redirectregex/#regex
          */
         export interface MiddlewareSpecRedirectRegex {
+            /**
+             * Permanent defines whether the redirection is permanent (301).
+             */
             permanent?: boolean;
+            /**
+             * Regex defines the regex used to match and capture elements from the request URL.
+             */
             regex?: string;
+            /**
+             * Replacement defines how to modify the URL to have the new target URL.
+             */
             replacement?: string;
         }
 
         /**
-         * RedirectScheme holds the scheme redirection configuration.
+         * RedirectScheme holds the redirect scheme middleware configuration. This middleware redirects requests from a scheme/port to another. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/redirectscheme/
          */
         export interface MiddlewareSpecRedirectScheme {
+            /**
+             * Permanent defines whether the redirection is permanent (301).
+             */
             permanent?: boolean;
+            /**
+             * Port defines the port of the new URL.
+             */
             port?: string;
+            /**
+             * Scheme defines the scheme of the new URL.
+             */
             scheme?: string;
         }
 
         /**
-         * ReplacePath holds the ReplacePath configuration.
+         * ReplacePath holds the replace path middleware configuration. This middleware replaces the path of the request URL and store the original path in an X-Replaced-Path header. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/replacepath/
          */
         export interface MiddlewareSpecReplacePath {
+            /**
+             * Path defines the path to use as replacement in the request URL.
+             */
             path?: string;
         }
 
         /**
-         * ReplacePathRegex holds the ReplacePathRegex configuration.
+         * ReplacePathRegex holds the replace path regex middleware configuration. This middleware replaces the path of a URL using regex matching and replacement. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/replacepathregex/
          */
         export interface MiddlewareSpecReplacePathRegex {
+            /**
+             * Regex defines the regular expression used to match and capture the path from the request URL.
+             */
             regex?: string;
+            /**
+             * Replacement defines the replacement path format, which can include captured variables.
+             */
             replacement?: string;
         }
 
         /**
-         * Retry holds the retry configuration.
+         * Retry holds the retry middleware configuration. This middleware reissues requests a given number of times to a backend server if that server does not reply. As soon as the server answers, the middleware stops retrying, regardless of the response status. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/retry/
          */
         export interface MiddlewareSpecRetry {
+            /**
+             * Attempts defines how many times the request should be retried.
+             */
             attempts?: number;
+            /**
+             * InitialInterval defines the first wait time in the exponential backoff series. The maximum interval is calculated as twice the initialInterval. If unspecified, requests will be retried immediately. The value of initialInterval should be provided in seconds or as a valid duration format, see https://pkg.go.dev/time#ParseDuration.
+             */
             initialInterval?: outputs.traefik.v1alpha1.MiddlewareSpecRetryInitialInterval;
         }
 
@@ -32884,89 +33401,123 @@ export namespace traefik {
         }
 
         /**
-         * StripPrefix holds the StripPrefix configuration.
+         * StripPrefix holds the strip prefix middleware configuration. This middleware removes the specified prefixes from the URL path. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/stripprefix/
          */
         export interface MiddlewareSpecStripPrefix {
+            /**
+             * ForceSlash ensures that the resulting stripped path is not the empty string, by replacing it with / when necessary. Default: true.
+             */
             forceSlash?: boolean;
+            /**
+             * Prefixes defines the prefixes to strip from the request URL.
+             */
             prefixes?: string[];
         }
 
         /**
-         * StripPrefixRegex holds the StripPrefixRegex configuration.
+         * StripPrefixRegex holds the strip prefix regex middleware configuration. This middleware removes the matching prefixes from the URL path. More info: https://doc.traefik.io/traefik/v2.8/middlewares/http/stripprefixregex/
          */
         export interface MiddlewareSpecStripPrefixRegex {
+            /**
+             * Regex defines the regular expression to match the path prefix from the request URL.
+             */
             regex?: string[];
         }
 
         /**
-         * MiddlewareTCPSpec holds the MiddlewareTCP configuration.
+         * MiddlewareTCPSpec defines the desired state of a MiddlewareTCP.
          */
         export interface MiddlewareTCPSpec {
             /**
-             * TCPIPWhiteList holds the TCP ip white list configuration.
+             * InFlightConn defines the InFlightConn middleware configuration.
+             */
+            inFlightConn?: outputs.traefik.v1alpha1.MiddlewareTCPSpecInFlightConn;
+            /**
+             * IPWhiteList defines the IPWhiteList middleware configuration.
              */
             ipWhiteList?: outputs.traefik.v1alpha1.MiddlewareTCPSpecIpWhiteList;
         }
 
         /**
-         * TCPIPWhiteList holds the TCP ip white list configuration.
+         * InFlightConn defines the InFlightConn middleware configuration.
+         */
+        export interface MiddlewareTCPSpecInFlightConn {
+            /**
+             * Amount defines the maximum amount of allowed simultaneous connections. The middleware closes the connection if there are already amount connections opened.
+             */
+            amount?: number;
+        }
+
+        /**
+         * IPWhiteList defines the IPWhiteList middleware configuration.
          */
         export interface MiddlewareTCPSpecIpWhiteList {
+            /**
+             * SourceRange defines the allowed IPs (or ranges of allowed IPs by using CIDR notation).
+             */
             sourceRange?: string[];
         }
 
         /**
-         * ServersTransportSpec options to configure communication between Traefik and the servers.
+         * ServersTransportSpec defines the desired state of a ServersTransport.
          */
         export interface ServersTransportSpec {
             /**
-             * Certificates for mTLS.
+             * CertificatesSecrets defines a list of secret storing client certificates for mTLS.
              */
             certificatesSecrets?: string[];
             /**
-             * Disable HTTP/2 for connections with backend servers.
+             * DisableHTTP2 disables HTTP/2 for connections with backend servers.
              */
             disableHTTP2?: boolean;
             /**
-             * Timeouts for requests forwarded to the backend servers.
+             * ForwardingTimeouts defines the timeouts for requests forwarded to the backend servers.
              */
             forwardingTimeouts?: outputs.traefik.v1alpha1.ServersTransportSpecForwardingTimeouts;
             /**
-             * Disable SSL certificate verification.
+             * InsecureSkipVerify disables SSL certificate verification.
              */
             insecureSkipVerify?: boolean;
             /**
-             * If non-zero, controls the maximum idle (keep-alive) to keep per-host. If zero, DefaultMaxIdleConnsPerHost is used.
+             * MaxIdleConnsPerHost controls the maximum idle (keep-alive) to keep per-host.
              */
             maxIdleConnsPerHost?: number;
             /**
-             * Defines the URI used to match against SAN URIs during the server's certificate verification.
+             * PeerCertURI defines the peer cert URI used to match against SAN URI during the peer certificate verification.
              */
             peerCertURI?: string;
             /**
-             * Add cert file for self-signed certificate.
+             * RootCAsSecrets defines a list of CA secret used to validate self-signed certificate.
              */
             rootCAsSecrets?: string[];
             /**
-             * ServerName used to contact the server.
+             * ServerName defines the server name used to contact the server.
              */
             serverName?: string;
         }
 
         /**
-         * Timeouts for requests forwarded to the backend servers.
+         * ForwardingTimeouts defines the timeouts for requests forwarded to the backend servers.
          */
         export interface ServersTransportSpecForwardingTimeouts {
             /**
-             * The amount of time to wait until a connection to a backend server can be established. If zero, no timeout exists.
+             * DialTimeout is the amount of time to wait until a connection to a backend server can be established.
              */
             dialTimeout?: outputs.traefik.v1alpha1.ServersTransportSpecForwardingTimeoutsDialTimeout;
             /**
-             * The maximum period for which an idle HTTP keep-alive connection will remain open before closing itself.
+             * IdleConnTimeout is the maximum period for which an idle HTTP keep-alive connection will remain open before closing itself.
              */
             idleConnTimeout?: outputs.traefik.v1alpha1.ServersTransportSpecForwardingTimeoutsIdleConnTimeout;
             /**
-             * The amount of time to wait for a server's response headers after fully writing the request (including its body, if any). If zero, no timeout exists.
+             * PingTimeout is the timeout after which the HTTP/2 connection will be closed if a response to ping is not received.
+             */
+            pingTimeout?: outputs.traefik.v1alpha1.ServersTransportSpecForwardingTimeoutsPingTimeout;
+            /**
+             * ReadIdleTimeout is the timeout after which a health check using ping frame will be carried out if no frame is received on the HTTP/2 connection.
+             */
+            readIdleTimeout?: outputs.traefik.v1alpha1.ServersTransportSpecForwardingTimeoutsReadIdleTimeout;
+            /**
+             * ResponseHeaderTimeout is the amount of time to wait for a server's response headers after fully writing the request (including its body, if any).
              */
             responseHeaderTimeout?: outputs.traefik.v1alpha1.ServersTransportSpecForwardingTimeoutsResponseHeaderTimeout;
         }
@@ -32977,28 +33528,55 @@ export namespace traefik {
         export interface ServersTransportSpecForwardingTimeoutsIdleConnTimeout {
         }
 
+        export interface ServersTransportSpecForwardingTimeoutsPingTimeout {
+        }
+
+        export interface ServersTransportSpecForwardingTimeoutsReadIdleTimeout {
+        }
+
         export interface ServersTransportSpecForwardingTimeoutsResponseHeaderTimeout {
         }
 
         /**
-         * TLSOptionSpec configures TLS for an entry point.
+         * TLSOptionSpec defines the desired state of a TLSOption.
          */
         export interface TLSOptionSpec {
+            /**
+             * ALPNProtocols defines the list of supported application level protocols for the TLS handshake, in order of preference. More info: https://doc.traefik.io/traefik/v2.8/https/tls/#alpn-protocols
+             */
             alpnProtocols?: string[];
+            /**
+             * CipherSuites defines the list of supported cipher suites for TLS versions up to TLS 1.2. More info: https://doc.traefik.io/traefik/v2.8/https/tls/#cipher-suites
+             */
             cipherSuites?: string[];
             /**
-             * ClientAuth defines the parameters of the client authentication part of the TLS connection, if any.
+             * ClientAuth defines the server's policy for TLS Client Authentication.
              */
             clientAuth?: outputs.traefik.v1alpha1.TLSOptionSpecClientAuth;
+            /**
+             * CurvePreferences defines the preferred elliptic curves in a specific order. More info: https://doc.traefik.io/traefik/v2.8/https/tls/#curve-preferences
+             */
             curvePreferences?: string[];
+            /**
+             * MaxVersion defines the maximum TLS version that Traefik will accept. Possible values: VersionTLS10, VersionTLS11, VersionTLS12, VersionTLS13. Default: None.
+             */
             maxVersion?: string;
+            /**
+             * MinVersion defines the minimum TLS version that Traefik will accept. Possible values: VersionTLS10, VersionTLS11, VersionTLS12, VersionTLS13. Default: VersionTLS10.
+             */
             minVersion?: string;
+            /**
+             * PreferServerCipherSuites defines whether the server chooses a cipher suite among his own instead of among the client's. It is enabled automatically when minVersion or maxVersion are set.
+             */
             preferServerCipherSuites?: boolean;
+            /**
+             * SniStrict defines whether Traefik allows connections from clients connections that do not specify a server_name extension.
+             */
             sniStrict?: boolean;
         }
 
         /**
-         * ClientAuth defines the parameters of the client authentication part of the TLS connection, if any.
+         * ClientAuth defines the server's policy for TLS Client Authentication.
          */
         export interface TLSOptionSpecClientAuth {
             /**
@@ -33006,23 +33584,37 @@ export namespace traefik {
              */
             clientAuthType?: string;
             /**
-             * SecretName is the name of the referenced Kubernetes Secret to specify the certificate details.
+             * SecretNames defines the names of the referenced Kubernetes Secret storing certificate details.
              */
             secretNames?: string[];
         }
 
         /**
-         * TLSStoreSpec configures a TLSStore resource.
+         * TLSStoreSpec defines the desired state of a TLSStore.
          */
         export interface TLSStoreSpec {
             /**
-             * DefaultCertificate holds a secret name for the TLSOption resource.
+             * Certificates is a list of secret names, each secret holding a key/certificate pair to add to the store.
              */
-            defaultCertificate: outputs.traefik.v1alpha1.TLSStoreSpecDefaultCertificate;
+            certificates?: outputs.traefik.v1alpha1.TLSStoreSpecCertificates[];
+            /**
+             * DefaultCertificate defines the default certificate configuration.
+             */
+            defaultCertificate?: outputs.traefik.v1alpha1.TLSStoreSpecDefaultCertificate;
         }
 
         /**
-         * DefaultCertificate holds a secret name for the TLSOption resource.
+         * Certificate holds a secret name for the TLSStore resource.
+         */
+        export interface TLSStoreSpecCertificates {
+            /**
+             * SecretName is the name of the referenced Kubernetes Secret to specify the certificate details.
+             */
+            secretName: string;
+        }
+
+        /**
+         * DefaultCertificate defines the default certificate configuration.
          */
         export interface TLSStoreSpecDefaultCertificate {
             /**
@@ -33032,76 +33624,127 @@ export namespace traefik {
         }
 
         /**
-         * ServiceSpec defines whether a TraefikService is a load-balancer of services or a mirroring service.
+         * TraefikServiceSpec defines the desired state of a TraefikService.
          */
         export interface TraefikServiceSpec {
             /**
-             * Mirroring defines a mirroring service, which is composed of a main load-balancer, and a list of mirrors.
+             * Mirroring defines the Mirroring service configuration.
              */
             mirroring?: outputs.traefik.v1alpha1.TraefikServiceSpecMirroring;
             /**
-             * WeightedRoundRobin defines a load-balancer of services.
+             * Weighted defines the Weighted Round Robin configuration.
              */
             weighted?: outputs.traefik.v1alpha1.TraefikServiceSpecWeighted;
         }
 
         /**
-         * Mirroring defines a mirroring service, which is composed of a main load-balancer, and a list of mirrors.
+         * Mirroring defines the Mirroring service configuration.
          */
         export interface TraefikServiceSpecMirroring {
+            /**
+             * Kind defines the kind of the Service.
+             */
             kind?: string;
+            /**
+             * MaxBodySize defines the maximum size allowed for the body of the request. If the body is larger, the request is not mirrored. Default value is -1, which means unlimited size.
+             */
             maxBodySize?: number;
+            /**
+             * Mirrors defines the list of mirrors where Traefik will duplicate the traffic.
+             */
             mirrors?: outputs.traefik.v1alpha1.TraefikServiceSpecMirroringMirrors[];
             /**
-             * Name is a reference to a Kubernetes Service object (for a load-balancer of servers), or to a TraefikService object (service load-balancer, mirroring, etc). The differentiation between the two is specified in the Kind field.
+             * Name defines the name of the referenced Kubernetes Service or TraefikService. The differentiation between the two is specified in the Kind field.
              */
             name: string;
+            /**
+             * Namespace defines the namespace of the referenced Kubernetes Service or TraefikService.
+             */
             namespace?: string;
+            /**
+             * PassHostHeader defines whether the client Host header is forwarded to the upstream Kubernetes Service. By default, passHostHeader is true.
+             */
             passHostHeader?: boolean;
+            /**
+             * Port defines the port of a Kubernetes Service. This can be a reference to a named port.
+             */
             port?: outputs.traefik.v1alpha1.TraefikServiceSpecMirroringPort;
             /**
-             * ResponseForwarding holds configuration for the forward of the response.
+             * ResponseForwarding defines how Traefik forwards the response from the upstream Kubernetes Service to the client.
              */
             responseForwarding?: outputs.traefik.v1alpha1.TraefikServiceSpecMirroringResponseForwarding;
+            /**
+             * Scheme defines the scheme to use for the request to the upstream Kubernetes Service. It defaults to https when Kubernetes Service port is 443, http otherwise.
+             */
             scheme?: string;
+            /**
+             * ServersTransport defines the name of ServersTransport resource to use. It allows to configure the transport between Traefik and your servers. Can only be used on a Kubernetes Service.
+             */
             serversTransport?: string;
             /**
-             * Sticky holds the sticky configuration.
+             * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#sticky-sessions
              */
             sticky?: outputs.traefik.v1alpha1.TraefikServiceSpecMirroringSticky;
+            /**
+             * Strategy defines the load balancing strategy between the servers. RoundRobin is the only supported value at the moment.
+             */
             strategy?: string;
             /**
-             * Weight should only be specified when Name references a TraefikService object (and to be precise, one that embeds a Weighted Round Robin).
+             * Weight defines the weight and should only be specified when Name references a TraefikService object (and to be precise, one that embeds a Weighted Round Robin).
              */
             weight?: number;
         }
 
         /**
-         * MirrorService defines one of the mirrors of a Mirroring service.
+         * MirrorService holds the mirror configuration.
          */
         export interface TraefikServiceSpecMirroringMirrors {
+            /**
+             * Kind defines the kind of the Service.
+             */
             kind?: string;
             /**
-             * Name is a reference to a Kubernetes Service object (for a load-balancer of servers), or to a TraefikService object (service load-balancer, mirroring, etc). The differentiation between the two is specified in the Kind field.
+             * Name defines the name of the referenced Kubernetes Service or TraefikService. The differentiation between the two is specified in the Kind field.
              */
             name: string;
+            /**
+             * Namespace defines the namespace of the referenced Kubernetes Service or TraefikService.
+             */
             namespace?: string;
+            /**
+             * PassHostHeader defines whether the client Host header is forwarded to the upstream Kubernetes Service. By default, passHostHeader is true.
+             */
             passHostHeader?: boolean;
+            /**
+             * Percent defines the part of the traffic to mirror. Supported values: 0 to 100.
+             */
             percent?: number;
+            /**
+             * Port defines the port of a Kubernetes Service. This can be a reference to a named port.
+             */
             port?: outputs.traefik.v1alpha1.TraefikServiceSpecMirroringMirrorsPort;
             /**
-             * ResponseForwarding holds configuration for the forward of the response.
+             * ResponseForwarding defines how Traefik forwards the response from the upstream Kubernetes Service to the client.
              */
             responseForwarding?: outputs.traefik.v1alpha1.TraefikServiceSpecMirroringMirrorsResponseForwarding;
+            /**
+             * Scheme defines the scheme to use for the request to the upstream Kubernetes Service. It defaults to https when Kubernetes Service port is 443, http otherwise.
+             */
             scheme?: string;
+            /**
+             * ServersTransport defines the name of ServersTransport resource to use. It allows to configure the transport between Traefik and your servers. Can only be used on a Kubernetes Service.
+             */
             serversTransport?: string;
             /**
-             * Sticky holds the sticky configuration.
+             * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#sticky-sessions
              */
             sticky?: outputs.traefik.v1alpha1.TraefikServiceSpecMirroringMirrorsSticky;
+            /**
+             * Strategy defines the load balancing strategy between the servers. RoundRobin is the only supported value at the moment.
+             */
             strategy?: string;
             /**
-             * Weight should only be specified when Name references a TraefikService object (and to be precise, one that embeds a Weighted Round Robin).
+             * Weight defines the weight and should only be specified when Name references a TraefikService object (and to be precise, one that embeds a Weighted Round Robin).
              */
             weight?: number;
         }
@@ -33110,29 +33753,44 @@ export namespace traefik {
         }
 
         /**
-         * ResponseForwarding holds configuration for the forward of the response.
+         * ResponseForwarding defines how Traefik forwards the response from the upstream Kubernetes Service to the client.
          */
         export interface TraefikServiceSpecMirroringMirrorsResponseForwarding {
+            /**
+             * FlushInterval defines the interval, in milliseconds, in between flushes to the client while copying the response body. A negative value means to flush immediately after each write to the client. This configuration is ignored when ReverseProxy recognizes a response as a streaming response; for such responses, writes are flushed to the client immediately. Default: 100ms
+             */
             flushInterval?: string;
         }
 
         /**
-         * Sticky holds the sticky configuration.
+         * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#sticky-sessions
          */
         export interface TraefikServiceSpecMirroringMirrorsSticky {
             /**
-             * Cookie holds the sticky configuration based on cookie.
+             * Cookie defines the sticky cookie configuration.
              */
             cookie?: outputs.traefik.v1alpha1.TraefikServiceSpecMirroringMirrorsStickyCookie;
         }
 
         /**
-         * Cookie holds the sticky configuration based on cookie.
+         * Cookie defines the sticky cookie configuration.
          */
         export interface TraefikServiceSpecMirroringMirrorsStickyCookie {
+            /**
+             * HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript.
+             */
             httpOnly?: boolean;
+            /**
+             * Name defines the Cookie name.
+             */
             name?: string;
+            /**
+             * SameSite defines the same site policy. More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
+             */
             sameSite?: string;
+            /**
+             * Secure defines whether the cookie can only be transmitted over an encrypted connection (i.e. HTTPS).
+             */
             secure?: boolean;
         }
 
@@ -33140,68 +33798,107 @@ export namespace traefik {
         }
 
         /**
-         * ResponseForwarding holds configuration for the forward of the response.
+         * ResponseForwarding defines how Traefik forwards the response from the upstream Kubernetes Service to the client.
          */
         export interface TraefikServiceSpecMirroringResponseForwarding {
+            /**
+             * FlushInterval defines the interval, in milliseconds, in between flushes to the client while copying the response body. A negative value means to flush immediately after each write to the client. This configuration is ignored when ReverseProxy recognizes a response as a streaming response; for such responses, writes are flushed to the client immediately. Default: 100ms
+             */
             flushInterval?: string;
         }
 
         /**
-         * Sticky holds the sticky configuration.
+         * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#sticky-sessions
          */
         export interface TraefikServiceSpecMirroringSticky {
             /**
-             * Cookie holds the sticky configuration based on cookie.
+             * Cookie defines the sticky cookie configuration.
              */
             cookie?: outputs.traefik.v1alpha1.TraefikServiceSpecMirroringStickyCookie;
         }
 
         /**
-         * Cookie holds the sticky configuration based on cookie.
+         * Cookie defines the sticky cookie configuration.
          */
         export interface TraefikServiceSpecMirroringStickyCookie {
+            /**
+             * HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript.
+             */
             httpOnly?: boolean;
+            /**
+             * Name defines the Cookie name.
+             */
             name?: string;
+            /**
+             * SameSite defines the same site policy. More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
+             */
             sameSite?: string;
+            /**
+             * Secure defines whether the cookie can only be transmitted over an encrypted connection (i.e. HTTPS).
+             */
             secure?: boolean;
         }
 
         /**
-         * WeightedRoundRobin defines a load-balancer of services.
+         * Weighted defines the Weighted Round Robin configuration.
          */
         export interface TraefikServiceSpecWeighted {
+            /**
+             * Services defines the list of Kubernetes Service and/or TraefikService to load-balance, with weight.
+             */
             services?: outputs.traefik.v1alpha1.TraefikServiceSpecWeightedServices[];
             /**
-             * Sticky holds the sticky configuration.
+             * Sticky defines whether sticky sessions are enabled. More info: https://doc.traefik.io/traefik/v2.8/routing/providers/kubernetes-crd/#stickiness-and-load-balancing
              */
             sticky?: outputs.traefik.v1alpha1.TraefikServiceSpecWeightedSticky;
         }
 
         /**
-         * Service defines an upstream to proxy traffic.
+         * Service defines an upstream HTTP service to proxy traffic to.
          */
         export interface TraefikServiceSpecWeightedServices {
+            /**
+             * Kind defines the kind of the Service.
+             */
             kind?: string;
             /**
-             * Name is a reference to a Kubernetes Service object (for a load-balancer of servers), or to a TraefikService object (service load-balancer, mirroring, etc). The differentiation between the two is specified in the Kind field.
+             * Name defines the name of the referenced Kubernetes Service or TraefikService. The differentiation between the two is specified in the Kind field.
              */
             name: string;
+            /**
+             * Namespace defines the namespace of the referenced Kubernetes Service or TraefikService.
+             */
             namespace?: string;
+            /**
+             * PassHostHeader defines whether the client Host header is forwarded to the upstream Kubernetes Service. By default, passHostHeader is true.
+             */
             passHostHeader?: boolean;
+            /**
+             * Port defines the port of a Kubernetes Service. This can be a reference to a named port.
+             */
             port?: outputs.traefik.v1alpha1.TraefikServiceSpecWeightedServicesPort;
             /**
-             * ResponseForwarding holds configuration for the forward of the response.
+             * ResponseForwarding defines how Traefik forwards the response from the upstream Kubernetes Service to the client.
              */
             responseForwarding?: outputs.traefik.v1alpha1.TraefikServiceSpecWeightedServicesResponseForwarding;
+            /**
+             * Scheme defines the scheme to use for the request to the upstream Kubernetes Service. It defaults to https when Kubernetes Service port is 443, http otherwise.
+             */
             scheme?: string;
+            /**
+             * ServersTransport defines the name of ServersTransport resource to use. It allows to configure the transport between Traefik and your servers. Can only be used on a Kubernetes Service.
+             */
             serversTransport?: string;
             /**
-             * Sticky holds the sticky configuration.
+             * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#sticky-sessions
              */
             sticky?: outputs.traefik.v1alpha1.TraefikServiceSpecWeightedServicesSticky;
+            /**
+             * Strategy defines the load balancing strategy between the servers. RoundRobin is the only supported value at the moment.
+             */
             strategy?: string;
             /**
-             * Weight should only be specified when Name references a TraefikService object (and to be precise, one that embeds a Weighted Round Robin).
+             * Weight defines the weight and should only be specified when Name references a TraefikService object (and to be precise, one that embeds a Weighted Round Robin).
              */
             weight?: number;
         }
@@ -33210,49 +33907,76 @@ export namespace traefik {
         }
 
         /**
-         * ResponseForwarding holds configuration for the forward of the response.
+         * ResponseForwarding defines how Traefik forwards the response from the upstream Kubernetes Service to the client.
          */
         export interface TraefikServiceSpecWeightedServicesResponseForwarding {
+            /**
+             * FlushInterval defines the interval, in milliseconds, in between flushes to the client while copying the response body. A negative value means to flush immediately after each write to the client. This configuration is ignored when ReverseProxy recognizes a response as a streaming response; for such responses, writes are flushed to the client immediately. Default: 100ms
+             */
             flushInterval?: string;
         }
 
         /**
-         * Sticky holds the sticky configuration.
+         * Sticky defines the sticky sessions configuration. More info: https://doc.traefik.io/traefik/v2.8/routing/services/#sticky-sessions
          */
         export interface TraefikServiceSpecWeightedServicesSticky {
             /**
-             * Cookie holds the sticky configuration based on cookie.
+             * Cookie defines the sticky cookie configuration.
              */
             cookie?: outputs.traefik.v1alpha1.TraefikServiceSpecWeightedServicesStickyCookie;
         }
 
         /**
-         * Cookie holds the sticky configuration based on cookie.
+         * Cookie defines the sticky cookie configuration.
          */
         export interface TraefikServiceSpecWeightedServicesStickyCookie {
+            /**
+             * HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript.
+             */
             httpOnly?: boolean;
+            /**
+             * Name defines the Cookie name.
+             */
             name?: string;
+            /**
+             * SameSite defines the same site policy. More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
+             */
             sameSite?: string;
+            /**
+             * Secure defines whether the cookie can only be transmitted over an encrypted connection (i.e. HTTPS).
+             */
             secure?: boolean;
         }
 
         /**
-         * Sticky holds the sticky configuration.
+         * Sticky defines whether sticky sessions are enabled. More info: https://doc.traefik.io/traefik/v2.8/routing/providers/kubernetes-crd/#stickiness-and-load-balancing
          */
         export interface TraefikServiceSpecWeightedSticky {
             /**
-             * Cookie holds the sticky configuration based on cookie.
+             * Cookie defines the sticky cookie configuration.
              */
             cookie?: outputs.traefik.v1alpha1.TraefikServiceSpecWeightedStickyCookie;
         }
 
         /**
-         * Cookie holds the sticky configuration based on cookie.
+         * Cookie defines the sticky cookie configuration.
          */
         export interface TraefikServiceSpecWeightedStickyCookie {
+            /**
+             * HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript.
+             */
             httpOnly?: boolean;
+            /**
+             * Name defines the Cookie name.
+             */
             name?: string;
+            /**
+             * SameSite defines the same site policy. More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
+             */
             sameSite?: string;
+            /**
+             * Secure defines whether the cookie can only be transmitted over an encrypted connection (i.e. HTTPS).
+             */
             secure?: boolean;
         }
     }
