@@ -8,7 +8,7 @@ import * as utilities from "../../utilities";
 import {ObjectMeta} from "../../meta/v1";
 
 /**
- * ServersTransport is a specification for a ServersTransport resource.
+ * ServersTransport is the CRD implementation of a ServersTransport. If no serversTransport is specified, the default@internal will be used. The default@internal serversTransport is created from the static configuration. More info: https://doc.traefik.io/traefik/v2.9/routing/services/#serverstransport_1
  */
 export class ServersTransport extends pulumi.CustomResource {
     /**
@@ -41,7 +41,7 @@ export class ServersTransport extends pulumi.CustomResource {
     public readonly kind!: pulumi.Output<"ServersTransport" | undefined>;
     public readonly metadata!: pulumi.Output<ObjectMeta>;
     /**
-     * ServersTransportSpec options to configure communication between Traefik and the servers.
+     * ServersTransportSpec defines the desired state of a ServersTransport.
      */
     public readonly spec!: pulumi.Output<outputs.traefik.v1alpha1.ServersTransportSpec>;
 
@@ -81,7 +81,7 @@ export interface ServersTransportArgs {
     readonly kind?: pulumi.Input<"ServersTransport">;
     readonly metadata?: pulumi.Input<ObjectMeta>;
     /**
-     * ServersTransportSpec options to configure communication between Traefik and the servers.
+     * ServersTransportSpec defines the desired state of a ServersTransport.
      */
     readonly spec?: pulumi.Input<inputs.traefik.v1alpha1.ServersTransportSpecArgs>;
 }

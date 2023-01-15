@@ -4,7 +4,7 @@ config:
   networking:cloudflare:
     accountId: 265a046434c952eeecb9710cfd76617c
     apiToken:
-      secure: AAABAFDtLJw6Zl6eufzlrA2vEh6SjbtwfBJZ9DoQOxPXdxotyp7YTT92yJLaLXLIX2YQ1LNnb1w5zfKE9O4/3b3qMfVWTZwt
+      secure: AAABAIDgFvBzb95tdwDCD+U/h0yTCM5KmXobkOTVEcRvTpeUUksC0Sp0pRD1874tuzXPFE3krfnAxGRmYUB65XZczMaSZryc
   networking:letsEncrypt:
     email:
       secure: AAABAN4+HBxBBB40mVqjDNUwpT6zDlojK8qI1EEey0FvQrBjGvWlk18cpPexcnikWg7lJFo5vg==

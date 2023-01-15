@@ -8,7 +8,7 @@ import * as utilities from "../../utilities";
 import {ObjectMeta} from "../../meta/v1";
 
 /**
- * MiddlewareTCP is a specification for a MiddlewareTCP resource.
+ * MiddlewareTCP is the CRD implementation of a Traefik TCP middleware. More info: https://doc.traefik.io/traefik/v2.9/middlewares/overview/
  */
 export class MiddlewareTCP extends pulumi.CustomResource {
     /**
@@ -41,7 +41,7 @@ export class MiddlewareTCP extends pulumi.CustomResource {
     public readonly kind!: pulumi.Output<"MiddlewareTCP" | undefined>;
     public readonly metadata!: pulumi.Output<ObjectMeta>;
     /**
-     * MiddlewareTCPSpec holds the MiddlewareTCP configuration.
+     * MiddlewareTCPSpec defines the desired state of a MiddlewareTCP.
      */
     public readonly spec!: pulumi.Output<outputs.traefik.v1alpha1.MiddlewareTCPSpec>;
 
@@ -81,7 +81,7 @@ export interface MiddlewareTCPArgs {
     readonly kind?: pulumi.Input<"MiddlewareTCP">;
     readonly metadata?: pulumi.Input<ObjectMeta>;
     /**
-     * MiddlewareTCPSpec holds the MiddlewareTCP configuration.
+     * MiddlewareTCPSpec defines the desired state of a MiddlewareTCP.
      */
     readonly spec?: pulumi.Input<inputs.traefik.v1alpha1.MiddlewareTCPSpecArgs>;
 }

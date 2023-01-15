@@ -8,7 +8,7 @@ import * as utilities from "../../utilities";
 import {ObjectMeta} from "../../meta/v1";
 
 /**
- * TLSOption is a specification for a TLSOption resource.
+ * TLSOption is the CRD implementation of a Traefik TLS Option, allowing to configure some parameters of the TLS connection. More info: https://doc.traefik.io/traefik/v2.9/https/tls/#tls-options
  */
 export class TLSOption extends pulumi.CustomResource {
     /**
@@ -41,7 +41,7 @@ export class TLSOption extends pulumi.CustomResource {
     public readonly kind!: pulumi.Output<"TLSOption" | undefined>;
     public readonly metadata!: pulumi.Output<ObjectMeta>;
     /**
-     * TLSOptionSpec configures TLS for an entry point.
+     * TLSOptionSpec defines the desired state of a TLSOption.
      */
     public readonly spec!: pulumi.Output<outputs.traefik.v1alpha1.TLSOptionSpec>;
 
@@ -81,7 +81,7 @@ export interface TLSOptionArgs {
     readonly kind?: pulumi.Input<"TLSOption">;
     readonly metadata?: pulumi.Input<ObjectMeta>;
     /**
-     * TLSOptionSpec configures TLS for an entry point.
+     * TLSOptionSpec defines the desired state of a TLSOption.
      */
     readonly spec?: pulumi.Input<inputs.traefik.v1alpha1.TLSOptionSpecArgs>;
 }

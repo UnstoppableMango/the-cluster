@@ -8,7 +8,7 @@ import * as utilities from "../../utilities";
 import {ObjectMeta} from "../../meta/v1";
 
 /**
- * TraefikService is the specification for a service (that an IngressRoute refers to) that is usually not a terminal service (i.e. not a pod of servers), as opposed to a Kubernetes Service. That is to say, it usually refers to other (children) services, which themselves can be TraefikServices or Services.
+ * TraefikService is the CRD implementation of a Traefik Service. TraefikService object allows to: - Apply weight to Services on load-balancing - Mirror traffic on services More info: https://doc.traefik.io/traefik/v2.9/routing/providers/kubernetes-crd/#kind-traefikservice
  */
 export class TraefikService extends pulumi.CustomResource {
     /**
@@ -41,7 +41,7 @@ export class TraefikService extends pulumi.CustomResource {
     public readonly kind!: pulumi.Output<"TraefikService" | undefined>;
     public readonly metadata!: pulumi.Output<ObjectMeta>;
     /**
-     * ServiceSpec defines whether a TraefikService is a load-balancer of services or a mirroring service.
+     * TraefikServiceSpec defines the desired state of a TraefikService.
      */
     public readonly spec!: pulumi.Output<outputs.traefik.v1alpha1.TraefikServiceSpec>;
 
@@ -81,7 +81,7 @@ export interface TraefikServiceArgs {
     readonly kind?: pulumi.Input<"TraefikService">;
     readonly metadata?: pulumi.Input<ObjectMeta>;
     /**
-     * ServiceSpec defines whether a TraefikService is a load-balancer of services or a mirroring service.
+     * TraefikServiceSpec defines the desired state of a TraefikService.
      */
     readonly spec?: pulumi.Input<inputs.traefik.v1alpha1.TraefikServiceSpecArgs>;
 }
