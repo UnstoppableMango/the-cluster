@@ -1,7 +1,6 @@
 {
   "name": "media",
   "dependencies": {
-    "@types/mkdirp": "^2.0.0",
     "@types/unzipper": "^0.10.5",
     "node-fetch": "^3.3.0",
     "unzipper": "^0.10.11"
