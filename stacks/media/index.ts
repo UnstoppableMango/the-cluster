@@ -171,7 +171,7 @@ const tv = new resources.Sonarr('tv', {
   downloads: completedDownloadsNfs,
   tv: {
     server: 'apollo',
-    path: '/tank1/media/tv',
+    path: '/tank2/media/tv',
   },
 });
 
@@ -363,7 +363,7 @@ const bazarr = new resources.Bazarr('bazarr', {
   }, {
     name: 'tv',
     server: 'apollo',
-    sourcePath: '/tank1/media/tv',
+    sourcePath: '/tank2/media/tv',
     destPath: '/tv',
   }, {
     name: 'tv4k',
