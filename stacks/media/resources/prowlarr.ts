@@ -39,13 +39,14 @@ export class Prowlarr extends ComponentResource {
         securityContext: {
           privileged: true,
         },
-        image: 'linuxserver/prowlarr:1.2.2.2699-ls7',
+        image: 'linuxserver/prowlarr:develop-1.3.1.2796-ls94',
         envFrom: [{
           configMapRef: { name: this.args.linuxServer.metadata.name },
         }],
         env: {
           DOCKER_MODS: 'ghcr.io/gilbn/theme.park:prowlarr',
           TP_THEME: 'plex',
+          TZ: 'America/Chicago',
         },
         ports: {
           http: 9696,
