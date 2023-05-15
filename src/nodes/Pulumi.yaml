@@ -1,0 +1,3 @@
+name: the-cluster-nodes
+runtime: nodejs
+description: THECLUSTER node infrastructure
