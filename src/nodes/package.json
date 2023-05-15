@@ -1,0 +1,11 @@
+{
+    "name": "the-cluster-nodes",
+    "main": "index.ts",
+    "devDependencies": {
+        "@types/node": "^16"
+    },
+    "dependencies": {
+        "@muhlba91/pulumi-proxmoxve": "^3.0.0",
+        "@pulumi/pulumi": "^3.0.0"
+    }
+}
