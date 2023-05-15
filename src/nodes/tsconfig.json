@@ -2,7 +2,7 @@
     "compilerOptions": {
         "strict": true,
         "outDir": "bin",
-        "target": "es2020",
+        "target": "es2016",
         "module": "commonjs",
         "moduleResolution": "node",
         "sourceMap": true,
@@ -10,16 +10,9 @@
         "pretty": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitReturns": true,
-        "forceConsistentCasingInFileNames": true,
-        "lib": ["ES2019"]
+        "forceConsistentCasingInFileNames": true
     },
-    "ts-node": {
-      "moduleTypes": {
-        "tools/*": "cjs"
-      },
-      "compilerOptions": {
-        "target": "ESNext",
-        "module": "ESNext"
-      }
-    }
+    "files": [
+        "index.ts"
+    ]
 }
