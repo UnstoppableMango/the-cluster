@@ -4,11 +4,19 @@ node_modules/
 # Artifacts
 bin/
 obj
+*.raw
 
 # IDE Configuration
 .vscode/
 !.vscode/settings.json
+.idea/
 
-# User Settings
+# Configuration
 talosconfig
 kubeconfig
+secrets.yaml
+controlplane.yaml
+worker.yaml
+
+# User Specific
+*.user
