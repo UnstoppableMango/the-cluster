@@ -20,3 +20,4 @@ worker.yaml
 
 # User Specific
 *.user
+.envrc

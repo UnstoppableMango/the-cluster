@@ -7,9 +7,19 @@ open System
 open System.IO
 open Xunit.Abstractions
 
+module String =
+    let defaultNullOrEmpty d v =
+        if String.IsNullOrEmpty(v) then d else v
+
 type Fixture(messageSink: IMessageSink) =
     let workingDirectory = Environment.CurrentDirectory
-    let projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.Parent.FullName
+
+    let projectDirectory =
+        Directory.GetParent(workingDirectory).Parent.Parent.Parent.FullName
+
+    let stack =
+        Environment.GetEnvironmentVariable("ROSEQUARTZ_STACK")
+        |> String.defaultNullOrEmpty "ci"
 
     let log message =
         messageSink.OnMessage(
@@ -19,22 +29,19 @@ type Fixture(messageSink: IMessageSink) =
         |> ignore
 
     let getStack name =
-        task {
-            let stackArgs = LocalProgramArgs(name, projectDirectory)
-            return! LocalWorkspace.SelectStackAsync(stackArgs)
-        }
+        LocalProgramArgs(name, projectDirectory) |> LocalWorkspace.SelectStackAsync
 
     interface IAsyncLifetime with
         member this.InitializeAsync() : Task =
             task {
-                let! stack = getStack "dev"
+                let! stack = getStack stack
                 let options = UpOptions(OnStandardOutput = log, OnStandardError = log)
                 return! stack.UpAsync(options)
             }
 
         member this.DisposeAsync() : Task =
             task {
-                let! stack = getStack "dev"
+                let! stack = getStack stack
                 let options = DestroyOptions(OnStandardOutput = log, OnStandardError = log)
                 return! stack.DestroyAsync(options)
             }
