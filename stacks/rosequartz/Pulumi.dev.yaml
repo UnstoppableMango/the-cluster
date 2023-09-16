@@ -1,2 +1,2 @@
 config:
-  rosequartz:useDocker: "true"
+  rosequartz:useDocker: "false"

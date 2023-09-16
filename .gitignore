@@ -10,6 +10,7 @@ obj
 .vscode/
 !.vscode/settings.json
 .idea/
+.fake
 
 # Configuration
 talosconfig
@@ -21,3 +22,5 @@ worker.yaml
 # User Specific
 *.user
 .envrc
+.talos/
+.kube/
