@@ -1,2 +1,3 @@
 config:
+  rosequartz:generateTalosconfig: "false"
   rosequartz:nodeIp: 10.5.0.2
