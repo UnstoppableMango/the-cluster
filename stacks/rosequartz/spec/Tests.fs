@@ -6,6 +6,7 @@ open System.Threading.Tasks
 open System
 open System.IO
 open Xunit.Abstractions
+open k8s
 
 module String =
     let defaultNullOrEmpty d v =
@@ -20,6 +21,8 @@ type Fixture(messageSink: IMessageSink) =
     let stack =
         Environment.GetEnvironmentVariable("ROSEQUARTZ_STACK")
         |> String.defaultNullOrEmpty "ci"
+
+    let kubeconfig = KubernetesClientConfiguration.BuildConfigFromConfigFile(currentContext = "admin@talos-rosequartz")
 
     let log message =
         messageSink.OnMessage(
