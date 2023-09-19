@@ -19,7 +19,7 @@ fi
 
 PATCHES=()
 for patch in "$@"; do
-    PATCHES+=("--patch $patch")
+    PATCHES+=("--config-patch $patch")
 done
 
 TALOSCONFIG="$ROSEQUARTZ_TALOSCONFIG"
