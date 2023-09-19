@@ -25,6 +25,11 @@ done
 TALOSCONFIG="$ROSEQUARTZ_TALOSCONFIG"
 NODE_IP="$ROSEQUARTZ_NODE_IP"
 
+if ! [ -z ${ROSEQUARTZ_DELAY+x} ]; then
+    echo "Sleeping for ${ROSEQUARTZ_DELAY}s"
+    sleep $ROSEQUARTZ_DELAY
+fi
+
 talosctl apply-config \
     --insecure \
     --file "$ROSEQUARTZ_MACHINECONFIG" \

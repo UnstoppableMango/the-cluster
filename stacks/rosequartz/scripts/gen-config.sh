@@ -41,3 +41,7 @@ talosctl gen config "$CLUSTER_NAME" "$ENDPOINT" \
     --talos-version "$TALOS_VERSION" \
     --output-types "$TYPE" \
     --output -
+
+# if [ "$TYPE" = "talosconfig" ]; then
+#     talosctl config node "$ROSEQUARTZ_NODE_IP"
+# fi
