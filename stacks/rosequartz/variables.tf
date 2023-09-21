@@ -1,13 +1,13 @@
 variable "talos_version" {
   description = "The version of talos to use"
   type        = string
-  default     = "v1.5.2"
+  default     = null
 }
 
 variable "k8s_version" {
   description = "The version of kubernetes to use"
   type        = string
-  default     = "1.28.1"
+  default     = null
 }
 
 variable "cluster_name" {
@@ -19,6 +19,7 @@ variable "cluster_name" {
 variable "cluster_endpoint" {
   description = "The endpoint for the Talos cluster"
   type        = string
+  default     = "https://10.5.0.2:6443"
 }
 
 variable "node_data" {
