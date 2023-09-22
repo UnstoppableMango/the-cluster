@@ -28,11 +28,11 @@ resource "talos_machine_configuration_apply" "controlplane" {
   for_each                    = var.node_data.controlplanes
   node                        = each.key
   config_patches = [
-    templatefile("${path.module}/templates/install-disk-and-hostname.yaml.tftpl", {
+    templatefile("${path.module}/patches/install-disk-and-hostname.yaml.tftpl", {
       hostname     = each.value.hostname
       install_disk = each.value.install_disk
     }),
-    file("${path.module}/files/controlplane-scheduling.yaml"),
+    file("${path.module}/patches/controlplane-scheduling.yaml"),
   ]
 }
 
