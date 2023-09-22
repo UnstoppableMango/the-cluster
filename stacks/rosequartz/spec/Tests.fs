@@ -1,56 +1,47 @@
 module Tests
 
-open Pulumi.Automation
 open Xunit
-open System.Threading.Tasks
 open System
 open System.IO
-open Xunit.Abstractions
 open k8s
 
 module String =
     let defaultNullOrEmpty d v =
         if String.IsNullOrEmpty(v) then d else v
 
-type Fixture(messageSink: IMessageSink) =
-    let workingDirectory = Environment.CurrentDirectory
+module K8s =
+    let listNode (client: Kubernetes) = client.CoreV1.ListNodeAsync()
 
-    let projectDirectory =
-        Directory.GetParent(workingDirectory).Parent.Parent.Parent.FullName
+    let version (client: Kubernetes) = client.Version.GetCodeAsync()
 
-    let stack =
-        Environment.GetEnvironmentVariable("ROSEQUARTZ_STACK")
-        |> String.defaultNullOrEmpty "ci"
+let getK8s =
+    Environment.GetEnvironmentVariable("ROSEQUARTZ_KUBECONFIG")
+    |> KubernetesClientConfiguration.BuildConfigFromConfigFile
+    |> fun x -> new Kubernetes(x)
 
-    let kubeconfig = KubernetesClientConfiguration.BuildConfigFromConfigFile(currentContext = "admin@talos-rosequartz")
+[<Fact>]
+let ``Cluster is accessible`` () =
+    task {
+        let! nodes = getK8s |> K8s.listNode
 
-    let log message =
-        messageSink.OnMessage(
-            { new IDiagnosticMessage with
-                member _.Message = message }
-        )
-        |> ignore
+        Assert.NotEmpty(nodes.Items)
+    }
 
-    let getStack name =
-        LocalProgramArgs(name, projectDirectory) |> LocalWorkspace.SelectStackAsync
+[<Fact>]
+let ``Should have node name configured properly`` () =
+    task {
+        let! nodes = getK8s |> K8s.listNode
 
-    interface IAsyncLifetime with
-        member this.InitializeAsync() : Task =
-            task {
-                let! stack = getStack stack
-                let options = UpOptions(OnStandardOutput = log, OnStandardError = log)
-                return! stack.UpAsync(options)
-            }
+        let node = Assert.Single(nodes.Items)
+        Assert.Equal("rqctrl1", node.Metadata.Name)
+    }
 
-        member this.DisposeAsync() : Task =
-            task {
-                let! stack = getStack stack
-                let options = DestroyOptions(OnStandardOutput = log, OnStandardError = log)
-                return! stack.DestroyAsync(options)
-            }
+[<Fact>]
+let ``Should have correct kubernetes version`` () =
+    task {
+        let! expected = File.ReadAllTextAsync(".versions/k8s")
 
-type Tests(fixture: Fixture) =
-    [<Fact>]
-    let ``My test`` () = Assert.True(true)
+        let! version = getK8s |> K8s.version
 
-    interface IClassFixture<Fixture>
+        Assert.Equal("1.28.1", version.GitVersion)
+    }

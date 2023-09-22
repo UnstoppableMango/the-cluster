@@ -19,7 +19,6 @@ talosctl cluster create \
     --arch arm64 \
     --talos-version "v$TALOS_VERSION" \
     --kubernetes-version "$K8S_VERSION" \
-    --skip-injecting-config \
     --skip-kubeconfig \
     --disk 65536 \
     --memory 4096 \
