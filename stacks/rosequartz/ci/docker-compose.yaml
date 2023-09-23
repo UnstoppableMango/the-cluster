@@ -1,5 +1,9 @@
 version: '3'
 
+# Attempt to mimic the output of `talosctl cluster create --provisioner docker ...`
+# The CLI doesn't seem to have a clean way to start a node in maintenence
+# mode, so we'll just stand it up manually for now.
+
 name: rosequartz
 
 services:
