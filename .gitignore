@@ -25,3 +25,4 @@ worker.yaml
 .envrc
 .talos/
 .kube/
+tmp/
