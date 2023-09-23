@@ -1,0 +1,50 @@
+name: Main
+
+on:
+  pull_request:
+    branches: [v2]
+  push:
+    branches: [v2]
+
+jobs:
+  bootstrap:
+    name: Bootstrap Stack
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: echo "Boostrapping..."
+
+  rosequartz:
+    name: Rosequartz Stack
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: stacks/rosequartz
+    needs:
+      - bootstrap
+    if: ${{ !cancelled() }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.7
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+          terraform_wrapper: false
+
+      - name: Terraform Format
+        run: terraform fmt -check
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        run: terraform plan -no-color -out=tfplan
+
+      - name: Terraform Apply
+        if: ${{ github.event_name == 'push' }}
+        run: terraform apply -no-color -auto-approve -var-file=vars/ci.tfvars tfplan
