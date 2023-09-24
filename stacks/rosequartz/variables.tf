@@ -44,3 +44,9 @@ variable "node_data" {
     workers = {}
   }
 }
+
+variable "cert_sans" {
+  description = "Subject Alternative Names to use for certificates"
+  type        = list(string)
+  default     = ["10.5.0.2"]
+}

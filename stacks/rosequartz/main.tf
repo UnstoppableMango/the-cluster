@@ -33,6 +33,9 @@ resource "talos_machine_configuration_apply" "controlplane" {
       install_disk = each.value.install_disk
     }),
     file("${path.module}/patches/controlplane-scheduling.yaml"),
+    templatefile("${path.module}/patches/cert-sans.yaml.tftpl", {
+      cert_sans = var.cert_sans
+    }),
   ]
 }
 
