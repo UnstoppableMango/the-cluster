@@ -10,10 +10,30 @@ jobs:
   bootstrap:
     name: Bootstrap Stack
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: stacks/bootstrap
+    env:
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
-      - run: echo "Boostrapping..."
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: .nvmrc
+
+      - uses: pulumi/actions@v4
+        with:
+          stack-name: prod
+
+      - run: npm ci
+
+      - name: Pulumi Preeview
+        run: pulumi preview
+
+      - name: Pulumi Up
+        if: ${{ github.event_name == 'push' }}
+        run: pulumi up -yf
 
   rosequartz:
     name: Rosequartz Stack
@@ -42,9 +62,28 @@ jobs:
       - name: Terraform Validate
         run: terraform validate -no-color
 
+      - name: Terraform select workspace
+        if: ${{ github.event_name == 'pull_request' }}
+        run: terraform workspace select rosequartz-ci
+
+      - name: Create test cluster
+        if: ${{ github.event_name == 'pull_request' }}
+        run: ./ci/up.sh
+
+      - name: Run test cluster validation
+        if: ${{ github.event_name == 'pull_request' }}
+        run: ./spec/validation.sh
+
+      - name: Tear down test cluster
+        if: ${{ github.event_name == 'pull_request' }}
+        run: ./ci/down.sh
+
+      - name: Terraform select workspace
+        run: terraform workspace select rosequartz-prod
+
       - name: Terraform Plan
-        run: terraform plan -no-color -out=tfplan
+        run: terraform plan -no-color -var-file=vars/prod.tfvars -out=tfplan
 
       - name: Terraform Apply
         if: ${{ github.event_name == 'push' }}
-        run: terraform apply -no-color -auto-approve -var-file=vars/ci.tfvars tfplan
+        run: terraform apply -no-color -auto-approve -var-file=vars/prod.tfvars tfplan

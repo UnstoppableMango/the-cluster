@@ -11,7 +11,7 @@ timeout 1m terraform -chdir="$root" destroy -var-file="vars/ci.tfvars" -auto-app
 echo "Destroying cluster..."
 docker compose -f "$cwd/docker-compose.yaml" down -v
 
-stack="${ROSEQUARTZ_STACK:-dev}"
+stack="${ROSEQUARTZ_STACK:-ci}"
 talosconfig="${ROSEQUARTZ_TALOSCONFIG:-"$root/.talos/$stack/talosconfig"}"
 kubeconfig="${ROSEQUARTZ_KUBECONFIG:-"$root/.kube/$stack/config"}"
 

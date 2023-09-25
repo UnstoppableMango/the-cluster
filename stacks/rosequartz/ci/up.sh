@@ -8,12 +8,13 @@ root="$(dirname "$cwd")"
 echo "Creating cluster..."
 timeout 1m docker compose -f "$cwd/docker-compose.yaml" up -d
 
+# Wait to enter maintenance mdoe
 sleep 3
 
 echo "Applying terraform configuration..."
-timeout 5m terraform -chdir="$root" apply -var-file="vars/ci.tfvars" -auto-approve
+timeout 3m terraform -chdir="$root" apply -var-file="vars/ci.tfvars" -auto-approve
 
-stack="${ROSEQUARTZ_STACK:-dev}"
+stack="${ROSEQUARTZ_STACK:-ci}"
 talosconfig="${ROSEQUARTZ_TALOSCONFIG:-"$root/.talos/$stack/talosconfig"}"
 kubeconfig="${ROSEQUARTZ_KUBECONFIG:-"$root/.kube/$stack/config"}"
 
