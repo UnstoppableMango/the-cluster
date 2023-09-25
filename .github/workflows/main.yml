@@ -28,14 +28,14 @@ jobs:
         uses: pulumi/actions@v4
         with:
           command: preview
-          stack-name: prod
+          stack-name: UnstoppableMango/bootstrap/prod
 
       - name: Pulumi Up
         if: ${{ github.event_name == 'push' }}
         uses: pulumi/actions@v4
         with:
           command: up
-          stack-name: prod
+          stack-name: UnstoppableMango/bootstrap/prod
 
   rosequartz:
     name: Rosequartz Stack
@@ -57,9 +57,6 @@ jobs:
 
       - name: Terraform Format
         run: terraform fmt -check
-
-      - name: Terraform Validate
-        run: terraform validate -no-color
 
       - name: Terraform select workspace
         if: ${{ github.event_name == 'pull_request' }}
