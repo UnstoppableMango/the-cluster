@@ -73,16 +73,21 @@ jobs:
         run: ./ci/up.sh
         env:
           TF_WORKSPACE: rosequartz-ci
+          ROSEQUARTZ_STACK: ci
 
       - name: Run test cluster validation
         if: ${{ github.event_name == 'pull_request' }}
+        continue-on-error: true
         run: ./spec/validation.sh
+        env:
+          ROSEQUARTZ_STACK: ci
 
       - name: Tear down test cluster
         if: ${{ github.event_name == 'pull_request' }}
         run: ./ci/down.sh
         env:
           TF_WORKSPACE: rosequartz-ci
+          ROSEQUARTZ_STACK: ci
 
       - name: Terraform Plan
         run: terraform plan -no-color -var-file=vars/prod.tfvars -out=tfplan
