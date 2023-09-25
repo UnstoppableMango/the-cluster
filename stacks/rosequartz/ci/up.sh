@@ -12,7 +12,7 @@ timeout 1m docker compose -f "$cwd/docker-compose.yaml" up -d
 sleep 3
 
 echo "Applying terraform configuration..."
-timeout 10m terraform -chdir="$root" apply -var-file="vars/ci.tfvars" -auto-approve
+timeout 5m terraform -chdir="$root" apply -var-file="vars/ci.tfvars" -auto-approve
 
 stack="${ROSEQUARTZ_STACK:-ci}"
 talosconfig="${ROSEQUARTZ_TALOSCONFIG:-"$root/.talos/$stack/talosconfig"}"
