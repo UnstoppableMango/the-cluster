@@ -28,14 +28,16 @@ jobs:
         uses: pulumi/actions@v4
         with:
           command: preview
-          stack-name: UnstoppableMango/thecluster-bootstrap/prod
+          stack-name: prod
+          work-dir: stacks/bootstrap
 
       - name: Pulumi Up
         if: ${{ github.event_name == 'push' }}
         uses: pulumi/actions@v4
         with:
           command: up
-          stack-name: UnstoppableMango/thecluster-bootstrap/prod
+          stack-name: prod
+          work-dir: stacks/bootstrap
 
   rosequartz:
     name: Rosequartz Stack
