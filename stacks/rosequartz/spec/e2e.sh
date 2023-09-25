@@ -15,19 +15,24 @@ export ROSEQUARTZ_TALOSCONFIG="$cwd/tmp/talosconfig"
 export ROSEQUARTZ_KUBECONFIG="$cwd/tmp/kubeconfig"
 export ROSEQUARTZ_BACKUP_DIR="$cwd/tmp"
 
+# NOTE: Because of bash weirdness, $cwd is not reliable after this point
+# TODO: And apparently others like $KUBECONFIG
+
 echo "Standing up cluster..."
 . "$root/ci/up.sh"
 echo ""
 
-# Something weird is happening with the cwd variable here...
-# The exported vars above have the correct cwd
-# Here cwd is at $root/ci for some reason
 echo "Running validation..."
-. "$cwd/validation.sh"
+. "$root/spec/validation.sh"
 echo ""
 
 echo "Running etcd-backup..."
-. "$cwd/etcd-backup.sh"
+. "$root/spec/etcd-backup.sh"
+echo ""
+
+echo "Running kubernetes upgrade..."
+ROSEQUARTZ_DRY_RUN=true . "$root/scripts/k8s-upgrade.sh"
+. "$root/spec/validation.sh"
 echo ""
 
 echo "Tearing down cluster..."
