@@ -28,14 +28,14 @@ jobs:
         uses: pulumi/actions@v4
         with:
           command: preview
-          stack-name: UnstoppableMango/bootstrap/prod
+          stack-name: thecluster-bootstrap/prod
 
       - name: Pulumi Up
         if: ${{ github.event_name == 'push' }}
         uses: pulumi/actions@v4
         with:
           command: up
-          stack-name: UnstoppableMango/bootstrap/prod
+          stack-name: thecluster-bootstrap/prod
 
   rosequartz:
     name: Rosequartz Stack
@@ -58,9 +58,13 @@ jobs:
       - name: Terraform Format
         run: terraform fmt -check
 
-      - name: Terraform select workspace
-        if: ${{ github.event_name == 'pull_request' }}
-        run: terraform workspace select rosequartz-ci && terraform init
+      - name: Terraform Init
+        run: terraform init -no-color -input=false -lockfile=readonly
+        env:
+          TF_WORKSPACE: ${{ github.event_name == 'pull_request' && 'rosequartz-ci' || 'rosequartz-prod' }}
+
+      - name: Terraform Validate
+        run: terraform validate -no-color
 
       - name: Create test cluster
         if: ${{ github.event_name == 'pull_request' }}
@@ -73,9 +77,6 @@ jobs:
       - name: Tear down test cluster
         if: ${{ github.event_name == 'pull_request' }}
         run: ./ci/down.sh
-
-      - name: Terraform select workspace
-        run: terraform workspace select rosequartz-prod && terraform init
 
       - name: Terraform Plan
         run: terraform plan -no-color -var-file=vars/prod.tfvars -out=tfplan
