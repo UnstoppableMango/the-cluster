@@ -53,12 +53,12 @@ variable "node_data" {
 
 variable "health_timeout" {
   description = "Timeout for the health operation"
-  type = string
-  default = "5m"
+  type        = string
+  default     = "5m"
 }
 
 variable "kubeconfig_timeout" {
   description = "Timeout for the kubeconfig operation"
-  type = string
-  default = "1m"
+  type        = string
+  default     = "1m"
 }

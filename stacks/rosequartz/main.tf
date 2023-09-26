@@ -1,6 +1,6 @@
 locals {
-  k8s_version   = coalesce(var.k8s_version, trim(file(".versions/k8s"), "\n"))
-  talos_version = coalesce(var.talos_version, "v${trim(file(".versions/talos"), "\n")}")
+  k8s_version     = coalesce(var.k8s_version, trim(file(".versions/k8s"), "\n"))
+  talos_version   = coalesce(var.talos_version, "v${trim(file(".versions/talos"), "\n")}")
   installer_image = "ghcr.io/siderolabs/installer:${local.talos_version}"
 }
 
@@ -38,7 +38,7 @@ resource "talos_machine_configuration_apply" "controlplane" {
       }
       machine = {
         install = {
-          disk = each.value.install_disk
+          disk  = each.value.install_disk
           image = local.installer_image
         }
         network = {
