@@ -23,3 +23,5 @@ mkdir -p "$(dirname "$kubeconfig")"
 
 terraform output -raw talosconfig >"$talosconfig"
 terraform output -raw kubeconfig >"$kubeconfig"
+
+docker logs rosequartz-talos-controlplane-1
