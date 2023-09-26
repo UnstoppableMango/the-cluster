@@ -5,7 +5,9 @@ set -eum
 cwd="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 root="$(dirname "$cwd")"
 
-trap "docker logs rosequartz-talos-controlplane-1" EXIT
+if ${CI+x}; then
+    trap "docker logs rosequartz-talos-controlplane-1" EXIT
+fi
 
 echo "Creating cluster..."
 timeout 1m docker compose -f "$cwd/docker-compose.yaml" up -d
