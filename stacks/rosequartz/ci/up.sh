@@ -5,6 +5,8 @@ set -eum
 cwd="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 root="$(dirname "$cwd")"
 
+trap "docker logs rosequartz-talos-controlplane-1" EXIT
+
 echo "Creating cluster..."
 timeout 1m docker compose -f "$cwd/docker-compose.yaml" up -d
 
@@ -23,5 +25,3 @@ mkdir -p "$(dirname "$kubeconfig")"
 
 terraform output -raw talosconfig >"$talosconfig"
 terraform output -raw kubeconfig >"$kubeconfig"
-
-docker logs rosequartz-talos-controlplane-1
