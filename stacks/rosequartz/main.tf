@@ -1,6 +1,7 @@
 locals {
   k8s_version   = coalesce(var.k8s_version, trim(file(".versions/k8s"), "\n"))
   talos_version = coalesce(var.talos_version, "v${trim(file(".versions/talos"), "\n")}")
+  installer_image = "ghcr.io/siderolabs/installer:${local.talos_version}"
 }
 
 resource "talos_machine_secrets" "this" {
@@ -28,14 +29,24 @@ resource "talos_machine_configuration_apply" "controlplane" {
   for_each                    = var.node_data.controlplanes
   node                        = each.key
   config_patches = [
-    templatefile("${path.module}/patches/install-disk-and-hostname.yaml.tftpl", {
-      hostname     = each.value.hostname
-      install_disk = each.value.install_disk
-    }),
-    file("${path.module}/patches/controlplane-scheduling.yaml"),
-    templatefile("${path.module}/patches/cert-sans.yaml.tftpl", {
-      cert_sans = var.cert_sans
-    }),
+    yamlencode({
+      cluster = {
+        allowSchedulingOnControlPlanes = true
+        apiServer = {
+          certSANs = var.cert_sans
+        }
+      }
+      machine = {
+        install = {
+          disk = each.value.install_disk
+          image = local.installer_image
+        }
+        network = {
+          hostname = each.value.hostname
+        }
+        certSANs = var.cert_sans
+      }
+    })
   ]
 }
 
@@ -52,6 +63,9 @@ data "talos_cluster_health" "this" {
   client_configuration = talos_machine_secrets.this.client_configuration
   control_plane_nodes  = [for k, v in var.node_data.controlplanes : k]
   endpoints            = [for k, v in var.node_data.controlplanes : k]
+  timeouts = {
+    read = var.health_timeout
+  }
 }
 
 data "talos_cluster_kubeconfig" "this" {
@@ -59,4 +73,7 @@ data "talos_cluster_kubeconfig" "this" {
 
   client_configuration = talos_machine_secrets.this.client_configuration
   node                 = [for k, v in var.node_data.controlplanes : k][0]
+  timeouts = {
+    read = var.kubeconfig_timeout
+  }
 }
