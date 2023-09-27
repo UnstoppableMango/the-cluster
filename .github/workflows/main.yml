@@ -97,3 +97,9 @@ jobs:
       - name: Terraform Apply
         if: ${{ github.event_name == 'push' }}
         run: terraform apply -no-color -auto-approve -var-file=vars/prod.tfvars tfplan
+
+      - name: Run cluster validation
+        if: ${{ github.event_name == 'push' }}
+        run: ./spec/validation.sh
+        env:
+          ROSEQUARTZ_STACK: prod

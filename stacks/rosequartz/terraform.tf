@@ -3,7 +3,7 @@ terraform {
     organization = "UnstoppableMango"
 
     workspaces {
-      name = "rosequartz-prod"
+      tags = ["rosequartz"]
     }
   }
 }
