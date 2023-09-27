@@ -57,6 +57,9 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
           terraform_wrapper: false
 
+      - name: Install talosctl
+        run: curl -sL https://talos.dev/install | sh
+
       - name: Terraform Format
         run: terraform fmt -check
 
