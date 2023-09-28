@@ -44,7 +44,7 @@ docker compose up
 Apply configuration.
 
 ```shell
-terraform apply -var-file=vars/ci.tfvars
+terraform apply -var-file=vars/dev.tfvars
 ```
 
 Write talosconfig and kubeconfig for connecting to the node.
