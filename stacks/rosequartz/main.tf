@@ -61,8 +61,8 @@ data "talos_cluster_health" "this" {
   depends_on = [talos_machine_bootstrap.this]
 
   client_configuration = talos_machine_secrets.this.client_configuration
-  control_plane_nodes  = [for k, v in var.node_data.controlplanes : k]
-  endpoints            = [for k, v in var.node_data.controlplanes : k]
+  control_plane_nodes  = ["192.168.1.101"]
+  endpoints            = ["192.168.1.101"]
   timeouts = {
     read = var.health_timeout
   }
