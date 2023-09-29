@@ -96,12 +96,12 @@ jobs:
         run: terraform plan -no-color -var-file=vars/prod.tfvars -out=tfplan
         env:
           TF_WORKSPACE: ${{ github.event_name == 'pull_request' && 'rosequartz-ci' || 'rosequartz-prod' }}
+          TF_VAR_public_ip: ${{ secrets.ROSEQUARTZ_PUBLIC_IP }}
+          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       - name: Terraform Apply
         if: ${{ github.event_name == 'push' }}
-        run: terraform apply -no-color -auto-approve -var-file=vars/prod.tfvars tfplan
-        env:
-          TF_VAR_public_ip: ${{ secrets.ROSEQUARTZ_PUBLIC_IP }}
+        run: terraform apply -no-color -auto-approve tfplan
 
       - name: Run cluster validation
         if: ${{ github.event_name == 'push' }}

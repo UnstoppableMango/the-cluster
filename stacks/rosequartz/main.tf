@@ -4,6 +4,30 @@ locals {
   installer_image = "ghcr.io/siderolabs/installer:${local.talos_version}"
   all_node_data   = merge(var.node_data.controlplanes, var.node_data.workers)
   cert_sans       = concat([var.public_ip], var.cert_sans)
+  zone_id         = "22f1d42ba0fbe4f924905e1c6597055c"
+}
+
+resource "cloudflare_record" "primary_dns" {
+  name    = var.primary_dns_name
+  zone_id = local.zone_id
+  type    = "A"
+  value   = var.public_ip
+  proxied = false
+}
+
+resource "cloudflare_ruleset" "ssl" {
+  name = "${var.primary_dns_name} SSL"
+  description = "Set SSL to a value that works for ${var.primary_dns_name}"
+  kind = "zone"
+  zone_id = local.zone_id
+  phase = "http_config_settings"
+  rules {
+    action = "set_config"
+    action_parameters {
+      ssl = "full"
+    }
+    expression = "(http.host eq \"${var.primary_dns_name}\")"
+  }
 }
 
 resource "talos_machine_secrets" "this" {
@@ -29,7 +53,6 @@ data "talos_client_configuration" "this" {
 resource "talos_machine_configuration_apply" "controlplane" {
   client_configuration        = talos_machine_secrets.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.controlplane.machine_configuration
-  endpoint                    = var.cluster_endpoint
   for_each                    = var.node_data.controlplanes
   node                        = each.key
   config_patches = [
@@ -58,7 +81,6 @@ resource "talos_machine_bootstrap" "this" {
   depends_on = [talos_machine_configuration_apply.controlplane]
 
   client_configuration = talos_machine_secrets.this.client_configuration
-  endpoint             = var.cluster_endpoint
   for_each             = local.all_node_data
   node                 = each.key
 }
@@ -68,7 +90,8 @@ data "talos_cluster_health" "this" {
 
   client_configuration = talos_machine_secrets.this.client_configuration
   control_plane_nodes  = [for k, v in var.node_data.controlplanes : k]
-  endpoints            = [var.cluster_endpoint]
+  endpoints            = [for k, v in var.node_data.controlplanes : k]
+  # endpoints            = [var.cluster_endpoint]
   timeouts = {
     read = var.health_timeout
   }
@@ -79,6 +102,7 @@ data "talos_cluster_kubeconfig" "this" {
 
   client_configuration = talos_machine_secrets.this.client_configuration
   node                 = [for k, v in var.node_data.controlplanes : k][0]
+  # endpoint             = var.cluster_endpoint
   timeouts = {
     read = var.kubeconfig_timeout
   }
