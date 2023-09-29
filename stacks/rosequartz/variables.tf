@@ -22,6 +22,12 @@ variable "cluster_endpoint" {
   default     = "https://10.5.0.2:6443"
 }
 
+variable "public_ip" {
+  description = "The public IP used for the Talos cluster"
+  type        = string
+  default     = "10.5.0.2"
+}
+
 variable "cert_sans" {
   description = "Subject Alternative Names to use for certificates"
   type        = list(string)

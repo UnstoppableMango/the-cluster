@@ -5,7 +5,7 @@ cert_sans = [
 ]
 node_data = {
     controlplanes = {
-        "man.thecluster.io" = {
+        "192.168.1.101" = {
             install_disk = "/dev/mmcblk0"
             hostname = "rqctrl1"
         }

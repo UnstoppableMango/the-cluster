@@ -2,6 +2,8 @@ locals {
   k8s_version     = coalesce(var.k8s_version, trim(file(".versions/k8s"), "\n"))
   talos_version   = coalesce(var.talos_version, "v${trim(file(".versions/talos"), "\n")}")
   installer_image = "ghcr.io/siderolabs/installer:${local.talos_version}"
+  all_node_data   = merge(var.node_data.controlplanes, var.node_data.workers)
+  cert_sans       = concat([var.public_ip], var.cert_sans)
 }
 
 resource "talos_machine_secrets" "this" {
@@ -20,12 +22,14 @@ data "talos_machine_configuration" "controlplane" {
 data "talos_client_configuration" "this" {
   cluster_name         = var.cluster_name
   client_configuration = talos_machine_secrets.this.client_configuration
-  endpoints            = [for k, v in var.node_data.controlplanes : k]
+  endpoints            = [var.cluster_endpoint]
+  nodes                = [for k, v in local.all_node_data : k]
 }
 
 resource "talos_machine_configuration_apply" "controlplane" {
   client_configuration        = talos_machine_secrets.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.controlplane.machine_configuration
+  endpoint                    = var.cluster_endpoint
   for_each                    = var.node_data.controlplanes
   node                        = each.key
   config_patches = [
@@ -33,7 +37,7 @@ resource "talos_machine_configuration_apply" "controlplane" {
       cluster = {
         allowSchedulingOnControlPlanes = true
         apiServer = {
-          certSANs = var.cert_sans
+          certSANs = local.cert_sans
         }
       }
       machine = {
@@ -44,7 +48,7 @@ resource "talos_machine_configuration_apply" "controlplane" {
         network = {
           hostname = each.value.hostname
         }
-        certSANs = var.cert_sans
+        certSANs = local.cert_sans
       }
     })
   ]
@@ -54,15 +58,17 @@ resource "talos_machine_bootstrap" "this" {
   depends_on = [talos_machine_configuration_apply.controlplane]
 
   client_configuration = talos_machine_secrets.this.client_configuration
-  node                 = [for k, v in var.node_data.controlplanes : k][0]
+  endpoint             = var.cluster_endpoint
+  for_each             = local.all_node_data
+  node                 = each.key
 }
 
 data "talos_cluster_health" "this" {
   depends_on = [talos_machine_bootstrap.this]
 
   client_configuration = talos_machine_secrets.this.client_configuration
-  control_plane_nodes  = ["192.168.1.101"]
-  endpoints            = ["192.168.1.101"]
+  control_plane_nodes  = [for k, v in var.node_data.controlplanes : k]
+  endpoints            = [var.cluster_endpoint]
   timeouts = {
     read = var.health_timeout
   }

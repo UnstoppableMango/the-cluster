@@ -100,6 +100,8 @@ jobs:
       - name: Terraform Apply
         if: ${{ github.event_name == 'push' }}
         run: terraform apply -no-color -auto-approve -var-file=vars/prod.tfvars tfplan
+        env:
+          TF_VAR_public_ip: ${{ secrets.ROSEQUARTZ_PUBLIC_IP }}
 
       - name: Run cluster validation
         if: ${{ github.event_name == 'push' }}
