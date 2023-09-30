@@ -1,8 +1,3 @@
-variable "cloudflare_api_token" {
-  description = "API Token to authenticate calls to cloudflare"
-  type        = string
-}
-
 variable "talos_version" {
   description = "The version of talos to use"
   type        = string
@@ -24,12 +19,6 @@ variable "cluster_name" {
 variable "primary_dns_name" {
   description = "The primary DNS name to use"
   type = string
-}
-
-variable "cluster_endpoint" {
-  description = "The endpoint for the Talos cluster"
-  type        = string
-  default     = "https://10.5.0.2:6443"
 }
 
 variable "public_ip" {
@@ -70,11 +59,11 @@ variable "node_data" {
 variable "health_timeout" {
   description = "Timeout for the health operation"
   type        = string
-  default     = "5m"
+  default     = "4m"
 }
 
 variable "kubeconfig_timeout" {
   description = "Timeout for the kubeconfig operation"
   type        = string
-  default     = "1m"
+  default     = "30s"
 }

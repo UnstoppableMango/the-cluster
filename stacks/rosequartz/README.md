@@ -4,6 +4,20 @@ Management cluster for THECLUSTER.
 Provisions Talos Linux on a raspberry pi.
 Default configuration assumes a single node cluster.
 
+## The Process
+
+1. Get a Raspberry Pi 4
+1. Get a microSD card
+1. Follow the [Talos installation steps](https://www.talos.dev/v1.5/talos-guides/install/single-board-computers/rpi_generic/)
+    1. Update EEPROM
+    1. Boot the Talos iso
+1. Test the configuration locally with `./ci/up.sh && ./spec/validation.sh && ./ci/down.sh`
+1. Assign a static IP for the pi in the DHCP server
+1. Run `terraform apply -var-file=vars/prod.tfvars`
+1. Get the generated talosconfig `terraform output -raw talosconfig > talosconfig`
+1. Get the generated kubeconfig `terraform output -raw kubeconfig > kubeconfig`
+1. Have at 'er
+
 ## Environment Variables
 
 Scripts are intended to be able to be run without input, but most aspects are configurable.

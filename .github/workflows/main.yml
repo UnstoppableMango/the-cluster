@@ -7,47 +7,21 @@ on:
     branches: [v2]
 
 jobs:
-  bootstrap:
-    name: Bootstrap Stack
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: stacks/bootstrap
-    env:
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version-file: .nvmrc
-
-      - run: npm ci
-
-      - name: Pulumi Preview
-        uses: pulumi/actions@v4
-        with:
-          command: preview
-          stack-name: prod
-          work-dir: stacks/bootstrap
-
-      - name: Pulumi Up
-        if: ${{ github.event_name == 'push' }}
-        uses: pulumi/actions@v4
-        with:
-          command: up
-          stack-name: prod
-          work-dir: stacks/bootstrap
-
   rosequartz:
     name: Rosequartz Stack
     runs-on: ubuntu-latest
+    if: ${{ !cancelled() }}
     defaults:
       run:
         working-directory: stacks/rosequartz
-    needs:
-      - bootstrap
-    if: ${{ !cancelled() }}
+    env:
+      TF_IN_AUTOMATION: true
+      TF_INPUT: false
+      TF_CLI_ARGS: '-no-color'
+      TF_WORKSPACE: ${{ github.event_name == 'pull_request' && 'rosequartz-ci' || 'rosequartz-prod' }}
+      ROSEQUARTZ_STACK: ${{ github.event_name == 'pull_request' && 'ci' || 'prod' }}
+      ROSEQUARTZ_TALOSCONFIG: talosconfig
+      ROSEQUARTZ_KUBECONFIG: kubeconfig
     steps:
       - uses: actions/checkout@v4
 
@@ -64,47 +38,31 @@ jobs:
         run: terraform fmt -check
 
       - name: Terraform Init
-        run: terraform init -no-color -input=false -lockfile=readonly
-        env:
-          TF_WORKSPACE: ${{ github.event_name == 'pull_request' && 'rosequartz-ci' || 'rosequartz-prod' }}
+        run: terraform init -lockfile=readonly
 
       - name: Terraform Validate
-        run: terraform validate -no-color
+        run: terraform validate
 
-      - name: Create test cluster
+      - name: Create test node
         if: ${{ github.event_name == 'pull_request' }}
-        run: ./ci/up.sh
-        env:
-          TF_WORKSPACE: rosequartz-ci
-          ROSEQUARTZ_STACK: ci
-
-      - name: Run test cluster validation
-        if: ${{ github.event_name == 'pull_request' }}
-        continue-on-error: true
-        run: ./spec/validation.sh
-        env:
-          ROSEQUARTZ_STACK: ci
-
-      - name: Tear down test cluster
-        if: ${{ github.event_name == 'pull_request' }}
-        run: ./ci/down.sh
-        env:
-          TF_WORKSPACE: rosequartz-ci
-          ROSEQUARTZ_STACK: ci
+        run: docker compose -f ci/docker-compose.yml up -d
+        timeout-minutes: 1
 
       - name: Terraform Plan
-        run: terraform plan -no-color -var-file=vars/prod.tfvars -out=tfplan
+        run: terraform plan -var-file=vars/prod.tfvars -out=tfplan
         env:
-          TF_WORKSPACE: ${{ github.event_name == 'pull_request' && 'rosequartz-ci' || 'rosequartz-prod' }}
           TF_VAR_public_ip: ${{ secrets.ROSEQUARTZ_PUBLIC_IP }}
-          TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_VAR_primary_dns_name: ${{ secrets.ROSEQUARTZ_PRIMARY_DNS_NAME }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       - name: Terraform Apply
-        if: ${{ github.event_name == 'push' }}
-        run: terraform apply -no-color -auto-approve tfplan
+        run: terraform apply -auto-approve tfplan
+        timeout-minutes: 4
 
-      - name: Run cluster validation
-        if: ${{ github.event_name == 'push' }}
+      - name: Write configuration files
+        run: |
+          terraform output -raw talosconfig > "$ROSEQUARTZ_TALOSCONFIG"
+          terraform output -raw kubeconfig > "$ROSEQUARTZ_KUBECONFIG"
+
+      - name: Cluster validation
         run: ./spec/validation.sh
-        env:
-          ROSEQUARTZ_STACK: prod

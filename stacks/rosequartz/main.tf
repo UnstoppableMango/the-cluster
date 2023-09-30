@@ -1,13 +1,17 @@
 locals {
-  k8s_version     = coalesce(var.k8s_version, trim(file(".versions/k8s"), "\n"))
-  talos_version   = coalesce(var.talos_version, "v${trim(file(".versions/talos"), "\n")}")
-  installer_image = "ghcr.io/siderolabs/installer:${local.talos_version}"
-  all_node_data   = merge(var.node_data.controlplanes, var.node_data.workers)
-  cert_sans       = concat([var.public_ip], var.cert_sans)
-  zone_id         = "22f1d42ba0fbe4f924905e1c6597055c"
+  k8s_version      = coalesce(var.k8s_version, trim(file(".versions/k8s"), "\n"))
+  talos_version    = coalesce(var.talos_version, "v${trim(file(".versions/talos"), "\n")}")
+  installer_image  = "ghcr.io/siderolabs/installer:${local.talos_version}"
+  all_node_data    = merge(var.node_data.controlplanes, var.node_data.workers)
+  zone_id          = "22f1d42ba0fbe4f924905e1c6597055c"
+  endpoint         = coalesce(var.primary_dns_name, var.public_ip)
+  cluster_endpoint = "https://${local.endpoint}:6443"
+  cert_sans        = concat([var.public_ip, local.endpoint], var.cert_sans)
 }
 
 resource "cloudflare_record" "primary_dns" {
+  count = terraform.workspace == "rosequartz-prod" ? 1 : 0
+
   name    = var.primary_dns_name
   zone_id = local.zone_id
   type    = "A"
@@ -16,11 +20,13 @@ resource "cloudflare_record" "primary_dns" {
 }
 
 resource "cloudflare_ruleset" "ssl" {
-  name = "${var.primary_dns_name} SSL"
+  count = terraform.workspace == "rosequartz-prod" ? 1 : 0
+
+  name        = "${var.primary_dns_name} SSL"
   description = "Set SSL to a value that works for ${var.primary_dns_name}"
-  kind = "zone"
-  zone_id = local.zone_id
-  phase = "http_config_settings"
+  kind        = "zone"
+  zone_id     = local.zone_id
+  phase       = "http_config_settings"
   rules {
     action = "set_config"
     action_parameters {
@@ -36,9 +42,11 @@ resource "talos_machine_secrets" "this" {
 
 data "talos_machine_configuration" "controlplane" {
   cluster_name       = var.cluster_name
-  cluster_endpoint   = var.cluster_endpoint
+  cluster_endpoint   = local.cluster_endpoint
   machine_type       = "controlplane"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
+  docs               = false
+  examples           = false
   talos_version      = local.talos_version
   kubernetes_version = local.k8s_version
 }
@@ -46,7 +54,7 @@ data "talos_machine_configuration" "controlplane" {
 data "talos_client_configuration" "this" {
   cluster_name         = var.cluster_name
   client_configuration = talos_machine_secrets.this.client_configuration
-  endpoints            = [var.cluster_endpoint]
+  endpoints            = [local.endpoint]
   nodes                = [for k, v in local.all_node_data : k]
 }
 
@@ -90,8 +98,8 @@ data "talos_cluster_health" "this" {
 
   client_configuration = talos_machine_secrets.this.client_configuration
   control_plane_nodes  = [for k, v in var.node_data.controlplanes : k]
-  endpoints            = [for k, v in var.node_data.controlplanes : k]
-  # endpoints            = [var.cluster_endpoint]
+  # endpoints            = [for k, v in var.node_data.controlplanes : k]
+  endpoints = [local.endpoint]
   timeouts = {
     read = var.health_timeout
   }
@@ -102,7 +110,7 @@ data "talos_cluster_kubeconfig" "this" {
 
   client_configuration = talos_machine_secrets.this.client_configuration
   node                 = [for k, v in var.node_data.controlplanes : k][0]
-  # endpoint             = var.cluster_endpoint
+  endpoint             = local.endpoint
   timeouts = {
     read = var.kubeconfig_timeout
   }
