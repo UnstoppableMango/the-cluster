@@ -35,12 +35,16 @@
         "talos"
       ],
        "dependencyDashboardApproval": true
+    },
+    {
+      "matchPackagePatterns": ["talos"],
+      "groupName": "talos"
     }
   ],
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["k8s$"],
+      "fileMatch": [".*\\/\\.versions\\/k8s$"],
       "matchStrings": ["(?<currentValue>.)"],
       "versioningTemplate": "semver-coerced",
       "datasourceTemplate": "github-tags",
