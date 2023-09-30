@@ -1,6 +1,9 @@
 {
   "files.associations": {
     "tools/ansible/**/*.{yml,yaml}": "ansible",
-    "*.{yml,yaml}": "yaml"
-  }
+    "*.{yml,yaml}": "yaml",
+    "config": "yaml",
+    "talosconfig": "yaml"
+  },
+  "FSharp.inlayHints.typeAnnotations": false
 }

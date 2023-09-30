@@ -1,14 +1,28 @@
 # Packages
 node_modules/
+.terraform/
 
 # Artifacts
 bin/
 obj
+*.raw
 
 # IDE Configuration
 .vscode/
 !.vscode/settings.json
+.idea/
+.fake
 
-# User Settings
+# Configuration
 talosconfig
 kubeconfig
+secrets.yaml
+controlplane.yaml
+worker.yaml
+
+# User Specific
+*.user
+.envrc
+.talos/
+.kube/
+tmp/
