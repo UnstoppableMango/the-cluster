@@ -49,16 +49,20 @@ jobs:
         run: docker compose -f ci/docker-compose.yaml up -d
         timeout-minutes: 1
 
+      - name: Setup secrets
+        if: github.event_name == 'push'
+        run: |
+          echo "TF_VAR_public_ip=${{ secrets.ROSEQUARTZ_PUBLIC_IP }}" >> $GITHUB_ENV
+          echo "TF_VAR_primary_dns_name=${{ secrets.ROSEQUARTZ_PRIMARY_DNS_NAME }}" >> $GITHUB_ENV
+
       - name: Terraform Plan
         run: terraform plan -var-file=vars/$ROSEQUARTZ_STACK.tfvars -out=tfplan
-        env:
-          TF_VAR_public_ip: ${{ secrets.ROSEQUARTZ_PUBLIC_IP }}
-          TF_VAR_primary_dns_name: ${{ secrets.ROSEQUARTZ_PRIMARY_DNS_NAME }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
-        timeout-minutes: 4
+        timeout-minutes: 5
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       - name: Write configuration files
         run: |
@@ -71,3 +75,4 @@ jobs:
       - name: Tear down
         if: github.event_name == 'pull_request' && !cancelled()
         run: terraform destroy -auto-approve
+        timeout-minutes: 5
