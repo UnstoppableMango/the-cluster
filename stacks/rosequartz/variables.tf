@@ -18,7 +18,7 @@ variable "cluster_name" {
 
 variable "primary_dns_name" {
   description = "The primary DNS name to use"
-  type = string
+  type        = string
 }
 
 variable "public_ip" {
