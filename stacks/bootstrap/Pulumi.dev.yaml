@@ -1,6 +1,0 @@
-config:
-  cloudflare:apiToken:
-    secure: AAABAAxGxz6dNYIvWI8OE3XAlyO7IJF2qK70vy0gcb52tRj1PJgb9JV8UpiyaDE2lsA9QjY7bXB1AwuN7UGREF1Vbvzm2lIh
-  thecluster-bootstrap:primaryDnsName: man-dev
-  thecluster-bootstrap:publicIp:
-    secure: AAABAMdU/RS0ulghBn2dfgbB9fj71JsdpoCW+X7yhfF8AdEOnvAIsHfGrw==
