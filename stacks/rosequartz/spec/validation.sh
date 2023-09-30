@@ -8,13 +8,14 @@ root="$(dirname "$cwd")"
 stack="${ROSEQUARTZ_STACK:-dev}"
 export TALOSCONFIG="${ROSEQUARTZ_TALOSCONFIG:-"$root/.talos/$stack/talosconfig"}"
 export KUBECONFIG="${ROSEQUARTZ_KUBECONFIG:-"$root/.kube/$stack/config"}"
+exitCode=0
 
 echo "TALOSCONFIG should be set..."
 if [ ! -z ${TALOSCONFIG+x} ]; then
     echo "✅ TALOSCONFIG is set to $TALOSCONFIG!"
 else
     echo "❌ TALOSCONFIG is not set!"
-    exit 1
+    exitCode=1
 fi
 
 echo ""
@@ -24,7 +25,7 @@ if [ -f "$TALOSCONFIG" ]; then
     echo "✅ $TALOSCONFIG exists!"
 else
     echo "❌ $TALOSCONFIG does not exist!"
-    exit 1
+    exitCode=1
 fi
 
 echo ""
@@ -34,7 +35,7 @@ if [ ! -z ${KUBECONFIG+x} ]; then
     echo "✅ KUBECONFIG is set to $KUBECONFIG!"
 else
     echo "❌ KUBECONFIG is not set!"
-    exit 1
+    exitCode=1
 fi
 
 echo ""
@@ -44,7 +45,7 @@ if [ -f "$KUBECONFIG" ]; then
     echo "✅ $KUBECONFIG exists!"
 else
     echo "❌ $KUBECONFIG does not exist!"
-    exit 1
+    exitCode=1
 fi
 
 echo ""
@@ -54,7 +55,7 @@ if kubectl get nodes 1>/dev/null; then
     echo "✅ Cluster is available!"
 else
     echo "❌ Couldn't connect to cluster!"
-    exit 1
+    exitCode=1
 fi
 
 echo ""
@@ -69,6 +70,7 @@ else
     echo "❌ Cluster version did not match expected version!"
     echo "Expected: $expectedVersion"
     echo "Actual:   $serverVersion"
+    exitCode=1
 fi
 
 echo ""
@@ -79,6 +81,7 @@ if ! kubectl get nodes -o json | jq -e '.items[].spec.taints' 1>/dev/null; then
 else
     echo "❌ Controlplane had unexpected taints!"
     kubectl get nodes -o json | jq '.items[].spec.taints'
+    exitCode=1
 fi
 
 echo ""
@@ -92,11 +95,12 @@ else
     echo "❌ Node did not have expected hostname!"
     echo "Expected: rqctrl1"
     echo "Actual:   $hostname"
+    exitCode=1
 fi
 
 if ! command -v talosctl &> /dev/null; then
     echo "talosctl does not appear to be installed, skipping remaining tests"
-    exit 0
+    exit $exitCode
 fi
 
 echo ""
@@ -112,6 +116,7 @@ if [ $retval -eq 0 ]; then
 else
     echo "❌ Cluster was not healthy!"
     echo "$clusterHealth"
+    exitCode=1
 fi
 
 echo ""
@@ -126,4 +131,7 @@ else
     echo "❌ Talos version did not match expected version!"
     echo "Expected: $expectedVersion"
     echo "Actual:   $serverVersion"
+    exitCode=1
 fi
+
+exit $exitCode
