@@ -44,10 +44,16 @@ jobs:
 
       - name: Setup workspace
         id: setup-workspace
-        run: ${{ github.workspace }}/.github/scripts/setup-tf-workspace.sh
-        env:
-          THECLUSTER_HEAD_REF: ${{ github.head_ref }}
-          THECLUSTER_EVENT_NAME: ${{ github.event_name }}
+        run: |
+          workspace="rosequartz"
+          if [ "${{ github.event_name }}" == "push" ]; then
+              workspace="$workspace-prod"
+          else
+              workspace="$workspace-${{ github.head_ref }}"
+              terraform workspace new "$workspace"
+              terraform workspace select "$workspace"
+          fi
+          echo "workspace=$workspace" >> "$GITHUB_OUTPUT"
 
       - name: Terraform Validate
         run: terraform validate
