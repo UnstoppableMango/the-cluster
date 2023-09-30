@@ -1,0 +1,15 @@
+name: Validate Renovate Configuration
+on:
+  pull_request:
+    paths: ['.github/renovate.json']
+jobs:
+  validate-renovate:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+
+      - run: npm i -g renovate
+      - run: renovate-config-validator --strict

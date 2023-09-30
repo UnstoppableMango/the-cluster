@@ -1,0 +1,62 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "baseBranches": ["v2"],
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/bower_components/**",
+    "**/vendor/**",
+    "**/examples/**",
+    "**/__tests__/**",
+    "**/test/**",
+    "**/tests/**",
+    "**/__fixtures__/**",
+    "old-stacks/**",
+    "src/**",
+    "lib/**",
+    "stacks/auth/**",
+    "stacks/dev/**",
+    "stacks/management/**",
+    "stacks/media/**",
+    "stacks/networking/**",
+    "stacks/rancher/**",
+    "stacks/storage/**"
+  ],
+  "major": {
+    "dependencyDashboardApproval": true
+  },
+  "packageRules": [
+    {
+       "matchPackageNames": [
+        "k8s",
+        "kubernetes",
+        "talos"
+      ],
+       "dependencyDashboardApproval": true
+    },
+    {
+      "matchPackagePatterns": ["talos"],
+      "groupName": "talos"
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [".*\\/\\.versions\\/k8s$"],
+      "matchStrings": ["(?<currentValue>.)"],
+      "versioningTemplate": "semver-coerced",
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "kubernetes/kubernetes"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": [".*\\/\\.versions\\/talos$"],
+      "matchStrings": ["(?<currentValue>.)"],
+      "versioningTemplate": "semver-coerced",
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "siderolabs/talos"
+    }
+  ]
+}
