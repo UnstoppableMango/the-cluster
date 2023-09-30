@@ -18,7 +18,7 @@ jobs:
       TF_IN_AUTOMATION: true
       TF_INPUT: false
       TF_CLI_ARGS: '-no-color'
-      TF_WORKSPACE: ${{ github.event_name == 'pull_request' && 'rosequartz-ci' || 'rosequartz-prod' }}
+      TF_WORKSPACE: ${{ github.event_name == 'push' && 'rosequartz-prod' || format('rosequartz-{0}', github.sha) }}
       ROSEQUARTZ_STACK: ${{ github.event_name == 'pull_request' && 'ci' || 'prod' }}
       ROSEQUARTZ_TALOSCONFIG: talosconfig
       ROSEQUARTZ_KUBECONFIG: kubeconfig
@@ -76,7 +76,10 @@ jobs:
 
       - name: Tear down
         if: github.event_name == 'pull_request' && !cancelled()
-        run: terraform destroy -auto-approve
+        run: |
+          terraform destroy -auto-approve
+          terraform workspace select rosequartz-ci
+          terraform workspace delete "$TF_WORKSPACE"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         timeout-minutes: 5
