@@ -44,7 +44,7 @@ jobs:
         run: terraform validate
 
       - name: Create test node
-        if: ${{ github.event_name == 'pull_request' }}
+        if: github.event_name == 'pull_request'
         run: docker compose -f ci/docker-compose.yaml up -d
         timeout-minutes: 1
 
@@ -66,3 +66,7 @@ jobs:
 
       - name: Cluster validation
         run: ./spec/validation.sh
+
+      - name: Tear down
+        if: github.event_name == 'pull_request' && !cancelled()
+        run: terraform destroy -auto-approve
