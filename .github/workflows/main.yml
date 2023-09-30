@@ -31,6 +31,7 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
           terraform_wrapper: false
 
+      # TODO: Get a specfic version
       - name: Install talosctl
         run: curl -sL https://talos.dev/install | sh
 
@@ -49,7 +50,7 @@ jobs:
         timeout-minutes: 1
 
       - name: Terraform Plan
-        run: terraform plan -var-file=vars/prod.tfvars -out=tfplan
+        run: terraform plan -var-file=vars/$ROSEQUARTZ_STACK.tfvars -out=tfplan
         env:
           TF_VAR_public_ip: ${{ secrets.ROSEQUARTZ_PUBLIC_IP }}
           TF_VAR_primary_dns_name: ${{ secrets.ROSEQUARTZ_PRIMARY_DNS_NAME }}
