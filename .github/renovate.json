@@ -36,5 +36,15 @@
       ],
        "dependencyDashboardApproval": true
     }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["k8s"],
+      "matchStrings": ["(?<currentValue>.)"],
+      "versioningTemplate": "semver-coerced",
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "kubernetes/kubernetes"
+    }
   ]
 }
