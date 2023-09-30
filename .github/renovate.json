@@ -40,7 +40,7 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["^k8s$"],
+      "fileMatch": ["k8s$"],
       "matchStrings": ["(?<currentValue>.)"],
       "versioningTemplate": "semver-coerced",
       "datasourceTemplate": "github-tags",
@@ -48,7 +48,7 @@
     },
     {
       "customType": "regex",
-      "fileMatch": ["^talos$"],
+      "fileMatch": [".*\\/\\.versions\\/talos$"],
       "matchStrings": ["(?<currentValue>.)"],
       "versioningTemplate": "semver-coerced",
       "datasourceTemplate": "github-tags",
