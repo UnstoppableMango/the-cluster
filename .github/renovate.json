@@ -31,12 +31,12 @@
   },
   "packageRules": [
     {
-      "matchDepNames": [
-        "kubernetes/kubernetes",
-        "siderolabs/talos"
+      "matchPackageNames": [
+        "k8s",
+        "kubernetes",
+        "talos"
       ],
-      "dependencyDashboardApproval": true,
-      "extractVersion": "^v(?<version>.*)"
+      "dependencyDashboardApproval": true
     },
     {
       "matchPackagePatterns": [
@@ -49,13 +49,26 @@
     {
       "customType": "regex",
       "fileMatch": [
-        ".*/\\.versions$"
+        ".*\\/\\.versions\\/k8s$"
       ],
       "matchStrings": [
-        "(?<depName>.*)=(?<currentValue>.*)"
+        "(?<currentValue>.)"
       ],
       "versioningTemplate": "semver-coerced",
-      "datasourceTemplate": "github-tags"
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "kubernetes/kubernetes"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": [
+        ".*\\/\\.versions\\/talos$"
+      ],
+      "matchStrings": [
+        "(?<currentValue>.)"
+      ],
+      "versioningTemplate": "semver-coerced",
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "siderolabs/talos"
     }
   ]
 }
