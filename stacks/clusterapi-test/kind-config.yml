@@ -1,0 +1,15 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: clusterapi
+networking:
+  ipFamily: dual
+nodes:
+  - role: control-plane
+    extraMounts:
+      - hostPath: /var/run/docker.sock
+        containerPath: /var/run/docker.sock
+      - hostPath: /lib/modules
+        containerPath: /lib/modules
+        readOnly: true
+      # - hostPath: /sys/fs/cgroup
+      #   containerPath: /sys/fs/cgroup
