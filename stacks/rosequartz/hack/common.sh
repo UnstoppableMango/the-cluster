@@ -1,0 +1,24 @@
+#!/bin/bash
+
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
+
+function version {
+    cat "$SCRIPT_DIR/../.versions/$1"
+}
+
+STACK="${ROSEQUARTZ_STACK:-dev}"
+CLUSTER_NAME="${ROSEQUARTZ_CLUSTER_NAME:-rosequartz}"
+NODE_IP="${ROSEQUARTZ_NODE_IP:-10.5.0.2}"
+K8S_VERSION="${ROSEQUARTZ_K8S_VERSION:-"$(version "k8s")"}"
+TALOS_VERSION="${ROSEQUARTZ_TALOS_VERSION:-"$(version "talos")"}"
+
+STACK_DIR=$(dirname "$SCRIPT_DIR")
+TALOS_DIR="${ROSEQUARTZ_TALOS_DIR:-"$STACK_DIR/.talos/$STACK"}"
+KUBE_DIR="${ROSEQUARTZ_KUBE_DIR:-"$STACK_DIR/.kube/$STACK"}"
+
+TALOS_STATE="${ROSEQUARTZ_TALOS_STATE:-$TALOS_DIR/clusters}"
+
+TALOSCONFIG="${ROSEQUARTZ_TALOSCONFIG:-$TALOS_DIR/talosconfig}"
+KUBECONFIG="${ROSEQUARTZ_KUBECONFIG:-$KUBE_DIR/config}"
+
+PROVISIONER=docker
