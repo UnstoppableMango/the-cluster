@@ -44,11 +44,15 @@ jobs:
 
       - name: Setup workspace
         id: setup-workspace
-        if: github.event_name == 'pull_request'
         run: |
-          workspace="rosequartz-${{ github.head_ref }}"
-          terraform workspace new "$workspace"
-          terraform workspace select "$workspace"
+          workspace="rosequartz"
+          if [ "${{ github.event_name }}" == "push" ]; then
+              workspace="$workspace-prod"
+          else
+              workspace="$workspace-${{ github.head_ref }}"
+              terraform workspace new "$workspace"
+              terraform workspace select "$workspace"
+          fi
           echo "workspace=$workspace" >> "$GITHUB_OUTPUT"
 
       - name: Terraform Validate
@@ -69,12 +73,14 @@ jobs:
         run: terraform plan -var-file=vars/$ROSEQUARTZ_STACK.tfvars -out=tfplan
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_WORKSPACE: ${{ steps.setup-workspace.outputs.workspace }}
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
         timeout-minutes: 5
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TF_WORKSPACE: ${{ steps.setup-workspace.outputs.workspace }}
 
       - name: Write configuration files
         run: |
