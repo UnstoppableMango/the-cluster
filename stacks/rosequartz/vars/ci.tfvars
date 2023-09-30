@@ -6,7 +6,7 @@ node_data = {
   controlplanes = {
     "10.5.0.2" = {
       install_disk = "/dev/mmcblk0"
-      hostname     = "testymctestface"
+      hostname     = "rqctrl1"
     }
   }
   workers = {}
