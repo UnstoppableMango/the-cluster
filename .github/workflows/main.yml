@@ -44,7 +44,7 @@ jobs:
 
       - name: Setup workspace
         id: setup-workspace
-        run: /.github/scripts/setup-tf-workspace.sh
+        run: ${{ github.workspace }}/.github/scripts/setup-tf-workspace.sh
         env:
           THECLUSTER_HEAD_REF: ${{ github.head_ref }}
           THECLUSTER_EVENT_NAME: ${{ github.event_name }}
