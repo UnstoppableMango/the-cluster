@@ -45,7 +45,7 @@ jobs:
 
       - name: Create test node
         if: ${{ github.event_name == 'pull_request' }}
-        run: docker compose -f ci/docker-compose.yml up -d
+        run: docker compose -f ci/docker-compose.yaml up -d
         timeout-minutes: 1
 
       - name: Terraform Plan
