@@ -46,7 +46,7 @@ jobs:
         id: setup-workspace
         if: github.event_name == 'pull_request'
         run: |
-          workspace="rosequartz-${{ github.sha }}"
+          workspace="rosequartz-${{ github.head_ref }}"
           terraform workspace new "$workspace"
           terraform workspace select "$workspace"
           echo "workspace=$workspace" >> "$GITHUB_OUTPUT"
