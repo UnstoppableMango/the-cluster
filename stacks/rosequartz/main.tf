@@ -59,8 +59,11 @@ data "talos_client_configuration" "this" {
 }
 
 resource "talos_machine_configuration_apply" "controlplane" {
+  depends_on = [cloudflare_record.primary_dns]
+
   client_configuration        = talos_machine_secrets.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.controlplane.machine_configuration
+  endpoint                    = local.endpoint
   for_each                    = var.node_data.controlplanes
   node                        = each.key
   config_patches = [
@@ -91,6 +94,7 @@ resource "talos_machine_bootstrap" "this" {
   client_configuration = talos_machine_secrets.this.client_configuration
   for_each             = local.all_node_data
   node                 = each.key
+  endpoint             = local.endpoint
 }
 
 data "talos_cluster_health" "this" {
@@ -98,7 +102,6 @@ data "talos_cluster_health" "this" {
 
   client_configuration = talos_machine_secrets.this.client_configuration
   control_plane_nodes  = [for k, v in var.node_data.controlplanes : k]
-  # endpoints            = [for k, v in var.node_data.controlplanes : k]
   endpoints = [local.endpoint]
   timeouts = {
     read = var.health_timeout

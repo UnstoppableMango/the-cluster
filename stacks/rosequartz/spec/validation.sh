@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -u
 
 cwd="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 root="$(dirname "$cwd")"
@@ -105,11 +105,8 @@ fi
 
 echo ""
 
-nodeIp="${ROSEQUARTZ_NODE_IP:-"10.5.0.2"}"
-echo "Using nodeIp $nodeIp"
-
 echo "Checking cluster health..."
-clusterHealth="$(talosctl health --nodes "$nodeIp" 2>&1)"
+clusterHealth="$(talosctl health 2>&1)"
 retval=$?
 if [ $retval -eq 0 ]; then
     echo "✅ Cluster is healthy!"
@@ -123,13 +120,13 @@ echo ""
 
 echo "It should use configured talos version..."
 expectedVersion="$(cat "$root/.versions/talos")"
-serverVersion="$(talosctl version --nodes "$nodeIp" | tr -d ' \t' | awk -F':' '/^Tag/{print $2}' | tail -n 1)"
+serverVersion="$(talosctl version | tr -d ' \t' | awk -F':' '/^Tag/{print $2}' | tail -n 1)"
 
 if [ "v$expectedVersion" == "$serverVersion" ]; then
     echo "✅ Talos has expected version $expectedVersion!"
 else
     echo "❌ Talos version did not match expected version!"
-    echo "Expected: $expectedVersion"
+    echo "Expected: v$expectedVersion"
     echo "Actual:   $serverVersion"
     exitCode=1
 fi
