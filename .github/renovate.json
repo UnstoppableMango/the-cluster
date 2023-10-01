@@ -36,7 +36,8 @@
         "kubernetes",
         "talos"
       ],
-      "dependencyDashboardApproval": true
+      "dependencyDashboardApproval": true,
+      "extractVersion": "^v(?<version>.*)"
     },
     {
       "matchPackagePatterns": [
@@ -52,7 +53,7 @@
         ".*\\/\\.versions\\/k8s$"
       ],
       "matchStrings": [
-        "(?<currentValue>.)"
+        "(?<currentValue>.*)"
       ],
       "versioningTemplate": "semver-coerced",
       "datasourceTemplate": "github-tags",
@@ -64,7 +65,7 @@
         ".*\\/\\.versions\\/talos$"
       ],
       "matchStrings": [
-        "(?<currentValue>.)"
+        "(?<currentValue>.*)"
       ],
       "versioningTemplate": "semver-coerced",
       "datasourceTemplate": "github-tags",
