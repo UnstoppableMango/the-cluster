@@ -58,7 +58,8 @@
         "kubernetes",
         "talos"
       ],
-      "dependencyDashboardApproval": true
+      "dependencyDashboardApproval": true,
+      "extractVersion": "^v(?<version>.*)"
     },
     {
       "matchPackagePatterns": [
