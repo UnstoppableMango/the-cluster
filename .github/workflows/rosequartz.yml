@@ -1,16 +1,21 @@
-name: Main
+name: Rosequartz
 
 on:
   pull_request:
     branches: [v2]
+    paths:
+      - stacks/rosequartz
+      - .github/workflows/rosequartz.yaml
   push:
     branches: [v2]
+    paths:
+      - stacks/rosequartz
+      - .github/workflows/rosequartz.yaml
 
 jobs:
   rosequartz:
     name: Rosequartz Stack
     runs-on: ubuntu-latest
-    if: ${{ !cancelled() }}
     defaults:
       run:
         working-directory: stacks/rosequartz
@@ -51,8 +56,8 @@ jobs:
           else
               workspace="$workspace-${{ github.head_ref }}"
               terraform workspace new "$workspace"
-              terraform workspace select "$workspace"
           fi
+          terraform workspace select "$workspace"
           echo "workspace=$workspace" >> "$GITHUB_OUTPUT"
 
       - name: Terraform Validate
@@ -73,14 +78,12 @@ jobs:
         run: terraform plan -var-file=vars/$ROSEQUARTZ_STACK.tfvars -out=tfplan
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          TF_WORKSPACE: ${{ steps.setup-workspace.outputs.workspace }}
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
         timeout-minutes: 5
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          TF_WORKSPACE: ${{ steps.setup-workspace.outputs.workspace }}
 
       - name: Write configuration files
         run: |
