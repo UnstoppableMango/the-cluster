@@ -5,12 +5,12 @@ on:
     branches: [v2]
     paths:
       - stacks/rosequartz
-      - .github/workflows/rosequartz.yaml
+      - .github/workflows/rosequartz.yml
   push:
     branches: [v2]
     paths:
       - stacks/rosequartz
-      - .github/workflows/rosequartz.yaml
+      - .github/workflows/rosequartz.yml
 
 jobs:
   rosequartz:
