@@ -53,10 +53,9 @@
   ],
   "packageRules": [
     {
-      "matchPackageNames": [
-        "k8s",
-        "kubernetes",
-        "talos"
+      "matchDepNames": [
+        "kubernetes/kubernetes",
+        "siderolabs/talos"
       ],
       "dependencyDashboardApproval": true,
       "extractVersion": "^v(?<version>.*)"

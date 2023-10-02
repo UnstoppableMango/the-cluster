@@ -1,7 +1,7 @@
 locals {
-  k8s_version      = coalesce(var.k8s_version, trim(file(".versions/k8s"), "\n"))
-  talos_version    = coalesce(var.talos_version, "v${trim(file(".versions/talos"), "\n")}")
-  installer_image  = "ghcr.io/siderolabs/installer:${local.talos_version}"
+  k8s_version      = regex("kubernetes\\/kubernetes=(?P<version>.*)\\s?#?.*", file(".versions"))["version"]
+  talos_version    = regex("siderolabs\\/talos=(?P<version>.*)\\s?#?.*", file(".versions"))["version"]
+  installer_image  = "ghcr.io/siderolabs/installer:v${local.talos_version}"
   all_node_data    = merge(var.node_data.controlplanes, var.node_data.workers)
   zone_id          = "22f1d42ba0fbe4f924905e1c6597055c"
   endpoint         = coalesce(var.primary_dns_name, var.public_ip)
@@ -37,7 +37,7 @@ resource "cloudflare_ruleset" "ssl" {
 }
 
 resource "talos_machine_secrets" "this" {
-  talos_version = local.talos_version
+  talos_version = "v${local.talos_version}"
 }
 
 data "talos_machine_configuration" "controlplane" {
@@ -47,7 +47,7 @@ data "talos_machine_configuration" "controlplane" {
   machine_secrets    = talos_machine_secrets.this.machine_secrets
   docs               = false
   examples           = false
-  talos_version      = local.talos_version
+  talos_version      = "v${local.talos_version}"
   kubernetes_version = local.k8s_version
 }
 
