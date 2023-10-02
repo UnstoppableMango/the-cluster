@@ -26,3 +26,4 @@ worker.yaml
 .talos/
 .kube/
 tmp/
+.backups/
