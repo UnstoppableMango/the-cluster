@@ -49,10 +49,10 @@
     {
       "customType": "regex",
       "fileMatch": [
-        "^.*\\/\\.versions$"
+        ".*/\\.versions$"
       ],
       "matchStrings": [
-        "^(?<depName>.*)=(?<currentValue>.*)$"
+        "(?<depName>.*)=(?<currentValue>.*)"
       ],
       "versioningTemplate": "semver-coerced",
       "datasourceTemplate": "github-tags"
