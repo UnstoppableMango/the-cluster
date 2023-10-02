@@ -3,7 +3,9 @@
   "extends": [
     "config:recommended"
   ],
-  "baseBranches": ["v2"],
+  "baseBranches": [
+    "v2"
+  ],
   "ignorePaths": [
     "**/node_modules/**",
     "**/bower_components/**",
@@ -29,34 +31,31 @@
   },
   "packageRules": [
     {
-       "matchPackageNames": [
-        "k8s",
-        "kubernetes",
-        "talos"
+      "matchDepNames": [
+        "kubernetes/kubernetes",
+        "siderolabs/talos"
       ],
-       "dependencyDashboardApproval": true
+      "dependencyDashboardApproval": true,
+      "extractVersion": "^v(?<version>.*)"
     },
     {
-      "matchPackagePatterns": ["talos"],
+      "matchPackagePatterns": [
+        "talos"
+      ],
       "groupName": "talos"
     }
   ],
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": [".*\\/\\.versions\\/k8s$"],
-      "matchStrings": ["(?<currentValue>.)"],
+      "fileMatch": [
+        "^.*\\/\\.versions$"
+      ],
+      "matchStrings": [
+        "^(?<depName>.*)=(?<currentValue>.*)$"
+      ],
       "versioningTemplate": "semver-coerced",
-      "datasourceTemplate": "github-tags",
-      "depNameTemplate": "kubernetes/kubernetes"
-    },
-    {
-      "customType": "regex",
-      "fileMatch": [".*\\/\\.versions\\/talos$"],
-      "matchStrings": ["(?<currentValue>.)"],
-      "versioningTemplate": "semver-coerced",
-      "datasourceTemplate": "github-tags",
-      "depNameTemplate": "siderolabs/talos"
+      "datasourceTemplate": "github-tags"
     }
   ]
 }
