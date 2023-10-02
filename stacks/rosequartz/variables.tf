@@ -1,15 +1,3 @@
-variable "talos_version" {
-  description = "The version of talos to use"
-  type        = string
-  default     = null
-}
-
-variable "k8s_version" {
-  description = "The version of kubernetes to use"
-  type        = string
-  default     = null
-}
-
 variable "cluster_name" {
   description = "A name to provide for the Talos cluster"
   type        = string
