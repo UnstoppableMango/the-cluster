@@ -8,9 +8,11 @@ root="$(dirname "$cwd")"
 stack="${ROSEQUARTZ_STACK:-dev}"
 backupDir=$ROSEQUARTZ_BACKUP_DIR
 talosDir="${ROSEQUARTZ_TALOS_DIR:-"$root/.talos/$stack"}"
-nodeIp="${ROSEQUARTZ_NODE_IP:-"10.5.0.2"}"
+
+echo "Stack: $stack"
+echo "Backup: $backupDir"
+echo "Talos: $talosDir"
 
 echo "Creating etcd snapshot..."
 backupFile="${backupDir:-$talosDir}/etcd-$(date +%s).snapshot"
-talosctl etcd snapshot "$backupFile" \
-    --nodes "$nodeIp"
+talosctl etcd snapshot "$backupFile"
