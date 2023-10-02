@@ -8,8 +8,7 @@ root="$(dirname "$cwd")"
 # TODO: Check if the targetd cluster is a docker cluster
 # The upgrade command does not appear to support the docker provisioner
 
-nodeIp="${ROSEQUARTZ_NODE_IP:-"10.5.0.2"}"
-talosVersion="$(< "$root/.versions/talos")"
+talosVersion="$(awk -F= '$1 == "siderolabs/talos" {print $2}' .versions)"
 
 # TODO: Download the version of talosctl used by the cluster, per docs recommendation
 # https://www.talos.dev/v1.5/talos-guides/upgrading-talos/#faqs
@@ -18,9 +17,8 @@ talosVersion="$(< "$root/.versions/talos")"
 
 . "$cwd/etcd-backup.sh"
 
-echo "Upgrading talos..."
+echo "Upgrading talos to $talosVersion..."
 talosctl upgrade \
-    --nodes "$nodeIp" \
     --image "ghcr.io/siderolabs/installer:v$talosVersion" \
     --preserve \
     --wait

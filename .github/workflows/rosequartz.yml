@@ -51,10 +51,10 @@ jobs:
         id: setup-workspace
         run: |
           workspace="rosequartz"
-          if [ "${{ github.event_name }}" == "push" ]; then
+          if [ "$GITHUB_EVENT_NAME" == "push" ]; then
               workspace="$workspace-prod"
           else
-              workspace="$workspace-${{ github.head_ref }}"
+              workspace="$workspace-${GITHUB_HEAD_REF//\//-}"
               terraform workspace new "$workspace"
           fi
           terraform workspace select "$workspace"
