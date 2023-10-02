@@ -54,7 +54,7 @@ jobs:
           if [ "$GITHUB_EVENT_NAME" == "push" ]; then
               workspace="$workspace-prod"
           else
-              workspace="$workspace-${GITHUB_HEAD_REF//\//-}"
+              workspace="$workspace-${GITHUB_HEAD_REF//[\/.]/-}"
               terraform workspace new "$workspace"
           fi
           terraform workspace select "$workspace"
