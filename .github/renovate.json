@@ -29,7 +29,7 @@
   "ignoreDeps": [
     "submodules/actions-runner-controller",
     "submodules/cert-manager",
-    "submodules/matallb",
+    "submodules/metallb",
     "submodules/traefik-helm-chart"
   ],
   "major": {
