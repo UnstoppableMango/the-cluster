@@ -5,9 +5,9 @@ set -u
 cwd="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 root="$(dirname "$cwd")"
 
-stack="${ROSEQUARTZ_STACK:-dev}"
-export TALOSCONFIG="${ROSEQUARTZ_TALOSCONFIG:-"$root/.talos/$stack/talosconfig"}"
-export KUBECONFIG="${ROSEQUARTZ_KUBECONFIG:-"$root/.kube/$stack/config"}"
+stack="${RQ_STACK:-dev}"
+export TALOSCONFIG="${RQ_TALOSCONFIG:-"$root/.talos/$stack/talosconfig"}"
+export KUBECONFIG="${RQ_KUBECONFIG:-"$root/.kube/$stack/config"}"
 exitCode=0
 
 echo "TALOSCONFIG should be set..."

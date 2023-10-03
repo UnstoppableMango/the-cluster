@@ -33,9 +33,9 @@ jobs:
       TF_IN_AUTOMATION: true
       TF_INPUT: false
       TF_CLI_ARGS: '-no-color'
-      ROSEQUARTZ_STACK: ${{ github.event_name == 'pull_request' && 'ci' || 'prod' }}
-      ROSEQUARTZ_TALOSCONFIG: talosconfig
-      ROSEQUARTZ_KUBECONFIG: kubeconfig
+      RQ_STACK: ${{ github.event_name == 'pull_request' && 'ci' || 'prod' }}
+      RQ_TALOSCONFIG: talosconfig
+      RQ_KUBECONFIG: kubeconfig
     steps:
       - uses: actions/checkout@v4
 
@@ -81,11 +81,11 @@ jobs:
       - name: Setup secrets
         if: github.event_name == 'push'
         run: |
-          echo "TF_VAR_public_ip=${{ secrets.ROSEQUARTZ_PUBLIC_IP }}" >> "$GITHUB_ENV"
-          echo "TF_VAR_primary_dns_name=${{ secrets.ROSEQUARTZ_PRIMARY_DNS_NAME }}" >> "$GITHUB_ENV"
+          echo "TF_VAR_public_ip=${{ secrets.RQ_PUBLIC_IP }}" >> "$GITHUB_ENV"
+          echo "TF_VAR_primary_dns_name=${{ secrets.RQ_PRIMARY_DNS_NAME }}" >> "$GITHUB_ENV"
 
       - name: Terraform Plan
-        run: terraform plan -var-file=vars/$ROSEQUARTZ_STACK.tfvars -out=tfplan
+        run: terraform plan -var-file=vars/$RQ_STACK.tfvars -out=tfplan
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
@@ -97,8 +97,8 @@ jobs:
 
       - name: Write configuration files
         run: |
-          terraform output -raw talosconfig > "$ROSEQUARTZ_TALOSCONFIG"
-          terraform output -raw kubeconfig > "$ROSEQUARTZ_KUBECONFIG"
+          terraform output -raw talosconfig > "$RQ_TALOSCONFIG"
+          terraform output -raw kubeconfig > "$RQ_KUBECONFIG"
 
       - name: Cluster validation
         run: ./spec/validation.sh

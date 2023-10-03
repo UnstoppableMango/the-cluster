@@ -5,9 +5,9 @@ set -eum
 cwd="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 root="$(dirname "$cwd")"
 
-stack="${ROSEQUARTZ_STACK:-ci}"
-talosconfig="${ROSEQUARTZ_TALOSCONFIG:-"$root/.talos/$stack/talosconfig"}"
-kubeconfig="${ROSEQUARTZ_KUBECONFIG:-"$root/.kube/$stack/config"}"
+stack="${RQ_STACK:-ci}"
+talosconfig="${RQ_TALOSCONFIG:-"$root/.talos/$stack/talosconfig"}"
+kubeconfig="${RQ_KUBECONFIG:-"$root/.kube/$stack/config"}"
 
 if [ ${CI+x} ]; then
     trap "docker logs rosequartz-talos-controlplane-1" EXIT
