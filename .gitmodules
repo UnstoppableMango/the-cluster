@@ -10,7 +10,3 @@
 [submodule "submodules/metallb"]
 	path = submodules/metallb
 	url = git@github.com:metallb/metallb.git
-[submodule "stacks/cert-manager/cert-manager"]
-	path = stacks/cert-manager/cert-manager
-	url = https://github.com/cert-manager/cert-manager
-	branch = release-1.13
