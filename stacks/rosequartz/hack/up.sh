@@ -9,8 +9,9 @@ stack="${RQ_STACK:-ci}"
 talosconfig="${RQ_TALOSCONFIG:-"$root/.talos/$stack/talosconfig"}"
 kubeconfig="${RQ_KUBECONFIG:-"$root/.kube/$stack/config"}"
 
-if [ ${CI+x} ]; then
-    trap "docker logs rosequartz-talos-controlplane-1" EXIT
+if [ "$stack" = "prod" ] || [ "$(terraform workspace show)" = "rosequartz-prod" ]; then
+    echo "Cannot operate on prod"
+    exit 0
 fi
 
 echo "Creating cluster..."
