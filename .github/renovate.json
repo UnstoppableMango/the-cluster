@@ -26,9 +26,31 @@
     "stacks/rancher/**",
     "stacks/storage/**"
   ],
+  "ignoreDeps": [
+    "submodules/actions-runner-controller",
+    "submodules/cert-manager",
+    "submodules/matallb",
+    "submodules/traefik-helm-chart"
+  ],
   "major": {
     "dependencyDashboardApproval": true
   },
+  "git-submodules": {
+    "enabled": true
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [
+        ".*/\\.versions$"
+      ],
+      "matchStrings": [
+        "(?<depName>.*)=(?<currentValue>.*)"
+      ],
+      "versioningTemplate": "semver-coerced",
+      "datasourceTemplate": "github-tags"
+    }
+  ],
   "packageRules": [
     {
       "matchDepNames": [
@@ -43,19 +65,6 @@
         "talos"
       ],
       "groupName": "talos"
-    }
-  ],
-  "customManagers": [
-    {
-      "customType": "regex",
-      "fileMatch": [
-        ".*/\\.versions$"
-      ],
-      "matchStrings": [
-        "(?<depName>.*)=(?<currentValue>.*)"
-      ],
-      "versioningTemplate": "semver-coerced",
-      "datasourceTemplate": "github-tags"
     }
   ]
 }
