@@ -26,8 +26,7 @@ if (!diff) {
 
 const files = diff.split(os.EOL);
 
-console.log(`Found ${files.length} changed files`);
-console.log(files);
+console.log(`Found ${files.length} changed files:`, files);
 
 const modified = files.map(x => x.split(path.sep))
     .filter(x => x.length > 2) // Only look at directories
@@ -35,7 +34,8 @@ const modified = files.map(x => x.split(path.sep))
     .filter((x, i, a) => a.indexOf(x) === i) // Distinct
     .map(x => x[1]);
 
-console.log(modified);
+console.log('Modified stacks: ', modified);
 
-const result = stacks.map(x => [x, modified.includes(x)]);
+const isPush = github.context.eventName === 'push';
+const result = stacks.map(x => [x, modified.includes(x) || isPush]);
 core.setOutput('stacks', Object.fromEntries(result));
