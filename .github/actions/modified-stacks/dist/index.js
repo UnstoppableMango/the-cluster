@@ -9858,8 +9858,11 @@ const modified = files.map(x => x.split(path.sep))
 console.log('Modified stacks: ', modified);
 
 const isPush = github.context.eventName === 'push';
-const result = stacks.map(x => [x, modified.includes(x) || isPush]);
-core.setOutput('stacks', Object.fromEntries(result));
+stacks.forEach(x => {
+  const result = modified.includes(x) || isPush;
+  console.log('Setting output: ', x, result);
+  core.setOutput(x, result);
+});
 
 })();
 

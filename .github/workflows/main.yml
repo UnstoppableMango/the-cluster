@@ -19,13 +19,13 @@ jobs:
         id: modified-stacks
         uses: ./.github/actions/modified-stacks
     outputs:
-      stacks: ${{ steps.modified-stacks.outputs.stacks }}
+      rosequartz: ${{ steps.modified-stacks.outputs.rosequartz }}
 
   rosequartz:
     name: Rosequartz Stack
     runs-on: ubuntu-latest
     needs: [setup]
-    if: needs.setup.outputs.stacks.rosequartz && !cancelled()
+    if: needs.setup.outputs.rosequartz && !cancelled()
     defaults:
       run:
         working-directory: stacks/rosequartz
