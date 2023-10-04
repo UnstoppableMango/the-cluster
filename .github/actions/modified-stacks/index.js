@@ -14,13 +14,13 @@ console.log(`Using stackDir:   ${stackDir}`);
 const stacks = readdirSync(stackDir, 'utf-8')
 console.log('All stacks:      ', stacks);
 
-const target = github.context.eventName === 'pull_request'
+const target = 'origin/' + github.context.eventName === 'pull_request'
     ? process.env.GITHUB_BASE_REF
     : github.context.ref;
 
 console.log(`Using target ref: ${target}`);
 
-const diff = execSync(`git diff --name-only origin/${target}`, { encoding: 'utf-8' }).trim();
+const diff = execSync(`git diff --name-only ${target}`, { encoding: 'utf-8' }).trim();
 
 if (!diff) {
     console.log('No modified stacks');

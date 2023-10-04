@@ -15,7 +15,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: ./.github/actions/modified-stacks
+      - name: Set modified stacks
+        uses: ./.github/actions/modified-stacks
 
   rosequartz:
     name: Rosequartz Stack
