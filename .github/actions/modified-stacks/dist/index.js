@@ -9838,7 +9838,7 @@ const target = github.context.eventName === 'pull_request'
 
 console.log(`Using target ref: ${target}`);
 
-const diff = execSync(`git diff --name-only ${target}`, { encoding: 'utf-8' }).trim();
+const diff = execSync(`git diff --name-only origin/${target}`, { encoding: 'utf-8' }).trim();
 
 if (!diff) {
     console.log('No modified stacks');
