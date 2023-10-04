@@ -16,10 +16,10 @@ jobs:
           fetch-depth: 0
 
       - name: Set modified stacks
-        id: modified-stacks
+        id: stacks
         uses: ./.github/actions/modified-stacks
     outputs:
-      rosequartz: ${{ steps.modified-stacks.outputs.rosequartz }}
+      rosequartz: ${{ steps.stacks.outputs.rosequartz }}
 
   rosequartz:
     name: Rosequartz Stack
