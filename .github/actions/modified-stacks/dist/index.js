@@ -9834,7 +9834,7 @@ console.log('All stacks:      ', stacks);
 
 const target = github.context.eventName === 'pull_request'
     ? process.env.GITHUB_BASE_REF
-    : github.context.ref;
+    : process.env.GITHUB_REF_NAME;
 
 console.log(`Using target ref: origin/${target}`);
 
