@@ -9832,7 +9832,7 @@ console.log(`Using stackDir:   ${stackDir}`);
 const stacks = readdirSync(stackDir, 'utf-8')
 console.log('All stacks:      ', stacks);
 
-const target = github.context.ref;
+const target = process.env.GITHUB_REF_NAME;
 console.log(`Using target ref: ${target}`);
 
 const diff = execSync(`git diff --name-only ${target}`, { encoding: 'utf-8' }).trim();
