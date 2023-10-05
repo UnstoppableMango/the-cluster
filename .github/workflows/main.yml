@@ -148,6 +148,8 @@ jobs:
           echo "KUBECONFIG=$(pwd)/kubeconfig" >> "$GITHUB_ENV"
         working-directory: stacks/rosequartz
 
+      - run: npm ci
+
       - name: Pulumi Action
         uses: pulumi/actions@v4
         with:
