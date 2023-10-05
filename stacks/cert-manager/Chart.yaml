@@ -1,0 +1,9 @@
+apiVersion: v2
+name: cert-manager
+description: Cert Manager install for THECLUSTER
+type: application
+version: 0.1.0
+dependencies:
+  - name: cert-manager
+    repository: https://charts.jetstack.io
+    version: 1.13.1
