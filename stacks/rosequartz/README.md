@@ -21,20 +21,20 @@ Default configuration assumes a single node cluster.
 ## Environment Variables
 
 Scripts are intended to be able to be run without input, but most aspects are configurable.
-All environment variables are prefixed with `ROSEQUARTZ_` to prevent clashing with existing variables.
+All environment variables are prefixed with `RQ_` to prevent clashing with existing variables.
 
 |Variable|Description|Default|
 |:-------|:----------|:------|
-|`ROSEQUARTZ_STACK`|Terraform workspace (stack) to operate on|`dev`|
-|`ROSEQUARTZ_TALOS_DIR`|Path to a directory for talos configuration|`.talos/$ROSEQUARTZ_STACK`|
-|`ROSEQUARTZ_KUBE_DIR`|Path to a directory for kubernetes configuration|`.kube/$ROSEQUARTZ_STACK`|
-|`ROSEQUARTZ_BACKUP_DIR`|Path to a directory for etcd backups|`$ROSEQUARTZ_TALOS_DIR`|
-|`ROSEQUARTZ_TALOSCONFIG`|Path to a talosconfig file|`$ROSEQUARTZ_TALOS_DIR/talosconfig`|
-|`ROSEQUARTZ_KUBECONFIG`|Path to a kubeconfig file|`$ROSEQUARTZ_KUBE_DIR/config`|
-|`ROSEQUARTZ_NODE_IP`|Node IP to use for configuration end endpoints|`10.5.0.2`|
-|(unused) `ROSEQUARTZ_TALOS_VERSION`|Talos version to use for generating configuration|`1.5.2`, `.versions/talos`|
-|(unused) `ROSEQUARTZ_K8S_VERSION`|Kubernetes version to use for generating configuration|`1.28.1`, `.versions/k8s`|
-|`ROSEQUARTZ_DRY_RUN`|Whether to perform a dry run on the operations that support it||
+|`RQ_STACK`|Terraform workspace (stack) to operate on|`dev`|
+|`RQ_TALOS_DIR`|Path to a directory for talos configuration|`.talos/$RQ_STACK`|
+|`RQ_KUBE_DIR`|Path to a directory for kubernetes configuration|`.kube/$RQ_STACK`|
+|`RQ_BACKUP_DIR`|Path to a directory for etcd backups|`$RQ_TALOS_DIR`|
+|`RQ_TALOSCONFIG`|Path to a talosconfig file|`$RQ_TALOS_DIR/talosconfig`|
+|`RQ_KUBECONFIG`|Path to a kubeconfig file|`$RQ_KUBE_DIR/config`|
+|`RQ_NODE_IP`|Node IP to use for configuration end endpoints|`10.5.0.2`|
+|(unused) `RQ_TALOS_VERSION`|Talos version to use for generating configuration|`1.5.2`, `.versions/talos`|
+|(unused) `RQ_K8S_VERSION`|Kubernetes version to use for generating configuration|`1.28.1`, `.versions/k8s`|
+|`RQ_DRY_RUN`|Whether to perform a dry run on the operations that support it||
 
 ## Local Development
 

@@ -2,19 +2,19 @@
 
 set -eu
 
-if [ -z ${ROSEQUARTZ_SECRETS_FILE+x} ]; then
+if [ -z ${RQ_SECRETS_FILE+x} ]; then
     echo "Secrets must be provided"
     exit 1
 fi
 
-if [ -z ${ROSEQUARTZ_TALOS_VERSION+x} ]; then
+if [ -z ${RQ_TALOS_VERSION+x} ]; then
     echo "Endpoint must be provided"
     exit 1
 fi
 
-DIR=$(dirname "$ROSEQUARTZ_SECRETS_FILE")
-FILE="$ROSEQUARTZ_SECRETS_FILE"
-TALOS_VERSION="v$ROSEQUARTZ_TALOS_VERSION"
+DIR=$(dirname "$RQ_SECRETS_FILE")
+FILE="$RQ_SECRETS_FILE"
+TALOS_VERSION="v$RQ_TALOS_VERSION"
 
 mkdir -p "$DIR"
 

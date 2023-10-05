@@ -10,10 +10,10 @@ root="$(dirname "$cwd")"
 
 source "$root/scripts/common.sh"
 
-export ROSEQUARTZ_NODE_IP="10.5.0.2"
-export ROSEQUARTZ_TALOSCONFIG="$cwd/tmp/talosconfig"
-export ROSEQUARTZ_KUBECONFIG="$cwd/tmp/kubeconfig"
-export ROSEQUARTZ_BACKUP_DIR="$cwd/tmp"
+export RQ_NODE_IP="10.5.0.2"
+export RQ_TALOSCONFIG="$cwd/tmp/talosconfig"
+export RQ_KUBECONFIG="$cwd/tmp/kubeconfig"
+export RQ_BACKUP_DIR="$cwd/tmp"
 
 # NOTE: Because of bash weirdness, $cwd is not reliable after this point
 # TODO: And apparently others like $KUBECONFIG
@@ -31,7 +31,7 @@ echo "Running etcd-backup..."
 echo ""
 
 echo "Running kubernetes upgrade..."
-ROSEQUARTZ_DRY_RUN=true . "$root/scripts/k8s-upgrade.sh"
+RQ_DRY_RUN=true . "$root/scripts/k8s-upgrade.sh"
 . "$root/spec/validation.sh"
 echo ""
 
