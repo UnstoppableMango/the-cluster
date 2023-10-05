@@ -153,5 +153,5 @@ jobs:
       - name: Pulumi Action
         uses: pulumi/actions@v4
         with:
-          stack-name: thecluster-cert-manager/rosequartz
+          stack-name: UnstoppableMango/thecluster-cert-manager/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
