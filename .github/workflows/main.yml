@@ -140,7 +140,7 @@ jobs:
           terraform init -lockfile=readonly
           terraform output -raw kubeconfig > kubeconfig
           echo "KUBECONFIG=$(pwd)/kubeconfig" >> "$GITHUB_ENV"
-        working-directory: ../rosequartz
+        working-directory: stacks/rosequartz
 
       - name: Pulumi Action
         uses: pulumi/actions@v4
