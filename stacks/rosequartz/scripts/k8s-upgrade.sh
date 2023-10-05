@@ -5,7 +5,7 @@ set -e
 cwd="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 root="$(dirname "$cwd")"
 
-stack="${ROSEQUARTZ_STACK:-dev}"
+stack="${RQ_STACK:-dev}"
 
 currentVersion="$(kubectl version -o json | jq -r '.serverVersion.gitVersion | sub("^v"; "")')"
 k8sVersion="$(awk -F= '$1 == "kubernetes/kubernetes" {print $2}' "$root/.versions")"
@@ -16,7 +16,7 @@ if [ "$currentVersion" = "$k8sVersion" ]; then
 fi
 
 dryRun=""
-if [ -z ${ROSEQUARTZ_DRY_RUN+x} ]; then
+if [ -z ${RQ_DRY_RUN+x} ]; then
     . "$cwd/etcd-backup.sh"
 else
     echo "Performing a dry run"

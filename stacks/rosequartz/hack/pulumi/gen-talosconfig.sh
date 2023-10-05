@@ -2,36 +2,36 @@
 
 set -eu
 
-if [ -z ${ROSEQUARTZ_SECRETS_FILE+x} ]; then
+if [ -z ${RQ_SECRETS_FILE+x} ]; then
     echo "Secrets must be provided"
     exit 1
 fi
 
-if [ -z ${ROSEQUARTZ_CLUSTER_NAME+x} ]; then
+if [ -z ${RQ_CLUSTER_NAME+x} ]; then
     echo "Cluster name must be provided"
     exit 1
 fi
 
-if [ -z ${ROSEQUARTZ_ENDPOINT+x} ]; then
+if [ -z ${RQ_ENDPOINT+x} ]; then
     echo "Endpoint must be provided"
     exit 1
 fi
 
-if [ -z ${ROSEQUARTZ_K8S_VERSION+x} ]; then
+if [ -z ${RQ_K8S_VERSION+x} ]; then
     echo "Kubernetes version must be provided"
     exit 1
 fi
 
-if [ -z ${ROSEQUARTZ_TALOS_VERSION+x} ]; then
+if [ -z ${RQ_TALOS_VERSION+x} ]; then
     echo "Talos version must be provided"
     exit 1
 fi
 
-CLUSTER_NAME="$ROSEQUARTZ_CLUSTER_NAME"
-ENDPOINT="$ROSEQUARTZ_ENDPOINT"
-SECRETS_FILE="$ROSEQUARTZ_SECRETS_FILE"
-K8S_VERSION="$ROSEQUARTZ_K8S_VERSION"
-TALOS_VERSION="v$ROSEQUARTZ_TALOS_VERSION"
+CLUSTER_NAME="$RQ_CLUSTER_NAME"
+ENDPOINT="$RQ_ENDPOINT"
+SECRETS_FILE="$RQ_SECRETS_FILE"
+K8S_VERSION="$RQ_K8S_VERSION"
+TALOS_VERSION="v$RQ_TALOS_VERSION"
 
 talosctl gen config "$CLUSTER_NAME" "$ENDPOINT" \
     --with-secrets "$SECRETS_FILE" \
