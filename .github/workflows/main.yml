@@ -151,4 +151,5 @@ jobs:
       - name: Pulumi Action
         uses: pulumi/actions@v4
         with:
+          stack-name: rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
