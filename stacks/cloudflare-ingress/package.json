@@ -1,0 +1,11 @@
+{
+    "name": "thecluster-cloudflare-ingress",
+    "main": "index.ts",
+    "devDependencies": {
+        "@types/node": "^16"
+    },
+    "dependencies": {
+        "@pulumi/kubernetes": "^4.3.0",
+        "@pulumi/pulumi": "^3.0.0"
+    }
+}
