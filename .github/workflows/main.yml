@@ -155,3 +155,4 @@ jobs:
         with:
           stack-name: UnstoppableMango/thecluster-cert-manager/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
+          work-dir: stacks/cert-manager
