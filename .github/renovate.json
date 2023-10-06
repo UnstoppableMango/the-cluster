@@ -24,7 +24,8 @@
     "stacks/media/**",
     "stacks/networking/**",
     "stacks/rancher/**",
-    "stacks/storage/**"
+    "stacks/storage/**",
+    "**/crds/**"
   ],
   "ignoreDeps": [
     "submodules/actions-runner-controller",
