@@ -1,14 +1,12 @@
-import * as pulumi from "@pulumi/pulumi";
+import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as cf from '@pulumi/cloudflare';
 
-const cfConfig = new pulumi.Config('cloudflare');
 const config = new pulumi.Config();
 const accountId = config.require('accountId');
-const zoneId = '22f1d42ba0fbe4f924905e1c6597055c';
+const zoneId = config.require('zoneId');
 
 const all = cf.getApiTokenPermissionGroups();
-
 const apiToken = new cf.ApiToken('cloudflare-ingress', {
   name: 'THECLUSTER-cloudflare-ingress',
   policies: [
@@ -16,7 +14,7 @@ const apiToken = new cf.ApiToken('cloudflare-ingress', {
       permissionGroups: all.then(x => [
         x.zone['Zone Read'],
         x.zone['DNS Write'],
-        x.account['Cloudflare Tunnel Edit'],
+        x.account['Argo Tunnel Write'],
       ]),
       resources: {
         [`com.cloudflare.api.account.${accountId}`]: '*',
@@ -36,7 +34,7 @@ const chart = new k8s.helm.v3.Chart('cloudflare-ingress', {
     values: {
       'cloudflare-tunnel-ingress-controller': {
         cloudflare: {
-          apiToken: cfConfig.requireSecret('apiToken'),
+          apiToken: apiToken.value,
           accountId: accountId,
           tunnelName: 'rosequartz-ingress',
         },
