@@ -26,6 +26,8 @@ spec:
             cpu: "500m"
         ports:
         - containerPort: 80
+        securityContext:
+          allowPrivilegeEscalation: false
 ---
 apiVersion: v1
 kind: Service
