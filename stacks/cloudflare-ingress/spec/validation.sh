@@ -16,12 +16,20 @@ echo "Applying test resources..."
 kubectl apply -f "$cwd/resources.yaml" --wait
 echo ""
 
-sleep 5
-
-if kubectl wait deployment test-deployment -n "$namespace" --for condition=Available=true --timeout=120s; then
+echo "Waiting for deployment to be available..."
+if kubectl wait deployment test-deployment -n "$namespace" --for condition=Available=true --timeout=120s 1>/dev/null; then
     echo "✅ Deployment is ready"
 else
     echo "❌ Deployment was not ready in time"
+fi
+
+echo ""
+
+echo "It should route traffic properly"
+if curl -s https://cf-ing-test.thecluster.io 1>/dev/null; then
+    echo "✅ Ingress is properly routing traffic!"
+else
+    echo "❌ Ingress is not routing traffic!"
 fi
 
 echo ""
