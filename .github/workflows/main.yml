@@ -194,6 +194,7 @@ jobs:
         working-directory: stacks/rosequartz
 
       - run: npm ci
+      - run: helm dependency build
 
       - name: Pulumi Action
         uses: pulumi/actions@v4
