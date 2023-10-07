@@ -168,7 +168,7 @@ jobs:
     concurrency: ${{ github.event_name }}
     defaults:
       run:
-        working-directory: stacks/cert-manager
+        working-directory: stacks/cloudflare-ingress
     env:
       TF_WORKSPACE: rosequartz-prod
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
