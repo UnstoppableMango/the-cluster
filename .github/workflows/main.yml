@@ -201,3 +201,7 @@ jobs:
           stack-name: UnstoppableMango/thecluster-cloudflare-ingress/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: stacks/cloudflare-ingress
+
+      - name: Validate
+        if: ${{ github.event_name == 'push' }}
+        run: ./spec/validation.sh
