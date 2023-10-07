@@ -1,0 +1,3 @@
+name: thecluster-dashboard
+runtime: nodejs
+description: Kubernetes Dashboard deployment for THECLUSTER
