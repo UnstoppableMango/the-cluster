@@ -194,7 +194,7 @@ jobs:
         working-directory: stacks/rosequartz
 
       - run: npm ci
-      - run: helm dependency build
+      - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
 
       - name: Pulumi Action
         uses: pulumi/actions@v4
