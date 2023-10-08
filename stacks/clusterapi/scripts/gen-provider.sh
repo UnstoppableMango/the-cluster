@@ -34,5 +34,8 @@ clusterctl generate provider --control-plane "kubeadm:v$capiVersion" > "$provide
 echo "Generating metal3 infrastructure v$metal3Version"
 clusterctl generate provider --infrastructure "metal3:v$metal3Version" > "$providerDir/metal3.yaml"
 
+export SIDERO_CONTROLLER_MANAGER_HOST_NETWORK=true
+export SIDERO_CONTROLLER_MANAGER_DEPLOYMENT_STRATEGY=Recreate
+export SIDERO_CONTROLLER_MANAGER_API_ENDPOINT="${RQ_ENDPOINT:-"10.5.0.2"}"
 echo "Generating sidero infrastructure v$sideroVersion"
 clusterctl generate provider --infrastructure "sidero:v$sideroVersion" > "$providerDir/sidero.yaml"

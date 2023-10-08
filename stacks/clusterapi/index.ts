@@ -4,30 +4,39 @@ import * as path from 'path';
 
 const core = new k8s.yaml.ConfigFile('core', {
   file: 'providers/core.yaml',
-  // transformations: [
-  //   (obj: any, opts: pulumi.CustomResourceOptions) => {
-  //     if (obj.kind === 'CustomResourceDefinition') {
-  //       obj.spec.versions = obj.spec.versions.filter((x: any) => {
-  //         const excluded = ['v1alpha1', 'v1alpha2', 'v1alpha3', 'v1alpha4'];
-  //         return x.storage || !excluded.includes(x.name);
-  //       });
-  //     }
-  //   },
-  // ],
 }, {
+  // Would be nice to find a way to ignore just the aggregated manager role rules, not all roles
   ignoreChanges: [
-    'spec.conversion.webhook.clientConfig.caBundle',
-    'rules', // SSA conflict for some reason
+    'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
+    'rules', // Aggregated ClusterRole will get rules filled in by controlplane
   ],
 });
 
-// const providers = new k8s.yaml.ConfigGroup('providers', {
-//   files: [
-//     // 'kubeadm-bootstrap.yaml',
-//     // 'kubeadm-controlplane.yaml',
-//     // 'metal3.yaml',
-//     'sidero.yaml',
-//     'talos-bootstrap.yaml',
-//     'talos-controlplane.yaml',
-//   ].map(x => path.join('providers', x)),
-// }, { dependsOn: core.ready });
+const bootstrap = new k8s.yaml.ConfigGroup('bootstrap', {
+  files: [
+    // 'kubeadm-bootstrap.yaml',
+    'talos-bootstrap.yaml',
+  ].map(x => path.join('providers', x)),
+}, { dependsOn: core.ready });
+
+const controlplane = new k8s.yaml.ConfigGroup('controlplane', {
+  files: [
+    // 'kubeadm-controlplane.yaml',
+    'talos-controlplane.yaml',
+  ].map(x => path.join('providers', x)),
+}, { dependsOn: bootstrap.ready });
+
+const infrastructure = new k8s.yaml.ConfigGroup('infrastructure', {
+  files: [
+    // 'metal3.yaml',
+    'sidero.yaml',
+  ].map(x => path.join('providers', x)),
+  transformations: [patchKubeRbacProxy],
+}, { dependsOn: controlplane.ready });
+
+function patchKubeRbacProxy(obj: any, opts: pulumi.CustomResourceOptions): void {
+  if (obj.kind !== 'Deployment') return;
+  obj.spec.template.spec.containers.forEach((x: any) => {
+    x.image = x.image.replace('0.4.1', '0.14.1');
+  });
+}

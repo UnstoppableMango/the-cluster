@@ -3782,7 +3782,7 @@ spec:
       cluster.x-k8s.io/v1beta1: v1alpha3
       control-plane: sidero-controller-manager
   strategy:
-    type: RollingUpdate
+    type: Recreate
   template:
     metadata:
       creationTimestamp: null
@@ -3797,7 +3797,7 @@ spec:
       containers:
       - args:
         - --metrics-bind-addr=127.0.0.1:8080
-        - --api-endpoint=-
+        - --api-endpoint=man.thecluster.io
         - --api-port=8081
         - --http-port=8081
         - --extra-agent-kernel-args=-
@@ -3921,6 +3921,7 @@ spec:
           requests:
             cpu: 50m
             memory: 128Mi
+      hostNetwork: true
       terminationGracePeriodSeconds: 10
       volumes:
       - name: cert
