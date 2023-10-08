@@ -5,7 +5,7 @@ set -e
 cwd="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 root="$(dirname "$cwd")"
 
-# TODO: Check if the targetd cluster is a docker cluster
+# TODO: Check if the targeted cluster is a docker cluster
 # The upgrade command does not appear to support the docker provisioner
 
 talosVersion="$(awk -F= '$1 == "siderolabs/talos" {print $2}' "$root/.versions")"
