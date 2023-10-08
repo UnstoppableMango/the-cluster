@@ -1,0 +1,5 @@
+kubernetes-sigs/cluster-api=1.5.2
+metal3-io/cluster-api-provider-metal3=1.5.1
+siderolabs/cluster-api-bootstrap-provider-talos=0.6.2
+siderolabs/cluster-api-control-plane-provider-talos=0.5.3
+siderolabs/sidero=0.6.0
