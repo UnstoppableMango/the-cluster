@@ -1,6 +1,11 @@
 #!/bin/bash
 
-set -eu
+set -e
+
+if ! command -v crd2pulumi >/dev/null 2>&1; then
+    echo "Install kubectl-slice first https://github.com/patrickdappollonio/kubectl-slice#installation"
+    exit 0
+fi
 
 cwd="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 root="$(dirname "$cwd")"
@@ -13,29 +18,40 @@ metal3Version="$(awk -F= '$1 == "metal3-io/cluster-api-provider-metal3" {print $
 cabptVersion="$(awk -F= '$1 == "siderolabs/cluster-api-bootstrap-provider-talos" {print $2}' "$root/.versions")"
 cacpptVersion="$(awk -F= '$1 == "siderolabs/cluster-api-control-plane-provider-talos" {print $2}' "$root/.versions")"
 sideroVersion="$(awk -F= '$1 == "siderolabs/sidero" {print $2}' "$root/.versions")"
+proxmoxVersion="$(awk -F= '$1 == "sp-yduck/cluster-api-provider-proxmox" {print $2}' "$root/.versions")"
 
 export CLUSTER_TOPOLOGY=true
 
-echo "Generating core v$capiVersion"
-clusterctl generate provider --core "cluster-api:v$capiVersion" > "$providerDir/core.yaml"
+function generate() {
+    module=$1
+    version=$2
+    name=$3
+    component=$4
+    config=$5
 
-echo "Generating kubeadm bootstrap v$capiVersion"
-clusterctl generate provider --bootstrap "kubeadm:v$capiVersion" > "$providerDir/kubeadm-bootstrap.yaml"
-
-echo "Generating talos bootstrap v$cabptVersion"
-clusterctl generate provider --bootstrap "talos:v$cabptVersion" > "$providerDir/talos-bootstrap.yaml"
-
-echo "Generating talos controlplane v$cacpptVersion"
-clusterctl generate provider --control-plane "talos:v$cacpptVersion" > "$providerDir/talos-controlplane.yaml"
-
-echo "Generating kubeadm controlplane v$capiVersion"
-clusterctl generate provider --control-plane "kubeadm:v$capiVersion" > "$providerDir/kubeadm-controlplane.yaml"
-
-echo "Generating metal3 infrastructure v$metal3Version"
-clusterctl generate provider --infrastructure "metal3:v$metal3Version" > "$providerDir/metal3.yaml"
+    echo "Generating $name v$version"
+    clusterctl generate provider $component "$module:v$version" $config > "$providerDir/$name.yaml"
+    mkdir -p "$providerDir/$name"
+    if [ -d "$providerDir/$name" ]; then rm -Rf "$providerDir/$name"; fi
+    kubectl-slice --input-file "$providerDir/$name.yaml" --output-dir "$providerDir/$name" --include-kind CustomResourceDefinition --template "crds.yaml"
+    kubectl-slice --input-file "$providerDir/$name.yaml" --output-dir "$providerDir/$name" --exclude-kind CustomResourceDefinition --template "resources.yaml"
+    rm "$providerDir/$name.yaml"
+}
 
 export SIDERO_CONTROLLER_MANAGER_HOST_NETWORK=true
 export SIDERO_CONTROLLER_MANAGER_DEPLOYMENT_STRATEGY=Recreate
 export SIDERO_CONTROLLER_MANAGER_API_ENDPOINT="${RQ_ENDPOINT:-"10.5.0.2"}"
-echo "Generating sidero infrastructure v$sideroVersion"
-clusterctl generate provider --infrastructure "sidero:v$sideroVersion" > "$providerDir/sidero.yaml"
+
+generate "cluster-api" $capiVersion "core" --core
+generate "kubeadm" $capiVersion "kubeadm-bootstrap" --bootstrap
+generate "talos" $cabptVersion "talos-bootstrap" --bootstrap
+generate "talos" $cacpptVersion "talos-controlplane" --control-plane
+generate "kubeadm" $capiVersion "kubeadm-controlplane" --control-plane
+generate "metal3" $metal3Version "metal3" --infrastructure
+generate "sidero" $sideroVersion "sidero" --infrastructure
+generate "proxmox" $proxmoxVersion "proxmox" --infrastructure "--config https://raw.githubusercontent.com/sp-yduck/cluster-api-provider-proxmox/main/clusterctl.yaml"
+
+# export CONTROLPLANE_HOST=X.X.X.X # control-plane vip
+# export PROXMOX_URL=https://X.X.X.X:8006/api2/json
+# export PROXMOX_PASSWORD=password
+# export PROXMOX_USER=user@pam
