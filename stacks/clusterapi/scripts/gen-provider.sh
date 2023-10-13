@@ -23,10 +23,10 @@ proxmoxVersion="$(awk -F= '$1 == "sp-yduck/cluster-api-provider-proxmox" {print 
 export CLUSTER_TOPOLOGY=true
 
 function generate() {
-    module=$1
-    version=$2
-    name=$3
-    component=$4
+    component=$1
+    module=$2
+    version=$3
+    name=$4
     config=$5
 
     echo "Generating $name v$version"
@@ -42,16 +42,11 @@ export SIDERO_CONTROLLER_MANAGER_HOST_NETWORK=true
 export SIDERO_CONTROLLER_MANAGER_DEPLOYMENT_STRATEGY=Recreate
 export SIDERO_CONTROLLER_MANAGER_API_ENDPOINT="${RQ_ENDPOINT:-"10.5.0.2"}"
 
-generate "cluster-api" $capiVersion "core" --core
-generate "kubeadm" $capiVersion "kubeadm-bootstrap" --bootstrap
-generate "talos" $cabptVersion "talos-bootstrap" --bootstrap
-generate "talos" $cacpptVersion "talos-controlplane" --control-plane
-generate "kubeadm" $capiVersion "kubeadm-controlplane" --control-plane
-generate "metal3" $metal3Version "metal3" --infrastructure
-generate "sidero" $sideroVersion "sidero" --infrastructure
-generate "proxmox" $proxmoxVersion "proxmox" --infrastructure "--config https://raw.githubusercontent.com/sp-yduck/cluster-api-provider-proxmox/main/clusterctl.yaml"
-
-# export CONTROLPLANE_HOST=X.X.X.X # control-plane vip
-# export PROXMOX_URL=https://X.X.X.X:8006/api2/json
-# export PROXMOX_PASSWORD=password
-# export PROXMOX_USER=user@pam
+generate --core "cluster-api" $capiVersion "core"
+# generate --bootstrap "kubeadm" $capiVersion "kubeadm-bootstrap"
+generate --bootstrap "talos" $cabptVersion "talos-bootstrap"
+generate --control-plane "talos" $cacpptVersion "talos-controlplane"
+# generate --control-plane "kubeadm" $capiVersion "kubeadm-controlplane"
+# generate --infrastructure "metal3" $metal3Version "metal3"
+# generate --infrastructure "sidero" $sideroVersion "sidero"
+generate --infrastructure "proxmox" $proxmoxVersion "proxmox" "--config https://raw.githubusercontent.com/sp-yduck/cluster-api-provider-proxmox/main/clusterctl.yaml"

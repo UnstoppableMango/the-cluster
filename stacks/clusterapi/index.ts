@@ -9,7 +9,7 @@ const crds = new k8s.yaml.ConfigGroup('crds', {
     // 'kubeadm-controlplane/crds.yaml',
     // 'metal3/crds.yaml',
     'proxmox/crds.yaml',
-    'sidero/crds.yaml',
+    // 'sidero/crds.yaml',
     'talos-bootstrap/crds.yaml',
     'talos-controlplane/crds.yaml',
   ].map(x => path.join('providers', x)),
@@ -31,6 +31,7 @@ const bootstrap = new k8s.yaml.ConfigGroup('bootstrap', {
     // 'kubeadm-bootstrap/resources.yaml',
     'talos-bootstrap/resources.yaml',
   ].map(x => path.join('providers', x)),
+  transformations: [patchControllerManagerPorts],
 }, { dependsOn: core.ready });
 
 const controlplane = new k8s.yaml.ConfigGroup('controlplane', {
@@ -38,19 +39,37 @@ const controlplane = new k8s.yaml.ConfigGroup('controlplane', {
     // 'kubeadm-controlplane/resources.yaml',
     'talos-controlplane/resources.yaml',
   ].map(x => path.join('providers', x)),
+  transformations: [patchControllerManagerPorts],
 }, { dependsOn: bootstrap.ready });
 
 const infrastructure = new k8s.yaml.ConfigGroup('infrastructure', {
   files: [
     // 'metal3/resources.yaml',
-    'sidero/resources.yaml',
+    // 'sidero/resources.yaml',
+    'proxmox/resources.yaml',
   ].map(x => path.join('providers', x)),
   transformations: [patchKubeRbacProxy],
 }, { dependsOn: controlplane.ready });
 
+// Sidero currently has an old rbac-proxy version that doesn't support ARM64
 function patchKubeRbacProxy(obj: any, opts: pulumi.CustomResourceOptions): void {
   if (obj.kind !== 'Deployment') return;
   obj.spec.template.spec.containers.forEach((x: any) => {
     x.image = x.image.replace('0.4.1', '0.14.1');
+  });
+}
+
+function patchControllerManagerPorts(obj: any, opts: pulumi.CustomResourceOptions): void {
+  if (obj.kind !== 'Deployment') return;
+
+  const deployments = ['cabpt-controller-manager', 'cacppt-controller-manager'];
+
+  if (!deployments.includes(obj.metadata.name)) return;
+
+  // Seems to be a bug in the templates. Metrics binds to 8080, but there is no corresponding port
+  obj.spec.template.spec.containers[0].ports.push({
+    containerPort: 8080,
+    name: 'https',
+    protocol: 'TCP',
   });
 }
