@@ -1,0 +1,3 @@
+name: thecluster-metrics-server
+runtime: nodejs
+description: Metrics Server install for THECLUSTER
