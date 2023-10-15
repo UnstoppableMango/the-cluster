@@ -27,6 +27,7 @@ jobs:
       rosequartz: ${{ steps.stacks.outputs.rosequartz }}
       cert-manager: ${{ steps.stacks.outputs.cert-manager }}
       cloudflare-ingress: ${{ steps.stacks.outputs.cloudflare-ingress }}
+      dashboard: ${{ steps.stacks.outputs.dashboard }}
 
   rosequartz:
     name: Rosequartz Stack
@@ -123,7 +124,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [setup, rosequartz]
     if: fromJson(needs.setup.outputs.cert-manager) && !failure() && !cancelled()
-    concurrency: cer-manager-${{ github.event_name }}
+    concurrency: cert-manager-${{ github.event_name }}
     defaults:
       run:
         working-directory: stacks/cert-manager
@@ -152,6 +153,7 @@ jobs:
         working-directory: stacks/rosequartz
 
       - run: npm ci
+      - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
 
       - name: Pulumi Action
         uses: pulumi/actions@v4
@@ -202,6 +204,53 @@ jobs:
           stack-name: UnstoppableMango/thecluster-cloudflare-ingress/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: stacks/cloudflare-ingress
+
+      - name: Validate
+        if: ${{ github.event_name == 'push' }}
+        run: ./spec/validation.sh
+
+  dashboard:
+    name: Kubernetes Dashboard Stack
+    runs-on: ubuntu-latest
+    needs: [setup, rosequartz, cloudflare-ingress]
+    if: fromJson(needs.setup.outputs.dashboard) && !failure() && !cancelled()
+    concurrency: dashboard-${{ github.event_name }}
+    defaults:
+      run:
+        working-directory: stacks/dashboard
+    env:
+      TF_WORKSPACE: rosequartz-prod
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: stacks/dashboard/package-lock.json
+
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.7
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+          terraform_wrapper: false
+
+      - name: Setup kubeconfig
+        run: |
+          terraform init -lockfile=readonly
+          terraform output -raw kubeconfig > kubeconfig
+          echo "KUBECONFIG=$(pwd)/kubeconfig" >> "$GITHUB_ENV"
+        working-directory: stacks/rosequartz
+
+      - run: npm ci
+      - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
+
+      - name: Pulumi Action
+        uses: pulumi/actions@v4
+        with:
+          stack-name: UnstoppableMango/thecluster-dashboard/rosequartz
+          command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
+          work-dir: stacks/dashboard
 
       - name: Validate
         if: ${{ github.event_name == 'push' }}
