@@ -83,6 +83,11 @@ resource "talos_machine_configuration_apply" "controlplane" {
           hostname = each.value.hostname
         }
         certSANs = local.cert_sans
+        kubelet = {
+          extraArgs = {
+            rotate-server-certificates = true
+          }
+        }
       }
     })
   ]
