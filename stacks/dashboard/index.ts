@@ -1,7 +1,15 @@
 import * as k8s from '@pulumi/kubernetes';
+import { Buffer } from 'buffer';
 
 const ns = new k8s.core.v1.Namespace('dashboard', {
   metadata: { name: 'dashboard' },
+});
+
+const serviceAccount = new k8s.core.v1.ServiceAccount('admin', {
+  metadata: {
+    name: 'admin',
+    namespace: ns.metadata.name,
+  },
 });
 
 const chart = new k8s.helm.v3.Chart('dashboard', {
@@ -9,8 +17,13 @@ const chart = new k8s.helm.v3.Chart('dashboard', {
   namespace: ns.metadata.name,
   values: {
     'kubernetes-dashboard': {
-      nginx: { enabled: false },
-      'cert-manager': { enabled: false },
+      // v3 config
+      // nginx: { enabled: false },
+      // 'cert-manager': { enabled: false },
+      serviceAccount: {
+        create: false,
+        name: serviceAccount.metadata.name,
+      },
       ingress: {
         enabled: true,
         className: 'cloudflare-tunnel',
@@ -42,3 +55,31 @@ const chart = new k8s.helm.v3.Chart('dashboard', {
     },
   },
 });
+
+const adminSecret = new k8s.core.v1.Secret('ui-token', {
+  metadata: {
+    name: 'ui-token',
+    namespace: ns.metadata.name,
+    annotations: {
+      'kubernetes.io/service-account.name': serviceAccount.metadata.name,
+    }
+  },
+  type: 'kubernetes.io/service-account-token',
+}, { dependsOn: chart.ready });
+
+const clusterRoleBinding = new k8s.rbac.v1.ClusterRoleBinding('admin', {
+  metadata: { name: 'dashboard-admin' },
+  roleRef: {
+    apiGroup: 'rbac.authorization.k8s.io',
+    kind: 'ClusterRole',
+    name: 'cluster-admin',
+  },
+  subjects: [{
+    kind: 'ServiceAccount',
+    name: serviceAccount.metadata.name,
+    namespace: ns.metadata.name,
+  }],
+});
+
+const btoa = (x: string) => Buffer.from(x, 'base64').toString('binary');
+export const uiToken = adminSecret.data['token'].apply(btoa);
