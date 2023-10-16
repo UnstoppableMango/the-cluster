@@ -3,8 +3,8 @@ name: Validate Modified Stacks Action
 on:
   pull_request:
     branches: [v2]
-    paths: ['.github/actions/modified-stacks']
-  
+    paths: ['.github/actions/modified-stacks/**']
+
 jobs:
   validate:
     runs-on: ubuntu-latest
