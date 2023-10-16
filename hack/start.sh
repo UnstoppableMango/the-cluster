@@ -39,6 +39,7 @@ function start-rosequartz() {
 
 function deploy-cert-manager() {
     # "$root/stacks/cert-manager"
+    echo "TODO"
 }
 
 check-tools
