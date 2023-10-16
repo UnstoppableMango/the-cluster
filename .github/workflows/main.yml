@@ -255,4 +255,3 @@ jobs:
       - name: Validate
         if: ${{ github.event_name == 'push' }}
         run: ./spec/validation.sh
-rosequartz-v2-kubelet-cert-approver
