@@ -1,0 +1,26 @@
+name: Validate Modified Stacks Action
+
+on:
+  pull_request:
+    branches: [v2]
+    paths: ['.github/actions/modified-stacks']
+  
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .github/actions/modified-stacks
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+          cache-dependency-path: .github/actions/modified-stacks/package-lock.json
+
+      - run: npm ci
+      - run: build.sh
+
+      - name: Verify action has been built
+        run: '[ -z "$(git status --porcelain)" ] || exit 1'
