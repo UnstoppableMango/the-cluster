@@ -28,14 +28,14 @@ console.log(`Found ${files.length} changed files:`, files);
 const modified = files.map(x => x.split(path.sep))
     .filter(x => x.length > 2) // Only look at directories
     .filter(x => x[0] === 'stacks')
-    .filter((x, i, a) => a.indexOf(x) === i) // Distinct
-    .map(x => x[1]);
+    .map(x => x[1])
+    .filter((x, i, a) => a.indexOf(x) === i); // Distinct
 
 console.log('Modified stacks: ', modified);
 
 const isPush = github.context.eventName === 'push';
-stacks.forEach(x => {
-  const result = modified.includes(x) || isPush;
-  console.log('Setting output: ', x, result);
-  core.setOutput(x, result);
+stacks.forEach(stack => {
+  const result = modified.includes(stack) || isPush;
+  console.log('Setting output: ', stack, result);
+  core.setOutput(stack, result);
 });
