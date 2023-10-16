@@ -1,6 +1,7 @@
 locals {
   k8s_version      = regex("kubernetes\\/kubernetes=(?P<version>.*)\\s?#?.*", file(".versions"))["version"]
   talos_version    = regex("siderolabs\\/talos=(?P<version>.*)\\s?#?.*", file(".versions"))["version"]
+  ksca_version     = regex("alex1989hu\\/kubelet-serving-cert-approver=(?P<version>.*)\\s?#?.*", file(".versions"))["version"]
   installer_image  = "ghcr.io/siderolabs/installer:v${local.talos_version}"
   all_node_data    = merge(var.node_data.controlplanes, var.node_data.workers)
   zone_id          = "22f1d42ba0fbe4f924905e1c6597055c"
@@ -73,6 +74,9 @@ resource "talos_machine_configuration_apply" "controlplane" {
         apiServer = {
           certSANs = local.cert_sans
         }
+        extraManifests = [
+          "https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/v${local.ksca_version}/deploy/standalone-install.yaml"
+        ]
       }
       machine = {
         install = {
@@ -83,6 +87,11 @@ resource "talos_machine_configuration_apply" "controlplane" {
           hostname = each.value.hostname
         }
         certSANs = local.cert_sans
+        kubelet = {
+          extraArgs = {
+            rotate-server-certificates = true
+          }
+        }
       }
     })
   ]
