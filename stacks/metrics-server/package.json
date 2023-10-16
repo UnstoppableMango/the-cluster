@@ -1,0 +1,11 @@
+{
+    "name": "thecluster-metrics-server",
+    "main": "index.ts",
+    "devDependencies": {
+        "@types/node": "^16.18.58"
+    },
+    "dependencies": {
+        "@pulumi/kubernetes": "^4.4.0",
+        "@pulumi/pulumi": "^3.88.1"
+    }
+}

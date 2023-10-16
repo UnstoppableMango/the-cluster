@@ -1,6 +1,7 @@
 #!/bin/bash
 set -eu
 
+exitCode=0
 namespace="dashboard"
 
 echo -e "Running Kubernetes Dashboard tests\n"
@@ -10,6 +11,7 @@ if kubectl wait deployment dashboard-kubernetes-dashboard -n "$namespace" --for 
     echo -e "✅ Deployment is ready!\n"
 else
     echo -e "❌ Deployment was not ready in time!\n"
+    exitCode=1
 fi
 
 echo "curl -s 'https://dashboard.thecluster.io'"
@@ -17,4 +19,7 @@ if curl -s 'https://dashboard.thecluster.io' 1>/dev/null; then
     echo -e "✅ Dashboard is publicly accessible!\n"
 else
     echo -e "❌ Dashboard is not publicly accessible!\n"
+    exitCode=1
 fi
+
+exit $exitCode
