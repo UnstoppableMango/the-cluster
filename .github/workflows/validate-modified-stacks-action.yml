@@ -20,7 +20,7 @@ jobs:
           cache-dependency-path: .github/actions/modified-stacks/package-lock.json
 
       - run: npm ci
-      - run: ./build.sh
+      - run: npm run build
 
       - name: Verify action has been built
         run: '[ -z "$(git status --porcelain)" ] || git status && exit 1'
