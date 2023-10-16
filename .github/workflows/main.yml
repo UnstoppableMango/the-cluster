@@ -28,7 +28,6 @@ jobs:
       cert-manager: ${{ steps.stacks.outputs.cert-manager }}
       cloudflare-ingress: ${{ steps.stacks.outputs.cloudflare-ingress }}
       dashboard: ${{ steps.stacks.outputs.dashboard }}
-      kubelet-serving-cert-approver: ${{ steps.stacks.outputs.kubelet-serving-cert-approver }}
 
   rosequartz:
     name: Rosequartz Stack
@@ -256,3 +255,4 @@ jobs:
       - name: Validate
         if: ${{ github.event_name == 'push' }}
         run: ./spec/validation.sh
+rosequartz-v2-kubelet-cert-approver
