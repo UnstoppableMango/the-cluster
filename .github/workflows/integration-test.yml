@@ -1,0 +1,75 @@
+name: Integration Test
+
+on:
+  pull_request:
+    branches: [v2]
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+    if: github.actor == 'renovate[bot]'
+    concurrency: integration-test-${{ github.head_ref }}
+    env:
+      RQ_STACK: ci
+      RQ_TALOSCONFIG: talosconfig
+      RQ_KUBECONFIG: kubeconfig
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.7
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+          terraform_wrapper: false
+
+      # TODO: Get a specfic version
+      - name: Install talosctl
+        run: curl -sL https://talos.dev/install | sh
+
+      - name: Terraform Init
+        working-directory: stacks/rosequartz
+        run: terraform init -lockfile=readonly
+        env:
+          TF_WORKSPACE: rosequartz-ci
+
+      - name: Setup workspace
+        id: setup-workspace
+        working-directory: stacks/rosequartz
+        run: |
+          workspace="rosequartz-${GITHUB_HEAD_REF//[\/.]/-}"
+          terraform workspace new "$workspace"
+          terraform workspace select "$workspace"
+          echo "workspace=$workspace" >> "$GITHUB_OUTPUT"
+
+      - name: Create test node
+        working-directory: stacks/rosequartz
+        run: docker compose -f ci/docker-compose.yaml up -d
+        timeout-minutes: 1
+
+      - name: Terraform Apply
+        working-directory: stacks/rosequartz
+        run: terraform apply -var-file=vars/$RQ_STACK.tfvars -auto-approve
+        timeout-minutes: 5
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Write configuration files
+        working-directory: stacks/rosequartz
+        run: |
+          terraform output -raw talosconfig > "$RQ_TALOSCONFIG"
+          terraform output -raw kubeconfig > "$RQ_KUBECONFIG"
+
+      - name: Cluster validation
+        working-directory: stacks/rosequartz
+        run: ./spec/validation.sh
+
+      - name: Tear down
+        if: '!cancelled()'
+        working-directory: stacks/rosequartz
+        run: |
+          terraform destroy -auto-approve
+          terraform workspace select rosequartz-ci
+          terraform workspace delete "${{ steps.setup-workspace.outputs.workspace }}"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        timeout-minutes: 5
