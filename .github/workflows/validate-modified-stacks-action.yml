@@ -23,4 +23,4 @@ jobs:
       - run: ./build.sh
 
       - name: Verify action has been built
-        run: '[ -z "$(git status --porcelain)" ] || exit 1'
+        run: '[ -z "$(git status --porcelain)" ] || git status && exit 1'
