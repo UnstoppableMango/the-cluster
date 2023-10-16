@@ -2,8 +2,8 @@
 
 set -eum
 
-cwd="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
-root="$(dirname "$cwd")"
+root="$(git rev-parse --show-toplevel)/stacks/rosequartz"
+cwd="$root/hack"
 
 stack="${RQ_STACK:-ci}"
 talosconfig="${RQ_TALOSCONFIG:-"$root/.talos/$stack/talosconfig"}"
@@ -15,7 +15,7 @@ if [ "$stack" = "prod" ] || [ "$(terraform workspace show)" = "rosequartz-prod" 
 fi
 
 echo "Creating cluster..."
-timeout 1m docker compose -f "$cwd/docker-compose.yaml" up -d
+timeout 1m docker compose -f "$root/ci/docker-compose.yaml" up -d
 
 # Wait to enter maintenance mdoe
 sleep 3

@@ -1,8 +1,6 @@
 #!/bin/bash
 
-set -e
-
-terraform workspace select rosequartz-ci
+echo "Cleaning up $(terraform workspace show)"
 
 while read resource; do
     terraform state rm "$resource"

@@ -2,8 +2,8 @@
 
 set -eum
 
-cwd="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
-root="$(dirname "$cwd")"
+root="$(git rev-parse --show-toplevel)/stacks/rosequartz"
+cwd="$root/hack"
 
 stack="${RQ_STACK:-ci}"
 talosconfig="${RQ_TALOSCONFIG:-"$root/.talos/$stack/talosconfig"}"
@@ -18,6 +18,6 @@ echo "Destroying terraform configuration..."
 timeout 1m terraform -chdir="$root" destroy -var-file="vars/ci.tfvars" -auto-approve
 
 echo "Destroying cluster..."
-docker compose -f "$cwd/docker-compose.yaml" down -v
+docker compose -f "$root/ci/docker-compose.yaml" down -v
 
 rm "$talosconfig" "$kubeconfig"

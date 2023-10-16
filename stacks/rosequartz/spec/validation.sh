@@ -98,12 +98,19 @@ else
     exitCode=1
 fi
 
+echo ""
+
+echo "Waiting for kubelet-serving-cert-approver deployment to be available..."
+if kubectl wait deployment kubelet-serving-cert-approver -n "kubelet-serving-cert-approver" --for condition=Available=true --timeout=120s 1>/dev/null; then
+    echo -e "✅ Deployment is ready!\n"
+else
+    echo -e "❌ Deployment was not ready in time!\n"
+fi
+
 if ! command -v talosctl &> /dev/null; then
     echo "talosctl does not appear to be installed, skipping remaining tests"
     exit $exitCode
 fi
-
-echo ""
 
 echo "Checking cluster health..."
 clusterHealth="$(talosctl health 2>&1)"
