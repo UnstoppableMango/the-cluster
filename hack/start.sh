@@ -28,13 +28,18 @@ function check-tools() {
     echo "Tools are installed!"
 }
 
-function check-vars() {
-    export CLOUDFLARE_API_TOKEN="test-token"
-    export RQ_STACK="dev"
-}
-
 function start-rosequartz() {
-    $root/clusters/rosequartz/hack/up.sh
+    pushd $root/stacks/rosequartz/
+    terraform init
+
+    echo "Select the stack to use"
+    options=("dev" "prod")
+    select_option "${options[@]}"
+    stack=${options[$?]}
+
+    terraform workspace select "rosequartz-$stack"
+    ./hack/up.sh
+    popd
 }
 
 function deploy-cert-manager() {
@@ -43,10 +48,14 @@ function deploy-cert-manager() {
 }
 
 check-tools
-check-vars
+
+export CLOUDFLARE_API_TOKEN="test-token"
+export RQ_STACK="dev"
 
 root="$(git rev-parse --show-toplevel)"
 echo "root: $root"
+
+source $root/hack/select-option.sh
 
 start-rosequartz
 deploy-cert-manager
