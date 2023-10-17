@@ -113,6 +113,9 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
+      - run: kubectl logs -n cloudflare-ingress cloudflare-ingress-cloudflare-tunnel-ingress-controller
+        if: failure()
+
       - run: ./spec/validation.sh
         working-directory: stacks/cloudflare-ingress
 
