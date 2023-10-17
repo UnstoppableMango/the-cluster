@@ -5,10 +5,11 @@ import * as cf from '@pulumi/cloudflare';
 const config = new pulumi.Config();
 const accountId = config.require('accountId');
 const zoneId = config.require('zoneId');
+const suffix = config.get('suffix') ? `-${config.get('suffix')}` : '';
 
 const all = cf.getApiTokenPermissionGroups();
 const apiToken = new cf.ApiToken('cloudflare-ingress', {
-  name: 'THECLUSTER-cloudflare-ingress',
+  name: `THECLUSTER-cloudflare-ingress${suffix}`,
   policies: [
     {
       permissionGroups: all.then(x => [
@@ -36,7 +37,7 @@ const chart = new k8s.helm.v3.Chart('cloudflare-ingress', {
         cloudflare: {
           apiToken: apiToken.value,
           accountId: accountId,
-          tunnelName: 'rosequartz-ingress',
+          tunnelName: `rosequartz-ingress${suffix}`,
         },
         image: {
           repository: 'ghcr.io/unstoppablemango/cloudflare-tunnel-ingress-controller',

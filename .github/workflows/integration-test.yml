@@ -94,10 +94,41 @@ jobs:
       - run: ./spec/validation.sh
         working-directory: stacks/cert-manager
 
+      - run: npm ci
+        working-directory: stacks/cloudflare-ingress
+
+      - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
+        working-directory: stacks/cloudflare-ingress
+
+      - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
+        working-directory: stacks/cloudflare-ingress
+
+      - uses: pulumi/actions@v4
+        with:
+          stack-name: UnstoppableMango/thecluster-cloudflare-ingress/rq-${{ env.STACK_ID }}
+          command: up
+          work-dir: stacks/cloudflare-ingress
+          config-map: |
+            suffix: ${{ env.STACK_ID }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - run: ./spec/validation.sh
+        working-directory: stacks/cloudflare-ingress
+
+      - name: Tear down cloudflare-ingress
+        if: always()
+        working-directory: stacks/cloudflare-ingress
+        run: |
+          pulumi down -yf
+          pulumi stack rm -yf "rq-$STACK_ID"
+
       - name: Tear down cert-manager
         if: always()
         working-directory: stacks/cert-manager
-        run: pulumi stack rm -yf "rq-$STACK_ID"
+        run: |
+          pulumi down -yf
+          pulumi stack rm -yf "rq-$STACK_ID"
 
       - name: Tear down rosequartz
         if: always()
