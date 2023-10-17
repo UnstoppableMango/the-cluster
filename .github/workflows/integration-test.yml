@@ -3,16 +3,21 @@ name: Integration Test
 on:
   pull_request:
     branches: [v2]
+  workflow_dispatch:
 
 jobs:
   integration-test:
     runs-on: ubuntu-latest
     if: github.actor == 'renovate[bot]'
-    concurrency: integration-test-${{ github.head_ref }}
     env:
       RQ_STACK: ci
-      RQ_TALOSCONFIG: talosconfig
-      RQ_KUBECONFIG: kubeconfig
+      RQ_TALOSCONFIG: ${{ github.workspace }}/talosconfig
+      RQ_KUBECONFIG: ${{ github.workspace }}/kubeconfig
+      TALOSCONFIG: ${{ github.workspace }}/talosconfig
+      KUBECONFIG: ${{ github.workspace }}/kubeconfig
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      CLOUDFLARE_API_TOKEN: bogus
+      STACK_ID: ${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
 
@@ -21,6 +26,14 @@ jobs:
           terraform_version: 1.5.7
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
           terraform_wrapper: false
+
+      - uses: pulumi/actions@v4
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
 
       # TODO: Get a specfic version
       - name: Install talosctl
@@ -36,7 +49,7 @@ jobs:
         id: setup-workspace
         working-directory: stacks/rosequartz
         run: |
-          workspace="rosequartz-${GITHUB_HEAD_REF//[\/.]/-}"
+          workspace="rosequartz-$STACK_ID"
           terraform workspace new "$workspace"
           terraform workspace select "$workspace"
           echo "workspace=$workspace" >> "$GITHUB_OUTPUT"
@@ -48,10 +61,8 @@ jobs:
 
       - name: Terraform Apply
         working-directory: stacks/rosequartz
-        run: terraform apply -var-file=vars/$RQ_STACK.tfvars -auto-approve
+        run: terraform apply -var-file=vars/ci.tfvars -auto-approve
         timeout-minutes: 5
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       - name: Write configuration files
         working-directory: stacks/rosequartz
@@ -59,17 +70,38 @@ jobs:
           terraform output -raw talosconfig > "$RQ_TALOSCONFIG"
           terraform output -raw kubeconfig > "$RQ_KUBECONFIG"
 
-      - name: Cluster validation
+      - name: Rosequartz validation
         working-directory: stacks/rosequartz
         run: ./spec/validation.sh
 
-      - name: Tear down
-        if: '!cancelled()'
+      - run: npm ci
+        working-directory: stacks/cert-manager
+
+      - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
+        working-directory: stacks/cert-manager
+
+      - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
+        working-directory: stacks/cert-manager
+
+      - uses: pulumi/actions@v4
+        with:
+          stack-name: UnstoppableMango/thecluster-cert-manager/rosequartz
+          command: up
+          work-dir: stacks/cert-manager
+
+      - run: ./spec/validation.sh
+        working-directory: stacks/cert-manager
+
+      - name: Tear down cert-manager
+        if: always()
+        working-directory: stacks/cert-manager
+        run: pulumi stack rm -yf "rq-$STACK_ID"
+
+      - name: Tear down rosequartz
+        if: always()
         working-directory: stacks/rosequartz
         run: |
           terraform destroy -auto-approve
           terraform workspace select rosequartz-ci
           terraform workspace delete "${{ steps.setup-workspace.outputs.workspace }}"
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         timeout-minutes: 5
