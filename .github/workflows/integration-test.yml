@@ -4,11 +4,13 @@ on:
   pull_request:
     branches: [v2]
   workflow_dispatch:
+  push:
+    branches: [v2-integration-test]
 
 jobs:
   integration-test:
     runs-on: ubuntu-latest
-    if: github.actor == 'renovate[bot]'
+    # if: github.actor == 'renovate[bot]'
     env:
       RQ_STACK: ci
       RQ_TALOSCONFIG: ${{ github.workspace }}/talosconfig
