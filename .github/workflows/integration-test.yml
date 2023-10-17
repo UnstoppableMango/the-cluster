@@ -87,7 +87,7 @@ jobs:
 
       - uses: pulumi/actions@v4
         with:
-          stack-name: UnstoppableMango/thecluster-cert-manager/rosequartz
+          stack-name: UnstoppableMango/thecluster-cert-manager/rq-${{ env.STACK_ID }}
           command: up
           work-dir: stacks/cert-manager
 
