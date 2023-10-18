@@ -955,7 +955,7 @@ spec:
       containers:
       - args:
         - --metrics-bind-addr=127.0.0.1:8080
-        - --api-endpoint=man.thecluster.io
+        - --api-endpoint=192.168.1.101
         - --api-port=8081
         - --http-port=8081
         - --extra-agent-kernel-args=-
