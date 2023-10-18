@@ -8,8 +8,8 @@ const crds = new k8s.yaml.ConfigGroup('crds', {
     // 'kubeadm-bootstrap/crds.yaml',
     // 'kubeadm-controlplane/crds.yaml',
     // 'metal3/crds.yaml',
-    'proxmox/crds.yaml',
-    // 'sidero/crds.yaml',
+    // 'proxmox/crds.yaml',
+    'sidero/crds.yaml',
     'talos-bootstrap/crds.yaml',
     'talos-controlplane/crds.yaml',
   ].map(x => path.join('providers', x)),
@@ -45,8 +45,8 @@ const controlplane = new k8s.yaml.ConfigGroup('controlplane', {
 const infrastructure = new k8s.yaml.ConfigGroup('infrastructure', {
   files: [
     // 'metal3/resources.yaml',
-    // 'sidero/resources.yaml',
-    'proxmox/resources.yaml',
+    'sidero/resources.yaml',
+    // 'proxmox/resources.yaml',
   ].map(x => path.join('providers', x)),
   transformations: [patchKubeRbacProxy],
 }, { dependsOn: controlplane.ready });
