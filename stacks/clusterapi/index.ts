@@ -2,6 +2,10 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as path from 'path';
 
+const config = new pulumi.Config();
+
+const uefiVersion = config.require('uefiVersion');
+
 const crds = new k8s.yaml.ConfigGroup('crds', {
   files: [
     'core/crds.yaml',
@@ -48,7 +52,7 @@ const infrastructure = new k8s.yaml.ConfigGroup('infrastructure', {
     'sidero/resources.yaml',
     // 'proxmox/resources.yaml',
   ].map(x => path.join('providers', x)),
-  transformations: [patchKubeRbacProxy],
+  transformations: [patchKubeRbacProxy, patchSidero],
 }, { dependsOn: controlplane.ready });
 
 // Sidero currently has an old rbac-proxy version that doesn't support ARM64
@@ -71,5 +75,40 @@ function patchControllerManagerPorts(obj: any, opts: pulumi.CustomResourceOption
     containerPort: 8080,
     name: 'https',
     protocol: 'TCP',
+  });
+}
+
+function patchSidero(obj: any, opts: pulumi.CustomResourceOptions): void {
+  if (obj.kind !== 'Deployment') return;
+  if (obj.metadata.name !== 'sidero-controller-manager') return;
+
+  if (!obj.spec.template.spec.volumes) {
+    obj.spec.template.spec.volumes = [];
+  }
+
+  obj.spec.template.spec.volumes.push({
+    name: 'tftp-folder',
+    emptyDir: {},
+  });
+
+  if (!obj.spec.template.spec.initContainers) {
+    obj.spec.template.spec.initContainers = [];
+  }
+
+  obj.spec.template.spec.initContainers.push({
+    image: `ghcr.io/unstoppablemango/raspberrypi4-uefi:v${uefiVersion}`,
+    imagePullPolicy: 'Always',
+    name: 'tftp-folder-setup',
+    command: ['cp'],
+    args: ['-r', '/tftp', '/var/lib/sidero'],
+    volumeMounts: [{
+      mountPath: '/var/lib/sidero/tftp',
+      name: 'tftp-folder',
+    }],
+  });
+
+  obj.spec.template.spec.containers.find((x: any) => x.name === 'manager').volumeMounts.push({
+    mountPath: '/var/lib/sidero/tftp',
+    name: 'tftp-folder',
   });
 }
