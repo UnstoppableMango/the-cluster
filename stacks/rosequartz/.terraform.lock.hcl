@@ -26,6 +26,7 @@ provider "registry.terraform.io/siderolabs/talos" {
   version     = "0.4.0-alpha.0"
   constraints = "0.4.0-alpha.0"
   hashes = [
+    "h1:B2J8A44RKvc7IAzXCZTo1eMYp09Vc+CwSWM06EmGgv8=",
     "h1:LygqCd18h7jYuQAR6CzajEN9lhA4gPQn7SKHcxVhSxc=",
     "zh:0f7561370fe15a33b7ded55fe27a21f6e45b2a4950502edfcdb583fd91771239",
     "zh:0fa82a384b25a58b65523e0ea4768fa1212b1f5cfc0c9379d31162454fedcc9d",
