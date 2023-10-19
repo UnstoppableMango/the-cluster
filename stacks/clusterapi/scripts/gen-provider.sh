@@ -41,6 +41,7 @@ function generate() {
 export SIDERO_CONTROLLER_MANAGER_HOST_NETWORK=true
 export SIDERO_CONTROLLER_MANAGER_DEPLOYMENT_STRATEGY=Recreate
 export SIDERO_CONTROLLER_MANAGER_API_ENDPOINT="${RQ_ENDPOINT:-"10.5.0.2"}"
+export SIDERO_CONTROLLER_MANAGER_AUTO_BMC_SETUP=false
 
 generate --core "cluster-api" $capiVersion "core"
 # generate --bootstrap "kubeadm" $capiVersion "kubeadm-bootstrap"
