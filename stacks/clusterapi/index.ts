@@ -1,5 +1,6 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
+import * as clusterapi from '@pulumi/crds';
 import * as path from 'path';
 
 const config = new pulumi.Config();
@@ -54,6 +55,28 @@ const infrastructure = new k8s.yaml.ConfigGroup('infrastructure', {
   ].map(x => path.join('providers', x)),
   transformations: [patchKubeRbacProxy, patchSidero],
 }, { dependsOn: controlplane.ready });
+
+const rpiServerClass = new clusterapi.metal.v1alpha2.ServerClass('rpi', {
+  metadata: {
+    name: 'rpi',
+    namespace: 'sidero-system',
+  },
+  spec: {
+    qualifiers: {
+      hardware: [{
+        system: {
+          family: 'Raspberry Pi'
+        },
+      }],
+    },
+    bootFromDiskMethod: 'ipxe-sanboot',
+    configPatches: [{
+      op: 'replace',
+      path: '/machine/install/disk',
+      value: '/dev/mmcblk1' as unknown as Record<string, string>,
+    }],
+  },
+}, { dependsOn: infrastructure.ready });
 
 // Sidero currently has an old rbac-proxy version that doesn't support ARM64
 function patchKubeRbacProxy(obj: any, opts: pulumi.CustomResourceOptions): void {
