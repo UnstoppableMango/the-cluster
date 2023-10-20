@@ -1,0 +1,7 @@
+{
+    "name": "THECLUSTER",
+    "dockerComposeFile": [
+        "../stacks/rosequartz/ci/docker-compose.yaml"
+    ],
+    "service": "devcontainer"
+}
