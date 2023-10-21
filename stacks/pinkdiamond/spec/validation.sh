@@ -190,6 +190,19 @@ else
     exitCode=1
 fi
 
+echo "It should set controlplane port..."
+expectedControlplanePort="6444"
+actualControlplanePort="$(echo "$manifests" | yq -r 'select(.kind == "MetalCluster") | .spec.controlPlaneEndpoint.port')"
+
+if [ "$actualControlplanePort" == "$expectedControlplanePort" ]; then
+    echo -e "✅ Controlplane had expected port!\n"
+else
+    echo -e "❌ Controlplane did not have expected port!"
+    echo -e "Expected: $expectedControlplanePort"
+    echo -e "Actual:   $actualControlplanePort\n"
+    exitCode=1
+fi
+
 echo "It should set number of controlplane nodes..."
 expectedControlplaneNodes="3"
 actualControlplaneNodes="$(echo "$manifests" | yq -r 'select(.kind == "TalosControlPlane") | .spec.replicas')"

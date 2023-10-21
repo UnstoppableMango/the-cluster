@@ -11,7 +11,7 @@ export CONTROL_PLANE_SERVERCLASS=rpi
 export WORKER_SERVERCLASS=rpi
 export TALOS_VERSION="v$talosVersion"
 export KUBERNETES_VERSION="v$k8sVersion"
-export CONTROL_PLANE_PORT=6443
+export CONTROL_PLANE_PORT=6444
 export CONTROL_PLANE_ENDPOINT=pd.thecluster.io
 
 echo "Talos Version:      $TALOS_VERSION"
