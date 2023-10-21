@@ -1,0 +1,27 @@
+apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
+kind: TalosControlPlane
+metadata:
+  name: pink-diamond-cp
+  namespace: pink-diamond
+spec:
+  controlPlaneConfig:
+    controlplane:
+      configPatches:
+      - op: add
+        path: /machine/network
+        value:
+          interfaces:
+          - interface: eth0
+            dhcp: true
+            vip:
+              ip: 192.168.1.100
+    init:
+      configPatches:
+      - op: add
+        path: /machine/network
+        value:
+          interfaces:
+          - interface: eth0
+            dhcp: true
+            vip:
+              ip: 192.168.1.100
