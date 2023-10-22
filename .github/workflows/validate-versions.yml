@@ -59,7 +59,7 @@ jobs:
           tag: v1.5.2 # renovate depName=kubernetes-sigs/cluster-api
           extension-matching: disable
           rename-to: clusterctl
-          cache: enable
+          cache: disable
 
       - name: Generate providers
         run: ./scripts/gen-provider.sh
