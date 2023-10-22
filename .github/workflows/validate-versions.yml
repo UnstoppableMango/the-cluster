@@ -67,6 +67,7 @@ jobs:
       - name: Setup Pulumi
         uses: pulumi/actions@v4
         with:
+          stack-name: UnstoppableMango/thecluster-clusterapi/rosequartz
           pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
 
       - name: Generate providers
