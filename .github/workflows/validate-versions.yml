@@ -62,7 +62,7 @@ jobs:
           extension-matching: disable
           rename-to: clusterctl
           chmod: 0755
-          cache: disable
+          cache: enable
 
       - name: Setup Pulumi
         uses: pulumi/actions@v4
