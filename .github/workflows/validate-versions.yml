@@ -62,6 +62,11 @@ jobs:
           chmod: 0755
           cache: disable
 
+      - name: Setup Pulumi
+        uses: pulumi/actions@v4
+        with:
+          pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+
       - name: Generate providers
         run: ./scripts/gen-provider.sh
 
