@@ -33,7 +33,7 @@ resource "cloudflare_ruleset" "ssl" {
     action_parameters {
       ssl = "full"
     }
-    expression = "(http.host eq \"${var.primary_dns_name}\")"
+    expression = "(http.host eq \"${var.primary_dns_name}\") or (http.host eq \"pd.thecluster.io\")"
   }
 }
 
