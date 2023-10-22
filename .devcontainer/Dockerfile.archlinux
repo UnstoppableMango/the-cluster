@@ -1,0 +1,3 @@
+FROM archlinux:base-20231015.0.185077
+
+# RUN pacman -Sy gnupg

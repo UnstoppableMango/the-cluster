@@ -3,4 +3,8 @@ name: thecluster
 services:
   devcontainer:
     build:
+      dockerfile: Dockerfile.archlinux
       context: .
+    volumes:
+      - ..:/workspaces:cached
+    command: /bin/sh -c "while sleep 1000; do :; done"
