@@ -178,7 +178,7 @@ done <<< "$actualServerClasses"
 echo ""
 
 echo "It should set controlplane endpoint..."
-expectedControlplaneEndpoint="pd.thecluster.io"
+expectedControlplaneEndpoint="192.168.1.100"
 actualControlplaneEndpoint="$(echo "$manifests" | yq -r 'select(.kind == "MetalCluster") | .spec.controlPlaneEndpoint.host')"
 
 if [ "$actualControlplaneEndpoint" == "$expectedControlplaneEndpoint" ]; then
