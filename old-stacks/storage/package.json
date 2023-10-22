@@ -1,6 +1,0 @@
-{
-  "name": "storage",
-  "dependencies": {
-    "htpasswd": "^2.4.6"
-  }
-}

@@ -1,6 +1,0 @@
-{
-  "name": "networking",
-  "dependencies": {
-    "@pulumi/random": "^4.8.2"
-  }
-}
