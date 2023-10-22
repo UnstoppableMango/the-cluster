@@ -1,0 +1,7 @@
+config:
+  cloudflare:apiToken:
+    secure: AAABAMTpWxUKesQ46o7HhfvL8giqa3twXkm7WPNqJRtGv9gtFnvPR3RkcflKC568puubj4Z2nasCADKyvVeApE/+M1qE6N4v
+  thecluster-pinkdiamond:accountId: 265a046434c952eeecb9710cfd76617c
+  thecluster-pinkdiamond:publicIp:
+    secure: AAABADPLkIpbRLRNksFw06Tyf5Cbgja7Yd4rVmeNjzyJlkLnSLu/4/MoAA==
+  thecluster-pinkdiamond:zoneId: 22f1d42ba0fbe4f924905e1c6597055c
