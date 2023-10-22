@@ -37,7 +37,7 @@
     {
       "customType": "regex",
       "fileMatch": [
-        "\\.github/workflows/.*\\.yaml$"
+        "^\\.github\\/workflows\\/.*\\.(yml|yaml)$"
       ],
       "matchStrings": [
         ".*: (?<currentValue>.*) # renovate depName=(?<depName>.*)"
@@ -52,6 +52,7 @@
         "kubernetes/kubernetes",
         "kubernetes-sigs/cluster-api",
         "metal3-io/cluster-api-provider-metal3",
+        "pulumi/pulumi",
         "siderolabs/cluster-api-bootstrap-provider-talos",
         "siderolabs/cluster-api-control-plane-provider-talos",
         "siderolabs/sidero",
@@ -69,8 +70,7 @@
     },
     {
       "matchPackagePatterns": [
-        "pulumi-version",
-        "@pulumi/pulumi"
+        "pulumi/pulumi"
       ],
       "groupName": "pulumi"
     }

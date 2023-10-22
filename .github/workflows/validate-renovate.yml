@@ -5,11 +5,16 @@ on:
 jobs:
   validate-renovate:
     runs-on: 'ubuntu-latest'
+    defaults:
+      run:
+        working-directory: tools/renovate
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
+          cache: npm
+          cache-dependency-path: tools/renovate/package-lock.json
 
-      - run: npm i -g renovate
-      - run: renovate-config-validator --strict
+      - run: npm ci
+      - run: npm run validate

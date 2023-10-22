@@ -1,0 +1,12 @@
+{
+  "name": "renovate",
+  "version": "1.0.0",
+  "scripts": {
+    "dry-run": "cd ../../ && renovate --dry-run=full --platform=local",
+    "stats": "LOG_FORMAT=json npm run dry-run | sed '1,4d' | jq '.stats | select(. != null)'",
+    "validate": "cd ../../ && renovate-config-validator --strict"
+  },
+  "dependencies": {
+    "renovate": "^37.31.1"
+  }
+}
