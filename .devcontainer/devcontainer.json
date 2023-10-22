@@ -6,5 +6,5 @@
     "../clusters/rosequartz/ci/docker-compose.yaml"
   ],
   "service": "devcontainer",
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}"
+  "workspaceFolder": "/workspaces"
 }
