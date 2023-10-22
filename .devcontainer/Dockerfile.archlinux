@@ -1,3 +1,11 @@
 FROM archlinux:base-20231015.0.185077
 
-# RUN pacman -Sy gnupg
+RUN pacman -Sy --noconfirm \
+        inetutils \
+        base-devel \
+        zsh \
+        git \
+        docker \
+        docker-compose \
+        python \
+        thefuck

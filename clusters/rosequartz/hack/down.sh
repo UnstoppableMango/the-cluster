@@ -1,6 +1,11 @@
 #!/bin/bash
 set -eum
 
+if [-z ${DEVCONTAINER+x} ]; then
+    echo "Running insider a devcontainer, skipping"
+    exit 0
+fi
+
 root="$(git rev-parse --show-toplevel)/clusters/rosequartz"
 stack="${RQ_STACK:-"$(hostname)"}"
 configDir="$root/.config/$stack"
