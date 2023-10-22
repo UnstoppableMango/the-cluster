@@ -2,7 +2,8 @@
   "files.associations": {
     "*.{yml,yaml}": "yaml",
     "config": "yaml",
-    "talosconfig": "yaml"
+    "talosconfig": "yaml",
+    ".versions": "yaml"
   },
   "FSharp.inlayHints.typeAnnotations": false
 }

@@ -8,7 +8,7 @@ root="$(dirname "$cwd")"
 stack="${RQ_STACK:-dev}"
 
 currentVersion="$(kubectl version -o json | jq -r '.serverVersion.gitVersion | sub("^v"; "")')"
-k8sVersion="$(awk -F= '$1 == "kubernetes/kubernetes" {print $2}' "$root/.versions")"
+k8sVersion="$(cat "$root/.versions" | yq -r '."kubernetes/kubernetes"')"
 
 if [ "$currentVersion" = "$k8sVersion" ]; then
     echo "Current version: $currentVersion matched upgrade version: $k8sVersion"

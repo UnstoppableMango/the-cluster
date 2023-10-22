@@ -61,7 +61,7 @@ fi
 echo ""
 
 echo "It should use configured kubernetes version..."
-expectedVersion="v$(awk -F= '$1 == "kubernetes/kubernetes" {print $2}' "$root/.versions")"
+expectedVersion="v$(cat "$root/.versions" | yq -r '."kubernetes/kubernetes"')"
 serverVersion="$(kubectl version -o json | jq -r '.serverVersion.gitVersion')"
 
 if [ "$expectedVersion" == "$serverVersion" ]; then
@@ -126,10 +126,10 @@ fi
 echo ""
 
 echo "It should use configured talos version..."
-expectedVersion="$(awk -F= '$1 == "siderolabs/talos" {print $2}' "$root/.versions")"
+expectedVersion="v$(cat "$root/.versions" | yq -r '."siderolabs/talos"')"
 serverVersion="$(talosctl version | tr -d ' \t' | awk -F':' '/^Tag/{print $2}' | tail -n 1)"
 
-if [ "v$expectedVersion" == "$serverVersion" ]; then
+if [ "$expectedVersion" == "$serverVersion" ]; then
     echo "✅ Talos has expected version $expectedVersion!"
 else
     echo "❌ Talos version did not match expected version!"

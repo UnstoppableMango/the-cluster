@@ -13,12 +13,12 @@ root="$(dirname "$cwd")"
 providerDir="$root/providers"
 mkdir -p "$providerDir"
 
-capiVersion="$(awk -F= '$1 == "kubernetes-sigs/cluster-api" {print $2}' "$root/.versions")"
-metal3Version="$(awk -F= '$1 == "metal3-io/cluster-api-provider-metal3" {print $2}' "$root/.versions")"
-cabptVersion="$(awk -F= '$1 == "siderolabs/cluster-api-bootstrap-provider-talos" {print $2}' "$root/.versions")"
-cacpptVersion="$(awk -F= '$1 == "siderolabs/cluster-api-control-plane-provider-talos" {print $2}' "$root/.versions")"
-sideroVersion="$(awk -F= '$1 == "siderolabs/sidero" {print $2}' "$root/.versions")"
-proxmoxVersion="$(awk -F= '$1 == "sp-yduck/cluster-api-provider-proxmox" {print $2}' "$root/.versions")"
+capiVersion="$(cat "$root/.versions" | yq -r '."kubernetes-sigs/cluster-api"')"
+metal3Version="$(cat "$root/.versions" | yq -r '."metal3-io/cluster-api-provider-metal3"')"
+cabptVersion="$(cat "$root/.versions" | yq -r '."siderolabs/cluster-api-bootstrap-provider-talos"')"
+cacpptVersion="$(cat "$root/.versions" | yq -r '."siderolabs/cluster-api-control-plane-provider-talos"')"
+sideroVersion="$(cat "$root/.versions" | yq -r '."siderolabs/sidero"')"
+proxmoxVersion="$(cat "$root/.versions" | yq -r '."sp-yduck/cluster-api-provider-proxmox"')"
 
 export CLUSTER_TOPOLOGY=true
 
