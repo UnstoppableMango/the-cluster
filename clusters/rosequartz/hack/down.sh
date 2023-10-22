@@ -16,7 +16,9 @@ if [[ $(pulumi -C "$root" stack export | jq -r '.deployment.resources | length')
 fi
 
 echo "Destroying cluster..."
-docker compose -f "$root/hack/docker-compose.yaml" down -v
+pushd "$root/ci"
+docker compose down -v
+popd
 
 [ -f "$configDir/kubeconfig" ] && rm "$configDir/kubeconfig"
 [ -f "$configDir/talosconfig.yaml" ] && rm "$configDir/talosconfig.yaml"

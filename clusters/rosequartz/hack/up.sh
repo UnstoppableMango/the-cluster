@@ -20,4 +20,6 @@ else
 fi
 
 echo "Creating cluster..."
-timeout 1m docker compose -f "$root/hack/docker-compose.yaml" up -d
+pushd "$root/ci"
+timeout 1m docker compose up -d
+popd
