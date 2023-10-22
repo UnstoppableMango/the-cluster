@@ -8,7 +8,7 @@ root="$(dirname "$cwd")"
 # TODO: Check if the targeted cluster is a docker cluster
 # The upgrade command does not appear to support the docker provisioner
 
-talosVersion="$(awk -F= '$1 == "siderolabs/talos" {print $2}' "$root/.versions")"
+talosVersion="$(cat "$root/.versions" | yq -r '."siderolabs/talos"')"
 
 # TODO: Download the version of talosctl used by the cluster, per docs recommendation
 # https://www.talos.dev/v1.5/talos-guides/upgrading-talos/#faqs

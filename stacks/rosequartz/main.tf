@@ -1,7 +1,7 @@
 locals {
-  k8s_version      = regex("kubernetes\\/kubernetes=(?P<version>.*)\\s?#?.*", file(".versions"))["version"]
-  talos_version    = regex("siderolabs\\/talos=(?P<version>.*)\\s?#?.*", file(".versions"))["version"]
-  ksca_version     = regex("alex1989hu\\/kubelet-serving-cert-approver=(?P<version>.*)\\s?#?.*", file(".versions"))["version"]
+  k8s_version      = yamldecode(file(".versions"))["kubernetes/kubernetes"]
+  talos_version    = yamldecode(file(".versions"))["siderolabs/talos"]
+  ksca_version     = yamldecode(file(".versions"))["alex1989hu/kubelet-serving-cert-approver"]
   installer_image  = "ghcr.io/siderolabs/installer:v${local.talos_version}"
   all_node_data    = merge(var.node_data.controlplanes, var.node_data.workers)
   zone_id          = "22f1d42ba0fbe4f924905e1c6597055c"
