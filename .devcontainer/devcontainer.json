@@ -6,5 +6,20 @@
     "../clusters/rosequartz/ci/docker-compose.yaml"
   ],
   "service": "devcontainer",
-  "workspaceFolder": "/workspaces"
+  "workspaceFolder": "/workspaces",
+  "containerEnv": {
+    "DEVCONTAINER": "true"
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.profiles.linux": {
+          "zsh": {
+            "path": "zsh"
+          }
+        }
+      }
+    }
+  }
 }
