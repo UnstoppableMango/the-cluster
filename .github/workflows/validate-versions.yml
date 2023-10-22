@@ -52,6 +52,13 @@ jobs:
           tag: v1.2.5 # renovate depName=pulumi/crd2pulumi
           cache: enable
 
+      - name: Setup clusterctl
+        uses: jaxxstorm/action-install-gh-release@v1
+        with:
+          repo: kubernetes-sigs/cluster-api
+          tag: v1.5.2 # renovate depName=kubernetes-sigs/cluster-api
+          cache: enable
+
       - name: Generate providers
         run: ./scripts/gen-provider.sh
 
