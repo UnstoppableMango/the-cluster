@@ -4,9 +4,6 @@ on:
   pull_request:
     branches: [main]
     paths: ['**/.versions']
-  push:
-    branches:
-      - validate-versions
 
 jobs:
   setup:
@@ -30,8 +27,8 @@ jobs:
 
   sidero:
     runs-on: ubuntu-latest
-    # needs: [setup]
-    # if: fromJson(needs.setup.outputs.clusterapi) && !failure() && !cancelled()
+    needs: [setup]
+    if: fromJson(needs.setup.outputs.clusterapi) && !failure() && !cancelled()
     defaults:
       run:
         working-directory: apps/clusterapi
