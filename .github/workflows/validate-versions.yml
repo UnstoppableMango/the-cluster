@@ -45,6 +45,13 @@ jobs:
           tag: v1.2.7 # renovate depName=patrickdappollonio/kubectl-slice
           cache: enable
 
+      - name: Setup crd2pulumi
+        uses: jaxxstorm/action-install-gh-release@v1
+        with:
+          repo: pulumi/crd2pulumi
+          tag: v1.2.5 # renovate depName=pulumi/crd2pulumi
+          cache: enable
+
       - name: Generate providers
         run: ./scripts/gen-provider.sh
 

@@ -2,9 +2,9 @@
 
 set -e
 
-if ! command -v crd2pulumi >/dev/null 2>&1; then
+if ! command -v kubectl-slice >/dev/null 2>&1; then
     echo "Install kubectl-slice first https://github.com/patrickdappollonio/kubectl-slice#installation"
-    exit 0
+    exit 1
 fi
 
 cwd="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
