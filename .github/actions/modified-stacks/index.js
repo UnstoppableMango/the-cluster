@@ -27,7 +27,7 @@ console.log(`Found ${files.length} changed files:`, files);
 
 const modified = files.map(x => x.split(path.sep))
     .filter(x => x.length > 2) // Only look at directories
-    .filter(x => x[0] === 'stacks')
+    .filter(x => ['clusters', 'apps'].includes(x[0]))
     .map(x => x[1])
     .filter((x, i, a) => a.indexOf(x) === i); // Distinct
 

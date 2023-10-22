@@ -39,7 +39,7 @@ jobs:
     concurrency: setup-${{ github.event_name }}
     defaults:
       run:
-        working-directory: stacks/rosequartz
+        working-directory: clusters/rosequartz
     env:
       RQ_STACK: ${{ github.event_name == 'pull_request' && 'ci' || 'prod' }}
       RQ_TALOSCONFIG: talosconfig
@@ -129,7 +129,7 @@ jobs:
     concurrency: cert-manager-${{ github.event_name }}
     defaults:
       run:
-        working-directory: stacks/cert-manager
+        working-directory: apps/cert-manager
     env:
       TF_WORKSPACE: rosequartz-prod
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
@@ -139,7 +139,7 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-          cache-dependency-path: stacks/cert-manager/package-lock.json
+          cache-dependency-path: apps/cert-manager/package-lock.json
 
       - uses: hashicorp/setup-terraform@v2
         with:
@@ -152,7 +152,7 @@ jobs:
           terraform init -lockfile=readonly
           terraform output -raw kubeconfig > kubeconfig
           echo "KUBECONFIG=$(pwd)/kubeconfig" >> "$GITHUB_ENV"
-        working-directory: stacks/rosequartz
+        working-directory: clusters/rosequartz
 
       - run: npm ci
       - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
@@ -162,7 +162,7 @@ jobs:
         with:
           stack-name: UnstoppableMango/thecluster-cert-manager/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
-          work-dir: stacks/cert-manager
+          work-dir: apps/cert-manager
 
   cloudflare-ingress:
     name: Cloudflare Ingress
@@ -172,7 +172,7 @@ jobs:
     concurrency: cloudflare-ingress-${{ github.event_name }}
     defaults:
       run:
-        working-directory: stacks/cloudflare-ingress
+        working-directory: apps/cloudflare-ingress
     env:
       TF_WORKSPACE: rosequartz-prod
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
@@ -182,7 +182,7 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-          cache-dependency-path: stacks/cloudflare-ingress/package-lock.json
+          cache-dependency-path: apps/cloudflare-ingress/package-lock.json
 
       - uses: hashicorp/setup-terraform@v2
         with:
@@ -195,7 +195,7 @@ jobs:
           terraform init -lockfile=readonly
           terraform output -raw kubeconfig > kubeconfig
           echo "KUBECONFIG=$(pwd)/kubeconfig" >> "$GITHUB_ENV"
-        working-directory: stacks/rosequartz
+        working-directory: clusters/rosequartz
 
       - run: npm ci
       - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
@@ -205,7 +205,7 @@ jobs:
         with:
           stack-name: UnstoppableMango/thecluster-cloudflare-ingress/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
-          work-dir: stacks/cloudflare-ingress
+          work-dir: apps/cloudflare-ingress
 
       - name: Validate
         if: ${{ github.event_name == 'push' }}
@@ -219,7 +219,7 @@ jobs:
     concurrency: dashboard-${{ github.event_name }}
     defaults:
       run:
-        working-directory: stacks/dashboard
+        working-directory: apps/dashboard
     env:
       TF_WORKSPACE: rosequartz-prod
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
@@ -229,7 +229,7 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-          cache-dependency-path: stacks/dashboard/package-lock.json
+          cache-dependency-path: apps/dashboard/package-lock.json
 
       - uses: hashicorp/setup-terraform@v2
         with:
@@ -242,7 +242,7 @@ jobs:
           terraform init -lockfile=readonly
           terraform output -raw kubeconfig > kubeconfig
           echo "KUBECONFIG=$(pwd)/kubeconfig" >> "$GITHUB_ENV"
-        working-directory: stacks/rosequartz
+        working-directory: clusters/rosequartz
 
       - run: npm ci
       - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
@@ -252,7 +252,7 @@ jobs:
         with:
           stack-name: UnstoppableMango/thecluster-dashboard/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
-          work-dir: stacks/dashboard
+          work-dir: apps/dashboard
 
       - name: Validate
         if: ${{ github.event_name == 'push' }}
@@ -266,7 +266,7 @@ jobs:
     concurrency: metrics-server-${{ github.event_name }}
     defaults:
       run:
-        working-directory: stacks/metrics-server
+        working-directory: apps/metrics-server
     env:
       TF_WORKSPACE: rosequartz-prod
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
@@ -276,7 +276,7 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-          cache-dependency-path: stacks/metrics-server/package-lock.json
+          cache-dependency-path: apps/metrics-server/package-lock.json
 
       - uses: hashicorp/setup-terraform@v2
         with:
@@ -289,7 +289,7 @@ jobs:
           terraform init -lockfile=readonly
           terraform output -raw kubeconfig > kubeconfig
           echo "KUBECONFIG=$(pwd)/kubeconfig" >> "$GITHUB_ENV"
-        working-directory: stacks/rosequartz
+        working-directory: clusters/rosequartz
 
       - run: npm ci
       - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
@@ -299,7 +299,7 @@ jobs:
         with:
           stack-name: UnstoppableMango/thecluster-metrics-server/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
-          work-dir: stacks/metrics-server
+          work-dir: apps/metrics-server
 
       - name: Validate
         if: ${{ github.event_name == 'push' }}
@@ -313,7 +313,7 @@ jobs:
     concurrency: clusterapi-${{ github.event_name }}
     defaults:
       run:
-        working-directory: stacks/clusterapi
+        working-directory: apps/clusterapi
     env:
       TF_WORKSPACE: rosequartz-prod
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
@@ -323,7 +323,7 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-          cache-dependency-path: stacks/clusterapi/package-lock.json
+          cache-dependency-path: apps/clusterapi/package-lock.json
 
       - uses: hashicorp/setup-terraform@v2
         with:
@@ -336,7 +336,7 @@ jobs:
           terraform init -lockfile=readonly
           terraform output -raw kubeconfig > kubeconfig
           echo "KUBECONFIG=$(pwd)/kubeconfig" >> "$GITHUB_ENV"
-        working-directory: stacks/rosequartz
+        working-directory: clusters/rosequartz
 
       - run: npm ci
 
@@ -345,7 +345,7 @@ jobs:
         with:
           stack-name: UnstoppableMango/thecluster-clusterapi/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
-          work-dir: stacks/clusterapi
+          work-dir: apps/clusterapi
 
       - name: Validate
         if: ${{ github.event_name == 'push' }}

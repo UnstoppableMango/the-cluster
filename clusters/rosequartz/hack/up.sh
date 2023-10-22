@@ -2,7 +2,7 @@
 
 set -eum
 
-root="$(git rev-parse --show-toplevel)/stacks/rosequartz"
+root="$(git rev-parse --show-toplevel)/clusters/rosequartz"
 cwd="$root/hack"
 
 stack="${RQ_STACK:-ci}"
