@@ -35,6 +35,8 @@ jobs:
     defaults:
       run:
         working-directory: apps/clusterapi
+    env:
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
