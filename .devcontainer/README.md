@@ -27,6 +27,7 @@ git update-index --skip-worktree docker-compose.override.yaml
 
 This way `devcontainer.json` does not need to be modified and can include the `docker-compose.override.yaml` without actually overriding anything.
 Additonally `docker-compose.override.yaml` can be modified locally without having to ignore those modifications when committing real changes.
+[StackOverflow question](https://stackoverflow.com/questions/13630849/git-difference-between-assume-unchanged-and-skip-worktree/13631525#13631525) explaining `--skip-worktree`.
 
 A few helper scripts are provided for switching between the two images.
 
