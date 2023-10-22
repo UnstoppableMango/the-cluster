@@ -1,6 +1,5 @@
 {
   "files.associations": {
-    "tools/ansible/**/*.{yml,yaml}": "ansible",
     "*.{yml,yaml}": "yaml",
     "config": "yaml",
     "talosconfig": "yaml"

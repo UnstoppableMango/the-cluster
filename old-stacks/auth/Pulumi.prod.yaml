@@ -1,9 +1,0 @@
-config:
-  auth:basic:
-    users:
-    - secure: AAABAJkMTVxi95fl5IFM+Vx61JYcEgazlq40J/pb0ixMMopzldK5yGybJ59P8T5JY+0Pkk5QiayKoCpfu+JqG24n4rw0OkR5o0zOa+UYers=
-  auth:github:
-    clientId: d1f065d7f2d33f3cfbd6
-    clientSecret:
-      secure: AAABAIGe3vFdN0Qi1JPkwSoj0CH3GP/bbn3LhwSFkQyLGv8bM8uIYYMlxRbqRCM4Eeztbn1nLhHPBnUqwIL0UFrAGjQ27yso
-  auth:remoteStack: prod

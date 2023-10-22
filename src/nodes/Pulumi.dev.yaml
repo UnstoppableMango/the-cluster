@@ -1,7 +1,0 @@
-config:
-  the-cluster-nodes:endpoint:
-    secure: AAABACPp5sgKfB65YajpPRrMbe1v7yFmmCCcImuzr0MCQRCq7Qtf1+FnqLmQ3iIneYgIKZ1HaQ8=
-  the-cluster-nodes:password:
-    secure: AAABAGy2iy/zPDPOfTFB0QxgiSM5RN3acT9Ge/sUMWgv0F0p+VayL8clluHUUlqnXPr5hAEm3b1OW7PEn0owXFGhL3o=
-  the-cluster-nodes:username:
-    secure: AAABAGAOu2N6pB13vT3odVlko4vZlsrrsHjjBU90C2vIViYT6El1hw==
