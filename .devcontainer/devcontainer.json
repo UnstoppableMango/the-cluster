@@ -1,7 +1,10 @@
 {
-    "name": "THECLUSTER",
-    "dockerComposeFile": [
-        "../stacks/rosequartz/ci/docker-compose.yaml"
-    ],
-    "service": "devcontainer"
+  "name": "THECLUSTER",
+  "dockerComposeFile": [
+    "docker-compose.yaml",
+    "docker-compose.override.yaml",
+    "../clusters/rosequartz/ci/docker-compose.yaml"
+  ],
+  "service": "devcontainer",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}"
 }
