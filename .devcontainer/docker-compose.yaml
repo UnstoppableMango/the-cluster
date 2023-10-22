@@ -8,3 +8,19 @@ services:
     volumes:
       - ..:/workspaces:cached
     command: /bin/sh -c "while sleep 1000; do :; done"
+
+  talos-controlplane:
+    ports: []
+    networks:
+      default:
+        ipv4_address: '10.6.0.2'
+
+networks:
+  default:
+    labels:
+      talos.cluster.name: rosequartz
+      talos.owned: false
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.6.0.0/24
