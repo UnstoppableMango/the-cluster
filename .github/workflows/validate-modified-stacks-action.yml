@@ -2,7 +2,7 @@ name: Validate Modified Stacks Action
 
 on:
   pull_request:
-    branches: [v2]
+    branches: [main]
     paths: ['.github/actions/modified-stacks/**']
 
 jobs:

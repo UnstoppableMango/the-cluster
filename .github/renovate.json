@@ -3,9 +3,6 @@
   "extends": [
     "config:recommended"
   ],
-  "baseBranches": [
-    "v2"
-  ],
   "ignorePaths": [
     "**/node_modules/**",
     "**/bower_components/**",
@@ -18,20 +15,7 @@
     "old-stacks/**",
     "src/**",
     "lib/**",
-    "stacks/auth/**",
-    "stacks/dev/**",
-    "stacks/management/**",
-    "stacks/media/**",
-    "stacks/networking/**",
-    "stacks/rancher/**",
-    "stacks/storage/**",
     "**/crds/**"
-  ],
-  "ignoreDeps": [
-    "submodules/actions-runner-controller",
-    "submodules/cert-manager",
-    "submodules/metallb",
-    "submodules/traefik-helm-chart"
   ],
   "major": {
     "dependencyDashboardApproval": true
