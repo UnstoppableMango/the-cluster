@@ -40,7 +40,7 @@
         "\\.github/workflows/.*\\.yaml$"
       ],
       "matchStrings": [
-        "(?<packageName>.*): (?<currentValue>.*) # renovate depName=(?<depName>.*)"
+        ".*: (?<currentValue>.*) # renovate depName=(?<depName>.*)"
       ],
       "versioningTemplate": "semver-coerced",
       "datasourceTemplate": "github-tags"
@@ -50,7 +50,13 @@
     {
       "matchDepNames": [
         "kubernetes/kubernetes",
-        "siderolabs/talos"
+        "kubernetes-sigs/cluster-api",
+        "metal3-io/cluster-api-provider-metal3",
+        "siderolabs/cluster-api-bootstrap-provider-talos",
+        "siderolabs/cluster-api-control-plane-provider-talos",
+        "siderolabs/sidero",
+        "siderolabs/talos",
+        "sp-yduck/cluster-api-provider-proxmox"
       ],
       "dependencyDashboardApproval": true,
       "extractVersion": "^v(?<version>.*)"
