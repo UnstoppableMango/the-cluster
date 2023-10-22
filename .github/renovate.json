@@ -33,6 +33,17 @@
       ],
       "versioningTemplate": "semver-coerced",
       "datasourceTemplate": "github-tags"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "\\.github/workflows/.*\\.yaml$"
+      ],
+      "matchStrings": [
+        "(?<packageName>.*): (?<currentValue>.*) # renovate depName=(?<depName>.*)"
+      ],
+      "versioningTemplate": "semver-coerced",
+      "datasourceTemplate": "github-tags"
     }
   ],
   "packageRules": [
@@ -49,6 +60,13 @@
         "talos"
       ],
       "groupName": "talos"
+    },
+    {
+      "matchPackagePatterns": [
+        "pulumi-version",
+        "@pulumi/pulumi"
+      ],
+      "groupName": "pulumi"
     }
   ]
 }

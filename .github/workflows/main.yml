@@ -163,6 +163,7 @@ jobs:
           stack-name: UnstoppableMango/thecluster-cert-manager/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: apps/cert-manager
+          pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
 
   cloudflare-ingress:
     name: Cloudflare Ingress
@@ -206,6 +207,7 @@ jobs:
           stack-name: UnstoppableMango/thecluster-cloudflare-ingress/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: apps/cloudflare-ingress
+          pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
 
       - name: Validate
         if: ${{ github.event_name == 'push' }}
@@ -253,6 +255,7 @@ jobs:
           stack-name: UnstoppableMango/thecluster-dashboard/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: apps/dashboard
+          pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
 
       - name: Validate
         if: ${{ github.event_name == 'push' }}
@@ -300,6 +303,7 @@ jobs:
           stack-name: UnstoppableMango/thecluster-metrics-server/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: apps/metrics-server
+          pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
 
       - name: Validate
         if: ${{ github.event_name == 'push' }}
@@ -346,6 +350,7 @@ jobs:
           stack-name: UnstoppableMango/thecluster-clusterapi/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: apps/clusterapi
+          pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
 
       - name: Validate
         if: ${{ github.event_name == 'push' }}
