@@ -6,18 +6,18 @@ const os = require('os');
 const { execSync } = require('child_process');
 
 const root = execSync('git rev-parse --show-toplevel', { encoding: 'utf-8' }).trim();
-console.log(`Using root:       ${root}`);
+console.log(`Using root:        ${root}`);
 
 const clustersDir = path.join(root, 'clusters');
-console.log(`Using clustersDir:   ${clustersDir}`);
+console.log(`Using clustersDir: ${clustersDir}`);
 
-const appsDir = path.join(root, 'clusters');
-console.log(`Using appsDir:   ${appsDir}`);
+const appsDir = path.join(root, 'apps');
+console.log(`Using appsDir:     ${appsDir}`);
 
 const clusters = readdirSync(clustersDir, 'utf-8');
 const apps = readdirSync(appsDir, 'utf-8');
 const stacks = [...clusters, ...apps];
-console.log('All stacks:      ', stacks);
+console.log('All stacks:        ', stacks);
 
 const target = github.context.eventName === 'pull_request'
     ? process.env.GITHUB_BASE_REF
