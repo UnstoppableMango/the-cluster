@@ -34,11 +34,11 @@ function check-vars() {
 }
 
 function start-rosequartz() {
-    $root/stacks/rosequartz/hack/up.sh
+    $root/clusters/rosequartz/hack/up.sh
 }
 
 function deploy-cert-manager() {
-    # "$root/stacks/cert-manager"
+    # "$root/clusters/cert-manager"
     echo "TODO"
 }
 

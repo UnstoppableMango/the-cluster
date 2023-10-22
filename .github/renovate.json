@@ -12,7 +12,6 @@
     "**/test/**",
     "**/tests/**",
     "**/__fixtures__/**",
-    "old-stacks/**",
     "src/**",
     "lib/**",
     "**/crds/**"

@@ -1,7 +1,8 @@
 # Packages
 node_modules/
 .terraform/
-stacks/*/charts/
+apps/*/charts/
+clusters/*/charts/
 
 # Artifacts
 bin/
