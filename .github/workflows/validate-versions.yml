@@ -1,0 +1,52 @@
+name: Validate Versions
+
+on:
+  pull_request:
+    branches: [main]
+    paths: ['**/.versions']
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set modified stacks
+        id: stacks
+        uses: ./.github/actions/modified-stacks
+    outputs:
+      rosequartz: ${{ steps.stacks.outputs.rosequartz }}
+      cert-manager: ${{ steps.stacks.outputs.cert-manager }}
+      cloudflare-ingress: ${{ steps.stacks.outputs.cloudflare-ingress }}
+      dashboard: ${{ steps.stacks.outputs.dashboard }}
+      metrics-server: ${{ steps.stacks.outputs.metrics-server }}
+      clusterapi: ${{ steps.stacks.outputs.clusterapi }}
+
+  sidero:
+    runs-on: ubuntu-latest
+    needs: [setup]
+    if: fromJson(needs.setup.outputs.clusterapi) && !failure() && !cancelled()
+    defaults:
+      run:
+        working-directory: apps/clusterapi
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup kubectl-slice
+        uses: jaxxstorm/action-install-gh-release@v1
+        with:
+          repo: patrickdappollonio/kubectl-slice
+          tag: v1.2.7 # renovate depName=patrickdappollonio/kubectl-slice
+          cache: enable
+
+      - name: Generate providers
+        run: ./scripts/gen-provider.sh
+
+      - name: Generate CRDs
+        run: ./scripts/gen-crds.sh
+
+      - name: Verify manifests are updated
+        run: '[ -z "$(git status --porcelain)" ] || { git status; exit 1; }'
