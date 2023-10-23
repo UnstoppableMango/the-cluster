@@ -145,7 +145,7 @@ const bootstrap: talos.machine.Bootstrap[] = Object.keys(allNodeData)
   })));
 
 // const healthCheck = talos.index.clusterHealth({
-//     clientConfiguration: thisResource.clientConfiguration,
+//     clientConfiguration: secrets.clientConfiguration,
 //     controlPlaneNodes: Object.keys(nodeData.controlplanes ?? []),
 //     endpoints: [endpoint],
 //     timeouts: {
