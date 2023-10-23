@@ -18,6 +18,10 @@ const crds = new k8s.yaml.ConfigGroup('crds', {
     'talos-bootstrap/crds.yaml',
     'talos-controlplane/crds.yaml',
   ].map(x => path.join('providers', x)),
+}, {
+  ignoreChanges: [
+    'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
+  ],
 });
 
 const core = new k8s.yaml.ConfigFile('core', {
@@ -37,7 +41,12 @@ const bootstrap = new k8s.yaml.ConfigGroup('bootstrap', {
     'talos-bootstrap/resources.yaml',
   ].map(x => path.join('providers', x)),
   transformations: [patchControllerManagerPorts],
-}, { dependsOn: core.ready });
+}, {
+  dependsOn: core.ready,
+  ignoreChanges: [
+    'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
+  ],
+});
 
 const controlplane = new k8s.yaml.ConfigGroup('controlplane', {
   files: [
@@ -54,11 +63,16 @@ const infrastructure = new k8s.yaml.ConfigGroup('infrastructure', {
     // 'proxmox/resources.yaml',
   ].map(x => path.join('providers', x)),
   transformations: [patchKubeRbacProxy, patchSidero],
-}, { dependsOn: controlplane.ready });
+}, {
+  dependsOn: controlplane.ready,
+  ignoreChanges: [
+    'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
+  ],
+});
 
-const rpiServerClass = new clusterapi.metal.v1alpha2.ServerClass('rpi', {
+const rpiServerClass = new clusterapi.metal.v1alpha2.ServerClass('rpi4.md', {
   metadata: {
-    name: 'rpi',
+    name: 'rpi4.md',
     namespace: 'sidero-system',
   },
   spec: {
@@ -67,6 +81,9 @@ const rpiServerClass = new clusterapi.metal.v1alpha2.ServerClass('rpi', {
         system: {
           family: 'Raspberry Pi'
         },
+        memory: {
+          totalSize: '4 GB',
+        }
       }],
     },
     bootFromDiskMethod: 'ipxe-sanboot',
