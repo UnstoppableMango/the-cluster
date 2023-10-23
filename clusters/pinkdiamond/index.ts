@@ -19,4 +19,9 @@ const ns = new k8s.core.v1.Namespace('pink-diamond', {
 
 const manifests = new k8s.kustomize.Directory('manifests', {
   directory: './manifests',
-}, { dependsOn: [publicEndpoint, ns] });
+}, {
+  dependsOn: [publicEndpoint, ns],
+  ignoreChanges: [
+    'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
+  ],
+});

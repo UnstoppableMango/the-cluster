@@ -1,14 +1,14 @@
 #!/bin/bash
 set -eu
 
-root="$(git rev-parse --show-toplevel)/stacks/pinkdiamond"
+root="$(git rev-parse --show-toplevel)/clusters/pinkdiamond"
 
 talosVersion="$(cat $root/.versions | yq -r '."siderolabs/talos"')"
 k8sVersion="$(cat $root/.versions | yq -r '."kubernetes/kubernetes"')"
 sideroVersion="$(cat $root/.versions | yq -r '."siderolabs/sidero"')"
 
-export CONTROL_PLANE_SERVERCLASS=rpi
-export WORKER_SERVERCLASS=rpi
+export CONTROL_PLANE_SERVERCLASS=rpi4.md
+export WORKER_SERVERCLASS=rpi4.md
 export TALOS_VERSION="v$talosVersion"
 export KUBERNETES_VERSION="v$k8sVersion"
 export CONTROL_PLANE_PORT=6444
