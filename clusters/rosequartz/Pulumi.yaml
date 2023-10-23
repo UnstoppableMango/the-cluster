@@ -1,2 +1,17 @@
 name: thecluster-rosequartz
 runtime: nodejs
+config:
+  clusterName: rosequartz
+  publicIp: 10.5.0.2
+  certSans:
+    value:
+      - 10.5.0.2
+  nodeData:
+    value:
+      controlplanes:
+        10.5.0.2:
+          hostname: rqctrl1
+          installDisk: /dev/sda
+      workers: {}
+  healthTimeout: 4m
+  kubeconfigTimeout: 30s

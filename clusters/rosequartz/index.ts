@@ -23,40 +23,28 @@ interface Versions {
 const config = new pulumi.Config();
 
 // A name to provide for the Talos cluster
-const clusterName = config.get("clusterName") || "rosequartz";
-
-// The primary DNS name to use
-const primaryDnsName = config.get("primaryDnsName");
+const clusterName = config.require("clusterName");
 
 // The public IP used for the Talos cluster
-const publicIp = config.get("publicIp") || "10.5.0.2";
+const publicIp = config.require("publicIp");
 
-// const endpoint = notImplemented("coalesce(var.primary_dns_name,var.public_ip)");
-const endpoint = primaryDnsName ?? publicIp;
+const endpoint = config.get("primaryDnsName") ?? publicIp;
 const clusterEndpoint = `https://${endpoint}:6443`;
 
 // Subject Alternative Names to use for certificates
-const certSans = (config.getObject<string[]>("certSans") || ["10.5.0.2"]).concat([
+const certSans = config.requireObject<string[]>("certSans").concat([
   publicIp,
   endpoint,
 ]);
 
 // A map of node data
-const nodeData = config.getObject<Cluster>("nodeData") || {
-  controlplanes: {
-    "10.5.0.2": {
-      hostname: "rqctrl1",
-      installDisk: "/dev/sda",
-    },
-  },
-  workers: {},
-};
+const nodeData = config.requireObject<Cluster>("nodeData");
 
 // Timeout for the health operation
-const healthTimeout = config.get("healthTimeout") || "4m";
+const healthTimeout = config.require("healthTimeout");
 
 // Timeout for the kubeconfig operation
-const kubeconfigTimeout = config.get("kubeconfigTimeout") || "30s";
+const kubeconfigTimeout = config.require("kubeconfigTimeout");
 
 const versions: Versions = YAML.parse(fs.readFileSync('.versions', { encoding: 'utf-8' }));
 const k8sVersion = versions['kubernetes/kubernetes'];
@@ -69,8 +57,10 @@ const allNodeData: Nodes = { ...nodeData.controlplanes, ...nodeData.workers };
 const zoneId = "22f1d42ba0fbe4f924905e1c6597055c";
 
 if (pulumi.getStack() === 'prod') {
+  const dnsName = config.require('primaryDnsName');
+
   const primaryDns = new cloudflare.Record('primary-dns', {
-    name: config.require('primaryDnsName'),
+    name: dnsName,
     zoneId: zoneId,
     type: "A",
     value: publicIp,
@@ -78,8 +68,8 @@ if (pulumi.getStack() === 'prod') {
   });
 
   const ssl = new cloudflare.Ruleset('ssl', {
-    name: `${primaryDnsName} SSL`,
-    description: `Set SSL to a value that works for ${primaryDnsName}`,
+    name: `${dnsName} SSL`,
+    description: `Set SSL to a value that works for ${dnsName}`,
     kind: "zone",
     zoneId: zoneId,
     phase: "http_config_settings",
@@ -88,7 +78,7 @@ if (pulumi.getStack() === 'prod') {
       actionParameters: {
         ssl: "full",
       },
-      expression: `(http.host eq "${primaryDnsName}") or (http.host eq "pd.thecluster.io")`,
+      expression: `(http.host eq "${dnsName}") or (http.host eq "pd.thecluster.io")`,
     }],
   })
 }
