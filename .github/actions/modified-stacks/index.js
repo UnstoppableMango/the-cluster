@@ -44,9 +44,8 @@ function getModifiedStacks(files) {
     .filter((x, i, a) => a.indexOf(x) === i); // Distinct
 }
 
-function getNodeStacks(root) {
-  return ['clusters', 'apps']
-    .map(x => path.join(root, x))
+function getNodeStacks(stackPaths) {
+  return stackPaths
     .flatMap(x => readdirSync(x, 'utf-8'))
     .filter(x => /package.*\.json/g.test(x))
     .map(x => x.split(path.sep)[1]);
@@ -57,6 +56,10 @@ const clustersDir = getClusterDir(root);
 const appsDir = getAppDir(root);
 const clusters = getClusters(clustersDir);
 const apps = getApps(appsDir);
+const stackPaths = [
+  ...clusters.map(x => path.join(root, 'clusters', x)),
+  ...apps.map(x => path.join(root, 'apps', x)),
+];
 const stacks = [...clusters, ...apps];
 const nodeStacks = getNodeStacks(root);
 const target = getTargetRef();
