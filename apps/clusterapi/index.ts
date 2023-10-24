@@ -78,6 +78,37 @@ const rpiServerClass = new clusterapi.metal.v1alpha2.ServerClass('rpi', {
   },
 }, { dependsOn: infrastructure.ready });
 
+const ryzenGen1ServerClass = new clusterapi.metal.v1alpha2.ServerClass('ryzen.gen1.md', {
+  metadata: {
+    name: 'ryzen.gen1.md',
+    namespace: 'sidero-system',
+  },
+  spec: {
+    qualifiers: {
+      hardware: [{
+        compute: {
+          processors: [{
+            productName: 'AMD Ryzen 7 1700 Eight-Core Processor',
+            coreCount: 8,
+            speed: 3000,
+          }],
+        },
+        memory: {
+          totalSize: '16 GB',
+        },
+      }],
+    },
+    configPatches: [{
+      op: 'replace',
+      path: '/machine/install/disk',
+      value: '/dev/sda' as unknown as Record<string, string>,
+    }],
+  },
+}, { dependsOn: infrastructure.ready });
+
+export const rpi4MdServerClassId = rpiServerClass.id;
+export const ryzenGen1MdServerClassId = ryzenGen1ServerClass.id;
+
 // Sidero currently has an old rbac-proxy version that doesn't support ARM64
 function patchKubeRbacProxy(obj: any, opts: pulumi.CustomResourceOptions): void {
   if (obj.kind !== 'Deployment') return;
