@@ -1,6 +1,12 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as cloudflare from '@pulumi/cloudflare';
+import * as infra from '@pulumi/crds/infrastructure';
+import * as metal from '@pulumi/crds/metal/v1alpha2';
+
+const clusterApiStack = new pulumi.StackReference('clusterapi', {
+  name: 'UnstoppableMango/thecluster-clusterapi/rosequartz',
+});
 
 const config = new pulumi.Config();
 
@@ -24,4 +30,26 @@ const manifests = new k8s.kustomize.Directory('manifests', {
   ignoreChanges: [
     'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
   ],
+});
+
+const rpi4ServerClass = metal.ServerClass.get(
+  'ryzenGen1MdServerClass',
+  clusterApiStack.getOutput('ryzenGen1MdServerClassId'));
+
+const ryzenWorkers = new infra.v1alpha3.MetalMachineTemplate('ryzen', {
+  metadata: {
+    name: 'pink-diamond-ryzen-workers',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    template: {
+      spec: {
+        serverClassRef: {
+          apiVersion: rpi4ServerClass.apiVersion.apply(x => x ?? ''),
+          kind: rpi4ServerClass.kind.apply(x => x ?? ''),
+          name: pulumi.output(rpi4ServerClass.metadata).apply(x => x?.name ?? ''),
+        },
+      },
+    },
+  },
 });
