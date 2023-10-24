@@ -48,7 +48,12 @@ function getNodeStacks(root) {
   return ['clusters', 'apps']
     .map(x => path.join(root, x))
     .map(x => readdirSync(x, 'utf-8'))
-    .filter(x => /package.*\.json/g.test(x))
+    .filter(x => {
+      console.log('filter path', x);
+      const res = /package.*\.json/g.test(x);
+      console.log('result', res);
+      return res;
+    })
     .map(x => x.split(path.sep)[1]);
 }
 
