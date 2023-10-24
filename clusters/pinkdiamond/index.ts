@@ -1,6 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as cloudflare from '@pulumi/cloudflare';
+import * as cluster from '@pulumi/crds/cluster/v1beta1';
 import * as infra from '@pulumi/crds/infrastructure';
 import * as metal from '@pulumi/crds/metal/v1alpha2';
 
@@ -48,6 +49,36 @@ const ryzenWorkers = new infra.v1alpha3.MetalMachineTemplate('ryzen', {
           apiVersion: rpi4ServerClass.apiVersion.apply(x => x ?? ''),
           kind: rpi4ServerClass.kind.apply(x => x ?? ''),
           name: pulumi.output(rpi4ServerClass.metadata).apply(x => x?.name ?? ''),
+        },
+      },
+    },
+  },
+});
+
+const ryzenMachineDeployment = new cluster.MachineDeployment('pink-diamond-ryzen-workers', {
+  metadata: {
+    name: 'pink-diamond-ryzen-workers',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    clusterName: 'pink-diamond',
+    replicas: 1,
+    selector: {},
+    template: {
+      spec: {
+        clusterName: 'pink-diamond',
+        version: `v${config.require('k8sVersion')}`,
+        bootstrap: {
+          configRef: {
+            apiVersion: 'bootstrap.cluster.x-k8s.io/v1alpha3',
+            kind: 'TalosConfigTemplate',
+            name: 'pink-diamond-workers',
+          },
+        },
+        infrastructureRef: {
+          apiVersion: ryzenWorkers.apiVersion.apply(x => x ?? ''),
+          kind: ryzenWorkers.kind.apply(x => x ?? ''),
+          name: pulumi.output(ryzenWorkers.metadata).apply(x => x?.name ?? ''),
         },
       },
     },
