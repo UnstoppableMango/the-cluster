@@ -18,6 +18,10 @@ const crds = new k8s.yaml.ConfigGroup('crds', {
     'talos-bootstrap/crds.yaml',
     'talos-controlplane/crds.yaml',
   ].map(x => path.join('providers', x)),
+}, {
+  ignoreChanges: [
+    'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
+  ],
 });
 
 const core = new k8s.yaml.ConfigFile('core', {
@@ -37,7 +41,12 @@ const bootstrap = new k8s.yaml.ConfigGroup('bootstrap', {
     'talos-bootstrap/resources.yaml',
   ].map(x => path.join('providers', x)),
   transformations: [patchControllerManagerPorts],
-}, { dependsOn: core.ready });
+}, {
+  dependsOn: core.ready,
+  ignoreChanges: [
+    'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
+  ],
+});
 
 const controlplane = new k8s.yaml.ConfigGroup('controlplane', {
   files: [
@@ -54,11 +63,16 @@ const infrastructure = new k8s.yaml.ConfigGroup('infrastructure', {
     // 'proxmox/resources.yaml',
   ].map(x => path.join('providers', x)),
   transformations: [patchKubeRbacProxy, patchSidero],
-}, { dependsOn: controlplane.ready });
+}, {
+  dependsOn: controlplane.ready,
+  ignoreChanges: [
+    'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
+  ],
+});
 
-const rpiServerClass = new clusterapi.metal.v1alpha2.ServerClass('rpi', {
+const rpiServerClass = new clusterapi.metal.v1alpha2.ServerClass('rpi4.md', {
   metadata: {
-    name: 'rpi',
+    name: 'rpi4.md',
     namespace: 'sidero-system',
   },
   spec: {
@@ -67,6 +81,9 @@ const rpiServerClass = new clusterapi.metal.v1alpha2.ServerClass('rpi', {
         system: {
           family: 'Raspberry Pi'
         },
+        memory: {
+          totalSize: '4 GB',
+        }
       }],
     },
     bootFromDiskMethod: 'ipxe-sanboot',
@@ -77,6 +94,37 @@ const rpiServerClass = new clusterapi.metal.v1alpha2.ServerClass('rpi', {
     }],
   },
 }, { dependsOn: infrastructure.ready });
+
+const ryzenGen1ServerClass = new clusterapi.metal.v1alpha2.ServerClass('ryzen.gen1.md', {
+  metadata: {
+    name: 'ryzen.gen1.md',
+    namespace: 'sidero-system',
+  },
+  spec: {
+    qualifiers: {
+      hardware: [{
+        compute: {
+          processors: [{
+            productName: 'AMD Ryzen 7 1700 Eight-Core Processor',
+            coreCount: 8,
+            speed: 3000,
+          }],
+        },
+        memory: {
+          totalSize: '16 GB',
+        },
+      }],
+    },
+    configPatches: [{
+      op: 'replace',
+      path: '/machine/install/disk',
+      value: '/dev/sda' as unknown as Record<string, string>,
+    }],
+  },
+}, { dependsOn: infrastructure.ready });
+
+export const rpi4MdServerClassId = rpiServerClass.id;
+export const ryzenGen1MdServerClassId = ryzenGen1ServerClass.id;
 
 // Sidero currently has an old rbac-proxy version that doesn't support ARM64
 function patchKubeRbacProxy(obj: any, opts: pulumi.CustomResourceOptions): void {
