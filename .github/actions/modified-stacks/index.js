@@ -61,7 +61,7 @@ const stackPaths = [
   ...apps.map(x => path.join(root, 'apps', x)),
 ];
 const stacks = [...clusters, ...apps];
-const nodeStacks = getNodeStacks(root);
+const nodeStacks = getNodeStacks(stackPaths);
 const target = getTargetRef();
 const files = getModifiedFiles(target);
 const modified = getModifiedStacks(files);
