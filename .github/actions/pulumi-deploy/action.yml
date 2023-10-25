@@ -1,0 +1,48 @@
+name: Pulumi Deploy
+description: Deploy a Pulumi stack
+inputs:
+  kind:
+    description: Directory stack is located in (clusters/apps)
+    required: true
+  name:
+    description: Name of the stack to deploy
+    required: true
+  stack:
+    description: Name of the stack configuration to deploy
+    required: true
+  op:
+    description: The pulumi operation to perform
+    required: true
+  validate:
+    description: Whether to run stack validation script
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: .nvmrc
+        cache: npm
+        cache-dependency-path: ${{ inputs.kind }}/${{ inputs.name }}/package-lock.json
+
+    - run: npm ci
+      shell: bash
+      working-directory: ${{ inputs.kind }}/${{ inputs.name }}
+
+    - run: |
+        [ $(ls -1 Chart.{yml,yaml} 2>/dev/null | wc -l) -gt 0 ] && helm dependency update
+      shell: bash
+      working-directory: ${{ inputs.kind }}/${{ inputs.name }}
+
+    - name: Pulumi Action
+      uses: pulumi/actions@v4
+      with:
+        stack-name: UnstoppableMango/thecluster-clusterapi/rosequartz
+        command: ${{ inptus.op }}
+        work-dir: ${{ inputs.kind }}/${{ inputs.name }}
+        pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+
+    - name: Validate
+      if: ${{ inputs.validate }}
+      run: ./spec/validation.sh
+      shell: bash
+      working-directory: ${{ inputs.kind }}/${{ inputs.name }}
