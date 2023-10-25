@@ -192,7 +192,7 @@ jobs:
         run: |
           name="$(kubectl get pods -n sidero-system -o json | jq -r '.items[].metadata.name' | grep sidero-controller-manager)"
           kubectl describe pod -n sidero-system "$name"
-          kubectl logs -n sidero-system "$name"
+          kubectl logs -n sidero-system "$name" -c 'tftp-folder-setup'
         if: failure()
 
       - name: Tear down Cluster API
