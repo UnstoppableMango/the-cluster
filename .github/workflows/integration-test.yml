@@ -134,7 +134,7 @@ jobs:
       - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
         working-directory: apps/dashboard
 
-      - name: Pulumi Action
+      - name: Pulumi Up
         uses: pulumi/actions@v4
         with:
           stack-name: UnstoppableMango/thecluster-dashboard/rq-${{ env.STACK_ID }}
@@ -152,12 +152,12 @@ jobs:
         working-directory: apps/metrics-server
 
       - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
-        working-directory: apps/dashboard
+        working-directory: apps/metrics-server
 
       - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
         working-directory: apps/metrics-server
 
-      - name: Pulumi Action
+      - name: Pulumi Up
         uses: pulumi/actions@v4
         with:
           stack-name: UnstoppableMango/thecluster-metrics-server/rq-${{ env.STACK_ID }}
@@ -169,9 +169,34 @@ jobs:
         run: ./spec/validation.sh
         working-directory: apps/metrics-server
 
-      - name: Tear down dashboard
+      - run: npm ci
+        working-directory: apps/clusterapi
+
+      - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
+        working-directory: apps/clusterapi
+
+      - name: Pulumi Up
+        uses: pulumi/actions@v4
+        with:
+          stack-name: UnstoppableMango/thecluster-clusterapi/rq-${{ env.STACK_ID }}
+          command: up
+          work-dir: apps/clusterapi
+          pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+
+      - name: Validate Cluster API
+        run: ./spec/validation.sh
+        working-directory: apps/clusterapi
+
+      - name: Tear down Cluster API
         if: always()
-        working-directory: apps/dashboard
+        working-directory: apps/clusterapi
+        run: |
+          pulumi down -yf
+          pulumi stack rm -yf "rq-$STACK_ID"
+
+      - name: Tear down metrics-server
+        if: always()
+        working-directory: apps/metrics-server
         run: |
           pulumi down -yf
           pulumi stack rm -yf "rq-$STACK_ID"
