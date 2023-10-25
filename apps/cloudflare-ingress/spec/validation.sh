@@ -4,6 +4,7 @@ set -u
 cwd="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
 
 namespace="cloudflare-ingress-test"
+exitCode=0
 
 function cleanup() {
     echo "Deleting test resources"
@@ -21,6 +22,7 @@ if kubectl wait deployment test-deployment -n "$namespace" --for condition=Avail
     echo "✅ Deployment is ready"
 else
     echo "❌ Deployment was not ready in time"
+    exitCode=1
 fi
 
 echo ""
@@ -30,6 +32,12 @@ if curl -s https://cf-ing-test.thecluster.io 1>/dev/null; then
     echo "✅ Ingress is properly routing traffic!"
 else
     echo "❌ Ingress is not routing traffic!"
+
+    name="$(kubectl get pods -n cloudflare-ingress -o json | jq -r '.items[].metadata.name' | grep ingress)"
+    kubectl logs -n cloudflare-ingress "$name"
+    exitCode=1
 fi
 
 echo ""
+
+exit $exitCode
