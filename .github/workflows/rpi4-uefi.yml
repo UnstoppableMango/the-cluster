@@ -41,8 +41,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: .
-          file: Pkgfile
+          context: infra/pkgs
+          file: infra/pkgs/Pkgfile
           target: raspberrypi4-uefi
           provenance: true
           platforms: linux/amd64,linux/arm64 # Build amd64 for CI
