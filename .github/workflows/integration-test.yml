@@ -148,6 +148,34 @@ jobs:
         run: ./spec/validation.sh
         working-directory: apps/dashboard
 
+      - run: npm ci
+        working-directory: apps/metrics-server
+
+      - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
+        working-directory: apps/dashboard
+
+      - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
+        working-directory: apps/metrics-server
+
+      - name: Pulumi Action
+        uses: pulumi/actions@v4
+        with:
+          stack-name: UnstoppableMango/thecluster-metrics-server/rq-${{ env.STACK_ID }}
+          command: up
+          work-dir: apps/metrics-server
+          pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+
+      - name: Validate Metrics Server
+        run: ./spec/validation.sh
+        working-directory: apps/metrics-server
+
+      - name: Tear down dashboard
+        if: always()
+        working-directory: apps/dashboard
+        run: |
+          pulumi down -yf
+          pulumi stack rm -yf "rq-$STACK_ID"
+
       - name: Tear down dashboard
         if: always()
         working-directory: apps/dashboard
