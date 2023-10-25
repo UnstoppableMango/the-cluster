@@ -1,5 +1,8 @@
+import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import { Buffer } from 'buffer';
+
+const config = new pulumi.Config();
 
 const ns = new k8s.core.v1.Namespace('dashboard', {
   metadata: { name: 'dashboard' },
@@ -27,7 +30,7 @@ const chart = new k8s.helm.v3.Chart('dashboard', {
       ingress: {
         enabled: true,
         className: 'cloudflare-tunnel',
-        hosts: ['dashboard.thecluster.io'],
+        hosts: [`${config.require('subdomain')}.thecluster.io`],
         customPaths: [{
           pathType: 'Prefix',
           path: '/*',
