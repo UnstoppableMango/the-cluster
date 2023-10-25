@@ -112,10 +112,12 @@ jobs:
             suffix: ${{ env.STACK_ID }}
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        timeout-minutes: 2
 
       - run: |
           name="$(kubectl get pods -n cloudflare-ingress -o json | jq -r '.items[].metadata.name' | grep ingress)"
           kubectl describe pod -n cloudflare-ingress "$name"
+          kubectl logs -n cloudflare-ingress "$name"
         if: failure()
 
       - run: ./spec/validation.sh
