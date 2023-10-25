@@ -130,7 +130,7 @@ jobs:
         working-directory: apps/dashboard
 
       - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
-        working-directory: apps/cloudflare-ingress
+        working-directory: apps/dashboard
 
       - name: Pulumi Action
         uses: pulumi/actions@v4
