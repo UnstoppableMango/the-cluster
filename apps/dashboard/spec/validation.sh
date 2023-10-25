@@ -17,7 +17,7 @@ fi
 # TODO: Wait/check that ingress is ready
 # Might be hard ATM since the cf ingress controller doesn't update the .status.loadBalancer field
 
-hostname="$(k get ingress -n dashboard dashboard-kubernetes-dashboard -o json | jq -r '.spec.rules[0].host')"
+hostname="$(kubectl get ingress -n dashboard dashboard-kubernetes-dashboard -o json | jq -r '.spec.rules[0].host')"
 echo "curl -s https://$hostname"
 if curl -s "https://$hostname" 1>/dev/null; then
     echo -e "✅ Dashboard is publicly accessible!\n"
