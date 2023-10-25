@@ -113,6 +113,11 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
+      - run: |
+          name="$(kubectl get pods -n cloudflare-ingress -o json | jq -r '.items[].metadata.name' | grep ingress)"
+          kubectl describe pod -n cloudflare-ingress "$name"
+        if: failure()
+
       - run: ./spec/validation.sh
         working-directory: apps/cloudflare-ingress
 
