@@ -30092,8 +30092,9 @@ stacks.forEach(stack => {
     || (nodeUpdate && nodeStacks.includes(stack))
     || override;
 
-  console.log('Setting output: ', stack, result);
-  core.setOutput(stack, result);
+  const name = stack.split(path.sep)[1];
+  console.log('Setting output: ', name, result);
+  core.setOutput(name, result);
 });
 
 })();
