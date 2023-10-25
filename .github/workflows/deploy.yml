@@ -1,0 +1,65 @@
+name: Deploy
+
+on:
+  workflow_call:
+    inputs:
+      kind:
+        required: true
+        type: string
+      name:
+        required: true
+        type: string
+      stack:
+        required: true
+        type: string
+      tf-stack:
+        required: true
+        type: string
+      op:
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/dashboard
+    env:
+      TF_WORKSPACE: ${{ inputs.tf-stack }}
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: apps/dashboard/package-lock.json
+
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.7 # renovate depName=hashicorp/terraform
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+          terraform_wrapper: false
+
+      - name: Setup kubeconfig
+        run: |
+          terraform init -lockfile=readonly
+          terraform output -raw kubeconfig > kubeconfig
+          echo "KUBECONFIG=$(pwd)/kubeconfig" >> "$GITHUB_ENV"
+        working-directory: clusters/rosequartz
+
+      - run: npm ci
+      - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
+
+      - name: Pulumi Action
+        uses: pulumi/actions@v4
+        with:
+          stack-name: UnstoppableMango/thecluster-dashboard/rosequartz
+          command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
+          work-dir: apps/dashboard
+          pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+
+      - name: Validate
+        if: ${{ github.event_name == 'push' }}
+        run: ./spec/validation.sh
