@@ -30014,44 +30014,87 @@ const path = __nccwpck_require__(1017);
 const os = __nccwpck_require__(2037);
 const { execSync } = __nccwpck_require__(2081);
 
-const root = execSync('git rev-parse --show-toplevel', { encoding: 'utf-8' }).trim();
-console.log(`Using root:        ${root}`);
+function getRootDir() {
+  return execSync('git rev-parse --show-toplevel', { encoding: 'utf-8' }).trim();
+}
 
-const clustersDir = path.join(root, 'clusters');
-console.log(`Using clustersDir: ${clustersDir}`);
+function getClusterDir(root) {
+  return path.join(root, 'clusters');
+}
 
-const appsDir = path.join(root, 'apps');
-console.log(`Using appsDir:     ${appsDir}`);
+function getAppDir(root) {
+  return path.join(root, 'apps');
+}
 
-const clusters = readdirSync(clustersDir, 'utf-8');
-const apps = readdirSync(appsDir, 'utf-8');
-const stacks = [...clusters, ...apps];
-console.log('All stacks:        ', stacks);
+function getClusters(clusterDir) {
+  return readdirSync(clusterDir, 'utf-8').map(x => path.join('clusters', x));
+}
 
-const target = github.context.eventName === 'pull_request'
+function getApps(appDir) {
+  return readdirSync(appDir, 'utf-8').map(x => path.join('apps', x));
+}
+
+function getTargetRef() {
+  return github.context.eventName === 'pull_request'
     ? process.env.GITHUB_BASE_REF
     : process.env.GITHUB_REF_NAME;
+}
 
-console.log(`Using target ref: origin/${target}`);
+function getModifiedFiles(target) {
+  const diff = execSync(`git diff --name-only origin/${target}`, { encoding: 'utf-8' }).trim();
+  return !diff ? [] : diff.split(os.EOL);
+}
 
-const diff = execSync(`git diff --name-only origin/${target}`, { encoding: 'utf-8' }).trim();
-const files = !diff ? [] : diff.split(os.EOL);
-
-console.log(`Found ${files.length} changed files:`, files);
-
-const modified = files.map(x => x.split(path.sep))
+function getModifiedStacks(files) {
+  return files.map(x => x.split(path.sep))
     .filter(x => x.length > 2) // Only look at directories
     .filter(x => ['clusters', 'apps'].includes(x[0]))
-    .map(x => x[1])
+    .map(x => path.join(x[0], x[1]))
     .filter((x, i, a) => a.indexOf(x) === i); // Distinct
+}
 
-console.log('Modified stacks: ', modified);
+function getNodeStacks(root, stacks) {
+  return stacks.filter(
+    x => readdirSync(path.join(root, x), 'utf-8')
+      .some(x => /package.*\.json/g.test(x))
+  );
+}
 
+const root = getRootDir();
+const clustersDir = getClusterDir(root);
+const appsDir = getAppDir(root);
+const clusters = getClusters(clustersDir);
+const apps = getApps(appsDir);
+const stacks = [...clusters, ...apps];
+const nodeStacks = getNodeStacks(root, stacks);
+const target = getTargetRef();
+const files = getModifiedFiles(target);
+const modified = getModifiedStacks(files);
 const isPush = github.context.eventName === 'push';
+const nodeUpdate = files.some(x => x.includes('.nvmrc'));
+const workflowUpdate = files.some(x => /\.github\/(workflows|actions)/g.test(x))
+const override = isPush || workflowUpdate;
+
+console.log(`Using root:        ${root}`);
+console.log(`Using clustersDir: ${clustersDir}`);
+console.log(`Using appsDir:     ${appsDir}`);
+console.log('All stacks:        ', stacks);
+console.log('Node stacks:       ', nodeStacks);
+console.log(`Using target ref:  origin/${target}`);
+console.log(`Found ${files.length} changed files:`, files);
+console.log('Modified stacks:   ', modified);
+
+if (override) console.log('Override reasons: ', { isPush, workflowUpdate });
+if (nodeUpdate) console.log('Node appears to have been updated');
+
 stacks.forEach(stack => {
-  const result = modified.includes(stack) || isPush;
-  console.log('Setting output: ', stack, result);
-  core.setOutput(stack, result);
+  const result = modified.includes(stack)
+    || (nodeUpdate && nodeStacks.includes(stack))
+    || override;
+
+  const name = stack.split(path.sep)[1];
+  console.log('Setting output: ', name, result);
+  core.setOutput(name, result);
 });
 
 })();
