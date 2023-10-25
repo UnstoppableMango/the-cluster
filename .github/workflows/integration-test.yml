@@ -42,14 +42,14 @@ jobs:
         run: curl -sL https://talos.dev/install | sh
 
       - name: Terraform Init
-        working-directory: stacks/rosequartz
+        working-directory: clusters/rosequartz
         run: terraform init -lockfile=readonly
         env:
           TF_WORKSPACE: rosequartz-ci
 
       - name: Setup workspace
         id: setup-workspace
-        working-directory: stacks/rosequartz
+        working-directory: clusters/rosequartz
         run: |
           workspace="rosequartz-$STACK_ID"
           terraform workspace new "$workspace"
@@ -57,57 +57,57 @@ jobs:
           echo "workspace=$workspace" >> "$GITHUB_OUTPUT"
 
       - name: Create test node
-        working-directory: stacks/rosequartz
+        working-directory: clusters/rosequartz
         run: docker compose -f ci/docker-compose.yaml up -d
         timeout-minutes: 1
 
       - name: Terraform Apply
-        working-directory: stacks/rosequartz
+        working-directory: clusters/rosequartz
         run: terraform apply -var-file=vars/ci.tfvars -auto-approve
         timeout-minutes: 5
 
       - name: Write configuration files
-        working-directory: stacks/rosequartz
+        working-directory: clusters/rosequartz
         run: |
           terraform output -raw talosconfig > "$RQ_TALOSCONFIG"
           terraform output -raw kubeconfig > "$RQ_KUBECONFIG"
 
       - name: Rosequartz validation
-        working-directory: stacks/rosequartz
+        working-directory: clusters/rosequartz
         run: ./spec/validation.sh
 
       - run: npm ci
-        working-directory: stacks/cert-manager
+        working-directory: apps/cert-manager
 
       - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
-        working-directory: stacks/cert-manager
+        working-directory: apps/cert-manager
 
       - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
-        working-directory: stacks/cert-manager
+        working-directory: apps/cert-manager
 
       - uses: pulumi/actions@v4
         with:
           stack-name: UnstoppableMango/thecluster-cert-manager/rq-${{ env.STACK_ID }}
           command: up
-          work-dir: stacks/cert-manager
+          work-dir: apps/cert-manager
 
       - run: ./spec/validation.sh
-        working-directory: stacks/cert-manager
+        working-directory: apps/cert-manager
 
       - run: npm ci
-        working-directory: stacks/cloudflare-ingress
+        working-directory: apps/cloudflare-ingress
 
       - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
-        working-directory: stacks/cloudflare-ingress
+        working-directory: apps/cloudflare-ingress
 
       - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
-        working-directory: stacks/cloudflare-ingress
+        working-directory: apps/cloudflare-ingress
 
       - uses: pulumi/actions@v4
         with:
           stack-name: UnstoppableMango/thecluster-cloudflare-ingress/rq-${{ env.STACK_ID }}
           command: up
-          work-dir: stacks/cloudflare-ingress
+          work-dir: apps/cloudflare-ingress
           config-map: |
             suffix: ${{ env.STACK_ID }}
         env:
@@ -117,25 +117,25 @@ jobs:
         if: failure()
 
       - run: ./spec/validation.sh
-        working-directory: stacks/cloudflare-ingress
+        working-directory: apps/cloudflare-ingress
 
       - name: Tear down cloudflare-ingress
         if: always()
-        working-directory: stacks/cloudflare-ingress
+        working-directory: apps/cloudflare-ingress
         run: |
           pulumi down -yf
           pulumi stack rm -yf "rq-$STACK_ID"
 
       - name: Tear down cert-manager
         if: always()
-        working-directory: stacks/cert-manager
+        working-directory: apps/cert-manager
         run: |
           pulumi down -yf
           pulumi stack rm -yf "rq-$STACK_ID"
 
       - name: Tear down rosequartz
         if: always()
-        working-directory: stacks/rosequartz
+        working-directory: clusters/rosequartz
         run: |
           terraform destroy -auto-approve
           terraform workspace select rosequartz-ci
