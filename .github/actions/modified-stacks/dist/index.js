@@ -30049,18 +30049,16 @@ function getModifiedStacks(files) {
   return files.map(x => x.split(path.sep))
     .filter(x => x.length > 2) // Only look at directories
     .filter(x => ['clusters', 'apps'].includes(x[0]))
-    .map(x => x[1])
+    .map(x => path.join(x[0], x[1]))
     .filter((x, i, a) => a.indexOf(x) === i); // Distinct
 }
 
 function getNodeStacks(root, stacks) {
-  return stacks
-    .filter(
-      x => path.join(root, x)
-        .readdirSync(x, 'utf-8')
-        .some(x => /package.*\.json/g.test(x))
-    )
-    .map(x => x.split(path.sep)[1]);
+  return stacks.filter(
+    x => path.join(root, x)
+      .readdirSync(x, 'utf-8')
+      .some(x => /package.*\.json/g.test(x))
+  );
 }
 
 const root = getRootDir();
