@@ -37,13 +37,13 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
           terraform_wrapper: false
 
-      - uses: /.github/actions/setup-rq-deploy
+      - uses: ./.github/actions/setup-rq-deploy
         with:
           tf-workspace: ${{ inputs.tf-stack }}
           talosconfig: ./talosconfig
           kubeconfig: ./kubeconfig
 
-      - uses: /.github/actions/pulumi-deploy
+      - uses: ./.github/actions/pulumi-deploy
         with:
           kind: ${{ inputs.kind }}
           name: ${{ inputs.name }}
