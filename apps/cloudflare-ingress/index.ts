@@ -41,7 +41,7 @@ const chart = new k8s.helm.v3.Chart('cloudflare-ingress', {
         },
         image: {
           repository: 'ghcr.io/unstoppablemango/cloudflare-tunnel-ingress-controller',
-          tag: 'sha-c92febc@sha256:7e4c9374891a1bd4058c09865d9b431779510de39c6ebdb8b13045f4935c87ed',
+          tag: 'sha-c92febc',
         },
         securityContext: {
           allowPrivilegeEscalation: false,
