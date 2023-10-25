@@ -141,14 +141,12 @@ jobs:
           command: up
           work-dir: apps/dashboard
           config-map: |
-            subdomain: ${{ env.STACK_ID }}
+            subdomain: test-${{ env.STACK_ID }}
           pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
 
       - name: Validate Dashboard
         run: ./spec/validation.sh
         working-directory: apps/dashboard
-        env:
-          DASH_SUBDOMAIN: test-${{ env.STACK_ID }}
 
       - name: Tear down dashboard
         if: always()
