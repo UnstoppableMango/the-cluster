@@ -182,6 +182,7 @@ jobs:
           command: up
           work-dir: apps/clusterapi
           pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+        timeout-minutes: 3
 
       - name: Validate Cluster API
         run: ./spec/validation.sh
