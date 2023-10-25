@@ -46,8 +46,7 @@ function getModifiedStacks(files) {
 
 function getNodeStacks(root, stacks) {
   return stacks.filter(
-    x => path.join(root, x)
-      .readdirSync(x, 'utf-8')
+    x => readdirSync(path.join(root, x), 'utf-8')
       .some(x => /package.*\.json/g.test(x))
   );
 }
