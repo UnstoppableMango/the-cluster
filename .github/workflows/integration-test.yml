@@ -114,13 +114,15 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         timeout-minutes: 2
 
-      - run: |
+      - name: Debug logs
+        run: |
           name="$(kubectl get pods -n cloudflare-ingress -o json | jq -r '.items[].metadata.name' | grep ingress)"
           kubectl describe pod -n cloudflare-ingress "$name"
           kubectl logs -n cloudflare-ingress "$name"
         if: failure()
 
-      - run: ./spec/validation.sh
+      - name: Validate Cloudflare Ingress
+        run: ./spec/validation.sh
         working-directory: apps/cloudflare-ingress
 
       - run: npm ci
@@ -142,9 +144,11 @@ jobs:
             subdomain: ${{ env.STACK_ID }}
           pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
 
-      - name: Validate
+      - name: Validate Dashboard
         run: ./spec/validation.sh
         working-directory: apps/dashboard
+        env:
+          DASH_SUBDOMAIN: test-${{ env.STACK_ID }}
 
       - name: Tear down dashboard
         if: always()

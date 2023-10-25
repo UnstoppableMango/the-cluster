@@ -14,8 +14,9 @@ else
     exitCode=1
 fi
 
-echo "curl -s 'https://dashboard.thecluster.io'"
-if curl -s 'https://dashboard.thecluster.io' 1>/dev/null; then
+subdomain="${DASH_SUBDOMAIN:-dashboard}"
+echo "curl -s https://$subdomain.thecluster.io"
+if curl -s "https://$subdomain.thecluster.io" 1>/dev/null; then
     echo -e "✅ Dashboard is publicly accessible!\n"
 else
     echo -e "❌ Dashboard is not publicly accessible!\n"
