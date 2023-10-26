@@ -30,7 +30,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ./.github/actions/setup-e2e
+      - id: setup
+        uses: ./.github/actions/setup-e2e
         with:
           tf-api-token: ${{ secrets.TF_API_TOKEN }}
           stack-id: ${{ env.STACK_ID }}
@@ -43,7 +44,7 @@ jobs:
 
       - uses: ./.github/actions/teardown-e2e
         with:
-          tf-api-token: ${{ secrets.TF_API_TOKEN }}
+          tf-workspace: ${{ steps.setup.outputs.workspace }}
           stack-id: ${{ env.STACK_ID }}
 
   upgrade-e2e-test:
@@ -63,7 +64,8 @@ jobs:
         with:
           ref: main
 
-      - uses: ./.github/actions/setup-e2e
+      - id: setup
+        uses: ./.github/actions/setup-e2e
         with:
           tf-api-token: ${{ secrets.TF_API_TOKEN }}
           stack-id: ${{ env.STACK_ID }}
@@ -84,5 +86,5 @@ jobs:
 
       - uses: ./.github/actions/teardown-e2e
         with:
-          tf-api-token: ${{ secrets.TF_API_TOKEN }}
+          tf-workspace: ${{ steps.setup.outputs.workspace }}
           stack-id: ${{ env.STACK_ID }}

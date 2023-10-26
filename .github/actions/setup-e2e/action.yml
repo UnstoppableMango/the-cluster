@@ -50,3 +50,7 @@ runs:
       working-directory: clusters/rosequartz
       run: docker compose -f ci/docker-compose.yaml up -d
       shell: bash
+outputs:
+  workspace:
+    description: The terraform workspace
+    value: ${{ steps.setup-workspace.outputs.workspace }}
