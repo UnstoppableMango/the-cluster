@@ -1,0 +1,167 @@
+name: End To End Test
+description: Run end to end tests for THECLUSTER
+inputs:
+  stack-id:
+    description: Stack identifier for this run
+    required: true
+  talosconfig:
+    description: Path to the talosconfig file
+    required: true
+  kubeconfig:
+    description: Path to the kubeconfig file
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Terraform Apply
+      working-directory: clusters/rosequartz
+      run: terraform apply -var-file=vars/ci.tfvars -auto-approve
+      shell: bash
+
+    - name: Write configuration files
+      working-directory: clusters/rosequartz
+      run: |
+        terraform output -raw talosconfig > "${{ inputs.talosconfig }}"
+        terraform output -raw kubeconfig > "${{ inputs.kubeconfig }}"
+      shell: bash
+
+    - name: Rosequartz validation
+      working-directory: clusters/rosequartz
+      run: ./spec/validation.sh
+      shell: bash
+
+    - run: npm ci
+      working-directory: apps/cert-manager
+      shell: bash
+
+    - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
+      working-directory: apps/cert-manager
+      shell: bash
+
+    - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
+      working-directory: apps/cert-manager
+      shell: bash
+
+    - uses: pulumi/actions@v4
+      with:
+        stack-name: UnstoppableMango/thecluster-cert-manager/rq-${{ inputs.stack-id }}
+        command: up
+        work-dir: apps/cert-manager
+
+    - run: ./spec/validation.sh
+      working-directory: apps/cert-manager
+      shell: bash
+
+    - run: npm ci
+      working-directory: apps/cloudflare-ingress
+      shell: bash
+
+    - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
+      working-directory: apps/cloudflare-ingress
+      shell: bash
+
+    - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
+      working-directory: apps/cloudflare-ingress
+      shell: bash
+
+    - uses: pulumi/actions@v4
+      with:
+        stack-name: UnstoppableMango/thecluster-cloudflare-ingress/rq-${{ inputs.stack-id }}
+        command: up
+        work-dir: apps/cloudflare-ingress
+        config-map: |
+          suffix: ${{ inputs.stack-id }}
+
+    - name: Validate Cloudflare Ingress
+      run: ./spec/validation.sh
+      working-directory: apps/cloudflare-ingress
+      shell: bash
+
+    - name: Debug logs
+      run: |
+        name="$(kubectl get pods -n cloudflare-ingress -o json | jq -r '.items[].metadata.name' | grep ingress)"
+        kubectl describe pod -n cloudflare-ingress "$name"
+        kubectl logs -n cloudflare-ingress "$name"
+      if: failure()
+      shell: bash
+
+    - run: npm ci
+      working-directory: apps/dashboard
+      shell: bash
+
+    - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
+      working-directory: apps/dashboard
+      shell: bash
+
+    - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
+      working-directory: apps/dashboard
+      shell: bash
+
+    - name: Pulumi Up
+      uses: pulumi/actions@v4
+      with:
+        stack-name: UnstoppableMango/thecluster-dashboard/rq-${{ inputs.stack-id }}
+        command: up
+        work-dir: apps/dashboard
+        config-map: |
+          subdomain: test-${{ inputs.stack-id }}
+        pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+
+    - name: Validate Dashboard
+      run: ./spec/validation.sh
+      working-directory: apps/dashboard
+      shell: bash
+
+    - run: npm ci
+      working-directory: apps/metrics-server
+      shell: bash
+
+    - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
+      working-directory: apps/metrics-server
+      shell: bash
+
+    - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
+      working-directory: apps/metrics-server
+      shell: bash
+
+    - name: Pulumi Up
+      uses: pulumi/actions@v4
+      with:
+        stack-name: UnstoppableMango/thecluster-metrics-server/rq-${{ inputs.stack-id }}
+        command: up
+        work-dir: apps/metrics-server
+        pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+
+    - name: Validate Metrics Server
+      run: ./spec/validation.sh
+      working-directory: apps/metrics-server
+      shell: bash
+
+    - run: npm ci
+      working-directory: apps/clusterapi
+      shell: bash
+
+    - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
+      working-directory: apps/clusterapi
+      shell: bash
+
+    - name: Pulumi Up
+      uses: pulumi/actions@v4
+      with:
+        stack-name: UnstoppableMango/thecluster-clusterapi/rq-${{ inputs.stack-id }}
+        command: up
+        work-dir: apps/clusterapi
+        pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+
+    - name: Validate Cluster API
+      run: ./spec/validation.sh
+      working-directory: apps/clusterapi
+      shell: bash
+
+    - name: Debug logs
+      run: |
+        name="$(kubectl get pods -n sidero-system -o json | jq -r '.items[].metadata.name' | grep sidero-controller-manager)"
+        kubectl describe pod -n sidero-system "$name"
+        kubectl logs -n sidero-system "$name" -c 'tftp-folder-setup'
+      if: failure()
+      shell: bash

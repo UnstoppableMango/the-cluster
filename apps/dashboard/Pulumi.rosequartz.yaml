@@ -1,0 +1,2 @@
+config:
+  thecluster-dashboard:subdomain: dashboard
