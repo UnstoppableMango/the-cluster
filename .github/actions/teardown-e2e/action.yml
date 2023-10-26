@@ -1,0 +1,60 @@
+name: Teardown End to End Tests
+description: Teardown end to end tests
+inputs:
+  stack-id:
+    description: The stack identifier for this run
+    required: true
+  tf-workspace:
+    description: The Terraform workspace to tear down
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Tear down Cluster API
+      if: always()
+      working-directory: apps/clusterapi
+      run: |
+        pulumi down -yf
+        pulumi stack rm -yf "rq-${{ inputs.stack-id }}"
+      shell: bash
+
+    - name: Tear down metrics-server
+      if: always()
+      working-directory: apps/metrics-server
+      run: |
+        pulumi down -yf
+        pulumi stack rm -yf "rq-${{ inputs.stack-id }}"
+      shell: bash
+
+    - name: Tear down dashboard
+      if: always()
+      working-directory: apps/dashboard
+      run: |
+        pulumi down -yf
+        pulumi stack rm -yf "rq-${{ inputs.stack-id }}"
+      shell: bash
+
+    - name: Tear down cloudflare-ingress
+      if: always()
+      working-directory: apps/cloudflare-ingress
+      run: |
+        pulumi down -yf
+        pulumi stack rm -yf "rq-${{ inputs.stack-id }}"
+      shell: bash
+
+    - name: Tear down cert-manager
+      if: always()
+      working-directory: apps/cert-manager
+      run: |
+        pulumi down -yf
+        pulumi stack rm -yf "rq-${{ inputs.stack-id }}"
+      shell: bash
+
+    - name: Tear down rosequartz
+      if: always()
+      working-directory: clusters/rosequartz
+      run: |
+        terraform destroy -auto-approve
+        terraform workspace select rosequartz-ci
+        terraform workspace delete "${{ inputs.tf-workspace }}"
+      shell: bash
