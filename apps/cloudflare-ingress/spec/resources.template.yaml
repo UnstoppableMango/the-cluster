@@ -30,6 +30,7 @@ spec:
           allowPrivilegeEscalation: false
           capabilities:
             drop: ['ALL']
+          runAsNonRoot: true
 ---
 apiVersion: v1
 kind: Service
