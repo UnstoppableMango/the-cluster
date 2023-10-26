@@ -13,31 +13,42 @@ function cleanup() {
 
 trap cleanup EXIT
 
+echo -e "Generating test resources...\n"
+export SUBDOMAIN=$RANDOM
+envsubst < "$cwd/resources.template.yaml" > "$cwd/resources.yaml"
+
+echo "Verifying test resource generation..."
+host="$(cat "$cwd/resources.yaml" | yq -r 'select(.kind == "Ingress") | .spec.rules[].host')"
+if [ "$SUBDOMAIN.thecluster.io" == "$host" ]; then
+    echo -e "✅ Resources were properly templated\n"
+else
+    echo -e "❌ Resources were not properly templated\n"
+
+    cat "$cwd/resources.yaml"
+    exitCode=1
+fi
+
 echo "Applying test resources..."
-kubectl apply -f "$cwd/resources.yaml" --wait
+kubectl apply --wait -f "$cwd/resources.yaml"
 echo ""
 
 echo "Waiting for deployment to be available..."
 if kubectl wait deployment test-deployment -n "$namespace" --for condition=Available=true --timeout=120s 1>/dev/null; then
-    echo "✅ Deployment is ready"
+    echo -e "✅ Deployment is ready\n"
 else
-    echo "❌ Deployment was not ready in time"
+    echo -e "❌ Deployment was not ready in time\n"
     exitCode=1
 fi
 
-echo ""
-
 echo "It should route traffic properly"
-if curl -s https://cf-ing-test.thecluster.io 1>/dev/null; then
-    echo "✅ Ingress is properly routing traffic!"
+if curl -s https://$SUBDOMAIN.thecluster.io 1>/dev/null; then
+    echo -e "✅ Ingress is properly routing traffic!\n"
 else
-    echo "❌ Ingress is not routing traffic!"
+    echo -e "❌ Ingress is not routing traffic!\n"
 
     name="$(kubectl get pods -n cloudflare-ingress -o json | jq -r '.items[].metadata.name' | grep ingress)"
     kubectl logs -n cloudflare-ingress "$name"
     exitCode=1
 fi
-
-echo ""
 
 exit $exitCode
