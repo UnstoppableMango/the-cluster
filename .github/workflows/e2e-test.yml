@@ -3,6 +3,13 @@ name: End To End Test
 on:
   pull_request:
     branches: [main]
+    paths:
+      - 'apps/**/package-lock.json'
+      - 'apps/**/Chart.yaml'
+      - 'apps/**/.versions'
+      - 'clusters/**/package-lock.json'
+      - 'clusters/**/Chart.yaml'
+      - 'clusters/**/.versions'
   workflow_dispatch:
   push:
     branches: [v2-integration-test]
@@ -41,7 +48,7 @@ jobs:
 
   upgrade-e2e-test:
     runs-on: ubuntu-latest
-    # if: github.actor == 'renovate[bot]'
+    if: false # Need a commit to main in order for the action to exist and run
     env:
       RQ_STACK: ci
       RQ_TALOSCONFIG: ${{ github.workspace }}/talosconfig
