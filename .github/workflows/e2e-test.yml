@@ -17,7 +17,6 @@ on:
 jobs:
   e2e-test:
     runs-on: ubuntu-latest
-    # if: github.actor == 'renovate[bot]'
     env:
       RQ_STACK: ci
       RQ_TALOSCONFIG: ${{ github.workspace }}/talosconfig
