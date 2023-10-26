@@ -38,15 +38,19 @@ runs:
       working-directory: apps/cert-manager
       shell: bash
 
-    - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
+    - name: Create temporary cert-manager stack "rq-${{ env.STACK_ID }}"
+      run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
       working-directory: apps/cert-manager
       shell: bash
 
-    - uses: pulumi/actions@v4
+    - name: Pulumi Up
+      uses: pulumi/actions@v4
       with:
         stack-name: UnstoppableMango/thecluster-cert-manager/rq-${{ inputs.stack-id }}
         command: up
         work-dir: apps/cert-manager
+        comment-on-pr: false
+        pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
 
     - run: ./spec/validation.sh
       working-directory: apps/cert-manager
@@ -60,7 +64,8 @@ runs:
       working-directory: apps/metrics-server
       shell: bash
 
-    - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
+    - name: Create temporary metrics-server stack "rq-${{ env.STACK_ID }}"
+      run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
       working-directory: apps/metrics-server
       shell: bash
 
@@ -70,6 +75,7 @@ runs:
         stack-name: UnstoppableMango/thecluster-metrics-server/rq-${{ inputs.stack-id }}
         command: up
         work-dir: apps/metrics-server
+        comment-on-pr: false
         pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
 
     - name: Validate Metrics Server
@@ -81,7 +87,8 @@ runs:
       working-directory: apps/clusterapi
       shell: bash
 
-    - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
+    - name: Create temporary clusterapi stack "rq-${{ env.STACK_ID }}"
+      run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
       working-directory: apps/clusterapi
       shell: bash
 
@@ -91,6 +98,7 @@ runs:
         stack-name: UnstoppableMango/thecluster-clusterapi/rq-${{ inputs.stack-id }}
         command: up
         work-dir: apps/clusterapi
+        comment-on-pr: false
         pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
 
     - name: Validate Cluster API
