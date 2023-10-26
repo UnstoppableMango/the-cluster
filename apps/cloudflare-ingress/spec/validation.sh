@@ -40,6 +40,10 @@ else
     exitCode=1
 fi
 
+duration=15
+echo "Sleeping for $duration"s...
+sleep $duration
+
 echo "It should route traffic properly"
 if curl -s https://$SUBDOMAIN.thecluster.io 1>/dev/null; then
     echo -e "✅ Ingress is properly routing traffic!\n"
