@@ -11,8 +11,6 @@ on:
       - 'clusters/**/Chart.yaml'
       - 'clusters/**/.versions'
   workflow_dispatch:
-  push:
-    branches: [v2-integration-test]
 
 jobs:
   e2e-test:
