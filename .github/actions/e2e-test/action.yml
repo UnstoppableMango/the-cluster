@@ -71,7 +71,6 @@ runs:
         work-dir: apps/cloudflare-ingress
         config-map: |
           suffix: ${{ inputs.stack-id }}
-      shell: bash
 
     - name: Validate Cloudflare Ingress
       run: ./spec/validation.sh
@@ -153,7 +152,6 @@ runs:
         command: up
         work-dir: apps/clusterapi
         pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
-      shell: bash
 
     - name: Validate Cluster API
       run: ./spec/validation.sh
