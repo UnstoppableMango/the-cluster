@@ -7,10 +7,10 @@ on:
       - '.github/**/*e2e*'
       - 'apps/**/package-lock.json'
       - 'apps/**/Chart.yaml'
-      - 'apps/**/.versions'
       - 'clusters/**/package-lock.json'
       - 'clusters/**/Chart.yaml'
-      - 'clusters/**/.versions'
+      - '**/.versions'
+      - '**/validation.sh'
   workflow_dispatch:
     inputs:
       e2e:
