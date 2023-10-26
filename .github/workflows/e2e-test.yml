@@ -12,6 +12,19 @@ on:
       - 'clusters/**/Chart.yaml'
       - 'clusters/**/.versions'
   workflow_dispatch:
+    inputs:
+      e2e:
+        description: Whether to run the standard end to end test
+        type: boolean
+        default: true
+      upgrade:
+        description: Whether to run the upgrade end to end test
+        type: boolean
+        default: true
+      upgrade-base-ref:
+        description: The ref to start at before upgrading
+        type: string
+        default: main
 
 env:
   RQ_STACK: ci
@@ -25,6 +38,7 @@ env:
 jobs:
   e2e-test:
     runs-on: ubuntu-latest
+    if: inputs.e2e
     env:
       STACK_ID: ${{ github.run_id }}-${{ github.run_attempt }}
     steps:
@@ -49,12 +63,13 @@ jobs:
 
   upgrade-e2e-test:
     runs-on: ubuntu-latest
+    if: inputs.upgrade
     env:
       STACK_ID: ${{ github.run_id }}-${{ github.run_attempt }}-upg
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ inputs.upgrade-base-ref }}
 
       - id: setup
         uses: ./.github/actions/setup-e2e
