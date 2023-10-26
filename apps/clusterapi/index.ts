@@ -167,7 +167,7 @@ function patchSidero(obj: any, opts: pulumi.CustomResourceOptions): void {
   }
 
   obj.spec.template.spec.initContainers.push({
-    image: `ghcr.io/unstoppablemango/raspberrypi4-uefi:v${uefiVersion}`,
+    image: `ghcr.io/unstoppablemango/raspberrypi4-uefi:${uefiVersion}`,
     imagePullPolicy: 'Always',
     name: 'tftp-folder-setup',
     command: ['cp'],
