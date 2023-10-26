@@ -51,7 +51,7 @@ metadata:
 spec:
   ingressClassName: cloudflare-tunnel
   rules:
-  - host: cf-ing-test.thecluster.io
+  - host: $SUBDOMAIN.thecluster.io
     http:
       paths:
       - pathType: Prefix
