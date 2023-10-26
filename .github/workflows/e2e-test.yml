@@ -12,17 +12,19 @@ on:
       - 'clusters/**/.versions'
   workflow_dispatch:
 
+env:
+  RQ_STACK: ci
+  RQ_TALOSCONFIG: ${{ github.workspace }}/talosconfig
+  RQ_KUBECONFIG: ${{ github.workspace }}/kubeconfig
+  TALOSCONFIG: ${{ github.workspace }}/talosconfig
+  KUBECONFIG: ${{ github.workspace }}/kubeconfig
+  PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+  CLOUDFLARE_API_TOKEN: bogus
+
 jobs:
   e2e-test:
     runs-on: ubuntu-latest
     env:
-      RQ_STACK: ci
-      RQ_TALOSCONFIG: ${{ github.workspace }}/talosconfig
-      RQ_KUBECONFIG: ${{ github.workspace }}/kubeconfig
-      TALOSCONFIG: ${{ github.workspace }}/talosconfig
-      KUBECONFIG: ${{ github.workspace }}/kubeconfig
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-      CLOUDFLARE_API_TOKEN: bogus
       STACK_ID: ${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
@@ -46,15 +48,7 @@ jobs:
 
   upgrade-e2e-test:
     runs-on: ubuntu-latest
-    if: false # Need a commit to main in order for the action to exist and run
     env:
-      RQ_STACK: ci
-      RQ_TALOSCONFIG: ${{ github.workspace }}/talosconfig
-      RQ_KUBECONFIG: ${{ github.workspace }}/kubeconfig
-      TALOSCONFIG: ${{ github.workspace }}/talosconfig
-      KUBECONFIG: ${{ github.workspace }}/kubeconfig
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-      CLOUDFLARE_API_TOKEN: bogus
       STACK_ID: ${{ github.run_id }}-${{ github.run_attempt }}-upg
     steps:
       - uses: actions/checkout@v4
