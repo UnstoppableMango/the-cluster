@@ -4,6 +4,7 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - '.github/**/*e2e*'
       - 'apps/**/package-lock.json'
       - 'apps/**/Chart.yaml'
       - 'apps/**/.versions'
