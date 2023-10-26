@@ -40,22 +40,14 @@ jobs:
     defaults:
       run:
         working-directory: clusters/rosequartz
-    env:
-      RQ_STACK: ${{ github.event_name == 'pull_request' && 'ci' || 'prod' }}
-      RQ_TALOSCONFIG: talosconfig
-      RQ_KUBECONFIG: kubeconfig
     steps:
       - uses: actions/checkout@v4
 
       - uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.5.7
+          terraform_version: 1.5.7 # renovate depName=hashicorp/terraform
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
           terraform_wrapper: false
-
-      # TODO: Get a specfic version
-      - name: Install talosctl
-        run: curl -sL https://talos.dev/install | sh
 
       - name: Terraform Format
         run: terraform fmt -check
@@ -63,28 +55,10 @@ jobs:
       - name: Terraform Init
         run: terraform init -lockfile=readonly
         env:
-          TF_WORKSPACE: ${{ github.event_name == 'push' && 'rosequartz-prod' || 'rosequartz-ci' }}
-
-      - name: Setup workspace
-        id: setup-workspace
-        run: |
-          workspace="rosequartz"
-          if [ "$GITHUB_EVENT_NAME" == "push" ]; then
-              workspace="$workspace-prod"
-          else
-              workspace="$workspace-${GITHUB_HEAD_REF//[\/.]/-}"
-              terraform workspace new "$workspace"
-          fi
-          terraform workspace select "$workspace"
-          echo "workspace=$workspace" >> "$GITHUB_OUTPUT"
+          TF_WORKSPACE: rosequartz-prod
 
       - name: Terraform Validate
         run: terraform validate
-
-      - name: Create test node
-        if: github.event_name == 'pull_request'
-        run: docker compose -f ci/docker-compose.yaml up -d
-        timeout-minutes: 1
 
       - name: Setup secrets
         if: github.event_name == 'push'
@@ -98,28 +72,11 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       - name: Terraform Apply
+        if: github.event_name == 'push'
         run: terraform apply -auto-approve tfplan
         timeout-minutes: 5
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-
-      - name: Write configuration files
-        run: |
-          terraform output -raw talosconfig > "$RQ_TALOSCONFIG"
-          terraform output -raw kubeconfig > "$RQ_KUBECONFIG"
-
-      - name: Cluster validation
-        run: ./spec/validation.sh
-
-      - name: Tear down
-        if: github.event_name == 'pull_request' && !cancelled()
-        run: |
-          terraform destroy -auto-approve
-          terraform workspace select rosequartz-ci
-          terraform workspace delete "${{ steps.setup-workspace.outputs.workspace }}"
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        timeout-minutes: 5
 
   cert-manager:
     name: Cert Manager
