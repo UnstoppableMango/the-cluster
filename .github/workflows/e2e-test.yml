@@ -38,7 +38,7 @@ env:
 jobs:
   e2e-test:
     runs-on: ubuntu-latest
-    if: inputs.e2e
+    if: inputs.e2e || github.event_name == 'pull_request'
     env:
       STACK_ID: ${{ github.run_id }}-${{ github.run_attempt }}
     steps:
@@ -63,7 +63,7 @@ jobs:
 
   upgrade-e2e-test:
     runs-on: ubuntu-latest
-    if: inputs.upgrade
+    if: inputs.upgrade || github.event_name == 'pull_request'
     env:
       STACK_ID: ${{ github.run_id }}-${{ github.run_attempt }}-upg
     steps:
