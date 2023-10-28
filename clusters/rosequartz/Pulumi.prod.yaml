@@ -1,4 +1,6 @@
 config:
+  cloudflare:apiToken:
+    secure: AAABAII/2q4AH1Vzb2cLj/e78z0/RA5Cd3yU7SuMfjYtzAH2FtCKpDNYVFhrA+Sg+iileQrhwNJW2jxhY/6vPQmAzjiWREal
   thecluster-rosequartz:certSans:
     - 192.168.1.101
   thecluster-rosequartz:nodeData:
