@@ -1,6 +1,6 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as cloudflare from "@pulumi/cloudflare";
-import * as talos from "@pulumiverse/talos";
+import * as talos from "@unmango/pulumi-talos";
 import * as fs from 'fs';
 import * as YAML from 'yaml';
 
@@ -65,7 +65,7 @@ if (pulumi.getStack() === 'prod') {
     type: "A",
     value: publicIp,
     proxied: false,
-  });
+  }, { protect: true });
 
   const ssl = new cloudflare.Ruleset('ssl', {
     name: `${dnsName} SSL`,
@@ -144,14 +144,14 @@ const controlplaneConfigApply: talos.machine.ConfigurationApply[] = Object.entri
     })],
   }, { dependsOn: bootstrap })));
 
-// const healthCheck = talos.index.clusterHealth({
-//     clientConfiguration: secrets.clientConfiguration,
-//     controlPlaneNodes: Object.keys(nodeData.controlplanes ?? []),
-//     endpoints: [endpoint],
-//     timeouts: {
-//         read: healthTimeout,
-//     },
-// });
+const healthCheck = talos.cluster.healthOutput({
+    clientConfiguration: secrets.clientConfiguration,
+    controlPlaneNodes: Object.keys(nodeData.controlplanes ?? []),
+    endpoints: [endpoint],
+    timeouts: {
+        read: healthTimeout,
+    },
+});
 
 const kubeconfigOutput = talos.cluster.kubeconfigOutput({
   clientConfiguration: secrets.clientConfiguration,
