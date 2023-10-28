@@ -103,6 +103,13 @@ const clientConfig = talos.client.configurationOutput({
   nodes: Object.keys(allNodeData),
 });
 
+const bootstrap: talos.machine.Bootstrap[] = Object.keys(allNodeData)
+  .map((key, i) => (new talos.machine.Bootstrap(`bootstrap-${i}`, {
+    clientConfiguration: secrets.clientConfiguration,
+    node: key,
+    endpoint: endpoint,
+  })));
+
 const controlplaneConfigApply: talos.machine.ConfigurationApply[] = Object.entries(nodeData.controlplanes || [])
   .map(([key, value]) => (new talos.machine.ConfigurationApply(`controlplane-${key}`, {
     clientConfiguration: secrets.clientConfiguration,
@@ -135,14 +142,7 @@ const controlplaneConfigApply: talos.machine.ConfigurationApply[] = Object.entri
         },
       }
     })],
-  })))
-
-const bootstrap: talos.machine.Bootstrap[] = Object.keys(allNodeData)
-  .map((key, i) => (new talos.machine.Bootstrap(`bootstrap-${i}`, {
-    clientConfiguration: secrets.clientConfiguration,
-    node: key,
-    endpoint: endpoint,
-  })));
+  }, { dependsOn: bootstrap })));
 
 // const healthCheck = talos.index.clusterHealth({
 //     clientConfiguration: secrets.clientConfiguration,
