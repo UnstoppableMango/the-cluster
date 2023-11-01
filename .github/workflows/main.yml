@@ -50,7 +50,7 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.5.7 # renovate depName=hashicorp/terraform
+          terraform_version: v1.6.3 # renovate depName=hashicorp/terraform
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
           terraform_wrapper: false
 
