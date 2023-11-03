@@ -12,6 +12,7 @@ if [ -z "$(pulumi -C "$root" stack ls --json | jq -r ".[].name | select(. == \"$
     pulumi stack init $stack --copy-config-from local
     pulumi stack tag set local true
 else
+    echo "Selecting stack $stack..."
     pulumi stack select "$stack"
 fi
 

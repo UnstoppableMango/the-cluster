@@ -7,7 +7,7 @@ version: '3'
 name: rosequartz
 
 x-controlplane: &controlplane
-  image: ghcr.io/siderolabs/talos:v1.4.8
+  image: ghcr.io/siderolabs/talos:v1.5.4
   environment:
     PLATFORM: container
   labels:

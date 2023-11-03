@@ -26,4 +26,4 @@ config:
     value:
       k8s: 1.28.0
       ksca: 0.7.5
-      talos: 1.4.8
+      talos: 1.5.4
