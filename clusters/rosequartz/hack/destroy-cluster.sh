@@ -8,7 +8,6 @@ source "$root/common.sh"
 talosctl cluster destroy \
     --name "$CLUSTER_NAME" \
     --provisioner "$PROVISIONER" \
-    --state "$TALOS_STATE" \
     --talosconfig "$TALOSCONFIG"
 
 rm \

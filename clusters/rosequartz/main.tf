@@ -62,6 +62,7 @@ data "talos_client_configuration" "this" {
 resource "talos_machine_configuration_apply" "controlplane" {
   depends_on = [cloudflare_record.primary_dns]
 
+  apply_mode                  = "no_reboot"
   client_configuration        = talos_machine_secrets.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.controlplane.machine_configuration
   endpoint                    = local.endpoint

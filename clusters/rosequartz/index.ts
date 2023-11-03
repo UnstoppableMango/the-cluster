@@ -1,7 +1,6 @@
-import * as pulumi from "@pulumi/pulumi";
-import * as cloudflare from "@pulumi/cloudflare";
-import * as talos from "@unmango/pulumi-talos";
-import * as fs from 'fs';
+import * as pulumi from '@pulumi/pulumi';
+import * as cloudflare from '@pulumi/cloudflare';
+import * as talos from '@pulumiverse/talos';
 import * as YAML from 'yaml';
 
 type Nodes = Record<string, {
@@ -15,54 +14,26 @@ interface Cluster {
 }
 
 interface Versions {
-  'kubernetes/kubernetes': string,
-  'siderolabs/talos': string,
-  'alex1989hu/kubelet-server-cert-approver': string,
+  k8s: string,
+  talos: string,
+  ksca: string,
 }
 
 const config = new pulumi.Config();
 
-// A name to provide for the Talos cluster
-const clusterName = config.require("clusterName");
+const certSans = config.requireObject<string[]>('certSans');
 
-// The public IP used for the Talos cluster
-const publicIp = config.require("publicIp");
-
-const endpoint = config.get("primaryDnsName") ?? publicIp;
-const clusterEndpoint = `https://${endpoint}:6443`;
-
-// Subject Alternative Names to use for certificates
-const certSans = config.requireObject<string[]>("certSans").concat([
-  publicIp,
-  endpoint,
-]);
-
-// A map of node data
-const nodeData = config.requireObject<Cluster>("nodeData");
-
-// Timeout for the health operation
-const healthTimeout = config.require("healthTimeout");
-
-// Timeout for the kubeconfig operation
-const kubeconfigTimeout = config.require("kubeconfigTimeout");
-
-const versions: Versions = YAML.parse(fs.readFileSync('.versions', { encoding: 'utf-8' }));
-const k8sVersion = versions['kubernetes/kubernetes'];
-const talosVersion = versions['siderolabs/talos'];
-const kscaVersion = versions['alex1989hu/kubelet-server-cert-approver'];
-
-const installerImage = `ghcr.io/siderolabs/installer:v${talosVersion}`;
-
-const allNodeData: Nodes = { ...nodeData.controlplanes, ...nodeData.workers };
-const zoneId = "22f1d42ba0fbe4f924905e1c6597055c";
-
-if (pulumi.getStack() === 'prod') {
+if (config.requireBoolean('createDnsRecord')) {
+  const zoneId = '22f1d42ba0fbe4f924905e1c6597055c';
+  const publicIp = config.require('publicIp');
   const dnsName = config.require('primaryDnsName');
+
+  certSans.push(publicIp);
 
   const primaryDns = new cloudflare.Record('primary-dns', {
     name: dnsName,
     zoneId: zoneId,
-    type: "A",
+    type: 'A',
     value: publicIp,
     proxied: false,
   }, { protect: true });
@@ -70,30 +41,44 @@ if (pulumi.getStack() === 'prod') {
   const ssl = new cloudflare.Ruleset('ssl', {
     name: `${dnsName} SSL`,
     description: `Set SSL to a value that works for ${dnsName}`,
-    kind: "zone",
+    kind: 'zone',
     zoneId: zoneId,
-    phase: "http_config_settings",
+    phase: 'http_config_settings',
     rules: [{
-      action: "set_config",
+      action: 'set_config',
       actionParameters: {
-        ssl: "full",
+        ssl: 'full',
       },
       expression: `(http.host eq "${dnsName}") or (http.host eq "pd.thecluster.io")`,
     }],
   })
 }
 
-const secrets = new talos.machine.Secrets('secrets', { talosVersion: `v${talosVersion}` });
+const clusterName = config.require('clusterName');
+const endpoint = config.require('endpoint');
+const vip = config.require('vip');
+
+certSans.push(endpoint, vip);
+
+const clusterEndpoint = `https://${vip}:6443`;
+const nodeData = config.requireObject<Cluster>('nodeData');
+const versions = config.requireObject<Versions>('versions');
+
+const allNodeData: Nodes = { ...nodeData.controlplanes, ...nodeData.workers };
+
+const secrets = new talos.machine.Secrets('secrets', { talosVersion: `v${versions.talos}` });
+
+export const secretData = secrets.clientConfiguration;
 
 const controlplaneConfig = talos.machine.configurationOutput({
   clusterName: clusterName,
   clusterEndpoint: clusterEndpoint,
-  machineType: "controlplane",
+  machineType: 'controlplane',
   machineSecrets: secrets.machineSecrets,
   docs: false,
   examples: false,
-  talosVersion: `v${talosVersion}`,
-  kubernetesVersion: k8sVersion,
+  talosVersion: `v${versions.talos}`,
+  kubernetesVersion: versions.k8s,
 });
 
 const clientConfig = talos.client.configurationOutput({
@@ -112,6 +97,7 @@ const bootstrap: talos.machine.Bootstrap[] = Object.keys(allNodeData)
 
 const controlplaneConfigApply: talos.machine.ConfigurationApply[] = Object.entries(nodeData.controlplanes || [])
   .map(([key, value]) => (new talos.machine.ConfigurationApply(`controlplane-${key}`, {
+    applyMode: 'no_reboot',
     clientConfiguration: secrets.clientConfiguration,
     machineConfigurationInput: controlplaneConfig.machineConfiguration,
     endpoint: endpoint,
@@ -123,16 +109,20 @@ const controlplaneConfigApply: talos.machine.ConfigurationApply[] = Object.entri
           certSANs: certSans,
         },
         extraManifests: [
-          `https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/v${kscaVersion}/deploy/standalone-install.yaml`,
+          `https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/v${versions.ksca}/deploy/standalone-install.yaml`,
         ],
       },
       machine: {
         install: {
           disk: value.installDisk,
-          image: installerImage,
+          image: `ghcr.io/siderolabs/installer:v${versions.talos}`,
         },
         network: {
-          hostname: value.hostname,
+          interfaces: [{
+            deviceSelector: { busPath: '0*' },
+            dhcp: true,
+            vip: { ip: vip },
+          }],
         },
         certSANs: certSans,
         kubelet: {
@@ -144,21 +134,21 @@ const controlplaneConfigApply: talos.machine.ConfigurationApply[] = Object.entri
     })],
   }, { dependsOn: bootstrap })));
 
-const healthCheck = talos.cluster.healthOutput({
-    clientConfiguration: secrets.clientConfiguration,
-    controlPlaneNodes: Object.keys(nodeData.controlplanes ?? []),
-    endpoints: [endpoint],
-    timeouts: {
-        read: healthTimeout,
-    },
-});
+// const healthCheck = talos.cluster.healthOutput({
+//     clientConfiguration: secrets.clientConfiguration,
+//     controlPlaneNodes: Object.keys(nodeData.controlplanes ?? []),
+//     endpoints: [endpoint],
+//     timeouts: {
+//         read: config.require('healthTimeout'),
+//     },
+// });
 
 const kubeconfigOutput = talos.cluster.kubeconfigOutput({
   clientConfiguration: secrets.clientConfiguration,
   node: Object.keys(nodeData.controlplanes ?? [])[0],
   endpoint: endpoint,
   timeouts: {
-    read: kubeconfigTimeout,
+    read: config.require('kubeconfigTimeout'),
   },
 });
 

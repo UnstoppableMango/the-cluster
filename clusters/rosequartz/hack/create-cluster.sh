@@ -13,15 +13,10 @@ pushd "$TALOS_DIR"
 talosctl cluster create \
     --name "$CLUSTER_NAME" \
     --provisioner "$PROVISIONER" \
-    --state "$TALOS_STATE" \
     --talosconfig "$TALOSCONFIG" \
-    --endpoint "https://$NODE_IP:6443" \
-    --arch arm64 \
     --talos-version "v$TALOS_VERSION" \
     --kubernetes-version "$K8S_VERSION" \
-    --skip-kubeconfig \
     --disk 65536 \
     --memory 4096 \
-    --workers 0 \
-    --wait \
-    --wait-timeout "2m30s"
+    --controlplanes 3 \
+    --workers 0
