@@ -6,51 +6,51 @@ version: '3'
 
 name: rosequartz
 
-x-controlplane: &controlplane
-  image: ghcr.io/siderolabs/talos:v1.5.4
-  environment:
-    PLATFORM: container
-  labels:
-    talos.cluster.name: rosequartz
-    talos.owned: false
-    talos.type: controlplane
-  tmpfs:
-    - /run
-    - /system
-    - /tmp
-  privileged: true
-  security_opt:
-    - seccomp:unconfined
-    - label=disable
-
 services:
-  talos-controlplane-1:
-    container_name: 'rosequartz-talos-controlplane-1'
-    <<: *controlplane
+  talos-controlplane:
+    image: ghcr.io/siderolabs/talos:v1.5.3
+    environment:
+      PLATFORM: container
+      TALOSSKU: 2CPU-2048RAM
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    labels:
+      org.opencontainers.image.source: https://github.com/siderolabs/talos
+      talos.cluster.name: rosequartz
+      talos.owned: false
+      talos.type: controlplane
     networks:
       default:
         ipv4_address: '10.5.0.2'
     ports:
       - 50000:50000/tcp
       - 6443:6443/tcp
-  talos-controlplane-2:
-    container_name: 'rosequartz-talos-controlplane-2'
-    <<: *controlplane
-    networks:
-      default:
-        ipv4_address: '10.5.0.3'
-    ports:
-      - 50001:50000/tcp
-      - 6444:6443/tcp
-  talos-controlplane-3:
-    container_name: 'rosequartz-talos-controlplane-3'
-    <<: *controlplane
-    networks:
-      default:
-        ipv4_address: '10.5.0.4'
-    ports:
-      - 50002:50000/tcp
-      - 6445:6443/tcp
+    tmpfs:
+      - /run
+      - /system
+      - /tmp
+    volumes:
+      - cni:/etc/cni
+      - etcK8s:/etc/kubernetes
+      - libexecK8s:/usr/libexec/kubernetes
+      - opt:/opt
+      - udev:/usr/etc/udev
+      - var:/var
+      - state:/system/state
+    privileged: true
+    security_opt:
+      - seccomp:unconfined
+      - label=disable
+    sysctls:
+      net.ipv6.conf.all.disable_ipv6: 0
+
+volumes:
+  cni:
+  etcK8s:
+  libexecK8s:
+  opt:
+  udev:
+  var:
+  state:
 
 networks:
   default:
