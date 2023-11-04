@@ -18,3 +18,6 @@ fi
 
 echo "Destroying cluster..."
 docker compose -f "$cwd/docker-compose.yaml" down -v
+
+[ -f "$root/.kube/$stack/config" ] && rm "$root/.kube/$stack/config"
+[ -f "$root/.talos/$stack/talosconfig.yaml" ] && rm "$root/.talos/$stack/talosconfig.yaml"

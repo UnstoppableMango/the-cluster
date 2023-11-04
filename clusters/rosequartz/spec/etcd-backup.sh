@@ -1,16 +1,13 @@
 #!/bin/bash
 
-cwd="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
-root="$(dirname "$cwd")"
+root="$(git rev-parse --show-toplevel)/clusters/rosequartz"
+cwd="$root/spec"
 
-stack="${RQ_STACK:-dev}"
+stack="$(pulumi -C "$root" stack --show-name)"
 work="$cwd/tmp"
 mkdir -p "$work"
 
 export RQ_BACKUP_DIR="$work"
-export RQ_TALOS_DIR="$root/.talos/$stack"
-export RQ_NODE_IP="10.5.0.2"
-
 mkdir -p "$RQ_BACKUP_DIR"
 
 . "$root/scripts/etcd-backup.sh"

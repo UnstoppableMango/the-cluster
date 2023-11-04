@@ -1,40 +1,13 @@
 #!/bin/bash
+set -eum
 
-set -eu
-
-echo "This script is WIP!"
-exit 1
-
-cwd="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
-root="$(dirname "$cwd")"
-
-source "$root/scripts/common.sh"
-
-export RQ_NODE_IP="10.5.0.2"
-export RQ_TALOSCONFIG="$cwd/tmp/talosconfig"
-export RQ_KUBECONFIG="$cwd/tmp/kubeconfig"
-export RQ_BACKUP_DIR="$cwd/tmp"
-
-# NOTE: Because of bash weirdness, $cwd is not reliable after this point
-# TODO: And apparently others like $KUBECONFIG
-
-echo "Standing up cluster..."
-. "$root/ci/up.sh"
-echo ""
-
-echo "Running validation..."
-. "$root/spec/validation.sh"
-echo ""
-
-echo "Running etcd-backup..."
+root="$(git rev-parse --show-toplevel)/clusters/rosequartz"
+. "$root/hack/up.sh"
+pulumi -C "$root" up -yf
+. "$root/hack/write-config-files.sh"
+talosctl health --nodes "$(pulumi -C "$root" config get endpoint)"
+bash "$root/spec/verify.sh"
 . "$root/spec/etcd-backup.sh"
-echo ""
-
-echo "Running kubernetes upgrade..."
-RQ_DRY_RUN=true . "$root/scripts/k8s-upgrade.sh"
-. "$root/spec/validation.sh"
-echo ""
-
-echo "Tearing down cluster..."
-. "$root/ci/down.sh"
-echo ""
+RQ_DRY_RUN=true bash "$root/scripts/k8s-upgrade.sh"
+pulumi -C "$root" down -yf
+. "$root/hack/down.sh"
