@@ -1,0 +1,45 @@
+name: Setup Config
+description: Setup configuration files such as kubeconfig and talosconfig
+inputs:
+  cluster:
+    description: The cluster to setup config for
+    required: true
+  stack:
+    description: The stack of the configuration to use
+    required: true
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v3
+      with:
+        node-version-file: .nvmrc
+        cache: npm
+        cache-dependency-path: 'clusters/${{ inputs.cluster }}/package-lock.json'
+
+    - run: npm ci
+      working-directory: clusters/${{ inputs.cluster }}
+      shell: bash
+
+    - uses: pulumi/actions@v4
+      with:
+        pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+
+    - id: set-outputs
+      run: |
+        KUBECONFIG="$GITHUB_WORKSPACE/kubeconfig"
+        TALOSCONFIG="$GITHUB_WORKSPACE/talosconfig.yaml"
+        pulumi stack output --show-secrets kubeconfig > "$KUBECONFIG"
+        pulumi stack output --show-secrets talosconfig > "$TALOSCONFIG"
+        echo "kubeconfig=$KUBECONFIG" >> "$GITHUB_OUTPUT"
+        echo "talosconfig=$TALOSCONFIG" >> "$GITHUB_OUTPUT"
+        echo "KUBECONFIG=$KUBECONFIG" >> "$GITHUB_ENV"
+        echo "TALOSCONFIG=$TALOSCONFIG" >> "$GITHUB_ENV"
+      shell: bash
+
+outputs:
+  kubeconfig:
+    description: Path to the kubeconfig file
+    value: ${{ steps.set-outputs.outputs.kubeconfig }}
+  talosconfig:
+    description: Path to the talosconfig.yaml file
+    value: ${{ steps.set-outputs.outputs.talosconfig }}

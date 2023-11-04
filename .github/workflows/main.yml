@@ -6,11 +6,6 @@ on:
   push:
     branches: [main]
 
-env:
-  TF_IN_AUTOMATION: true
-  TF_INPUT: false
-  TF_CLI_ARGS: '-no-color'
-
 jobs:
   setup:
     name: Setup
@@ -41,35 +36,24 @@ jobs:
       run:
         working-directory: clusters/rosequartz
     env:
-      TF_WORKSPACE: rosequartz-prod
-      TF_VAR_public_ip: ${{ secrets.RQ_PUBLIC_IP }}
-      TF_VAR_primary_dns_name: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     steps:
       - uses: actions/checkout@v4
-
-      - uses: hashicorp/setup-terraform@v2
+      - uses: actions/setup-node@v4
         with:
-          terraform_version: 1.5.7 # renovate depName=hashicorp/terraform
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-          terraform_wrapper: false
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: clusters/rosequartz/package-lock.json
 
-      - name: Terraform Format
-        run: terraform fmt -check
+      - run: npm ci
 
-      - name: Terraform Init
-        run: terraform init -lockfile=readonly
-
-      - name: Terraform Validate
-        run: terraform validate
-
-      - name: Terraform Plan
-        run: terraform plan -var-file=vars/prod.tfvars -out=tfplan
-
-      - name: Terraform Apply
-        if: github.event_name == 'push'
-        run: terraform apply -auto-approve tfplan
-        timeout-minutes: 5
+      - name: Pulumi Action
+        uses: pulumi/actions@v4
+        with:
+          stack-name: UnstoppableMango/thecluster-rosequartz/prod
+          command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
+          work-dir: clusters/rosequartz
+          pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
 
   cert-manager:
     name: Cert Manager
@@ -81,7 +65,6 @@ jobs:
       run:
         working-directory: apps/cert-manager
     env:
-      TF_WORKSPACE: rosequartz-prod
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
@@ -91,21 +74,14 @@ jobs:
           cache: npm
           cache-dependency-path: apps/cert-manager/package-lock.json
 
-      - uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.5.7
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-          terraform_wrapper: false
-
-      - name: Setup kubeconfig
-        run: |
-          terraform init -lockfile=readonly
-          terraform output -raw kubeconfig > kubeconfig
-          echo "KUBECONFIG=$(pwd)/kubeconfig" >> "$GITHUB_ENV"
-        working-directory: clusters/rosequartz
-
       - run: npm ci
       - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
+
+      - id: setup-config
+        uses: ./.github/actions/setup-config
+        with:
+          cluster: rosequartz
+          stack: prod
 
       - name: Pulumi Action
         uses: pulumi/actions@v4
@@ -114,6 +90,8 @@ jobs:
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: apps/cert-manager
           pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+        env:
+          KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
 
   metrics-server:
     name: Metrics Server
@@ -125,7 +103,6 @@ jobs:
       run:
         working-directory: apps/metrics-server
     env:
-      TF_WORKSPACE: rosequartz-prod
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
@@ -135,21 +112,14 @@ jobs:
           cache: npm
           cache-dependency-path: apps/metrics-server/package-lock.json
 
-      - uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.5.7
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-          terraform_wrapper: false
-
-      - name: Setup kubeconfig
-        run: |
-          terraform init -lockfile=readonly
-          terraform output -raw kubeconfig > kubeconfig
-          echo "KUBECONFIG=$(pwd)/kubeconfig" >> "$GITHUB_ENV"
-        working-directory: clusters/rosequartz
-
       - run: npm ci
       - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
+
+      - id: setup-config
+        uses: ./.github/actions/setup-config
+        with:
+          cluster: rosequartz
+          stack: prod
 
       - name: Pulumi Action
         uses: pulumi/actions@v4
@@ -158,6 +128,8 @@ jobs:
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: apps/metrics-server
           pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+        env:
+          KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
 
       - name: Validate
         if: ${{ github.event_name == 'push' }}
@@ -173,7 +145,6 @@ jobs:
       run:
         working-directory: apps/clusterapi
     env:
-      TF_WORKSPACE: rosequartz-prod
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
@@ -183,20 +154,13 @@ jobs:
           cache: npm
           cache-dependency-path: apps/clusterapi/package-lock.json
 
-      - uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.5.7
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-          terraform_wrapper: false
-
-      - name: Setup kubeconfig
-        run: |
-          terraform init -lockfile=readonly
-          terraform output -raw kubeconfig > kubeconfig
-          echo "KUBECONFIG=$(pwd)/kubeconfig" >> "$GITHUB_ENV"
-        working-directory: clusters/rosequartz
-
       - run: npm ci
+
+      - id: setup-config
+        uses: ./.github/actions/setup-config
+        with:
+          cluster: rosequartz
+          stack: prod
 
       - name: Pulumi Action
         uses: pulumi/actions@v4
@@ -205,6 +169,8 @@ jobs:
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: apps/clusterapi
           pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+        env:
+          KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
 
       - name: Validate
         if: ${{ github.event_name == 'push' }}
