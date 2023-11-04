@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [setup]
     if: fromJson(needs.setup.outputs.rosequartz) && !failure() && !cancelled()
-    concurrency: setup-${{ github.event_name }}
+    concurrency: rosequartz-${{ github.ref }}
     defaults:
       run:
         working-directory: clusters/rosequartz
@@ -55,12 +55,19 @@ jobs:
           work-dir: clusters/rosequartz
           pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
 
+      - run: ./spec/e2e.sh
+        if: github.event_name == 'pull_request'
+
+      - name: Verify
+        if: github.event_name == 'push'
+        run: ./spec/verify.sh
+
   cert-manager:
     name: Cert Manager
     runs-on: ubuntu-latest
     needs: [setup, rosequartz]
     if: fromJson(needs.setup.outputs.cert-manager) && !failure() && !cancelled()
-    concurrency: cert-manager-${{ github.event_name }}
+    concurrency: cert-manager-${{ github.ref }}
     defaults:
       run:
         working-directory: apps/cert-manager
@@ -98,7 +105,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [setup, rosequartz]
     if: fromJson(needs.setup.outputs.metrics-server) && !failure() && !cancelled()
-    concurrency: metrics-server-${{ github.event_name }}
+    concurrency: metrics-server-${{ github.ref }}
     defaults:
       run:
         working-directory: apps/metrics-server
@@ -132,7 +139,7 @@ jobs:
           KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
 
       - name: Validate
-        if: ${{ github.event_name == 'push' }}
+        if: github.event_name == 'push'
         run: ./spec/validation.sh
 
   clusterapi:
@@ -140,7 +147,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [setup, rosequartz, cert-manager]
     if: fromJson(needs.setup.outputs.clusterapi) && !failure() && !cancelled()
-    concurrency: clusterapi-${{ github.event_name }}
+    concurrency: clusterapi-${{ github.ref }}
     defaults:
       run:
         working-directory: apps/clusterapi
@@ -173,5 +180,5 @@ jobs:
           KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
 
       - name: Validate
-        if: ${{ github.event_name == 'push' }}
+        if: github.event_name == 'push'
         run: ./spec/validation.sh

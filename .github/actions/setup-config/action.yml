@@ -26,8 +26,8 @@ runs:
 
     - id: set-outputs
       run: |
-        KUBECONFIG="$GITHUB_WORKSPACE/kubeconfig"
-        TALOSCONFIG="$GITHUB_WORKSPACE/talosconfig.yaml"
+        KUBECONFIG="${KUBECONFIG:-"$GITHUB_WORKSPACE/kubeconfig"}"
+        TALOSCONFIG="${TALOSCONFIG:-"$GITHUB_WORKSPACE/talosconfig.yaml"}"
         pulumi stack output --show-secrets kubeconfig > "$KUBECONFIG"
         pulumi stack output --show-secrets talosconfig > "$TALOSCONFIG"
         echo "kubeconfig=$KUBECONFIG" >> "$GITHUB_OUTPUT"
