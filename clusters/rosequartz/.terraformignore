@@ -1,9 +1,0 @@
-.envrc
-node_modules/
-hack/
-ci/
-.versions/
-.talos/
-.kube/
-README.md
-scripts/

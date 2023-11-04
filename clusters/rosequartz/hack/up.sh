@@ -16,8 +16,5 @@ else
     pulumi stack select "$stack"
 fi
 
-talosconfig="$root/.talos/$stack/talosconfig"
-kubeconfig="$root/.kube/$stack/config"
-
 echo "Creating cluster..."
-timeout 1m docker compose -f "$root/ci/docker-compose.yaml" up -d
+timeout 1m docker compose -f "$cwd/docker-compose.yaml" up -d

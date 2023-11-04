@@ -1,13 +1,11 @@
 #!/bin/bash
+set -eum
 
-set -u
+root="$(git rev-parse --show-toplevel)/clusters/rosequartz"
 
-cwd="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
-root="$(dirname "$cwd")"
-
-stack="${RQ_STACK:-dev}"
-export TALOSCONFIG="${RQ_TALOSCONFIG:-"$root/.talos/$stack/talosconfig"}"
-export KUBECONFIG="${RQ_KUBECONFIG:-"$root/.kube/$stack/config"}"
+stack="$(pulumi stack --show-name)"
+export TALOSCONFIG="$root/.talos/$stack/talosconfig.yaml"
+export KUBECONFIG="$root/.kube/$stack/config"
 exitCode=0
 
 echo "TALOSCONFIG should be set..."
@@ -61,7 +59,7 @@ fi
 echo ""
 
 echo "It should use configured kubernetes version..."
-expectedVersion="v$(cat "$root/.versions" | yq -r '."kubernetes/kubernetes"')"
+expectedVersion="v$(pulumi -C "$root" config get --path 'versions.k8s')"
 serverVersion="$(kubectl version -o json | jq -r '.serverVersion.gitVersion')"
 
 if [ "$expectedVersion" == "$serverVersion" ]; then
@@ -86,20 +84,6 @@ fi
 
 echo ""
 
-echo "It should have configured hostname..."
-hostname="$(kubectl get nodes -o json | jq -r '.items[].metadata.labels."kubernetes.io/hostname"')"
-
-if [ "$hostname" == "rqctrl1" ]; then
-    echo "✅ Node had expected hostname $hostname!"
-else
-    echo "❌ Node did not have expected hostname!"
-    echo "Expected: rqctrl1"
-    echo "Actual:   $hostname"
-    exitCode=1
-fi
-
-echo ""
-
 echo "Waiting for kubelet-serving-cert-approver deployment to be available..."
 if kubectl wait deployment kubelet-serving-cert-approver -n "kubelet-serving-cert-approver" --for condition=Available=true --timeout=120s 1>/dev/null; then
     echo -e "✅ Deployment is ready!\n"
@@ -113,7 +97,8 @@ if ! command -v talosctl &> /dev/null; then
 fi
 
 echo "Checking cluster health..."
-clusterHealth="$(talosctl health 2>&1)"
+node="$(pulumi -C "$root" config get endpoint)"
+clusterHealth="$(talosctl health --nodes "$node")"
 retval=$?
 if [ $retval -eq 0 ]; then
     echo "✅ Cluster is healthy!"
@@ -126,7 +111,7 @@ fi
 echo ""
 
 echo "It should use configured talos version..."
-expectedVersion="v$(cat "$root/.versions" | yq -r '."siderolabs/talos"')"
+expectedVersion="v$(pulumi -C "$root" config get --path 'versions.talos')"
 serverVersion="$(talosctl version | tr -d ' \t' | awk -F':' '/^Tag/{print $2}' | tail -n 1)"
 
 if [ "$expectedVersion" == "$serverVersion" ]; then

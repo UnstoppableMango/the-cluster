@@ -16,8 +16,5 @@ else
     pulumi stack select "$stack"
 fi
 
-talosconfig="$root/.talos/$stack/talosconfig"
-kubeconfig="$root/.kube/$stack/config"
-
 echo "Destroying cluster..."
-docker compose -f "$root/ci/docker-compose.yaml" down -v
+docker compose -f "$cwd/docker-compose.yaml" down -v
