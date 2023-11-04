@@ -2,15 +2,21 @@ name: thecluster-rosequartz
 runtime: nodejs
 config:
   clusterName: rosequartz
+  clusterEndpoint: https://10.5.0.5:6443
   endpoint: 10.5.0.2
-  vip: 10.5.0.5
   certSans:
     value:
       - 10.5.0.2
+      - 10.5.0.3
+      - 10.5.0.4
   nodeData:
     value:
       controlplanes:
         10.5.0.2:
+          installDisk: /dev/sda
+        10.5.0.3:
+          installDisk: /dev/sda
+        10.5.0.4:
           installDisk: /dev/sda
       workers: {}
   healthTimeout: 4m

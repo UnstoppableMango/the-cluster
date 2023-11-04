@@ -7,7 +7,7 @@ version: '3'
 name: rosequartz
 
 x-controlplane: &controlplane
-  image: ghcr.io/siderolabs/talos:v1.5.3
+  image: ghcr.io/siderolabs/talos:v1.5.4
   environment:
     PLATFORM: container
     TALOSSKU: 2CPU-2048RAM
@@ -21,20 +21,12 @@ x-controlplane: &controlplane
     - /run
     - /system
     - /tmp
-  volumes:
-    - cni:/etc/cni
-    - etcK8s:/etc/kubernetes
-    - libexecK8s:/usr/libexec/kubernetes
-    - opt:/opt
-    - udev:/usr/etc/udev
-    - var:/var
-    - state:/system/state
   privileged: true
   security_opt:
     - seccomp:unconfined
     - label=disable
-  sysctls:
-    net.ipv6.conf.all.disable_ipv6: 0
+  # sysctls:
+  #   net.ipv6.conf.all.disable_ipv6: 0
 
 services:
   talos-controlplane-1:
@@ -43,27 +35,76 @@ services:
     networks:
       default:
         ipv4_address: '10.5.0.2'
+    volumes:
+      - cni1:/etc/cni
+      - etcK8s1:/etc/kubernetes
+      - libexecK8s1:/usr/libexec/kubernetes
+      - opt1:/opt
+      - udev1:/usr/etc/udev
+      - var1:/var
+      - state1:/system/state
   talos-controlplane-2:
     container_name: rosequartz-talos-controlplane-2
     <<: *controlplane
     networks:
       default:
         ipv4_address: '10.5.0.3'
+    volumes:
+      - cni2:/etc/cni
+      - etcK8s2:/etc/kubernetes
+      - libexecK8s2:/usr/libexec/kubernetes
+      - opt2:/opt
+      - udev2:/usr/etc/udev
+      - var2:/var
+      - state2:/system/state
   talos-controlplane-3:
     container_name: rosequartz-talos-controlplane-3
     <<: *controlplane
     networks:
       default:
         ipv4_address: '10.5.0.4'
+    volumes:
+      - cni3:/etc/cni
+      - etcK8s3:/etc/kubernetes
+      - libexecK8s3:/usr/libexec/kubernetes
+      - opt3:/opt
+      - udev3:/usr/etc/udev
+      - var3:/var
+      - state3:/system/state
+  lb:
+    image: haproxy:2.8.3
+    volumes:
+      - ./haproxy:/usr/local/etc/haproxy:ro
+    sysctls:
+      - net.ipv4.ip_unprivileged_port_start=0
+    ulimits:
+      nofile: 65535
+    networks:
+      default:
+        ipv4_address: '10.5.0.5'
 
 volumes:
-  cni:
-  etcK8s:
-  libexecK8s:
-  opt:
-  udev:
-  var:
-  state:
+  cni1:
+  etcK8s1:
+  libexecK8s1:
+  opt1:
+  udev1:
+  var1:
+  state1:
+  cni2:
+  etcK8s2:
+  libexecK8s2:
+  opt2:
+  udev2:
+  var2:
+  state2:
+  cni3:
+  etcK8s3:
+  libexecK8s3:
+  opt3:
+  udev3:
+  var3:
+  state3:
 
 networks:
   default:

@@ -56,19 +56,18 @@ if (config.requireBoolean('createDnsRecord')) {
 
 const clusterName = config.require('clusterName');
 const endpoint = config.require('endpoint');
-const vip = config.require('vip');
+certSans.push(endpoint);
 
-certSans.push(endpoint, vip);
+const vip = config.get('vip');
+if (vip) certSans.push(vip);
 
-const clusterEndpoint = `https://${vip}:6443`;
+const clusterEndpoint = config.require('clusterEndpoint');
 const nodeData = config.requireObject<Cluster>('nodeData');
 const versions = config.requireObject<Versions>('versions');
 
 const allNodeData: Nodes = { ...nodeData.controlplanes, ...nodeData.workers };
 
 const secrets = new talos.machine.Secrets('secrets', { talosVersion: `v${versions.talos}` });
-
-export const secretData = secrets.clientConfiguration;
 
 const controlplaneConfig = talos.machine.configurationOutput({
   clusterName: clusterName,
@@ -84,54 +83,64 @@ const controlplaneConfig = talos.machine.configurationOutput({
 const clientConfig = talos.client.configurationOutput({
   clusterName: clusterName,
   clientConfiguration: secrets.clientConfiguration,
-  endpoints: [endpoint],
+  endpoints: Object.keys(allNodeData),
   nodes: Object.keys(allNodeData),
 });
+
+const configPatches: string[] = [];
+
+if (vip) {
+  configPatches.push(YAML.stringify({
+    machine: {
+      network: {
+        interfaces: [{
+          deviceSelector: { busPath: '0*' },
+          dhcp: true,
+          vip: { ip: vip },
+        }],
+      },
+    },
+  }));
+}
 
 const controlplaneConfigApply: talos.machine.ConfigurationApply[] = Object.entries(nodeData.controlplanes || [])
   .map(([key, value]) => (new talos.machine.ConfigurationApply(`controlplane-${key}`, {
     clientConfiguration: secrets.clientConfiguration,
     machineConfigurationInput: controlplaneConfig.machineConfiguration,
-    endpoint: endpoint,
     node: key,
-    configPatches: [YAML.stringify({
-      cluster: {
-        allowSchedulingOnControlPlanes: true,
-        apiServer: {
-          certSANs: certSans,
-        },
-        extraManifests: [
-          `https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/v${versions.ksca}/deploy/standalone-install.yaml`,
-        ],
-      },
-      machine: {
-        install: {
-          disk: value.installDisk,
-          image: `ghcr.io/siderolabs/installer:v${versions.talos}`,
-        },
-        network: {
-          interfaces: [{
-            deviceSelector: { busPath: '0*' },
-            dhcp: true,
-            vip: { ip: vip },
-          }],
-        },
-        certSANs: certSans,
-        kubelet: {
-          extraArgs: {
-            'rotate-server-certificates': true,
+    configPatches: [
+      ...configPatches,
+      YAML.stringify({
+        cluster: {
+          allowSchedulingOnControlPlanes: true,
+          apiServer: {
+            certSANs: certSans,
           },
+          extraManifests: [
+            `https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/v${versions.ksca}/deploy/standalone-install.yaml`,
+          ],
         },
-      }
-    })],
+        machine: {
+          install: {
+            disk: value.installDisk,
+            image: `ghcr.io/siderolabs/installer:v${versions.talos}`,
+          },
+          certSANs: certSans,
+          kubelet: {
+            extraArgs: {
+              'rotate-server-certificates': true,
+            },
+          },
+        }
+      }),
+    ],
   })));
 
-const bootstrap: talos.machine.Bootstrap[] = Object.keys(allNodeData)
-  .map((key, i) => (new talos.machine.Bootstrap(`bootstrap-${i}`, {
-    clientConfiguration: secrets.clientConfiguration,
-    node: key,
-    endpoint: endpoint,
-  }, { dependsOn: controlplaneConfigApply })));
+const bootstrap = new talos.machine.Bootstrap(`bootstrap`, {
+  clientConfiguration: secrets.clientConfiguration,
+  node: endpoint,
+  endpoint: endpoint,
+}, { dependsOn: controlplaneConfigApply });
 
 // const healthCheck = talos.cluster.healthOutput({
 //     clientConfiguration: secrets.clientConfiguration,
