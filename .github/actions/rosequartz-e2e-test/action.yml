@@ -10,17 +10,21 @@ inputs:
 runs:
   using: composite
   steps:
+    - run: pulumi stack init "${{ inputs.stack }}" --copy-config-from ci
+      working-directory: clusters/rosequartz
+      shell: bash
+
     - uses: pulumi/actions@v4
       with:
-        stack-name: UnstoppableMango/thecluster-rosequartz/rq-${{ inputs.stack }}
+        stack-name: UnstoppableMango/thecluster-rosequartz/${{ inputs.stack }}
         command: up
-        work-dir: apps/cert-manager
+        work-dir: clusters/rosequartz
 
     - id: setup-config
       uses: ./.github/actions/setup-config
       with:
         cluster: rosequartz
-        stack: rq-${{ inputs.stack }}
+        stack: ${{ inputs.stack }}
         endpoint: ${{ inputs.endpoint }}
 
     - name: Rosequartz validation
@@ -36,13 +40,13 @@ runs:
       working-directory: apps/cert-manager
       shell: bash
 
-    - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
+    - run: pulumi stack init "${{ inputs.stack }}" --copy-config-from rosequartz
       working-directory: apps/cert-manager
       shell: bash
 
     - uses: pulumi/actions@v4
       with:
-        stack-name: UnstoppableMango/thecluster-cert-manager/rq-${{ inputs.stack }}
+        stack-name: UnstoppableMango/thecluster-cert-manager/${{ inputs.stack }}
         command: up
         work-dir: apps/cert-manager
 
@@ -58,14 +62,14 @@ runs:
       working-directory: apps/metrics-server
       shell: bash
 
-    - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
+    - run: pulumi stack init "${{ inputs.stack }}" --copy-config-from rosequartz
       working-directory: apps/metrics-server
       shell: bash
 
     - name: Pulumi Up
       uses: pulumi/actions@v4
       with:
-        stack-name: UnstoppableMango/thecluster-metrics-server/rq-${{ inputs.stack }}
+        stack-name: UnstoppableMango/thecluster-metrics-server/${{ inputs.stack }}
         command: up
         work-dir: apps/metrics-server
         pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
@@ -79,14 +83,14 @@ runs:
       working-directory: apps/clusterapi
       shell: bash
 
-    - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
+    - run: pulumi stack init "${{ inputs.stack }}" --copy-config-from rosequartz
       working-directory: apps/clusterapi
       shell: bash
 
     - name: Pulumi Up
       uses: pulumi/actions@v4
       with:
-        stack-name: UnstoppableMango/thecluster-clusterapi/rq-${{ inputs.stack }}
+        stack-name: UnstoppableMango/thecluster-clusterapi/${{ inputs.stack }}
         command: up
         work-dir: apps/clusterapi
         pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
