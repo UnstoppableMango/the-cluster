@@ -4,6 +4,9 @@ inputs:
   stack:
     description: The stack for this run
     required: true
+  endpoint:
+    description: The public endpoint to use to connect to
+    required: true
 runs:
   using: composite
   steps:
@@ -18,7 +21,7 @@ runs:
       with:
         cluster: rosequartz
         stack: rq-${{ inputs.stack }}
-        endpoint: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
+        endpoint: ${{ inputs.endpoint }}
 
     - name: Rosequartz validation
       working-directory: clusters/rosequartz

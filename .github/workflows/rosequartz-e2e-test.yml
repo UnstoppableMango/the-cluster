@@ -43,6 +43,7 @@ jobs:
       - uses: ./.github/actions/rosequartz-e2e-test
         with:
           stack: ${{ env.STACK }}
+          endpoint: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
 
       - name: Tear down Cluster API
         if: always()
@@ -110,12 +111,14 @@ jobs:
       - uses: ./.github/actions/rosequartz-e2e-test
         with:
           stack: ${{ env.STACK }}
+          endpoint: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
 
       - uses: actions/checkout@v4
 
       - uses: ./.github/actions/rosequartz-e2e-test
         with:
           stack: ${{ env.STACK }}
+          endpoint: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
 
       - name: Tear down Cluster API
         if: always()
