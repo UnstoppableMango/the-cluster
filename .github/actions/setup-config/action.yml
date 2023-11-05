@@ -9,7 +9,7 @@ inputs:
     required: true
   endpoint:
     description: The public endpoint to use to connect to
-    required: true
+    required: false
 runs:
   using: composite
   steps:
@@ -43,6 +43,7 @@ runs:
     - run: | # TODO: The port will eventually need to be configurable
         kubectl config set-cluster ${{ inputs.cluster }} --server="https://${{ inputs.endpoint }}:6443"
         talosctl config endpoint "${{ inputs.endpoint }}"
+      if: inputs.endpoint != ''
       working-directory: clusters/${{ inputs.cluster }}
       shell: bash
 

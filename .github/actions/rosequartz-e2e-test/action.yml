@@ -32,7 +32,10 @@ runs:
       with:
         cluster: rosequartz
         stack: ${{ inputs.stack }}
-        endpoint: ${{ inputs.endpoint }}
+
+    - run: talosctl health --nodes "$(pulumi config get --path 'nodeData.controlplanes' | jq -r 'keys | .[0]')"
+      working-directory: clusters/rosequartz
+      shell: bash
 
     - name: Rosequartz validation
       working-directory: clusters/rosequartz

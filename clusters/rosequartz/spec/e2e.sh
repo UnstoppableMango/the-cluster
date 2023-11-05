@@ -11,9 +11,10 @@ pulumi -C "$root" up -yf
 
 echo "Setting up config files..."
 . "$root/hack/write-config-files.sh"
+source "$root/hack/source-me.sh"
 
 echo "Running tests..."
-talosctl health --nodes "$(pulumi config get --path 'nodeData.controlplanes' | jq -r 'keys | .[0]')"
+talosctl health --nodes "$(pulumi -C "$root" config get --path 'nodeData.controlplanes' | jq -r 'keys | .[0]')"
 bash "$root/spec/verify.sh"
 . "$root/spec/etcd-backup.sh"
 RQ_DRY_RUN=true bash "$root/scripts/k8s-upgrade.sh"
