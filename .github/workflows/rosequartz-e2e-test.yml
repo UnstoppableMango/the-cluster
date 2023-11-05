@@ -4,10 +4,12 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - 'apps/**/package-lock.json'
-      - 'apps/**/Chart.yaml'
-      - 'clusters/**/package-lock.json'
-      - 'clusters/**/Chart.yaml'
+      - .github/actions/rosequartz-e2e-test/**
+      - .github/workflows/rosequartz-e2e-test.yaml
+      - apps/**/package-lock.json
+      - apps/**/Chart.yaml
+      - clusters/**/package-lock.json
+      - clusters/**/Chart.yaml
   workflow_dispatch:
 
 jobs:
@@ -16,7 +18,7 @@ jobs:
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       CLOUDFLARE_API_TOKEN: ci
-      STACK_ID: e2e-${{ github.run_id }}-${{ github.run_attempt }}
+      STACK: e2e-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
 
@@ -33,27 +35,49 @@ jobs:
       # TODO: Get a specfic version
       - name: Install talosctl
         run: curl -sL https://talos.dev/install | sh
-        shell: bash
 
       - name: Create test node
         working-directory: clusters/rosequartz
         run: docker compose -f ci/docker-compose.yaml up -d
-        shell: bash
 
       - uses: ./.github/actions/rosequartz-e2e-test
         with:
-          stack-id: ${{ env.STACK_ID }}
+          stack: ${{ env.STACK }}
 
-      - uses: ./.github/actions/teardown-e2e
-        with:
-          stack-id: ${{ env.STACK_ID }}
+      - name: Tear down Cluster API
+        if: always()
+        working-directory: apps/clusterapi
+        run: |
+          pulumi down -yf
+          pulumi stack rm -yf "rq-${{ env.STACK }}"
+
+      - name: Tear down metrics-server
+        if: always()
+        working-directory: apps/metrics-server
+        run: |
+          pulumi down -yf
+          pulumi stack rm -yf "rq-${{ env.STACK }}"
+
+      - name: Tear down cert-manager
+        if: always()
+        working-directory: apps/cert-manager
+        run: |
+          pulumi down -yf
+          pulumi stack rm -yf "rq-${{ env.STACK }}"
+
+      - name: Tear down rosequartz
+        if: always()
+        working-directory: clusters/rosequartz
+        run: |
+          pulumi down -yf
+          pulumi stack rm -yf "rq-${{ env.STACK }}"
 
   upgrade-e2e-test:
     runs-on: ubuntu-latest
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       CLOUDFLARE_API_TOKEN: ci
-      STACK_ID: upgrade-e2e-${{ github.run_id }}-${{ github.run_attempt }}
+      STACK: upgrade-e2e-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -85,14 +109,38 @@ jobs:
 
       - uses: ./.github/actions/rosequartz-e2e-test
         with:
-          stack-id: ${{ env.STACK_ID }}
+          stack: ${{ env.STACK }}
 
       - uses: actions/checkout@v4
 
       - uses: ./.github/actions/rosequartz-e2e-test
         with:
-          stack-id: ${{ env.STACK_ID }}
+          stack: ${{ env.STACK }}
 
-      - uses: ./.github/actions/teardown-e2e
-        with:
-          stack-id: ${{ env.STACK_ID }}
+      - name: Tear down Cluster API
+        if: always()
+        working-directory: apps/clusterapi
+        run: |
+          pulumi down -yf
+          pulumi stack rm -yf "rq-${{ env.STACK }}"
+
+      - name: Tear down metrics-server
+        if: always()
+        working-directory: apps/metrics-server
+        run: |
+          pulumi down -yf
+          pulumi stack rm -yf "rq-${{ env.STACK }}"
+
+      - name: Tear down cert-manager
+        if: always()
+        working-directory: apps/cert-manager
+        run: |
+          pulumi down -yf
+          pulumi stack rm -yf "rq-${{ env.STACK }}"
+
+      - name: Tear down rosequartz
+        if: always()
+        working-directory: clusters/rosequartz
+        run: |
+          pulumi down -yf
+          pulumi stack rm -yf "rq-${{ env.STACK }}"
