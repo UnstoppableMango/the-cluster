@@ -91,6 +91,10 @@ jobs:
           cache: npm
           cache-dependency-path: apps/cert-manager/package-lock.json
 
+      # TODO: Get a specfic version
+      - name: Install talosctl
+        run: curl -sL https://talos.dev/install | sh
+
       - run: npm ci
       - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
 
@@ -129,6 +133,10 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: apps/metrics-server/package-lock.json
+
+      # TODO: Get a specfic version
+      - name: Install talosctl
+        run: curl -sL https://talos.dev/install | sh
 
       - run: npm ci
       - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
@@ -172,6 +180,10 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: apps/clusterapi/package-lock.json
+
+      # TODO: Get a specfic version
+      - name: Install talosctl
+        run: curl -sL https://talos.dev/install | sh
 
       - run: npm ci
 
