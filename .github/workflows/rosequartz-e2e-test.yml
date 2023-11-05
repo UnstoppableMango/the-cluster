@@ -48,21 +48,25 @@ jobs:
 
       - name: Tear down Cluster API
         if: always()
+        continue-on-error: true
         working-directory: apps/clusterapi
         run: pulumi stack rm -yf "${{ env.STACK }}"
 
       - name: Tear down metrics-server
         if: always()
+        continue-on-error: true
         working-directory: apps/metrics-server
         run: pulumi stack rm -yf "${{ env.STACK }}"
 
       - name: Tear down cert-manager
         if: always()
+        continue-on-error: true
         working-directory: apps/cert-manager
         run: pulumi stack rm -yf "${{ env.STACK }}"
 
       - name: Tear down rosequartz
         if: always()
+        continue-on-error: true
         working-directory: clusters/rosequartz
         run: pulumi stack rm -yf "${{ env.STACK }}"
 
@@ -116,20 +120,24 @@ jobs:
 
       - name: Tear down Cluster API
         if: always()
+        continue-on-error: true
         working-directory: apps/clusterapi
         run: pulumi stack rm -yf "${{ env.STACK }}"
 
       - name: Tear down metrics-server
         if: always()
+        continue-on-error: true
         working-directory: apps/metrics-server
         run: pulumi stack rm -yf "${{ env.STACK }}"
 
       - name: Tear down cert-manager
         if: always()
+        continue-on-error: true
         working-directory: apps/cert-manager
         run: pulumi stack rm -yf "${{ env.STACK }}"
 
       - name: Tear down rosequartz
         if: always()
+        continue-on-error: true
         working-directory: clusters/rosequartz
         run: pulumi stack rm -yf "${{ env.STACK }}"
