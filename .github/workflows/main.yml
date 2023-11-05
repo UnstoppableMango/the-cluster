@@ -6,6 +6,9 @@ on:
   push:
     branches: [main]
 
+env:
+  CI: true
+
 jobs:
   setup:
     name: Setup
@@ -48,16 +51,10 @@ jobs:
 
       - run: npm ci
 
-      - name: Pulumi Action
-        uses: pulumi/actions@v4
-        with:
-          stack-name: UnstoppableMango/thecluster-rosequartz/prod
-          command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
-          work-dir: clusters/rosequartz
-          pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
-
       - run: ./spec/e2e.sh
         if: github.event_name == 'pull_request'
+        env:
+          RQ_STACK: rq-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Verify
         if: github.event_name == 'push'
