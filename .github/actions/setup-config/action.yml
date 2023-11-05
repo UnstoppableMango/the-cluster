@@ -31,8 +31,8 @@ runs:
       run: |
         KUBECONFIG="${KUBECONFIG:-"$GITHUB_WORKSPACE/kubeconfig"}"
         TALOSCONFIG="${TALOSCONFIG:-"$GITHUB_WORKSPACE/talosconfig.yaml"}"
-        pulumi stack output --show-secrets kubeconfig > "$KUBECONFIG"
-        pulumi stack output --show-secrets talosconfig > "$TALOSCONFIG"
+        pulumi stack output --stack "${{ inputs.stack }}" --show-secrets kubeconfig > "$KUBECONFIG"
+        pulumi stack output --stack "${{ inputs.stack }}" --show-secrets talosconfig > "$TALOSCONFIG"
         echo "kubeconfig=$KUBECONFIG" >> "$GITHUB_OUTPUT"
         echo "talosconfig=$TALOSCONFIG" >> "$GITHUB_OUTPUT"
         echo "KUBECONFIG=$KUBECONFIG" >> "$GITHUB_ENV"
