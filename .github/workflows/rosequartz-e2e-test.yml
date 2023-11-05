@@ -48,30 +48,22 @@ jobs:
       - name: Tear down Cluster API
         if: always()
         working-directory: apps/clusterapi
-        run: |
-          pulumi down -yf
-          pulumi stack rm -yf "rq-${{ env.STACK }}"
+        run: pulumi stack rm -yf "${{ env.STACK }}"
 
       - name: Tear down metrics-server
         if: always()
         working-directory: apps/metrics-server
-        run: |
-          pulumi down -yf
-          pulumi stack rm -yf "rq-${{ env.STACK }}"
+        run: pulumi stack rm -yf "${{ env.STACK }}"
 
       - name: Tear down cert-manager
         if: always()
         working-directory: apps/cert-manager
-        run: |
-          pulumi down -yf
-          pulumi stack rm -yf "rq-${{ env.STACK }}"
+        run: pulumi stack rm -yf "${{ env.STACK }}"
 
       - name: Tear down rosequartz
         if: always()
         working-directory: clusters/rosequartz
-        run: |
-          pulumi down -yf
-          pulumi stack rm -yf "rq-${{ env.STACK }}"
+        run: pulumi stack rm -yf "${{ env.STACK }}"
 
   upgrade-e2e-test:
     runs-on: ubuntu-latest
@@ -123,27 +115,19 @@ jobs:
       - name: Tear down Cluster API
         if: always()
         working-directory: apps/clusterapi
-        run: |
-          pulumi down -yf
-          pulumi stack rm -yf "rq-${{ env.STACK }}"
+        run: pulumi stack rm -yf "${{ env.STACK }}"
 
       - name: Tear down metrics-server
         if: always()
         working-directory: apps/metrics-server
-        run: |
-          pulumi down -yf
-          pulumi stack rm -yf "rq-${{ env.STACK }}"
+        run: pulumi stack rm -yf "${{ env.STACK }}"
 
       - name: Tear down cert-manager
         if: always()
         working-directory: apps/cert-manager
-        run: |
-          pulumi down -yf
-          pulumi stack rm -yf "rq-${{ env.STACK }}"
+        run: pulumi stack rm -yf "${{ env.STACK }}"
 
       - name: Tear down rosequartz
         if: always()
         working-directory: clusters/rosequartz
-        run: |
-          pulumi down -yf
-          pulumi stack rm -yf "rq-${{ env.STACK }}"
+        run: pulumi stack rm -yf "${{ env.STACK }}"
