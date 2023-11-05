@@ -67,6 +67,7 @@ jobs:
 
   upgrade-e2e-test:
     runs-on: ubuntu-latest
+    if: false # We need the pulumi code to exist on main in order to test an upgrade
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       CLOUDFLARE_API_TOKEN: ci

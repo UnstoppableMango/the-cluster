@@ -19,13 +19,13 @@ runs:
         cache: npm
         cache-dependency-path: 'clusters/${{ inputs.cluster }}/package-lock.json'
 
-    - run: npm ci
-      working-directory: clusters/${{ inputs.cluster }}
-      shell: bash
-
     - uses: pulumi/actions@v4
       with:
         pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+
+    - run: npm ci
+      working-directory: clusters/${{ inputs.cluster }}
+      shell: bash
 
     - id: set-outputs
       run: |
@@ -37,11 +37,13 @@ runs:
         echo "talosconfig=$TALOSCONFIG" >> "$GITHUB_OUTPUT"
         echo "KUBECONFIG=$KUBECONFIG" >> "$GITHUB_ENV"
         echo "TALOSCONFIG=$TALOSCONFIG" >> "$GITHUB_ENV"
+      working-directory: clusters/${{ inputs.cluster }}
       shell: bash
 
     - run: | # TODO: The port will eventually need to be configurable
         kubectl config set-cluster ${{ inputs.cluster }} --server="https://${{ inputs.endpoint }}:6443"
         talosctl config endpoint "${{ inputs.endpoint }}"
+      working-directory: clusters/${{ inputs.cluster }}
       shell: bash
 
 outputs:

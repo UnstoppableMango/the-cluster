@@ -3,21 +3,21 @@ set -eum
 
 root="$(git rev-parse --show-toplevel)/clusters/rosequartz"
 
-# Create local docker nodes
+echo "Creating local docker nodes..."
 . "$root/hack/up.sh"
 
-# Create cluster
+echo "Deploying cluster..."
 pulumi -C "$root" up -yf
 
-# Setup config files
+echo "Setting up config files..."
 . "$root/hack/write-config-files.sh"
 
-# Run tests
+echo "Running tests..."
 talosctl health --nodes "$(pulumi -C "$root" config get endpoint)"
 bash "$root/spec/verify.sh"
 . "$root/spec/etcd-backup.sh"
 RQ_DRY_RUN=true bash "$root/scripts/k8s-upgrade.sh"
 
-# Teardown infastructure
+echo "Tearing down infrastructure..."
 pulumi -C "$root" down -yf
 . "$root/hack/down.sh"
