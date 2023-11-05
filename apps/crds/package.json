@@ -1,8 +1,8 @@
 {
-    "name": "thecluster-cert-manager",
+    "name": "thecluster-crds",
     "main": "index.ts",
     "dependencies": {
-        "@pulumi/kubernetes": "^4.5.2",
+        "@pulumi/kubernetes": "^4.5.3",
         "@pulumi/pulumi": "^3.92.0"
     },
     "devDependencies": {

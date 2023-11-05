@@ -1,0 +1,7 @@
+name: thecluster-crds
+runtime: nodejs
+description: CRDs for THECLUSTER
+config:
+  cert-manager:
+    value:
+      version: 1.13.1
