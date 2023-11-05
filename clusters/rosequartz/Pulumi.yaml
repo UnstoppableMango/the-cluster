@@ -1,0 +1,29 @@
+name: thecluster-rosequartz
+runtime: nodejs
+config:
+  clusterName: rosequartz
+  clusterEndpoint: https://10.5.0.5:6443
+  endpoint: 10.5.0.2
+  certSans:
+    value:
+      - 10.5.0.2
+      - 10.5.0.3
+      - 10.5.0.4
+  nodeData:
+    value:
+      controlplanes:
+        10.5.0.2:
+          installDisk: /dev/sda
+        10.5.0.3:
+          installDisk: /dev/sda
+        10.5.0.4:
+          installDisk: /dev/sda
+      workers: {}
+  healthTimeout: 4m
+  kubeconfigTimeout: 30s
+  createDnsRecord: false
+  versions:
+    value:
+      k8s: 1.28.0 # renovate depName=kubernetes/kubernetes
+      ksca: 0.7.5 # renovate depName=alex1989hu/kubelet-serving-cert-approver
+      talos: 1.5.4 # renovate depName=siderolabs/talos

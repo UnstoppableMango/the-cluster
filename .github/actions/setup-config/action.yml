@@ -1,0 +1,56 @@
+name: Setup Config
+description: Setup configuration files such as kubeconfig and talosconfig
+inputs:
+  cluster:
+    description: The cluster to setup config for
+    required: true
+  stack:
+    description: The stack of the configuration to use
+    required: true
+  endpoint:
+    description: The public endpoint to use to connect to
+    required: false
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v3
+      with:
+        node-version-file: .nvmrc
+        cache: npm
+        cache-dependency-path: 'clusters/${{ inputs.cluster }}/package-lock.json'
+
+    - uses: pulumi/actions@v4
+      with:
+        pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+
+    - run: npm ci
+      working-directory: clusters/${{ inputs.cluster }}
+      shell: bash
+
+    - id: set-outputs
+      run: |
+        KUBECONFIG="${KUBECONFIG:-"$GITHUB_WORKSPACE/kubeconfig"}"
+        TALOSCONFIG="${TALOSCONFIG:-"$GITHUB_WORKSPACE/talosconfig.yaml"}"
+        pulumi stack output --stack "${{ inputs.stack }}" --show-secrets kubeconfig > "$KUBECONFIG"
+        pulumi stack output --stack "${{ inputs.stack }}" --show-secrets talosconfig > "$TALOSCONFIG"
+        echo "kubeconfig=$KUBECONFIG" >> "$GITHUB_OUTPUT"
+        echo "talosconfig=$TALOSCONFIG" >> "$GITHUB_OUTPUT"
+        echo "KUBECONFIG=$KUBECONFIG" >> "$GITHUB_ENV"
+        echo "TALOSCONFIG=$TALOSCONFIG" >> "$GITHUB_ENV"
+      working-directory: clusters/${{ inputs.cluster }}
+      shell: bash
+
+    - run: | # TODO: The port will eventually need to be configurable
+        kubectl config set-cluster ${{ inputs.cluster }} --server="https://${{ inputs.endpoint }}:6443"
+        talosctl config endpoint "${{ inputs.endpoint }}"
+      if: inputs.endpoint != ''
+      working-directory: clusters/${{ inputs.cluster }}
+      shell: bash
+
+outputs:
+  kubeconfig:
+    description: Path to the kubeconfig file
+    value: ${{ steps.set-outputs.outputs.kubeconfig }}
+  talosconfig:
+    description: Path to the talosconfig.yaml file
+    value: ${{ steps.set-outputs.outputs.talosconfig }}

@@ -1,23 +1,16 @@
 #!/bin/bash
-
 set -eum
 
 root="$(git rev-parse --show-toplevel)/clusters/rosequartz"
-cwd="$root/hack"
+stack="${RQ_STACK:-"$(hostname)"}"
 
-stack="${RQ_STACK:-ci}"
-talosconfig="${RQ_TALOSCONFIG:-"$root/.talos/$stack/talosconfig"}"
-kubeconfig="${RQ_KUBECONFIG:-"$root/.kube/$stack/config"}"
-
-if [ "$stack" = "prod" ] || [ "$(terraform workspace show)" = "rosequartz-prod" ]; then
-    echo "Cannot operate on prod"
-    exit 0
+if [ -n "$(pulumi -C "$root" stack ls --json | jq -r ".[].name | select(. == \"$stack\")")" ]; then
+    echo "Selecting stack $stack..."
+    pulumi stack select "$stack"
 fi
 
-echo "Destroying terraform configuration..."
-timeout 1m terraform -chdir="$root" destroy -var-file="vars/ci.tfvars" -auto-approve
-
 echo "Destroying cluster..."
-docker compose -f "$root/ci/docker-compose.yaml" down -v
+docker compose -f "$root/hack/docker-compose.yaml" down -v
 
-rm "$talosconfig" "$kubeconfig"
+[ -f "$root/.kube/$stack/config" ] && rm "$root/.kube/$stack/config"
+[ -f "$root/.talos/$stack/talosconfig.yaml" ] && rm "$root/.talos/$stack/talosconfig.yaml"

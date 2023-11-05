@@ -1,33 +1,45 @@
 name: End To End Test
 description: Run end to end tests for THECLUSTER
 inputs:
-  stack-id:
-    description: Stack identifier for this run
+  stack:
+    description: The stack for this run
     required: true
-  talosconfig:
-    description: Path to the talosconfig file
-    required: true
-  kubeconfig:
-    description: Path to the kubeconfig file
+  endpoint:
+    description: The public endpoint to use to connect to
     required: true
 runs:
   using: composite
   steps:
-    - name: Terraform Apply
+    - run: npm ci
       working-directory: clusters/rosequartz
-      run: terraform apply -var-file=vars/ci.tfvars -auto-approve
       shell: bash
 
-    - name: Write configuration files
+    - run: pulumi stack init "${{ inputs.stack }}" --copy-config-from ci
       working-directory: clusters/rosequartz
-      run: |
-        terraform output -raw talosconfig > "${{ inputs.talosconfig }}"
-        terraform output -raw kubeconfig > "${{ inputs.kubeconfig }}"
+      shell: bash
+
+    - uses: pulumi/actions@v4
+      with:
+        stack-name: UnstoppableMango/thecluster-rosequartz/${{ inputs.stack }}
+        command: up
+        work-dir: clusters/rosequartz
+        pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+        comment-on-pr: false
+        comment-on-summary: false
+
+    - id: setup-config
+      uses: ./.github/actions/setup-config
+      with:
+        cluster: rosequartz
+        stack: ${{ inputs.stack }}
+
+    - run: talosctl health --nodes "$(pulumi config get --path 'nodeData.controlplanes' | jq -r 'keys | .[0]')"
+      working-directory: clusters/rosequartz
       shell: bash
 
     - name: Rosequartz validation
       working-directory: clusters/rosequartz
-      run: ./spec/validation.sh
+      run: ./spec/verify.sh
       shell: bash
 
     - run: npm ci
@@ -38,15 +50,18 @@ runs:
       working-directory: apps/cert-manager
       shell: bash
 
-    - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
+    - run: pulumi stack init "${{ inputs.stack }}" --copy-config-from rosequartz
       working-directory: apps/cert-manager
       shell: bash
 
     - uses: pulumi/actions@v4
       with:
-        stack-name: UnstoppableMango/thecluster-cert-manager/rq-${{ inputs.stack-id }}
+        stack-name: UnstoppableMango/thecluster-cert-manager/${{ inputs.stack }}
         command: up
         work-dir: apps/cert-manager
+        pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+        comment-on-pr: false
+        comment-on-summary: false
 
     - run: ./spec/validation.sh
       working-directory: apps/cert-manager
@@ -60,17 +75,19 @@ runs:
       working-directory: apps/metrics-server
       shell: bash
 
-    - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
+    - run: pulumi stack init "${{ inputs.stack }}" --copy-config-from rosequartz
       working-directory: apps/metrics-server
       shell: bash
 
     - name: Pulumi Up
       uses: pulumi/actions@v4
       with:
-        stack-name: UnstoppableMango/thecluster-metrics-server/rq-${{ inputs.stack-id }}
+        stack-name: UnstoppableMango/thecluster-metrics-server/${{ inputs.stack }}
         command: up
         work-dir: apps/metrics-server
         pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+        comment-on-pr: false
+        comment-on-summary: false
 
     - name: Validate Metrics Server
       run: ./spec/validation.sh
@@ -81,17 +98,19 @@ runs:
       working-directory: apps/clusterapi
       shell: bash
 
-    - run: pulumi stack init "rq-$STACK_ID" --copy-config-from rosequartz
+    - run: pulumi stack init "${{ inputs.stack }}" --copy-config-from rosequartz
       working-directory: apps/clusterapi
       shell: bash
 
     - name: Pulumi Up
       uses: pulumi/actions@v4
       with:
-        stack-name: UnstoppableMango/thecluster-clusterapi/rq-${{ inputs.stack-id }}
+        stack-name: UnstoppableMango/thecluster-clusterapi/${{ inputs.stack }}
         command: up
         work-dir: apps/clusterapi
         pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+        comment-on-pr: false
+        comment-on-summary: false
 
     - name: Validate Cluster API
       run: ./spec/validation.sh

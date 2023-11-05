@@ -1,14 +1,13 @@
 #!/bin/bash
-
 set -e
 
-cwd="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
-root="$(dirname "$cwd")"
+root="$(git rev-parse --show-toplevel)/clusters/rosequartz"
+cwd="$root/scripts"
 
-stack="${RQ_STACK:-dev}"
+stack="$(pulumi -C "$root" stack --show-name)"
 
 currentVersion="$(kubectl version -o json | jq -r '.serverVersion.gitVersion | sub("^v"; "")')"
-k8sVersion="$(cat "$root/.versions" | yq -r '."kubernetes/kubernetes"')"
+k8sVersion="$(pulumi -C "$root" config get --path 'versions.k8s')"
 
 if [ "$currentVersion" = "$k8sVersion" ]; then
     echo "Current version: $currentVersion matched upgrade version: $k8sVersion"

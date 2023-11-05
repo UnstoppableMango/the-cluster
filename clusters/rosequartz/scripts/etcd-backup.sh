@@ -1,18 +1,15 @@
 #!/bin/bash
-
 set -e
 
-cwd="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
-root="$(dirname "$cwd")"
-
-stack="${RQ_STACK:-dev}"
-backupDir=$RQ_BACKUP_DIR
-talosDir="${RQ_TALOS_DIR:-"$root/.talos/$stack"}"
+root="$(git rev-parse --show-toplevel)/clusters/rosequartz"
+stack="$(pulumi -C "$root" stack --show-name)"
+talosDir="$root/.talos/$stack"
+backupDir=${RQ_BACKUP_DIR:-"$talosDir"}
 
 echo "Stack:     $stack"
 echo "BackupDir: $backupDir"
 echo "Talos Dir: $talosDir"
 
 echo "Creating etcd snapshot..."
-backupFile="${backupDir:-$talosDir}/etcd-$(date +%s).snapshot"
-talosctl etcd snapshot "$backupFile"
+backupFile="$backupDir/etcd-$(date +%s).snapshot"
+talosctl etcd snapshot "$backupFile" --nodes "$(pulumi -C "$root" config get endpoint)"
