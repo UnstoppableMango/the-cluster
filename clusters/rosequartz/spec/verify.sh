@@ -2,10 +2,7 @@
 set -eum
 
 root="$(git rev-parse --show-toplevel)/clusters/rosequartz"
-
-stack="$(pulumi stack --show-name)"
-export TALOSCONFIG="$root/.talos/$stack/talosconfig.yaml"
-export KUBECONFIG="$root/.kube/$stack/config"
+stack="$(pulumi -C "$root" stack --show-name)"
 exitCode=0
 
 echo "TALOSCONFIG should be set..."
