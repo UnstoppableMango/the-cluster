@@ -66,6 +66,7 @@ jobs:
 
       - name: Tear down rosequartz
         if: always()
+        continue-on-error: true
         working-directory: clusters/rosequartz
         run: pulumi stack rm -yf "${{ env.RQ_STACK }}"
 
