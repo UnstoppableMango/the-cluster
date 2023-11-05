@@ -89,6 +89,7 @@ jobs:
         with:
           cluster: rosequartz
           stack: prod
+          endpoint: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
 
       - name: Pulumi Action
         uses: pulumi/actions@v4
@@ -127,6 +128,7 @@ jobs:
         with:
           cluster: rosequartz
           stack: prod
+          endpoint: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
 
       - name: Pulumi Action
         uses: pulumi/actions@v4
@@ -168,6 +170,7 @@ jobs:
         with:
           cluster: rosequartz
           stack: prod
+          endpoint: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
 
       - name: Pulumi Action
         uses: pulumi/actions@v4

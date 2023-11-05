@@ -7,6 +7,9 @@ inputs:
   stack:
     description: The stack of the configuration to use
     required: true
+  endpoint:
+    description: The public endpoint to use to connect to
+    required: true
 runs:
   using: composite
   steps:
@@ -34,6 +37,11 @@ runs:
         echo "talosconfig=$TALOSCONFIG" >> "$GITHUB_OUTPUT"
         echo "KUBECONFIG=$KUBECONFIG" >> "$GITHUB_ENV"
         echo "TALOSCONFIG=$TALOSCONFIG" >> "$GITHUB_ENV"
+      shell: bash
+
+    - run: | # TODO: The port will eventually need to be configurable
+        kubectl config set-cluster ${{ inputs.cluster }} --server="https://${{ inputs.endpoint }}:6443"
+        talosctl config endpoint "${{ inputs.endpoint }}"
       shell: bash
 
 outputs:

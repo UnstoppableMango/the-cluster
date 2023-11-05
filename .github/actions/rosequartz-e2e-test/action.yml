@@ -18,6 +18,7 @@ runs:
       with:
         cluster: rosequartz
         stack: rq-${{ inputs.stack }}
+        endpoint: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
 
     - name: Rosequartz validation
       working-directory: clusters/rosequartz
