@@ -5,6 +5,7 @@ config:
     - 192.168.1.101
     - 192.168.1.102
     - 192.168.1.103
+  thecluster-rosequartz:clusterEndpoint: https://192.168.1.99:6443
   thecluster-rosequartz:createDnsRecord: "true"
   thecluster-rosequartz:endpoint: 192.168.1.101
   thecluster-rosequartz:nodeData:

@@ -28,7 +28,7 @@ if (config.requireBoolean('createDnsRecord')) {
   const publicIp = config.require('publicIp');
   const dnsName = config.require('primaryDnsName');
 
-  certSans.push(publicIp);
+  certSans.push(publicIp, dnsName);
 
   const primaryDns = new cloudflare.Record('primary-dns', {
     name: dnsName,
@@ -94,7 +94,7 @@ if (vip) {
     machine: {
       network: {
         interfaces: [{
-          deviceSelector: { busPath: '0*' },
+          deviceSelector: { hardwareAddr: 'd8:3a:dd:*' },
           dhcp: true,
           vip: { ip: vip },
         }],
