@@ -24,6 +24,6 @@ config:
   createDnsRecord: false
   versions:
     value:
-      k8s: 1.28.0
-      ksca: 0.7.5
-      talos: 1.5.4
+      k8s: 1.28.0 # renovate depName=kubernetes/kubernetes
+      ksca: 0.7.5 # renovate depName=alex1989hu/kubelet-serving-cert-approver
+      talos: 1.5.4 # renovate depName=siderolabs/talos
