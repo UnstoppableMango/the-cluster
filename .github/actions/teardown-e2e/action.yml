@@ -1,11 +1,8 @@
 name: Teardown End to End Tests
 description: Teardown end to end tests
 inputs:
-  stack-id:
-    description: The stack identifier for this run
-    required: true
-  tf-workspace:
-    description: The Terraform workspace to tear down
+  stack:
+    description: The stack for this run
     required: true
 runs:
   using: composite
@@ -38,7 +35,6 @@ runs:
       if: always()
       working-directory: clusters/rosequartz
       run: |
-        terraform destroy -auto-approve
-        terraform workspace select rosequartz-ci
-        terraform workspace delete "${{ inputs.tf-workspace }}"
+        pulumi down -yf
+        pulumi stack rm -yf "rq-${{ inputs.stack-id }}"
       shell: bash

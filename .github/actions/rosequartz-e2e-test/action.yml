@@ -1,33 +1,27 @@
 name: End To End Test
 description: Run end to end tests for THECLUSTER
 inputs:
-  stack-id:
-    description: Stack identifier for this run
-    required: true
-  talosconfig:
-    description: Path to the talosconfig file
-    required: true
-  kubeconfig:
-    description: Path to the kubeconfig file
+  stack:
+    description: The stack for this run
     required: true
 runs:
   using: composite
   steps:
-    - name: Terraform Apply
-      working-directory: clusters/rosequartz
-      run: terraform apply -var-file=vars/ci.tfvars -auto-approve
-      shell: bash
+    - uses: pulumi/actions@v4
+      with:
+        stack-name: UnstoppableMango/thecluster-rosequartz/rq-${{ inputs.stack }}
+        command: up
+        work-dir: apps/cert-manager
 
-    - name: Write configuration files
-      working-directory: clusters/rosequartz
-      run: |
-        terraform output -raw talosconfig > "${{ inputs.talosconfig }}"
-        terraform output -raw kubeconfig > "${{ inputs.kubeconfig }}"
-      shell: bash
+    - id: setup-config
+      uses: ./.github/actions/setup-config
+      with:
+        cluster: rosequartz
+        stack: rq-${{ inputs.stack }}
 
     - name: Rosequartz validation
       working-directory: clusters/rosequartz
-      run: ./spec/validation.sh
+      run: ./spec/verify.sh
       shell: bash
 
     - run: npm ci
@@ -44,7 +38,7 @@ runs:
 
     - uses: pulumi/actions@v4
       with:
-        stack-name: UnstoppableMango/thecluster-cert-manager/rq-${{ inputs.stack-id }}
+        stack-name: UnstoppableMango/thecluster-cert-manager/rq-${{ inputs.stack }}
         command: up
         work-dir: apps/cert-manager
 
@@ -67,7 +61,7 @@ runs:
     - name: Pulumi Up
       uses: pulumi/actions@v4
       with:
-        stack-name: UnstoppableMango/thecluster-metrics-server/rq-${{ inputs.stack-id }}
+        stack-name: UnstoppableMango/thecluster-metrics-server/rq-${{ inputs.stack }}
         command: up
         work-dir: apps/metrics-server
         pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
@@ -88,7 +82,7 @@ runs:
     - name: Pulumi Up
       uses: pulumi/actions@v4
       with:
-        stack-name: UnstoppableMango/thecluster-clusterapi/rq-${{ inputs.stack-id }}
+        stack-name: UnstoppableMango/thecluster-clusterapi/rq-${{ inputs.stack }}
         command: up
         work-dir: apps/clusterapi
         pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
