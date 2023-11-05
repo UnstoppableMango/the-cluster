@@ -10,6 +10,10 @@ inputs:
 runs:
   using: composite
   steps:
+    - run: npm ci
+      working-directory: clusters/rosequartz
+      shell: bash
+
     - run: pulumi stack init "${{ inputs.stack }}" --copy-config-from ci
       working-directory: clusters/rosequartz
       shell: bash
