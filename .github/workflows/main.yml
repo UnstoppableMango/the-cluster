@@ -51,7 +51,7 @@ jobs:
 
       - uses: pulumi/actions@v4
         with:
-          pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+          pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi
           comment-on-pr: false
           comment-on-summary: false
 
@@ -109,7 +109,7 @@ jobs:
           stack-name: UnstoppableMango/thecluster-cert-manager/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: apps/cert-manager
-          pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+          pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi
         env:
           KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
 
@@ -152,7 +152,7 @@ jobs:
           stack-name: UnstoppableMango/thecluster-metrics-server/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: apps/metrics-server
-          pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+          pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi
         env:
           KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
 
@@ -198,7 +198,7 @@ jobs:
           stack-name: UnstoppableMango/thecluster-clusterapi/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: apps/clusterapi
-          pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+          pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi
         env:
           KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
 
