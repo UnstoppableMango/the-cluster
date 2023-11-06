@@ -31,7 +31,7 @@ pulumi -C "$root" stack select codegen
 
 function version() {
     dep=$1
-    pulumi -C "$root" config get --path "$dep.version"
+    pulumi -C "$root" config get --path "versions.$dep"
 }
 
 echo "Getting versions..."

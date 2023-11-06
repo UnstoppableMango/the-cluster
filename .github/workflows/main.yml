@@ -91,7 +91,13 @@ jobs:
       - name: Setup tools
         uses: ./.github/actions/setup-tools
 
+      - name: Setup pulumi
+        uses: pulumi/actions@v4
+        with:
+          pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi
+
       - run: npm ci
+      - run: pulumi stack select UnstoppableMango/thecluster-crds/rosequartz
       - run: ./gen/capi.sh
 
       - id: setup-config
@@ -107,7 +113,6 @@ jobs:
           stack-name: UnstoppableMango/thecluster-crds/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: apps/crds
-          pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi
         env:
           KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
 
@@ -221,7 +226,13 @@ jobs:
       - name: Setup tools
         uses: ./.github/actions/setup-tools
 
+      - name: Setup pulumi
+        uses: pulumi/actions@v4
+        with:
+          pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi
+
       - run: npm ci
+      - run: pulumi stack select UnstoppableMango/thecluster-clusterapi/rosequartz
       - run: ./gen/manifests.sh
 
       - id: setup-config
@@ -237,7 +248,6 @@ jobs:
           stack-name: UnstoppableMango/thecluster-clusterapi/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: apps/clusterapi
-          pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi
         env:
           KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
 
