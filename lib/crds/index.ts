@@ -21,6 +21,7 @@ import * as controlplane from "./controlplane";
 import * as infrastructure from "./infrastructure";
 import * as ipam from "./ipam";
 import * as metal from "./metal";
+import * as pulumi from "./pulumi";
 import * as runtime from "./runtime";
 import * as types from "./types";
 
@@ -34,6 +35,7 @@ export {
     infrastructure,
     ipam,
     metal,
+    pulumi,
     runtime,
     types,
 };
