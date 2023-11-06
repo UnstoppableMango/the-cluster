@@ -1,3 +1,12 @@
 name: thecluster-clusterapi
 runtime: nodejs
 description: Cluster API install for THECLUSTER
+config:
+  versions:
+    value:
+      clusterapi: 1.5.2 # renovate depName=kubernetes-sigs/cluster-api
+      proxmox: 0.3.2 # renovate depName=sp-yduck/cluster-api-provider-proxmox
+      sidero: 0.6.1 # renovate depName=siderolabs/sidero
+      cabpt: 0.6.2 # renovate depName=siderolabs/cluster-api-bootstrap-provider-talos
+      cacppt: 0.5.3 # renovate depName=siderolabs/cluster-api-control-plane-provider-talos
+      uefi: sha-22238b4

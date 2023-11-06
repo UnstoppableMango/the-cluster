@@ -1,3 +1,2 @@
 config:
-  thecluster-clusterapi:sideroApiEndpoint: 192.168.1.101
-  thecluster-clusterapi:uefiVersion: sha-fe14615
+  thecluster-clusterapi:sideroApiEndpoint: 192.168.1.99
