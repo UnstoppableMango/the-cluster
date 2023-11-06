@@ -2,21 +2,11 @@ name: thecluster-crds
 runtime: nodejs
 description: CRDs for THECLUSTER
 config:
-  cabpt:
+  versions:
     value:
-      version: 0.6.2
-  cacppt:
-    value:
-      version: 0.5.3
-  cert-manager:
-    value:
-      version: 1.13.1
-  clusterapi:
-    value:
-      version: 1.5.3
-  proxmox:
-    value:
-      version: 0.3.2
-  sidero:
-    value:
-      version: 0.6.1
+      clusterapi: 1.5.2 # renovate depName=kubernetes-sigs/cluster-api
+      proxmox: 0.3.2 # renovate depName=sp-yduck/cluster-api-provider-proxmox
+      sidero: 0.6.1 # renovate depName=siderolabs/sidero
+      cabpt: 0.6.2 # renovate depName=siderolabs/cluster-api-bootstrap-provider-talos
+      cacppt: 0.5.3 # renovate depName=siderolabs/cluster-api-control-plane-provider-talos
+      cert-manager: 1.13.1 # renovate depName="cert-manager/cert-manager"

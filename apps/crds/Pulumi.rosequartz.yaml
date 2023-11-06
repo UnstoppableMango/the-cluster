@@ -1,13 +1,8 @@
 config:
-  thecluster-crds:cabpt:
-    enabled: true
-  thecluster-crds:cacppt:
-    enabled: true
-  thecluster-crds:cert-manager:
-    enabled: true
-  thecluster-crds:clusterapi:
-    enabled: true
-  thecluster-crds:proxmox:
-    enabled: true
-  thecluster-crds:sidero:
-    enabled: true
+  thecluster-crds:enabled:
+    - cabpt
+    - cacppt
+    - cert-manager
+    - clusterapi
+    - proxmox
+    - sidero
