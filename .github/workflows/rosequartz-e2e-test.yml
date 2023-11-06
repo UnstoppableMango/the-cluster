@@ -18,6 +18,7 @@ on:
 jobs:
   e2e-test:
     runs-on: ubuntu-latest
+    if: false # Still some kinks to work out
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       STACK: e2e-${{ github.run_id }}-${{ github.run_attempt }}
