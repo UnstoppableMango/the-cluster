@@ -25,7 +25,7 @@
         "^.*Pulumi.*\\.(yml|yaml)$"
       ],
       "matchStrings": [
-        "^.+?: (?<currentValue>\\S+?) # renovate depName=(?<depName>\\S+?)(?: extractVersion=(?<extractVersion>\\S+?))*$"
+        ".+?: (?<currentValue>\\S*) # renovate depName=(?<depName>\\S*)(?: extractVersion=(?<extractVersion>\\S*))*"
       ],
       "versioningTemplate": "semver-coerced",
       "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^v(?<version>.*){{/if}}",
