@@ -69,6 +69,12 @@
         "pulumi/pulumi"
       ],
       "groupName": "pulumi"
+    },
+    {
+      "matchPackagePatterns": [
+        "cert-manager"
+      ],
+      "groupName": "cert-manager"
     }
   ]
 }
