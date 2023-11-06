@@ -4,7 +4,7 @@ description: CRDs for THECLUSTER
 config:
   versions:
     value:
-      clusterapi: 1.5.2 # renovate depName=kubernetes-sigs/cluster-api extractVersion=^v(?<version>.*)
+      clusterapi: 1.5.3 # renovate depName=kubernetes-sigs/cluster-api extractVersion=^v(?<version>.*)
       proxmox: 0.3.2 # renovate depName=sp-yduck/cluster-api-provider-proxmox extractVersion=^v(?<version>.*)
       sidero: 0.6.1 # renovate depName=siderolabs/sidero extractVersion=^v(?<version>.*)
       cabpt: 0.6.2 # renovate depName=siderolabs/cluster-api-bootstrap-provider-talos extractVersion=^v(?<version>.*)
