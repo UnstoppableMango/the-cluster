@@ -45,6 +45,7 @@
   "packageRules": [
     {
       "matchDepNames": [
+        "cert-manager/cert-manager",
         "kubernetes/kubernetes",
         "kubernetes-sigs/cluster-api",
         "pulumi/pulumi",
