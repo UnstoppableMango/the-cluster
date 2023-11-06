@@ -21,7 +21,7 @@ runs:
 
     - uses: pulumi/actions@v4
       with:
-        pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi
+        pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
 
     - run: npm ci
       working-directory: clusters/${{ inputs.cluster }}
