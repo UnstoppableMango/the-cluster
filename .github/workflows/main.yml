@@ -95,6 +95,7 @@ jobs:
         run: curl -sL https://talos.dev/install | sh
 
       - run: npm ci
+      - run: ./gen/capi.sh
 
       - id: setup-config
         uses: ./.github/actions/setup-config
@@ -227,6 +228,7 @@ jobs:
         run: curl -sL https://talos.dev/install | sh
 
       - run: npm ci
+      - run: ./gen/manifests.sh
 
       - id: setup-config
         uses: ./.github/actions/setup-config

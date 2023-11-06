@@ -50,6 +50,10 @@ runs:
       working-directory: apps/crds
       shell: bash
 
+    - run: ./gen/capi.sh
+      working-directory: apps/crds
+      shell: bash
+
     - uses: pulumi/actions@v4
       with:
         stack-name: UnstoppableMango/thecluster-crds/${{ inputs.stack }}
@@ -116,6 +120,10 @@ runs:
       shell: bash
 
     - run: pulumi stack init "${{ inputs.stack }}" --copy-config-from rosequartz
+      working-directory: apps/clusterapi
+      shell: bash
+
+    - run: ./gen/manifests.sh
       working-directory: apps/clusterapi
       shell: bash
 
