@@ -48,7 +48,7 @@ function gen() {
 
     echo "Generating CRDs for $module $version"
     mkdir -p "$manifestDir/$providerName"
-    "$root/gen/provider.sh" $component $module $version $config \
+    "$root/gen/provider.sh" $component $module $version $config ${@:4} \
         | kubectl slice --exclude-kind CustomResourceDefinition --stdout \
         > "$manifestDir/$providerName/output.yaml"
 }
@@ -62,4 +62,4 @@ gen --core "cluster-api" $coreVersion
 gen --bootstrap "talos" $cabptVersion
 gen --control-plane "talos" $cacpptVersion
 gen --infrastructure "sidero" $sideroVersion
-gen --infrastructure "proxmox" $proxmoxVersion
+gen --infrastructure "proxmox" $proxmoxVersion -n cappx-system

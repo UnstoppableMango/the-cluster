@@ -40,21 +40,13 @@ const infrastructure = new k8s.yaml.ConfigGroup('infrastructure', {
     'sidero-infrastructure',
     'proxmox-infrastructure',
   ].map(x => path.join('manifests', stack, x, 'output.yaml')),
-  transformations: [patchKubeRbacProxy, patchSidero],
+  transformations: [patchSidero, patchProxmoxService],
 }, {
   dependsOn: controlplane.ready,
   ignoreChanges: [
     'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
   ],
 });
-
-// Sidero currently has an old rbac-proxy version that doesn't support ARM64
-function patchKubeRbacProxy(obj: any, opts: pulumi.CustomResourceOptions): void {
-  if (obj.kind !== 'Deployment') return;
-  obj.spec.template.spec.containers.forEach((x: any) => {
-    x.image = x.image.replace('0.4.1', '0.14.1');
-  });
-}
 
 function patchControllerManagerPorts(obj: any, opts: pulumi.CustomResourceOptions): void {
   if (obj.kind !== 'Deployment') return;
@@ -69,6 +61,15 @@ function patchControllerManagerPorts(obj: any, opts: pulumi.CustomResourceOption
     name: 'https',
     protocol: 'TCP',
   });
+}
+
+function patchProxmoxService(obj: any, opts: pulumi.CustomResourceOptions): void {
+  if (obj.kind !== 'Service') return;
+  if (obj.metadata.name !== 'cluster-api-provider-proxmox-controller-manager-metrics-service') return;
+
+  obj.metadata.labels['control-plane'] = 'capp-controller-manager';
+  obj.spec.selector['control-plane'] = 'capp-controller-manager';
+  obj.spec.selector['cluster.x-k8s.io/aggregate-to-manager'] = undefined
 }
 
 function patchSidero(obj: any, opts: pulumi.CustomResourceOptions): void {

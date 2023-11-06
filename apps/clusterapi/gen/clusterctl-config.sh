@@ -14,11 +14,7 @@ function version() {
 }
 
 echo "Getting versions..."
-coreVersion="$(version "clusterapi")"
 proxmoxVersion="$(version "proxmox")"
-sideroVersion="$(version "sidero")"
-cabptVersion="$(version "cabpt")"
-cacpptVersion="$(version "cacppt")"
 
 cat >"$root/clusterctl.yaml" <<EOL
 providers:
