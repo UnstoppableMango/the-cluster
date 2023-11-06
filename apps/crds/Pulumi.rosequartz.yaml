@@ -1,0 +1,8 @@
+config:
+  thecluster-crds:enabled:
+    - cabpt
+    - cacppt
+    - cert-manager
+    - clusterapi
+    - proxmox
+    - sidero

@@ -6,19 +6,21 @@ on:
     paths:
       - .github/actions/rosequartz-e2e-test/**
       - .github/workflows/rosequartz-e2e-test.yaml
-      - apps/**/package-lock.json
-      - apps/**/Chart.yaml
-      - clusters/**/package-lock.json
-      - clusters/**/Chart.yaml
+      - apps/crds/package-lock.json
+      - apps/cert-manager/package-lock.json
+      - apps/cert-manager/Chart.lock
+      - apps/clusterapi/package-lock.json
+      - apps/metrics-server/package-lock.json
+      - apps/metrics-server/Chart.lock
+      - clusters/rosequartz/package-lock.json
   workflow_dispatch:
 
 jobs:
   e2e-test:
     runs-on: ubuntu-latest
-    if: false # Disable until capi crds are split, causes deployment error
+    if: false # Still some kinks to work out
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-      CLOUDFLARE_API_TOKEN: ci
       STACK: e2e-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
@@ -26,6 +28,8 @@ jobs:
       - uses: pulumi/actions@v4
         with:
           pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi
+          comment-on-pr: false
+          comment-on-summary: false
 
       - uses: actions/setup-node@v3
         with:
@@ -33,9 +37,8 @@ jobs:
           cache: npm
           cache-dependency-path: '**/package-lock.json'
 
-      # TODO: Get a specfic version
-      - name: Install talosctl
-        run: curl -sL https://talos.dev/install | sh
+      - name: Setup tools
+        uses: ./.github/actions/setup-tools
 
       - name: Create test node
         working-directory: clusters/rosequartz
@@ -75,9 +78,9 @@ jobs:
     if: false # We need the pulumi code to exist on main in order to test an upgrade
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-      CLOUDFLARE_API_TOKEN: ci
       STACK: upgrade-e2e-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
@@ -89,6 +92,8 @@ jobs:
       - uses: pulumi/actions@v4
         with:
           pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi
+          comment-on-pr: false
+          comment-on-summary: false
 
       - uses: actions/setup-node@v3
         with:
@@ -96,10 +101,8 @@ jobs:
           cache: npm
           cache-dependency-path: '**/package-lock.json'
 
-      # TODO: Get a specfic version
-      - name: Install talosctl
-        run: curl -sL https://talos.dev/install | sh
-        shell: bash
+      - name: Setup tools
+        uses: ./.github/actions/setup-tools
 
       - name: Create test node
         working-directory: clusters/rosequartz

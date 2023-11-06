@@ -1,0 +1,46 @@
+name: Setup Tools
+description: Setup tools
+inputs: {}
+runs:
+  using: composite
+  steps:
+    - name: Setup kubectl-slice
+      uses: jaxxstorm/action-install-gh-release@v1
+      with:
+        repo: patrickdappollonio/kubectl-slice
+        tag: v1.2.7 # renovate depName=patrickdappollonio/kubectl-slice
+        cache: enable
+
+    - name: Setup crd2pulumi
+      uses: jaxxstorm/action-install-gh-release@v1
+      with:
+        repo: pulumi/crd2pulumi
+        tag: v1.2.5 # renovate depName=pulumi/crd2pulumi
+        cache: enable
+
+    - name: Setup clusterctl
+      uses: jaxxstorm/action-install-gh-release@v1
+      with:
+        repo: kubernetes-sigs/cluster-api
+        tag: v1.5.2 # renovate depName=kubernetes-sigs/cluster-api
+        extension-matching: disable
+        rename-to: clusterctl
+        chmod: 0755
+        cache: enable
+
+    # - name: Setup talosctl
+    #   uses: jaxxstorm/action-install-gh-release@v1
+    #   with:
+    #     repo: siderolabs/talos
+    #     tag: v1.2.5 # renovate depName=pulumi/crd2pulumi
+    #     extension-matching: disable
+    #     rename-to: talosctl
+    #     chmod: 0755
+    #     cache: enable
+
+    # TODO: Get a specfic version
+    - name: Install talosctl
+      run: curl -sL https://talos.dev/install | sh
+      shell: bash
+
+outputs: {}

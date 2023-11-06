@@ -28,6 +28,7 @@ jobs:
       dashboard: ${{ steps.stacks.outputs.dashboard }}
       metrics-server: ${{ steps.stacks.outputs.metrics-server }}
       clusterapi: ${{ steps.stacks.outputs.clusterapi }}
+      crds: ${{ steps.stacks.outputs.crds }}
 
   rosequartz:
     name: Rosequartz
@@ -39,7 +40,6 @@ jobs:
         working-directory: clusters/rosequartz
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       RQ_STACK: rq-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
@@ -55,9 +55,8 @@ jobs:
           comment-on-pr: false
           comment-on-summary: false
 
-      # TODO: Get a specfic version
-      - name: Install talosctl
-        run: curl -sL https://talos.dev/install | sh
+      - name: Setup tools
+        uses: ./.github/actions/setup-tools
 
       - run: npm ci
 
@@ -70,10 +69,57 @@ jobs:
         working-directory: clusters/rosequartz
         run: pulumi stack rm -yf "${{ env.RQ_STACK }}"
 
+  crds:
+    name: CRDs
+    runs-on: ubuntu-latest
+    needs: [setup, rosequartz]
+    if: fromJson(needs.setup.outputs.crds) && !failure() && !cancelled()
+    concurrency: crds-${{ github.ref }}
+    defaults:
+      run:
+        working-directory: apps/crds
+    env:
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: apps/crds/package-lock.json
+
+      - name: Setup tools
+        uses: ./.github/actions/setup-tools
+
+      - name: Setup pulumi
+        uses: pulumi/actions@v4
+        with:
+          pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi
+
+      - run: npm ci
+      - run: pulumi stack select UnstoppableMango/thecluster-crds/rosequartz
+      - run: ./gen/capi.sh
+
+      - id: setup-config
+        uses: ./.github/actions/setup-config
+        with:
+          cluster: rosequartz
+          stack: prod
+          endpoint: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
+
+      - name: Pulumi Action
+        uses: pulumi/actions@v4
+        with:
+          stack-name: UnstoppableMango/thecluster-crds/rosequartz
+          command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
+          work-dir: apps/crds
+        env:
+          KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
+
   cert-manager:
     name: Cert Manager
     runs-on: ubuntu-latest
-    needs: [setup, rosequartz]
+    needs: [setup, rosequartz, crds]
     if: fromJson(needs.setup.outputs.cert-manager) && !failure() && !cancelled()
     concurrency: cert-manager-${{ github.ref }}
     defaults:
@@ -89,9 +135,8 @@ jobs:
           cache: npm
           cache-dependency-path: apps/cert-manager/package-lock.json
 
-      # TODO: Get a specfic version
-      - name: Install talosctl
-        run: curl -sL https://talos.dev/install | sh
+      - name: Setup tools
+        uses: ./.github/actions/setup-tools
 
       - run: npm ci
       - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
@@ -132,9 +177,8 @@ jobs:
           cache: npm
           cache-dependency-path: apps/metrics-server/package-lock.json
 
-      # TODO: Get a specfic version
-      - name: Install talosctl
-        run: curl -sL https://talos.dev/install | sh
+      - name: Setup tools
+        uses: ./.github/actions/setup-tools
 
       - run: npm ci
       - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
@@ -163,7 +207,7 @@ jobs:
   clusterapi:
     name: Cluster API
     runs-on: ubuntu-latest
-    needs: [setup, rosequartz, cert-manager]
+    needs: [setup, rosequartz, cert-manager, crds]
     if: fromJson(needs.setup.outputs.clusterapi) && !failure() && !cancelled()
     concurrency: clusterapi-${{ github.ref }}
     defaults:
@@ -179,11 +223,17 @@ jobs:
           cache: npm
           cache-dependency-path: apps/clusterapi/package-lock.json
 
-      # TODO: Get a specfic version
-      - name: Install talosctl
-        run: curl -sL https://talos.dev/install | sh
+      - name: Setup tools
+        uses: ./.github/actions/setup-tools
+
+      - name: Setup pulumi
+        uses: pulumi/actions@v4
+        with:
+          pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi
 
       - run: npm ci
+      - run: pulumi stack select UnstoppableMango/thecluster-clusterapi/rosequartz
+      - run: ./gen/manifests.sh
 
       - id: setup-config
         uses: ./.github/actions/setup-config
@@ -198,7 +248,6 @@ jobs:
           stack-name: UnstoppableMango/thecluster-clusterapi/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: apps/clusterapi
-          pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi
         env:
           KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
 

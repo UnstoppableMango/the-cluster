@@ -1,0 +1,8 @@
+- op: remove
+  path: /spec/versions/0/schema/openAPIV3Schema/properties/spec/properties/rolloutStrategy/default
+- op: replace
+  path: /spec/versions/0/schema/openAPIV3Schema/properties/spec/properties/rolloutStrategy/properties/rollingUpdate/properties/maxSurge/default
+  value: 1
+- op: replace
+  path: /spec/versions/0/schema/openAPIV3Schema/properties/spec/properties/rolloutStrategy/properties/type/default
+  value: RollingUpdate
