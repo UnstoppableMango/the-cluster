@@ -46,10 +46,6 @@ runs:
       working-directory: apps/crds
       shell: bash
 
-    - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
-      working-directory: apps/crds
-      shell: bash
-
     - run: pulumi stack init "${{ inputs.stack }}" --copy-config-from rosequartz
       working-directory: apps/crds
       shell: bash
