@@ -40,7 +40,6 @@ jobs:
         working-directory: clusters/rosequartz
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       RQ_STACK: rq-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
@@ -56,9 +55,8 @@ jobs:
           comment-on-pr: false
           comment-on-summary: false
 
-      # TODO: Get a specfic version
-      - name: Install talosctl
-        run: curl -sL https://talos.dev/install | sh
+      - name: Setup tools
+        uses: ./.github/actions/setup-tools
 
       - run: npm ci
 
@@ -90,9 +88,8 @@ jobs:
           cache: npm
           cache-dependency-path: apps/crds/package-lock.json
 
-      # TODO: Get a specfic version
-      - name: Install talosctl
-        run: curl -sL https://talos.dev/install | sh
+      - name: Setup tools
+        uses: ./.github/actions/setup-tools
 
       - run: npm ci
       - run: ./gen/capi.sh
@@ -133,9 +130,8 @@ jobs:
           cache: npm
           cache-dependency-path: apps/cert-manager/package-lock.json
 
-      # TODO: Get a specfic version
-      - name: Install talosctl
-        run: curl -sL https://talos.dev/install | sh
+      - name: Setup tools
+        uses: ./.github/actions/setup-tools
 
       - run: npm ci
       - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
@@ -176,9 +172,8 @@ jobs:
           cache: npm
           cache-dependency-path: apps/metrics-server/package-lock.json
 
-      # TODO: Get a specfic version
-      - name: Install talosctl
-        run: curl -sL https://talos.dev/install | sh
+      - name: Setup tools
+        uses: ./.github/actions/setup-tools
 
       - run: npm ci
       - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
@@ -223,9 +218,8 @@ jobs:
           cache: npm
           cache-dependency-path: apps/clusterapi/package-lock.json
 
-      # TODO: Get a specfic version
-      - name: Install talosctl
-        run: curl -sL https://talos.dev/install | sh
+      - name: Setup tools
+        uses: ./.github/actions/setup-tools
 
       - run: npm ci
       - run: ./gen/manifests.sh

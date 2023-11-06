@@ -6,10 +6,13 @@ on:
     paths:
       - .github/actions/rosequartz-e2e-test/**
       - .github/workflows/rosequartz-e2e-test.yaml
-      - apps/**/package-lock.json
-      - apps/**/Chart.yaml
-      - clusters/**/package-lock.json
-      - clusters/**/Chart.yaml
+      - apps/crds/package-lock.json
+      - apps/cert-manager/package-lock.json
+      - apps/cert-manager/Chart.lock
+      - apps/clusterapi/package-lock.json
+      - apps/metrics-server/package-lock.json
+      - apps/metrics-server/Chart.lock
+      - clusters/rosequartz/package-lock.json
   workflow_dispatch:
 
 jobs:
@@ -34,9 +37,8 @@ jobs:
           cache: npm
           cache-dependency-path: '**/package-lock.json'
 
-      # TODO: Get a specfic version
-      - name: Install talosctl
-        run: curl -sL https://talos.dev/install | sh
+      - name: Setup tools
+        uses: ./.github/actions/setup-tools
 
       - name: Create test node
         working-directory: clusters/rosequartz
@@ -100,10 +102,8 @@ jobs:
           cache: npm
           cache-dependency-path: '**/package-lock.json'
 
-      # TODO: Get a specfic version
-      - name: Install talosctl
-        run: curl -sL https://talos.dev/install | sh
-        shell: bash
+      - name: Setup tools
+        uses: ./.github/actions/setup-tools
 
       - name: Create test node
         working-directory: clusters/rosequartz
