@@ -72,7 +72,7 @@ jobs:
         run: pulumi stack rm -yf "${{ env.RQ_STACK }}"
 
   crds:
-    name: Custom Resource Definitions
+    name: CRDs
     runs-on: ubuntu-latest
     needs: [setup, rosequartz]
     if: fromJson(needs.setup.outputs.crds) && !failure() && !cancelled()
