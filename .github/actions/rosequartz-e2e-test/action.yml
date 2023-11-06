@@ -23,7 +23,7 @@ runs:
         stack-name: UnstoppableMango/thecluster-rosequartz/${{ inputs.stack }}
         command: up
         work-dir: clusters/rosequartz
-        pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+        pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi
         comment-on-pr: false
         comment-on-summary: false
 
@@ -59,7 +59,7 @@ runs:
         stack-name: UnstoppableMango/thecluster-crds/${{ inputs.stack }}
         command: up
         work-dir: apps/crds
-        pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+        pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi
         comment-on-pr: false
         comment-on-summary: false
 
@@ -80,7 +80,7 @@ runs:
         stack-name: UnstoppableMango/thecluster-cert-manager/${{ inputs.stack }}
         command: up
         work-dir: apps/cert-manager
-        pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+        pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi
         comment-on-pr: false
         comment-on-summary: false
 
@@ -106,7 +106,7 @@ runs:
         stack-name: UnstoppableMango/thecluster-metrics-server/${{ inputs.stack }}
         command: up
         work-dir: apps/metrics-server
-        pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+        pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi
         comment-on-pr: false
         comment-on-summary: false
 
@@ -133,7 +133,7 @@ runs:
         stack-name: UnstoppableMango/thecluster-clusterapi/${{ inputs.stack }}
         command: up
         work-dir: apps/clusterapi
-        pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+        pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi
         comment-on-pr: false
         comment-on-summary: false
 
