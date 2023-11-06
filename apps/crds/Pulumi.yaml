@@ -2,6 +2,21 @@ name: thecluster-crds
 runtime: nodejs
 description: CRDs for THECLUSTER
 config:
+  cabpt:
+    value:
+      version: 0.6.2
+  cacppt:
+    value:
+      version: 0.5.3
   cert-manager:
     value:
       version: 1.13.1
+  clusterapi:
+    value:
+      version: 1.5.3
+  proxmox:
+    value:
+      version: 0.3.2
+  sidero:
+    value:
+      version: 0.6.1
