@@ -36,9 +36,10 @@
         "^.*Pulumi.*\\.(yml|yaml)$"
       ],
       "matchStrings": [
-        ".*: (?<currentValue>.*) # renovate depName=(?<depName>.*)"
+        "[^\\s]+?: (?<currentValue>.*) # renovate depName=(?<depName>[^\\s]+?)(?: ?(?:packageName=(?<packageName>[^\\s]+?)|extractVersion=(?<extractVersion>[^\\s+?]+?)))*$"
       ],
       "versioningTemplate": "semver-coerced",
+      "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^v(?<version>.*){{/if}}",
       "datasourceTemplate": "github-tags"
     }
   ],
@@ -75,6 +76,23 @@
         "cert-manager"
       ],
       "groupName": "cert-manager"
+    },
+    {
+      "matchPackagePatterns": [
+        "renovate",
+        "^typescript$",
+        "^yaml$",
+        "@actions/core",
+        "@actions/github",
+        "@types/node",
+        "@vercel/ncc"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true
     }
   ]
 }
