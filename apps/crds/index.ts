@@ -18,4 +18,8 @@ if (certManager?.enabled) {
 
 const manifests = new k8s.yaml.ConfigGroup('crds', {
   files: paths,
+}, {
+  ignoreChanges: [
+    'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
+  ],
 });

@@ -47,6 +47,7 @@ function gen() {
     version=$3
     config="--config $root/clusterctl.yaml"
     providerName="${module}${component:1}"
+    mkdir -p "$manifestDir/$providerName"
 
     echo "Generating CRDs for $module $version"
     "$repoRoot/apps/clusterapi/gen/provider.sh" $component $module $version $config \
