@@ -21,6 +21,7 @@ kubeconfig
 secrets.yaml
 controlplane.yaml
 worker.yaml
+clusterctl.yaml
 
 # User Specific
 *.user
@@ -29,3 +30,7 @@ worker.yaml
 .kube/
 tmp/
 .backups/
+
+# Generated code
+generated.yaml
+output.yaml
