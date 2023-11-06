@@ -20,7 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-      CLOUDFLARE_API_TOKEN: ci
       STACK: e2e-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
@@ -78,7 +77,6 @@ jobs:
     if: false # We need the pulumi code to exist on main in order to test an upgrade
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-      CLOUDFLARE_API_TOKEN: ci
       STACK: upgrade-e2e-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
