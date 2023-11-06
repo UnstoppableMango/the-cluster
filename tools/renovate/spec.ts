@@ -1,3 +1,4 @@
+import * as os from 'os';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -21,7 +22,7 @@ beforeAll(() => {
 });
 
 describe('regex manager fileMatch', () => {
-  const ignoredPatterns: RegExp[] = [/yaml\//];
+  const ignoredPatterns: RegExp[] = [];
   let files: string[] = [];
   let patterns: RegExp[] = [];
   let matches: string[] = [];
@@ -42,7 +43,7 @@ describe('regex manager fileMatch', () => {
   });
 
   it('should match files', () => {
-    expect(files).toHaveLength(5);
+    expect(files).toHaveLength(9);
   });
 
   it('should match github workflows', () => {
@@ -69,20 +70,23 @@ describe('regex manager fileMatch', () => {
 });
 
 describe('regex manager matchStrings', () => {
-  let patterns: RegExp[] = []
-
-  beforeAll(() => {
-    patterns = renovateConfig.customManagers.flatMap(x => x.matchStrings.map(m => new RegExp(m, 'gm')));
-  });
+  function act(fileName: string): RegExpMatchArray[] {
+    const file = path.join('cases', fileName);
+    const lines = fs.readFileSync(file, 'utf-8').split(os.EOL);
+    return renovateConfig.customManagers
+      .flatMap(x => x.matchStrings)
+      .flatMap(p => lines.map(l => new RegExp(p, 'gm').exec(l)))
+      .filter(x => x);
+  }
 
   it('should have patterns', () => {
-    expect(patterns.length).toBeGreaterThan(0);
+    const matchers = renovateConfig.customManagers.flatMap(x => x.matchStrings);
+
+    expect(matchers.length).toBeGreaterThan(0);
   });
 
   it('should match yaml dep', () => {
-    const dep = fs.readFileSync(path.join('cases', 'yaml', 'simple.yml'), 'utf-8');
-
-    const groups = patterns.map(x => x.exec(dep).groups);
+    const groups = act('simple.yml').map(x => x.groups);
 
     expect(groups).toContainEqual(expect.objectContaining({
       depName: 'test',
@@ -91,17 +95,14 @@ describe('regex manager matchStrings', () => {
   });
 
   it('should not match yaml dep missing depName', () => {
-    const dep = fs.readFileSync(path.join('cases', 'yaml', 'missing-dep-name.yml'), 'utf-8');
+    const matches = act('missing-dep-name.yml');
 
-    const actual = patterns.reduce((p, c) => p || c.test(dep), false);
-
-    expect(actual).toBeFalsy();
+    expect(matches).toHaveLength(0);
   });
 
   it('should match multiple yaml deps', () => {
-    const dep = fs.readFileSync(path.join('cases', 'yaml', 'multiple-simple.yml'), 'utf-8');
-
-    const groups = patterns.map(x => x.exec(dep).groups);
+    console.log(act('multiple-simple.yml'));
+    const groups = act('multiple-simple.yml').map(x => x.groups);
 
     expect(groups).toEqual(expect.arrayContaining([
       {
@@ -113,5 +114,15 @@ describe('regex manager matchStrings', () => {
         currentValue: '3.2.1',
       },
     ]));
+  });
+
+  it('should capture extractVersion', () => {
+    const groups = act('extract-version.yml').map(x => x.groups);
+
+    expect(groups).toContainEqual(expect.objectContaining({
+      depName: 'test',
+      currentValue: '1.2.3',
+      extractVersion: '^v(?<version>.*)',
+    }));
   });
 });
