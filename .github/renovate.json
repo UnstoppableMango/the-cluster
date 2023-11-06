@@ -20,23 +20,12 @@
     {
       "customType": "regex",
       "fileMatch": [
-        ".*/\\.versions$"
-      ],
-      "matchStrings": [
-        "(?<depName>.*): (?<currentValue>.*)"
-      ],
-      "versioningTemplate": "semver-coerced",
-      "datasourceTemplate": "github-tags"
-    },
-    {
-      "customType": "regex",
-      "fileMatch": [
         "^\\.github\\/workflows\\/.*\\.(yml|yaml)$",
         "^\\.github\\/.*\\/action\\.(yml|yaml)$",
         "^.*Pulumi.*\\.(yml|yaml)$"
       ],
       "matchStrings": [
-        "[^\\s]+?: (?<currentValue>.*) # renovate depName=(?<depName>[^\\s]+?)(?: ?(?:packageName=(?<packageName>[^\\s]+?)|extractVersion=(?<extractVersion>[^\\s+?]+?)))*$"
+        ".+?: (?<currentValue>\\S*) # renovate depName=(?<depName>\\S*)(?: extractVersion=(?<extractVersion>\\S*))*"
       ],
       "versioningTemplate": "semver-coerced",
       "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^v(?<version>.*){{/if}}",
