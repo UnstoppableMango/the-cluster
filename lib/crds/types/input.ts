@@ -1452,6 +1452,707 @@ export namespace acme {
     }
 }
 
+export namespace addons {
+    export namespace v1alpha3 {
+        /**
+         * ClusterResourceSetBindingSpec defines the desired state of ClusterResourceSetBinding.
+         */
+        export interface ClusterResourceSetBindingSpecArgs {
+            /**
+             * Bindings is a list of ClusterResourceSets and their resources.
+             */
+            bindings?: pulumi.Input<pulumi.Input<inputs.addons.v1alpha3.ClusterResourceSetBindingSpecBindingsArgs>[]>;
+        }
+
+        /**
+         * ResourceSetBinding keeps info on all of the resources in a ClusterResourceSet.
+         */
+        export interface ClusterResourceSetBindingSpecBindingsArgs {
+            /**
+             * ClusterResourceSetName is the name of the ClusterResourceSet that is applied to the owner cluster of the binding.
+             */
+            clusterResourceSetName: pulumi.Input<string>;
+            /**
+             * Resources is a list of resources that the ClusterResourceSet has.
+             */
+            resources?: pulumi.Input<pulumi.Input<inputs.addons.v1alpha3.ClusterResourceSetBindingSpecBindingsResourcesArgs>[]>;
+        }
+
+        /**
+         * ResourceBinding shows the status of a resource that belongs to a ClusterResourceSet matched by the owner cluster of the ClusterResourceSetBinding object.
+         */
+        export interface ClusterResourceSetBindingSpecBindingsResourcesArgs {
+            /**
+             * Applied is to track if a resource is applied to the cluster or not.
+             */
+            applied: pulumi.Input<boolean>;
+            /**
+             * Hash is the hash of a resource's data. This can be used to decide if a resource is changed. For "ApplyOnce" ClusterResourceSet.spec.strategy, this is no-op as that strategy does not act on change.
+             */
+            hash?: pulumi.Input<string>;
+            /**
+             * Kind of the resource. Supported kinds are: Secrets and ConfigMaps.
+             */
+            kind: pulumi.Input<string>;
+            /**
+             * LastAppliedTime identifies when this resource was last applied to the cluster.
+             */
+            lastAppliedTime?: pulumi.Input<string>;
+            /**
+             * Name of the resource that is in the same namespace with ClusterResourceSet object.
+             */
+            name: pulumi.Input<string>;
+        }
+
+        /**
+         * ClusterResourceSetSpec defines the desired state of ClusterResourceSet.
+         */
+        export interface ClusterResourceSetSpecArgs {
+            /**
+             * Label selector for Clusters. The Clusters that are selected by this will be the ones affected by this ClusterResourceSet. It must match the Cluster labels. This field is immutable.
+             */
+            clusterSelector: pulumi.Input<inputs.addons.v1alpha3.ClusterResourceSetSpecClusterSelectorArgs>;
+            /**
+             * Resources is a list of Secrets/ConfigMaps where each contains 1 or more resources to be applied to remote clusters.
+             */
+            resources?: pulumi.Input<pulumi.Input<inputs.addons.v1alpha3.ClusterResourceSetSpecResourcesArgs>[]>;
+            /**
+             * Strategy is the strategy to be used during applying resources. Defaults to ApplyOnce. This field is immutable.
+             */
+            strategy?: pulumi.Input<string>;
+        }
+
+        /**
+         * Label selector for Clusters. The Clusters that are selected by this will be the ones affected by this ClusterResourceSet. It must match the Cluster labels. This field is immutable.
+         */
+        export interface ClusterResourceSetSpecClusterSelectorArgs {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: pulumi.Input<pulumi.Input<inputs.addons.v1alpha3.ClusterResourceSetSpecClusterSelectorMatchExpressionsArgs>[]>;
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterResourceSetSpecClusterSelectorMatchExpressionsArgs {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: pulumi.Input<string>;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: pulumi.Input<string>;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * ResourceRef specifies a resource.
+         */
+        export interface ClusterResourceSetSpecResourcesArgs {
+            /**
+             * Kind of the resource. Supported kinds are: Secrets and ConfigMaps.
+             */
+            kind: pulumi.Input<string>;
+            /**
+             * Name of the resource that is in the same namespace with ClusterResourceSet object.
+             */
+            name: pulumi.Input<string>;
+        }
+
+        /**
+         * ClusterResourceSetStatus defines the observed state of ClusterResourceSet.
+         */
+        export interface ClusterResourceSetStatusArgs {
+            /**
+             * Conditions defines current state of the ClusterResourceSet.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.addons.v1alpha3.ClusterResourceSetStatusConditionsArgs>[]>;
+            /**
+             * ObservedGeneration reflects the generation of the most recently observed ClusterResourceSet.
+             */
+            observedGeneration?: pulumi.Input<number>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ClusterResourceSetStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+    }
+
+    export namespace v1alpha4 {
+        /**
+         * ClusterResourceSetBindingSpec defines the desired state of ClusterResourceSetBinding.
+         */
+        export interface ClusterResourceSetBindingSpecArgs {
+            /**
+             * Bindings is a list of ClusterResourceSets and their resources.
+             */
+            bindings?: pulumi.Input<pulumi.Input<inputs.addons.v1alpha4.ClusterResourceSetBindingSpecBindingsArgs>[]>;
+        }
+
+        /**
+         * ResourceSetBinding keeps info on all of the resources in a ClusterResourceSet.
+         */
+        export interface ClusterResourceSetBindingSpecBindingsArgs {
+            /**
+             * ClusterResourceSetName is the name of the ClusterResourceSet that is applied to the owner cluster of the binding.
+             */
+            clusterResourceSetName: pulumi.Input<string>;
+            /**
+             * Resources is a list of resources that the ClusterResourceSet has.
+             */
+            resources?: pulumi.Input<pulumi.Input<inputs.addons.v1alpha4.ClusterResourceSetBindingSpecBindingsResourcesArgs>[]>;
+        }
+
+        /**
+         * ResourceBinding shows the status of a resource that belongs to a ClusterResourceSet matched by the owner cluster of the ClusterResourceSetBinding object.
+         */
+        export interface ClusterResourceSetBindingSpecBindingsResourcesArgs {
+            /**
+             * Applied is to track if a resource is applied to the cluster or not.
+             */
+            applied: pulumi.Input<boolean>;
+            /**
+             * Hash is the hash of a resource's data. This can be used to decide if a resource is changed. For "ApplyOnce" ClusterResourceSet.spec.strategy, this is no-op as that strategy does not act on change.
+             */
+            hash?: pulumi.Input<string>;
+            /**
+             * Kind of the resource. Supported kinds are: Secrets and ConfigMaps.
+             */
+            kind: pulumi.Input<string>;
+            /**
+             * LastAppliedTime identifies when this resource was last applied to the cluster.
+             */
+            lastAppliedTime?: pulumi.Input<string>;
+            /**
+             * Name of the resource that is in the same namespace with ClusterResourceSet object.
+             */
+            name: pulumi.Input<string>;
+        }
+
+        /**
+         * ClusterResourceSetSpec defines the desired state of ClusterResourceSet.
+         */
+        export interface ClusterResourceSetSpecArgs {
+            /**
+             * Label selector for Clusters. The Clusters that are selected by this will be the ones affected by this ClusterResourceSet. It must match the Cluster labels. This field is immutable. Label selector cannot be empty.
+             */
+            clusterSelector: pulumi.Input<inputs.addons.v1alpha4.ClusterResourceSetSpecClusterSelectorArgs>;
+            /**
+             * Resources is a list of Secrets/ConfigMaps where each contains 1 or more resources to be applied to remote clusters.
+             */
+            resources?: pulumi.Input<pulumi.Input<inputs.addons.v1alpha4.ClusterResourceSetSpecResourcesArgs>[]>;
+            /**
+             * Strategy is the strategy to be used during applying resources. Defaults to ApplyOnce. This field is immutable.
+             */
+            strategy?: pulumi.Input<string>;
+        }
+
+        /**
+         * Label selector for Clusters. The Clusters that are selected by this will be the ones affected by this ClusterResourceSet. It must match the Cluster labels. This field is immutable. Label selector cannot be empty.
+         */
+        export interface ClusterResourceSetSpecClusterSelectorArgs {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: pulumi.Input<pulumi.Input<inputs.addons.v1alpha4.ClusterResourceSetSpecClusterSelectorMatchExpressionsArgs>[]>;
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterResourceSetSpecClusterSelectorMatchExpressionsArgs {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: pulumi.Input<string>;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: pulumi.Input<string>;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * ResourceRef specifies a resource.
+         */
+        export interface ClusterResourceSetSpecResourcesArgs {
+            /**
+             * Kind of the resource. Supported kinds are: Secrets and ConfigMaps.
+             */
+            kind: pulumi.Input<string>;
+            /**
+             * Name of the resource that is in the same namespace with ClusterResourceSet object.
+             */
+            name: pulumi.Input<string>;
+        }
+
+        /**
+         * ClusterResourceSetStatus defines the observed state of ClusterResourceSet.
+         */
+        export interface ClusterResourceSetStatusArgs {
+            /**
+             * Conditions defines current state of the ClusterResourceSet.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.addons.v1alpha4.ClusterResourceSetStatusConditionsArgs>[]>;
+            /**
+             * ObservedGeneration reflects the generation of the most recently observed ClusterResourceSet.
+             */
+            observedGeneration?: pulumi.Input<number>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ClusterResourceSetStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+    }
+
+    export namespace v1beta1 {
+        /**
+         * ClusterResourceSetBindingSpec defines the desired state of ClusterResourceSetBinding.
+         */
+        export interface ClusterResourceSetBindingSpecArgs {
+            /**
+             * Bindings is a list of ClusterResourceSets and their resources.
+             */
+            bindings?: pulumi.Input<pulumi.Input<inputs.addons.v1beta1.ClusterResourceSetBindingSpecBindingsArgs>[]>;
+            /**
+             * ClusterName is the name of the Cluster this binding applies to. Note: this field mandatory in v1beta2.
+             */
+            clusterName?: pulumi.Input<string>;
+        }
+
+        /**
+         * ResourceSetBinding keeps info on all of the resources in a ClusterResourceSet.
+         */
+        export interface ClusterResourceSetBindingSpecBindingsArgs {
+            /**
+             * ClusterResourceSetName is the name of the ClusterResourceSet that is applied to the owner cluster of the binding.
+             */
+            clusterResourceSetName: pulumi.Input<string>;
+            /**
+             * Resources is a list of resources that the ClusterResourceSet has.
+             */
+            resources?: pulumi.Input<pulumi.Input<inputs.addons.v1beta1.ClusterResourceSetBindingSpecBindingsResourcesArgs>[]>;
+        }
+
+        /**
+         * ResourceBinding shows the status of a resource that belongs to a ClusterResourceSet matched by the owner cluster of the ClusterResourceSetBinding object.
+         */
+        export interface ClusterResourceSetBindingSpecBindingsResourcesArgs {
+            /**
+             * Applied is to track if a resource is applied to the cluster or not.
+             */
+            applied: pulumi.Input<boolean>;
+            /**
+             * Hash is the hash of a resource's data. This can be used to decide if a resource is changed. For "ApplyOnce" ClusterResourceSet.spec.strategy, this is no-op as that strategy does not act on change.
+             */
+            hash?: pulumi.Input<string>;
+            /**
+             * Kind of the resource. Supported kinds are: Secrets and ConfigMaps.
+             */
+            kind: pulumi.Input<string>;
+            /**
+             * LastAppliedTime identifies when this resource was last applied to the cluster.
+             */
+            lastAppliedTime?: pulumi.Input<string>;
+            /**
+             * Name of the resource that is in the same namespace with ClusterResourceSet object.
+             */
+            name: pulumi.Input<string>;
+        }
+
+        /**
+         * ClusterResourceSetSpec defines the desired state of ClusterResourceSet.
+         */
+        export interface ClusterResourceSetSpecArgs {
+            /**
+             * Label selector for Clusters. The Clusters that are selected by this will be the ones affected by this ClusterResourceSet. It must match the Cluster labels. This field is immutable. Label selector cannot be empty.
+             */
+            clusterSelector: pulumi.Input<inputs.addons.v1beta1.ClusterResourceSetSpecClusterSelectorArgs>;
+            /**
+             * Resources is a list of Secrets/ConfigMaps where each contains 1 or more resources to be applied to remote clusters.
+             */
+            resources?: pulumi.Input<pulumi.Input<inputs.addons.v1beta1.ClusterResourceSetSpecResourcesArgs>[]>;
+            /**
+             * Strategy is the strategy to be used during applying resources. Defaults to ApplyOnce. This field is immutable.
+             */
+            strategy?: pulumi.Input<string>;
+        }
+
+        /**
+         * Label selector for Clusters. The Clusters that are selected by this will be the ones affected by this ClusterResourceSet. It must match the Cluster labels. This field is immutable. Label selector cannot be empty.
+         */
+        export interface ClusterResourceSetSpecClusterSelectorArgs {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: pulumi.Input<pulumi.Input<inputs.addons.v1beta1.ClusterResourceSetSpecClusterSelectorMatchExpressionsArgs>[]>;
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterResourceSetSpecClusterSelectorMatchExpressionsArgs {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: pulumi.Input<string>;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: pulumi.Input<string>;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * ResourceRef specifies a resource.
+         */
+        export interface ClusterResourceSetSpecResourcesArgs {
+            /**
+             * Kind of the resource. Supported kinds are: Secrets and ConfigMaps.
+             */
+            kind: pulumi.Input<string>;
+            /**
+             * Name of the resource that is in the same namespace with ClusterResourceSet object.
+             */
+            name: pulumi.Input<string>;
+        }
+
+        /**
+         * ClusterResourceSetStatus defines the observed state of ClusterResourceSet.
+         */
+        export interface ClusterResourceSetStatusArgs {
+            /**
+             * Conditions defines current state of the ClusterResourceSet.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.addons.v1beta1.ClusterResourceSetStatusConditionsArgs>[]>;
+            /**
+             * ObservedGeneration reflects the generation of the most recently observed ClusterResourceSet.
+             */
+            observedGeneration?: pulumi.Input<number>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ClusterResourceSetStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+    }
+}
+
+export namespace bootstrap {
+    export namespace v1alpha2 {
+        /**
+         * TalosConfigSpec defines the desired state of TalosConfig
+         */
+        export interface TalosConfigSpecArgs {
+            data?: pulumi.Input<string>;
+            generateType: pulumi.Input<string>;
+        }
+
+        /**
+         * TalosConfigStatus defines the observed state of TalosConfig
+         */
+        export interface TalosConfigStatusArgs {
+            /**
+             * BootstrapData will be a slice of bootstrap data
+             */
+            bootstrapData?: pulumi.Input<string>;
+            /**
+             * ErrorMessage will be set on non-retryable errors
+             */
+            errorMessage?: pulumi.Input<string>;
+            /**
+             * ErrorReason will be set on non-retryable errors
+             */
+            errorReason?: pulumi.Input<string>;
+            /**
+             * Ready indicates the BootstrapData field is ready to be consumed
+             */
+            ready?: pulumi.Input<boolean>;
+            /**
+             * Talos config will be a string containing the config for download
+             */
+            talosConfig?: pulumi.Input<string>;
+        }
+
+        /**
+         * TalosConfigTemplateSpec defines the desired state of TalosConfigTemplate
+         */
+        export interface TalosConfigTemplateSpecArgs {
+            /**
+             * TalosConfigTemplateResource defines the Template structure
+             */
+            template: pulumi.Input<inputs.bootstrap.v1alpha2.TalosConfigTemplateSpecTemplateArgs>;
+        }
+
+        /**
+         * TalosConfigTemplateResource defines the Template structure
+         */
+        export interface TalosConfigTemplateSpecTemplateArgs {
+            /**
+             * TalosConfigSpec defines the desired state of TalosConfig
+             */
+            spec?: pulumi.Input<inputs.bootstrap.v1alpha2.TalosConfigTemplateSpecTemplateSpecArgs>;
+        }
+
+        /**
+         * TalosConfigSpec defines the desired state of TalosConfig
+         */
+        export interface TalosConfigTemplateSpecTemplateSpecArgs {
+            data?: pulumi.Input<string>;
+            generateType: pulumi.Input<string>;
+        }
+    }
+
+    export namespace v1alpha3 {
+        /**
+         * TalosConfigSpec defines the desired state of TalosConfig
+         */
+        export interface TalosConfigSpecArgs {
+            configPatches?: pulumi.Input<pulumi.Input<inputs.bootstrap.v1alpha3.TalosConfigSpecConfigPatchesArgs>[]>;
+            data?: pulumi.Input<string>;
+            generateType: pulumi.Input<string>;
+            /**
+             * Set hostname in the machine configuration to some value.
+             */
+            hostname?: pulumi.Input<inputs.bootstrap.v1alpha3.TalosConfigSpecHostnameArgs>;
+            talosVersion?: pulumi.Input<string>;
+        }
+
+        export interface TalosConfigSpecConfigPatchesArgs {
+            op: pulumi.Input<string>;
+            path: pulumi.Input<string>;
+            value?: pulumi.Input<{[key: string]: any}>;
+        }
+
+        /**
+         * Set hostname in the machine configuration to some value.
+         */
+        export interface TalosConfigSpecHostnameArgs {
+            /**
+             * Source of the hostname. 
+             *  Allowed values: "MachineName" (use linked Machine's Name).
+             */
+            source?: pulumi.Input<string>;
+        }
+
+        /**
+         * TalosConfigStatus defines the observed state of TalosConfig
+         */
+        export interface TalosConfigStatusArgs {
+            /**
+             * Conditions defines current service state of the TalosConfig.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.bootstrap.v1alpha3.TalosConfigStatusConditionsArgs>[]>;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script.
+             */
+            dataSecretName?: pulumi.Input<string>;
+            /**
+             * FailureMessage will be set on non-retryable errors
+             */
+            failureMessage?: pulumi.Input<string>;
+            /**
+             * FailureReason will be set on non-retryable errors
+             */
+            failureReason?: pulumi.Input<string>;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * Ready indicates the BootstrapData field is ready to be consumed
+             */
+            ready?: pulumi.Input<boolean>;
+            /**
+             * Talos config will be a string containing the config for download. 
+             *  Deprecated: please use `<cluster>-talosconfig` secret.
+             */
+            talosConfig?: pulumi.Input<string>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface TalosConfigStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * TalosConfigTemplateSpec defines the desired state of TalosConfigTemplate
+         */
+        export interface TalosConfigTemplateSpecArgs {
+            /**
+             * TalosConfigTemplateResource defines the Template structure
+             */
+            template: pulumi.Input<inputs.bootstrap.v1alpha3.TalosConfigTemplateSpecTemplateArgs>;
+        }
+
+        /**
+         * TalosConfigTemplateResource defines the Template structure
+         */
+        export interface TalosConfigTemplateSpecTemplateArgs {
+            /**
+             * TalosConfigSpec defines the desired state of TalosConfig
+             */
+            spec?: pulumi.Input<inputs.bootstrap.v1alpha3.TalosConfigTemplateSpecTemplateSpecArgs>;
+        }
+
+        /**
+         * TalosConfigSpec defines the desired state of TalosConfig
+         */
+        export interface TalosConfigTemplateSpecTemplateSpecArgs {
+            configPatches?: pulumi.Input<pulumi.Input<inputs.bootstrap.v1alpha3.TalosConfigTemplateSpecTemplateSpecConfigPatchesArgs>[]>;
+            data?: pulumi.Input<string>;
+            generateType: pulumi.Input<string>;
+            /**
+             * Set hostname in the machine configuration to some value.
+             */
+            hostname?: pulumi.Input<inputs.bootstrap.v1alpha3.TalosConfigTemplateSpecTemplateSpecHostnameArgs>;
+            talosVersion?: pulumi.Input<string>;
+        }
+
+        export interface TalosConfigTemplateSpecTemplateSpecConfigPatchesArgs {
+            op: pulumi.Input<string>;
+            path: pulumi.Input<string>;
+            value?: pulumi.Input<{[key: string]: any}>;
+        }
+
+        /**
+         * Set hostname in the machine configuration to some value.
+         */
+        export interface TalosConfigTemplateSpecTemplateSpecHostnameArgs {
+            /**
+             * Source of the hostname. 
+             *  Allowed values: "MachineName" (use linked Machine's Name).
+             */
+            source?: pulumi.Input<string>;
+        }
+    }
+}
+
 export namespace certmanager {
     export namespace v1 {
         /**
@@ -5268,6 +5969,10231 @@ export namespace certmanager {
              * Type of the condition, known values are (`Ready`).
              */
             type: pulumi.Input<string>;
+        }
+    }
+}
+
+export namespace cluster {
+    export namespace v1alpha3 {
+        /**
+         * ClusterSpec defines the desired state of Cluster.
+         */
+        export interface ClusterSpecArgs {
+            /**
+             * Cluster network configuration.
+             */
+            clusterNetwork?: pulumi.Input<inputs.cluster.v1alpha3.ClusterSpecClusterNetworkArgs>;
+            /**
+             * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+             */
+            controlPlaneEndpoint?: pulumi.Input<inputs.cluster.v1alpha3.ClusterSpecControlPlaneEndpointArgs>;
+            /**
+             * ControlPlaneRef is an optional reference to a provider-specific resource that holds the details for provisioning the Control Plane for a Cluster.
+             */
+            controlPlaneRef?: pulumi.Input<inputs.cluster.v1alpha3.ClusterSpecControlPlaneRefArgs>;
+            /**
+             * InfrastructureRef is a reference to a provider-specific resource that holds the details for provisioning infrastructure for a cluster in said provider.
+             */
+            infrastructureRef?: pulumi.Input<inputs.cluster.v1alpha3.ClusterSpecInfrastructureRefArgs>;
+            /**
+             * Paused can be used to prevent controllers from processing the Cluster and all its associated objects.
+             */
+            paused?: pulumi.Input<boolean>;
+        }
+
+        /**
+         * Cluster network configuration.
+         */
+        export interface ClusterSpecClusterNetworkArgs {
+            /**
+             * APIServerPort specifies the port the API Server should bind to. Defaults to 6443.
+             */
+            apiServerPort?: pulumi.Input<number>;
+            /**
+             * The network ranges from which Pod networks are allocated.
+             */
+            pods?: pulumi.Input<inputs.cluster.v1alpha3.ClusterSpecClusterNetworkPodsArgs>;
+            /**
+             * Domain name for services.
+             */
+            serviceDomain?: pulumi.Input<string>;
+            /**
+             * The network ranges from which service VIPs are allocated.
+             */
+            services?: pulumi.Input<inputs.cluster.v1alpha3.ClusterSpecClusterNetworkServicesArgs>;
+        }
+
+        /**
+         * The network ranges from which Pod networks are allocated.
+         */
+        export interface ClusterSpecClusterNetworkPodsArgs {
+            cidrBlocks: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * The network ranges from which service VIPs are allocated.
+         */
+        export interface ClusterSpecClusterNetworkServicesArgs {
+            cidrBlocks: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+         */
+        export interface ClusterSpecControlPlaneEndpointArgs {
+            /**
+             * The hostname on which the API server is serving.
+             */
+            host: pulumi.Input<string>;
+            /**
+             * The port on which the API server is serving.
+             */
+            port: pulumi.Input<number>;
+        }
+
+        /**
+         * ControlPlaneRef is an optional reference to a provider-specific resource that holds the details for provisioning the Control Plane for a Cluster.
+         */
+        export interface ClusterSpecControlPlaneRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * InfrastructureRef is a reference to a provider-specific resource that holds the details for provisioning infrastructure for a cluster in said provider.
+         */
+        export interface ClusterSpecInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * ClusterStatus defines the observed state of Cluster.
+         */
+        export interface ClusterStatusArgs {
+            /**
+             * Conditions defines current service state of the cluster.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha3.ClusterStatusConditionsArgs>[]>;
+            /**
+             * ControlPlaneInitialized defines if the control plane has been initialized.
+             */
+            controlPlaneInitialized?: pulumi.Input<boolean>;
+            /**
+             * ControlPlaneReady defines if the control plane is ready.
+             */
+            controlPlaneReady?: pulumi.Input<boolean>;
+            /**
+             * FailureDomains is a slice of failure domain objects synced from the infrastructure provider.
+             */
+            failureDomains?: pulumi.Input<{[key: string]: pulumi.Input<inputs.cluster.v1alpha3.ClusterStatusFailureDomainsArgs>}>;
+            /**
+             * FailureMessage indicates that there is a fatal problem reconciling the state, and will be set to a descriptive error message.
+             */
+            failureMessage?: pulumi.Input<string>;
+            /**
+             * FailureReason indicates that there is a fatal problem reconciling the state, and will be set to a token value suitable for programmatic interpretation.
+             */
+            failureReason?: pulumi.Input<string>;
+            /**
+             * InfrastructureReady is the state of the infrastructure provider.
+             */
+            infrastructureReady?: pulumi.Input<boolean>;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * Phase represents the current phase of cluster actuation. E.g. Pending, Running, Terminating, Failed etc.
+             */
+            phase?: pulumi.Input<string>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ClusterStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * FailureDomainSpec is the Schema for Cluster API failure domains. It allows controllers to understand how many failure domains a cluster can optionally span across.
+         */
+        export interface ClusterStatusFailureDomainsArgs {
+            /**
+             * Attributes is a free form map of attributes an infrastructure provider might use or require.
+             */
+            attributes?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * ControlPlane determines if this failure domain is suitable for use by control plane machines.
+             */
+            controlPlane?: pulumi.Input<boolean>;
+        }
+
+        /**
+         * MachineDeploymentSpec defines the desired state of MachineDeployment.
+         */
+        export interface MachineDeploymentSpecArgs {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * Minimum number of seconds for which a newly created machine should be ready. Defaults to 0 (machine will be considered available as soon as it is ready)
+             */
+            minReadySeconds?: pulumi.Input<number>;
+            /**
+             * Indicates that the deployment is paused.
+             */
+            paused?: pulumi.Input<boolean>;
+            /**
+             * The maximum time in seconds for a deployment to make progress before it is considered to be failed. The deployment controller will continue to process failed deployments and a condition with a ProgressDeadlineExceeded reason will be surfaced in the deployment status. Note that progress will not be estimated during the time a deployment is paused. Defaults to 600s.
+             */
+            progressDeadlineSeconds?: pulumi.Input<number>;
+            /**
+             * Number of desired machines. Defaults to 1. This is a pointer to distinguish between explicit zero and not specified.
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * The number of old MachineSets to retain to allow rollback. This is a pointer to distinguish between explicit zero and not specified. Defaults to 1.
+             */
+            revisionHistoryLimit?: pulumi.Input<number>;
+            /**
+             * Label selector for machines. Existing MachineSets whose machines are selected by this will be the ones affected by this deployment. It must match the machine template's labels.
+             */
+            selector: pulumi.Input<inputs.cluster.v1alpha3.MachineDeploymentSpecSelectorArgs>;
+            /**
+             * The deployment strategy to use to replace existing machines with new ones.
+             */
+            strategy?: pulumi.Input<inputs.cluster.v1alpha3.MachineDeploymentSpecStrategyArgs>;
+            /**
+             * Template describes the machines that will be created.
+             */
+            template: pulumi.Input<inputs.cluster.v1alpha3.MachineDeploymentSpecTemplateArgs>;
+        }
+
+        /**
+         * Label selector for machines. Existing MachineSets whose machines are selected by this will be the ones affected by this deployment. It must match the machine template's labels.
+         */
+        export interface MachineDeploymentSpecSelectorArgs {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha3.MachineDeploymentSpecSelectorMatchExpressionsArgs>[]>;
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface MachineDeploymentSpecSelectorMatchExpressionsArgs {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: pulumi.Input<string>;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: pulumi.Input<string>;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * The deployment strategy to use to replace existing machines with new ones.
+         */
+        export interface MachineDeploymentSpecStrategyArgs {
+            /**
+             * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+             */
+            rollingUpdate?: pulumi.Input<inputs.cluster.v1alpha3.MachineDeploymentSpecStrategyRollingUpdateArgs>;
+            /**
+             * Type of deployment. Currently the only supported strategy is "RollingUpdate". Default is RollingUpdate.
+             */
+            type?: pulumi.Input<string>;
+        }
+
+        /**
+         * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+         */
+        export interface MachineDeploymentSpecStrategyRollingUpdateArgs {
+            /**
+             * The maximum number of machines that can be scheduled above the desired number of machines. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up. Defaults to 1. Example: when this is set to 30%, the new MachineSet can be scaled up immediately when the rolling update starts, such that the total number of old and new machines do not exceed 130% of desired machines. Once old machines have been killed, new MachineSet can be scaled up further, ensuring that total number of machines running at any time during the update is at most 130% of desired machines.
+             */
+            maxSurge?: pulumi.Input<number | string>;
+            /**
+             * The maximum number of machines that can be unavailable during the update. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). Absolute number is calculated from percentage by rounding down. This can not be 0 if MaxSurge is 0. Defaults to 0. Example: when this is set to 30%, the old MachineSet can be scaled down to 70% of desired machines immediately when the rolling update starts. Once new machines are ready, old MachineSet can be scaled down further, followed by scaling up the new MachineSet, ensuring that the total number of machines available at all times during the update is at least 70% of desired machines.
+             */
+            maxUnavailable?: pulumi.Input<number | string>;
+        }
+
+        /**
+         * Template describes the machines that will be created.
+         */
+        export interface MachineDeploymentSpecTemplateArgs {
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata?: pulumi.Input<inputs.cluster.v1alpha3.MachineDeploymentSpecTemplateMetadataArgs>;
+            /**
+             * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+             */
+            spec?: pulumi.Input<inputs.cluster.v1alpha3.MachineDeploymentSpecTemplateSpecArgs>;
+        }
+
+        /**
+         * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface MachineDeploymentSpecTemplateMetadataArgs {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server. 
+             *  If this field is specified and the generated name exists, the server will NOT return a 409 - instead, it will either return 201 Created or 500 with Reason ServerTimeout indicating a unique name could not be found in the time allotted, and the client should retry (optionally after the time indicated in the Retry-After header). 
+             *  Applied only if Name is not specified. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            generateName?: pulumi.Input<string>;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * Name must be unique within a namespace. Is required when creating resources, although some resources may allow a client to request the generation of an appropriate name automatically. Name is primarily intended for creation idempotence and configuration definition. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/identifiers#names 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace defines the space within each name must be unique. An empty namespace is equivalent to the "default" namespace, but "default" is the canonical representation. Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty. 
+             *  Must be a DNS_LABEL. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/namespaces 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * List of objects depended by this object. If ALL objects in the list have been deleted, this object will be garbage collected. If this object is managed by a controller, then an entry in this list will point to this controller, with the controller field set to true. There cannot be more than one managing controller. 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            ownerReferences?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha3.MachineDeploymentSpecTemplateMetadataOwnerReferencesArgs>[]>;
+        }
+
+        /**
+         * OwnerReference contains enough information to let you identify an owning object. An owning object must be in the same namespace as the dependent, or be cluster-scoped, so there is no namespace field.
+         */
+        export interface MachineDeploymentSpecTemplateMetadataOwnerReferencesArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion: pulumi.Input<string>;
+            /**
+             * If true, AND if the owner has the "foregroundDeletion" finalizer, then the owner cannot be deleted from the key-value store until this reference is removed. See https://kubernetes.io/docs/concepts/architecture/garbage-collection/#foreground-deletion for how the garbage collector interacts with this field and enforces the foreground deletion. Defaults to false. To set this field, a user needs "delete" permission of the owner, otherwise 422 (Unprocessable Entity) will be returned.
+             */
+            blockOwnerDeletion?: pulumi.Input<boolean>;
+            /**
+             * If true, this reference points to the managing controller.
+             */
+            controller?: pulumi.Input<boolean>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names
+             */
+            name: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids
+             */
+            uid: pulumi.Input<string>;
+        }
+
+        /**
+         * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+         */
+        export interface MachineDeploymentSpecTemplateSpecArgs {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: pulumi.Input<inputs.cluster.v1alpha3.MachineDeploymentSpecTemplateSpecBootstrapArgs>;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: pulumi.Input<string>;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: pulumi.Input<inputs.cluster.v1alpha3.MachineDeploymentSpecTemplateSpecInfrastructureRefArgs>;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: pulumi.Input<string>;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: pulumi.Input<string>;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: pulumi.Input<string>;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachineDeploymentSpecTemplateSpecBootstrapArgs {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.Data without the need of a controller.
+             */
+            configRef?: pulumi.Input<inputs.cluster.v1alpha3.MachineDeploymentSpecTemplateSpecBootstrapConfigRefArgs>;
+            /**
+             * Data contains the bootstrap data, such as cloud-init details scripts. If nil, the Machine should remain in the Pending state. 
+             *  Deprecated: Switch to DataSecretName.
+             */
+            data?: pulumi.Input<string>;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: pulumi.Input<string>;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.Data without the need of a controller.
+         */
+        export interface MachineDeploymentSpecTemplateSpecBootstrapConfigRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachineDeploymentSpecTemplateSpecInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * MachineDeploymentStatus defines the observed state of MachineDeployment.
+         */
+        export interface MachineDeploymentStatusArgs {
+            /**
+             * Total number of available machines (ready for at least minReadySeconds) targeted by this deployment.
+             */
+            availableReplicas?: pulumi.Input<number>;
+            /**
+             * The generation observed by the deployment controller.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * Phase represents the current phase of a MachineDeployment (ScalingUp, ScalingDown, Running, Failed, or Unknown).
+             */
+            phase?: pulumi.Input<string>;
+            /**
+             * Total number of ready machines targeted by this deployment.
+             */
+            readyReplicas?: pulumi.Input<number>;
+            /**
+             * Total number of non-terminated machines targeted by this deployment (their labels match the selector).
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * Selector is the same as the label selector but in the string format to avoid introspection by clients. The string will be in the same format as the query-param syntax. More info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors
+             */
+            selector?: pulumi.Input<string>;
+            /**
+             * Total number of unavailable machines targeted by this deployment. This is the total number of machines that are still required for the deployment to have 100% available capacity. They may either be machines that are running but not yet available or machines that still have not been created.
+             */
+            unavailableReplicas?: pulumi.Input<number>;
+            /**
+             * Total number of non-terminated machines targeted by this deployment that have the desired template spec.
+             */
+            updatedReplicas?: pulumi.Input<number>;
+        }
+
+        /**
+         * Specification of machine health check policy
+         */
+        export interface MachineHealthCheckSpecArgs {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by "selector" are not healthy.
+             */
+            maxUnhealthy?: pulumi.Input<number | string>;
+            /**
+             * Machines older than this duration without a node will be considered to have failed and will be remediated.
+             */
+            nodeStartupTimeout?: pulumi.Input<string>;
+            /**
+             * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+             *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+             */
+            remediationTemplate?: pulumi.Input<inputs.cluster.v1alpha3.MachineHealthCheckSpecRemediationTemplateArgs>;
+            /**
+             * Label selector to match machines whose health will be exercised
+             */
+            selector: pulumi.Input<inputs.cluster.v1alpha3.MachineHealthCheckSpecSelectorArgs>;
+            /**
+             * UnhealthyConditions contains a list of the conditions that determine whether a node is considered unhealthy.  The conditions are combined in a logical OR, i.e. if any of the conditions is met, the node is unhealthy.
+             */
+            unhealthyConditions: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha3.MachineHealthCheckSpecUnhealthyConditionsArgs>[]>;
+        }
+
+        /**
+         * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+         *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+         */
+        export interface MachineHealthCheckSpecRemediationTemplateArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * Label selector to match machines whose health will be exercised
+         */
+        export interface MachineHealthCheckSpecSelectorArgs {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha3.MachineHealthCheckSpecSelectorMatchExpressionsArgs>[]>;
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface MachineHealthCheckSpecSelectorMatchExpressionsArgs {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: pulumi.Input<string>;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: pulumi.Input<string>;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * UnhealthyCondition represents a Node condition type and value with a timeout specified as a duration.  When the named condition has been in the given status for at least the timeout value, a node is considered unhealthy.
+         */
+        export interface MachineHealthCheckSpecUnhealthyConditionsArgs {
+            status: pulumi.Input<string>;
+            timeout: pulumi.Input<string>;
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * Most recently observed status of MachineHealthCheck resource
+         */
+        export interface MachineHealthCheckStatusArgs {
+            /**
+             * Conditions defines current service state of the MachineHealthCheck.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha3.MachineHealthCheckStatusConditionsArgs>[]>;
+            /**
+             * total number of healthy machines counted by this machine health check
+             */
+            currentHealthy?: pulumi.Input<number>;
+            /**
+             * total number of machines counted by this machine health check
+             */
+            expectedMachines?: pulumi.Input<number>;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * RemediationsAllowed is the number of further remediations allowed by this machine health check before maxUnhealthy short circuiting will be applied
+             */
+            remediationsAllowed?: pulumi.Input<number>;
+            /**
+             * Targets shows the current list of machines the machine health check is watching
+             */
+            targets?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachineHealthCheckStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * MachinePoolSpec defines the desired state of MachinePool.
+         */
+        export interface MachinePoolSpecArgs {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * FailureDomains is the list of failure domains this MachinePool should be attached to.
+             */
+            failureDomains?: pulumi.Input<pulumi.Input<string>[]>;
+            /**
+             * Minimum number of seconds for which a newly created machine instances should be ready. Defaults to 0 (machine instance will be considered available as soon as it is ready)
+             */
+            minReadySeconds?: pulumi.Input<number>;
+            /**
+             * ProviderIDList are the identification IDs of machine instances provided by the provider. This field must match the provider IDs as seen on the node objects corresponding to a machine pool's machine instances.
+             */
+            providerIDList?: pulumi.Input<pulumi.Input<string>[]>;
+            /**
+             * Number of desired machines. Defaults to 1. This is a pointer to distinguish between explicit zero and not specified.
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * The deployment strategy to use to replace existing machine instances with new ones.
+             */
+            strategy?: pulumi.Input<inputs.cluster.v1alpha3.MachinePoolSpecStrategyArgs>;
+            /**
+             * Template describes the machines that will be created.
+             */
+            template: pulumi.Input<inputs.cluster.v1alpha3.MachinePoolSpecTemplateArgs>;
+        }
+
+        /**
+         * The deployment strategy to use to replace existing machine instances with new ones.
+         */
+        export interface MachinePoolSpecStrategyArgs {
+            /**
+             * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+             */
+            rollingUpdate?: pulumi.Input<inputs.cluster.v1alpha3.MachinePoolSpecStrategyRollingUpdateArgs>;
+            /**
+             * Type of deployment. Currently the only supported strategy is "RollingUpdate". Default is RollingUpdate.
+             */
+            type?: pulumi.Input<string>;
+        }
+
+        /**
+         * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+         */
+        export interface MachinePoolSpecStrategyRollingUpdateArgs {
+            /**
+             * The maximum number of machines that can be scheduled above the desired number of machines. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up. Defaults to 1. Example: when this is set to 30%, the new MachineSet can be scaled up immediately when the rolling update starts, such that the total number of old and new machines do not exceed 130% of desired machines. Once old machines have been killed, new MachineSet can be scaled up further, ensuring that total number of machines running at any time during the update is at most 130% of desired machines.
+             */
+            maxSurge?: pulumi.Input<number | string>;
+            /**
+             * The maximum number of machines that can be unavailable during the update. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). Absolute number is calculated from percentage by rounding down. This can not be 0 if MaxSurge is 0. Defaults to 0. Example: when this is set to 30%, the old MachineSet can be scaled down to 70% of desired machines immediately when the rolling update starts. Once new machines are ready, old MachineSet can be scaled down further, followed by scaling up the new MachineSet, ensuring that the total number of machines available at all times during the update is at least 70% of desired machines.
+             */
+            maxUnavailable?: pulumi.Input<number | string>;
+        }
+
+        /**
+         * Template describes the machines that will be created.
+         */
+        export interface MachinePoolSpecTemplateArgs {
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata?: pulumi.Input<inputs.cluster.v1alpha3.MachinePoolSpecTemplateMetadataArgs>;
+            /**
+             * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+             */
+            spec?: pulumi.Input<inputs.cluster.v1alpha3.MachinePoolSpecTemplateSpecArgs>;
+        }
+
+        /**
+         * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface MachinePoolSpecTemplateMetadataArgs {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server. 
+             *  If this field is specified and the generated name exists, the server will NOT return a 409 - instead, it will either return 201 Created or 500 with Reason ServerTimeout indicating a unique name could not be found in the time allotted, and the client should retry (optionally after the time indicated in the Retry-After header). 
+             *  Applied only if Name is not specified. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            generateName?: pulumi.Input<string>;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * Name must be unique within a namespace. Is required when creating resources, although some resources may allow a client to request the generation of an appropriate name automatically. Name is primarily intended for creation idempotence and configuration definition. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/identifiers#names 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace defines the space within each name must be unique. An empty namespace is equivalent to the "default" namespace, but "default" is the canonical representation. Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty. 
+             *  Must be a DNS_LABEL. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/namespaces 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * List of objects depended by this object. If ALL objects in the list have been deleted, this object will be garbage collected. If this object is managed by a controller, then an entry in this list will point to this controller, with the controller field set to true. There cannot be more than one managing controller. 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            ownerReferences?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha3.MachinePoolSpecTemplateMetadataOwnerReferencesArgs>[]>;
+        }
+
+        /**
+         * OwnerReference contains enough information to let you identify an owning object. An owning object must be in the same namespace as the dependent, or be cluster-scoped, so there is no namespace field.
+         */
+        export interface MachinePoolSpecTemplateMetadataOwnerReferencesArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion: pulumi.Input<string>;
+            /**
+             * If true, AND if the owner has the "foregroundDeletion" finalizer, then the owner cannot be deleted from the key-value store until this reference is removed. See https://kubernetes.io/docs/concepts/architecture/garbage-collection/#foreground-deletion for how the garbage collector interacts with this field and enforces the foreground deletion. Defaults to false. To set this field, a user needs "delete" permission of the owner, otherwise 422 (Unprocessable Entity) will be returned.
+             */
+            blockOwnerDeletion?: pulumi.Input<boolean>;
+            /**
+             * If true, this reference points to the managing controller.
+             */
+            controller?: pulumi.Input<boolean>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names
+             */
+            name: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids
+             */
+            uid: pulumi.Input<string>;
+        }
+
+        /**
+         * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+         */
+        export interface MachinePoolSpecTemplateSpecArgs {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: pulumi.Input<inputs.cluster.v1alpha3.MachinePoolSpecTemplateSpecBootstrapArgs>;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: pulumi.Input<string>;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: pulumi.Input<inputs.cluster.v1alpha3.MachinePoolSpecTemplateSpecInfrastructureRefArgs>;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: pulumi.Input<string>;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: pulumi.Input<string>;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: pulumi.Input<string>;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachinePoolSpecTemplateSpecBootstrapArgs {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.Data without the need of a controller.
+             */
+            configRef?: pulumi.Input<inputs.cluster.v1alpha3.MachinePoolSpecTemplateSpecBootstrapConfigRefArgs>;
+            /**
+             * Data contains the bootstrap data, such as cloud-init details scripts. If nil, the Machine should remain in the Pending state. 
+             *  Deprecated: Switch to DataSecretName.
+             */
+            data?: pulumi.Input<string>;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: pulumi.Input<string>;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.Data without the need of a controller.
+         */
+        export interface MachinePoolSpecTemplateSpecBootstrapConfigRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachinePoolSpecTemplateSpecInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * MachinePoolStatus defines the observed state of MachinePool.
+         */
+        export interface MachinePoolStatusArgs {
+            /**
+             * The number of available replicas (ready for at least minReadySeconds) for this MachinePool.
+             */
+            availableReplicas?: pulumi.Input<number>;
+            /**
+             * BootstrapReady is the state of the bootstrap provider.
+             */
+            bootstrapReady?: pulumi.Input<boolean>;
+            /**
+             * Conditions define the current service state of the MachinePool.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha3.MachinePoolStatusConditionsArgs>[]>;
+            /**
+             * FailureMessage indicates that there is a problem reconciling the state, and will be set to a descriptive error message.
+             */
+            failureMessage?: pulumi.Input<string>;
+            /**
+             * FailureReason indicates that there is a problem reconciling the state, and will be set to a token value suitable for programmatic interpretation.
+             */
+            failureReason?: pulumi.Input<string>;
+            /**
+             * InfrastructureReady is the state of the infrastructure provider.
+             */
+            infrastructureReady?: pulumi.Input<boolean>;
+            /**
+             * NodeRefs will point to the corresponding Nodes if it they exist.
+             */
+            nodeRefs?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha3.MachinePoolStatusNodeRefsArgs>[]>;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * Phase represents the current phase of cluster actuation. E.g. Pending, Running, Terminating, Failed etc.
+             */
+            phase?: pulumi.Input<string>;
+            /**
+             * The number of ready replicas for this MachinePool. A machine is considered ready when the node has been created and is "Ready".
+             */
+            readyReplicas?: pulumi.Input<number>;
+            /**
+             * Replicas is the most recently observed number of replicas.
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * Total number of unavailable machine instances targeted by this machine pool. This is the total number of machine instances that are still required for the machine pool to have 100% available capacity. They may either be machine instances that are running but not yet available or machine instances that still have not been created.
+             */
+            unavailableReplicas?: pulumi.Input<number>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachinePoolStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface MachinePoolStatusNodeRefsArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * MachineSetSpec defines the desired state of MachineSet.
+         */
+        export interface MachineSetSpecArgs {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * DeletePolicy defines the policy used to identify nodes to delete when downscaling. Defaults to "Random".  Valid values are "Random, "Newest", "Oldest"
+             */
+            deletePolicy?: pulumi.Input<string>;
+            /**
+             * MinReadySeconds is the minimum number of seconds for which a newly created machine should be ready. Defaults to 0 (machine will be considered available as soon as it is ready)
+             */
+            minReadySeconds?: pulumi.Input<number>;
+            /**
+             * Replicas is the number of desired replicas. This is a pointer to distinguish between explicit zero and unspecified. Defaults to 1.
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * Selector is a label query over machines that should match the replica count. Label keys and values that must match in order to be controlled by this MachineSet. It must match the machine template's labels. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
+             */
+            selector: pulumi.Input<inputs.cluster.v1alpha3.MachineSetSpecSelectorArgs>;
+            /**
+             * Template is the object that describes the machine that will be created if insufficient replicas are detected. Object references to custom resources are treated as templates.
+             */
+            template?: pulumi.Input<inputs.cluster.v1alpha3.MachineSetSpecTemplateArgs>;
+        }
+
+        /**
+         * Selector is a label query over machines that should match the replica count. Label keys and values that must match in order to be controlled by this MachineSet. It must match the machine template's labels. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
+         */
+        export interface MachineSetSpecSelectorArgs {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha3.MachineSetSpecSelectorMatchExpressionsArgs>[]>;
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface MachineSetSpecSelectorMatchExpressionsArgs {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: pulumi.Input<string>;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: pulumi.Input<string>;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * Template is the object that describes the machine that will be created if insufficient replicas are detected. Object references to custom resources are treated as templates.
+         */
+        export interface MachineSetSpecTemplateArgs {
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata?: pulumi.Input<inputs.cluster.v1alpha3.MachineSetSpecTemplateMetadataArgs>;
+            /**
+             * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+             */
+            spec?: pulumi.Input<inputs.cluster.v1alpha3.MachineSetSpecTemplateSpecArgs>;
+        }
+
+        /**
+         * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface MachineSetSpecTemplateMetadataArgs {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server. 
+             *  If this field is specified and the generated name exists, the server will NOT return a 409 - instead, it will either return 201 Created or 500 with Reason ServerTimeout indicating a unique name could not be found in the time allotted, and the client should retry (optionally after the time indicated in the Retry-After header). 
+             *  Applied only if Name is not specified. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            generateName?: pulumi.Input<string>;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * Name must be unique within a namespace. Is required when creating resources, although some resources may allow a client to request the generation of an appropriate name automatically. Name is primarily intended for creation idempotence and configuration definition. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/identifiers#names 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace defines the space within each name must be unique. An empty namespace is equivalent to the "default" namespace, but "default" is the canonical representation. Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty. 
+             *  Must be a DNS_LABEL. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/namespaces 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * List of objects depended by this object. If ALL objects in the list have been deleted, this object will be garbage collected. If this object is managed by a controller, then an entry in this list will point to this controller, with the controller field set to true. There cannot be more than one managing controller. 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            ownerReferences?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha3.MachineSetSpecTemplateMetadataOwnerReferencesArgs>[]>;
+        }
+
+        /**
+         * OwnerReference contains enough information to let you identify an owning object. An owning object must be in the same namespace as the dependent, or be cluster-scoped, so there is no namespace field.
+         */
+        export interface MachineSetSpecTemplateMetadataOwnerReferencesArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion: pulumi.Input<string>;
+            /**
+             * If true, AND if the owner has the "foregroundDeletion" finalizer, then the owner cannot be deleted from the key-value store until this reference is removed. See https://kubernetes.io/docs/concepts/architecture/garbage-collection/#foreground-deletion for how the garbage collector interacts with this field and enforces the foreground deletion. Defaults to false. To set this field, a user needs "delete" permission of the owner, otherwise 422 (Unprocessable Entity) will be returned.
+             */
+            blockOwnerDeletion?: pulumi.Input<boolean>;
+            /**
+             * If true, this reference points to the managing controller.
+             */
+            controller?: pulumi.Input<boolean>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names
+             */
+            name: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids
+             */
+            uid: pulumi.Input<string>;
+        }
+
+        /**
+         * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+         */
+        export interface MachineSetSpecTemplateSpecArgs {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: pulumi.Input<inputs.cluster.v1alpha3.MachineSetSpecTemplateSpecBootstrapArgs>;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: pulumi.Input<string>;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: pulumi.Input<inputs.cluster.v1alpha3.MachineSetSpecTemplateSpecInfrastructureRefArgs>;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: pulumi.Input<string>;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: pulumi.Input<string>;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: pulumi.Input<string>;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachineSetSpecTemplateSpecBootstrapArgs {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.Data without the need of a controller.
+             */
+            configRef?: pulumi.Input<inputs.cluster.v1alpha3.MachineSetSpecTemplateSpecBootstrapConfigRefArgs>;
+            /**
+             * Data contains the bootstrap data, such as cloud-init details scripts. If nil, the Machine should remain in the Pending state. 
+             *  Deprecated: Switch to DataSecretName.
+             */
+            data?: pulumi.Input<string>;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: pulumi.Input<string>;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.Data without the need of a controller.
+         */
+        export interface MachineSetSpecTemplateSpecBootstrapConfigRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachineSetSpecTemplateSpecInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * MachineSetStatus defines the observed state of MachineSet.
+         */
+        export interface MachineSetStatusArgs {
+            /**
+             * The number of available replicas (ready for at least minReadySeconds) for this MachineSet.
+             */
+            availableReplicas?: pulumi.Input<number>;
+            failureMessage?: pulumi.Input<string>;
+            /**
+             * In the event that there is a terminal problem reconciling the replicas, both FailureReason and FailureMessage will be set. FailureReason will be populated with a succinct value suitable for machine interpretation, while FailureMessage will contain a more verbose string suitable for logging and human consumption. 
+             *  These fields should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the MachineTemplate's spec or the configuration of the machine controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the machine controller, or the responsible machine controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the MachineSet object and/or logged in the controller's output.
+             */
+            failureReason?: pulumi.Input<string>;
+            /**
+             * The number of replicas that have labels matching the labels of the machine template of the MachineSet.
+             */
+            fullyLabeledReplicas?: pulumi.Input<number>;
+            /**
+             * ObservedGeneration reflects the generation of the most recently observed MachineSet.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * The number of ready replicas for this MachineSet. A machine is considered ready when the node has been created and is "Ready".
+             */
+            readyReplicas?: pulumi.Input<number>;
+            /**
+             * Replicas is the most recently observed number of replicas.
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * Selector is the same as the label selector but in the string format to avoid introspection by clients. The string will be in the same format as the query-param syntax. More info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors
+             */
+            selector?: pulumi.Input<string>;
+        }
+
+        /**
+         * MachineSpec defines the desired state of Machine.
+         */
+        export interface MachineSpecArgs {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: pulumi.Input<inputs.cluster.v1alpha3.MachineSpecBootstrapArgs>;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: pulumi.Input<string>;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: pulumi.Input<inputs.cluster.v1alpha3.MachineSpecInfrastructureRefArgs>;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: pulumi.Input<string>;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: pulumi.Input<string>;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: pulumi.Input<string>;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachineSpecBootstrapArgs {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.Data without the need of a controller.
+             */
+            configRef?: pulumi.Input<inputs.cluster.v1alpha3.MachineSpecBootstrapConfigRefArgs>;
+            /**
+             * Data contains the bootstrap data, such as cloud-init details scripts. If nil, the Machine should remain in the Pending state. 
+             *  Deprecated: Switch to DataSecretName.
+             */
+            data?: pulumi.Input<string>;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: pulumi.Input<string>;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.Data without the need of a controller.
+         */
+        export interface MachineSpecBootstrapConfigRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachineSpecInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * MachineStatus defines the observed state of Machine.
+         */
+        export interface MachineStatusArgs {
+            /**
+             * Addresses is a list of addresses assigned to the machine. This field is copied from the infrastructure provider reference.
+             */
+            addresses?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha3.MachineStatusAddressesArgs>[]>;
+            /**
+             * BootstrapReady is the state of the bootstrap provider.
+             */
+            bootstrapReady?: pulumi.Input<boolean>;
+            /**
+             * Conditions defines current service state of the Machine.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha3.MachineStatusConditionsArgs>[]>;
+            /**
+             * FailureMessage will be set in the event that there is a terminal problem reconciling the Machine and will contain a more verbose string suitable for logging and human consumption. 
+             *  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+             */
+            failureMessage?: pulumi.Input<string>;
+            /**
+             * FailureReason will be set in the event that there is a terminal problem reconciling the Machine and will contain a succinct value suitable for machine interpretation. 
+             *  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+             */
+            failureReason?: pulumi.Input<string>;
+            /**
+             * InfrastructureReady is the state of the infrastructure provider.
+             */
+            infrastructureReady?: pulumi.Input<boolean>;
+            /**
+             * LastUpdated identifies when the phase of the Machine last transitioned.
+             */
+            lastUpdated?: pulumi.Input<string>;
+            /**
+             * NodeRef will point to the corresponding Node if it exists.
+             */
+            nodeRef?: pulumi.Input<inputs.cluster.v1alpha3.MachineStatusNodeRefArgs>;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * Phase represents the current phase of machine actuation. E.g. Pending, Running, Terminating, Failed etc.
+             */
+            phase?: pulumi.Input<string>;
+            /**
+             * Version specifies the current version of Kubernetes running on the corresponding Node. This is meant to be a means of bubbling up status from the Node to the Machine. It is entirely optional, but useful for end-user UX if it’s present.
+             */
+            version?: pulumi.Input<string>;
+        }
+
+        /**
+         * MachineAddress contains information for the node's address.
+         */
+        export interface MachineStatusAddressesArgs {
+            /**
+             * The machine address.
+             */
+            address: pulumi.Input<string>;
+            /**
+             * Machine address type, one of Hostname, ExternalIP or InternalIP.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachineStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * NodeRef will point to the corresponding Node if it exists.
+         */
+        export interface MachineStatusNodeRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+    }
+
+    export namespace v1alpha4 {
+        /**
+         * ClusterClassSpec describes the desired state of the ClusterClass.
+         */
+        export interface ClusterClassSpecArgs {
+            /**
+             * ControlPlane is a reference to a local struct that holds the details for provisioning the Control Plane for the Cluster.
+             */
+            controlPlane?: pulumi.Input<inputs.cluster.v1alpha4.ClusterClassSpecControlPlaneArgs>;
+            /**
+             * Infrastructure is a reference to a provider-specific template that holds the details for provisioning infrastructure specific cluster for the underlying provider. The underlying provider is responsible for the implementation of the template to an infrastructure cluster.
+             */
+            infrastructure?: pulumi.Input<inputs.cluster.v1alpha4.ClusterClassSpecInfrastructureArgs>;
+            /**
+             * Workers describes the worker nodes for the cluster. It is a collection of node types which can be used to create the worker nodes of the cluster.
+             */
+            workers?: pulumi.Input<inputs.cluster.v1alpha4.ClusterClassSpecWorkersArgs>;
+        }
+
+        /**
+         * ControlPlane is a reference to a local struct that holds the details for provisioning the Control Plane for the Cluster.
+         */
+        export interface ClusterClassSpecControlPlaneArgs {
+            /**
+             * MachineTemplate defines the metadata and infrastructure information for control plane machines. 
+             *  This field is supported if and only if the control plane provider template referenced above is Machine based and supports setting replicas.
+             */
+            machineInfrastructure?: pulumi.Input<inputs.cluster.v1alpha4.ClusterClassSpecControlPlaneMachineInfrastructureArgs>;
+            /**
+             * Metadata is the metadata applied to the machines of the ControlPlane. At runtime this metadata is merged with the corresponding metadata from the topology. 
+             *  This field is supported if and only if the control plane provider template referenced is Machine based.
+             */
+            metadata?: pulumi.Input<inputs.cluster.v1alpha4.ClusterClassSpecControlPlaneMetadataArgs>;
+            /**
+             * Ref is a required reference to a custom resource offered by a provider.
+             */
+            ref: pulumi.Input<inputs.cluster.v1alpha4.ClusterClassSpecControlPlaneRefArgs>;
+        }
+
+        /**
+         * MachineTemplate defines the metadata and infrastructure information for control plane machines. 
+         *  This field is supported if and only if the control plane provider template referenced above is Machine based and supports setting replicas.
+         */
+        export interface ClusterClassSpecControlPlaneMachineInfrastructureArgs {
+            /**
+             * Ref is a required reference to a custom resource offered by a provider.
+             */
+            ref: pulumi.Input<inputs.cluster.v1alpha4.ClusterClassSpecControlPlaneMachineInfrastructureRefArgs>;
+        }
+
+        /**
+         * Ref is a required reference to a custom resource offered by a provider.
+         */
+        export interface ClusterClassSpecControlPlaneMachineInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * Metadata is the metadata applied to the machines of the ControlPlane. At runtime this metadata is merged with the corresponding metadata from the topology. 
+         *  This field is supported if and only if the control plane provider template referenced is Machine based.
+         */
+        export interface ClusterClassSpecControlPlaneMetadataArgs {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * Ref is a required reference to a custom resource offered by a provider.
+         */
+        export interface ClusterClassSpecControlPlaneRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * Infrastructure is a reference to a provider-specific template that holds the details for provisioning infrastructure specific cluster for the underlying provider. The underlying provider is responsible for the implementation of the template to an infrastructure cluster.
+         */
+        export interface ClusterClassSpecInfrastructureArgs {
+            /**
+             * Ref is a required reference to a custom resource offered by a provider.
+             */
+            ref: pulumi.Input<inputs.cluster.v1alpha4.ClusterClassSpecInfrastructureRefArgs>;
+        }
+
+        /**
+         * Ref is a required reference to a custom resource offered by a provider.
+         */
+        export interface ClusterClassSpecInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * Workers describes the worker nodes for the cluster. It is a collection of node types which can be used to create the worker nodes of the cluster.
+         */
+        export interface ClusterClassSpecWorkersArgs {
+            /**
+             * MachineDeployments is a list of machine deployment classes that can be used to create a set of worker nodes.
+             */
+            machineDeployments?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha4.ClusterClassSpecWorkersMachineDeploymentsArgs>[]>;
+        }
+
+        /**
+         * MachineDeploymentClass serves as a template to define a set of worker nodes of the cluster provisioned using the `ClusterClass`.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsArgs {
+            /**
+             * Class denotes a type of worker node present in the cluster, this name MUST be unique within a ClusterClass and can be referenced in the Cluster to create a managed MachineDeployment.
+             */
+            class: pulumi.Input<string>;
+            /**
+             * Template is a local struct containing a collection of templates for creation of MachineDeployment objects representing a set of worker nodes.
+             */
+            template: pulumi.Input<inputs.cluster.v1alpha4.ClusterClassSpecWorkersMachineDeploymentsTemplateArgs>;
+        }
+
+        /**
+         * Template is a local struct containing a collection of templates for creation of MachineDeployment objects representing a set of worker nodes.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateArgs {
+            /**
+             * Bootstrap contains the bootstrap template reference to be used for the creation of worker Machines.
+             */
+            bootstrap: pulumi.Input<inputs.cluster.v1alpha4.ClusterClassSpecWorkersMachineDeploymentsTemplateBootstrapArgs>;
+            /**
+             * Infrastructure contains the infrastructure template reference to be used for the creation of worker Machines.
+             */
+            infrastructure: pulumi.Input<inputs.cluster.v1alpha4.ClusterClassSpecWorkersMachineDeploymentsTemplateInfrastructureArgs>;
+            /**
+             * Metadata is the metadata applied to the machines of the MachineDeployment. At runtime this metadata is merged with the corresponding metadata from the topology.
+             */
+            metadata?: pulumi.Input<inputs.cluster.v1alpha4.ClusterClassSpecWorkersMachineDeploymentsTemplateMetadataArgs>;
+        }
+
+        /**
+         * Bootstrap contains the bootstrap template reference to be used for the creation of worker Machines.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateBootstrapArgs {
+            /**
+             * Ref is a required reference to a custom resource offered by a provider.
+             */
+            ref: pulumi.Input<inputs.cluster.v1alpha4.ClusterClassSpecWorkersMachineDeploymentsTemplateBootstrapRefArgs>;
+        }
+
+        /**
+         * Ref is a required reference to a custom resource offered by a provider.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateBootstrapRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * Infrastructure contains the infrastructure template reference to be used for the creation of worker Machines.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateInfrastructureArgs {
+            /**
+             * Ref is a required reference to a custom resource offered by a provider.
+             */
+            ref: pulumi.Input<inputs.cluster.v1alpha4.ClusterClassSpecWorkersMachineDeploymentsTemplateInfrastructureRefArgs>;
+        }
+
+        /**
+         * Ref is a required reference to a custom resource offered by a provider.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * Metadata is the metadata applied to the machines of the MachineDeployment. At runtime this metadata is merged with the corresponding metadata from the topology.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateMetadataArgs {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * ClusterSpec defines the desired state of Cluster.
+         */
+        export interface ClusterSpecArgs {
+            /**
+             * Cluster network configuration.
+             */
+            clusterNetwork?: pulumi.Input<inputs.cluster.v1alpha4.ClusterSpecClusterNetworkArgs>;
+            /**
+             * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+             */
+            controlPlaneEndpoint?: pulumi.Input<inputs.cluster.v1alpha4.ClusterSpecControlPlaneEndpointArgs>;
+            /**
+             * ControlPlaneRef is an optional reference to a provider-specific resource that holds the details for provisioning the Control Plane for a Cluster.
+             */
+            controlPlaneRef?: pulumi.Input<inputs.cluster.v1alpha4.ClusterSpecControlPlaneRefArgs>;
+            /**
+             * InfrastructureRef is a reference to a provider-specific resource that holds the details for provisioning infrastructure for a cluster in said provider.
+             */
+            infrastructureRef?: pulumi.Input<inputs.cluster.v1alpha4.ClusterSpecInfrastructureRefArgs>;
+            /**
+             * Paused can be used to prevent controllers from processing the Cluster and all its associated objects.
+             */
+            paused?: pulumi.Input<boolean>;
+            /**
+             * This encapsulates the topology for the cluster. NOTE: It is required to enable the ClusterTopology feature gate flag to activate managed topologies support; this feature is highly experimental, and parts of it might still be not implemented.
+             */
+            topology?: pulumi.Input<inputs.cluster.v1alpha4.ClusterSpecTopologyArgs>;
+        }
+
+        /**
+         * Cluster network configuration.
+         */
+        export interface ClusterSpecClusterNetworkArgs {
+            /**
+             * APIServerPort specifies the port the API Server should bind to. Defaults to 6443.
+             */
+            apiServerPort?: pulumi.Input<number>;
+            /**
+             * The network ranges from which Pod networks are allocated.
+             */
+            pods?: pulumi.Input<inputs.cluster.v1alpha4.ClusterSpecClusterNetworkPodsArgs>;
+            /**
+             * Domain name for services.
+             */
+            serviceDomain?: pulumi.Input<string>;
+            /**
+             * The network ranges from which service VIPs are allocated.
+             */
+            services?: pulumi.Input<inputs.cluster.v1alpha4.ClusterSpecClusterNetworkServicesArgs>;
+        }
+
+        /**
+         * The network ranges from which Pod networks are allocated.
+         */
+        export interface ClusterSpecClusterNetworkPodsArgs {
+            cidrBlocks: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * The network ranges from which service VIPs are allocated.
+         */
+        export interface ClusterSpecClusterNetworkServicesArgs {
+            cidrBlocks: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+         */
+        export interface ClusterSpecControlPlaneEndpointArgs {
+            /**
+             * The hostname on which the API server is serving.
+             */
+            host: pulumi.Input<string>;
+            /**
+             * The port on which the API server is serving.
+             */
+            port: pulumi.Input<number>;
+        }
+
+        /**
+         * ControlPlaneRef is an optional reference to a provider-specific resource that holds the details for provisioning the Control Plane for a Cluster.
+         */
+        export interface ClusterSpecControlPlaneRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * InfrastructureRef is a reference to a provider-specific resource that holds the details for provisioning infrastructure for a cluster in said provider.
+         */
+        export interface ClusterSpecInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * This encapsulates the topology for the cluster. NOTE: It is required to enable the ClusterTopology feature gate flag to activate managed topologies support; this feature is highly experimental, and parts of it might still be not implemented.
+         */
+        export interface ClusterSpecTopologyArgs {
+            /**
+             * The name of the ClusterClass object to create the topology.
+             */
+            class: pulumi.Input<string>;
+            /**
+             * ControlPlane describes the cluster control plane.
+             */
+            controlPlane?: pulumi.Input<inputs.cluster.v1alpha4.ClusterSpecTopologyControlPlaneArgs>;
+            /**
+             * RolloutAfter performs a rollout of the entire cluster one component at a time, control plane first and then machine deployments.
+             */
+            rolloutAfter?: pulumi.Input<string>;
+            /**
+             * The Kubernetes version of the cluster.
+             */
+            version: pulumi.Input<string>;
+            /**
+             * Workers encapsulates the different constructs that form the worker nodes for the cluster.
+             */
+            workers?: pulumi.Input<inputs.cluster.v1alpha4.ClusterSpecTopologyWorkersArgs>;
+        }
+
+        /**
+         * ControlPlane describes the cluster control plane.
+         */
+        export interface ClusterSpecTopologyControlPlaneArgs {
+            /**
+             * Metadata is the metadata applied to the machines of the ControlPlane. At runtime this metadata is merged with the corresponding metadata from the ClusterClass. 
+             *  This field is supported if and only if the control plane provider template referenced in the ClusterClass is Machine based.
+             */
+            metadata?: pulumi.Input<inputs.cluster.v1alpha4.ClusterSpecTopologyControlPlaneMetadataArgs>;
+            /**
+             * Replicas is the number of control plane nodes. If the value is nil, the ControlPlane object is created without the number of Replicas and it's assumed that the control plane controller does not implement support for this field. When specified against a control plane provider that lacks support for this field, this value will be ignored.
+             */
+            replicas?: pulumi.Input<number>;
+        }
+
+        /**
+         * Metadata is the metadata applied to the machines of the ControlPlane. At runtime this metadata is merged with the corresponding metadata from the ClusterClass. 
+         *  This field is supported if and only if the control plane provider template referenced in the ClusterClass is Machine based.
+         */
+        export interface ClusterSpecTopologyControlPlaneMetadataArgs {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * Workers encapsulates the different constructs that form the worker nodes for the cluster.
+         */
+        export interface ClusterSpecTopologyWorkersArgs {
+            /**
+             * MachineDeployments is a list of machine deployments in the cluster.
+             */
+            machineDeployments?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha4.ClusterSpecTopologyWorkersMachineDeploymentsArgs>[]>;
+        }
+
+        /**
+         * MachineDeploymentTopology specifies the different parameters for a set of worker nodes in the topology. This set of nodes is managed by a MachineDeployment object whose lifecycle is managed by the Cluster controller.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeploymentsArgs {
+            /**
+             * Class is the name of the MachineDeploymentClass used to create the set of worker nodes. This should match one of the deployment classes defined in the ClusterClass object mentioned in the `Cluster.Spec.Class` field.
+             */
+            class: pulumi.Input<string>;
+            /**
+             * Metadata is the metadata applied to the machines of the MachineDeployment. At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
+             */
+            metadata?: pulumi.Input<inputs.cluster.v1alpha4.ClusterSpecTopologyWorkersMachineDeploymentsMetadataArgs>;
+            /**
+             * Name is the unique identifier for this MachineDeploymentTopology. The value is used with other unique identifiers to create a MachineDeployment's Name (e.g. cluster's name, etc). In case the name is greater than the allowed maximum length, the values are hashed together.
+             */
+            name: pulumi.Input<string>;
+            /**
+             * Replicas is the number of worker nodes belonging to this set. If the value is nil, the MachineDeployment is created without the number of Replicas (defaulting to zero) and it's assumed that an external entity (like cluster autoscaler) is responsible for the management of this value.
+             */
+            replicas?: pulumi.Input<number>;
+        }
+
+        /**
+         * Metadata is the metadata applied to the machines of the MachineDeployment. At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeploymentsMetadataArgs {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * ClusterStatus defines the observed state of Cluster.
+         */
+        export interface ClusterStatusArgs {
+            /**
+             * Conditions defines current service state of the cluster.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha4.ClusterStatusConditionsArgs>[]>;
+            /**
+             * ControlPlaneReady defines if the control plane is ready.
+             */
+            controlPlaneReady?: pulumi.Input<boolean>;
+            /**
+             * FailureDomains is a slice of failure domain objects synced from the infrastructure provider.
+             */
+            failureDomains?: pulumi.Input<{[key: string]: pulumi.Input<inputs.cluster.v1alpha4.ClusterStatusFailureDomainsArgs>}>;
+            /**
+             * FailureMessage indicates that there is a fatal problem reconciling the state, and will be set to a descriptive error message.
+             */
+            failureMessage?: pulumi.Input<string>;
+            /**
+             * FailureReason indicates that there is a fatal problem reconciling the state, and will be set to a token value suitable for programmatic interpretation.
+             */
+            failureReason?: pulumi.Input<string>;
+            /**
+             * InfrastructureReady is the state of the infrastructure provider.
+             */
+            infrastructureReady?: pulumi.Input<boolean>;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * Phase represents the current phase of cluster actuation. E.g. Pending, Running, Terminating, Failed etc.
+             */
+            phase?: pulumi.Input<string>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ClusterStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * FailureDomainSpec is the Schema for Cluster API failure domains. It allows controllers to understand how many failure domains a cluster can optionally span across.
+         */
+        export interface ClusterStatusFailureDomainsArgs {
+            /**
+             * Attributes is a free form map of attributes an infrastructure provider might use or require.
+             */
+            attributes?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * ControlPlane determines if this failure domain is suitable for use by control plane machines.
+             */
+            controlPlane?: pulumi.Input<boolean>;
+        }
+
+        /**
+         * MachineDeploymentSpec defines the desired state of MachineDeployment.
+         */
+        export interface MachineDeploymentSpecArgs {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * Minimum number of seconds for which a newly created machine should be ready. Defaults to 0 (machine will be considered available as soon as it is ready)
+             */
+            minReadySeconds?: pulumi.Input<number>;
+            /**
+             * Indicates that the deployment is paused.
+             */
+            paused?: pulumi.Input<boolean>;
+            /**
+             * The maximum time in seconds for a deployment to make progress before it is considered to be failed. The deployment controller will continue to process failed deployments and a condition with a ProgressDeadlineExceeded reason will be surfaced in the deployment status. Note that progress will not be estimated during the time a deployment is paused. Defaults to 600s.
+             */
+            progressDeadlineSeconds?: pulumi.Input<number>;
+            /**
+             * Number of desired machines. Defaults to 1. This is a pointer to distinguish between explicit zero and not specified.
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * The number of old MachineSets to retain to allow rollback. This is a pointer to distinguish between explicit zero and not specified. Defaults to 1.
+             */
+            revisionHistoryLimit?: pulumi.Input<number>;
+            /**
+             * Label selector for machines. Existing MachineSets whose machines are selected by this will be the ones affected by this deployment. It must match the machine template's labels.
+             */
+            selector: pulumi.Input<inputs.cluster.v1alpha4.MachineDeploymentSpecSelectorArgs>;
+            /**
+             * The deployment strategy to use to replace existing machines with new ones.
+             */
+            strategy?: pulumi.Input<inputs.cluster.v1alpha4.MachineDeploymentSpecStrategyArgs>;
+            /**
+             * Template describes the machines that will be created.
+             */
+            template: pulumi.Input<inputs.cluster.v1alpha4.MachineDeploymentSpecTemplateArgs>;
+        }
+        /**
+         * machineDeploymentSpecArgsProvideDefaults sets the appropriate defaults for MachineDeploymentSpecArgs
+         */
+        export function machineDeploymentSpecArgsProvideDefaults(val: MachineDeploymentSpecArgs): MachineDeploymentSpecArgs {
+            return {
+                ...val,
+                replicas: (val.replicas) ?? 1,
+            };
+        }
+
+        /**
+         * Label selector for machines. Existing MachineSets whose machines are selected by this will be the ones affected by this deployment. It must match the machine template's labels.
+         */
+        export interface MachineDeploymentSpecSelectorArgs {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha4.MachineDeploymentSpecSelectorMatchExpressionsArgs>[]>;
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface MachineDeploymentSpecSelectorMatchExpressionsArgs {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: pulumi.Input<string>;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: pulumi.Input<string>;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * The deployment strategy to use to replace existing machines with new ones.
+         */
+        export interface MachineDeploymentSpecStrategyArgs {
+            /**
+             * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+             */
+            rollingUpdate?: pulumi.Input<inputs.cluster.v1alpha4.MachineDeploymentSpecStrategyRollingUpdateArgs>;
+            /**
+             * Type of deployment. Default is RollingUpdate.
+             */
+            type?: pulumi.Input<string>;
+        }
+
+        /**
+         * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+         */
+        export interface MachineDeploymentSpecStrategyRollingUpdateArgs {
+            /**
+             * DeletePolicy defines the policy used by the MachineDeployment to identify nodes to delete when downscaling. Valid values are "Random, "Newest", "Oldest" When no value is supplied, the default DeletePolicy of MachineSet is used
+             */
+            deletePolicy?: pulumi.Input<string>;
+            /**
+             * The maximum number of machines that can be scheduled above the desired number of machines. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up. Defaults to 1. Example: when this is set to 30%, the new MachineSet can be scaled up immediately when the rolling update starts, such that the total number of old and new machines do not exceed 130% of desired machines. Once old machines have been killed, new MachineSet can be scaled up further, ensuring that total number of machines running at any time during the update is at most 130% of desired machines.
+             */
+            maxSurge?: pulumi.Input<number | string>;
+            /**
+             * The maximum number of machines that can be unavailable during the update. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). Absolute number is calculated from percentage by rounding down. This can not be 0 if MaxSurge is 0. Defaults to 0. Example: when this is set to 30%, the old MachineSet can be scaled down to 70% of desired machines immediately when the rolling update starts. Once new machines are ready, old MachineSet can be scaled down further, followed by scaling up the new MachineSet, ensuring that the total number of machines available at all times during the update is at least 70% of desired machines.
+             */
+            maxUnavailable?: pulumi.Input<number | string>;
+        }
+
+        /**
+         * Template describes the machines that will be created.
+         */
+        export interface MachineDeploymentSpecTemplateArgs {
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata?: pulumi.Input<inputs.cluster.v1alpha4.MachineDeploymentSpecTemplateMetadataArgs>;
+            /**
+             * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+             */
+            spec?: pulumi.Input<inputs.cluster.v1alpha4.MachineDeploymentSpecTemplateSpecArgs>;
+        }
+
+        /**
+         * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface MachineDeploymentSpecTemplateMetadataArgs {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+         */
+        export interface MachineDeploymentSpecTemplateSpecArgs {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: pulumi.Input<inputs.cluster.v1alpha4.MachineDeploymentSpecTemplateSpecBootstrapArgs>;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: pulumi.Input<string>;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: pulumi.Input<inputs.cluster.v1alpha4.MachineDeploymentSpecTemplateSpecInfrastructureRefArgs>;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: pulumi.Input<string>;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: pulumi.Input<string>;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: pulumi.Input<string>;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachineDeploymentSpecTemplateSpecBootstrapArgs {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+             */
+            configRef?: pulumi.Input<inputs.cluster.v1alpha4.MachineDeploymentSpecTemplateSpecBootstrapConfigRefArgs>;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: pulumi.Input<string>;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+         */
+        export interface MachineDeploymentSpecTemplateSpecBootstrapConfigRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachineDeploymentSpecTemplateSpecInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * MachineDeploymentStatus defines the observed state of MachineDeployment.
+         */
+        export interface MachineDeploymentStatusArgs {
+            /**
+             * Total number of available machines (ready for at least minReadySeconds) targeted by this deployment.
+             */
+            availableReplicas?: pulumi.Input<number>;
+            /**
+             * Conditions defines current service state of the MachineDeployment.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha4.MachineDeploymentStatusConditionsArgs>[]>;
+            /**
+             * The generation observed by the deployment controller.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * Phase represents the current phase of a MachineDeployment (ScalingUp, ScalingDown, Running, Failed, or Unknown).
+             */
+            phase?: pulumi.Input<string>;
+            /**
+             * Total number of ready machines targeted by this deployment.
+             */
+            readyReplicas?: pulumi.Input<number>;
+            /**
+             * Total number of non-terminated machines targeted by this deployment (their labels match the selector).
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * Selector is the same as the label selector but in the string format to avoid introspection by clients. The string will be in the same format as the query-param syntax. More info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors
+             */
+            selector?: pulumi.Input<string>;
+            /**
+             * Total number of unavailable machines targeted by this deployment. This is the total number of machines that are still required for the deployment to have 100% available capacity. They may either be machines that are running but not yet available or machines that still have not been created.
+             */
+            unavailableReplicas?: pulumi.Input<number>;
+            /**
+             * Total number of non-terminated machines targeted by this deployment that have the desired template spec.
+             */
+            updatedReplicas?: pulumi.Input<number>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachineDeploymentStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * Specification of machine health check policy
+         */
+        export interface MachineHealthCheckSpecArgs {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by "selector" are not healthy.
+             */
+            maxUnhealthy?: pulumi.Input<number | string>;
+            /**
+             * Machines older than this duration without a node will be considered to have failed and will be remediated. If not set, this value is defaulted to 10 minutes. If you wish to disable this feature, set the value explicitly to 0.
+             */
+            nodeStartupTimeout?: pulumi.Input<string>;
+            /**
+             * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+             *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+             */
+            remediationTemplate?: pulumi.Input<inputs.cluster.v1alpha4.MachineHealthCheckSpecRemediationTemplateArgs>;
+            /**
+             * Label selector to match machines whose health will be exercised
+             */
+            selector: pulumi.Input<inputs.cluster.v1alpha4.MachineHealthCheckSpecSelectorArgs>;
+            /**
+             * UnhealthyConditions contains a list of the conditions that determine whether a node is considered unhealthy.  The conditions are combined in a logical OR, i.e. if any of the conditions is met, the node is unhealthy.
+             */
+            unhealthyConditions: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha4.MachineHealthCheckSpecUnhealthyConditionsArgs>[]>;
+            /**
+             * Any further remediation is only allowed if the number of machines selected by "selector" as not healthy is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy. Eg. "[3-5]" - This means that remediation will be allowed only when: (a) there are at least 3 unhealthy machines (and) (b) there are at most 5 unhealthy machines
+             */
+            unhealthyRange?: pulumi.Input<string>;
+        }
+
+        /**
+         * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+         *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+         */
+        export interface MachineHealthCheckSpecRemediationTemplateArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * Label selector to match machines whose health will be exercised
+         */
+        export interface MachineHealthCheckSpecSelectorArgs {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha4.MachineHealthCheckSpecSelectorMatchExpressionsArgs>[]>;
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface MachineHealthCheckSpecSelectorMatchExpressionsArgs {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: pulumi.Input<string>;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: pulumi.Input<string>;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * UnhealthyCondition represents a Node condition type and value with a timeout specified as a duration.  When the named condition has been in the given status for at least the timeout value, a node is considered unhealthy.
+         */
+        export interface MachineHealthCheckSpecUnhealthyConditionsArgs {
+            status: pulumi.Input<string>;
+            timeout: pulumi.Input<string>;
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * Most recently observed status of MachineHealthCheck resource
+         */
+        export interface MachineHealthCheckStatusArgs {
+            /**
+             * Conditions defines current service state of the MachineHealthCheck.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha4.MachineHealthCheckStatusConditionsArgs>[]>;
+            /**
+             * total number of healthy machines counted by this machine health check
+             */
+            currentHealthy?: pulumi.Input<number>;
+            /**
+             * total number of machines counted by this machine health check
+             */
+            expectedMachines?: pulumi.Input<number>;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * RemediationsAllowed is the number of further remediations allowed by this machine health check before maxUnhealthy short circuiting will be applied
+             */
+            remediationsAllowed?: pulumi.Input<number>;
+            /**
+             * Targets shows the current list of machines the machine health check is watching
+             */
+            targets?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachineHealthCheckStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * MachinePoolSpec defines the desired state of MachinePool.
+         */
+        export interface MachinePoolSpecArgs {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * FailureDomains is the list of failure domains this MachinePool should be attached to.
+             */
+            failureDomains?: pulumi.Input<pulumi.Input<string>[]>;
+            /**
+             * Minimum number of seconds for which a newly created machine instances should be ready. Defaults to 0 (machine instance will be considered available as soon as it is ready)
+             */
+            minReadySeconds?: pulumi.Input<number>;
+            /**
+             * ProviderIDList are the identification IDs of machine instances provided by the provider. This field must match the provider IDs as seen on the node objects corresponding to a machine pool's machine instances.
+             */
+            providerIDList?: pulumi.Input<pulumi.Input<string>[]>;
+            /**
+             * Number of desired machines. Defaults to 1. This is a pointer to distinguish between explicit zero and not specified.
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * Template describes the machines that will be created.
+             */
+            template: pulumi.Input<inputs.cluster.v1alpha4.MachinePoolSpecTemplateArgs>;
+        }
+
+        /**
+         * Template describes the machines that will be created.
+         */
+        export interface MachinePoolSpecTemplateArgs {
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata?: pulumi.Input<inputs.cluster.v1alpha4.MachinePoolSpecTemplateMetadataArgs>;
+            /**
+             * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+             */
+            spec?: pulumi.Input<inputs.cluster.v1alpha4.MachinePoolSpecTemplateSpecArgs>;
+        }
+
+        /**
+         * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface MachinePoolSpecTemplateMetadataArgs {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+         */
+        export interface MachinePoolSpecTemplateSpecArgs {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: pulumi.Input<inputs.cluster.v1alpha4.MachinePoolSpecTemplateSpecBootstrapArgs>;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: pulumi.Input<string>;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: pulumi.Input<inputs.cluster.v1alpha4.MachinePoolSpecTemplateSpecInfrastructureRefArgs>;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: pulumi.Input<string>;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: pulumi.Input<string>;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: pulumi.Input<string>;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachinePoolSpecTemplateSpecBootstrapArgs {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+             */
+            configRef?: pulumi.Input<inputs.cluster.v1alpha4.MachinePoolSpecTemplateSpecBootstrapConfigRefArgs>;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: pulumi.Input<string>;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+         */
+        export interface MachinePoolSpecTemplateSpecBootstrapConfigRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachinePoolSpecTemplateSpecInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * MachinePoolStatus defines the observed state of MachinePool.
+         */
+        export interface MachinePoolStatusArgs {
+            /**
+             * The number of available replicas (ready for at least minReadySeconds) for this MachinePool.
+             */
+            availableReplicas?: pulumi.Input<number>;
+            /**
+             * BootstrapReady is the state of the bootstrap provider.
+             */
+            bootstrapReady?: pulumi.Input<boolean>;
+            /**
+             * Conditions define the current service state of the MachinePool.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha4.MachinePoolStatusConditionsArgs>[]>;
+            /**
+             * FailureMessage indicates that there is a problem reconciling the state, and will be set to a descriptive error message.
+             */
+            failureMessage?: pulumi.Input<string>;
+            /**
+             * FailureReason indicates that there is a problem reconciling the state, and will be set to a token value suitable for programmatic interpretation.
+             */
+            failureReason?: pulumi.Input<string>;
+            /**
+             * InfrastructureReady is the state of the infrastructure provider.
+             */
+            infrastructureReady?: pulumi.Input<boolean>;
+            /**
+             * NodeRefs will point to the corresponding Nodes if it they exist.
+             */
+            nodeRefs?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha4.MachinePoolStatusNodeRefsArgs>[]>;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * Phase represents the current phase of cluster actuation. E.g. Pending, Running, Terminating, Failed etc.
+             */
+            phase?: pulumi.Input<string>;
+            /**
+             * The number of ready replicas for this MachinePool. A machine is considered ready when the node has been created and is "Ready".
+             */
+            readyReplicas?: pulumi.Input<number>;
+            /**
+             * Replicas is the most recently observed number of replicas.
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * Total number of unavailable machine instances targeted by this machine pool. This is the total number of machine instances that are still required for the machine pool to have 100% available capacity. They may either be machine instances that are running but not yet available or machine instances that still have not been created.
+             */
+            unavailableReplicas?: pulumi.Input<number>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachinePoolStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface MachinePoolStatusNodeRefsArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * MachineSetSpec defines the desired state of MachineSet.
+         */
+        export interface MachineSetSpecArgs {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * DeletePolicy defines the policy used to identify nodes to delete when downscaling. Defaults to "Random".  Valid values are "Random, "Newest", "Oldest"
+             */
+            deletePolicy?: pulumi.Input<string>;
+            /**
+             * MinReadySeconds is the minimum number of seconds for which a newly created machine should be ready. Defaults to 0 (machine will be considered available as soon as it is ready)
+             */
+            minReadySeconds?: pulumi.Input<number>;
+            /**
+             * Replicas is the number of desired replicas. This is a pointer to distinguish between explicit zero and unspecified. Defaults to 1.
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * Selector is a label query over machines that should match the replica count. Label keys and values that must match in order to be controlled by this MachineSet. It must match the machine template's labels. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
+             */
+            selector: pulumi.Input<inputs.cluster.v1alpha4.MachineSetSpecSelectorArgs>;
+            /**
+             * Template is the object that describes the machine that will be created if insufficient replicas are detected. Object references to custom resources are treated as templates.
+             */
+            template?: pulumi.Input<inputs.cluster.v1alpha4.MachineSetSpecTemplateArgs>;
+        }
+        /**
+         * machineSetSpecArgsProvideDefaults sets the appropriate defaults for MachineSetSpecArgs
+         */
+        export function machineSetSpecArgsProvideDefaults(val: MachineSetSpecArgs): MachineSetSpecArgs {
+            return {
+                ...val,
+                replicas: (val.replicas) ?? 1,
+            };
+        }
+
+        /**
+         * Selector is a label query over machines that should match the replica count. Label keys and values that must match in order to be controlled by this MachineSet. It must match the machine template's labels. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
+         */
+        export interface MachineSetSpecSelectorArgs {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha4.MachineSetSpecSelectorMatchExpressionsArgs>[]>;
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface MachineSetSpecSelectorMatchExpressionsArgs {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: pulumi.Input<string>;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: pulumi.Input<string>;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * Template is the object that describes the machine that will be created if insufficient replicas are detected. Object references to custom resources are treated as templates.
+         */
+        export interface MachineSetSpecTemplateArgs {
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata?: pulumi.Input<inputs.cluster.v1alpha4.MachineSetSpecTemplateMetadataArgs>;
+            /**
+             * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+             */
+            spec?: pulumi.Input<inputs.cluster.v1alpha4.MachineSetSpecTemplateSpecArgs>;
+        }
+
+        /**
+         * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface MachineSetSpecTemplateMetadataArgs {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+         */
+        export interface MachineSetSpecTemplateSpecArgs {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: pulumi.Input<inputs.cluster.v1alpha4.MachineSetSpecTemplateSpecBootstrapArgs>;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: pulumi.Input<string>;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: pulumi.Input<inputs.cluster.v1alpha4.MachineSetSpecTemplateSpecInfrastructureRefArgs>;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: pulumi.Input<string>;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: pulumi.Input<string>;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: pulumi.Input<string>;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachineSetSpecTemplateSpecBootstrapArgs {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+             */
+            configRef?: pulumi.Input<inputs.cluster.v1alpha4.MachineSetSpecTemplateSpecBootstrapConfigRefArgs>;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: pulumi.Input<string>;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+         */
+        export interface MachineSetSpecTemplateSpecBootstrapConfigRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachineSetSpecTemplateSpecInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * MachineSetStatus defines the observed state of MachineSet.
+         */
+        export interface MachineSetStatusArgs {
+            /**
+             * The number of available replicas (ready for at least minReadySeconds) for this MachineSet.
+             */
+            availableReplicas?: pulumi.Input<number>;
+            /**
+             * Conditions defines current service state of the MachineSet.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha4.MachineSetStatusConditionsArgs>[]>;
+            failureMessage?: pulumi.Input<string>;
+            /**
+             * In the event that there is a terminal problem reconciling the replicas, both FailureReason and FailureMessage will be set. FailureReason will be populated with a succinct value suitable for machine interpretation, while FailureMessage will contain a more verbose string suitable for logging and human consumption. 
+             *  These fields should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the MachineTemplate's spec or the configuration of the machine controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the machine controller, or the responsible machine controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the MachineSet object and/or logged in the controller's output.
+             */
+            failureReason?: pulumi.Input<string>;
+            /**
+             * The number of replicas that have labels matching the labels of the machine template of the MachineSet.
+             */
+            fullyLabeledReplicas?: pulumi.Input<number>;
+            /**
+             * ObservedGeneration reflects the generation of the most recently observed MachineSet.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * The number of ready replicas for this MachineSet. A machine is considered ready when the node has been created and is "Ready".
+             */
+            readyReplicas?: pulumi.Input<number>;
+            /**
+             * Replicas is the most recently observed number of replicas.
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * Selector is the same as the label selector but in the string format to avoid introspection by clients. The string will be in the same format as the query-param syntax. More info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors
+             */
+            selector?: pulumi.Input<string>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachineSetStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * MachineSpec defines the desired state of Machine.
+         */
+        export interface MachineSpecArgs {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: pulumi.Input<inputs.cluster.v1alpha4.MachineSpecBootstrapArgs>;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: pulumi.Input<string>;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: pulumi.Input<inputs.cluster.v1alpha4.MachineSpecInfrastructureRefArgs>;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: pulumi.Input<string>;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: pulumi.Input<string>;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: pulumi.Input<string>;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachineSpecBootstrapArgs {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+             */
+            configRef?: pulumi.Input<inputs.cluster.v1alpha4.MachineSpecBootstrapConfigRefArgs>;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: pulumi.Input<string>;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+         */
+        export interface MachineSpecBootstrapConfigRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachineSpecInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * MachineStatus defines the observed state of Machine.
+         */
+        export interface MachineStatusArgs {
+            /**
+             * Addresses is a list of addresses assigned to the machine. This field is copied from the infrastructure provider reference.
+             */
+            addresses?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha4.MachineStatusAddressesArgs>[]>;
+            /**
+             * BootstrapReady is the state of the bootstrap provider.
+             */
+            bootstrapReady?: pulumi.Input<boolean>;
+            /**
+             * Conditions defines current service state of the Machine.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1alpha4.MachineStatusConditionsArgs>[]>;
+            /**
+             * FailureMessage will be set in the event that there is a terminal problem reconciling the Machine and will contain a more verbose string suitable for logging and human consumption. 
+             *  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+             */
+            failureMessage?: pulumi.Input<string>;
+            /**
+             * FailureReason will be set in the event that there is a terminal problem reconciling the Machine and will contain a succinct value suitable for machine interpretation. 
+             *  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+             */
+            failureReason?: pulumi.Input<string>;
+            /**
+             * InfrastructureReady is the state of the infrastructure provider.
+             */
+            infrastructureReady?: pulumi.Input<boolean>;
+            /**
+             * LastUpdated identifies when the phase of the Machine last transitioned.
+             */
+            lastUpdated?: pulumi.Input<string>;
+            /**
+             * NodeInfo is a set of ids/uuids to uniquely identify the node. More info: https://kubernetes.io/docs/concepts/nodes/node/#info
+             */
+            nodeInfo?: pulumi.Input<inputs.cluster.v1alpha4.MachineStatusNodeInfoArgs>;
+            /**
+             * NodeRef will point to the corresponding Node if it exists.
+             */
+            nodeRef?: pulumi.Input<inputs.cluster.v1alpha4.MachineStatusNodeRefArgs>;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * Phase represents the current phase of machine actuation. E.g. Pending, Running, Terminating, Failed etc.
+             */
+            phase?: pulumi.Input<string>;
+            /**
+             * Version specifies the current version of Kubernetes running on the corresponding Node. This is meant to be a means of bubbling up status from the Node to the Machine. It is entirely optional, but useful for end-user UX if it’s present.
+             */
+            version?: pulumi.Input<string>;
+        }
+
+        /**
+         * MachineAddress contains information for the node's address.
+         */
+        export interface MachineStatusAddressesArgs {
+            /**
+             * The machine address.
+             */
+            address: pulumi.Input<string>;
+            /**
+             * Machine address type, one of Hostname, ExternalIP or InternalIP.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachineStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * NodeInfo is a set of ids/uuids to uniquely identify the node. More info: https://kubernetes.io/docs/concepts/nodes/node/#info
+         */
+        export interface MachineStatusNodeInfoArgs {
+            /**
+             * The Architecture reported by the node
+             */
+            architecture: pulumi.Input<string>;
+            /**
+             * Boot ID reported by the node.
+             */
+            bootID: pulumi.Input<string>;
+            /**
+             * ContainerRuntime Version reported by the node through runtime remote API (e.g. containerd://1.4.2).
+             */
+            containerRuntimeVersion: pulumi.Input<string>;
+            /**
+             * Kernel Version reported by the node from 'uname -r' (e.g. 3.16.0-0.bpo.4-amd64).
+             */
+            kernelVersion: pulumi.Input<string>;
+            /**
+             * KubeProxy Version reported by the node.
+             */
+            kubeProxyVersion: pulumi.Input<string>;
+            /**
+             * Kubelet Version reported by the node.
+             */
+            kubeletVersion: pulumi.Input<string>;
+            /**
+             * MachineID reported by the node. For unique machine identification in the cluster this field is preferred. Learn more from man(5) machine-id: http://man7.org/linux/man-pages/man5/machine-id.5.html
+             */
+            machineID: pulumi.Input<string>;
+            /**
+             * The Operating System reported by the node
+             */
+            operatingSystem: pulumi.Input<string>;
+            /**
+             * OS Image reported by the node from /etc/os-release (e.g. Debian GNU/Linux 7 (wheezy)).
+             */
+            osImage: pulumi.Input<string>;
+            /**
+             * SystemUUID reported by the node. For unique machine identification MachineID is preferred. This field is specific to Red Hat hosts https://access.redhat.com/documentation/en-us/red_hat_subscription_management/1/html/rhsm/uuid
+             */
+            systemUUID: pulumi.Input<string>;
+        }
+
+        /**
+         * NodeRef will point to the corresponding Node if it exists.
+         */
+        export interface MachineStatusNodeRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+    }
+
+    export namespace v1beta1 {
+        /**
+         * ClusterClassSpec describes the desired state of the ClusterClass.
+         */
+        export interface ClusterClassSpecArgs {
+            /**
+             * ControlPlane is a reference to a local struct that holds the details for provisioning the Control Plane for the Cluster.
+             */
+            controlPlane?: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecControlPlaneArgs>;
+            /**
+             * Infrastructure is a reference to a provider-specific template that holds the details for provisioning infrastructure specific cluster for the underlying provider. The underlying provider is responsible for the implementation of the template to an infrastructure cluster.
+             */
+            infrastructure?: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecInfrastructureArgs>;
+            /**
+             * Patches defines the patches which are applied to customize referenced templates of a ClusterClass. Note: Patches will be applied in the order of the array.
+             */
+            patches?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecPatchesArgs>[]>;
+            /**
+             * Variables defines the variables which can be configured in the Cluster topology and are then used in patches.
+             */
+            variables?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecVariablesArgs>[]>;
+            /**
+             * Workers describes the worker nodes for the cluster. It is a collection of node types which can be used to create the worker nodes of the cluster.
+             */
+            workers?: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecWorkersArgs>;
+        }
+
+        /**
+         * ControlPlane is a reference to a local struct that holds the details for provisioning the Control Plane for the Cluster.
+         */
+        export interface ClusterClassSpecControlPlaneArgs {
+            /**
+             * MachineHealthCheck defines a MachineHealthCheck for this ControlPlaneClass. This field is supported if and only if the ControlPlane provider template referenced above is Machine based and supports setting replicas.
+             */
+            machineHealthCheck?: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecControlPlaneMachineHealthCheckArgs>;
+            /**
+             * MachineInfrastructure defines the metadata and infrastructure information for control plane machines. 
+             *  This field is supported if and only if the control plane provider template referenced above is Machine based and supports setting replicas.
+             */
+            machineInfrastructure?: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecControlPlaneMachineInfrastructureArgs>;
+            /**
+             * Metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane if the ControlPlaneTemplate referenced is machine based. If not, it is applied only to the ControlPlane. At runtime this metadata is merged with the corresponding metadata from the topology. 
+             *  This field is supported if and only if the control plane provider template referenced is Machine based.
+             */
+            metadata?: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecControlPlaneMetadataArgs>;
+            /**
+             * NamingStrategy allows changing the naming pattern used when creating the control plane provider object.
+             */
+            namingStrategy?: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecControlPlaneNamingStrategyArgs>;
+            /**
+             * NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely. Defaults to 10 seconds. NOTE: This value can be overridden while defining a Cluster.Topology.
+             */
+            nodeDeletionTimeout?: pulumi.Input<string>;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout` NOTE: This value can be overridden while defining a Cluster.Topology.
+             */
+            nodeDrainTimeout?: pulumi.Input<string>;
+            /**
+             * NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations. NOTE: This value can be overridden while defining a Cluster.Topology.
+             */
+            nodeVolumeDetachTimeout?: pulumi.Input<string>;
+            /**
+             * Ref is a required reference to a custom resource offered by a provider.
+             */
+            ref: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecControlPlaneRefArgs>;
+        }
+
+        /**
+         * MachineHealthCheck defines a MachineHealthCheck for this ControlPlaneClass. This field is supported if and only if the ControlPlane provider template referenced above is Machine based and supports setting replicas.
+         */
+        export interface ClusterClassSpecControlPlaneMachineHealthCheckArgs {
+            /**
+             * Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by "selector" are not healthy.
+             */
+            maxUnhealthy?: pulumi.Input<number | string>;
+            /**
+             * Machines older than this duration without a node will be considered to have failed and will be remediated. If you wish to disable this feature, set the value explicitly to 0.
+             */
+            nodeStartupTimeout?: pulumi.Input<string>;
+            /**
+             * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+             *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+             */
+            remediationTemplate?: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecControlPlaneMachineHealthCheckRemediationTemplateArgs>;
+            /**
+             * UnhealthyConditions contains a list of the conditions that determine whether a node is considered unhealthy. The conditions are combined in a logical OR, i.e. if any of the conditions is met, the node is unhealthy.
+             */
+            unhealthyConditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecControlPlaneMachineHealthCheckUnhealthyConditionsArgs>[]>;
+            /**
+             * Any further remediation is only allowed if the number of machines selected by "selector" as not healthy is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy. Eg. "[3-5]" - This means that remediation will be allowed only when: (a) there are at least 3 unhealthy machines (and) (b) there are at most 5 unhealthy machines
+             */
+            unhealthyRange?: pulumi.Input<string>;
+        }
+
+        /**
+         * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+         *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+         */
+        export interface ClusterClassSpecControlPlaneMachineHealthCheckRemediationTemplateArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * UnhealthyCondition represents a Node condition type and value with a timeout specified as a duration.  When the named condition has been in the given status for at least the timeout value, a node is considered unhealthy.
+         */
+        export interface ClusterClassSpecControlPlaneMachineHealthCheckUnhealthyConditionsArgs {
+            status: pulumi.Input<string>;
+            timeout: pulumi.Input<string>;
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * MachineInfrastructure defines the metadata and infrastructure information for control plane machines. 
+         *  This field is supported if and only if the control plane provider template referenced above is Machine based and supports setting replicas.
+         */
+        export interface ClusterClassSpecControlPlaneMachineInfrastructureArgs {
+            /**
+             * Ref is a required reference to a custom resource offered by a provider.
+             */
+            ref: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecControlPlaneMachineInfrastructureRefArgs>;
+        }
+
+        /**
+         * Ref is a required reference to a custom resource offered by a provider.
+         */
+        export interface ClusterClassSpecControlPlaneMachineInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * Metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane if the ControlPlaneTemplate referenced is machine based. If not, it is applied only to the ControlPlane. At runtime this metadata is merged with the corresponding metadata from the topology. 
+         *  This field is supported if and only if the control plane provider template referenced is Machine based.
+         */
+        export interface ClusterClassSpecControlPlaneMetadataArgs {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * NamingStrategy allows changing the naming pattern used when creating the control plane provider object.
+         */
+        export interface ClusterClassSpecControlPlaneNamingStrategyArgs {
+            /**
+             * Template defines the template to use for generating the name of the ControlPlane object. If not defined, it will fallback to `{{ .cluster.name }}-{{ .random }}`. If the templated string exceeds 63 characters, it will be trimmed to 58 characters and will get concatenated with a random suffix of length 5. The templating mechanism provides the following arguments: * `.cluster.name`: The name of the cluster object. * `.random`: A random alphanumeric string, without vowels, of length 5.
+             */
+            template?: pulumi.Input<string>;
+        }
+
+        /**
+         * Ref is a required reference to a custom resource offered by a provider.
+         */
+        export interface ClusterClassSpecControlPlaneRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * Infrastructure is a reference to a provider-specific template that holds the details for provisioning infrastructure specific cluster for the underlying provider. The underlying provider is responsible for the implementation of the template to an infrastructure cluster.
+         */
+        export interface ClusterClassSpecInfrastructureArgs {
+            /**
+             * Ref is a required reference to a custom resource offered by a provider.
+             */
+            ref: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecInfrastructureRefArgs>;
+        }
+
+        /**
+         * Ref is a required reference to a custom resource offered by a provider.
+         */
+        export interface ClusterClassSpecInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * ClusterClassPatch defines a patch which is applied to customize the referenced templates.
+         */
+        export interface ClusterClassSpecPatchesArgs {
+            /**
+             * Definitions define inline patches. Note: Patches will be applied in the order of the array. Note: Exactly one of Definitions or External must be set.
+             */
+            definitions?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecPatchesDefinitionsArgs>[]>;
+            /**
+             * Description is a human-readable description of this patch.
+             */
+            description?: pulumi.Input<string>;
+            /**
+             * EnabledIf is a Go template to be used to calculate if a patch should be enabled. It can reference variables defined in .spec.variables and builtin variables. The patch will be enabled if the template evaluates to `true`, otherwise it will be disabled. If EnabledIf is not set, the patch will be enabled per default.
+             */
+            enabledIf?: pulumi.Input<string>;
+            /**
+             * External defines an external patch. Note: Exactly one of Definitions or External must be set.
+             */
+            external?: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecPatchesExternalArgs>;
+            /**
+             * Name of the patch.
+             */
+            name: pulumi.Input<string>;
+        }
+
+        /**
+         * PatchDefinition defines a patch which is applied to customize the referenced templates.
+         */
+        export interface ClusterClassSpecPatchesDefinitionsArgs {
+            /**
+             * JSONPatches defines the patches which should be applied on the templates matching the selector. Note: Patches will be applied in the order of the array.
+             */
+            jsonPatches: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecPatchesDefinitionsJsonPatchesArgs>[]>;
+            /**
+             * Selector defines on which templates the patch should be applied.
+             */
+            selector: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecPatchesDefinitionsSelectorArgs>;
+        }
+
+        /**
+         * JSONPatch defines a JSON patch.
+         */
+        export interface ClusterClassSpecPatchesDefinitionsJsonPatchesArgs {
+            /**
+             * Op defines the operation of the patch. Note: Only `add`, `replace` and `remove` are supported.
+             */
+            op: pulumi.Input<string>;
+            /**
+             * Path defines the path of the patch. Note: Only the spec of a template can be patched, thus the path has to start with /spec/. Note: For now the only allowed array modifications are `append` and `prepend`, i.e.: * for op: `add`: only index 0 (prepend) and - (append) are allowed * for op: `replace` or `remove`: no indexes are allowed
+             */
+            path: pulumi.Input<string>;
+            /**
+             * Value defines the value of the patch. Note: Either Value or ValueFrom is required for add and replace operations. Only one of them is allowed to be set at the same time. Note: We have to use apiextensionsv1.JSON instead of our JSON type, because controller-tools has a hard-coded schema for apiextensionsv1.JSON which cannot be produced by another type (unset type field). Ref: https://github.com/kubernetes-sigs/controller-tools/blob/d0e03a142d0ecdd5491593e941ee1d6b5d91dba6/pkg/crd/known_types.go#L106-L111
+             */
+            value?: pulumi.Input<{[key: string]: any}>;
+            /**
+             * ValueFrom defines the value of the patch. Note: Either Value or ValueFrom is required for add and replace operations. Only one of them is allowed to be set at the same time.
+             */
+            valueFrom?: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecPatchesDefinitionsJsonPatchesValueFromArgs>;
+        }
+
+        /**
+         * ValueFrom defines the value of the patch. Note: Either Value or ValueFrom is required for add and replace operations. Only one of them is allowed to be set at the same time.
+         */
+        export interface ClusterClassSpecPatchesDefinitionsJsonPatchesValueFromArgs {
+            /**
+             * Template is the Go template to be used to calculate the value. A template can reference variables defined in .spec.variables and builtin variables. Note: The template must evaluate to a valid YAML or JSON value.
+             */
+            template?: pulumi.Input<string>;
+            /**
+             * Variable is the variable to be used as value. Variable can be one of the variables defined in .spec.variables or a builtin variable.
+             */
+            variable?: pulumi.Input<string>;
+        }
+
+        /**
+         * Selector defines on which templates the patch should be applied.
+         */
+        export interface ClusterClassSpecPatchesDefinitionsSelectorArgs {
+            /**
+             * APIVersion filters templates by apiVersion.
+             */
+            apiVersion: pulumi.Input<string>;
+            /**
+             * Kind filters templates by kind.
+             */
+            kind: pulumi.Input<string>;
+            /**
+             * MatchResources selects templates based on where they are referenced.
+             */
+            matchResources: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecPatchesDefinitionsSelectorMatchResourcesArgs>;
+        }
+
+        /**
+         * MatchResources selects templates based on where they are referenced.
+         */
+        export interface ClusterClassSpecPatchesDefinitionsSelectorMatchResourcesArgs {
+            /**
+             * ControlPlane selects templates referenced in .spec.ControlPlane. Note: this will match the controlPlane and also the controlPlane machineInfrastructure (depending on the kind and apiVersion).
+             */
+            controlPlane?: pulumi.Input<boolean>;
+            /**
+             * InfrastructureCluster selects templates referenced in .spec.infrastructure.
+             */
+            infrastructureCluster?: pulumi.Input<boolean>;
+            /**
+             * MachineDeploymentClass selects templates referenced in specific MachineDeploymentClasses in .spec.workers.machineDeployments.
+             */
+            machineDeploymentClass?: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecPatchesDefinitionsSelectorMatchResourcesMachineDeploymentClassArgs>;
+        }
+
+        /**
+         * MachineDeploymentClass selects templates referenced in specific MachineDeploymentClasses in .spec.workers.machineDeployments.
+         */
+        export interface ClusterClassSpecPatchesDefinitionsSelectorMatchResourcesMachineDeploymentClassArgs {
+            /**
+             * Names selects templates by class names.
+             */
+            names?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * External defines an external patch. Note: Exactly one of Definitions or External must be set.
+         */
+        export interface ClusterClassSpecPatchesExternalArgs {
+            /**
+             * DiscoverVariablesExtension references an extension which is called to discover variables.
+             */
+            discoverVariablesExtension?: pulumi.Input<string>;
+            /**
+             * GenerateExtension references an extension which is called to generate patches.
+             */
+            generateExtension?: pulumi.Input<string>;
+            /**
+             * Settings defines key value pairs to be passed to the extensions. Values defined here take precedence over the values defined in the corresponding ExtensionConfig.
+             */
+            settings?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * ValidateExtension references an extension which is called to validate the topology.
+             */
+            validateExtension?: pulumi.Input<string>;
+        }
+
+        /**
+         * ClusterClassVariable defines a variable which can be configured in the Cluster topology and used in patches.
+         */
+        export interface ClusterClassSpecVariablesArgs {
+            /**
+             * Name of the variable.
+             */
+            name: pulumi.Input<string>;
+            /**
+             * Required specifies if the variable is required. Note: this applies to the variable as a whole and thus the top-level object defined in the schema. If nested fields are required, this will be specified inside the schema.
+             */
+            required: pulumi.Input<boolean>;
+            /**
+             * Schema defines the schema of the variable.
+             */
+            schema: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecVariablesSchemaArgs>;
+        }
+
+        /**
+         * Schema defines the schema of the variable.
+         */
+        export interface ClusterClassSpecVariablesSchemaArgs {
+            /**
+             * OpenAPIV3Schema defines the schema of a variable via OpenAPI v3 schema. The schema is a subset of the schema used in Kubernetes CRDs.
+             */
+            openAPIV3Schema: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecVariablesSchemaOpenAPIV3SchemaArgs>;
+        }
+
+        /**
+         * OpenAPIV3Schema defines the schema of a variable via OpenAPI v3 schema. The schema is a subset of the schema used in Kubernetes CRDs.
+         */
+        export interface ClusterClassSpecVariablesSchemaOpenAPIV3SchemaArgs {
+            /**
+             * AdditionalProperties specifies the schema of values in a map (keys are always strings). NOTE: Can only be set if type is object. NOTE: AdditionalProperties is mutually exclusive with Properties. NOTE: This field uses PreserveUnknownFields and Schemaless, because recursive validation is not possible.
+             */
+            additionalProperties?: pulumi.Input<{[key: string]: any}>;
+            /**
+             * Default is the default value of the variable. NOTE: Can be set for all types.
+             */
+            default?: pulumi.Input<{[key: string]: any}>;
+            /**
+             * Description is a human-readable description of this variable.
+             */
+            description?: pulumi.Input<string>;
+            /**
+             * Enum is the list of valid values of the variable. NOTE: Can be set for all types.
+             */
+            enum?: pulumi.Input<pulumi.Input<{[key: string]: any}>[]>;
+            /**
+             * Example is an example for this variable.
+             */
+            example?: pulumi.Input<{[key: string]: any}>;
+            /**
+             * ExclusiveMaximum specifies if the Maximum is exclusive. NOTE: Can only be set if type is integer or number.
+             */
+            exclusiveMaximum?: pulumi.Input<boolean>;
+            /**
+             * ExclusiveMinimum specifies if the Minimum is exclusive. NOTE: Can only be set if type is integer or number.
+             */
+            exclusiveMinimum?: pulumi.Input<boolean>;
+            /**
+             * Format is an OpenAPI v3 format string. Unknown formats are ignored. For a list of supported formats please see: (of the k8s.io/apiextensions-apiserver version we're currently using) https://github.com/kubernetes/apiextensions-apiserver/blob/master/pkg/apiserver/validation/formats.go NOTE: Can only be set if type is string.
+             */
+            format?: pulumi.Input<string>;
+            /**
+             * Items specifies fields of an array. NOTE: Can only be set if type is array. NOTE: This field uses PreserveUnknownFields and Schemaless, because recursive validation is not possible.
+             */
+            items?: pulumi.Input<{[key: string]: any}>;
+            /**
+             * MaxItems is the max length of an array variable. NOTE: Can only be set if type is array.
+             */
+            maxItems?: pulumi.Input<number>;
+            /**
+             * MaxLength is the max length of a string variable. NOTE: Can only be set if type is string.
+             */
+            maxLength?: pulumi.Input<number>;
+            /**
+             * Maximum is the maximum of an integer or number variable. If ExclusiveMaximum is false, the variable is valid if it is lower than, or equal to, the value of Maximum. If ExclusiveMaximum is true, the variable is valid if it is strictly lower than the value of Maximum. NOTE: Can only be set if type is integer or number.
+             */
+            maximum?: pulumi.Input<number>;
+            /**
+             * MinItems is the min length of an array variable. NOTE: Can only be set if type is array.
+             */
+            minItems?: pulumi.Input<number>;
+            /**
+             * MinLength is the min length of a string variable. NOTE: Can only be set if type is string.
+             */
+            minLength?: pulumi.Input<number>;
+            /**
+             * Minimum is the minimum of an integer or number variable. If ExclusiveMinimum is false, the variable is valid if it is greater than, or equal to, the value of Minimum. If ExclusiveMinimum is true, the variable is valid if it is strictly greater than the value of Minimum. NOTE: Can only be set if type is integer or number.
+             */
+            minimum?: pulumi.Input<number>;
+            /**
+             * Pattern is the regex which a string variable must match. NOTE: Can only be set if type is string.
+             */
+            pattern?: pulumi.Input<string>;
+            /**
+             * Properties specifies fields of an object. NOTE: Can only be set if type is object. NOTE: Properties is mutually exclusive with AdditionalProperties. NOTE: This field uses PreserveUnknownFields and Schemaless, because recursive validation is not possible.
+             */
+            properties?: pulumi.Input<{[key: string]: any}>;
+            /**
+             * Required specifies which fields of an object are required. NOTE: Can only be set if type is object.
+             */
+            required?: pulumi.Input<pulumi.Input<string>[]>;
+            /**
+             * Type is the type of the variable. Valid values are: object, array, string, integer, number or boolean.
+             */
+            type: pulumi.Input<string>;
+            /**
+             * UniqueItems specifies if items in an array must be unique. NOTE: Can only be set if type is array.
+             */
+            uniqueItems?: pulumi.Input<boolean>;
+            /**
+             * XPreserveUnknownFields allows setting fields in a variable object which are not defined in the variable schema. This affects fields recursively, except if nested properties or additionalProperties are specified in the schema.
+             */
+            'x-kubernetes-preserve-unknown-fields'?: pulumi.Input<boolean>;
+        }
+
+        /**
+         * Workers describes the worker nodes for the cluster. It is a collection of node types which can be used to create the worker nodes of the cluster.
+         */
+        export interface ClusterClassSpecWorkersArgs {
+            /**
+             * MachineDeployments is a list of machine deployment classes that can be used to create a set of worker nodes.
+             */
+            machineDeployments?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsArgs>[]>;
+        }
+
+        /**
+         * MachineDeploymentClass serves as a template to define a set of worker nodes of the cluster provisioned using the `ClusterClass`.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsArgs {
+            /**
+             * Class denotes a type of worker node present in the cluster, this name MUST be unique within a ClusterClass and can be referenced in the Cluster to create a managed MachineDeployment.
+             */
+            class: pulumi.Input<string>;
+            /**
+             * FailureDomain is the failure domain the machines will be created in. Must match a key in the FailureDomains map stored on the cluster object. NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+             */
+            failureDomain?: pulumi.Input<string>;
+            /**
+             * MachineHealthCheck defines a MachineHealthCheck for this MachineDeploymentClass.
+             */
+            machineHealthCheck?: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsMachineHealthCheckArgs>;
+            /**
+             * Minimum number of seconds for which a newly created machine should be ready. Defaults to 0 (machine will be considered available as soon as it is ready) NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+             */
+            minReadySeconds?: pulumi.Input<number>;
+            /**
+             * NamingStrategy allows changing the naming pattern used when creating the MachineDeployment.
+             */
+            namingStrategy?: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsNamingStrategyArgs>;
+            /**
+             * NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely. Defaults to 10 seconds. NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+             */
+            nodeDeletionTimeout?: pulumi.Input<string>;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout` NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+             */
+            nodeDrainTimeout?: pulumi.Input<string>;
+            /**
+             * NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations. NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+             */
+            nodeVolumeDetachTimeout?: pulumi.Input<string>;
+            /**
+             * The deployment strategy to use to replace existing machines with new ones. NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+             */
+            strategy?: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsStrategyArgs>;
+            /**
+             * Template is a local struct containing a collection of templates for creation of MachineDeployment objects representing a set of worker nodes.
+             */
+            template: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsTemplateArgs>;
+        }
+
+        /**
+         * MachineHealthCheck defines a MachineHealthCheck for this MachineDeploymentClass.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsMachineHealthCheckArgs {
+            /**
+             * Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by "selector" are not healthy.
+             */
+            maxUnhealthy?: pulumi.Input<number | string>;
+            /**
+             * Machines older than this duration without a node will be considered to have failed and will be remediated. If you wish to disable this feature, set the value explicitly to 0.
+             */
+            nodeStartupTimeout?: pulumi.Input<string>;
+            /**
+             * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+             *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+             */
+            remediationTemplate?: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsMachineHealthCheckRemediationTemplateArgs>;
+            /**
+             * UnhealthyConditions contains a list of the conditions that determine whether a node is considered unhealthy. The conditions are combined in a logical OR, i.e. if any of the conditions is met, the node is unhealthy.
+             */
+            unhealthyConditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditionsArgs>[]>;
+            /**
+             * Any further remediation is only allowed if the number of machines selected by "selector" as not healthy is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy. Eg. "[3-5]" - This means that remediation will be allowed only when: (a) there are at least 3 unhealthy machines (and) (b) there are at most 5 unhealthy machines
+             */
+            unhealthyRange?: pulumi.Input<string>;
+        }
+
+        /**
+         * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+         *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsMachineHealthCheckRemediationTemplateArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * UnhealthyCondition represents a Node condition type and value with a timeout specified as a duration.  When the named condition has been in the given status for at least the timeout value, a node is considered unhealthy.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditionsArgs {
+            status: pulumi.Input<string>;
+            timeout: pulumi.Input<string>;
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * NamingStrategy allows changing the naming pattern used when creating the MachineDeployment.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsNamingStrategyArgs {
+            /**
+             * Template defines the template to use for generating the name of the MachineDeployment object. If not defined, it will fallback to `{{ .cluster.name }}-{{ .machineDeployment.topologyName }}-{{ .random }}`. If the templated string exceeds 63 characters, it will be trimmed to 58 characters and will get concatenated with a random suffix of length 5. The templating mechanism provides the following arguments: * `.cluster.name`: The name of the cluster object. * `.random`: A random alphanumeric string, without vowels, of length 5. * `.machineDeployment.topologyName`: The name of the MachineDeployment topology (Cluster.spec.topology.workers.machineDeployments[].name).
+             */
+            template?: pulumi.Input<string>;
+        }
+
+        /**
+         * The deployment strategy to use to replace existing machines with new ones. NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsStrategyArgs {
+            /**
+             * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+             */
+            rollingUpdate?: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsStrategyRollingUpdateArgs>;
+            /**
+             * Type of deployment. Default is RollingUpdate.
+             */
+            type?: pulumi.Input<string>;
+        }
+
+        /**
+         * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsStrategyRollingUpdateArgs {
+            /**
+             * DeletePolicy defines the policy used by the MachineDeployment to identify nodes to delete when downscaling. Valid values are "Random, "Newest", "Oldest" When no value is supplied, the default DeletePolicy of MachineSet is used
+             */
+            deletePolicy?: pulumi.Input<string>;
+            /**
+             * The maximum number of machines that can be scheduled above the desired number of machines. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up. Defaults to 1. Example: when this is set to 30%, the new MachineSet can be scaled up immediately when the rolling update starts, such that the total number of old and new machines do not exceed 130% of desired machines. Once old machines have been killed, new MachineSet can be scaled up further, ensuring that total number of machines running at any time during the update is at most 130% of desired machines.
+             */
+            maxSurge?: pulumi.Input<number | string>;
+            /**
+             * The maximum number of machines that can be unavailable during the update. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). Absolute number is calculated from percentage by rounding down. This can not be 0 if MaxSurge is 0. Defaults to 0. Example: when this is set to 30%, the old MachineSet can be scaled down to 70% of desired machines immediately when the rolling update starts. Once new machines are ready, old MachineSet can be scaled down further, followed by scaling up the new MachineSet, ensuring that the total number of machines available at all times during the update is at least 70% of desired machines.
+             */
+            maxUnavailable?: pulumi.Input<number | string>;
+        }
+
+        /**
+         * Template is a local struct containing a collection of templates for creation of MachineDeployment objects representing a set of worker nodes.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateArgs {
+            /**
+             * Bootstrap contains the bootstrap template reference to be used for the creation of worker Machines.
+             */
+            bootstrap: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsTemplateBootstrapArgs>;
+            /**
+             * Infrastructure contains the infrastructure template reference to be used for the creation of worker Machines.
+             */
+            infrastructure: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsTemplateInfrastructureArgs>;
+            /**
+             * Metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment. At runtime this metadata is merged with the corresponding metadata from the topology.
+             */
+            metadata?: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsTemplateMetadataArgs>;
+        }
+
+        /**
+         * Bootstrap contains the bootstrap template reference to be used for the creation of worker Machines.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateBootstrapArgs {
+            /**
+             * Ref is a required reference to a custom resource offered by a provider.
+             */
+            ref: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsTemplateBootstrapRefArgs>;
+        }
+
+        /**
+         * Ref is a required reference to a custom resource offered by a provider.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateBootstrapRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * Infrastructure contains the infrastructure template reference to be used for the creation of worker Machines.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateInfrastructureArgs {
+            /**
+             * Ref is a required reference to a custom resource offered by a provider.
+             */
+            ref: pulumi.Input<inputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsTemplateInfrastructureRefArgs>;
+        }
+
+        /**
+         * Ref is a required reference to a custom resource offered by a provider.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * Metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment. At runtime this metadata is merged with the corresponding metadata from the topology.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateMetadataArgs {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * ClusterClassStatus defines the observed state of the ClusterClass.
+         */
+        export interface ClusterClassStatusArgs {
+            /**
+             * Conditions defines current observed state of the ClusterClass.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.ClusterClassStatusConditionsArgs>[]>;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * Variables is a list of ClusterClassStatusVariable that are defined for the ClusterClass.
+             */
+            variables?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.ClusterClassStatusVariablesArgs>[]>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ClusterClassStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * ClusterClassStatusVariable defines a variable which appears in the status of a ClusterClass.
+         */
+        export interface ClusterClassStatusVariablesArgs {
+            /**
+             * Definitions is a list of definitions for a variable.
+             */
+            definitions: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.ClusterClassStatusVariablesDefinitionsArgs>[]>;
+            /**
+             * DefinitionsConflict specifies whether or not there are conflicting definitions for a single variable name.
+             */
+            definitionsConflict?: pulumi.Input<boolean>;
+            /**
+             * Name is the name of the variable.
+             */
+            name: pulumi.Input<string>;
+        }
+
+        /**
+         * ClusterClassStatusVariableDefinition defines a variable which appears in the status of a ClusterClass.
+         */
+        export interface ClusterClassStatusVariablesDefinitionsArgs {
+            /**
+             * From specifies the origin of the variable definition. This will be `inline` for variables defined in the ClusterClass or the name of a patch defined in the ClusterClass for variables discovered from a DiscoverVariables runtime extensions.
+             */
+            from: pulumi.Input<string>;
+            /**
+             * Required specifies if the variable is required. Note: this applies to the variable as a whole and thus the top-level object defined in the schema. If nested fields are required, this will be specified inside the schema.
+             */
+            required: pulumi.Input<boolean>;
+            /**
+             * Schema defines the schema of the variable.
+             */
+            schema: pulumi.Input<inputs.cluster.v1beta1.ClusterClassStatusVariablesDefinitionsSchemaArgs>;
+        }
+
+        /**
+         * Schema defines the schema of the variable.
+         */
+        export interface ClusterClassStatusVariablesDefinitionsSchemaArgs {
+            /**
+             * OpenAPIV3Schema defines the schema of a variable via OpenAPI v3 schema. The schema is a subset of the schema used in Kubernetes CRDs.
+             */
+            openAPIV3Schema: pulumi.Input<inputs.cluster.v1beta1.ClusterClassStatusVariablesDefinitionsSchemaOpenAPIV3SchemaArgs>;
+        }
+
+        /**
+         * OpenAPIV3Schema defines the schema of a variable via OpenAPI v3 schema. The schema is a subset of the schema used in Kubernetes CRDs.
+         */
+        export interface ClusterClassStatusVariablesDefinitionsSchemaOpenAPIV3SchemaArgs {
+            /**
+             * AdditionalProperties specifies the schema of values in a map (keys are always strings). NOTE: Can only be set if type is object. NOTE: AdditionalProperties is mutually exclusive with Properties. NOTE: This field uses PreserveUnknownFields and Schemaless, because recursive validation is not possible.
+             */
+            additionalProperties?: pulumi.Input<{[key: string]: any}>;
+            /**
+             * Default is the default value of the variable. NOTE: Can be set for all types.
+             */
+            default?: pulumi.Input<{[key: string]: any}>;
+            /**
+             * Description is a human-readable description of this variable.
+             */
+            description?: pulumi.Input<string>;
+            /**
+             * Enum is the list of valid values of the variable. NOTE: Can be set for all types.
+             */
+            enum?: pulumi.Input<pulumi.Input<{[key: string]: any}>[]>;
+            /**
+             * Example is an example for this variable.
+             */
+            example?: pulumi.Input<{[key: string]: any}>;
+            /**
+             * ExclusiveMaximum specifies if the Maximum is exclusive. NOTE: Can only be set if type is integer or number.
+             */
+            exclusiveMaximum?: pulumi.Input<boolean>;
+            /**
+             * ExclusiveMinimum specifies if the Minimum is exclusive. NOTE: Can only be set if type is integer or number.
+             */
+            exclusiveMinimum?: pulumi.Input<boolean>;
+            /**
+             * Format is an OpenAPI v3 format string. Unknown formats are ignored. For a list of supported formats please see: (of the k8s.io/apiextensions-apiserver version we're currently using) https://github.com/kubernetes/apiextensions-apiserver/blob/master/pkg/apiserver/validation/formats.go NOTE: Can only be set if type is string.
+             */
+            format?: pulumi.Input<string>;
+            /**
+             * Items specifies fields of an array. NOTE: Can only be set if type is array. NOTE: This field uses PreserveUnknownFields and Schemaless, because recursive validation is not possible.
+             */
+            items?: pulumi.Input<{[key: string]: any}>;
+            /**
+             * MaxItems is the max length of an array variable. NOTE: Can only be set if type is array.
+             */
+            maxItems?: pulumi.Input<number>;
+            /**
+             * MaxLength is the max length of a string variable. NOTE: Can only be set if type is string.
+             */
+            maxLength?: pulumi.Input<number>;
+            /**
+             * Maximum is the maximum of an integer or number variable. If ExclusiveMaximum is false, the variable is valid if it is lower than, or equal to, the value of Maximum. If ExclusiveMaximum is true, the variable is valid if it is strictly lower than the value of Maximum. NOTE: Can only be set if type is integer or number.
+             */
+            maximum?: pulumi.Input<number>;
+            /**
+             * MinItems is the min length of an array variable. NOTE: Can only be set if type is array.
+             */
+            minItems?: pulumi.Input<number>;
+            /**
+             * MinLength is the min length of a string variable. NOTE: Can only be set if type is string.
+             */
+            minLength?: pulumi.Input<number>;
+            /**
+             * Minimum is the minimum of an integer or number variable. If ExclusiveMinimum is false, the variable is valid if it is greater than, or equal to, the value of Minimum. If ExclusiveMinimum is true, the variable is valid if it is strictly greater than the value of Minimum. NOTE: Can only be set if type is integer or number.
+             */
+            minimum?: pulumi.Input<number>;
+            /**
+             * Pattern is the regex which a string variable must match. NOTE: Can only be set if type is string.
+             */
+            pattern?: pulumi.Input<string>;
+            /**
+             * Properties specifies fields of an object. NOTE: Can only be set if type is object. NOTE: Properties is mutually exclusive with AdditionalProperties. NOTE: This field uses PreserveUnknownFields and Schemaless, because recursive validation is not possible.
+             */
+            properties?: pulumi.Input<{[key: string]: any}>;
+            /**
+             * Required specifies which fields of an object are required. NOTE: Can only be set if type is object.
+             */
+            required?: pulumi.Input<pulumi.Input<string>[]>;
+            /**
+             * Type is the type of the variable. Valid values are: object, array, string, integer, number or boolean.
+             */
+            type: pulumi.Input<string>;
+            /**
+             * UniqueItems specifies if items in an array must be unique. NOTE: Can only be set if type is array.
+             */
+            uniqueItems?: pulumi.Input<boolean>;
+            /**
+             * XPreserveUnknownFields allows setting fields in a variable object which are not defined in the variable schema. This affects fields recursively, except if nested properties or additionalProperties are specified in the schema.
+             */
+            'x-kubernetes-preserve-unknown-fields'?: pulumi.Input<boolean>;
+        }
+
+        /**
+         * ClusterSpec defines the desired state of Cluster.
+         */
+        export interface ClusterSpecArgs {
+            /**
+             * Cluster network configuration.
+             */
+            clusterNetwork?: pulumi.Input<inputs.cluster.v1beta1.ClusterSpecClusterNetworkArgs>;
+            /**
+             * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+             */
+            controlPlaneEndpoint?: pulumi.Input<inputs.cluster.v1beta1.ClusterSpecControlPlaneEndpointArgs>;
+            /**
+             * ControlPlaneRef is an optional reference to a provider-specific resource that holds the details for provisioning the Control Plane for a Cluster.
+             */
+            controlPlaneRef?: pulumi.Input<inputs.cluster.v1beta1.ClusterSpecControlPlaneRefArgs>;
+            /**
+             * InfrastructureRef is a reference to a provider-specific resource that holds the details for provisioning infrastructure for a cluster in said provider.
+             */
+            infrastructureRef?: pulumi.Input<inputs.cluster.v1beta1.ClusterSpecInfrastructureRefArgs>;
+            /**
+             * Paused can be used to prevent controllers from processing the Cluster and all its associated objects.
+             */
+            paused?: pulumi.Input<boolean>;
+            /**
+             * This encapsulates the topology for the cluster. NOTE: It is required to enable the ClusterTopology feature gate flag to activate managed topologies support; this feature is highly experimental, and parts of it might still be not implemented.
+             */
+            topology?: pulumi.Input<inputs.cluster.v1beta1.ClusterSpecTopologyArgs>;
+        }
+
+        /**
+         * Cluster network configuration.
+         */
+        export interface ClusterSpecClusterNetworkArgs {
+            /**
+             * APIServerPort specifies the port the API Server should bind to. Defaults to 6443.
+             */
+            apiServerPort?: pulumi.Input<number>;
+            /**
+             * The network ranges from which Pod networks are allocated.
+             */
+            pods?: pulumi.Input<inputs.cluster.v1beta1.ClusterSpecClusterNetworkPodsArgs>;
+            /**
+             * Domain name for services.
+             */
+            serviceDomain?: pulumi.Input<string>;
+            /**
+             * The network ranges from which service VIPs are allocated.
+             */
+            services?: pulumi.Input<inputs.cluster.v1beta1.ClusterSpecClusterNetworkServicesArgs>;
+        }
+
+        /**
+         * The network ranges from which Pod networks are allocated.
+         */
+        export interface ClusterSpecClusterNetworkPodsArgs {
+            cidrBlocks: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * The network ranges from which service VIPs are allocated.
+         */
+        export interface ClusterSpecClusterNetworkServicesArgs {
+            cidrBlocks: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+         */
+        export interface ClusterSpecControlPlaneEndpointArgs {
+            /**
+             * The hostname on which the API server is serving.
+             */
+            host: pulumi.Input<string>;
+            /**
+             * The port on which the API server is serving.
+             */
+            port: pulumi.Input<number>;
+        }
+
+        /**
+         * ControlPlaneRef is an optional reference to a provider-specific resource that holds the details for provisioning the Control Plane for a Cluster.
+         */
+        export interface ClusterSpecControlPlaneRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * InfrastructureRef is a reference to a provider-specific resource that holds the details for provisioning infrastructure for a cluster in said provider.
+         */
+        export interface ClusterSpecInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * This encapsulates the topology for the cluster. NOTE: It is required to enable the ClusterTopology feature gate flag to activate managed topologies support; this feature is highly experimental, and parts of it might still be not implemented.
+         */
+        export interface ClusterSpecTopologyArgs {
+            /**
+             * The name of the ClusterClass object to create the topology.
+             */
+            class: pulumi.Input<string>;
+            /**
+             * ControlPlane describes the cluster control plane.
+             */
+            controlPlane?: pulumi.Input<inputs.cluster.v1beta1.ClusterSpecTopologyControlPlaneArgs>;
+            /**
+             * RolloutAfter performs a rollout of the entire cluster one component at a time, control plane first and then machine deployments. 
+             *  Deprecated: This field has no function and is going to be removed in the next apiVersion.
+             */
+            rolloutAfter?: pulumi.Input<string>;
+            /**
+             * Variables can be used to customize the Cluster through patches. They must comply to the corresponding VariableClasses defined in the ClusterClass.
+             */
+            variables?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.ClusterSpecTopologyVariablesArgs>[]>;
+            /**
+             * The Kubernetes version of the cluster.
+             */
+            version: pulumi.Input<string>;
+            /**
+             * Workers encapsulates the different constructs that form the worker nodes for the cluster.
+             */
+            workers?: pulumi.Input<inputs.cluster.v1beta1.ClusterSpecTopologyWorkersArgs>;
+        }
+
+        /**
+         * ControlPlane describes the cluster control plane.
+         */
+        export interface ClusterSpecTopologyControlPlaneArgs {
+            /**
+             * MachineHealthCheck allows to enable, disable and override the MachineHealthCheck configuration in the ClusterClass for this control plane.
+             */
+            machineHealthCheck?: pulumi.Input<inputs.cluster.v1beta1.ClusterSpecTopologyControlPlaneMachineHealthCheckArgs>;
+            /**
+             * Metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane if the ControlPlaneTemplate referenced by the ClusterClass is machine based. If not, it is applied only to the ControlPlane. At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
+             */
+            metadata?: pulumi.Input<inputs.cluster.v1beta1.ClusterSpecTopologyControlPlaneMetadataArgs>;
+            /**
+             * NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely. Defaults to 10 seconds.
+             */
+            nodeDeletionTimeout?: pulumi.Input<string>;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: pulumi.Input<string>;
+            /**
+             * NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
+             */
+            nodeVolumeDetachTimeout?: pulumi.Input<string>;
+            /**
+             * Replicas is the number of control plane nodes. If the value is nil, the ControlPlane object is created without the number of Replicas and it's assumed that the control plane controller does not implement support for this field. When specified against a control plane provider that lacks support for this field, this value will be ignored.
+             */
+            replicas?: pulumi.Input<number>;
+        }
+
+        /**
+         * MachineHealthCheck allows to enable, disable and override the MachineHealthCheck configuration in the ClusterClass for this control plane.
+         */
+        export interface ClusterSpecTopologyControlPlaneMachineHealthCheckArgs {
+            /**
+             * Enable controls if a MachineHealthCheck should be created for the target machines. 
+             *  If false: No MachineHealthCheck will be created. 
+             *  If not set(default): A MachineHealthCheck will be created if it is defined here or in the associated ClusterClass. If no MachineHealthCheck is defined then none will be created. 
+             *  If true: A MachineHealthCheck is guaranteed to be created. Cluster validation will block if `enable` is true and no MachineHealthCheck definition is available.
+             */
+            enable?: pulumi.Input<boolean>;
+            /**
+             * Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by "selector" are not healthy.
+             */
+            maxUnhealthy?: pulumi.Input<number | string>;
+            /**
+             * Machines older than this duration without a node will be considered to have failed and will be remediated. If you wish to disable this feature, set the value explicitly to 0.
+             */
+            nodeStartupTimeout?: pulumi.Input<string>;
+            /**
+             * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+             *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+             */
+            remediationTemplate?: pulumi.Input<inputs.cluster.v1beta1.ClusterSpecTopologyControlPlaneMachineHealthCheckRemediationTemplateArgs>;
+            /**
+             * UnhealthyConditions contains a list of the conditions that determine whether a node is considered unhealthy. The conditions are combined in a logical OR, i.e. if any of the conditions is met, the node is unhealthy.
+             */
+            unhealthyConditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.ClusterSpecTopologyControlPlaneMachineHealthCheckUnhealthyConditionsArgs>[]>;
+            /**
+             * Any further remediation is only allowed if the number of machines selected by "selector" as not healthy is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy. Eg. "[3-5]" - This means that remediation will be allowed only when: (a) there are at least 3 unhealthy machines (and) (b) there are at most 5 unhealthy machines
+             */
+            unhealthyRange?: pulumi.Input<string>;
+        }
+
+        /**
+         * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+         *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+         */
+        export interface ClusterSpecTopologyControlPlaneMachineHealthCheckRemediationTemplateArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * UnhealthyCondition represents a Node condition type and value with a timeout specified as a duration.  When the named condition has been in the given status for at least the timeout value, a node is considered unhealthy.
+         */
+        export interface ClusterSpecTopologyControlPlaneMachineHealthCheckUnhealthyConditionsArgs {
+            status: pulumi.Input<string>;
+            timeout: pulumi.Input<string>;
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * Metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane if the ControlPlaneTemplate referenced by the ClusterClass is machine based. If not, it is applied only to the ControlPlane. At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
+         */
+        export interface ClusterSpecTopologyControlPlaneMetadataArgs {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * ClusterVariable can be used to customize the Cluster through patches. Each ClusterVariable is associated with a Variable definition in the ClusterClass `status` variables.
+         */
+        export interface ClusterSpecTopologyVariablesArgs {
+            /**
+             * DefinitionFrom specifies where the definition of this Variable is from. DefinitionFrom is `inline` when the definition is from the ClusterClass `.spec.variables` or the name of a patch defined in the ClusterClass `.spec.patches` where the patch is external and provides external variables. This field is mandatory if the variable has `DefinitionsConflict: true` in ClusterClass `status.variables[]`
+             */
+            definitionFrom?: pulumi.Input<string>;
+            /**
+             * Name of the variable.
+             */
+            name: pulumi.Input<string>;
+            /**
+             * Value of the variable. Note: the value will be validated against the schema of the corresponding ClusterClassVariable from the ClusterClass. Note: We have to use apiextensionsv1.JSON instead of a custom JSON type, because controller-tools has a hard-coded schema for apiextensionsv1.JSON which cannot be produced by another type via controller-tools, i.e. it is not possible to have no type field. Ref: https://github.com/kubernetes-sigs/controller-tools/blob/d0e03a142d0ecdd5491593e941ee1d6b5d91dba6/pkg/crd/known_types.go#L106-L111
+             */
+            value: pulumi.Input<{[key: string]: any}>;
+        }
+
+        /**
+         * Workers encapsulates the different constructs that form the worker nodes for the cluster.
+         */
+        export interface ClusterSpecTopologyWorkersArgs {
+            /**
+             * MachineDeployments is a list of machine deployments in the cluster.
+             */
+            machineDeployments?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.ClusterSpecTopologyWorkersMachineDeploymentsArgs>[]>;
+        }
+
+        /**
+         * MachineDeploymentTopology specifies the different parameters for a set of worker nodes in the topology. This set of nodes is managed by a MachineDeployment object whose lifecycle is managed by the Cluster controller.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeploymentsArgs {
+            /**
+             * Class is the name of the MachineDeploymentClass used to create the set of worker nodes. This should match one of the deployment classes defined in the ClusterClass object mentioned in the `Cluster.Spec.Class` field.
+             */
+            class: pulumi.Input<string>;
+            /**
+             * FailureDomain is the failure domain the machines will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: pulumi.Input<string>;
+            /**
+             * MachineHealthCheck allows to enable, disable and override the MachineHealthCheck configuration in the ClusterClass for this MachineDeployment.
+             */
+            machineHealthCheck?: pulumi.Input<inputs.cluster.v1beta1.ClusterSpecTopologyWorkersMachineDeploymentsMachineHealthCheckArgs>;
+            /**
+             * Metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment. At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
+             */
+            metadata?: pulumi.Input<inputs.cluster.v1beta1.ClusterSpecTopologyWorkersMachineDeploymentsMetadataArgs>;
+            /**
+             * Minimum number of seconds for which a newly created machine should be ready. Defaults to 0 (machine will be considered available as soon as it is ready)
+             */
+            minReadySeconds?: pulumi.Input<number>;
+            /**
+             * Name is the unique identifier for this MachineDeploymentTopology. The value is used with other unique identifiers to create a MachineDeployment's Name (e.g. cluster's name, etc). In case the name is greater than the allowed maximum length, the values are hashed together.
+             */
+            name: pulumi.Input<string>;
+            /**
+             * NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely. Defaults to 10 seconds.
+             */
+            nodeDeletionTimeout?: pulumi.Input<string>;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: pulumi.Input<string>;
+            /**
+             * NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
+             */
+            nodeVolumeDetachTimeout?: pulumi.Input<string>;
+            /**
+             * Replicas is the number of worker nodes belonging to this set. If the value is nil, the MachineDeployment is created without the number of Replicas (defaulting to 1) and it's assumed that an external entity (like cluster autoscaler) is responsible for the management of this value.
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * The deployment strategy to use to replace existing machines with new ones.
+             */
+            strategy?: pulumi.Input<inputs.cluster.v1beta1.ClusterSpecTopologyWorkersMachineDeploymentsStrategyArgs>;
+            /**
+             * Variables can be used to customize the MachineDeployment through patches.
+             */
+            variables?: pulumi.Input<inputs.cluster.v1beta1.ClusterSpecTopologyWorkersMachineDeploymentsVariablesArgs>;
+        }
+
+        /**
+         * MachineHealthCheck allows to enable, disable and override the MachineHealthCheck configuration in the ClusterClass for this MachineDeployment.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeploymentsMachineHealthCheckArgs {
+            /**
+             * Enable controls if a MachineHealthCheck should be created for the target machines. 
+             *  If false: No MachineHealthCheck will be created. 
+             *  If not set(default): A MachineHealthCheck will be created if it is defined here or in the associated ClusterClass. If no MachineHealthCheck is defined then none will be created. 
+             *  If true: A MachineHealthCheck is guaranteed to be created. Cluster validation will block if `enable` is true and no MachineHealthCheck definition is available.
+             */
+            enable?: pulumi.Input<boolean>;
+            /**
+             * Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by "selector" are not healthy.
+             */
+            maxUnhealthy?: pulumi.Input<number | string>;
+            /**
+             * Machines older than this duration without a node will be considered to have failed and will be remediated. If you wish to disable this feature, set the value explicitly to 0.
+             */
+            nodeStartupTimeout?: pulumi.Input<string>;
+            /**
+             * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+             *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+             */
+            remediationTemplate?: pulumi.Input<inputs.cluster.v1beta1.ClusterSpecTopologyWorkersMachineDeploymentsMachineHealthCheckRemediationTemplateArgs>;
+            /**
+             * UnhealthyConditions contains a list of the conditions that determine whether a node is considered unhealthy. The conditions are combined in a logical OR, i.e. if any of the conditions is met, the node is unhealthy.
+             */
+            unhealthyConditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.ClusterSpecTopologyWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditionsArgs>[]>;
+            /**
+             * Any further remediation is only allowed if the number of machines selected by "selector" as not healthy is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy. Eg. "[3-5]" - This means that remediation will be allowed only when: (a) there are at least 3 unhealthy machines (and) (b) there are at most 5 unhealthy machines
+             */
+            unhealthyRange?: pulumi.Input<string>;
+        }
+
+        /**
+         * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+         *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeploymentsMachineHealthCheckRemediationTemplateArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * UnhealthyCondition represents a Node condition type and value with a timeout specified as a duration.  When the named condition has been in the given status for at least the timeout value, a node is considered unhealthy.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditionsArgs {
+            status: pulumi.Input<string>;
+            timeout: pulumi.Input<string>;
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * Metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment. At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeploymentsMetadataArgs {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * The deployment strategy to use to replace existing machines with new ones.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeploymentsStrategyArgs {
+            /**
+             * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+             */
+            rollingUpdate?: pulumi.Input<inputs.cluster.v1beta1.ClusterSpecTopologyWorkersMachineDeploymentsStrategyRollingUpdateArgs>;
+            /**
+             * Type of deployment. Default is RollingUpdate.
+             */
+            type?: pulumi.Input<string>;
+        }
+
+        /**
+         * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeploymentsStrategyRollingUpdateArgs {
+            /**
+             * DeletePolicy defines the policy used by the MachineDeployment to identify nodes to delete when downscaling. Valid values are "Random, "Newest", "Oldest" When no value is supplied, the default DeletePolicy of MachineSet is used
+             */
+            deletePolicy?: pulumi.Input<string>;
+            /**
+             * The maximum number of machines that can be scheduled above the desired number of machines. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up. Defaults to 1. Example: when this is set to 30%, the new MachineSet can be scaled up immediately when the rolling update starts, such that the total number of old and new machines do not exceed 130% of desired machines. Once old machines have been killed, new MachineSet can be scaled up further, ensuring that total number of machines running at any time during the update is at most 130% of desired machines.
+             */
+            maxSurge?: pulumi.Input<number | string>;
+            /**
+             * The maximum number of machines that can be unavailable during the update. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). Absolute number is calculated from percentage by rounding down. This can not be 0 if MaxSurge is 0. Defaults to 0. Example: when this is set to 30%, the old MachineSet can be scaled down to 70% of desired machines immediately when the rolling update starts. Once new machines are ready, old MachineSet can be scaled down further, followed by scaling up the new MachineSet, ensuring that the total number of machines available at all times during the update is at least 70% of desired machines.
+             */
+            maxUnavailable?: pulumi.Input<number | string>;
+        }
+
+        /**
+         * Variables can be used to customize the MachineDeployment through patches.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeploymentsVariablesArgs {
+            /**
+             * Overrides can be used to override Cluster level variables.
+             */
+            overrides?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.ClusterSpecTopologyWorkersMachineDeploymentsVariablesOverridesArgs>[]>;
+        }
+
+        /**
+         * ClusterVariable can be used to customize the Cluster through patches. Each ClusterVariable is associated with a Variable definition in the ClusterClass `status` variables.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeploymentsVariablesOverridesArgs {
+            /**
+             * DefinitionFrom specifies where the definition of this Variable is from. DefinitionFrom is `inline` when the definition is from the ClusterClass `.spec.variables` or the name of a patch defined in the ClusterClass `.spec.patches` where the patch is external and provides external variables. This field is mandatory if the variable has `DefinitionsConflict: true` in ClusterClass `status.variables[]`
+             */
+            definitionFrom?: pulumi.Input<string>;
+            /**
+             * Name of the variable.
+             */
+            name: pulumi.Input<string>;
+            /**
+             * Value of the variable. Note: the value will be validated against the schema of the corresponding ClusterClassVariable from the ClusterClass. Note: We have to use apiextensionsv1.JSON instead of a custom JSON type, because controller-tools has a hard-coded schema for apiextensionsv1.JSON which cannot be produced by another type via controller-tools, i.e. it is not possible to have no type field. Ref: https://github.com/kubernetes-sigs/controller-tools/blob/d0e03a142d0ecdd5491593e941ee1d6b5d91dba6/pkg/crd/known_types.go#L106-L111
+             */
+            value: pulumi.Input<{[key: string]: any}>;
+        }
+
+        /**
+         * ClusterStatus defines the observed state of Cluster.
+         */
+        export interface ClusterStatusArgs {
+            /**
+             * Conditions defines current service state of the cluster.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.ClusterStatusConditionsArgs>[]>;
+            /**
+             * ControlPlaneReady defines if the control plane is ready.
+             */
+            controlPlaneReady?: pulumi.Input<boolean>;
+            /**
+             * FailureDomains is a slice of failure domain objects synced from the infrastructure provider.
+             */
+            failureDomains?: pulumi.Input<{[key: string]: pulumi.Input<inputs.cluster.v1beta1.ClusterStatusFailureDomainsArgs>}>;
+            /**
+             * FailureMessage indicates that there is a fatal problem reconciling the state, and will be set to a descriptive error message.
+             */
+            failureMessage?: pulumi.Input<string>;
+            /**
+             * FailureReason indicates that there is a fatal problem reconciling the state, and will be set to a token value suitable for programmatic interpretation.
+             */
+            failureReason?: pulumi.Input<string>;
+            /**
+             * InfrastructureReady is the state of the infrastructure provider.
+             */
+            infrastructureReady?: pulumi.Input<boolean>;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * Phase represents the current phase of cluster actuation. E.g. Pending, Running, Terminating, Failed etc.
+             */
+            phase?: pulumi.Input<string>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ClusterStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * FailureDomainSpec is the Schema for Cluster API failure domains. It allows controllers to understand how many failure domains a cluster can optionally span across.
+         */
+        export interface ClusterStatusFailureDomainsArgs {
+            /**
+             * Attributes is a free form map of attributes an infrastructure provider might use or require.
+             */
+            attributes?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * ControlPlane determines if this failure domain is suitable for use by control plane machines.
+             */
+            controlPlane?: pulumi.Input<boolean>;
+        }
+
+        /**
+         * MachineDeploymentSpec defines the desired state of MachineDeployment.
+         */
+        export interface MachineDeploymentSpecArgs {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * MinReadySeconds is the minimum number of seconds for which a Node for a newly created machine should be ready before considering the replica available. Defaults to 0 (machine will be considered available as soon as the Node is ready)
+             */
+            minReadySeconds?: pulumi.Input<number>;
+            /**
+             * Indicates that the deployment is paused.
+             */
+            paused?: pulumi.Input<boolean>;
+            /**
+             * The maximum time in seconds for a deployment to make progress before it is considered to be failed. The deployment controller will continue to process failed deployments and a condition with a ProgressDeadlineExceeded reason will be surfaced in the deployment status. Note that progress will not be estimated during the time a deployment is paused. Defaults to 600s.
+             */
+            progressDeadlineSeconds?: pulumi.Input<number>;
+            /**
+             * Number of desired machines. This is a pointer to distinguish between explicit zero and not specified. 
+             *  Defaults to: * if the Kubernetes autoscaler min size and max size annotations are set: - if it's a new MachineDeployment, use min size - if the replicas field of the old MachineDeployment is < min size, use min size - if the replicas field of the old MachineDeployment is > max size, use max size - if the replicas field of the old MachineDeployment is in the (min size, max size) range, keep the value from the oldMD * otherwise use 1 Note: Defaulting will be run whenever the replicas field is not set: * A new MachineDeployment is created with replicas not set. * On an existing MachineDeployment the replicas field was first set and is now unset. Those cases are especially relevant for the following Kubernetes autoscaler use cases: * A new MachineDeployment is created and replicas should be managed by the autoscaler * An existing MachineDeployment which initially wasn't controlled by the autoscaler should be later controlled by the autoscaler
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * The number of old MachineSets to retain to allow rollback. This is a pointer to distinguish between explicit zero and not specified. Defaults to 1.
+             */
+            revisionHistoryLimit?: pulumi.Input<number>;
+            /**
+             * RolloutAfter is a field to indicate a rollout should be performed after the specified time even if no changes have been made to the MachineDeployment. Example: In the YAML the time can be specified in the RFC3339 format. To specify the rolloutAfter target as March 9, 2023, at 9 am UTC use "2023-03-09T09:00:00Z".
+             */
+            rolloutAfter?: pulumi.Input<string>;
+            /**
+             * Label selector for machines. Existing MachineSets whose machines are selected by this will be the ones affected by this deployment. It must match the machine template's labels.
+             */
+            selector: pulumi.Input<inputs.cluster.v1beta1.MachineDeploymentSpecSelectorArgs>;
+            /**
+             * The deployment strategy to use to replace existing machines with new ones.
+             */
+            strategy?: pulumi.Input<inputs.cluster.v1beta1.MachineDeploymentSpecStrategyArgs>;
+            /**
+             * Template describes the machines that will be created.
+             */
+            template: pulumi.Input<inputs.cluster.v1beta1.MachineDeploymentSpecTemplateArgs>;
+        }
+
+        /**
+         * Label selector for machines. Existing MachineSets whose machines are selected by this will be the ones affected by this deployment. It must match the machine template's labels.
+         */
+        export interface MachineDeploymentSpecSelectorArgs {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.MachineDeploymentSpecSelectorMatchExpressionsArgs>[]>;
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface MachineDeploymentSpecSelectorMatchExpressionsArgs {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: pulumi.Input<string>;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: pulumi.Input<string>;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * The deployment strategy to use to replace existing machines with new ones.
+         */
+        export interface MachineDeploymentSpecStrategyArgs {
+            /**
+             * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+             */
+            rollingUpdate?: pulumi.Input<inputs.cluster.v1beta1.MachineDeploymentSpecStrategyRollingUpdateArgs>;
+            /**
+             * Type of deployment. Default is RollingUpdate.
+             */
+            type?: pulumi.Input<string>;
+        }
+
+        /**
+         * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+         */
+        export interface MachineDeploymentSpecStrategyRollingUpdateArgs {
+            /**
+             * DeletePolicy defines the policy used by the MachineDeployment to identify nodes to delete when downscaling. Valid values are "Random, "Newest", "Oldest" When no value is supplied, the default DeletePolicy of MachineSet is used
+             */
+            deletePolicy?: pulumi.Input<string>;
+            /**
+             * The maximum number of machines that can be scheduled above the desired number of machines. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up. Defaults to 1. Example: when this is set to 30%, the new MachineSet can be scaled up immediately when the rolling update starts, such that the total number of old and new machines do not exceed 130% of desired machines. Once old machines have been killed, new MachineSet can be scaled up further, ensuring that total number of machines running at any time during the update is at most 130% of desired machines.
+             */
+            maxSurge?: pulumi.Input<number | string>;
+            /**
+             * The maximum number of machines that can be unavailable during the update. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). Absolute number is calculated from percentage by rounding down. This can not be 0 if MaxSurge is 0. Defaults to 0. Example: when this is set to 30%, the old MachineSet can be scaled down to 70% of desired machines immediately when the rolling update starts. Once new machines are ready, old MachineSet can be scaled down further, followed by scaling up the new MachineSet, ensuring that the total number of machines available at all times during the update is at least 70% of desired machines.
+             */
+            maxUnavailable?: pulumi.Input<number | string>;
+        }
+
+        /**
+         * Template describes the machines that will be created.
+         */
+        export interface MachineDeploymentSpecTemplateArgs {
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata?: pulumi.Input<inputs.cluster.v1beta1.MachineDeploymentSpecTemplateMetadataArgs>;
+            /**
+             * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+             */
+            spec?: pulumi.Input<inputs.cluster.v1beta1.MachineDeploymentSpecTemplateSpecArgs>;
+        }
+
+        /**
+         * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface MachineDeploymentSpecTemplateMetadataArgs {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+         */
+        export interface MachineDeploymentSpecTemplateSpecArgs {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: pulumi.Input<inputs.cluster.v1beta1.MachineDeploymentSpecTemplateSpecBootstrapArgs>;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: pulumi.Input<string>;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: pulumi.Input<inputs.cluster.v1beta1.MachineDeploymentSpecTemplateSpecInfrastructureRefArgs>;
+            /**
+             * NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely. Defaults to 10 seconds.
+             */
+            nodeDeletionTimeout?: pulumi.Input<string>;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: pulumi.Input<string>;
+            /**
+             * NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
+             */
+            nodeVolumeDetachTimeout?: pulumi.Input<string>;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: pulumi.Input<string>;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: pulumi.Input<string>;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachineDeploymentSpecTemplateSpecBootstrapArgs {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+             */
+            configRef?: pulumi.Input<inputs.cluster.v1beta1.MachineDeploymentSpecTemplateSpecBootstrapConfigRefArgs>;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: pulumi.Input<string>;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+         */
+        export interface MachineDeploymentSpecTemplateSpecBootstrapConfigRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachineDeploymentSpecTemplateSpecInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * MachineDeploymentStatus defines the observed state of MachineDeployment.
+         */
+        export interface MachineDeploymentStatusArgs {
+            /**
+             * Total number of available machines (ready for at least minReadySeconds) targeted by this deployment.
+             */
+            availableReplicas?: pulumi.Input<number>;
+            /**
+             * Conditions defines current service state of the MachineDeployment.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.MachineDeploymentStatusConditionsArgs>[]>;
+            /**
+             * The generation observed by the deployment controller.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * Phase represents the current phase of a MachineDeployment (ScalingUp, ScalingDown, Running, Failed, or Unknown).
+             */
+            phase?: pulumi.Input<string>;
+            /**
+             * Total number of ready machines targeted by this deployment.
+             */
+            readyReplicas?: pulumi.Input<number>;
+            /**
+             * Total number of non-terminated machines targeted by this deployment (their labels match the selector).
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * Selector is the same as the label selector but in the string format to avoid introspection by clients. The string will be in the same format as the query-param syntax. More info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors
+             */
+            selector?: pulumi.Input<string>;
+            /**
+             * Total number of unavailable machines targeted by this deployment. This is the total number of machines that are still required for the deployment to have 100% available capacity. They may either be machines that are running but not yet available or machines that still have not been created.
+             */
+            unavailableReplicas?: pulumi.Input<number>;
+            /**
+             * Total number of non-terminated machines targeted by this deployment that have the desired template spec.
+             */
+            updatedReplicas?: pulumi.Input<number>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachineDeploymentStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * Specification of machine health check policy
+         */
+        export interface MachineHealthCheckSpecArgs {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by "selector" are not healthy.
+             */
+            maxUnhealthy?: pulumi.Input<number | string>;
+            /**
+             * Machines older than this duration without a node will be considered to have failed and will be remediated. If not set, this value is defaulted to 10 minutes. If you wish to disable this feature, set the value explicitly to 0.
+             */
+            nodeStartupTimeout?: pulumi.Input<string>;
+            /**
+             * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+             *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+             */
+            remediationTemplate?: pulumi.Input<inputs.cluster.v1beta1.MachineHealthCheckSpecRemediationTemplateArgs>;
+            /**
+             * Label selector to match machines whose health will be exercised
+             */
+            selector: pulumi.Input<inputs.cluster.v1beta1.MachineHealthCheckSpecSelectorArgs>;
+            /**
+             * UnhealthyConditions contains a list of the conditions that determine whether a node is considered unhealthy.  The conditions are combined in a logical OR, i.e. if any of the conditions is met, the node is unhealthy.
+             */
+            unhealthyConditions: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.MachineHealthCheckSpecUnhealthyConditionsArgs>[]>;
+            /**
+             * Any further remediation is only allowed if the number of machines selected by "selector" as not healthy is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy. Eg. "[3-5]" - This means that remediation will be allowed only when: (a) there are at least 3 unhealthy machines (and) (b) there are at most 5 unhealthy machines
+             */
+            unhealthyRange?: pulumi.Input<string>;
+        }
+
+        /**
+         * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+         *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+         */
+        export interface MachineHealthCheckSpecRemediationTemplateArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * Label selector to match machines whose health will be exercised
+         */
+        export interface MachineHealthCheckSpecSelectorArgs {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.MachineHealthCheckSpecSelectorMatchExpressionsArgs>[]>;
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface MachineHealthCheckSpecSelectorMatchExpressionsArgs {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: pulumi.Input<string>;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: pulumi.Input<string>;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * UnhealthyCondition represents a Node condition type and value with a timeout specified as a duration.  When the named condition has been in the given status for at least the timeout value, a node is considered unhealthy.
+         */
+        export interface MachineHealthCheckSpecUnhealthyConditionsArgs {
+            status: pulumi.Input<string>;
+            timeout: pulumi.Input<string>;
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * Most recently observed status of MachineHealthCheck resource
+         */
+        export interface MachineHealthCheckStatusArgs {
+            /**
+             * Conditions defines current service state of the MachineHealthCheck.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.MachineHealthCheckStatusConditionsArgs>[]>;
+            /**
+             * total number of healthy machines counted by this machine health check
+             */
+            currentHealthy?: pulumi.Input<number>;
+            /**
+             * total number of machines counted by this machine health check
+             */
+            expectedMachines?: pulumi.Input<number>;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * RemediationsAllowed is the number of further remediations allowed by this machine health check before maxUnhealthy short circuiting will be applied
+             */
+            remediationsAllowed?: pulumi.Input<number>;
+            /**
+             * Targets shows the current list of machines the machine health check is watching
+             */
+            targets?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachineHealthCheckStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * MachinePoolSpec defines the desired state of MachinePool.
+         */
+        export interface MachinePoolSpecArgs {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * FailureDomains is the list of failure domains this MachinePool should be attached to.
+             */
+            failureDomains?: pulumi.Input<pulumi.Input<string>[]>;
+            /**
+             * Minimum number of seconds for which a newly created machine instances should be ready. Defaults to 0 (machine instance will be considered available as soon as it is ready) NOTE: No logic is implemented for this field and it currently has no behaviour.
+             */
+            minReadySeconds?: pulumi.Input<number>;
+            /**
+             * ProviderIDList are the identification IDs of machine instances provided by the provider. This field must match the provider IDs as seen on the node objects corresponding to a machine pool's machine instances.
+             */
+            providerIDList?: pulumi.Input<pulumi.Input<string>[]>;
+            /**
+             * Number of desired machines. Defaults to 1. This is a pointer to distinguish between explicit zero and not specified.
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * Template describes the machines that will be created.
+             */
+            template: pulumi.Input<inputs.cluster.v1beta1.MachinePoolSpecTemplateArgs>;
+        }
+
+        /**
+         * Template describes the machines that will be created.
+         */
+        export interface MachinePoolSpecTemplateArgs {
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata?: pulumi.Input<inputs.cluster.v1beta1.MachinePoolSpecTemplateMetadataArgs>;
+            /**
+             * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+             */
+            spec?: pulumi.Input<inputs.cluster.v1beta1.MachinePoolSpecTemplateSpecArgs>;
+        }
+
+        /**
+         * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface MachinePoolSpecTemplateMetadataArgs {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+         */
+        export interface MachinePoolSpecTemplateSpecArgs {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: pulumi.Input<inputs.cluster.v1beta1.MachinePoolSpecTemplateSpecBootstrapArgs>;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: pulumi.Input<string>;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: pulumi.Input<inputs.cluster.v1beta1.MachinePoolSpecTemplateSpecInfrastructureRefArgs>;
+            /**
+             * NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely. Defaults to 10 seconds.
+             */
+            nodeDeletionTimeout?: pulumi.Input<string>;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: pulumi.Input<string>;
+            /**
+             * NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
+             */
+            nodeVolumeDetachTimeout?: pulumi.Input<string>;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: pulumi.Input<string>;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: pulumi.Input<string>;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachinePoolSpecTemplateSpecBootstrapArgs {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+             */
+            configRef?: pulumi.Input<inputs.cluster.v1beta1.MachinePoolSpecTemplateSpecBootstrapConfigRefArgs>;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: pulumi.Input<string>;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+         */
+        export interface MachinePoolSpecTemplateSpecBootstrapConfigRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachinePoolSpecTemplateSpecInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * MachinePoolStatus defines the observed state of MachinePool.
+         */
+        export interface MachinePoolStatusArgs {
+            /**
+             * The number of available replicas (ready for at least minReadySeconds) for this MachinePool.
+             */
+            availableReplicas?: pulumi.Input<number>;
+            /**
+             * BootstrapReady is the state of the bootstrap provider.
+             */
+            bootstrapReady?: pulumi.Input<boolean>;
+            /**
+             * Conditions define the current service state of the MachinePool.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.MachinePoolStatusConditionsArgs>[]>;
+            /**
+             * FailureMessage indicates that there is a problem reconciling the state, and will be set to a descriptive error message.
+             */
+            failureMessage?: pulumi.Input<string>;
+            /**
+             * FailureReason indicates that there is a problem reconciling the state, and will be set to a token value suitable for programmatic interpretation.
+             */
+            failureReason?: pulumi.Input<string>;
+            /**
+             * InfrastructureReady is the state of the infrastructure provider.
+             */
+            infrastructureReady?: pulumi.Input<boolean>;
+            /**
+             * NodeRefs will point to the corresponding Nodes if it they exist.
+             */
+            nodeRefs?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.MachinePoolStatusNodeRefsArgs>[]>;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * Phase represents the current phase of cluster actuation. E.g. Pending, Running, Terminating, Failed etc.
+             */
+            phase?: pulumi.Input<string>;
+            /**
+             * The number of ready replicas for this MachinePool. A machine is considered ready when the node has been created and is "Ready".
+             */
+            readyReplicas?: pulumi.Input<number>;
+            /**
+             * Replicas is the most recently observed number of replicas.
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * Total number of unavailable machine instances targeted by this machine pool. This is the total number of machine instances that are still required for the machine pool to have 100% available capacity. They may either be machine instances that are running but not yet available or machine instances that still have not been created.
+             */
+            unavailableReplicas?: pulumi.Input<number>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachinePoolStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface MachinePoolStatusNodeRefsArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * MachineSetSpec defines the desired state of MachineSet.
+         */
+        export interface MachineSetSpecArgs {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * DeletePolicy defines the policy used to identify nodes to delete when downscaling. Defaults to "Random".  Valid values are "Random, "Newest", "Oldest"
+             */
+            deletePolicy?: pulumi.Input<string>;
+            /**
+             * MinReadySeconds is the minimum number of seconds for which a Node for a newly created machine should be ready before considering the replica available. Defaults to 0 (machine will be considered available as soon as the Node is ready)
+             */
+            minReadySeconds?: pulumi.Input<number>;
+            /**
+             * Replicas is the number of desired replicas. This is a pointer to distinguish between explicit zero and unspecified. Defaults to 1.
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * Selector is a label query over machines that should match the replica count. Label keys and values that must match in order to be controlled by this MachineSet. It must match the machine template's labels. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
+             */
+            selector: pulumi.Input<inputs.cluster.v1beta1.MachineSetSpecSelectorArgs>;
+            /**
+             * Template is the object that describes the machine that will be created if insufficient replicas are detected. Object references to custom resources are treated as templates.
+             */
+            template?: pulumi.Input<inputs.cluster.v1beta1.MachineSetSpecTemplateArgs>;
+        }
+        /**
+         * machineSetSpecArgsProvideDefaults sets the appropriate defaults for MachineSetSpecArgs
+         */
+        export function machineSetSpecArgsProvideDefaults(val: MachineSetSpecArgs): MachineSetSpecArgs {
+            return {
+                ...val,
+                replicas: (val.replicas) ?? 1,
+            };
+        }
+
+        /**
+         * Selector is a label query over machines that should match the replica count. Label keys and values that must match in order to be controlled by this MachineSet. It must match the machine template's labels. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
+         */
+        export interface MachineSetSpecSelectorArgs {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.MachineSetSpecSelectorMatchExpressionsArgs>[]>;
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface MachineSetSpecSelectorMatchExpressionsArgs {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: pulumi.Input<string>;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: pulumi.Input<string>;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * Template is the object that describes the machine that will be created if insufficient replicas are detected. Object references to custom resources are treated as templates.
+         */
+        export interface MachineSetSpecTemplateArgs {
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata?: pulumi.Input<inputs.cluster.v1beta1.MachineSetSpecTemplateMetadataArgs>;
+            /**
+             * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+             */
+            spec?: pulumi.Input<inputs.cluster.v1beta1.MachineSetSpecTemplateSpecArgs>;
+        }
+
+        /**
+         * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface MachineSetSpecTemplateMetadataArgs {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+         */
+        export interface MachineSetSpecTemplateSpecArgs {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: pulumi.Input<inputs.cluster.v1beta1.MachineSetSpecTemplateSpecBootstrapArgs>;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: pulumi.Input<string>;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: pulumi.Input<inputs.cluster.v1beta1.MachineSetSpecTemplateSpecInfrastructureRefArgs>;
+            /**
+             * NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely. Defaults to 10 seconds.
+             */
+            nodeDeletionTimeout?: pulumi.Input<string>;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: pulumi.Input<string>;
+            /**
+             * NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
+             */
+            nodeVolumeDetachTimeout?: pulumi.Input<string>;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: pulumi.Input<string>;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: pulumi.Input<string>;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachineSetSpecTemplateSpecBootstrapArgs {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+             */
+            configRef?: pulumi.Input<inputs.cluster.v1beta1.MachineSetSpecTemplateSpecBootstrapConfigRefArgs>;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: pulumi.Input<string>;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+         */
+        export interface MachineSetSpecTemplateSpecBootstrapConfigRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachineSetSpecTemplateSpecInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * MachineSetStatus defines the observed state of MachineSet.
+         */
+        export interface MachineSetStatusArgs {
+            /**
+             * The number of available replicas (ready for at least minReadySeconds) for this MachineSet.
+             */
+            availableReplicas?: pulumi.Input<number>;
+            /**
+             * Conditions defines current service state of the MachineSet.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.MachineSetStatusConditionsArgs>[]>;
+            failureMessage?: pulumi.Input<string>;
+            /**
+             * In the event that there is a terminal problem reconciling the replicas, both FailureReason and FailureMessage will be set. FailureReason will be populated with a succinct value suitable for machine interpretation, while FailureMessage will contain a more verbose string suitable for logging and human consumption. 
+             *  These fields should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the MachineTemplate's spec or the configuration of the machine controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the machine controller, or the responsible machine controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the MachineSet object and/or logged in the controller's output.
+             */
+            failureReason?: pulumi.Input<string>;
+            /**
+             * The number of replicas that have labels matching the labels of the machine template of the MachineSet.
+             */
+            fullyLabeledReplicas?: pulumi.Input<number>;
+            /**
+             * ObservedGeneration reflects the generation of the most recently observed MachineSet.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * The number of ready replicas for this MachineSet. A machine is considered ready when the node has been created and is "Ready".
+             */
+            readyReplicas?: pulumi.Input<number>;
+            /**
+             * Replicas is the most recently observed number of replicas.
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * Selector is the same as the label selector but in the string format to avoid introspection by clients. The string will be in the same format as the query-param syntax. More info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors
+             */
+            selector?: pulumi.Input<string>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachineSetStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * MachineSpec defines the desired state of Machine.
+         */
+        export interface MachineSpecArgs {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: pulumi.Input<inputs.cluster.v1beta1.MachineSpecBootstrapArgs>;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: pulumi.Input<string>;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: pulumi.Input<string>;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: pulumi.Input<inputs.cluster.v1beta1.MachineSpecInfrastructureRefArgs>;
+            /**
+             * NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely. Defaults to 10 seconds.
+             */
+            nodeDeletionTimeout?: pulumi.Input<string>;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: pulumi.Input<string>;
+            /**
+             * NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
+             */
+            nodeVolumeDetachTimeout?: pulumi.Input<string>;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: pulumi.Input<string>;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: pulumi.Input<string>;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachineSpecBootstrapArgs {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+             */
+            configRef?: pulumi.Input<inputs.cluster.v1beta1.MachineSpecBootstrapConfigRefArgs>;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: pulumi.Input<string>;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+         */
+        export interface MachineSpecBootstrapConfigRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachineSpecInfrastructureRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * MachineStatus defines the observed state of Machine.
+         */
+        export interface MachineStatusArgs {
+            /**
+             * Addresses is a list of addresses assigned to the machine. This field is copied from the infrastructure provider reference.
+             */
+            addresses?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.MachineStatusAddressesArgs>[]>;
+            /**
+             * BootstrapReady is the state of the bootstrap provider.
+             */
+            bootstrapReady?: pulumi.Input<boolean>;
+            /**
+             * CertificatesExpiryDate is the expiry date of the machine certificates. This value is only set for control plane machines.
+             */
+            certificatesExpiryDate?: pulumi.Input<string>;
+            /**
+             * Conditions defines current service state of the Machine.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.cluster.v1beta1.MachineStatusConditionsArgs>[]>;
+            /**
+             * FailureMessage will be set in the event that there is a terminal problem reconciling the Machine and will contain a more verbose string suitable for logging and human consumption. 
+             *  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+             */
+            failureMessage?: pulumi.Input<string>;
+            /**
+             * FailureReason will be set in the event that there is a terminal problem reconciling the Machine and will contain a succinct value suitable for machine interpretation. 
+             *  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+             */
+            failureReason?: pulumi.Input<string>;
+            /**
+             * InfrastructureReady is the state of the infrastructure provider.
+             */
+            infrastructureReady?: pulumi.Input<boolean>;
+            /**
+             * LastUpdated identifies when the phase of the Machine last transitioned.
+             */
+            lastUpdated?: pulumi.Input<string>;
+            /**
+             * NodeInfo is a set of ids/uuids to uniquely identify the node. More info: https://kubernetes.io/docs/concepts/nodes/node/#info
+             */
+            nodeInfo?: pulumi.Input<inputs.cluster.v1beta1.MachineStatusNodeInfoArgs>;
+            /**
+             * NodeRef will point to the corresponding Node if it exists.
+             */
+            nodeRef?: pulumi.Input<inputs.cluster.v1beta1.MachineStatusNodeRefArgs>;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * Phase represents the current phase of machine actuation. E.g. Pending, Running, Terminating, Failed etc.
+             */
+            phase?: pulumi.Input<string>;
+        }
+
+        /**
+         * MachineAddress contains information for the node's address.
+         */
+        export interface MachineStatusAddressesArgs {
+            /**
+             * The machine address.
+             */
+            address: pulumi.Input<string>;
+            /**
+             * Machine address type, one of Hostname, ExternalIP, InternalIP, ExternalDNS or InternalDNS.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachineStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * NodeInfo is a set of ids/uuids to uniquely identify the node. More info: https://kubernetes.io/docs/concepts/nodes/node/#info
+         */
+        export interface MachineStatusNodeInfoArgs {
+            /**
+             * The Architecture reported by the node
+             */
+            architecture: pulumi.Input<string>;
+            /**
+             * Boot ID reported by the node.
+             */
+            bootID: pulumi.Input<string>;
+            /**
+             * ContainerRuntime Version reported by the node through runtime remote API (e.g. containerd://1.4.2).
+             */
+            containerRuntimeVersion: pulumi.Input<string>;
+            /**
+             * Kernel Version reported by the node from 'uname -r' (e.g. 3.16.0-0.bpo.4-amd64).
+             */
+            kernelVersion: pulumi.Input<string>;
+            /**
+             * KubeProxy Version reported by the node.
+             */
+            kubeProxyVersion: pulumi.Input<string>;
+            /**
+             * Kubelet Version reported by the node.
+             */
+            kubeletVersion: pulumi.Input<string>;
+            /**
+             * MachineID reported by the node. For unique machine identification in the cluster this field is preferred. Learn more from man(5) machine-id: http://man7.org/linux/man-pages/man5/machine-id.5.html
+             */
+            machineID: pulumi.Input<string>;
+            /**
+             * The Operating System reported by the node
+             */
+            operatingSystem: pulumi.Input<string>;
+            /**
+             * OS Image reported by the node from /etc/os-release (e.g. Debian GNU/Linux 7 (wheezy)).
+             */
+            osImage: pulumi.Input<string>;
+            /**
+             * SystemUUID reported by the node. For unique machine identification MachineID is preferred. This field is specific to Red Hat hosts https://access.redhat.com/documentation/en-us/red_hat_subscription_management/1/html/rhsm/uuid
+             */
+            systemUUID: pulumi.Input<string>;
+        }
+
+        /**
+         * NodeRef will point to the corresponding Node if it exists.
+         */
+        export interface MachineStatusNodeRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+    }
+}
+
+export namespace controlplane {
+    export namespace v1alpha3 {
+        /**
+         * TalosControlPlaneSpec defines the desired state of TalosControlPlane
+         */
+        export interface TalosControlPlaneSpecArgs {
+            /**
+             * ControlPlaneConfig is a two TalosConfigSpecs to use for initializing and joining machines to the control plane.
+             */
+            controlPlaneConfig: pulumi.Input<inputs.controlplane.v1alpha3.TalosControlPlaneSpecControlPlaneConfigArgs>;
+            /**
+             * InfrastructureTemplate is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureTemplate: pulumi.Input<inputs.controlplane.v1alpha3.TalosControlPlaneSpecInfrastructureTemplateArgs>;
+            /**
+             * Number of desired machines. Defaults to 1. When stacked etcd is used only odd numbers are permitted, as per [etcd best practice](https://etcd.io/docs/v3.3.12/faq/#why-an-odd-number-of-cluster-members). This is a pointer to distinguish between explicit zero and not specified.
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * The RolloutStrategy to use to replace control plane machines with new ones.
+             */
+            rolloutStrategy?: pulumi.Input<inputs.controlplane.v1alpha3.TalosControlPlaneSpecRolloutStrategyArgs>;
+            /**
+             * Version defines the desired Kubernetes version.
+             */
+            version: pulumi.Input<string>;
+        }
+        /**
+         * talosControlPlaneSpecArgsProvideDefaults sets the appropriate defaults for TalosControlPlaneSpecArgs
+         */
+        export function talosControlPlaneSpecArgsProvideDefaults(val: TalosControlPlaneSpecArgs): TalosControlPlaneSpecArgs {
+            return {
+                ...val,
+                rolloutStrategy: (val.rolloutStrategy ? pulumi.output(val.rolloutStrategy).apply(inputs.controlplane.v1alpha3.talosControlPlaneSpecRolloutStrategyArgsProvideDefaults) : undefined),
+            };
+        }
+
+        /**
+         * ControlPlaneConfig is a two TalosConfigSpecs to use for initializing and joining machines to the control plane.
+         */
+        export interface TalosControlPlaneSpecControlPlaneConfigArgs {
+            /**
+             * TalosConfigSpec defines the desired state of TalosConfig
+             */
+            controlplane: pulumi.Input<inputs.controlplane.v1alpha3.TalosControlPlaneSpecControlPlaneConfigControlplaneArgs>;
+            /**
+             * Deprecated: starting from cacppt v0.4.0 provider doesn't use init configs.
+             */
+            init?: pulumi.Input<inputs.controlplane.v1alpha3.TalosControlPlaneSpecControlPlaneConfigInitArgs>;
+        }
+
+        /**
+         * TalosConfigSpec defines the desired state of TalosConfig
+         */
+        export interface TalosControlPlaneSpecControlPlaneConfigControlplaneArgs {
+            configPatches?: pulumi.Input<pulumi.Input<inputs.controlplane.v1alpha3.TalosControlPlaneSpecControlPlaneConfigControlplaneConfigPatchesArgs>[]>;
+            data?: pulumi.Input<string>;
+            generateType: pulumi.Input<string>;
+            /**
+             * Set hostname in the machine configuration to some value.
+             */
+            hostname?: pulumi.Input<inputs.controlplane.v1alpha3.TalosControlPlaneSpecControlPlaneConfigControlplaneHostnameArgs>;
+            talosVersion?: pulumi.Input<string>;
+        }
+
+        export interface TalosControlPlaneSpecControlPlaneConfigControlplaneConfigPatchesArgs {
+            op: pulumi.Input<string>;
+            path: pulumi.Input<string>;
+            value?: pulumi.Input<{[key: string]: any}>;
+        }
+
+        /**
+         * Set hostname in the machine configuration to some value.
+         */
+        export interface TalosControlPlaneSpecControlPlaneConfigControlplaneHostnameArgs {
+            /**
+             * Source of the hostname. 
+             *  Allowed values: "MachineName" (use linked Machine's Name).
+             */
+            source?: pulumi.Input<string>;
+        }
+
+        /**
+         * Deprecated: starting from cacppt v0.4.0 provider doesn't use init configs.
+         */
+        export interface TalosControlPlaneSpecControlPlaneConfigInitArgs {
+            configPatches?: pulumi.Input<pulumi.Input<inputs.controlplane.v1alpha3.TalosControlPlaneSpecControlPlaneConfigInitConfigPatchesArgs>[]>;
+            data?: pulumi.Input<string>;
+            generateType: pulumi.Input<string>;
+            /**
+             * Set hostname in the machine configuration to some value.
+             */
+            hostname?: pulumi.Input<inputs.controlplane.v1alpha3.TalosControlPlaneSpecControlPlaneConfigInitHostnameArgs>;
+            talosVersion?: pulumi.Input<string>;
+        }
+
+        export interface TalosControlPlaneSpecControlPlaneConfigInitConfigPatchesArgs {
+            op: pulumi.Input<string>;
+            path: pulumi.Input<string>;
+            value?: pulumi.Input<{[key: string]: any}>;
+        }
+
+        /**
+         * Set hostname in the machine configuration to some value.
+         */
+        export interface TalosControlPlaneSpecControlPlaneConfigInitHostnameArgs {
+            /**
+             * Source of the hostname. 
+             *  Allowed values: "MachineName" (use linked Machine's Name).
+             */
+            source?: pulumi.Input<string>;
+        }
+
+        /**
+         * InfrastructureTemplate is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface TalosControlPlaneSpecInfrastructureTemplateArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * The RolloutStrategy to use to replace control plane machines with new ones.
+         */
+        export interface TalosControlPlaneSpecRolloutStrategyArgs {
+            /**
+             * Rolling update config params. Present only if RolloutStrategyType = RollingUpdate.
+             */
+            rollingUpdate?: pulumi.Input<inputs.controlplane.v1alpha3.TalosControlPlaneSpecRolloutStrategyRollingUpdateArgs>;
+            /**
+             * Change rollout strategy. 
+             *  Supported strategies: * "RollingUpdate". * "OnDelete" 
+             *  Default is RollingUpdate.
+             */
+            type?: pulumi.Input<string>;
+        }
+        /**
+         * talosControlPlaneSpecRolloutStrategyArgsProvideDefaults sets the appropriate defaults for TalosControlPlaneSpecRolloutStrategyArgs
+         */
+        export function talosControlPlaneSpecRolloutStrategyArgsProvideDefaults(val: TalosControlPlaneSpecRolloutStrategyArgs): TalosControlPlaneSpecRolloutStrategyArgs {
+            return {
+                ...val,
+                rollingUpdate: (val.rollingUpdate ? pulumi.output(val.rollingUpdate).apply(inputs.controlplane.v1alpha3.talosControlPlaneSpecRolloutStrategyRollingUpdateArgsProvideDefaults) : undefined),
+                type: (val.type) ?? "RollingUpdate",
+            };
+        }
+
+        /**
+         * Rolling update config params. Present only if RolloutStrategyType = RollingUpdate.
+         */
+        export interface TalosControlPlaneSpecRolloutStrategyRollingUpdateArgs {
+            /**
+             * The maximum number of control planes that can be scheduled above or under the desired number of control planes. Value can be an absolute number 1 or 0. Defaults to 1. Example: when this is set to 1, the control plane can be scaled up immediately when the rolling update starts.
+             */
+            maxSurge?: pulumi.Input<number | string>;
+        }
+        /**
+         * talosControlPlaneSpecRolloutStrategyRollingUpdateArgsProvideDefaults sets the appropriate defaults for TalosControlPlaneSpecRolloutStrategyRollingUpdateArgs
+         */
+        export function talosControlPlaneSpecRolloutStrategyRollingUpdateArgsProvideDefaults(val: TalosControlPlaneSpecRolloutStrategyRollingUpdateArgs): TalosControlPlaneSpecRolloutStrategyRollingUpdateArgs {
+            return {
+                ...val,
+                maxSurge: (val.maxSurge) ?? 1,
+            };
+        }
+
+        /**
+         * TalosControlPlaneStatus defines the observed state of TalosControlPlane
+         */
+        export interface TalosControlPlaneStatusArgs {
+            /**
+             * Bootstrapped denotes whether any nodes received bootstrap request which is required to start etcd and Kubernetes components in Talos.
+             */
+            bootstrapped?: pulumi.Input<boolean>;
+            /**
+             * Conditions defines current service state of the KubeadmControlPlane.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.controlplane.v1alpha3.TalosControlPlaneStatusConditionsArgs>[]>;
+            /**
+             * ErrorMessage indicates that there is a terminal problem reconciling the state, and will be set to a descriptive error message.
+             */
+            failureMessage?: pulumi.Input<string>;
+            /**
+             * FailureReason indicates that there is a terminal problem reconciling the state, and will be set to a token value suitable for programmatic interpretation.
+             */
+            failureReason?: pulumi.Input<string>;
+            /**
+             * Initialized denotes whether or not the control plane has the uploaded talos-config configmap.
+             */
+            initialized?: pulumi.Input<boolean>;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * Ready denotes that the TalosControlPlane API Server is ready to receive requests.
+             */
+            ready?: pulumi.Input<boolean>;
+            /**
+             * Total number of fully running and ready control plane machines.
+             */
+            readyReplicas?: pulumi.Input<number>;
+            /**
+             * Total number of non-terminated machines targeted by this control plane (their labels match the selector).
+             */
+            replicas?: pulumi.Input<number>;
+            /**
+             * Selector is the label selector in string format to avoid introspection by clients, and is used to provide the CRD-based integration for the scale subresource and additional integrations for things like kubectl describe.. The string will be in the same format as the query-param syntax. More info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors
+             */
+            selector?: pulumi.Input<string>;
+            /**
+             * Total number of unavailable machines targeted by this control plane. This is the total number of machines that are still required for the deployment to have 100% available capacity. They may either be machines that are running but not yet ready or machines that still have not been created.
+             */
+            unavailableReplicas?: pulumi.Input<number>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface TalosControlPlaneStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+    }
+}
+
+export namespace infrastructure {
+    export namespace v1alpha2 {
+        /**
+         * MetalClusterSpec defines the desired state of MetalCluster.
+         */
+        export interface MetalClusterSpecArgs {
+            apiEndpoints?: pulumi.Input<pulumi.Input<inputs.infrastructure.v1alpha2.MetalClusterSpecApiEndpointsArgs>[]>;
+        }
+
+        export interface MetalClusterSpecApiEndpointsArgs {
+            /**
+             * The hostname on which the API server is serving.
+             */
+            host: pulumi.Input<string>;
+            /**
+             * The port on which the API server is serving.
+             */
+            port: pulumi.Input<number>;
+        }
+
+        /**
+         * MetalClusterStatus defines the observed state of MetalCluster.
+         */
+        export interface MetalClusterStatusArgs {
+            /**
+             * APIEndpoints represents the endpoints to communicate with the control plane.
+             */
+            apiEndpoints?: pulumi.Input<pulumi.Input<inputs.infrastructure.v1alpha2.MetalClusterStatusApiEndpointsArgs>[]>;
+            ready: pulumi.Input<boolean>;
+        }
+
+        export interface MetalClusterStatusApiEndpointsArgs {
+            /**
+             * The hostname on which the API server is serving.
+             */
+            host: pulumi.Input<string>;
+            /**
+             * The port on which the API server is serving.
+             */
+            port: pulumi.Input<number>;
+        }
+
+        /**
+         * MetalMachineSpec defines the desired state of MetalMachine.
+         */
+        export interface MetalMachineSpecArgs {
+            /**
+             * ProviderID is the unique identifier as specified by the cloud provider.
+             */
+            providerID?: pulumi.Input<string>;
+            /**
+             * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+             *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+             */
+            serverRef?: pulumi.Input<inputs.infrastructure.v1alpha2.MetalMachineSpecServerRefArgs>;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface MetalMachineSpecServerRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * MetalMachineStatus defines the observed state of MetalMachine.
+         */
+        export interface MetalMachineStatusArgs {
+            /**
+             * ErrorMessage will be set in the event that there is a terminal problem reconciling the Machine and will contain a more verbose string suitable for logging and human consumption. 
+             *  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+             */
+            errorMessage?: pulumi.Input<string>;
+            /**
+             * ErrorReason will be set in the event that there is a terminal problem reconciling the Machine and will contain a succinct value suitable for machine interpretation. 
+             *  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+             */
+            errorReason?: pulumi.Input<string>;
+            ready: pulumi.Input<boolean>;
+        }
+
+        /**
+         * MetalMachineTemplateSpec defines the desired state of MetalMachineTemplate.
+         */
+        export interface MetalMachineTemplateSpecArgs {
+            template: pulumi.Input<inputs.infrastructure.v1alpha2.MetalMachineTemplateSpecTemplateArgs>;
+        }
+
+        export interface MetalMachineTemplateSpecTemplateArgs {
+            /**
+             * Spec is the specification of the desired behavior of the machine.
+             */
+            spec: pulumi.Input<inputs.infrastructure.v1alpha2.MetalMachineTemplateSpecTemplateSpecArgs>;
+        }
+
+        /**
+         * Spec is the specification of the desired behavior of the machine.
+         */
+        export interface MetalMachineTemplateSpecTemplateSpecArgs {
+            /**
+             * ProviderID is the unique identifier as specified by the cloud provider.
+             */
+            providerID?: pulumi.Input<string>;
+            /**
+             * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+             *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+             */
+            serverRef?: pulumi.Input<inputs.infrastructure.v1alpha2.MetalMachineTemplateSpecTemplateSpecServerRefArgs>;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface MetalMachineTemplateSpecTemplateSpecServerRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+    }
+
+    export namespace v1alpha3 {
+        /**
+         * MetalClusterSpec defines the desired state of MetalCluster.
+         */
+        export interface MetalClusterSpecArgs {
+            /**
+             * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+             */
+            controlPlaneEndpoint?: pulumi.Input<inputs.infrastructure.v1alpha3.MetalClusterSpecControlPlaneEndpointArgs>;
+        }
+
+        /**
+         * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+         */
+        export interface MetalClusterSpecControlPlaneEndpointArgs {
+            /**
+             * The hostname on which the API server is serving.
+             */
+            host: pulumi.Input<string>;
+            /**
+             * The port on which the API server is serving.
+             */
+            port: pulumi.Input<number>;
+        }
+
+        /**
+         * MetalClusterStatus defines the observed state of MetalCluster.
+         */
+        export interface MetalClusterStatusArgs {
+            ready: pulumi.Input<boolean>;
+        }
+
+        /**
+         * MetalMachineSpec defines the desired state of MetalMachine.
+         */
+        export interface MetalMachineSpecArgs {
+            /**
+             * ProviderID is the unique identifier as specified by the cloud provider.
+             */
+            providerID?: pulumi.Input<string>;
+            /**
+             * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+             *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+             */
+            serverClassRef?: pulumi.Input<inputs.infrastructure.v1alpha3.MetalMachineSpecServerClassRefArgs>;
+            /**
+             * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+             *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+             */
+            serverRef?: pulumi.Input<inputs.infrastructure.v1alpha3.MetalMachineSpecServerRefArgs>;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface MetalMachineSpecServerClassRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface MetalMachineSpecServerRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * MetalMachineStatus defines the observed state of MetalMachine.
+         */
+        export interface MetalMachineStatusArgs {
+            /**
+             * Addresses contains the Metal machine associated addresses.
+             */
+            addresses?: pulumi.Input<pulumi.Input<inputs.infrastructure.v1alpha3.MetalMachineStatusAddressesArgs>[]>;
+            /**
+             * Conditions defines current state of the MetalMachine.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.infrastructure.v1alpha3.MetalMachineStatusConditionsArgs>[]>;
+            /**
+             * FailureMessage will be set in the event that there is a terminal problem reconciling the Machine and will contain a more verbose string suitable for logging and human consumption. 
+             *  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+             */
+            failureMessage?: pulumi.Input<string>;
+            /**
+             * FailureReason will be set in the event that there is a terminal problem reconciling the Machine and will contain a succinct value suitable for machine interpretation. 
+             *  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+             */
+            failureReason?: pulumi.Input<string>;
+            ready?: pulumi.Input<boolean>;
+        }
+
+        /**
+         * MachineAddress contains information for the node's address.
+         */
+        export interface MetalMachineStatusAddressesArgs {
+            /**
+             * The machine address.
+             */
+            address: pulumi.Input<string>;
+            /**
+             * Machine address type, one of Hostname, ExternalIP, InternalIP, ExternalDNS or InternalDNS.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MetalMachineStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * MetalMachineTemplateSpec defines the desired state of MetalMachineTemplate.
+         */
+        export interface MetalMachineTemplateSpecArgs {
+            template: pulumi.Input<inputs.infrastructure.v1alpha3.MetalMachineTemplateSpecTemplateArgs>;
+        }
+
+        export interface MetalMachineTemplateSpecTemplateArgs {
+            /**
+             * Spec is the specification of the desired behavior of the machine.
+             */
+            spec: pulumi.Input<inputs.infrastructure.v1alpha3.MetalMachineTemplateSpecTemplateSpecArgs>;
+        }
+
+        /**
+         * Spec is the specification of the desired behavior of the machine.
+         */
+        export interface MetalMachineTemplateSpecTemplateSpecArgs {
+            /**
+             * ProviderID is the unique identifier as specified by the cloud provider.
+             */
+            providerID?: pulumi.Input<string>;
+            /**
+             * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+             *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+             */
+            serverClassRef?: pulumi.Input<inputs.infrastructure.v1alpha3.MetalMachineTemplateSpecTemplateSpecServerClassRefArgs>;
+            /**
+             * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+             *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+             */
+            serverRef?: pulumi.Input<inputs.infrastructure.v1alpha3.MetalMachineTemplateSpecTemplateSpecServerRefArgs>;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface MetalMachineTemplateSpecTemplateSpecServerClassRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface MetalMachineTemplateSpecTemplateSpecServerRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * ServerBindingSpec defines the spec of the ServerBinding object.
+         */
+        export interface ServerBindingSpecArgs {
+            /**
+             * Addresses describes node addresses for the server.
+             */
+            addresses?: pulumi.Input<pulumi.Input<string>[]>;
+            /**
+             * Hostname describes node hostname for the server.
+             */
+            hostname?: pulumi.Input<string>;
+            /**
+             * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+             *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+             */
+            metalMachineRef: pulumi.Input<inputs.infrastructure.v1alpha3.ServerBindingSpecMetalMachineRefArgs>;
+            /**
+             * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+             *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+             */
+            serverClassRef?: pulumi.Input<inputs.infrastructure.v1alpha3.ServerBindingSpecServerClassRefArgs>;
+            /**
+             * SideroLink describes state of the SideroLink tunnel.
+             */
+            siderolink?: pulumi.Input<inputs.infrastructure.v1alpha3.ServerBindingSpecSiderolinkArgs>;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface ServerBindingSpecMetalMachineRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface ServerBindingSpecServerClassRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * SideroLink describes state of the SideroLink tunnel.
+         */
+        export interface ServerBindingSpecSiderolinkArgs {
+            /**
+             * NodeAddress is the tunnel address of the node.
+             */
+            address: pulumi.Input<string>;
+            /**
+             * NodePublicKey is the Wireguard public key of the node.
+             */
+            publicKey: pulumi.Input<string>;
+        }
+
+        /**
+         * ServerBindingState defines the observed state of ServerBinding.
+         */
+        export interface ServerBindingStatusArgs {
+            /**
+             * Conditions defines current state of the ServerBinding.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.infrastructure.v1alpha3.ServerBindingStatusConditionsArgs>[]>;
+            /**
+             * Ready is true when matching server is found.
+             */
+            ready?: pulumi.Input<boolean>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ServerBindingStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+    }
+
+    export namespace v1beta1 {
+        /**
+         * ProxmoxClusterSpec defines the desired state of ProxmoxCluster
+         */
+        export interface ProxmoxClusterSpecArgs {
+            /**
+             * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+             */
+            controlPlaneEndpoint?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxClusterSpecControlPlaneEndpointArgs>;
+            /**
+             * ServerRef is used for configuring Proxmox client
+             */
+            serverRef: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxClusterSpecServerRefArgs>;
+            /**
+             * storage is used for storing cloud init snippet
+             */
+            storage?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxClusterSpecStorageArgs>;
+        }
+
+        /**
+         * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+         */
+        export interface ProxmoxClusterSpecControlPlaneEndpointArgs {
+            /**
+             * The hostname on which the API server is serving.
+             */
+            host: pulumi.Input<string>;
+            /**
+             * The port on which the API server is serving.
+             */
+            port: pulumi.Input<number>;
+        }
+
+        /**
+         * ServerRef is used for configuring Proxmox client
+         */
+        export interface ProxmoxClusterSpecServerRefArgs {
+            /**
+             * endpoint is the address of the Proxmox-VE REST API endpoint.
+             */
+            endpoint: pulumi.Input<string>;
+            /**
+             * SecretRef is a reference for secret which contains proxmox login secrets
+             */
+            secretRef: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxClusterSpecServerRefSecretRefArgs>;
+        }
+
+        /**
+         * SecretRef is a reference for secret which contains proxmox login secrets
+         */
+        export interface ProxmoxClusterSpecServerRefSecretRefArgs {
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+        }
+
+        /**
+         * storage is used for storing cloud init snippet
+         */
+        export interface ProxmoxClusterSpecStorageArgs {
+            name?: pulumi.Input<string>;
+            path?: pulumi.Input<string>;
+        }
+
+        /**
+         * ProxmoxClusterStatus defines the observed state of ProxmoxCluster
+         */
+        export interface ProxmoxClusterStatusArgs {
+            /**
+             * Conditions
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxClusterStatusConditionsArgs>[]>;
+            /**
+             * FailureDomains
+             */
+            failureDomains?: pulumi.Input<{[key: string]: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxClusterStatusFailureDomainsArgs>}>;
+            /**
+             * Ready
+             */
+            ready: pulumi.Input<boolean>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ProxmoxClusterStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * FailureDomainSpec is the Schema for Cluster API failure domains. It allows controllers to understand how many failure domains a cluster can optionally span across.
+         */
+        export interface ProxmoxClusterStatusFailureDomainsArgs {
+            /**
+             * Attributes is a free form map of attributes an infrastructure provider might use or require.
+             */
+            attributes?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * ControlPlane determines if this failure domain is suitable for use by control plane machines.
+             */
+            controlPlane?: pulumi.Input<boolean>;
+        }
+
+        /**
+         * ProxmoxMachineSpec defines the desired state of ProxmoxMachine
+         */
+        export interface ProxmoxMachineSpecArgs {
+            /**
+             * CloudInit defines options related to the bootstrapping systems where CloudInit is used.
+             */
+            cloudInit?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineSpecCloudInitArgs>;
+            /**
+             * FailureDomain is the failure domain unique identifier this Machine should be attached to, as defined in Cluster API.
+             */
+            failureDomain?: pulumi.Input<string>;
+            /**
+             * Hardware
+             */
+            hardware?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineSpecHardwareArgs>;
+            /**
+             * Image is the image to be provisioned
+             */
+            image: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineSpecImageArgs>;
+            /**
+             * Network
+             */
+            network?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineSpecNetworkArgs>;
+            /**
+             * Node is proxmox node hosting vm instance which used for ProxmoxMachine
+             */
+            node?: pulumi.Input<string>;
+            /**
+             * Options for QEMU instance
+             */
+            options?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineSpecOptionsArgs>;
+            /**
+             * ProviderID
+             */
+            providerID?: pulumi.Input<string>;
+            /**
+             * Storage is name of proxmox storage used by this node. The storage must support "images(VM Disks)" type of content. cappx will use random storage if empty
+             */
+            storage?: pulumi.Input<string>;
+            /**
+             * VMID is proxmox qemu's id
+             */
+            vmID?: pulumi.Input<number>;
+        }
+        /**
+         * proxmoxMachineSpecArgsProvideDefaults sets the appropriate defaults for ProxmoxMachineSpecArgs
+         */
+        export function proxmoxMachineSpecArgsProvideDefaults(val: ProxmoxMachineSpecArgs): ProxmoxMachineSpecArgs {
+            return {
+                ...val,
+                hardware: (val.hardware ? pulumi.output(val.hardware).apply(inputs.infrastructure.v1beta1.proxmoxMachineSpecHardwareArgsProvideDefaults) : undefined),
+            };
+        }
+
+        /**
+         * CloudInit defines options related to the bootstrapping systems where CloudInit is used.
+         */
+        export interface ProxmoxMachineSpecCloudInitArgs {
+            user?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineSpecCloudInitUserArgs>;
+        }
+
+        export interface ProxmoxMachineSpecCloudInitUserArgs {
+            bootcmd?: pulumi.Input<pulumi.Input<string>[]>;
+            ca_certs?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineSpecCloudInitUserCaCertsArgs>;
+            chpasswd?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineSpecCloudInitUserChpasswdArgs>;
+            manage_etc_hosts?: pulumi.Input<boolean>;
+            no_ssh_fingerprints?: pulumi.Input<boolean>;
+            package_update?: pulumi.Input<boolean>;
+            package_upgrade?: pulumi.Input<boolean>;
+            packages?: pulumi.Input<pulumi.Input<string>[]>;
+            password?: pulumi.Input<string>;
+            runCmd?: pulumi.Input<pulumi.Input<string>[]>;
+            ssh?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineSpecCloudInitUserSshArgs>;
+            ssh_authorized_keys?: pulumi.Input<pulumi.Input<string>[]>;
+            ssh_keys?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineSpecCloudInitUserSshKeysArgs>;
+            ssh_pwauth?: pulumi.Input<boolean>;
+            user?: pulumi.Input<string>;
+            users?: pulumi.Input<pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineSpecCloudInitUserUsersArgs>[]>;
+            writeFiles?: pulumi.Input<pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineSpecCloudInitUserWriteFilesArgs>[]>;
+        }
+
+        export interface ProxmoxMachineSpecCloudInitUserCaCertsArgs {
+            remove_defaults?: pulumi.Input<boolean>;
+            trusted?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        export interface ProxmoxMachineSpecCloudInitUserChpasswdArgs {
+            expire?: pulumi.Input<string>;
+        }
+
+        export interface ProxmoxMachineSpecCloudInitUserSshArgs {
+            emit_keys_to_console?: pulumi.Input<boolean>;
+        }
+
+        export interface ProxmoxMachineSpecCloudInitUserSshKeysArgs {
+            dsa_private?: pulumi.Input<string>;
+            dsa_public?: pulumi.Input<string>;
+            ecdsa_private?: pulumi.Input<string>;
+            ecdsa_public?: pulumi.Input<string>;
+            rsa_private?: pulumi.Input<string>;
+            rsa_public?: pulumi.Input<string>;
+        }
+
+        export interface ProxmoxMachineSpecCloudInitUserUsersArgs {
+            expiredate?: pulumi.Input<string>;
+            gecos?: pulumi.Input<string>;
+            groups?: pulumi.Input<pulumi.Input<string>[]>;
+            homedir?: pulumi.Input<string>;
+            inactive?: pulumi.Input<number>;
+            lock_passwd?: pulumi.Input<boolean>;
+            name: pulumi.Input<string>;
+            no_create_home?: pulumi.Input<boolean>;
+            no_log_init?: pulumi.Input<boolean>;
+            no_user_group?: pulumi.Input<boolean>;
+            passwd?: pulumi.Input<string>;
+            primary_group?: pulumi.Input<string>;
+            selinux_user?: pulumi.Input<string>;
+            shell?: pulumi.Input<string>;
+            snapuser?: pulumi.Input<string>;
+            ssh_authorized_keys?: pulumi.Input<pulumi.Input<string>[]>;
+            ssh_import_id?: pulumi.Input<pulumi.Input<string>[]>;
+            ssh_redirect_user?: pulumi.Input<boolean>;
+            sudo?: pulumi.Input<pulumi.Input<string>[]>;
+            system?: pulumi.Input<boolean>;
+        }
+
+        export interface ProxmoxMachineSpecCloudInitUserWriteFilesArgs {
+            content?: pulumi.Input<string>;
+            defer?: pulumi.Input<boolean>;
+            encoding?: pulumi.Input<string>;
+            owner?: pulumi.Input<string>;
+            path?: pulumi.Input<string>;
+            permissions?: pulumi.Input<string>;
+        }
+
+        /**
+         * Hardware
+         */
+        export interface ProxmoxMachineSpecHardwareArgs {
+            /**
+             * Select BIOS implementation. Defaults to seabios. seabios or ovmf. Defaults to seabios.
+             */
+            bios?: pulumi.Input<string>;
+            /**
+             * number of CPU cores : 1 ~
+             */
+            cpu?: pulumi.Input<number>;
+            /**
+             * Limit of CPU usage. If the computer has 2 CPUs, it has total of '2' CPU time. Value '0' indicates no CPU limit. Defaults to 0.
+             */
+            cpuLimit?: pulumi.Input<number>;
+            /**
+             * hard disk size
+             */
+            disk?: pulumi.Input<string>;
+            /**
+             * amount of RAM for the VM in MiB : 16 ~
+             */
+            memory?: pulumi.Input<number>;
+            /**
+             * The number of CPU sockets. Defaults to 1.
+             */
+            sockets?: pulumi.Input<number>;
+        }
+        /**
+         * proxmoxMachineSpecHardwareArgsProvideDefaults sets the appropriate defaults for ProxmoxMachineSpecHardwareArgs
+         */
+        export function proxmoxMachineSpecHardwareArgsProvideDefaults(val: ProxmoxMachineSpecHardwareArgs): ProxmoxMachineSpecHardwareArgs {
+            return {
+                ...val,
+                cpu: (val.cpu) ?? 2,
+                disk: (val.disk) ?? "50G",
+                memory: (val.memory) ?? 4096,
+            };
+        }
+
+        /**
+         * Image is the image to be provisioned
+         */
+        export interface ProxmoxMachineSpecImageArgs {
+            /**
+             * Checksum Always better to specify checksum otherwise cappx will download same image for every time. If checksum is specified, cappx will try to avoid downloading existing image.
+             */
+            checksum?: pulumi.Input<string>;
+            /**
+             * ChecksumType
+             */
+            checksumType?: pulumi.Input<string>;
+            /**
+             * URL is a location of an image to deploy. supported formats are iso/qcow2/qed/raw/vdi/vpc/vmdk.
+             */
+            url: pulumi.Input<string>;
+        }
+
+        /**
+         * Network
+         */
+        export interface ProxmoxMachineSpecNetworkArgs {
+            /**
+             * to do : should accept multiple IPConfig
+             */
+            ipConfig?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineSpecNetworkIpConfigArgs>;
+            /**
+             * DNS server
+             */
+            nameServer?: pulumi.Input<string>;
+            /**
+             * search domain
+             */
+            searchDomain?: pulumi.Input<string>;
+        }
+
+        /**
+         * to do : should accept multiple IPConfig
+         */
+        export interface ProxmoxMachineSpecNetworkIpConfigArgs {
+            /**
+             * gateway IPv4
+             */
+            gateway?: pulumi.Input<string>;
+            /**
+             * gateway IPv6
+             */
+            gateway6?: pulumi.Input<string>;
+            /**
+             * IPv4 with CIDR
+             */
+            ip?: pulumi.Input<string>;
+            /**
+             * IPv6 with CIDR
+             */
+            ip6?: pulumi.Input<string>;
+        }
+
+        /**
+         * Options for QEMU instance
+         */
+        export interface ProxmoxMachineSpecOptionsArgs {
+            /**
+             * Enable/Disable ACPI. Defaults to true.
+             */
+            acpi?: pulumi.Input<boolean>;
+            /**
+             * Virtual processor architecture. Defaults to the host. x86_64 or aarch64.
+             */
+            arch?: pulumi.Input<string>;
+            /**
+             * Amount of target RAM for the VM in MiB. Using zero disables the ballon driver.
+             */
+            balloon?: pulumi.Input<number>;
+            /**
+             * Description for the VM. Shown in the web-interface VM's summary. This is saved as comment inside the configuration file.
+             */
+            description?: pulumi.Input<string>;
+            /**
+             * enable/disable hugepages memory. 0 or 2 or 1024. 0 indicated 'any'
+             */
+            hugePages?: pulumi.Input<number>;
+            /**
+             * Use together with hugepages. If enabled, hugepages will not not be deleted after VM shutdown and can be used for subsequent starts. Defaults to false.
+             */
+            keepHugePages?: pulumi.Input<boolean>;
+            /**
+             * Enable/disable KVM hardware virtualization. Defaults to true.
+             */
+            kvm?: pulumi.Input<boolean>;
+            /**
+             * Set the real time clock (RTC) to local time. This is enabled by default if the `ostype` indicates a Microsoft Windows OS.
+             */
+            localTime?: pulumi.Input<boolean>;
+            /**
+             * Lock/unlock the VM.
+             */
+            lock?: pulumi.Input<string>;
+            /**
+             * Enable/disable NUMA.
+             */
+            numa?: pulumi.Input<boolean>;
+            /**
+             * Specifies whether a VM will be started during system bootup.
+             */
+            onBoot?: pulumi.Input<boolean>;
+            /**
+             * Specify guest operating system. This is used to enable special optimization/features for specific operating systems.
+             */
+            osType?: pulumi.Input<string>;
+            /**
+             * Sets the protection flag of the VM. This will disable the remove VM and remove disk operations. Defaults to false.
+             */
+            protection?: pulumi.Input<boolean>;
+            /**
+             * Allow reboot. If set to 'false' the VM exit on reboot. Defaults to true.
+             */
+            reboot?: pulumi.Input<boolean>;
+            /**
+             * Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning. Auto-ballooning is done by pvestatd. 0 ~ 5000. Defaults to 1000.
+             */
+            shares?: pulumi.Input<number>;
+            /**
+             * Enable/disable the USB tablet device. This device is usually needed to allow absolute mouse positioning with VNC. Else the mouse runs out of sync with normal VNC clients. If you're running lots of console-only guests on one host, you may consider disabling this to save some context switches. This is turned off by default if you use spice (`qm set <vmid> --vga qxl`). Defaults to true.
+             */
+            tablet?: pulumi.Input<boolean>;
+            /**
+             * Tags of the VM. This is only meta information.
+             */
+            tags?: pulumi.Input<pulumi.Input<string>[]>;
+            /**
+             * Enable/disable Template. Defaults to false.
+             */
+            template?: pulumi.Input<boolean>;
+            /**
+             * Enable/disable time drift fix. Defaults to false.
+             */
+            timeDriftFix?: pulumi.Input<boolean>;
+            /**
+             * Number of hotplugged vcpus. Defaults to 0.
+             */
+            vcpus?: pulumi.Input<number>;
+            /**
+             * The VM generation ID (vmgenid) device exposes a 128-bit integer value identifier to the guest OS. This allows to notify the guest operating system when the virtual machine is executed with a different configuration (e.g. snapshot execution or creation from a template). The guest operating system notices the change, and is then able to react as appropriate by marking its copies of distributed databases as dirty, re-initializing its random number generator, etc. Note that auto-creation only works when done through API/CLI create or update methods, but not when manually editing the config file. regex: (?:[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}|[01]). Defaults to 1 (autogenerated)
+             */
+            vmGenerationID?: pulumi.Input<string>;
+        }
+
+        /**
+         * ProxmoxMachineStatus defines the observed state of ProxmoxMachine
+         */
+        export interface ProxmoxMachineStatusArgs {
+            /**
+             * Addresses
+             */
+            addresses?: pulumi.Input<pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineStatusAddressesArgs>[]>;
+            /**
+             * Conditions
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineStatusConditionsArgs>[]>;
+            /**
+             * Configuration
+             */
+            config?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineStatusConfigArgs>;
+            /**
+             * FailureMessage
+             */
+            failureMessage?: pulumi.Input<string>;
+            /**
+             * FailureReason
+             */
+            failureReason?: pulumi.Input<string>;
+            /**
+             * InstanceStatus is the status of the proxmox instance for this machine.
+             */
+            instanceStatus?: pulumi.Input<string>;
+            /**
+             * Ready is true when the provider resource is ready.
+             */
+            ready?: pulumi.Input<boolean>;
+        }
+
+        /**
+         * MachineAddress contains information for the node's address.
+         */
+        export interface ProxmoxMachineStatusAddressesArgs {
+            /**
+             * The machine address.
+             */
+            address: pulumi.Input<string>;
+            /**
+             * Machine address type, one of Hostname, ExternalIP, InternalIP, ExternalDNS or InternalDNS.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ProxmoxMachineStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * Configuration
+         */
+        export interface ProxmoxMachineStatusConfigArgs {
+            /**
+             * Enable/disable ACPI.
+             */
+            acpi?: pulumi.Input<number>;
+            /**
+             * List of host cores used to execute guest processes, for example: 0,5,8-11
+             */
+            affinity?: pulumi.Input<string>;
+            /**
+             * Enable/disable communication with the QEMU Guest Agent and its properties.
+             */
+            agent?: pulumi.Input<string>;
+            /**
+             * Virtual processor architecture. Defaults to the host.
+             */
+            arch?: pulumi.Input<string>;
+            /**
+             * Arbitrary arguments passed to kvm, for example: args: -no-reboot -no-hpet NOTE: this option is for experts only.
+             */
+            args?: pulumi.Input<string>;
+            /**
+             * Configure a audio device, useful in combination with QXL/Spice.
+             */
+            audio0?: pulumi.Input<string>;
+            /**
+             * Automatic restart after crash (currently ignored).
+             */
+            autostart?: pulumi.Input<number>;
+            /**
+             * Amount of target RAM for the VM in MiB. Using zero disables the ballon driver.
+             */
+            balloon?: pulumi.Input<number>;
+            /**
+             * Select BIOS implementation.
+             */
+            bios?: pulumi.Input<string>;
+            /**
+             * boot order. ";" separated. : 'order=device1;device2;device3'
+             */
+            boot?: pulumi.Input<string>;
+            /**
+             * This is an alias for option -ide2
+             */
+            cdrom?: pulumi.Input<string>;
+            /**
+             * cloud-init: Specify custom files to replace the automatically generated ones at start.
+             */
+            cicustom?: pulumi.Input<string>;
+            /**
+             * cloud-init: Password to assign the user. Using this is generally not recommended. Use ssh keys instead. Also note that older cloud-init versions do not support hashed passwords.
+             */
+            cipassword?: pulumi.Input<string>;
+            /**
+             * Specifies the cloud-init configuration format. The default depends on the configured operating system type (`ostype`. We use the `nocloud` format for Linux, and `configdrive2` for windows.
+             */
+            citype?: pulumi.Input<string>;
+            /**
+             * cloud-init: User name to change ssh keys and password for instead of the image's configured default user.
+             */
+            ciuser?: pulumi.Input<string>;
+            /**
+             * The number of cores per socket. : 1 ~
+             */
+            cores?: pulumi.Input<number>;
+            /**
+             * emulated cpu type
+             */
+            cpu?: pulumi.Input<string>;
+            /**
+             * Limit of CPU usage. NOTE: If the computer has 2 CPUs, it has total of '2' CPU time. Value '0' indicates no CPU limit.
+             */
+            cpulimit?: pulumi.Input<number>;
+            /**
+             * CPU weight for a VM. Argument is used in the kernel fair scheduler. The larger the number is, the more CPU time this VM gets. Number is relative to weights of all the other running VMs.
+             */
+            cpuunits?: pulumi.Input<number>;
+            description?: pulumi.Input<string>;
+            efidisk0?: pulumi.Input<number>;
+            freeze?: pulumi.Input<number>;
+            hookscript?: pulumi.Input<string>;
+            hostpci0?: pulumi.Input<string>;
+            hostpci1?: pulumi.Input<string>;
+            hostpci2?: pulumi.Input<string>;
+            hostpci3?: pulumi.Input<string>;
+            hotplug?: pulumi.Input<string>;
+            hugepages?: pulumi.Input<string>;
+            ide0?: pulumi.Input<string>;
+            ide1?: pulumi.Input<string>;
+            ide2?: pulumi.Input<string>;
+            ide3?: pulumi.Input<string>;
+            ipconfig0?: pulumi.Input<string>;
+            ipconfig1?: pulumi.Input<string>;
+            ipconfig10?: pulumi.Input<string>;
+            ipconfig11?: pulumi.Input<string>;
+            ipconfig12?: pulumi.Input<string>;
+            ipconfig13?: pulumi.Input<string>;
+            ipconfig14?: pulumi.Input<string>;
+            ipconfig15?: pulumi.Input<string>;
+            ipconfig16?: pulumi.Input<string>;
+            ipconfig17?: pulumi.Input<string>;
+            ipconfig18?: pulumi.Input<string>;
+            ipconfig19?: pulumi.Input<string>;
+            ipconfig2?: pulumi.Input<string>;
+            ipconfig20?: pulumi.Input<string>;
+            ipconfig21?: pulumi.Input<string>;
+            ipconfig22?: pulumi.Input<string>;
+            ipconfig23?: pulumi.Input<string>;
+            ipconfig24?: pulumi.Input<string>;
+            ipconfig25?: pulumi.Input<string>;
+            ipconfig26?: pulumi.Input<string>;
+            ipconfig27?: pulumi.Input<string>;
+            ipconfig28?: pulumi.Input<string>;
+            ipconfig29?: pulumi.Input<string>;
+            ipconfig3?: pulumi.Input<string>;
+            ipconfig30?: pulumi.Input<string>;
+            ipconfig31?: pulumi.Input<string>;
+            ipconfig4?: pulumi.Input<string>;
+            ipconfig5?: pulumi.Input<string>;
+            ipconfig6?: pulumi.Input<string>;
+            ipconfig7?: pulumi.Input<string>;
+            ipconfig8?: pulumi.Input<string>;
+            ipconfig9?: pulumi.Input<string>;
+            ivshmem?: pulumi.Input<string>;
+            keephugepages?: pulumi.Input<number>;
+            keyboard?: pulumi.Input<string>;
+            /**
+             * enable/disable KVM hardware virtualization
+             */
+            kvm?: pulumi.Input<number>;
+            localtime?: pulumi.Input<number>;
+            lock?: pulumi.Input<string>;
+            /**
+             * specifies the QEMU machine type
+             */
+            machine?: pulumi.Input<string>;
+            /**
+             * amount of RAM for the VM in MiB : 16 ~
+             */
+            memory?: pulumi.Input<number>;
+            /**
+             * A Number represents a JSON number literal.
+             */
+            migrate_downtime?: pulumi.Input<string>;
+            migrate_speed?: pulumi.Input<number>;
+            /**
+             * name for VM. Only used on the configuration web interface
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * cloud-init: Sets DNS server IP address for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
+             */
+            nameserver?: pulumi.Input<string>;
+            net0?: pulumi.Input<string>;
+            net1?: pulumi.Input<string>;
+            net10?: pulumi.Input<string>;
+            net11?: pulumi.Input<string>;
+            net12?: pulumi.Input<string>;
+            net13?: pulumi.Input<string>;
+            net14?: pulumi.Input<string>;
+            net15?: pulumi.Input<string>;
+            net16?: pulumi.Input<string>;
+            net17?: pulumi.Input<string>;
+            net18?: pulumi.Input<string>;
+            net19?: pulumi.Input<string>;
+            net2?: pulumi.Input<string>;
+            net20?: pulumi.Input<string>;
+            net21?: pulumi.Input<string>;
+            net22?: pulumi.Input<string>;
+            net23?: pulumi.Input<string>;
+            net24?: pulumi.Input<string>;
+            net25?: pulumi.Input<string>;
+            net26?: pulumi.Input<string>;
+            net27?: pulumi.Input<string>;
+            net28?: pulumi.Input<string>;
+            net29?: pulumi.Input<string>;
+            net3?: pulumi.Input<string>;
+            net30?: pulumi.Input<string>;
+            net31?: pulumi.Input<string>;
+            net4?: pulumi.Input<string>;
+            net5?: pulumi.Input<string>;
+            net6?: pulumi.Input<string>;
+            net7?: pulumi.Input<string>;
+            net8?: pulumi.Input<string>;
+            net9?: pulumi.Input<string>;
+            numa?: pulumi.Input<number>;
+            numa0?: pulumi.Input<string>;
+            numa1?: pulumi.Input<string>;
+            numa2?: pulumi.Input<string>;
+            numa3?: pulumi.Input<string>;
+            numa4?: pulumi.Input<string>;
+            numa5?: pulumi.Input<string>;
+            numa6?: pulumi.Input<string>;
+            numa7?: pulumi.Input<string>;
+            /**
+             * specifies whether a VM will be started during system bootup
+             */
+            onboot?: pulumi.Input<number>;
+            /**
+             * quest OS
+             */
+            ostype?: pulumi.Input<string>;
+            parallel0?: pulumi.Input<string>;
+            parallel1?: pulumi.Input<string>;
+            parallel2?: pulumi.Input<string>;
+            protection?: pulumi.Input<number>;
+            /**
+             * Allow reboot. if set to '0' the VM exit on reboot
+             */
+            reboot?: pulumi.Input<number>;
+            rng0?: pulumi.Input<string>;
+            sata0?: pulumi.Input<string>;
+            sata1?: pulumi.Input<string>;
+            sata2?: pulumi.Input<string>;
+            sata3?: pulumi.Input<string>;
+            sata4?: pulumi.Input<string>;
+            sata5?: pulumi.Input<string>;
+            scsi0?: pulumi.Input<string>;
+            scsi1?: pulumi.Input<string>;
+            scsi10?: pulumi.Input<string>;
+            scsi11?: pulumi.Input<string>;
+            scsi12?: pulumi.Input<string>;
+            scsi13?: pulumi.Input<string>;
+            scsi14?: pulumi.Input<string>;
+            scsi15?: pulumi.Input<string>;
+            scsi16?: pulumi.Input<string>;
+            scsi17?: pulumi.Input<string>;
+            scsi18?: pulumi.Input<string>;
+            scsi19?: pulumi.Input<string>;
+            scsi2?: pulumi.Input<string>;
+            scsi20?: pulumi.Input<string>;
+            scsi21?: pulumi.Input<string>;
+            scsi22?: pulumi.Input<string>;
+            scsi23?: pulumi.Input<string>;
+            scsi24?: pulumi.Input<string>;
+            scsi25?: pulumi.Input<string>;
+            scsi26?: pulumi.Input<string>;
+            scsi27?: pulumi.Input<string>;
+            scsi28?: pulumi.Input<string>;
+            scsi29?: pulumi.Input<string>;
+            scsi3?: pulumi.Input<string>;
+            scsi30?: pulumi.Input<string>;
+            scsi4?: pulumi.Input<string>;
+            scsi5?: pulumi.Input<string>;
+            scsi6?: pulumi.Input<string>;
+            scsi7?: pulumi.Input<string>;
+            scsi8?: pulumi.Input<string>;
+            scsi9?: pulumi.Input<string>;
+            /**
+             * SCSI controller model
+             */
+            scsihw?: pulumi.Input<string>;
+            /**
+             * cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
+             */
+            searchdomain?: pulumi.Input<string>;
+            serial0?: pulumi.Input<string>;
+            serial1?: pulumi.Input<string>;
+            serial2?: pulumi.Input<string>;
+            serial3?: pulumi.Input<string>;
+            shares?: pulumi.Input<number>;
+            smbios1?: pulumi.Input<string>;
+            smp?: pulumi.Input<number>;
+            /**
+             * number of sockets
+             */
+            sockets?: pulumi.Input<number>;
+            spice_enhancements?: pulumi.Input<string>;
+            /**
+             * cloud-init setup public ssh keys (one key per line, OpenSSH format)
+             */
+            sshkeys?: pulumi.Input<string>;
+            startdate?: pulumi.Input<string>;
+            startup?: pulumi.Input<number>;
+            tablet?: pulumi.Input<number>;
+            /**
+             * tags of the VM. only for meta information
+             */
+            tags?: pulumi.Input<string>;
+            tdf?: pulumi.Input<number>;
+            /**
+             * enable/disable template
+             */
+            template?: pulumi.Input<number>;
+            tpmstate?: pulumi.Input<string>;
+            unused0?: pulumi.Input<string>;
+            unused1?: pulumi.Input<string>;
+            unused2?: pulumi.Input<string>;
+            unused3?: pulumi.Input<string>;
+            unused4?: pulumi.Input<string>;
+            unused5?: pulumi.Input<string>;
+            unused6?: pulumi.Input<string>;
+            unused7?: pulumi.Input<string>;
+            vcpus?: pulumi.Input<number>;
+            vga?: pulumi.Input<string>;
+            virtio0?: pulumi.Input<string>;
+            virtio1?: pulumi.Input<string>;
+            virtio10?: pulumi.Input<string>;
+            virtio11?: pulumi.Input<string>;
+            virtio12?: pulumi.Input<string>;
+            virtio13?: pulumi.Input<string>;
+            virtio14?: pulumi.Input<string>;
+            virtio15?: pulumi.Input<string>;
+            virtio2?: pulumi.Input<string>;
+            virtio3?: pulumi.Input<string>;
+            virtio4?: pulumi.Input<string>;
+            virtio5?: pulumi.Input<string>;
+            virtio6?: pulumi.Input<string>;
+            virtio7?: pulumi.Input<string>;
+            virtio8?: pulumi.Input<string>;
+            virtio9?: pulumi.Input<string>;
+            vmgenid?: pulumi.Input<string>;
+            vmstatestorage?: pulumi.Input<string>;
+            watchdog?: pulumi.Input<string>;
+        }
+
+        /**
+         * ProxmoxMachineTemplateSpec defines the desired state of ProxmoxMachineTemplate
+         */
+        export interface ProxmoxMachineTemplateSpecArgs {
+            template: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateArgs>;
+        }
+        /**
+         * proxmoxMachineTemplateSpecArgsProvideDefaults sets the appropriate defaults for ProxmoxMachineTemplateSpecArgs
+         */
+        export function proxmoxMachineTemplateSpecArgsProvideDefaults(val: ProxmoxMachineTemplateSpecArgs): ProxmoxMachineTemplateSpecArgs {
+            return {
+                ...val,
+                template: pulumi.output(val.template).apply(inputs.infrastructure.v1beta1.proxmoxMachineTemplateSpecTemplateArgsProvideDefaults),
+            };
+        }
+
+        export interface ProxmoxMachineTemplateSpecTemplateArgs {
+            /**
+             * ObjectMeta is metadata that all persisted resources must have, which includes all objects users must create. This is a copy of customizable fields from metav1.ObjectMeta. 
+             *  ObjectMeta is embedded in `Machine.Spec`, `MachineDeployment.Template` and `MachineSet.Template`, which are not top-level Kubernetes objects. Given that metav1.ObjectMeta has lots of special cases and read-only fields which end up in the generated CRD validation, having it as a subset simplifies the API and some issues that can impact user experience. 
+             *  During the [upgrade to controller-tools@v2](https://github.com/kubernetes-sigs/cluster-api/pull/1054) for v1alpha2, we noticed a failure would occur running Cluster API test suite against the new CRDs, specifically `spec.metadata.creationTimestamp in body must be of type string: "null"`. The investigation showed that `controller-tools@v2` behaves differently than its previous version when handling types from [metav1](k8s.io/apimachinery/pkg/apis/meta/v1) package. 
+             *  In more details, we found that embedded (non-top level) types that embedded `metav1.ObjectMeta` had validation properties, including for `creationTimestamp` (metav1.Time). The `metav1.Time` type specifies a custom json marshaller that, when IsZero() is true, returns `null` which breaks validation because the field isn't marked as nullable. 
+             *  In future versions, controller-tools@v2 might allow overriding the type and validation for embedded types. When that happens, this hack should be revisited.
+             */
+            metadata.omitempty?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateMetadataOmitemptyArgs>;
+            /**
+             * ProxmoxMachineSpec defines the desired state of ProxmoxMachine
+             */
+            spec: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecArgs>;
+        }
+        /**
+         * proxmoxMachineTemplateSpecTemplateArgsProvideDefaults sets the appropriate defaults for ProxmoxMachineTemplateSpecTemplateArgs
+         */
+        export function proxmoxMachineTemplateSpecTemplateArgsProvideDefaults(val: ProxmoxMachineTemplateSpecTemplateArgs): ProxmoxMachineTemplateSpecTemplateArgs {
+            return {
+                ...val,
+                spec: pulumi.output(val.spec).apply(inputs.infrastructure.v1beta1.proxmoxMachineTemplateSpecTemplateSpecArgsProvideDefaults),
+            };
+        }
+
+        /**
+         * ObjectMeta is metadata that all persisted resources must have, which includes all objects users must create. This is a copy of customizable fields from metav1.ObjectMeta. 
+         *  ObjectMeta is embedded in `Machine.Spec`, `MachineDeployment.Template` and `MachineSet.Template`, which are not top-level Kubernetes objects. Given that metav1.ObjectMeta has lots of special cases and read-only fields which end up in the generated CRD validation, having it as a subset simplifies the API and some issues that can impact user experience. 
+         *  During the [upgrade to controller-tools@v2](https://github.com/kubernetes-sigs/cluster-api/pull/1054) for v1alpha2, we noticed a failure would occur running Cluster API test suite against the new CRDs, specifically `spec.metadata.creationTimestamp in body must be of type string: "null"`. The investigation showed that `controller-tools@v2` behaves differently than its previous version when handling types from [metav1](k8s.io/apimachinery/pkg/apis/meta/v1) package. 
+         *  In more details, we found that embedded (non-top level) types that embedded `metav1.ObjectMeta` had validation properties, including for `creationTimestamp` (metav1.Time). The `metav1.Time` type specifies a custom json marshaller that, when IsZero() is true, returns `null` which breaks validation because the field isn't marked as nullable. 
+         *  In future versions, controller-tools@v2 might allow overriding the type and validation for embedded types. When that happens, this hack should be revisited.
+         */
+        export interface ProxmoxMachineTemplateSpecTemplateMetadataOmitemptyArgs {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * ProxmoxMachineSpec defines the desired state of ProxmoxMachine
+         */
+        export interface ProxmoxMachineTemplateSpecTemplateSpecArgs {
+            /**
+             * CloudInit defines options related to the bootstrapping systems where CloudInit is used.
+             */
+            cloudInit?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecCloudInitArgs>;
+            /**
+             * FailureDomain is the failure domain unique identifier this Machine should be attached to, as defined in Cluster API.
+             */
+            failureDomain?: pulumi.Input<string>;
+            /**
+             * Hardware
+             */
+            hardware?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecHardwareArgs>;
+            /**
+             * Image is the image to be provisioned
+             */
+            image: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecImageArgs>;
+            /**
+             * Network
+             */
+            network?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecNetworkArgs>;
+            /**
+             * Node is proxmox node hosting vm instance which used for ProxmoxMachine
+             */
+            node?: pulumi.Input<string>;
+            /**
+             * Options for QEMU instance
+             */
+            options?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecOptionsArgs>;
+            /**
+             * ProviderID
+             */
+            providerID?: pulumi.Input<string>;
+            /**
+             * Storage is name of proxmox storage used by this node. The storage must support "images(VM Disks)" type of content. cappx will use random storage if empty
+             */
+            storage?: pulumi.Input<string>;
+            /**
+             * VMID is proxmox qemu's id
+             */
+            vmID?: pulumi.Input<number>;
+        }
+        /**
+         * proxmoxMachineTemplateSpecTemplateSpecArgsProvideDefaults sets the appropriate defaults for ProxmoxMachineTemplateSpecTemplateSpecArgs
+         */
+        export function proxmoxMachineTemplateSpecTemplateSpecArgsProvideDefaults(val: ProxmoxMachineTemplateSpecTemplateSpecArgs): ProxmoxMachineTemplateSpecTemplateSpecArgs {
+            return {
+                ...val,
+                hardware: (val.hardware ? pulumi.output(val.hardware).apply(inputs.infrastructure.v1beta1.proxmoxMachineTemplateSpecTemplateSpecHardwareArgsProvideDefaults) : undefined),
+            };
+        }
+
+        /**
+         * CloudInit defines options related to the bootstrapping systems where CloudInit is used.
+         */
+        export interface ProxmoxMachineTemplateSpecTemplateSpecCloudInitArgs {
+            user?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserArgs>;
+        }
+
+        export interface ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserArgs {
+            bootcmd?: pulumi.Input<pulumi.Input<string>[]>;
+            ca_certs?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserCaCertsArgs>;
+            chpasswd?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserChpasswdArgs>;
+            manage_etc_hosts?: pulumi.Input<boolean>;
+            no_ssh_fingerprints?: pulumi.Input<boolean>;
+            package_update?: pulumi.Input<boolean>;
+            package_upgrade?: pulumi.Input<boolean>;
+            packages?: pulumi.Input<pulumi.Input<string>[]>;
+            password?: pulumi.Input<string>;
+            runCmd?: pulumi.Input<pulumi.Input<string>[]>;
+            ssh?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserSshArgs>;
+            ssh_authorized_keys?: pulumi.Input<pulumi.Input<string>[]>;
+            ssh_keys?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserSshKeysArgs>;
+            ssh_pwauth?: pulumi.Input<boolean>;
+            user?: pulumi.Input<string>;
+            users?: pulumi.Input<pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserUsersArgs>[]>;
+            writeFiles?: pulumi.Input<pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserWriteFilesArgs>[]>;
+        }
+
+        export interface ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserCaCertsArgs {
+            remove_defaults?: pulumi.Input<boolean>;
+            trusted?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        export interface ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserChpasswdArgs {
+            expire?: pulumi.Input<string>;
+        }
+
+        export interface ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserSshArgs {
+            emit_keys_to_console?: pulumi.Input<boolean>;
+        }
+
+        export interface ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserSshKeysArgs {
+            dsa_private?: pulumi.Input<string>;
+            dsa_public?: pulumi.Input<string>;
+            ecdsa_private?: pulumi.Input<string>;
+            ecdsa_public?: pulumi.Input<string>;
+            rsa_private?: pulumi.Input<string>;
+            rsa_public?: pulumi.Input<string>;
+        }
+
+        export interface ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserUsersArgs {
+            expiredate?: pulumi.Input<string>;
+            gecos?: pulumi.Input<string>;
+            groups?: pulumi.Input<pulumi.Input<string>[]>;
+            homedir?: pulumi.Input<string>;
+            inactive?: pulumi.Input<number>;
+            lock_passwd?: pulumi.Input<boolean>;
+            name: pulumi.Input<string>;
+            no_create_home?: pulumi.Input<boolean>;
+            no_log_init?: pulumi.Input<boolean>;
+            no_user_group?: pulumi.Input<boolean>;
+            passwd?: pulumi.Input<string>;
+            primary_group?: pulumi.Input<string>;
+            selinux_user?: pulumi.Input<string>;
+            shell?: pulumi.Input<string>;
+            snapuser?: pulumi.Input<string>;
+            ssh_authorized_keys?: pulumi.Input<pulumi.Input<string>[]>;
+            ssh_import_id?: pulumi.Input<pulumi.Input<string>[]>;
+            ssh_redirect_user?: pulumi.Input<boolean>;
+            sudo?: pulumi.Input<pulumi.Input<string>[]>;
+            system?: pulumi.Input<boolean>;
+        }
+
+        export interface ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserWriteFilesArgs {
+            content?: pulumi.Input<string>;
+            defer?: pulumi.Input<boolean>;
+            encoding?: pulumi.Input<string>;
+            owner?: pulumi.Input<string>;
+            path?: pulumi.Input<string>;
+            permissions?: pulumi.Input<string>;
+        }
+
+        /**
+         * Hardware
+         */
+        export interface ProxmoxMachineTemplateSpecTemplateSpecHardwareArgs {
+            /**
+             * Select BIOS implementation. Defaults to seabios. seabios or ovmf. Defaults to seabios.
+             */
+            bios?: pulumi.Input<string>;
+            /**
+             * number of CPU cores : 1 ~
+             */
+            cpu?: pulumi.Input<number>;
+            /**
+             * Limit of CPU usage. If the computer has 2 CPUs, it has total of '2' CPU time. Value '0' indicates no CPU limit. Defaults to 0.
+             */
+            cpuLimit?: pulumi.Input<number>;
+            /**
+             * hard disk size
+             */
+            disk?: pulumi.Input<string>;
+            /**
+             * amount of RAM for the VM in MiB : 16 ~
+             */
+            memory?: pulumi.Input<number>;
+            /**
+             * The number of CPU sockets. Defaults to 1.
+             */
+            sockets?: pulumi.Input<number>;
+        }
+        /**
+         * proxmoxMachineTemplateSpecTemplateSpecHardwareArgsProvideDefaults sets the appropriate defaults for ProxmoxMachineTemplateSpecTemplateSpecHardwareArgs
+         */
+        export function proxmoxMachineTemplateSpecTemplateSpecHardwareArgsProvideDefaults(val: ProxmoxMachineTemplateSpecTemplateSpecHardwareArgs): ProxmoxMachineTemplateSpecTemplateSpecHardwareArgs {
+            return {
+                ...val,
+                cpu: (val.cpu) ?? 2,
+                disk: (val.disk) ?? "50G",
+                memory: (val.memory) ?? 4096,
+            };
+        }
+
+        /**
+         * Image is the image to be provisioned
+         */
+        export interface ProxmoxMachineTemplateSpecTemplateSpecImageArgs {
+            /**
+             * Checksum Always better to specify checksum otherwise cappx will download same image for every time. If checksum is specified, cappx will try to avoid downloading existing image.
+             */
+            checksum?: pulumi.Input<string>;
+            /**
+             * ChecksumType
+             */
+            checksumType?: pulumi.Input<string>;
+            /**
+             * URL is a location of an image to deploy. supported formats are iso/qcow2/qed/raw/vdi/vpc/vmdk.
+             */
+            url: pulumi.Input<string>;
+        }
+
+        /**
+         * Network
+         */
+        export interface ProxmoxMachineTemplateSpecTemplateSpecNetworkArgs {
+            /**
+             * to do : should accept multiple IPConfig
+             */
+            ipConfig?: pulumi.Input<inputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecNetworkIpConfigArgs>;
+            /**
+             * DNS server
+             */
+            nameServer?: pulumi.Input<string>;
+            /**
+             * search domain
+             */
+            searchDomain?: pulumi.Input<string>;
+        }
+
+        /**
+         * to do : should accept multiple IPConfig
+         */
+        export interface ProxmoxMachineTemplateSpecTemplateSpecNetworkIpConfigArgs {
+            /**
+             * gateway IPv4
+             */
+            gateway?: pulumi.Input<string>;
+            /**
+             * gateway IPv6
+             */
+            gateway6?: pulumi.Input<string>;
+            /**
+             * IPv4 with CIDR
+             */
+            ip?: pulumi.Input<string>;
+            /**
+             * IPv6 with CIDR
+             */
+            ip6?: pulumi.Input<string>;
+        }
+
+        /**
+         * Options for QEMU instance
+         */
+        export interface ProxmoxMachineTemplateSpecTemplateSpecOptionsArgs {
+            /**
+             * Enable/Disable ACPI. Defaults to true.
+             */
+            acpi?: pulumi.Input<boolean>;
+            /**
+             * Virtual processor architecture. Defaults to the host. x86_64 or aarch64.
+             */
+            arch?: pulumi.Input<string>;
+            /**
+             * Amount of target RAM for the VM in MiB. Using zero disables the ballon driver.
+             */
+            balloon?: pulumi.Input<number>;
+            /**
+             * Description for the VM. Shown in the web-interface VM's summary. This is saved as comment inside the configuration file.
+             */
+            description?: pulumi.Input<string>;
+            /**
+             * enable/disable hugepages memory. 0 or 2 or 1024. 0 indicated 'any'
+             */
+            hugePages?: pulumi.Input<number>;
+            /**
+             * Use together with hugepages. If enabled, hugepages will not not be deleted after VM shutdown and can be used for subsequent starts. Defaults to false.
+             */
+            keepHugePages?: pulumi.Input<boolean>;
+            /**
+             * Enable/disable KVM hardware virtualization. Defaults to true.
+             */
+            kvm?: pulumi.Input<boolean>;
+            /**
+             * Set the real time clock (RTC) to local time. This is enabled by default if the `ostype` indicates a Microsoft Windows OS.
+             */
+            localTime?: pulumi.Input<boolean>;
+            /**
+             * Lock/unlock the VM.
+             */
+            lock?: pulumi.Input<string>;
+            /**
+             * Enable/disable NUMA.
+             */
+            numa?: pulumi.Input<boolean>;
+            /**
+             * Specifies whether a VM will be started during system bootup.
+             */
+            onBoot?: pulumi.Input<boolean>;
+            /**
+             * Specify guest operating system. This is used to enable special optimization/features for specific operating systems.
+             */
+            osType?: pulumi.Input<string>;
+            /**
+             * Sets the protection flag of the VM. This will disable the remove VM and remove disk operations. Defaults to false.
+             */
+            protection?: pulumi.Input<boolean>;
+            /**
+             * Allow reboot. If set to 'false' the VM exit on reboot. Defaults to true.
+             */
+            reboot?: pulumi.Input<boolean>;
+            /**
+             * Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning. Auto-ballooning is done by pvestatd. 0 ~ 5000. Defaults to 1000.
+             */
+            shares?: pulumi.Input<number>;
+            /**
+             * Enable/disable the USB tablet device. This device is usually needed to allow absolute mouse positioning with VNC. Else the mouse runs out of sync with normal VNC clients. If you're running lots of console-only guests on one host, you may consider disabling this to save some context switches. This is turned off by default if you use spice (`qm set <vmid> --vga qxl`). Defaults to true.
+             */
+            tablet?: pulumi.Input<boolean>;
+            /**
+             * Tags of the VM. This is only meta information.
+             */
+            tags?: pulumi.Input<pulumi.Input<string>[]>;
+            /**
+             * Enable/disable Template. Defaults to false.
+             */
+            template?: pulumi.Input<boolean>;
+            /**
+             * Enable/disable time drift fix. Defaults to false.
+             */
+            timeDriftFix?: pulumi.Input<boolean>;
+            /**
+             * Number of hotplugged vcpus. Defaults to 0.
+             */
+            vcpus?: pulumi.Input<number>;
+            /**
+             * The VM generation ID (vmgenid) device exposes a 128-bit integer value identifier to the guest OS. This allows to notify the guest operating system when the virtual machine is executed with a different configuration (e.g. snapshot execution or creation from a template). The guest operating system notices the change, and is then able to react as appropriate by marking its copies of distributed databases as dirty, re-initializing its random number generator, etc. Note that auto-creation only works when done through API/CLI create or update methods, but not when manually editing the config file. regex: (?:[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}|[01]). Defaults to 1 (autogenerated)
+             */
+            vmGenerationID?: pulumi.Input<string>;
+        }
+
+    }
+}
+
+export namespace ipam {
+    export namespace v1alpha1 {
+        /**
+         * IPAddressClaimSpec is the desired state of an IPAddressClaim.
+         */
+        export interface IPAddressClaimSpecArgs {
+            /**
+             * PoolRef is a reference to the pool from which an IP address should be created.
+             */
+            poolRef: pulumi.Input<inputs.ipam.v1alpha1.IPAddressClaimSpecPoolRefArgs>;
+        }
+
+        /**
+         * PoolRef is a reference to the pool from which an IP address should be created.
+         */
+        export interface IPAddressClaimSpecPoolRefArgs {
+            /**
+             * APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
+             */
+            apiGroup: pulumi.Input<string>;
+            /**
+             * Kind is the type of resource being referenced
+             */
+            kind: pulumi.Input<string>;
+            /**
+             * Name is the name of resource being referenced
+             */
+            name: pulumi.Input<string>;
+        }
+
+        /**
+         * IPAddressClaimStatus is the observed status of a IPAddressClaim.
+         */
+        export interface IPAddressClaimStatusArgs {
+            /**
+             * AddressRef is a reference to the address that was created for this claim.
+             */
+            addressRef?: pulumi.Input<inputs.ipam.v1alpha1.IPAddressClaimStatusAddressRefArgs>;
+            /**
+             * Conditions summarises the current state of the IPAddressClaim
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.ipam.v1alpha1.IPAddressClaimStatusConditionsArgs>[]>;
+        }
+
+        /**
+         * AddressRef is a reference to the address that was created for this claim.
+         */
+        export interface IPAddressClaimStatusAddressRefArgs {
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+             */
+            name?: pulumi.Input<string>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface IPAddressClaimStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * IPAddressSpec is the desired state of an IPAddress.
+         */
+        export interface IPAddressSpecArgs {
+            /**
+             * Address is the IP address.
+             */
+            address: pulumi.Input<string>;
+            /**
+             * ClaimRef is a reference to the claim this IPAddress was created for.
+             */
+            claimRef: pulumi.Input<inputs.ipam.v1alpha1.IPAddressSpecClaimRefArgs>;
+            /**
+             * Gateway is the network gateway of the network the address is from.
+             */
+            gateway?: pulumi.Input<string>;
+            /**
+             * PoolRef is a reference to the pool that this IPAddress was created from.
+             */
+            poolRef: pulumi.Input<inputs.ipam.v1alpha1.IPAddressSpecPoolRefArgs>;
+            /**
+             * Prefix is the prefix of the address.
+             */
+            prefix: pulumi.Input<number>;
+        }
+
+        /**
+         * ClaimRef is a reference to the claim this IPAddress was created for.
+         */
+        export interface IPAddressSpecClaimRefArgs {
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+             */
+            name?: pulumi.Input<string>;
+        }
+
+        /**
+         * PoolRef is a reference to the pool that this IPAddress was created from.
+         */
+        export interface IPAddressSpecPoolRefArgs {
+            /**
+             * APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
+             */
+            apiGroup: pulumi.Input<string>;
+            /**
+             * Kind is the type of resource being referenced
+             */
+            kind: pulumi.Input<string>;
+            /**
+             * Name is the name of resource being referenced
+             */
+            name: pulumi.Input<string>;
+        }
+    }
+}
+
+export namespace metal {
+    export namespace v1alpha1 {
+        /**
+         * EnvironmentSpec defines the desired state of Environment.
+         */
+        export interface EnvironmentSpecArgs {
+            initrd?: pulumi.Input<inputs.metal.v1alpha1.EnvironmentSpecInitrdArgs>;
+            kernel?: pulumi.Input<inputs.metal.v1alpha1.EnvironmentSpecKernelArgs>;
+        }
+
+        export interface EnvironmentSpecInitrdArgs {
+            sha512?: pulumi.Input<string>;
+            url?: pulumi.Input<string>;
+        }
+
+        export interface EnvironmentSpecKernelArgs {
+            args?: pulumi.Input<pulumi.Input<string>[]>;
+            sha512?: pulumi.Input<string>;
+            url?: pulumi.Input<string>;
+        }
+
+        /**
+         * EnvironmentStatus defines the observed state of Environment.
+         */
+        export interface EnvironmentStatusArgs {
+            conditions?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha1.EnvironmentStatusConditionsArgs>[]>;
+        }
+
+        export interface EnvironmentStatusConditionsArgs {
+            sha512?: pulumi.Input<string>;
+            status: pulumi.Input<string>;
+            type: pulumi.Input<string>;
+            url?: pulumi.Input<string>;
+        }
+
+        /**
+         * ServerClassSpec defines the desired state of ServerClass.
+         */
+        export interface ServerClassSpecArgs {
+            /**
+             * BootFromDiskMethod specifies the method to exit iPXE to force boot from disk. 
+             *  If not set, controller default is used. Valid values: ipxe-exit, http-404, ipxe-sanboot.
+             */
+            bootFromDiskMethod?: pulumi.Input<string>;
+            /**
+             * Set of config patches to apply to the machine configuration to the servers provisioned via this server class.
+             */
+            configPatches?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha1.ServerClassSpecConfigPatchesArgs>[]>;
+            /**
+             * Reference to the environment which should be used to provision the servers via this server class.
+             */
+            environmentRef?: pulumi.Input<inputs.metal.v1alpha1.ServerClassSpecEnvironmentRefArgs>;
+            /**
+             * Qualifiers to match on the server spec. 
+             *  If qualifiers are empty, they match all servers. Server should match both qualifiers and selector conditions to be included into the server class.
+             */
+            qualifiers?: pulumi.Input<inputs.metal.v1alpha1.ServerClassSpecQualifiersArgs>;
+            /**
+             * Label selector to filter the matching servers based on labels. A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+             */
+            selector?: pulumi.Input<inputs.metal.v1alpha1.ServerClassSpecSelectorArgs>;
+        }
+
+        export interface ServerClassSpecConfigPatchesArgs {
+            op: pulumi.Input<string>;
+            path: pulumi.Input<string>;
+            value?: pulumi.Input<{[key: string]: any}>;
+        }
+
+        /**
+         * Reference to the environment which should be used to provision the servers via this server class.
+         */
+        export interface ServerClassSpecEnvironmentRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * Qualifiers to match on the server spec. 
+         *  If qualifiers are empty, they match all servers. Server should match both qualifiers and selector conditions to be included into the server class.
+         */
+        export interface ServerClassSpecQualifiersArgs {
+            cpu?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha1.ServerClassSpecQualifiersCpuArgs>[]>;
+            labelSelectors?: pulumi.Input<pulumi.Input<{[key: string]: pulumi.Input<string>}>[]>;
+            systemInformation?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha1.ServerClassSpecQualifiersSystemInformationArgs>[]>;
+        }
+
+        export interface ServerClassSpecQualifiersCpuArgs {
+            manufacturer?: pulumi.Input<string>;
+            version?: pulumi.Input<string>;
+        }
+
+        export interface ServerClassSpecQualifiersSystemInformationArgs {
+            family?: pulumi.Input<string>;
+            manufacturer?: pulumi.Input<string>;
+            productName?: pulumi.Input<string>;
+            serialNumber?: pulumi.Input<string>;
+            skuNumber?: pulumi.Input<string>;
+            version?: pulumi.Input<string>;
+        }
+
+        /**
+         * Label selector to filter the matching servers based on labels. A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+         */
+        export interface ServerClassSpecSelectorArgs {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha1.ServerClassSpecSelectorMatchExpressionsArgs>[]>;
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ServerClassSpecSelectorMatchExpressionsArgs {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: pulumi.Input<string>;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: pulumi.Input<string>;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * ServerClassStatus defines the observed state of ServerClass.
+         */
+        export interface ServerClassStatusArgs {
+            serversAvailable: pulumi.Input<pulumi.Input<string>[]>;
+            serversInUse: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * ServerSpec defines the desired state of Server.
+         */
+        export interface ServerSpecArgs {
+            accepted: pulumi.Input<boolean>;
+            /**
+             * BMC defines data about how to talk to the node via ipmitool.
+             */
+            bmc?: pulumi.Input<inputs.metal.v1alpha1.ServerSpecBmcArgs>;
+            /**
+             * BootFromDiskMethod specifies the method to exit iPXE to force boot from disk. 
+             *  If not set, controller default is used. Valid values: ipxe-exit, http-404, ipxe-sanboot.
+             */
+            bootFromDiskMethod?: pulumi.Input<string>;
+            configPatches?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha1.ServerSpecConfigPatchesArgs>[]>;
+            cordoned?: pulumi.Input<boolean>;
+            cpu?: pulumi.Input<inputs.metal.v1alpha1.ServerSpecCpuArgs>;
+            /**
+             * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+             *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+             */
+            environmentRef?: pulumi.Input<inputs.metal.v1alpha1.ServerSpecEnvironmentRefArgs>;
+            hostname?: pulumi.Input<string>;
+            /**
+             * ManagementAPI defines data about how to talk to the node via simple HTTP API.
+             */
+            managementApi?: pulumi.Input<inputs.metal.v1alpha1.ServerSpecManagementApiArgs>;
+            pxeBootAlways?: pulumi.Input<boolean>;
+            /**
+             * PXEMode specifies the method to trigger PXE boot via IPMI. 
+             *  If not set, controller default is used. Valid values: uefi, bios.
+             */
+            pxeMode?: pulumi.Input<string>;
+            system?: pulumi.Input<inputs.metal.v1alpha1.ServerSpecSystemArgs>;
+        }
+
+        /**
+         * BMC defines data about how to talk to the node via ipmitool.
+         */
+        export interface ServerSpecBmcArgs {
+            /**
+             * BMC endpoint.
+             */
+            endpoint: pulumi.Input<string>;
+            /**
+             * BMC Interface Type. Defaults to lanplus.
+             */
+            interface?: pulumi.Input<string>;
+            /**
+             * BMC password value.
+             */
+            pass?: pulumi.Input<string>;
+            /**
+             * Source for the password value. Cannot be used if Pass is not empty.
+             */
+            passFrom?: pulumi.Input<inputs.metal.v1alpha1.ServerSpecBmcPassFromArgs>;
+            /**
+             * BMC port. Defaults to 623.
+             */
+            port?: pulumi.Input<number>;
+            /**
+             * BMC user value.
+             */
+            user?: pulumi.Input<string>;
+            /**
+             * Source for the user value. Cannot be used if User is not empty.
+             */
+            userFrom?: pulumi.Input<inputs.metal.v1alpha1.ServerSpecBmcUserFromArgs>;
+        }
+
+        /**
+         * Source for the password value. Cannot be used if Pass is not empty.
+         */
+        export interface ServerSpecBmcPassFromArgs {
+            /**
+             * SecretKeyRef defines a ref to a given key within a secret.
+             */
+            secretKeyRef?: pulumi.Input<inputs.metal.v1alpha1.ServerSpecBmcPassFromSecretKeyRefArgs>;
+        }
+
+        /**
+         * SecretKeyRef defines a ref to a given key within a secret.
+         */
+        export interface ServerSpecBmcPassFromSecretKeyRefArgs {
+            /**
+             * Key to select
+             */
+            key: pulumi.Input<string>;
+            name: pulumi.Input<string>;
+            /**
+             * Namespace and name of credential secret nb: can't use namespacedname here b/c it doesn't have json tags in the struct :(
+             */
+            namespace: pulumi.Input<string>;
+        }
+
+        /**
+         * Source for the user value. Cannot be used if User is not empty.
+         */
+        export interface ServerSpecBmcUserFromArgs {
+            /**
+             * SecretKeyRef defines a ref to a given key within a secret.
+             */
+            secretKeyRef?: pulumi.Input<inputs.metal.v1alpha1.ServerSpecBmcUserFromSecretKeyRefArgs>;
+        }
+
+        /**
+         * SecretKeyRef defines a ref to a given key within a secret.
+         */
+        export interface ServerSpecBmcUserFromSecretKeyRefArgs {
+            /**
+             * Key to select
+             */
+            key: pulumi.Input<string>;
+            name: pulumi.Input<string>;
+            /**
+             * Namespace and name of credential secret nb: can't use namespacedname here b/c it doesn't have json tags in the struct :(
+             */
+            namespace: pulumi.Input<string>;
+        }
+
+        export interface ServerSpecConfigPatchesArgs {
+            op: pulumi.Input<string>;
+            path: pulumi.Input<string>;
+            value?: pulumi.Input<{[key: string]: any}>;
+        }
+
+        export interface ServerSpecCpuArgs {
+            manufacturer?: pulumi.Input<string>;
+            version?: pulumi.Input<string>;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface ServerSpecEnvironmentRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * ManagementAPI defines data about how to talk to the node via simple HTTP API.
+         */
+        export interface ServerSpecManagementApiArgs {
+            endpoint: pulumi.Input<string>;
+        }
+
+        export interface ServerSpecSystemArgs {
+            family?: pulumi.Input<string>;
+            manufacturer?: pulumi.Input<string>;
+            productName?: pulumi.Input<string>;
+            serialNumber?: pulumi.Input<string>;
+            skuNumber?: pulumi.Input<string>;
+            version?: pulumi.Input<string>;
+        }
+
+        /**
+         * ServerStatus defines the observed state of Server.
+         */
+        export interface ServerStatusArgs {
+            /**
+             * Addresses lists discovered node IPs.
+             */
+            addresses?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha1.ServerStatusAddressesArgs>[]>;
+            /**
+             * Conditions defines current service state of the Server.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha1.ServerStatusConditionsArgs>[]>;
+            /**
+             * InUse is true when server is assigned to some MetalMachine.
+             */
+            inUse?: pulumi.Input<boolean>;
+            /**
+             * IsClean is true when server disks are wiped.
+             */
+            isClean?: pulumi.Input<boolean>;
+            /**
+             * Power is the current power state of the server: "on", "off" or "unknown".
+             */
+            power?: pulumi.Input<string>;
+            /**
+             * Ready is true when server is accepted and in use.
+             */
+            ready?: pulumi.Input<boolean>;
+        }
+
+        /**
+         * NodeAddress contains information for the node's address.
+         */
+        export interface ServerStatusAddressesArgs {
+            /**
+             * The node address.
+             */
+            address: pulumi.Input<string>;
+            /**
+             * Node address type, one of Hostname, ExternalIP or InternalIP.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ServerStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+    }
+
+    export namespace v1alpha2 {
+        /**
+         * EnvironmentSpec defines the desired state of Environment.
+         */
+        export interface EnvironmentSpecArgs {
+            initrd?: pulumi.Input<inputs.metal.v1alpha2.EnvironmentSpecInitrdArgs>;
+            kernel?: pulumi.Input<inputs.metal.v1alpha2.EnvironmentSpecKernelArgs>;
+        }
+
+        export interface EnvironmentSpecInitrdArgs {
+            sha512?: pulumi.Input<string>;
+            url?: pulumi.Input<string>;
+        }
+
+        export interface EnvironmentSpecKernelArgs {
+            args?: pulumi.Input<pulumi.Input<string>[]>;
+            sha512?: pulumi.Input<string>;
+            url?: pulumi.Input<string>;
+        }
+
+        /**
+         * EnvironmentStatus defines the observed state of Environment.
+         */
+        export interface EnvironmentStatusArgs {
+            conditions?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha2.EnvironmentStatusConditionsArgs>[]>;
+        }
+
+        export interface EnvironmentStatusConditionsArgs {
+            sha512?: pulumi.Input<string>;
+            status: pulumi.Input<string>;
+            type: pulumi.Input<string>;
+            url?: pulumi.Input<string>;
+        }
+
+        /**
+         * ServerClassSpec defines the desired state of ServerClass.
+         */
+        export interface ServerClassSpecArgs {
+            /**
+             * BootFromDiskMethod specifies the method to exit iPXE to force boot from disk. 
+             *  If not set, controller default is used. Valid values: ipxe-exit, http-404, ipxe-sanboot.
+             */
+            bootFromDiskMethod?: pulumi.Input<string>;
+            /**
+             * Set of config patches to apply to the machine configuration to the servers provisioned via this server class.
+             */
+            configPatches?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha2.ServerClassSpecConfigPatchesArgs>[]>;
+            /**
+             * Reference to the environment which should be used to provision the servers via this server class.
+             */
+            environmentRef?: pulumi.Input<inputs.metal.v1alpha2.ServerClassSpecEnvironmentRefArgs>;
+            /**
+             * Qualifiers to match on the server spec. 
+             *  If qualifiers are empty, they match all servers. Server should match both qualifiers and selector conditions to be included into the server class.
+             */
+            qualifiers?: pulumi.Input<inputs.metal.v1alpha2.ServerClassSpecQualifiersArgs>;
+            /**
+             * Label selector to filter the matching servers based on labels. A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+             */
+            selector?: pulumi.Input<inputs.metal.v1alpha2.ServerClassSpecSelectorArgs>;
+        }
+
+        export interface ServerClassSpecConfigPatchesArgs {
+            op: pulumi.Input<string>;
+            path: pulumi.Input<string>;
+            value?: pulumi.Input<{[key: string]: any}>;
+        }
+
+        /**
+         * Reference to the environment which should be used to provision the servers via this server class.
+         */
+        export interface ServerClassSpecEnvironmentRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        /**
+         * Qualifiers to match on the server spec. 
+         *  If qualifiers are empty, they match all servers. Server should match both qualifiers and selector conditions to be included into the server class.
+         */
+        export interface ServerClassSpecQualifiersArgs {
+            hardware?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha2.ServerClassSpecQualifiersHardwareArgs>[]>;
+            labelSelectors?: pulumi.Input<pulumi.Input<{[key: string]: pulumi.Input<string>}>[]>;
+        }
+
+        export interface ServerClassSpecQualifiersHardwareArgs {
+            compute?: pulumi.Input<inputs.metal.v1alpha2.ServerClassSpecQualifiersHardwareComputeArgs>;
+            memory?: pulumi.Input<inputs.metal.v1alpha2.ServerClassSpecQualifiersHardwareMemoryArgs>;
+            network?: pulumi.Input<inputs.metal.v1alpha2.ServerClassSpecQualifiersHardwareNetworkArgs>;
+            storage?: pulumi.Input<inputs.metal.v1alpha2.ServerClassSpecQualifiersHardwareStorageArgs>;
+            system?: pulumi.Input<inputs.metal.v1alpha2.ServerClassSpecQualifiersHardwareSystemArgs>;
+        }
+
+        export interface ServerClassSpecQualifiersHardwareComputeArgs {
+            processorCount?: pulumi.Input<number>;
+            processors?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha2.ServerClassSpecQualifiersHardwareComputeProcessorsArgs>[]>;
+            totalCoreCount?: pulumi.Input<number>;
+            totalThreadCount?: pulumi.Input<number>;
+        }
+
+        export interface ServerClassSpecQualifiersHardwareComputeProcessorsArgs {
+            coreCount?: pulumi.Input<number>;
+            manufacturer?: pulumi.Input<string>;
+            productName?: pulumi.Input<string>;
+            serialNumber?: pulumi.Input<string>;
+            /**
+             * Speed is in megahertz (Mhz)
+             */
+            speed?: pulumi.Input<number>;
+            threadCount?: pulumi.Input<number>;
+        }
+
+        export interface ServerClassSpecQualifiersHardwareMemoryArgs {
+            moduleCount?: pulumi.Input<number>;
+            modules?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha2.ServerClassSpecQualifiersHardwareMemoryModulesArgs>[]>;
+            totalSize?: pulumi.Input<string>;
+        }
+
+        export interface ServerClassSpecQualifiersHardwareMemoryModulesArgs {
+            manufacturer?: pulumi.Input<string>;
+            productName?: pulumi.Input<string>;
+            serialNumber?: pulumi.Input<string>;
+            /**
+             * Size is in megabytes (MB)
+             */
+            size?: pulumi.Input<number>;
+            /**
+             * Speed is in megatransfers per second (MT/S)
+             */
+            speed?: pulumi.Input<number>;
+            type?: pulumi.Input<string>;
+        }
+
+        export interface ServerClassSpecQualifiersHardwareNetworkArgs {
+            interfaceCount?: pulumi.Input<number>;
+            interfaces?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha2.ServerClassSpecQualifiersHardwareNetworkInterfacesArgs>[]>;
+        }
+
+        export interface ServerClassSpecQualifiersHardwareNetworkInterfacesArgs {
+            addresses?: pulumi.Input<pulumi.Input<string>[]>;
+            flags?: pulumi.Input<string>;
+            index?: pulumi.Input<number>;
+            mac?: pulumi.Input<string>;
+            mtu?: pulumi.Input<number>;
+            name?: pulumi.Input<string>;
+        }
+
+        export interface ServerClassSpecQualifiersHardwareStorageArgs {
+            deviceCount?: pulumi.Input<number>;
+            devices?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha2.ServerClassSpecQualifiersHardwareStorageDevicesArgs>[]>;
+            totalSize?: pulumi.Input<string>;
+        }
+
+        export interface ServerClassSpecQualifiersHardwareStorageDevicesArgs {
+            deviceName?: pulumi.Input<string>;
+            name?: pulumi.Input<string>;
+            productName?: pulumi.Input<string>;
+            serialNumber?: pulumi.Input<string>;
+            /**
+             * Size is in bytes
+             */
+            size?: pulumi.Input<number>;
+            type?: pulumi.Input<string>;
+            uuid?: pulumi.Input<string>;
+            wwid?: pulumi.Input<string>;
+        }
+
+        export interface ServerClassSpecQualifiersHardwareSystemArgs {
+            family?: pulumi.Input<string>;
+            manufacturer?: pulumi.Input<string>;
+            productName?: pulumi.Input<string>;
+            serialNumber?: pulumi.Input<string>;
+            skuNumber?: pulumi.Input<string>;
+            uuid?: pulumi.Input<string>;
+            version?: pulumi.Input<string>;
+        }
+
+        /**
+         * Label selector to filter the matching servers based on labels. A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+         */
+        export interface ServerClassSpecSelectorArgs {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha2.ServerClassSpecSelectorMatchExpressionsArgs>[]>;
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ServerClassSpecSelectorMatchExpressionsArgs {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: pulumi.Input<string>;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: pulumi.Input<string>;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * ServerClassStatus defines the observed state of ServerClass.
+         */
+        export interface ServerClassStatusArgs {
+            serversAvailable: pulumi.Input<pulumi.Input<string>[]>;
+            serversInUse: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * ServerSpec defines the desired state of Server.
+         */
+        export interface ServerSpecArgs {
+            accepted: pulumi.Input<boolean>;
+            /**
+             * BMC defines data about how to talk to the node via ipmitool.
+             */
+            bmc?: pulumi.Input<inputs.metal.v1alpha2.ServerSpecBmcArgs>;
+            /**
+             * BootFromDiskMethod specifies the method to exit iPXE to force boot from disk. 
+             *  If not set, controller default is used. Valid values: ipxe-exit, http-404, ipxe-sanboot.
+             */
+            bootFromDiskMethod?: pulumi.Input<string>;
+            configPatches?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha2.ServerSpecConfigPatchesArgs>[]>;
+            cordoned?: pulumi.Input<boolean>;
+            /**
+             * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+             *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+             */
+            environmentRef?: pulumi.Input<inputs.metal.v1alpha2.ServerSpecEnvironmentRefArgs>;
+            hardware?: pulumi.Input<inputs.metal.v1alpha2.ServerSpecHardwareArgs>;
+            hostname?: pulumi.Input<string>;
+            /**
+             * ManagementAPI defines data about how to talk to the node via simple HTTP API.
+             */
+            managementApi?: pulumi.Input<inputs.metal.v1alpha2.ServerSpecManagementApiArgs>;
+            pxeBootAlways?: pulumi.Input<boolean>;
+            /**
+             * PXEMode specifies the method to trigger PXE boot via IPMI. 
+             *  If not set, controller default is used. Valid values: uefi, bios.
+             */
+            pxeMode?: pulumi.Input<string>;
+        }
+
+        /**
+         * BMC defines data about how to talk to the node via ipmitool.
+         */
+        export interface ServerSpecBmcArgs {
+            /**
+             * BMC endpoint.
+             */
+            endpoint: pulumi.Input<string>;
+            /**
+             * BMC Interface Type. Defaults to lanplus.
+             */
+            interface?: pulumi.Input<string>;
+            /**
+             * BMC password value.
+             */
+            pass?: pulumi.Input<string>;
+            /**
+             * Source for the password value. Cannot be used if Pass is not empty.
+             */
+            passFrom?: pulumi.Input<inputs.metal.v1alpha2.ServerSpecBmcPassFromArgs>;
+            /**
+             * BMC port. Defaults to 623.
+             */
+            port?: pulumi.Input<number>;
+            /**
+             * BMC user value.
+             */
+            user?: pulumi.Input<string>;
+            /**
+             * Source for the user value. Cannot be used if User is not empty.
+             */
+            userFrom?: pulumi.Input<inputs.metal.v1alpha2.ServerSpecBmcUserFromArgs>;
+        }
+
+        /**
+         * Source for the password value. Cannot be used if Pass is not empty.
+         */
+        export interface ServerSpecBmcPassFromArgs {
+            /**
+             * SecretKeyRef defines a ref to a given key within a secret.
+             */
+            secretKeyRef?: pulumi.Input<inputs.metal.v1alpha2.ServerSpecBmcPassFromSecretKeyRefArgs>;
+        }
+
+        /**
+         * SecretKeyRef defines a ref to a given key within a secret.
+         */
+        export interface ServerSpecBmcPassFromSecretKeyRefArgs {
+            /**
+             * Key to select
+             */
+            key: pulumi.Input<string>;
+            name: pulumi.Input<string>;
+            /**
+             * Namespace and name of credential secret nb: can't use namespacedname here b/c it doesn't have json tags in the struct :(
+             */
+            namespace: pulumi.Input<string>;
+        }
+
+        /**
+         * Source for the user value. Cannot be used if User is not empty.
+         */
+        export interface ServerSpecBmcUserFromArgs {
+            /**
+             * SecretKeyRef defines a ref to a given key within a secret.
+             */
+            secretKeyRef?: pulumi.Input<inputs.metal.v1alpha2.ServerSpecBmcUserFromSecretKeyRefArgs>;
+        }
+
+        /**
+         * SecretKeyRef defines a ref to a given key within a secret.
+         */
+        export interface ServerSpecBmcUserFromSecretKeyRefArgs {
+            /**
+             * Key to select
+             */
+            key: pulumi.Input<string>;
+            name: pulumi.Input<string>;
+            /**
+             * Namespace and name of credential secret nb: can't use namespacedname here b/c it doesn't have json tags in the struct :(
+             */
+            namespace: pulumi.Input<string>;
+        }
+
+        export interface ServerSpecConfigPatchesArgs {
+            op: pulumi.Input<string>;
+            path: pulumi.Input<string>;
+            value?: pulumi.Input<{[key: string]: any}>;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface ServerSpecEnvironmentRefArgs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: pulumi.Input<string>;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: pulumi.Input<string>;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: pulumi.Input<string>;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: pulumi.Input<string>;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: pulumi.Input<string>;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: pulumi.Input<string>;
+        }
+
+        export interface ServerSpecHardwareArgs {
+            compute?: pulumi.Input<inputs.metal.v1alpha2.ServerSpecHardwareComputeArgs>;
+            memory?: pulumi.Input<inputs.metal.v1alpha2.ServerSpecHardwareMemoryArgs>;
+            network?: pulumi.Input<inputs.metal.v1alpha2.ServerSpecHardwareNetworkArgs>;
+            storage?: pulumi.Input<inputs.metal.v1alpha2.ServerSpecHardwareStorageArgs>;
+            system?: pulumi.Input<inputs.metal.v1alpha2.ServerSpecHardwareSystemArgs>;
+        }
+
+        export interface ServerSpecHardwareComputeArgs {
+            processorCount?: pulumi.Input<number>;
+            processors?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha2.ServerSpecHardwareComputeProcessorsArgs>[]>;
+            totalCoreCount?: pulumi.Input<number>;
+            totalThreadCount?: pulumi.Input<number>;
+        }
+
+        export interface ServerSpecHardwareComputeProcessorsArgs {
+            coreCount?: pulumi.Input<number>;
+            manufacturer?: pulumi.Input<string>;
+            productName?: pulumi.Input<string>;
+            serialNumber?: pulumi.Input<string>;
+            /**
+             * Speed is in megahertz (Mhz)
+             */
+            speed?: pulumi.Input<number>;
+            threadCount?: pulumi.Input<number>;
+        }
+
+        export interface ServerSpecHardwareMemoryArgs {
+            moduleCount?: pulumi.Input<number>;
+            modules?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha2.ServerSpecHardwareMemoryModulesArgs>[]>;
+            totalSize?: pulumi.Input<string>;
+        }
+
+        export interface ServerSpecHardwareMemoryModulesArgs {
+            manufacturer?: pulumi.Input<string>;
+            productName?: pulumi.Input<string>;
+            serialNumber?: pulumi.Input<string>;
+            /**
+             * Size is in megabytes (MB)
+             */
+            size?: pulumi.Input<number>;
+            /**
+             * Speed is in megatransfers per second (MT/S)
+             */
+            speed?: pulumi.Input<number>;
+            type?: pulumi.Input<string>;
+        }
+
+        export interface ServerSpecHardwareNetworkArgs {
+            interfaceCount?: pulumi.Input<number>;
+            interfaces?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha2.ServerSpecHardwareNetworkInterfacesArgs>[]>;
+        }
+
+        export interface ServerSpecHardwareNetworkInterfacesArgs {
+            addresses?: pulumi.Input<pulumi.Input<string>[]>;
+            flags?: pulumi.Input<string>;
+            index?: pulumi.Input<number>;
+            mac?: pulumi.Input<string>;
+            mtu?: pulumi.Input<number>;
+            name?: pulumi.Input<string>;
+        }
+
+        export interface ServerSpecHardwareStorageArgs {
+            deviceCount?: pulumi.Input<number>;
+            devices?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha2.ServerSpecHardwareStorageDevicesArgs>[]>;
+            totalSize?: pulumi.Input<string>;
+        }
+
+        export interface ServerSpecHardwareStorageDevicesArgs {
+            deviceName?: pulumi.Input<string>;
+            name?: pulumi.Input<string>;
+            productName?: pulumi.Input<string>;
+            serialNumber?: pulumi.Input<string>;
+            /**
+             * Size is in bytes
+             */
+            size?: pulumi.Input<number>;
+            type?: pulumi.Input<string>;
+            uuid?: pulumi.Input<string>;
+            wwid?: pulumi.Input<string>;
+        }
+
+        export interface ServerSpecHardwareSystemArgs {
+            family?: pulumi.Input<string>;
+            manufacturer?: pulumi.Input<string>;
+            productName?: pulumi.Input<string>;
+            serialNumber?: pulumi.Input<string>;
+            skuNumber?: pulumi.Input<string>;
+            uuid?: pulumi.Input<string>;
+            version?: pulumi.Input<string>;
+        }
+
+        /**
+         * ManagementAPI defines data about how to talk to the node via simple HTTP API.
+         */
+        export interface ServerSpecManagementApiArgs {
+            endpoint: pulumi.Input<string>;
+        }
+
+        /**
+         * ServerStatus defines the observed state of Server.
+         */
+        export interface ServerStatusArgs {
+            /**
+             * Addresses lists discovered node IPs.
+             */
+            addresses?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha2.ServerStatusAddressesArgs>[]>;
+            /**
+             * Conditions defines current service state of the Server.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.metal.v1alpha2.ServerStatusConditionsArgs>[]>;
+            /**
+             * InUse is true when server is assigned to some MetalMachine.
+             */
+            inUse?: pulumi.Input<boolean>;
+            /**
+             * IsClean is true when server disks are wiped.
+             */
+            isClean?: pulumi.Input<boolean>;
+            /**
+             * Power is the current power state of the server: "on", "off" or "unknown".
+             */
+            power?: pulumi.Input<string>;
+            /**
+             * Ready is true when server is accepted and in use.
+             */
+            ready?: pulumi.Input<boolean>;
+        }
+
+        /**
+         * NodeAddress contains information for the node's address.
+         */
+        export interface ServerStatusAddressesArgs {
+            /**
+             * The node address.
+             */
+            address: pulumi.Input<string>;
+            /**
+             * Node address type, one of Hostname, ExternalIP or InternalIP.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ServerStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+    }
+}
+
+export namespace runtime {
+    export namespace v1alpha1 {
+        /**
+         * ExtensionConfigSpec is the desired state of the ExtensionConfig
+         */
+        export interface ExtensionConfigSpecArgs {
+            /**
+             * ClientConfig defines how to communicate with the Extension server.
+             */
+            clientConfig: pulumi.Input<inputs.runtime.v1alpha1.ExtensionConfigSpecClientConfigArgs>;
+            /**
+             * NamespaceSelector decides whether to call the hook for an object based on whether the namespace for that object matches the selector. Defaults to the empty LabelSelector, which matches all objects.
+             */
+            namespaceSelector?: pulumi.Input<inputs.runtime.v1alpha1.ExtensionConfigSpecNamespaceSelectorArgs>;
+            /**
+             * Settings defines key value pairs to be passed to all calls to all supported RuntimeExtensions. Note: Settings can be overridden on the ClusterClass.
+             */
+            settings?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * ClientConfig defines how to communicate with the Extension server.
+         */
+        export interface ExtensionConfigSpecClientConfigArgs {
+            /**
+             * CABundle is a PEM encoded CA bundle which will be used to validate the Extension server's server certificate.
+             */
+            caBundle?: pulumi.Input<string>;
+            /**
+             * Service is a reference to the Kubernetes service for the Extension server. Note: Exactly one of `url` or `service` must be specified. 
+             *  If the Extension server is running within a cluster, then you should use `service`.
+             */
+            service?: pulumi.Input<inputs.runtime.v1alpha1.ExtensionConfigSpecClientConfigServiceArgs>;
+            /**
+             * URL gives the location of the Extension server, in standard URL form (`scheme://host:port/path`). Note: Exactly one of `url` or `service` must be specified. 
+             *  The scheme must be "https". 
+             *  The `host` should not refer to a service running in the cluster; use the `service` field instead. 
+             *  A path is optional, and if present may be any string permissible in a URL. If a path is set it will be used as prefix to the hook-specific path. 
+             *  Attempting to use a user or basic auth e.g. "user:password@" is not allowed. Fragments ("#...") and query parameters ("?...") are not allowed either.
+             */
+            url?: pulumi.Input<string>;
+        }
+
+        /**
+         * Service is a reference to the Kubernetes service for the Extension server. Note: Exactly one of `url` or `service` must be specified. 
+         *  If the Extension server is running within a cluster, then you should use `service`.
+         */
+        export interface ExtensionConfigSpecClientConfigServiceArgs {
+            /**
+             * Name is the name of the service.
+             */
+            name: pulumi.Input<string>;
+            /**
+             * Namespace is the namespace of the service.
+             */
+            namespace: pulumi.Input<string>;
+            /**
+             * Path is an optional URL path and if present may be any string permissible in a URL. If a path is set it will be used as prefix to the hook-specific path.
+             */
+            path?: pulumi.Input<string>;
+            /**
+             * Port is the port on the service that's hosting the Extension server. Defaults to 443. Port should be a valid port number (1-65535, inclusive).
+             */
+            port?: pulumi.Input<number>;
+        }
+
+        /**
+         * NamespaceSelector decides whether to call the hook for an object based on whether the namespace for that object matches the selector. Defaults to the empty LabelSelector, which matches all objects.
+         */
+        export interface ExtensionConfigSpecNamespaceSelectorArgs {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: pulumi.Input<pulumi.Input<inputs.runtime.v1alpha1.ExtensionConfigSpecNamespaceSelectorMatchExpressionsArgs>[]>;
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: pulumi.Input<{[key: string]: pulumi.Input<string>}>;
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ExtensionConfigSpecNamespaceSelectorMatchExpressionsArgs {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: pulumi.Input<string>;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: pulumi.Input<string>;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: pulumi.Input<pulumi.Input<string>[]>;
+        }
+
+        /**
+         * ExtensionConfigStatus is the current state of the ExtensionConfig
+         */
+        export interface ExtensionConfigStatusArgs {
+            /**
+             * Conditions define the current service state of the ExtensionConfig.
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.runtime.v1alpha1.ExtensionConfigStatusConditionsArgs>[]>;
+            /**
+             * Handlers defines the current ExtensionHandlers supported by an Extension.
+             */
+            handlers?: pulumi.Input<pulumi.Input<inputs.runtime.v1alpha1.ExtensionConfigStatusHandlersArgs>[]>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ExtensionConfigStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+
+        /**
+         * ExtensionHandler specifies the details of a handler for a particular runtime hook registered by an Extension server.
+         */
+        export interface ExtensionConfigStatusHandlersArgs {
+            /**
+             * FailurePolicy defines how failures in calls to the ExtensionHandler should be handled by a client. Defaults to Fail if not set.
+             */
+            failurePolicy?: pulumi.Input<string>;
+            /**
+             * Name is the unique name of the ExtensionHandler.
+             */
+            name: pulumi.Input<string>;
+            /**
+             * RequestHook defines the versioned runtime hook which this ExtensionHandler serves.
+             */
+            requestHook: pulumi.Input<inputs.runtime.v1alpha1.ExtensionConfigStatusHandlersRequestHookArgs>;
+            /**
+             * TimeoutSeconds defines the timeout duration for client calls to the ExtensionHandler. Defaults to 10 is not set.
+             */
+            timeoutSeconds?: pulumi.Input<number>;
+        }
+
+        /**
+         * RequestHook defines the versioned runtime hook which this ExtensionHandler serves.
+         */
+        export interface ExtensionConfigStatusHandlersRequestHookArgs {
+            /**
+             * APIVersion is the group and version of the Hook.
+             */
+            apiVersion: pulumi.Input<string>;
+            /**
+             * Hook is the name of the hook.
+             */
+            hook: pulumi.Input<string>;
         }
     }
 }

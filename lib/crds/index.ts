@@ -13,12 +13,28 @@ utilities.lazyLoad(exports, ["Provider"], () => require("./provider"));
 
 // Export sub-modules:
 import * as acme from "./acme";
+import * as addons from "./addons";
+import * as bootstrap from "./bootstrap";
 import * as certmanager from "./certmanager";
+import * as cluster from "./cluster";
+import * as controlplane from "./controlplane";
+import * as infrastructure from "./infrastructure";
+import * as ipam from "./ipam";
+import * as metal from "./metal";
+import * as runtime from "./runtime";
 import * as types from "./types";
 
 export {
     acme,
+    addons,
+    bootstrap,
     certmanager,
+    cluster,
+    controlplane,
+    infrastructure,
+    ipam,
+    metal,
+    runtime,
     types,
 };
 pulumi.runtime.registerResourcePackage("crds", {

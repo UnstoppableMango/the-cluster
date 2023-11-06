@@ -1453,6 +1453,712 @@ export namespace acme {
     }
 }
 
+export namespace addons {
+    export namespace v1alpha3 {
+        /**
+         * ClusterResourceSetBindingSpec defines the desired state of ClusterResourceSetBinding.
+         */
+        export interface ClusterResourceSetBindingSpec {
+            /**
+             * Bindings is a list of ClusterResourceSets and their resources.
+             */
+            bindings?: outputs.addons.v1alpha3.ClusterResourceSetBindingSpecBindings[];
+        }
+
+        /**
+         * ResourceSetBinding keeps info on all of the resources in a ClusterResourceSet.
+         */
+        export interface ClusterResourceSetBindingSpecBindings {
+            /**
+             * ClusterResourceSetName is the name of the ClusterResourceSet that is applied to the owner cluster of the binding.
+             */
+            clusterResourceSetName: string;
+            /**
+             * Resources is a list of resources that the ClusterResourceSet has.
+             */
+            resources?: outputs.addons.v1alpha3.ClusterResourceSetBindingSpecBindingsResources[];
+        }
+
+        /**
+         * ResourceBinding shows the status of a resource that belongs to a ClusterResourceSet matched by the owner cluster of the ClusterResourceSetBinding object.
+         */
+        export interface ClusterResourceSetBindingSpecBindingsResources {
+            /**
+             * Applied is to track if a resource is applied to the cluster or not.
+             */
+            applied: boolean;
+            /**
+             * Hash is the hash of a resource's data. This can be used to decide if a resource is changed. For "ApplyOnce" ClusterResourceSet.spec.strategy, this is no-op as that strategy does not act on change.
+             */
+            hash?: string;
+            /**
+             * Kind of the resource. Supported kinds are: Secrets and ConfigMaps.
+             */
+            kind: string;
+            /**
+             * LastAppliedTime identifies when this resource was last applied to the cluster.
+             */
+            lastAppliedTime?: string;
+            /**
+             * Name of the resource that is in the same namespace with ClusterResourceSet object.
+             */
+            name: string;
+        }
+
+        /**
+         * ClusterResourceSetSpec defines the desired state of ClusterResourceSet.
+         */
+        export interface ClusterResourceSetSpec {
+            /**
+             * Label selector for Clusters. The Clusters that are selected by this will be the ones affected by this ClusterResourceSet. It must match the Cluster labels. This field is immutable.
+             */
+            clusterSelector: outputs.addons.v1alpha3.ClusterResourceSetSpecClusterSelector;
+            /**
+             * Resources is a list of Secrets/ConfigMaps where each contains 1 or more resources to be applied to remote clusters.
+             */
+            resources?: outputs.addons.v1alpha3.ClusterResourceSetSpecResources[];
+            /**
+             * Strategy is the strategy to be used during applying resources. Defaults to ApplyOnce. This field is immutable.
+             */
+            strategy?: string;
+        }
+
+        /**
+         * Label selector for Clusters. The Clusters that are selected by this will be the ones affected by this ClusterResourceSet. It must match the Cluster labels. This field is immutable.
+         */
+        export interface ClusterResourceSetSpecClusterSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.addons.v1alpha3.ClusterResourceSetSpecClusterSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterResourceSetSpecClusterSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * ResourceRef specifies a resource.
+         */
+        export interface ClusterResourceSetSpecResources {
+            /**
+             * Kind of the resource. Supported kinds are: Secrets and ConfigMaps.
+             */
+            kind: string;
+            /**
+             * Name of the resource that is in the same namespace with ClusterResourceSet object.
+             */
+            name: string;
+        }
+
+        /**
+         * ClusterResourceSetStatus defines the observed state of ClusterResourceSet.
+         */
+        export interface ClusterResourceSetStatus {
+            /**
+             * Conditions defines current state of the ClusterResourceSet.
+             */
+            conditions?: outputs.addons.v1alpha3.ClusterResourceSetStatusConditions[];
+            /**
+             * ObservedGeneration reflects the generation of the most recently observed ClusterResourceSet.
+             */
+            observedGeneration?: number;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ClusterResourceSetStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+    }
+
+    export namespace v1alpha4 {
+        /**
+         * ClusterResourceSetBindingSpec defines the desired state of ClusterResourceSetBinding.
+         */
+        export interface ClusterResourceSetBindingSpec {
+            /**
+             * Bindings is a list of ClusterResourceSets and their resources.
+             */
+            bindings?: outputs.addons.v1alpha4.ClusterResourceSetBindingSpecBindings[];
+        }
+
+        /**
+         * ResourceSetBinding keeps info on all of the resources in a ClusterResourceSet.
+         */
+        export interface ClusterResourceSetBindingSpecBindings {
+            /**
+             * ClusterResourceSetName is the name of the ClusterResourceSet that is applied to the owner cluster of the binding.
+             */
+            clusterResourceSetName: string;
+            /**
+             * Resources is a list of resources that the ClusterResourceSet has.
+             */
+            resources?: outputs.addons.v1alpha4.ClusterResourceSetBindingSpecBindingsResources[];
+        }
+
+        /**
+         * ResourceBinding shows the status of a resource that belongs to a ClusterResourceSet matched by the owner cluster of the ClusterResourceSetBinding object.
+         */
+        export interface ClusterResourceSetBindingSpecBindingsResources {
+            /**
+             * Applied is to track if a resource is applied to the cluster or not.
+             */
+            applied: boolean;
+            /**
+             * Hash is the hash of a resource's data. This can be used to decide if a resource is changed. For "ApplyOnce" ClusterResourceSet.spec.strategy, this is no-op as that strategy does not act on change.
+             */
+            hash?: string;
+            /**
+             * Kind of the resource. Supported kinds are: Secrets and ConfigMaps.
+             */
+            kind: string;
+            /**
+             * LastAppliedTime identifies when this resource was last applied to the cluster.
+             */
+            lastAppliedTime?: string;
+            /**
+             * Name of the resource that is in the same namespace with ClusterResourceSet object.
+             */
+            name: string;
+        }
+
+        /**
+         * ClusterResourceSetSpec defines the desired state of ClusterResourceSet.
+         */
+        export interface ClusterResourceSetSpec {
+            /**
+             * Label selector for Clusters. The Clusters that are selected by this will be the ones affected by this ClusterResourceSet. It must match the Cluster labels. This field is immutable. Label selector cannot be empty.
+             */
+            clusterSelector: outputs.addons.v1alpha4.ClusterResourceSetSpecClusterSelector;
+            /**
+             * Resources is a list of Secrets/ConfigMaps where each contains 1 or more resources to be applied to remote clusters.
+             */
+            resources?: outputs.addons.v1alpha4.ClusterResourceSetSpecResources[];
+            /**
+             * Strategy is the strategy to be used during applying resources. Defaults to ApplyOnce. This field is immutable.
+             */
+            strategy?: string;
+        }
+
+        /**
+         * Label selector for Clusters. The Clusters that are selected by this will be the ones affected by this ClusterResourceSet. It must match the Cluster labels. This field is immutable. Label selector cannot be empty.
+         */
+        export interface ClusterResourceSetSpecClusterSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.addons.v1alpha4.ClusterResourceSetSpecClusterSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterResourceSetSpecClusterSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * ResourceRef specifies a resource.
+         */
+        export interface ClusterResourceSetSpecResources {
+            /**
+             * Kind of the resource. Supported kinds are: Secrets and ConfigMaps.
+             */
+            kind: string;
+            /**
+             * Name of the resource that is in the same namespace with ClusterResourceSet object.
+             */
+            name: string;
+        }
+
+        /**
+         * ClusterResourceSetStatus defines the observed state of ClusterResourceSet.
+         */
+        export interface ClusterResourceSetStatus {
+            /**
+             * Conditions defines current state of the ClusterResourceSet.
+             */
+            conditions?: outputs.addons.v1alpha4.ClusterResourceSetStatusConditions[];
+            /**
+             * ObservedGeneration reflects the generation of the most recently observed ClusterResourceSet.
+             */
+            observedGeneration?: number;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ClusterResourceSetStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+    }
+
+    export namespace v1beta1 {
+        /**
+         * ClusterResourceSetBindingSpec defines the desired state of ClusterResourceSetBinding.
+         */
+        export interface ClusterResourceSetBindingSpec {
+            /**
+             * Bindings is a list of ClusterResourceSets and their resources.
+             */
+            bindings?: outputs.addons.v1beta1.ClusterResourceSetBindingSpecBindings[];
+            /**
+             * ClusterName is the name of the Cluster this binding applies to. Note: this field mandatory in v1beta2.
+             */
+            clusterName?: string;
+        }
+
+        /**
+         * ResourceSetBinding keeps info on all of the resources in a ClusterResourceSet.
+         */
+        export interface ClusterResourceSetBindingSpecBindings {
+            /**
+             * ClusterResourceSetName is the name of the ClusterResourceSet that is applied to the owner cluster of the binding.
+             */
+            clusterResourceSetName: string;
+            /**
+             * Resources is a list of resources that the ClusterResourceSet has.
+             */
+            resources?: outputs.addons.v1beta1.ClusterResourceSetBindingSpecBindingsResources[];
+        }
+
+        /**
+         * ResourceBinding shows the status of a resource that belongs to a ClusterResourceSet matched by the owner cluster of the ClusterResourceSetBinding object.
+         */
+        export interface ClusterResourceSetBindingSpecBindingsResources {
+            /**
+             * Applied is to track if a resource is applied to the cluster or not.
+             */
+            applied: boolean;
+            /**
+             * Hash is the hash of a resource's data. This can be used to decide if a resource is changed. For "ApplyOnce" ClusterResourceSet.spec.strategy, this is no-op as that strategy does not act on change.
+             */
+            hash?: string;
+            /**
+             * Kind of the resource. Supported kinds are: Secrets and ConfigMaps.
+             */
+            kind: string;
+            /**
+             * LastAppliedTime identifies when this resource was last applied to the cluster.
+             */
+            lastAppliedTime?: string;
+            /**
+             * Name of the resource that is in the same namespace with ClusterResourceSet object.
+             */
+            name: string;
+        }
+
+        /**
+         * ClusterResourceSetSpec defines the desired state of ClusterResourceSet.
+         */
+        export interface ClusterResourceSetSpec {
+            /**
+             * Label selector for Clusters. The Clusters that are selected by this will be the ones affected by this ClusterResourceSet. It must match the Cluster labels. This field is immutable. Label selector cannot be empty.
+             */
+            clusterSelector: outputs.addons.v1beta1.ClusterResourceSetSpecClusterSelector;
+            /**
+             * Resources is a list of Secrets/ConfigMaps where each contains 1 or more resources to be applied to remote clusters.
+             */
+            resources?: outputs.addons.v1beta1.ClusterResourceSetSpecResources[];
+            /**
+             * Strategy is the strategy to be used during applying resources. Defaults to ApplyOnce. This field is immutable.
+             */
+            strategy?: string;
+        }
+
+        /**
+         * Label selector for Clusters. The Clusters that are selected by this will be the ones affected by this ClusterResourceSet. It must match the Cluster labels. This field is immutable. Label selector cannot be empty.
+         */
+        export interface ClusterResourceSetSpecClusterSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.addons.v1beta1.ClusterResourceSetSpecClusterSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ClusterResourceSetSpecClusterSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * ResourceRef specifies a resource.
+         */
+        export interface ClusterResourceSetSpecResources {
+            /**
+             * Kind of the resource. Supported kinds are: Secrets and ConfigMaps.
+             */
+            kind: string;
+            /**
+             * Name of the resource that is in the same namespace with ClusterResourceSet object.
+             */
+            name: string;
+        }
+
+        /**
+         * ClusterResourceSetStatus defines the observed state of ClusterResourceSet.
+         */
+        export interface ClusterResourceSetStatus {
+            /**
+             * Conditions defines current state of the ClusterResourceSet.
+             */
+            conditions?: outputs.addons.v1beta1.ClusterResourceSetStatusConditions[];
+            /**
+             * ObservedGeneration reflects the generation of the most recently observed ClusterResourceSet.
+             */
+            observedGeneration?: number;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ClusterResourceSetStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+    }
+}
+
+export namespace bootstrap {
+    export namespace v1alpha2 {
+        /**
+         * TalosConfigSpec defines the desired state of TalosConfig
+         */
+        export interface TalosConfigSpec {
+            data?: string;
+            generateType: string;
+        }
+
+        /**
+         * TalosConfigStatus defines the observed state of TalosConfig
+         */
+        export interface TalosConfigStatus {
+            /**
+             * BootstrapData will be a slice of bootstrap data
+             */
+            bootstrapData?: string;
+            /**
+             * ErrorMessage will be set on non-retryable errors
+             */
+            errorMessage?: string;
+            /**
+             * ErrorReason will be set on non-retryable errors
+             */
+            errorReason?: string;
+            /**
+             * Ready indicates the BootstrapData field is ready to be consumed
+             */
+            ready?: boolean;
+            /**
+             * Talos config will be a string containing the config for download
+             */
+            talosConfig?: string;
+        }
+
+        /**
+         * TalosConfigTemplateSpec defines the desired state of TalosConfigTemplate
+         */
+        export interface TalosConfigTemplateSpec {
+            /**
+             * TalosConfigTemplateResource defines the Template structure
+             */
+            template: outputs.bootstrap.v1alpha2.TalosConfigTemplateSpecTemplate;
+        }
+
+        /**
+         * TalosConfigTemplateResource defines the Template structure
+         */
+        export interface TalosConfigTemplateSpecTemplate {
+            /**
+             * TalosConfigSpec defines the desired state of TalosConfig
+             */
+            spec?: outputs.bootstrap.v1alpha2.TalosConfigTemplateSpecTemplateSpec;
+        }
+
+        /**
+         * TalosConfigSpec defines the desired state of TalosConfig
+         */
+        export interface TalosConfigTemplateSpecTemplateSpec {
+            data?: string;
+            generateType: string;
+        }
+
+    }
+
+    export namespace v1alpha3 {
+        /**
+         * TalosConfigSpec defines the desired state of TalosConfig
+         */
+        export interface TalosConfigSpec {
+            configPatches?: outputs.bootstrap.v1alpha3.TalosConfigSpecConfigPatches[];
+            data?: string;
+            generateType: string;
+            /**
+             * Set hostname in the machine configuration to some value.
+             */
+            hostname?: outputs.bootstrap.v1alpha3.TalosConfigSpecHostname;
+            talosVersion?: string;
+        }
+
+        export interface TalosConfigSpecConfigPatches {
+            op: string;
+            path: string;
+            value?: {[key: string]: any};
+        }
+
+        /**
+         * Set hostname in the machine configuration to some value.
+         */
+        export interface TalosConfigSpecHostname {
+            /**
+             * Source of the hostname. 
+             *  Allowed values: "MachineName" (use linked Machine's Name).
+             */
+            source?: string;
+        }
+
+        /**
+         * TalosConfigStatus defines the observed state of TalosConfig
+         */
+        export interface TalosConfigStatus {
+            /**
+             * Conditions defines current service state of the TalosConfig.
+             */
+            conditions?: outputs.bootstrap.v1alpha3.TalosConfigStatusConditions[];
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script.
+             */
+            dataSecretName?: string;
+            /**
+             * FailureMessage will be set on non-retryable errors
+             */
+            failureMessage?: string;
+            /**
+             * FailureReason will be set on non-retryable errors
+             */
+            failureReason?: string;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: number;
+            /**
+             * Ready indicates the BootstrapData field is ready to be consumed
+             */
+            ready?: boolean;
+            /**
+             * Talos config will be a string containing the config for download. 
+             *  Deprecated: please use `<cluster>-talosconfig` secret.
+             */
+            talosConfig?: string;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface TalosConfigStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * TalosConfigTemplateSpec defines the desired state of TalosConfigTemplate
+         */
+        export interface TalosConfigTemplateSpec {
+            /**
+             * TalosConfigTemplateResource defines the Template structure
+             */
+            template: outputs.bootstrap.v1alpha3.TalosConfigTemplateSpecTemplate;
+        }
+
+        /**
+         * TalosConfigTemplateResource defines the Template structure
+         */
+        export interface TalosConfigTemplateSpecTemplate {
+            /**
+             * TalosConfigSpec defines the desired state of TalosConfig
+             */
+            spec?: outputs.bootstrap.v1alpha3.TalosConfigTemplateSpecTemplateSpec;
+        }
+
+        /**
+         * TalosConfigSpec defines the desired state of TalosConfig
+         */
+        export interface TalosConfigTemplateSpecTemplateSpec {
+            configPatches?: outputs.bootstrap.v1alpha3.TalosConfigTemplateSpecTemplateSpecConfigPatches[];
+            data?: string;
+            generateType: string;
+            /**
+             * Set hostname in the machine configuration to some value.
+             */
+            hostname?: outputs.bootstrap.v1alpha3.TalosConfigTemplateSpecTemplateSpecHostname;
+            talosVersion?: string;
+        }
+
+        export interface TalosConfigTemplateSpecTemplateSpecConfigPatches {
+            op: string;
+            path: string;
+            value?: {[key: string]: any};
+        }
+
+        /**
+         * Set hostname in the machine configuration to some value.
+         */
+        export interface TalosConfigTemplateSpecTemplateSpecHostname {
+            /**
+             * Source of the hostname. 
+             *  Allowed values: "MachineName" (use linked Machine's Name).
+             */
+            source?: string;
+        }
+
+    }
+}
+
 export namespace certmanager {
     export namespace v1 {
         /**
@@ -5269,6 +5975,10240 @@ export namespace certmanager {
              * Type of the condition, known values are (`Ready`).
              */
             type: string;
+        }
+
+    }
+}
+
+export namespace cluster {
+    export namespace v1alpha3 {
+        /**
+         * ClusterSpec defines the desired state of Cluster.
+         */
+        export interface ClusterSpec {
+            /**
+             * Cluster network configuration.
+             */
+            clusterNetwork?: outputs.cluster.v1alpha3.ClusterSpecClusterNetwork;
+            /**
+             * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+             */
+            controlPlaneEndpoint?: outputs.cluster.v1alpha3.ClusterSpecControlPlaneEndpoint;
+            /**
+             * ControlPlaneRef is an optional reference to a provider-specific resource that holds the details for provisioning the Control Plane for a Cluster.
+             */
+            controlPlaneRef?: outputs.cluster.v1alpha3.ClusterSpecControlPlaneRef;
+            /**
+             * InfrastructureRef is a reference to a provider-specific resource that holds the details for provisioning infrastructure for a cluster in said provider.
+             */
+            infrastructureRef?: outputs.cluster.v1alpha3.ClusterSpecInfrastructureRef;
+            /**
+             * Paused can be used to prevent controllers from processing the Cluster and all its associated objects.
+             */
+            paused?: boolean;
+        }
+
+        /**
+         * Cluster network configuration.
+         */
+        export interface ClusterSpecClusterNetwork {
+            /**
+             * APIServerPort specifies the port the API Server should bind to. Defaults to 6443.
+             */
+            apiServerPort?: number;
+            /**
+             * The network ranges from which Pod networks are allocated.
+             */
+            pods?: outputs.cluster.v1alpha3.ClusterSpecClusterNetworkPods;
+            /**
+             * Domain name for services.
+             */
+            serviceDomain?: string;
+            /**
+             * The network ranges from which service VIPs are allocated.
+             */
+            services?: outputs.cluster.v1alpha3.ClusterSpecClusterNetworkServices;
+        }
+
+        /**
+         * The network ranges from which Pod networks are allocated.
+         */
+        export interface ClusterSpecClusterNetworkPods {
+            cidrBlocks: string[];
+        }
+
+        /**
+         * The network ranges from which service VIPs are allocated.
+         */
+        export interface ClusterSpecClusterNetworkServices {
+            cidrBlocks: string[];
+        }
+
+        /**
+         * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+         */
+        export interface ClusterSpecControlPlaneEndpoint {
+            /**
+             * The hostname on which the API server is serving.
+             */
+            host: string;
+            /**
+             * The port on which the API server is serving.
+             */
+            port: number;
+        }
+
+        /**
+         * ControlPlaneRef is an optional reference to a provider-specific resource that holds the details for provisioning the Control Plane for a Cluster.
+         */
+        export interface ClusterSpecControlPlaneRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * InfrastructureRef is a reference to a provider-specific resource that holds the details for provisioning infrastructure for a cluster in said provider.
+         */
+        export interface ClusterSpecInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * ClusterStatus defines the observed state of Cluster.
+         */
+        export interface ClusterStatus {
+            /**
+             * Conditions defines current service state of the cluster.
+             */
+            conditions?: outputs.cluster.v1alpha3.ClusterStatusConditions[];
+            /**
+             * ControlPlaneInitialized defines if the control plane has been initialized.
+             */
+            controlPlaneInitialized?: boolean;
+            /**
+             * ControlPlaneReady defines if the control plane is ready.
+             */
+            controlPlaneReady?: boolean;
+            /**
+             * FailureDomains is a slice of failure domain objects synced from the infrastructure provider.
+             */
+            failureDomains?: {[key: string]: outputs.cluster.v1alpha3.ClusterStatusFailureDomains};
+            /**
+             * FailureMessage indicates that there is a fatal problem reconciling the state, and will be set to a descriptive error message.
+             */
+            failureMessage?: string;
+            /**
+             * FailureReason indicates that there is a fatal problem reconciling the state, and will be set to a token value suitable for programmatic interpretation.
+             */
+            failureReason?: string;
+            /**
+             * InfrastructureReady is the state of the infrastructure provider.
+             */
+            infrastructureReady?: boolean;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: number;
+            /**
+             * Phase represents the current phase of cluster actuation. E.g. Pending, Running, Terminating, Failed etc.
+             */
+            phase?: string;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ClusterStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * FailureDomainSpec is the Schema for Cluster API failure domains. It allows controllers to understand how many failure domains a cluster can optionally span across.
+         */
+        export interface ClusterStatusFailureDomains {
+            /**
+             * Attributes is a free form map of attributes an infrastructure provider might use or require.
+             */
+            attributes?: {[key: string]: string};
+            /**
+             * ControlPlane determines if this failure domain is suitable for use by control plane machines.
+             */
+            controlPlane?: boolean;
+        }
+
+        /**
+         * MachineDeploymentSpec defines the desired state of MachineDeployment.
+         */
+        export interface MachineDeploymentSpec {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * Minimum number of seconds for which a newly created machine should be ready. Defaults to 0 (machine will be considered available as soon as it is ready)
+             */
+            minReadySeconds?: number;
+            /**
+             * Indicates that the deployment is paused.
+             */
+            paused?: boolean;
+            /**
+             * The maximum time in seconds for a deployment to make progress before it is considered to be failed. The deployment controller will continue to process failed deployments and a condition with a ProgressDeadlineExceeded reason will be surfaced in the deployment status. Note that progress will not be estimated during the time a deployment is paused. Defaults to 600s.
+             */
+            progressDeadlineSeconds?: number;
+            /**
+             * Number of desired machines. Defaults to 1. This is a pointer to distinguish between explicit zero and not specified.
+             */
+            replicas?: number;
+            /**
+             * The number of old MachineSets to retain to allow rollback. This is a pointer to distinguish between explicit zero and not specified. Defaults to 1.
+             */
+            revisionHistoryLimit?: number;
+            /**
+             * Label selector for machines. Existing MachineSets whose machines are selected by this will be the ones affected by this deployment. It must match the machine template's labels.
+             */
+            selector: outputs.cluster.v1alpha3.MachineDeploymentSpecSelector;
+            /**
+             * The deployment strategy to use to replace existing machines with new ones.
+             */
+            strategy?: outputs.cluster.v1alpha3.MachineDeploymentSpecStrategy;
+            /**
+             * Template describes the machines that will be created.
+             */
+            template: outputs.cluster.v1alpha3.MachineDeploymentSpecTemplate;
+        }
+
+        /**
+         * Label selector for machines. Existing MachineSets whose machines are selected by this will be the ones affected by this deployment. It must match the machine template's labels.
+         */
+        export interface MachineDeploymentSpecSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.cluster.v1alpha3.MachineDeploymentSpecSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface MachineDeploymentSpecSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * The deployment strategy to use to replace existing machines with new ones.
+         */
+        export interface MachineDeploymentSpecStrategy {
+            /**
+             * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+             */
+            rollingUpdate?: outputs.cluster.v1alpha3.MachineDeploymentSpecStrategyRollingUpdate;
+            /**
+             * Type of deployment. Currently the only supported strategy is "RollingUpdate". Default is RollingUpdate.
+             */
+            type?: string;
+        }
+
+        /**
+         * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+         */
+        export interface MachineDeploymentSpecStrategyRollingUpdate {
+            /**
+             * The maximum number of machines that can be scheduled above the desired number of machines. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up. Defaults to 1. Example: when this is set to 30%, the new MachineSet can be scaled up immediately when the rolling update starts, such that the total number of old and new machines do not exceed 130% of desired machines. Once old machines have been killed, new MachineSet can be scaled up further, ensuring that total number of machines running at any time during the update is at most 130% of desired machines.
+             */
+            maxSurge?: number | string;
+            /**
+             * The maximum number of machines that can be unavailable during the update. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). Absolute number is calculated from percentage by rounding down. This can not be 0 if MaxSurge is 0. Defaults to 0. Example: when this is set to 30%, the old MachineSet can be scaled down to 70% of desired machines immediately when the rolling update starts. Once new machines are ready, old MachineSet can be scaled down further, followed by scaling up the new MachineSet, ensuring that the total number of machines available at all times during the update is at least 70% of desired machines.
+             */
+            maxUnavailable?: number | string;
+        }
+
+        /**
+         * Template describes the machines that will be created.
+         */
+        export interface MachineDeploymentSpecTemplate {
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata?: outputs.cluster.v1alpha3.MachineDeploymentSpecTemplateMetadata;
+            /**
+             * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+             */
+            spec?: outputs.cluster.v1alpha3.MachineDeploymentSpecTemplateSpec;
+        }
+
+        /**
+         * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface MachineDeploymentSpecTemplateMetadata {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server. 
+             *  If this field is specified and the generated name exists, the server will NOT return a 409 - instead, it will either return 201 Created or 500 with Reason ServerTimeout indicating a unique name could not be found in the time allotted, and the client should retry (optionally after the time indicated in the Retry-After header). 
+             *  Applied only if Name is not specified. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            generateName?: string;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: {[key: string]: string};
+            /**
+             * Name must be unique within a namespace. Is required when creating resources, although some resources may allow a client to request the generation of an appropriate name automatically. Name is primarily intended for creation idempotence and configuration definition. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/identifiers#names 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            name?: string;
+            /**
+             * Namespace defines the space within each name must be unique. An empty namespace is equivalent to the "default" namespace, but "default" is the canonical representation. Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty. 
+             *  Must be a DNS_LABEL. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/namespaces 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            namespace?: string;
+            /**
+             * List of objects depended by this object. If ALL objects in the list have been deleted, this object will be garbage collected. If this object is managed by a controller, then an entry in this list will point to this controller, with the controller field set to true. There cannot be more than one managing controller. 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            ownerReferences?: outputs.cluster.v1alpha3.MachineDeploymentSpecTemplateMetadataOwnerReferences[];
+        }
+
+        /**
+         * OwnerReference contains enough information to let you identify an owning object. An owning object must be in the same namespace as the dependent, or be cluster-scoped, so there is no namespace field.
+         */
+        export interface MachineDeploymentSpecTemplateMetadataOwnerReferences {
+            /**
+             * API version of the referent.
+             */
+            apiVersion: string;
+            /**
+             * If true, AND if the owner has the "foregroundDeletion" finalizer, then the owner cannot be deleted from the key-value store until this reference is removed. See https://kubernetes.io/docs/concepts/architecture/garbage-collection/#foreground-deletion for how the garbage collector interacts with this field and enforces the foreground deletion. Defaults to false. To set this field, a user needs "delete" permission of the owner, otherwise 422 (Unprocessable Entity) will be returned.
+             */
+            blockOwnerDeletion?: boolean;
+            /**
+             * If true, this reference points to the managing controller.
+             */
+            controller?: boolean;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names
+             */
+            name: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids
+             */
+            uid: string;
+        }
+
+        /**
+         * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+         */
+        export interface MachineDeploymentSpecTemplateSpec {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: outputs.cluster.v1alpha3.MachineDeploymentSpecTemplateSpecBootstrap;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: string;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: outputs.cluster.v1alpha3.MachineDeploymentSpecTemplateSpecInfrastructureRef;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: string;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: string;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: string;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachineDeploymentSpecTemplateSpecBootstrap {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.Data without the need of a controller.
+             */
+            configRef?: outputs.cluster.v1alpha3.MachineDeploymentSpecTemplateSpecBootstrapConfigRef;
+            /**
+             * Data contains the bootstrap data, such as cloud-init details scripts. If nil, the Machine should remain in the Pending state. 
+             *  Deprecated: Switch to DataSecretName.
+             */
+            data?: string;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: string;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.Data without the need of a controller.
+         */
+        export interface MachineDeploymentSpecTemplateSpecBootstrapConfigRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachineDeploymentSpecTemplateSpecInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * MachineDeploymentStatus defines the observed state of MachineDeployment.
+         */
+        export interface MachineDeploymentStatus {
+            /**
+             * Total number of available machines (ready for at least minReadySeconds) targeted by this deployment.
+             */
+            availableReplicas?: number;
+            /**
+             * The generation observed by the deployment controller.
+             */
+            observedGeneration?: number;
+            /**
+             * Phase represents the current phase of a MachineDeployment (ScalingUp, ScalingDown, Running, Failed, or Unknown).
+             */
+            phase?: string;
+            /**
+             * Total number of ready machines targeted by this deployment.
+             */
+            readyReplicas?: number;
+            /**
+             * Total number of non-terminated machines targeted by this deployment (their labels match the selector).
+             */
+            replicas?: number;
+            /**
+             * Selector is the same as the label selector but in the string format to avoid introspection by clients. The string will be in the same format as the query-param syntax. More info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors
+             */
+            selector?: string;
+            /**
+             * Total number of unavailable machines targeted by this deployment. This is the total number of machines that are still required for the deployment to have 100% available capacity. They may either be machines that are running but not yet available or machines that still have not been created.
+             */
+            unavailableReplicas?: number;
+            /**
+             * Total number of non-terminated machines targeted by this deployment that have the desired template spec.
+             */
+            updatedReplicas?: number;
+        }
+
+        /**
+         * Specification of machine health check policy
+         */
+        export interface MachineHealthCheckSpec {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by "selector" are not healthy.
+             */
+            maxUnhealthy?: number | string;
+            /**
+             * Machines older than this duration without a node will be considered to have failed and will be remediated.
+             */
+            nodeStartupTimeout?: string;
+            /**
+             * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+             *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+             */
+            remediationTemplate?: outputs.cluster.v1alpha3.MachineHealthCheckSpecRemediationTemplate;
+            /**
+             * Label selector to match machines whose health will be exercised
+             */
+            selector: outputs.cluster.v1alpha3.MachineHealthCheckSpecSelector;
+            /**
+             * UnhealthyConditions contains a list of the conditions that determine whether a node is considered unhealthy.  The conditions are combined in a logical OR, i.e. if any of the conditions is met, the node is unhealthy.
+             */
+            unhealthyConditions: outputs.cluster.v1alpha3.MachineHealthCheckSpecUnhealthyConditions[];
+        }
+
+        /**
+         * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+         *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+         */
+        export interface MachineHealthCheckSpecRemediationTemplate {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * Label selector to match machines whose health will be exercised
+         */
+        export interface MachineHealthCheckSpecSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.cluster.v1alpha3.MachineHealthCheckSpecSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface MachineHealthCheckSpecSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * UnhealthyCondition represents a Node condition type and value with a timeout specified as a duration.  When the named condition has been in the given status for at least the timeout value, a node is considered unhealthy.
+         */
+        export interface MachineHealthCheckSpecUnhealthyConditions {
+            status: string;
+            timeout: string;
+            type: string;
+        }
+
+        /**
+         * Most recently observed status of MachineHealthCheck resource
+         */
+        export interface MachineHealthCheckStatus {
+            /**
+             * Conditions defines current service state of the MachineHealthCheck.
+             */
+            conditions?: outputs.cluster.v1alpha3.MachineHealthCheckStatusConditions[];
+            /**
+             * total number of healthy machines counted by this machine health check
+             */
+            currentHealthy?: number;
+            /**
+             * total number of machines counted by this machine health check
+             */
+            expectedMachines?: number;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: number;
+            /**
+             * RemediationsAllowed is the number of further remediations allowed by this machine health check before maxUnhealthy short circuiting will be applied
+             */
+            remediationsAllowed?: number;
+            /**
+             * Targets shows the current list of machines the machine health check is watching
+             */
+            targets?: string[];
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachineHealthCheckStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * MachinePoolSpec defines the desired state of MachinePool.
+         */
+        export interface MachinePoolSpec {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * FailureDomains is the list of failure domains this MachinePool should be attached to.
+             */
+            failureDomains?: string[];
+            /**
+             * Minimum number of seconds for which a newly created machine instances should be ready. Defaults to 0 (machine instance will be considered available as soon as it is ready)
+             */
+            minReadySeconds?: number;
+            /**
+             * ProviderIDList are the identification IDs of machine instances provided by the provider. This field must match the provider IDs as seen on the node objects corresponding to a machine pool's machine instances.
+             */
+            providerIDList?: string[];
+            /**
+             * Number of desired machines. Defaults to 1. This is a pointer to distinguish between explicit zero and not specified.
+             */
+            replicas?: number;
+            /**
+             * The deployment strategy to use to replace existing machine instances with new ones.
+             */
+            strategy?: outputs.cluster.v1alpha3.MachinePoolSpecStrategy;
+            /**
+             * Template describes the machines that will be created.
+             */
+            template: outputs.cluster.v1alpha3.MachinePoolSpecTemplate;
+        }
+
+        /**
+         * The deployment strategy to use to replace existing machine instances with new ones.
+         */
+        export interface MachinePoolSpecStrategy {
+            /**
+             * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+             */
+            rollingUpdate?: outputs.cluster.v1alpha3.MachinePoolSpecStrategyRollingUpdate;
+            /**
+             * Type of deployment. Currently the only supported strategy is "RollingUpdate". Default is RollingUpdate.
+             */
+            type?: string;
+        }
+
+        /**
+         * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+         */
+        export interface MachinePoolSpecStrategyRollingUpdate {
+            /**
+             * The maximum number of machines that can be scheduled above the desired number of machines. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up. Defaults to 1. Example: when this is set to 30%, the new MachineSet can be scaled up immediately when the rolling update starts, such that the total number of old and new machines do not exceed 130% of desired machines. Once old machines have been killed, new MachineSet can be scaled up further, ensuring that total number of machines running at any time during the update is at most 130% of desired machines.
+             */
+            maxSurge?: number | string;
+            /**
+             * The maximum number of machines that can be unavailable during the update. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). Absolute number is calculated from percentage by rounding down. This can not be 0 if MaxSurge is 0. Defaults to 0. Example: when this is set to 30%, the old MachineSet can be scaled down to 70% of desired machines immediately when the rolling update starts. Once new machines are ready, old MachineSet can be scaled down further, followed by scaling up the new MachineSet, ensuring that the total number of machines available at all times during the update is at least 70% of desired machines.
+             */
+            maxUnavailable?: number | string;
+        }
+
+        /**
+         * Template describes the machines that will be created.
+         */
+        export interface MachinePoolSpecTemplate {
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata?: outputs.cluster.v1alpha3.MachinePoolSpecTemplateMetadata;
+            /**
+             * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+             */
+            spec?: outputs.cluster.v1alpha3.MachinePoolSpecTemplateSpec;
+        }
+
+        /**
+         * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface MachinePoolSpecTemplateMetadata {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server. 
+             *  If this field is specified and the generated name exists, the server will NOT return a 409 - instead, it will either return 201 Created or 500 with Reason ServerTimeout indicating a unique name could not be found in the time allotted, and the client should retry (optionally after the time indicated in the Retry-After header). 
+             *  Applied only if Name is not specified. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            generateName?: string;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: {[key: string]: string};
+            /**
+             * Name must be unique within a namespace. Is required when creating resources, although some resources may allow a client to request the generation of an appropriate name automatically. Name is primarily intended for creation idempotence and configuration definition. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/identifiers#names 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            name?: string;
+            /**
+             * Namespace defines the space within each name must be unique. An empty namespace is equivalent to the "default" namespace, but "default" is the canonical representation. Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty. 
+             *  Must be a DNS_LABEL. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/namespaces 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            namespace?: string;
+            /**
+             * List of objects depended by this object. If ALL objects in the list have been deleted, this object will be garbage collected. If this object is managed by a controller, then an entry in this list will point to this controller, with the controller field set to true. There cannot be more than one managing controller. 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            ownerReferences?: outputs.cluster.v1alpha3.MachinePoolSpecTemplateMetadataOwnerReferences[];
+        }
+
+        /**
+         * OwnerReference contains enough information to let you identify an owning object. An owning object must be in the same namespace as the dependent, or be cluster-scoped, so there is no namespace field.
+         */
+        export interface MachinePoolSpecTemplateMetadataOwnerReferences {
+            /**
+             * API version of the referent.
+             */
+            apiVersion: string;
+            /**
+             * If true, AND if the owner has the "foregroundDeletion" finalizer, then the owner cannot be deleted from the key-value store until this reference is removed. See https://kubernetes.io/docs/concepts/architecture/garbage-collection/#foreground-deletion for how the garbage collector interacts with this field and enforces the foreground deletion. Defaults to false. To set this field, a user needs "delete" permission of the owner, otherwise 422 (Unprocessable Entity) will be returned.
+             */
+            blockOwnerDeletion?: boolean;
+            /**
+             * If true, this reference points to the managing controller.
+             */
+            controller?: boolean;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names
+             */
+            name: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids
+             */
+            uid: string;
+        }
+
+        /**
+         * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+         */
+        export interface MachinePoolSpecTemplateSpec {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: outputs.cluster.v1alpha3.MachinePoolSpecTemplateSpecBootstrap;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: string;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: outputs.cluster.v1alpha3.MachinePoolSpecTemplateSpecInfrastructureRef;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: string;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: string;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: string;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachinePoolSpecTemplateSpecBootstrap {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.Data without the need of a controller.
+             */
+            configRef?: outputs.cluster.v1alpha3.MachinePoolSpecTemplateSpecBootstrapConfigRef;
+            /**
+             * Data contains the bootstrap data, such as cloud-init details scripts. If nil, the Machine should remain in the Pending state. 
+             *  Deprecated: Switch to DataSecretName.
+             */
+            data?: string;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: string;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.Data without the need of a controller.
+         */
+        export interface MachinePoolSpecTemplateSpecBootstrapConfigRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachinePoolSpecTemplateSpecInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * MachinePoolStatus defines the observed state of MachinePool.
+         */
+        export interface MachinePoolStatus {
+            /**
+             * The number of available replicas (ready for at least minReadySeconds) for this MachinePool.
+             */
+            availableReplicas?: number;
+            /**
+             * BootstrapReady is the state of the bootstrap provider.
+             */
+            bootstrapReady?: boolean;
+            /**
+             * Conditions define the current service state of the MachinePool.
+             */
+            conditions?: outputs.cluster.v1alpha3.MachinePoolStatusConditions[];
+            /**
+             * FailureMessage indicates that there is a problem reconciling the state, and will be set to a descriptive error message.
+             */
+            failureMessage?: string;
+            /**
+             * FailureReason indicates that there is a problem reconciling the state, and will be set to a token value suitable for programmatic interpretation.
+             */
+            failureReason?: string;
+            /**
+             * InfrastructureReady is the state of the infrastructure provider.
+             */
+            infrastructureReady?: boolean;
+            /**
+             * NodeRefs will point to the corresponding Nodes if it they exist.
+             */
+            nodeRefs?: outputs.cluster.v1alpha3.MachinePoolStatusNodeRefs[];
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: number;
+            /**
+             * Phase represents the current phase of cluster actuation. E.g. Pending, Running, Terminating, Failed etc.
+             */
+            phase?: string;
+            /**
+             * The number of ready replicas for this MachinePool. A machine is considered ready when the node has been created and is "Ready".
+             */
+            readyReplicas?: number;
+            /**
+             * Replicas is the most recently observed number of replicas.
+             */
+            replicas?: number;
+            /**
+             * Total number of unavailable machine instances targeted by this machine pool. This is the total number of machine instances that are still required for the machine pool to have 100% available capacity. They may either be machine instances that are running but not yet available or machine instances that still have not been created.
+             */
+            unavailableReplicas?: number;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachinePoolStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface MachinePoolStatusNodeRefs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * MachineSetSpec defines the desired state of MachineSet.
+         */
+        export interface MachineSetSpec {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * DeletePolicy defines the policy used to identify nodes to delete when downscaling. Defaults to "Random".  Valid values are "Random, "Newest", "Oldest"
+             */
+            deletePolicy?: string;
+            /**
+             * MinReadySeconds is the minimum number of seconds for which a newly created machine should be ready. Defaults to 0 (machine will be considered available as soon as it is ready)
+             */
+            minReadySeconds?: number;
+            /**
+             * Replicas is the number of desired replicas. This is a pointer to distinguish between explicit zero and unspecified. Defaults to 1.
+             */
+            replicas?: number;
+            /**
+             * Selector is a label query over machines that should match the replica count. Label keys and values that must match in order to be controlled by this MachineSet. It must match the machine template's labels. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
+             */
+            selector: outputs.cluster.v1alpha3.MachineSetSpecSelector;
+            /**
+             * Template is the object that describes the machine that will be created if insufficient replicas are detected. Object references to custom resources are treated as templates.
+             */
+            template?: outputs.cluster.v1alpha3.MachineSetSpecTemplate;
+        }
+
+        /**
+         * Selector is a label query over machines that should match the replica count. Label keys and values that must match in order to be controlled by this MachineSet. It must match the machine template's labels. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
+         */
+        export interface MachineSetSpecSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.cluster.v1alpha3.MachineSetSpecSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface MachineSetSpecSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * Template is the object that describes the machine that will be created if insufficient replicas are detected. Object references to custom resources are treated as templates.
+         */
+        export interface MachineSetSpecTemplate {
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata?: outputs.cluster.v1alpha3.MachineSetSpecTemplateMetadata;
+            /**
+             * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+             */
+            spec?: outputs.cluster.v1alpha3.MachineSetSpecTemplateSpec;
+        }
+
+        /**
+         * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface MachineSetSpecTemplateMetadata {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * GenerateName is an optional prefix, used by the server, to generate a unique name ONLY IF the Name field has not been provided. If this field is used, the name returned to the client will be different than the name passed. This value will also be combined with a unique suffix. The provided value has the same validation rules as the Name field, and may be truncated by the length of the suffix required to make the value unique on the server. 
+             *  If this field is specified and the generated name exists, the server will NOT return a 409 - instead, it will either return 201 Created or 500 with Reason ServerTimeout indicating a unique name could not be found in the time allotted, and the client should retry (optionally after the time indicated in the Retry-After header). 
+             *  Applied only if Name is not specified. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            generateName?: string;
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: {[key: string]: string};
+            /**
+             * Name must be unique within a namespace. Is required when creating resources, although some resources may allow a client to request the generation of an appropriate name automatically. Name is primarily intended for creation idempotence and configuration definition. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/identifiers#names 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            name?: string;
+            /**
+             * Namespace defines the space within each name must be unique. An empty namespace is equivalent to the "default" namespace, but "default" is the canonical representation. Not all objects are required to be scoped to a namespace - the value of this field for those objects will be empty. 
+             *  Must be a DNS_LABEL. Cannot be updated. More info: http://kubernetes.io/docs/user-guide/namespaces 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            namespace?: string;
+            /**
+             * List of objects depended by this object. If ALL objects in the list have been deleted, this object will be garbage collected. If this object is managed by a controller, then an entry in this list will point to this controller, with the controller field set to true. There cannot be more than one managing controller. 
+             *  Deprecated: This field has no function and is going to be removed in a next release.
+             */
+            ownerReferences?: outputs.cluster.v1alpha3.MachineSetSpecTemplateMetadataOwnerReferences[];
+        }
+
+        /**
+         * OwnerReference contains enough information to let you identify an owning object. An owning object must be in the same namespace as the dependent, or be cluster-scoped, so there is no namespace field.
+         */
+        export interface MachineSetSpecTemplateMetadataOwnerReferences {
+            /**
+             * API version of the referent.
+             */
+            apiVersion: string;
+            /**
+             * If true, AND if the owner has the "foregroundDeletion" finalizer, then the owner cannot be deleted from the key-value store until this reference is removed. See https://kubernetes.io/docs/concepts/architecture/garbage-collection/#foreground-deletion for how the garbage collector interacts with this field and enforces the foreground deletion. Defaults to false. To set this field, a user needs "delete" permission of the owner, otherwise 422 (Unprocessable Entity) will be returned.
+             */
+            blockOwnerDeletion?: boolean;
+            /**
+             * If true, this reference points to the managing controller.
+             */
+            controller?: boolean;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#names
+             */
+            name: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names#uids
+             */
+            uid: string;
+        }
+
+        /**
+         * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+         */
+        export interface MachineSetSpecTemplateSpec {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: outputs.cluster.v1alpha3.MachineSetSpecTemplateSpecBootstrap;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: string;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: outputs.cluster.v1alpha3.MachineSetSpecTemplateSpecInfrastructureRef;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: string;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: string;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: string;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachineSetSpecTemplateSpecBootstrap {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.Data without the need of a controller.
+             */
+            configRef?: outputs.cluster.v1alpha3.MachineSetSpecTemplateSpecBootstrapConfigRef;
+            /**
+             * Data contains the bootstrap data, such as cloud-init details scripts. If nil, the Machine should remain in the Pending state. 
+             *  Deprecated: Switch to DataSecretName.
+             */
+            data?: string;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: string;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.Data without the need of a controller.
+         */
+        export interface MachineSetSpecTemplateSpecBootstrapConfigRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachineSetSpecTemplateSpecInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * MachineSetStatus defines the observed state of MachineSet.
+         */
+        export interface MachineSetStatus {
+            /**
+             * The number of available replicas (ready for at least minReadySeconds) for this MachineSet.
+             */
+            availableReplicas?: number;
+            failureMessage?: string;
+            /**
+             * In the event that there is a terminal problem reconciling the replicas, both FailureReason and FailureMessage will be set. FailureReason will be populated with a succinct value suitable for machine interpretation, while FailureMessage will contain a more verbose string suitable for logging and human consumption. 
+             *  These fields should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the MachineTemplate's spec or the configuration of the machine controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the machine controller, or the responsible machine controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the MachineSet object and/or logged in the controller's output.
+             */
+            failureReason?: string;
+            /**
+             * The number of replicas that have labels matching the labels of the machine template of the MachineSet.
+             */
+            fullyLabeledReplicas?: number;
+            /**
+             * ObservedGeneration reflects the generation of the most recently observed MachineSet.
+             */
+            observedGeneration?: number;
+            /**
+             * The number of ready replicas for this MachineSet. A machine is considered ready when the node has been created and is "Ready".
+             */
+            readyReplicas?: number;
+            /**
+             * Replicas is the most recently observed number of replicas.
+             */
+            replicas?: number;
+            /**
+             * Selector is the same as the label selector but in the string format to avoid introspection by clients. The string will be in the same format as the query-param syntax. More info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors
+             */
+            selector?: string;
+        }
+
+        /**
+         * MachineSpec defines the desired state of Machine.
+         */
+        export interface MachineSpec {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: outputs.cluster.v1alpha3.MachineSpecBootstrap;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: string;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: outputs.cluster.v1alpha3.MachineSpecInfrastructureRef;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: string;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: string;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: string;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachineSpecBootstrap {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.Data without the need of a controller.
+             */
+            configRef?: outputs.cluster.v1alpha3.MachineSpecBootstrapConfigRef;
+            /**
+             * Data contains the bootstrap data, such as cloud-init details scripts. If nil, the Machine should remain in the Pending state. 
+             *  Deprecated: Switch to DataSecretName.
+             */
+            data?: string;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: string;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.Data without the need of a controller.
+         */
+        export interface MachineSpecBootstrapConfigRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachineSpecInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * MachineStatus defines the observed state of Machine.
+         */
+        export interface MachineStatus {
+            /**
+             * Addresses is a list of addresses assigned to the machine. This field is copied from the infrastructure provider reference.
+             */
+            addresses?: outputs.cluster.v1alpha3.MachineStatusAddresses[];
+            /**
+             * BootstrapReady is the state of the bootstrap provider.
+             */
+            bootstrapReady?: boolean;
+            /**
+             * Conditions defines current service state of the Machine.
+             */
+            conditions?: outputs.cluster.v1alpha3.MachineStatusConditions[];
+            /**
+             * FailureMessage will be set in the event that there is a terminal problem reconciling the Machine and will contain a more verbose string suitable for logging and human consumption. 
+             *  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+             */
+            failureMessage?: string;
+            /**
+             * FailureReason will be set in the event that there is a terminal problem reconciling the Machine and will contain a succinct value suitable for machine interpretation. 
+             *  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+             */
+            failureReason?: string;
+            /**
+             * InfrastructureReady is the state of the infrastructure provider.
+             */
+            infrastructureReady?: boolean;
+            /**
+             * LastUpdated identifies when the phase of the Machine last transitioned.
+             */
+            lastUpdated?: string;
+            /**
+             * NodeRef will point to the corresponding Node if it exists.
+             */
+            nodeRef?: outputs.cluster.v1alpha3.MachineStatusNodeRef;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: number;
+            /**
+             * Phase represents the current phase of machine actuation. E.g. Pending, Running, Terminating, Failed etc.
+             */
+            phase?: string;
+            /**
+             * Version specifies the current version of Kubernetes running on the corresponding Node. This is meant to be a means of bubbling up status from the Node to the Machine. It is entirely optional, but useful for end-user UX if it’s present.
+             */
+            version?: string;
+        }
+
+        /**
+         * MachineAddress contains information for the node's address.
+         */
+        export interface MachineStatusAddresses {
+            /**
+             * The machine address.
+             */
+            address: string;
+            /**
+             * Machine address type, one of Hostname, ExternalIP or InternalIP.
+             */
+            type: string;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachineStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * NodeRef will point to the corresponding Node if it exists.
+         */
+        export interface MachineStatusNodeRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+    }
+
+    export namespace v1alpha4 {
+        /**
+         * ClusterClassSpec describes the desired state of the ClusterClass.
+         */
+        export interface ClusterClassSpec {
+            /**
+             * ControlPlane is a reference to a local struct that holds the details for provisioning the Control Plane for the Cluster.
+             */
+            controlPlane?: outputs.cluster.v1alpha4.ClusterClassSpecControlPlane;
+            /**
+             * Infrastructure is a reference to a provider-specific template that holds the details for provisioning infrastructure specific cluster for the underlying provider. The underlying provider is responsible for the implementation of the template to an infrastructure cluster.
+             */
+            infrastructure?: outputs.cluster.v1alpha4.ClusterClassSpecInfrastructure;
+            /**
+             * Workers describes the worker nodes for the cluster. It is a collection of node types which can be used to create the worker nodes of the cluster.
+             */
+            workers?: outputs.cluster.v1alpha4.ClusterClassSpecWorkers;
+        }
+
+        /**
+         * ControlPlane is a reference to a local struct that holds the details for provisioning the Control Plane for the Cluster.
+         */
+        export interface ClusterClassSpecControlPlane {
+            /**
+             * MachineTemplate defines the metadata and infrastructure information for control plane machines. 
+             *  This field is supported if and only if the control plane provider template referenced above is Machine based and supports setting replicas.
+             */
+            machineInfrastructure?: outputs.cluster.v1alpha4.ClusterClassSpecControlPlaneMachineInfrastructure;
+            /**
+             * Metadata is the metadata applied to the machines of the ControlPlane. At runtime this metadata is merged with the corresponding metadata from the topology. 
+             *  This field is supported if and only if the control plane provider template referenced is Machine based.
+             */
+            metadata?: outputs.cluster.v1alpha4.ClusterClassSpecControlPlaneMetadata;
+            /**
+             * Ref is a required reference to a custom resource offered by a provider.
+             */
+            ref: outputs.cluster.v1alpha4.ClusterClassSpecControlPlaneRef;
+        }
+
+        /**
+         * MachineTemplate defines the metadata and infrastructure information for control plane machines. 
+         *  This field is supported if and only if the control plane provider template referenced above is Machine based and supports setting replicas.
+         */
+        export interface ClusterClassSpecControlPlaneMachineInfrastructure {
+            /**
+             * Ref is a required reference to a custom resource offered by a provider.
+             */
+            ref: outputs.cluster.v1alpha4.ClusterClassSpecControlPlaneMachineInfrastructureRef;
+        }
+
+        /**
+         * Ref is a required reference to a custom resource offered by a provider.
+         */
+        export interface ClusterClassSpecControlPlaneMachineInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * Metadata is the metadata applied to the machines of the ControlPlane. At runtime this metadata is merged with the corresponding metadata from the topology. 
+         *  This field is supported if and only if the control plane provider template referenced is Machine based.
+         */
+        export interface ClusterClassSpecControlPlaneMetadata {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: {[key: string]: string};
+        }
+
+        /**
+         * Ref is a required reference to a custom resource offered by a provider.
+         */
+        export interface ClusterClassSpecControlPlaneRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * Infrastructure is a reference to a provider-specific template that holds the details for provisioning infrastructure specific cluster for the underlying provider. The underlying provider is responsible for the implementation of the template to an infrastructure cluster.
+         */
+        export interface ClusterClassSpecInfrastructure {
+            /**
+             * Ref is a required reference to a custom resource offered by a provider.
+             */
+            ref: outputs.cluster.v1alpha4.ClusterClassSpecInfrastructureRef;
+        }
+
+        /**
+         * Ref is a required reference to a custom resource offered by a provider.
+         */
+        export interface ClusterClassSpecInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * Workers describes the worker nodes for the cluster. It is a collection of node types which can be used to create the worker nodes of the cluster.
+         */
+        export interface ClusterClassSpecWorkers {
+            /**
+             * MachineDeployments is a list of machine deployment classes that can be used to create a set of worker nodes.
+             */
+            machineDeployments?: outputs.cluster.v1alpha4.ClusterClassSpecWorkersMachineDeployments[];
+        }
+
+        /**
+         * MachineDeploymentClass serves as a template to define a set of worker nodes of the cluster provisioned using the `ClusterClass`.
+         */
+        export interface ClusterClassSpecWorkersMachineDeployments {
+            /**
+             * Class denotes a type of worker node present in the cluster, this name MUST be unique within a ClusterClass and can be referenced in the Cluster to create a managed MachineDeployment.
+             */
+            class: string;
+            /**
+             * Template is a local struct containing a collection of templates for creation of MachineDeployment objects representing a set of worker nodes.
+             */
+            template: outputs.cluster.v1alpha4.ClusterClassSpecWorkersMachineDeploymentsTemplate;
+        }
+
+        /**
+         * Template is a local struct containing a collection of templates for creation of MachineDeployment objects representing a set of worker nodes.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplate {
+            /**
+             * Bootstrap contains the bootstrap template reference to be used for the creation of worker Machines.
+             */
+            bootstrap: outputs.cluster.v1alpha4.ClusterClassSpecWorkersMachineDeploymentsTemplateBootstrap;
+            /**
+             * Infrastructure contains the infrastructure template reference to be used for the creation of worker Machines.
+             */
+            infrastructure: outputs.cluster.v1alpha4.ClusterClassSpecWorkersMachineDeploymentsTemplateInfrastructure;
+            /**
+             * Metadata is the metadata applied to the machines of the MachineDeployment. At runtime this metadata is merged with the corresponding metadata from the topology.
+             */
+            metadata?: outputs.cluster.v1alpha4.ClusterClassSpecWorkersMachineDeploymentsTemplateMetadata;
+        }
+
+        /**
+         * Bootstrap contains the bootstrap template reference to be used for the creation of worker Machines.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateBootstrap {
+            /**
+             * Ref is a required reference to a custom resource offered by a provider.
+             */
+            ref: outputs.cluster.v1alpha4.ClusterClassSpecWorkersMachineDeploymentsTemplateBootstrapRef;
+        }
+
+        /**
+         * Ref is a required reference to a custom resource offered by a provider.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateBootstrapRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * Infrastructure contains the infrastructure template reference to be used for the creation of worker Machines.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateInfrastructure {
+            /**
+             * Ref is a required reference to a custom resource offered by a provider.
+             */
+            ref: outputs.cluster.v1alpha4.ClusterClassSpecWorkersMachineDeploymentsTemplateInfrastructureRef;
+        }
+
+        /**
+         * Ref is a required reference to a custom resource offered by a provider.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * Metadata is the metadata applied to the machines of the MachineDeployment. At runtime this metadata is merged with the corresponding metadata from the topology.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateMetadata {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: {[key: string]: string};
+        }
+
+        /**
+         * ClusterSpec defines the desired state of Cluster.
+         */
+        export interface ClusterSpec {
+            /**
+             * Cluster network configuration.
+             */
+            clusterNetwork?: outputs.cluster.v1alpha4.ClusterSpecClusterNetwork;
+            /**
+             * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+             */
+            controlPlaneEndpoint?: outputs.cluster.v1alpha4.ClusterSpecControlPlaneEndpoint;
+            /**
+             * ControlPlaneRef is an optional reference to a provider-specific resource that holds the details for provisioning the Control Plane for a Cluster.
+             */
+            controlPlaneRef?: outputs.cluster.v1alpha4.ClusterSpecControlPlaneRef;
+            /**
+             * InfrastructureRef is a reference to a provider-specific resource that holds the details for provisioning infrastructure for a cluster in said provider.
+             */
+            infrastructureRef?: outputs.cluster.v1alpha4.ClusterSpecInfrastructureRef;
+            /**
+             * Paused can be used to prevent controllers from processing the Cluster and all its associated objects.
+             */
+            paused?: boolean;
+            /**
+             * This encapsulates the topology for the cluster. NOTE: It is required to enable the ClusterTopology feature gate flag to activate managed topologies support; this feature is highly experimental, and parts of it might still be not implemented.
+             */
+            topology?: outputs.cluster.v1alpha4.ClusterSpecTopology;
+        }
+
+        /**
+         * Cluster network configuration.
+         */
+        export interface ClusterSpecClusterNetwork {
+            /**
+             * APIServerPort specifies the port the API Server should bind to. Defaults to 6443.
+             */
+            apiServerPort?: number;
+            /**
+             * The network ranges from which Pod networks are allocated.
+             */
+            pods?: outputs.cluster.v1alpha4.ClusterSpecClusterNetworkPods;
+            /**
+             * Domain name for services.
+             */
+            serviceDomain?: string;
+            /**
+             * The network ranges from which service VIPs are allocated.
+             */
+            services?: outputs.cluster.v1alpha4.ClusterSpecClusterNetworkServices;
+        }
+
+        /**
+         * The network ranges from which Pod networks are allocated.
+         */
+        export interface ClusterSpecClusterNetworkPods {
+            cidrBlocks: string[];
+        }
+
+        /**
+         * The network ranges from which service VIPs are allocated.
+         */
+        export interface ClusterSpecClusterNetworkServices {
+            cidrBlocks: string[];
+        }
+
+        /**
+         * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+         */
+        export interface ClusterSpecControlPlaneEndpoint {
+            /**
+             * The hostname on which the API server is serving.
+             */
+            host: string;
+            /**
+             * The port on which the API server is serving.
+             */
+            port: number;
+        }
+
+        /**
+         * ControlPlaneRef is an optional reference to a provider-specific resource that holds the details for provisioning the Control Plane for a Cluster.
+         */
+        export interface ClusterSpecControlPlaneRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * InfrastructureRef is a reference to a provider-specific resource that holds the details for provisioning infrastructure for a cluster in said provider.
+         */
+        export interface ClusterSpecInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * This encapsulates the topology for the cluster. NOTE: It is required to enable the ClusterTopology feature gate flag to activate managed topologies support; this feature is highly experimental, and parts of it might still be not implemented.
+         */
+        export interface ClusterSpecTopology {
+            /**
+             * The name of the ClusterClass object to create the topology.
+             */
+            class: string;
+            /**
+             * ControlPlane describes the cluster control plane.
+             */
+            controlPlane?: outputs.cluster.v1alpha4.ClusterSpecTopologyControlPlane;
+            /**
+             * RolloutAfter performs a rollout of the entire cluster one component at a time, control plane first and then machine deployments.
+             */
+            rolloutAfter?: string;
+            /**
+             * The Kubernetes version of the cluster.
+             */
+            version: string;
+            /**
+             * Workers encapsulates the different constructs that form the worker nodes for the cluster.
+             */
+            workers?: outputs.cluster.v1alpha4.ClusterSpecTopologyWorkers;
+        }
+
+        /**
+         * ControlPlane describes the cluster control plane.
+         */
+        export interface ClusterSpecTopologyControlPlane {
+            /**
+             * Metadata is the metadata applied to the machines of the ControlPlane. At runtime this metadata is merged with the corresponding metadata from the ClusterClass. 
+             *  This field is supported if and only if the control plane provider template referenced in the ClusterClass is Machine based.
+             */
+            metadata?: outputs.cluster.v1alpha4.ClusterSpecTopologyControlPlaneMetadata;
+            /**
+             * Replicas is the number of control plane nodes. If the value is nil, the ControlPlane object is created without the number of Replicas and it's assumed that the control plane controller does not implement support for this field. When specified against a control plane provider that lacks support for this field, this value will be ignored.
+             */
+            replicas?: number;
+        }
+
+        /**
+         * Metadata is the metadata applied to the machines of the ControlPlane. At runtime this metadata is merged with the corresponding metadata from the ClusterClass. 
+         *  This field is supported if and only if the control plane provider template referenced in the ClusterClass is Machine based.
+         */
+        export interface ClusterSpecTopologyControlPlaneMetadata {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: {[key: string]: string};
+        }
+
+        /**
+         * Workers encapsulates the different constructs that form the worker nodes for the cluster.
+         */
+        export interface ClusterSpecTopologyWorkers {
+            /**
+             * MachineDeployments is a list of machine deployments in the cluster.
+             */
+            machineDeployments?: outputs.cluster.v1alpha4.ClusterSpecTopologyWorkersMachineDeployments[];
+        }
+
+        /**
+         * MachineDeploymentTopology specifies the different parameters for a set of worker nodes in the topology. This set of nodes is managed by a MachineDeployment object whose lifecycle is managed by the Cluster controller.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeployments {
+            /**
+             * Class is the name of the MachineDeploymentClass used to create the set of worker nodes. This should match one of the deployment classes defined in the ClusterClass object mentioned in the `Cluster.Spec.Class` field.
+             */
+            class: string;
+            /**
+             * Metadata is the metadata applied to the machines of the MachineDeployment. At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
+             */
+            metadata?: outputs.cluster.v1alpha4.ClusterSpecTopologyWorkersMachineDeploymentsMetadata;
+            /**
+             * Name is the unique identifier for this MachineDeploymentTopology. The value is used with other unique identifiers to create a MachineDeployment's Name (e.g. cluster's name, etc). In case the name is greater than the allowed maximum length, the values are hashed together.
+             */
+            name: string;
+            /**
+             * Replicas is the number of worker nodes belonging to this set. If the value is nil, the MachineDeployment is created without the number of Replicas (defaulting to zero) and it's assumed that an external entity (like cluster autoscaler) is responsible for the management of this value.
+             */
+            replicas?: number;
+        }
+
+        /**
+         * Metadata is the metadata applied to the machines of the MachineDeployment. At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeploymentsMetadata {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: {[key: string]: string};
+        }
+
+        /**
+         * ClusterStatus defines the observed state of Cluster.
+         */
+        export interface ClusterStatus {
+            /**
+             * Conditions defines current service state of the cluster.
+             */
+            conditions?: outputs.cluster.v1alpha4.ClusterStatusConditions[];
+            /**
+             * ControlPlaneReady defines if the control plane is ready.
+             */
+            controlPlaneReady?: boolean;
+            /**
+             * FailureDomains is a slice of failure domain objects synced from the infrastructure provider.
+             */
+            failureDomains?: {[key: string]: outputs.cluster.v1alpha4.ClusterStatusFailureDomains};
+            /**
+             * FailureMessage indicates that there is a fatal problem reconciling the state, and will be set to a descriptive error message.
+             */
+            failureMessage?: string;
+            /**
+             * FailureReason indicates that there is a fatal problem reconciling the state, and will be set to a token value suitable for programmatic interpretation.
+             */
+            failureReason?: string;
+            /**
+             * InfrastructureReady is the state of the infrastructure provider.
+             */
+            infrastructureReady?: boolean;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: number;
+            /**
+             * Phase represents the current phase of cluster actuation. E.g. Pending, Running, Terminating, Failed etc.
+             */
+            phase?: string;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ClusterStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * FailureDomainSpec is the Schema for Cluster API failure domains. It allows controllers to understand how many failure domains a cluster can optionally span across.
+         */
+        export interface ClusterStatusFailureDomains {
+            /**
+             * Attributes is a free form map of attributes an infrastructure provider might use or require.
+             */
+            attributes?: {[key: string]: string};
+            /**
+             * ControlPlane determines if this failure domain is suitable for use by control plane machines.
+             */
+            controlPlane?: boolean;
+        }
+
+        /**
+         * MachineDeploymentSpec defines the desired state of MachineDeployment.
+         */
+        export interface MachineDeploymentSpec {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * Minimum number of seconds for which a newly created machine should be ready. Defaults to 0 (machine will be considered available as soon as it is ready)
+             */
+            minReadySeconds?: number;
+            /**
+             * Indicates that the deployment is paused.
+             */
+            paused?: boolean;
+            /**
+             * The maximum time in seconds for a deployment to make progress before it is considered to be failed. The deployment controller will continue to process failed deployments and a condition with a ProgressDeadlineExceeded reason will be surfaced in the deployment status. Note that progress will not be estimated during the time a deployment is paused. Defaults to 600s.
+             */
+            progressDeadlineSeconds?: number;
+            /**
+             * Number of desired machines. Defaults to 1. This is a pointer to distinguish between explicit zero and not specified.
+             */
+            replicas?: number;
+            /**
+             * The number of old MachineSets to retain to allow rollback. This is a pointer to distinguish between explicit zero and not specified. Defaults to 1.
+             */
+            revisionHistoryLimit?: number;
+            /**
+             * Label selector for machines. Existing MachineSets whose machines are selected by this will be the ones affected by this deployment. It must match the machine template's labels.
+             */
+            selector: outputs.cluster.v1alpha4.MachineDeploymentSpecSelector;
+            /**
+             * The deployment strategy to use to replace existing machines with new ones.
+             */
+            strategy?: outputs.cluster.v1alpha4.MachineDeploymentSpecStrategy;
+            /**
+             * Template describes the machines that will be created.
+             */
+            template: outputs.cluster.v1alpha4.MachineDeploymentSpecTemplate;
+        }
+        /**
+         * machineDeploymentSpecProvideDefaults sets the appropriate defaults for MachineDeploymentSpec
+         */
+        export function machineDeploymentSpecProvideDefaults(val: MachineDeploymentSpec): MachineDeploymentSpec {
+            return {
+                ...val,
+                replicas: (val.replicas) ?? 1,
+            };
+        }
+
+        /**
+         * Label selector for machines. Existing MachineSets whose machines are selected by this will be the ones affected by this deployment. It must match the machine template's labels.
+         */
+        export interface MachineDeploymentSpecSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.cluster.v1alpha4.MachineDeploymentSpecSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface MachineDeploymentSpecSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * The deployment strategy to use to replace existing machines with new ones.
+         */
+        export interface MachineDeploymentSpecStrategy {
+            /**
+             * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+             */
+            rollingUpdate?: outputs.cluster.v1alpha4.MachineDeploymentSpecStrategyRollingUpdate;
+            /**
+             * Type of deployment. Default is RollingUpdate.
+             */
+            type?: string;
+        }
+
+        /**
+         * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+         */
+        export interface MachineDeploymentSpecStrategyRollingUpdate {
+            /**
+             * DeletePolicy defines the policy used by the MachineDeployment to identify nodes to delete when downscaling. Valid values are "Random, "Newest", "Oldest" When no value is supplied, the default DeletePolicy of MachineSet is used
+             */
+            deletePolicy?: string;
+            /**
+             * The maximum number of machines that can be scheduled above the desired number of machines. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up. Defaults to 1. Example: when this is set to 30%, the new MachineSet can be scaled up immediately when the rolling update starts, such that the total number of old and new machines do not exceed 130% of desired machines. Once old machines have been killed, new MachineSet can be scaled up further, ensuring that total number of machines running at any time during the update is at most 130% of desired machines.
+             */
+            maxSurge?: number | string;
+            /**
+             * The maximum number of machines that can be unavailable during the update. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). Absolute number is calculated from percentage by rounding down. This can not be 0 if MaxSurge is 0. Defaults to 0. Example: when this is set to 30%, the old MachineSet can be scaled down to 70% of desired machines immediately when the rolling update starts. Once new machines are ready, old MachineSet can be scaled down further, followed by scaling up the new MachineSet, ensuring that the total number of machines available at all times during the update is at least 70% of desired machines.
+             */
+            maxUnavailable?: number | string;
+        }
+
+        /**
+         * Template describes the machines that will be created.
+         */
+        export interface MachineDeploymentSpecTemplate {
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata?: outputs.cluster.v1alpha4.MachineDeploymentSpecTemplateMetadata;
+            /**
+             * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+             */
+            spec?: outputs.cluster.v1alpha4.MachineDeploymentSpecTemplateSpec;
+        }
+
+        /**
+         * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface MachineDeploymentSpecTemplateMetadata {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: {[key: string]: string};
+        }
+
+        /**
+         * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+         */
+        export interface MachineDeploymentSpecTemplateSpec {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: outputs.cluster.v1alpha4.MachineDeploymentSpecTemplateSpecBootstrap;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: string;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: outputs.cluster.v1alpha4.MachineDeploymentSpecTemplateSpecInfrastructureRef;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: string;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: string;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: string;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachineDeploymentSpecTemplateSpecBootstrap {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+             */
+            configRef?: outputs.cluster.v1alpha4.MachineDeploymentSpecTemplateSpecBootstrapConfigRef;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: string;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+         */
+        export interface MachineDeploymentSpecTemplateSpecBootstrapConfigRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachineDeploymentSpecTemplateSpecInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * MachineDeploymentStatus defines the observed state of MachineDeployment.
+         */
+        export interface MachineDeploymentStatus {
+            /**
+             * Total number of available machines (ready for at least minReadySeconds) targeted by this deployment.
+             */
+            availableReplicas?: number;
+            /**
+             * Conditions defines current service state of the MachineDeployment.
+             */
+            conditions?: outputs.cluster.v1alpha4.MachineDeploymentStatusConditions[];
+            /**
+             * The generation observed by the deployment controller.
+             */
+            observedGeneration?: number;
+            /**
+             * Phase represents the current phase of a MachineDeployment (ScalingUp, ScalingDown, Running, Failed, or Unknown).
+             */
+            phase?: string;
+            /**
+             * Total number of ready machines targeted by this deployment.
+             */
+            readyReplicas?: number;
+            /**
+             * Total number of non-terminated machines targeted by this deployment (their labels match the selector).
+             */
+            replicas?: number;
+            /**
+             * Selector is the same as the label selector but in the string format to avoid introspection by clients. The string will be in the same format as the query-param syntax. More info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors
+             */
+            selector?: string;
+            /**
+             * Total number of unavailable machines targeted by this deployment. This is the total number of machines that are still required for the deployment to have 100% available capacity. They may either be machines that are running but not yet available or machines that still have not been created.
+             */
+            unavailableReplicas?: number;
+            /**
+             * Total number of non-terminated machines targeted by this deployment that have the desired template spec.
+             */
+            updatedReplicas?: number;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachineDeploymentStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * Specification of machine health check policy
+         */
+        export interface MachineHealthCheckSpec {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by "selector" are not healthy.
+             */
+            maxUnhealthy?: number | string;
+            /**
+             * Machines older than this duration without a node will be considered to have failed and will be remediated. If not set, this value is defaulted to 10 minutes. If you wish to disable this feature, set the value explicitly to 0.
+             */
+            nodeStartupTimeout?: string;
+            /**
+             * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+             *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+             */
+            remediationTemplate?: outputs.cluster.v1alpha4.MachineHealthCheckSpecRemediationTemplate;
+            /**
+             * Label selector to match machines whose health will be exercised
+             */
+            selector: outputs.cluster.v1alpha4.MachineHealthCheckSpecSelector;
+            /**
+             * UnhealthyConditions contains a list of the conditions that determine whether a node is considered unhealthy.  The conditions are combined in a logical OR, i.e. if any of the conditions is met, the node is unhealthy.
+             */
+            unhealthyConditions: outputs.cluster.v1alpha4.MachineHealthCheckSpecUnhealthyConditions[];
+            /**
+             * Any further remediation is only allowed if the number of machines selected by "selector" as not healthy is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy. Eg. "[3-5]" - This means that remediation will be allowed only when: (a) there are at least 3 unhealthy machines (and) (b) there are at most 5 unhealthy machines
+             */
+            unhealthyRange?: string;
+        }
+
+        /**
+         * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+         *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+         */
+        export interface MachineHealthCheckSpecRemediationTemplate {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * Label selector to match machines whose health will be exercised
+         */
+        export interface MachineHealthCheckSpecSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.cluster.v1alpha4.MachineHealthCheckSpecSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface MachineHealthCheckSpecSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * UnhealthyCondition represents a Node condition type and value with a timeout specified as a duration.  When the named condition has been in the given status for at least the timeout value, a node is considered unhealthy.
+         */
+        export interface MachineHealthCheckSpecUnhealthyConditions {
+            status: string;
+            timeout: string;
+            type: string;
+        }
+
+        /**
+         * Most recently observed status of MachineHealthCheck resource
+         */
+        export interface MachineHealthCheckStatus {
+            /**
+             * Conditions defines current service state of the MachineHealthCheck.
+             */
+            conditions?: outputs.cluster.v1alpha4.MachineHealthCheckStatusConditions[];
+            /**
+             * total number of healthy machines counted by this machine health check
+             */
+            currentHealthy?: number;
+            /**
+             * total number of machines counted by this machine health check
+             */
+            expectedMachines?: number;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: number;
+            /**
+             * RemediationsAllowed is the number of further remediations allowed by this machine health check before maxUnhealthy short circuiting will be applied
+             */
+            remediationsAllowed?: number;
+            /**
+             * Targets shows the current list of machines the machine health check is watching
+             */
+            targets?: string[];
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachineHealthCheckStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * MachinePoolSpec defines the desired state of MachinePool.
+         */
+        export interface MachinePoolSpec {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * FailureDomains is the list of failure domains this MachinePool should be attached to.
+             */
+            failureDomains?: string[];
+            /**
+             * Minimum number of seconds for which a newly created machine instances should be ready. Defaults to 0 (machine instance will be considered available as soon as it is ready)
+             */
+            minReadySeconds?: number;
+            /**
+             * ProviderIDList are the identification IDs of machine instances provided by the provider. This field must match the provider IDs as seen on the node objects corresponding to a machine pool's machine instances.
+             */
+            providerIDList?: string[];
+            /**
+             * Number of desired machines. Defaults to 1. This is a pointer to distinguish between explicit zero and not specified.
+             */
+            replicas?: number;
+            /**
+             * Template describes the machines that will be created.
+             */
+            template: outputs.cluster.v1alpha4.MachinePoolSpecTemplate;
+        }
+
+        /**
+         * Template describes the machines that will be created.
+         */
+        export interface MachinePoolSpecTemplate {
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata?: outputs.cluster.v1alpha4.MachinePoolSpecTemplateMetadata;
+            /**
+             * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+             */
+            spec?: outputs.cluster.v1alpha4.MachinePoolSpecTemplateSpec;
+        }
+
+        /**
+         * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface MachinePoolSpecTemplateMetadata {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: {[key: string]: string};
+        }
+
+        /**
+         * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+         */
+        export interface MachinePoolSpecTemplateSpec {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: outputs.cluster.v1alpha4.MachinePoolSpecTemplateSpecBootstrap;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: string;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: outputs.cluster.v1alpha4.MachinePoolSpecTemplateSpecInfrastructureRef;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: string;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: string;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: string;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachinePoolSpecTemplateSpecBootstrap {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+             */
+            configRef?: outputs.cluster.v1alpha4.MachinePoolSpecTemplateSpecBootstrapConfigRef;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: string;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+         */
+        export interface MachinePoolSpecTemplateSpecBootstrapConfigRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachinePoolSpecTemplateSpecInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * MachinePoolStatus defines the observed state of MachinePool.
+         */
+        export interface MachinePoolStatus {
+            /**
+             * The number of available replicas (ready for at least minReadySeconds) for this MachinePool.
+             */
+            availableReplicas?: number;
+            /**
+             * BootstrapReady is the state of the bootstrap provider.
+             */
+            bootstrapReady?: boolean;
+            /**
+             * Conditions define the current service state of the MachinePool.
+             */
+            conditions?: outputs.cluster.v1alpha4.MachinePoolStatusConditions[];
+            /**
+             * FailureMessage indicates that there is a problem reconciling the state, and will be set to a descriptive error message.
+             */
+            failureMessage?: string;
+            /**
+             * FailureReason indicates that there is a problem reconciling the state, and will be set to a token value suitable for programmatic interpretation.
+             */
+            failureReason?: string;
+            /**
+             * InfrastructureReady is the state of the infrastructure provider.
+             */
+            infrastructureReady?: boolean;
+            /**
+             * NodeRefs will point to the corresponding Nodes if it they exist.
+             */
+            nodeRefs?: outputs.cluster.v1alpha4.MachinePoolStatusNodeRefs[];
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: number;
+            /**
+             * Phase represents the current phase of cluster actuation. E.g. Pending, Running, Terminating, Failed etc.
+             */
+            phase?: string;
+            /**
+             * The number of ready replicas for this MachinePool. A machine is considered ready when the node has been created and is "Ready".
+             */
+            readyReplicas?: number;
+            /**
+             * Replicas is the most recently observed number of replicas.
+             */
+            replicas?: number;
+            /**
+             * Total number of unavailable machine instances targeted by this machine pool. This is the total number of machine instances that are still required for the machine pool to have 100% available capacity. They may either be machine instances that are running but not yet available or machine instances that still have not been created.
+             */
+            unavailableReplicas?: number;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachinePoolStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface MachinePoolStatusNodeRefs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * MachineSetSpec defines the desired state of MachineSet.
+         */
+        export interface MachineSetSpec {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * DeletePolicy defines the policy used to identify nodes to delete when downscaling. Defaults to "Random".  Valid values are "Random, "Newest", "Oldest"
+             */
+            deletePolicy?: string;
+            /**
+             * MinReadySeconds is the minimum number of seconds for which a newly created machine should be ready. Defaults to 0 (machine will be considered available as soon as it is ready)
+             */
+            minReadySeconds?: number;
+            /**
+             * Replicas is the number of desired replicas. This is a pointer to distinguish between explicit zero and unspecified. Defaults to 1.
+             */
+            replicas?: number;
+            /**
+             * Selector is a label query over machines that should match the replica count. Label keys and values that must match in order to be controlled by this MachineSet. It must match the machine template's labels. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
+             */
+            selector: outputs.cluster.v1alpha4.MachineSetSpecSelector;
+            /**
+             * Template is the object that describes the machine that will be created if insufficient replicas are detected. Object references to custom resources are treated as templates.
+             */
+            template?: outputs.cluster.v1alpha4.MachineSetSpecTemplate;
+        }
+        /**
+         * machineSetSpecProvideDefaults sets the appropriate defaults for MachineSetSpec
+         */
+        export function machineSetSpecProvideDefaults(val: MachineSetSpec): MachineSetSpec {
+            return {
+                ...val,
+                replicas: (val.replicas) ?? 1,
+            };
+        }
+
+        /**
+         * Selector is a label query over machines that should match the replica count. Label keys and values that must match in order to be controlled by this MachineSet. It must match the machine template's labels. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
+         */
+        export interface MachineSetSpecSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.cluster.v1alpha4.MachineSetSpecSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface MachineSetSpecSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * Template is the object that describes the machine that will be created if insufficient replicas are detected. Object references to custom resources are treated as templates.
+         */
+        export interface MachineSetSpecTemplate {
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata?: outputs.cluster.v1alpha4.MachineSetSpecTemplateMetadata;
+            /**
+             * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+             */
+            spec?: outputs.cluster.v1alpha4.MachineSetSpecTemplateSpec;
+        }
+
+        /**
+         * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface MachineSetSpecTemplateMetadata {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: {[key: string]: string};
+        }
+
+        /**
+         * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+         */
+        export interface MachineSetSpecTemplateSpec {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: outputs.cluster.v1alpha4.MachineSetSpecTemplateSpecBootstrap;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: string;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: outputs.cluster.v1alpha4.MachineSetSpecTemplateSpecInfrastructureRef;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: string;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: string;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: string;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachineSetSpecTemplateSpecBootstrap {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+             */
+            configRef?: outputs.cluster.v1alpha4.MachineSetSpecTemplateSpecBootstrapConfigRef;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: string;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+         */
+        export interface MachineSetSpecTemplateSpecBootstrapConfigRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachineSetSpecTemplateSpecInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * MachineSetStatus defines the observed state of MachineSet.
+         */
+        export interface MachineSetStatus {
+            /**
+             * The number of available replicas (ready for at least minReadySeconds) for this MachineSet.
+             */
+            availableReplicas?: number;
+            /**
+             * Conditions defines current service state of the MachineSet.
+             */
+            conditions?: outputs.cluster.v1alpha4.MachineSetStatusConditions[];
+            failureMessage?: string;
+            /**
+             * In the event that there is a terminal problem reconciling the replicas, both FailureReason and FailureMessage will be set. FailureReason will be populated with a succinct value suitable for machine interpretation, while FailureMessage will contain a more verbose string suitable for logging and human consumption. 
+             *  These fields should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the MachineTemplate's spec or the configuration of the machine controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the machine controller, or the responsible machine controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the MachineSet object and/or logged in the controller's output.
+             */
+            failureReason?: string;
+            /**
+             * The number of replicas that have labels matching the labels of the machine template of the MachineSet.
+             */
+            fullyLabeledReplicas?: number;
+            /**
+             * ObservedGeneration reflects the generation of the most recently observed MachineSet.
+             */
+            observedGeneration?: number;
+            /**
+             * The number of ready replicas for this MachineSet. A machine is considered ready when the node has been created and is "Ready".
+             */
+            readyReplicas?: number;
+            /**
+             * Replicas is the most recently observed number of replicas.
+             */
+            replicas?: number;
+            /**
+             * Selector is the same as the label selector but in the string format to avoid introspection by clients. The string will be in the same format as the query-param syntax. More info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors
+             */
+            selector?: string;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachineSetStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * MachineSpec defines the desired state of Machine.
+         */
+        export interface MachineSpec {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: outputs.cluster.v1alpha4.MachineSpecBootstrap;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: string;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: outputs.cluster.v1alpha4.MachineSpecInfrastructureRef;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: string;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: string;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: string;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachineSpecBootstrap {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+             */
+            configRef?: outputs.cluster.v1alpha4.MachineSpecBootstrapConfigRef;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: string;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+         */
+        export interface MachineSpecBootstrapConfigRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachineSpecInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * MachineStatus defines the observed state of Machine.
+         */
+        export interface MachineStatus {
+            /**
+             * Addresses is a list of addresses assigned to the machine. This field is copied from the infrastructure provider reference.
+             */
+            addresses?: outputs.cluster.v1alpha4.MachineStatusAddresses[];
+            /**
+             * BootstrapReady is the state of the bootstrap provider.
+             */
+            bootstrapReady?: boolean;
+            /**
+             * Conditions defines current service state of the Machine.
+             */
+            conditions?: outputs.cluster.v1alpha4.MachineStatusConditions[];
+            /**
+             * FailureMessage will be set in the event that there is a terminal problem reconciling the Machine and will contain a more verbose string suitable for logging and human consumption. 
+             *  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+             */
+            failureMessage?: string;
+            /**
+             * FailureReason will be set in the event that there is a terminal problem reconciling the Machine and will contain a succinct value suitable for machine interpretation. 
+             *  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+             */
+            failureReason?: string;
+            /**
+             * InfrastructureReady is the state of the infrastructure provider.
+             */
+            infrastructureReady?: boolean;
+            /**
+             * LastUpdated identifies when the phase of the Machine last transitioned.
+             */
+            lastUpdated?: string;
+            /**
+             * NodeInfo is a set of ids/uuids to uniquely identify the node. More info: https://kubernetes.io/docs/concepts/nodes/node/#info
+             */
+            nodeInfo?: outputs.cluster.v1alpha4.MachineStatusNodeInfo;
+            /**
+             * NodeRef will point to the corresponding Node if it exists.
+             */
+            nodeRef?: outputs.cluster.v1alpha4.MachineStatusNodeRef;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: number;
+            /**
+             * Phase represents the current phase of machine actuation. E.g. Pending, Running, Terminating, Failed etc.
+             */
+            phase?: string;
+            /**
+             * Version specifies the current version of Kubernetes running on the corresponding Node. This is meant to be a means of bubbling up status from the Node to the Machine. It is entirely optional, but useful for end-user UX if it’s present.
+             */
+            version?: string;
+        }
+
+        /**
+         * MachineAddress contains information for the node's address.
+         */
+        export interface MachineStatusAddresses {
+            /**
+             * The machine address.
+             */
+            address: string;
+            /**
+             * Machine address type, one of Hostname, ExternalIP or InternalIP.
+             */
+            type: string;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachineStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * NodeInfo is a set of ids/uuids to uniquely identify the node. More info: https://kubernetes.io/docs/concepts/nodes/node/#info
+         */
+        export interface MachineStatusNodeInfo {
+            /**
+             * The Architecture reported by the node
+             */
+            architecture: string;
+            /**
+             * Boot ID reported by the node.
+             */
+            bootID: string;
+            /**
+             * ContainerRuntime Version reported by the node through runtime remote API (e.g. containerd://1.4.2).
+             */
+            containerRuntimeVersion: string;
+            /**
+             * Kernel Version reported by the node from 'uname -r' (e.g. 3.16.0-0.bpo.4-amd64).
+             */
+            kernelVersion: string;
+            /**
+             * KubeProxy Version reported by the node.
+             */
+            kubeProxyVersion: string;
+            /**
+             * Kubelet Version reported by the node.
+             */
+            kubeletVersion: string;
+            /**
+             * MachineID reported by the node. For unique machine identification in the cluster this field is preferred. Learn more from man(5) machine-id: http://man7.org/linux/man-pages/man5/machine-id.5.html
+             */
+            machineID: string;
+            /**
+             * The Operating System reported by the node
+             */
+            operatingSystem: string;
+            /**
+             * OS Image reported by the node from /etc/os-release (e.g. Debian GNU/Linux 7 (wheezy)).
+             */
+            osImage: string;
+            /**
+             * SystemUUID reported by the node. For unique machine identification MachineID is preferred. This field is specific to Red Hat hosts https://access.redhat.com/documentation/en-us/red_hat_subscription_management/1/html/rhsm/uuid
+             */
+            systemUUID: string;
+        }
+
+        /**
+         * NodeRef will point to the corresponding Node if it exists.
+         */
+        export interface MachineStatusNodeRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+    }
+
+    export namespace v1beta1 {
+        /**
+         * ClusterClassSpec describes the desired state of the ClusterClass.
+         */
+        export interface ClusterClassSpec {
+            /**
+             * ControlPlane is a reference to a local struct that holds the details for provisioning the Control Plane for the Cluster.
+             */
+            controlPlane?: outputs.cluster.v1beta1.ClusterClassSpecControlPlane;
+            /**
+             * Infrastructure is a reference to a provider-specific template that holds the details for provisioning infrastructure specific cluster for the underlying provider. The underlying provider is responsible for the implementation of the template to an infrastructure cluster.
+             */
+            infrastructure?: outputs.cluster.v1beta1.ClusterClassSpecInfrastructure;
+            /**
+             * Patches defines the patches which are applied to customize referenced templates of a ClusterClass. Note: Patches will be applied in the order of the array.
+             */
+            patches?: outputs.cluster.v1beta1.ClusterClassSpecPatches[];
+            /**
+             * Variables defines the variables which can be configured in the Cluster topology and are then used in patches.
+             */
+            variables?: outputs.cluster.v1beta1.ClusterClassSpecVariables[];
+            /**
+             * Workers describes the worker nodes for the cluster. It is a collection of node types which can be used to create the worker nodes of the cluster.
+             */
+            workers?: outputs.cluster.v1beta1.ClusterClassSpecWorkers;
+        }
+
+        /**
+         * ControlPlane is a reference to a local struct that holds the details for provisioning the Control Plane for the Cluster.
+         */
+        export interface ClusterClassSpecControlPlane {
+            /**
+             * MachineHealthCheck defines a MachineHealthCheck for this ControlPlaneClass. This field is supported if and only if the ControlPlane provider template referenced above is Machine based and supports setting replicas.
+             */
+            machineHealthCheck?: outputs.cluster.v1beta1.ClusterClassSpecControlPlaneMachineHealthCheck;
+            /**
+             * MachineInfrastructure defines the metadata and infrastructure information for control plane machines. 
+             *  This field is supported if and only if the control plane provider template referenced above is Machine based and supports setting replicas.
+             */
+            machineInfrastructure?: outputs.cluster.v1beta1.ClusterClassSpecControlPlaneMachineInfrastructure;
+            /**
+             * Metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane if the ControlPlaneTemplate referenced is machine based. If not, it is applied only to the ControlPlane. At runtime this metadata is merged with the corresponding metadata from the topology. 
+             *  This field is supported if and only if the control plane provider template referenced is Machine based.
+             */
+            metadata?: outputs.cluster.v1beta1.ClusterClassSpecControlPlaneMetadata;
+            /**
+             * NamingStrategy allows changing the naming pattern used when creating the control plane provider object.
+             */
+            namingStrategy?: outputs.cluster.v1beta1.ClusterClassSpecControlPlaneNamingStrategy;
+            /**
+             * NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely. Defaults to 10 seconds. NOTE: This value can be overridden while defining a Cluster.Topology.
+             */
+            nodeDeletionTimeout?: string;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout` NOTE: This value can be overridden while defining a Cluster.Topology.
+             */
+            nodeDrainTimeout?: string;
+            /**
+             * NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations. NOTE: This value can be overridden while defining a Cluster.Topology.
+             */
+            nodeVolumeDetachTimeout?: string;
+            /**
+             * Ref is a required reference to a custom resource offered by a provider.
+             */
+            ref: outputs.cluster.v1beta1.ClusterClassSpecControlPlaneRef;
+        }
+
+        /**
+         * MachineHealthCheck defines a MachineHealthCheck for this ControlPlaneClass. This field is supported if and only if the ControlPlane provider template referenced above is Machine based and supports setting replicas.
+         */
+        export interface ClusterClassSpecControlPlaneMachineHealthCheck {
+            /**
+             * Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by "selector" are not healthy.
+             */
+            maxUnhealthy?: number | string;
+            /**
+             * Machines older than this duration without a node will be considered to have failed and will be remediated. If you wish to disable this feature, set the value explicitly to 0.
+             */
+            nodeStartupTimeout?: string;
+            /**
+             * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+             *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+             */
+            remediationTemplate?: outputs.cluster.v1beta1.ClusterClassSpecControlPlaneMachineHealthCheckRemediationTemplate;
+            /**
+             * UnhealthyConditions contains a list of the conditions that determine whether a node is considered unhealthy. The conditions are combined in a logical OR, i.e. if any of the conditions is met, the node is unhealthy.
+             */
+            unhealthyConditions?: outputs.cluster.v1beta1.ClusterClassSpecControlPlaneMachineHealthCheckUnhealthyConditions[];
+            /**
+             * Any further remediation is only allowed if the number of machines selected by "selector" as not healthy is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy. Eg. "[3-5]" - This means that remediation will be allowed only when: (a) there are at least 3 unhealthy machines (and) (b) there are at most 5 unhealthy machines
+             */
+            unhealthyRange?: string;
+        }
+
+        /**
+         * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+         *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+         */
+        export interface ClusterClassSpecControlPlaneMachineHealthCheckRemediationTemplate {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * UnhealthyCondition represents a Node condition type and value with a timeout specified as a duration.  When the named condition has been in the given status for at least the timeout value, a node is considered unhealthy.
+         */
+        export interface ClusterClassSpecControlPlaneMachineHealthCheckUnhealthyConditions {
+            status: string;
+            timeout: string;
+            type: string;
+        }
+
+        /**
+         * MachineInfrastructure defines the metadata and infrastructure information for control plane machines. 
+         *  This field is supported if and only if the control plane provider template referenced above is Machine based and supports setting replicas.
+         */
+        export interface ClusterClassSpecControlPlaneMachineInfrastructure {
+            /**
+             * Ref is a required reference to a custom resource offered by a provider.
+             */
+            ref: outputs.cluster.v1beta1.ClusterClassSpecControlPlaneMachineInfrastructureRef;
+        }
+
+        /**
+         * Ref is a required reference to a custom resource offered by a provider.
+         */
+        export interface ClusterClassSpecControlPlaneMachineInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * Metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane if the ControlPlaneTemplate referenced is machine based. If not, it is applied only to the ControlPlane. At runtime this metadata is merged with the corresponding metadata from the topology. 
+         *  This field is supported if and only if the control plane provider template referenced is Machine based.
+         */
+        export interface ClusterClassSpecControlPlaneMetadata {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: {[key: string]: string};
+        }
+
+        /**
+         * NamingStrategy allows changing the naming pattern used when creating the control plane provider object.
+         */
+        export interface ClusterClassSpecControlPlaneNamingStrategy {
+            /**
+             * Template defines the template to use for generating the name of the ControlPlane object. If not defined, it will fallback to `{{ .cluster.name }}-{{ .random }}`. If the templated string exceeds 63 characters, it will be trimmed to 58 characters and will get concatenated with a random suffix of length 5. The templating mechanism provides the following arguments: * `.cluster.name`: The name of the cluster object. * `.random`: A random alphanumeric string, without vowels, of length 5.
+             */
+            template?: string;
+        }
+
+        /**
+         * Ref is a required reference to a custom resource offered by a provider.
+         */
+        export interface ClusterClassSpecControlPlaneRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * Infrastructure is a reference to a provider-specific template that holds the details for provisioning infrastructure specific cluster for the underlying provider. The underlying provider is responsible for the implementation of the template to an infrastructure cluster.
+         */
+        export interface ClusterClassSpecInfrastructure {
+            /**
+             * Ref is a required reference to a custom resource offered by a provider.
+             */
+            ref: outputs.cluster.v1beta1.ClusterClassSpecInfrastructureRef;
+        }
+
+        /**
+         * Ref is a required reference to a custom resource offered by a provider.
+         */
+        export interface ClusterClassSpecInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * ClusterClassPatch defines a patch which is applied to customize the referenced templates.
+         */
+        export interface ClusterClassSpecPatches {
+            /**
+             * Definitions define inline patches. Note: Patches will be applied in the order of the array. Note: Exactly one of Definitions or External must be set.
+             */
+            definitions?: outputs.cluster.v1beta1.ClusterClassSpecPatchesDefinitions[];
+            /**
+             * Description is a human-readable description of this patch.
+             */
+            description?: string;
+            /**
+             * EnabledIf is a Go template to be used to calculate if a patch should be enabled. It can reference variables defined in .spec.variables and builtin variables. The patch will be enabled if the template evaluates to `true`, otherwise it will be disabled. If EnabledIf is not set, the patch will be enabled per default.
+             */
+            enabledIf?: string;
+            /**
+             * External defines an external patch. Note: Exactly one of Definitions or External must be set.
+             */
+            external?: outputs.cluster.v1beta1.ClusterClassSpecPatchesExternal;
+            /**
+             * Name of the patch.
+             */
+            name: string;
+        }
+
+        /**
+         * PatchDefinition defines a patch which is applied to customize the referenced templates.
+         */
+        export interface ClusterClassSpecPatchesDefinitions {
+            /**
+             * JSONPatches defines the patches which should be applied on the templates matching the selector. Note: Patches will be applied in the order of the array.
+             */
+            jsonPatches: outputs.cluster.v1beta1.ClusterClassSpecPatchesDefinitionsJsonPatches[];
+            /**
+             * Selector defines on which templates the patch should be applied.
+             */
+            selector: outputs.cluster.v1beta1.ClusterClassSpecPatchesDefinitionsSelector;
+        }
+
+        /**
+         * JSONPatch defines a JSON patch.
+         */
+        export interface ClusterClassSpecPatchesDefinitionsJsonPatches {
+            /**
+             * Op defines the operation of the patch. Note: Only `add`, `replace` and `remove` are supported.
+             */
+            op: string;
+            /**
+             * Path defines the path of the patch. Note: Only the spec of a template can be patched, thus the path has to start with /spec/. Note: For now the only allowed array modifications are `append` and `prepend`, i.e.: * for op: `add`: only index 0 (prepend) and - (append) are allowed * for op: `replace` or `remove`: no indexes are allowed
+             */
+            path: string;
+            /**
+             * Value defines the value of the patch. Note: Either Value or ValueFrom is required for add and replace operations. Only one of them is allowed to be set at the same time. Note: We have to use apiextensionsv1.JSON instead of our JSON type, because controller-tools has a hard-coded schema for apiextensionsv1.JSON which cannot be produced by another type (unset type field). Ref: https://github.com/kubernetes-sigs/controller-tools/blob/d0e03a142d0ecdd5491593e941ee1d6b5d91dba6/pkg/crd/known_types.go#L106-L111
+             */
+            value?: {[key: string]: any};
+            /**
+             * ValueFrom defines the value of the patch. Note: Either Value or ValueFrom is required for add and replace operations. Only one of them is allowed to be set at the same time.
+             */
+            valueFrom?: outputs.cluster.v1beta1.ClusterClassSpecPatchesDefinitionsJsonPatchesValueFrom;
+        }
+
+        /**
+         * ValueFrom defines the value of the patch. Note: Either Value or ValueFrom is required for add and replace operations. Only one of them is allowed to be set at the same time.
+         */
+        export interface ClusterClassSpecPatchesDefinitionsJsonPatchesValueFrom {
+            /**
+             * Template is the Go template to be used to calculate the value. A template can reference variables defined in .spec.variables and builtin variables. Note: The template must evaluate to a valid YAML or JSON value.
+             */
+            template?: string;
+            /**
+             * Variable is the variable to be used as value. Variable can be one of the variables defined in .spec.variables or a builtin variable.
+             */
+            variable?: string;
+        }
+
+        /**
+         * Selector defines on which templates the patch should be applied.
+         */
+        export interface ClusterClassSpecPatchesDefinitionsSelector {
+            /**
+             * APIVersion filters templates by apiVersion.
+             */
+            apiVersion: string;
+            /**
+             * Kind filters templates by kind.
+             */
+            kind: string;
+            /**
+             * MatchResources selects templates based on where they are referenced.
+             */
+            matchResources: outputs.cluster.v1beta1.ClusterClassSpecPatchesDefinitionsSelectorMatchResources;
+        }
+
+        /**
+         * MatchResources selects templates based on where they are referenced.
+         */
+        export interface ClusterClassSpecPatchesDefinitionsSelectorMatchResources {
+            /**
+             * ControlPlane selects templates referenced in .spec.ControlPlane. Note: this will match the controlPlane and also the controlPlane machineInfrastructure (depending on the kind and apiVersion).
+             */
+            controlPlane?: boolean;
+            /**
+             * InfrastructureCluster selects templates referenced in .spec.infrastructure.
+             */
+            infrastructureCluster?: boolean;
+            /**
+             * MachineDeploymentClass selects templates referenced in specific MachineDeploymentClasses in .spec.workers.machineDeployments.
+             */
+            machineDeploymentClass?: outputs.cluster.v1beta1.ClusterClassSpecPatchesDefinitionsSelectorMatchResourcesMachineDeploymentClass;
+        }
+
+        /**
+         * MachineDeploymentClass selects templates referenced in specific MachineDeploymentClasses in .spec.workers.machineDeployments.
+         */
+        export interface ClusterClassSpecPatchesDefinitionsSelectorMatchResourcesMachineDeploymentClass {
+            /**
+             * Names selects templates by class names.
+             */
+            names?: string[];
+        }
+
+        /**
+         * External defines an external patch. Note: Exactly one of Definitions or External must be set.
+         */
+        export interface ClusterClassSpecPatchesExternal {
+            /**
+             * DiscoverVariablesExtension references an extension which is called to discover variables.
+             */
+            discoverVariablesExtension?: string;
+            /**
+             * GenerateExtension references an extension which is called to generate patches.
+             */
+            generateExtension?: string;
+            /**
+             * Settings defines key value pairs to be passed to the extensions. Values defined here take precedence over the values defined in the corresponding ExtensionConfig.
+             */
+            settings?: {[key: string]: string};
+            /**
+             * ValidateExtension references an extension which is called to validate the topology.
+             */
+            validateExtension?: string;
+        }
+
+        /**
+         * ClusterClassVariable defines a variable which can be configured in the Cluster topology and used in patches.
+         */
+        export interface ClusterClassSpecVariables {
+            /**
+             * Name of the variable.
+             */
+            name: string;
+            /**
+             * Required specifies if the variable is required. Note: this applies to the variable as a whole and thus the top-level object defined in the schema. If nested fields are required, this will be specified inside the schema.
+             */
+            required: boolean;
+            /**
+             * Schema defines the schema of the variable.
+             */
+            schema: outputs.cluster.v1beta1.ClusterClassSpecVariablesSchema;
+        }
+
+        /**
+         * Schema defines the schema of the variable.
+         */
+        export interface ClusterClassSpecVariablesSchema {
+            /**
+             * OpenAPIV3Schema defines the schema of a variable via OpenAPI v3 schema. The schema is a subset of the schema used in Kubernetes CRDs.
+             */
+            openAPIV3Schema: outputs.cluster.v1beta1.ClusterClassSpecVariablesSchemaOpenAPIV3Schema;
+        }
+
+        /**
+         * OpenAPIV3Schema defines the schema of a variable via OpenAPI v3 schema. The schema is a subset of the schema used in Kubernetes CRDs.
+         */
+        export interface ClusterClassSpecVariablesSchemaOpenAPIV3Schema {
+            /**
+             * AdditionalProperties specifies the schema of values in a map (keys are always strings). NOTE: Can only be set if type is object. NOTE: AdditionalProperties is mutually exclusive with Properties. NOTE: This field uses PreserveUnknownFields and Schemaless, because recursive validation is not possible.
+             */
+            additionalProperties?: {[key: string]: any};
+            /**
+             * Default is the default value of the variable. NOTE: Can be set for all types.
+             */
+            default?: {[key: string]: any};
+            /**
+             * Description is a human-readable description of this variable.
+             */
+            description?: string;
+            /**
+             * Enum is the list of valid values of the variable. NOTE: Can be set for all types.
+             */
+            enum?: {[key: string]: any}[];
+            /**
+             * Example is an example for this variable.
+             */
+            example?: {[key: string]: any};
+            /**
+             * ExclusiveMaximum specifies if the Maximum is exclusive. NOTE: Can only be set if type is integer or number.
+             */
+            exclusiveMaximum?: boolean;
+            /**
+             * ExclusiveMinimum specifies if the Minimum is exclusive. NOTE: Can only be set if type is integer or number.
+             */
+            exclusiveMinimum?: boolean;
+            /**
+             * Format is an OpenAPI v3 format string. Unknown formats are ignored. For a list of supported formats please see: (of the k8s.io/apiextensions-apiserver version we're currently using) https://github.com/kubernetes/apiextensions-apiserver/blob/master/pkg/apiserver/validation/formats.go NOTE: Can only be set if type is string.
+             */
+            format?: string;
+            /**
+             * Items specifies fields of an array. NOTE: Can only be set if type is array. NOTE: This field uses PreserveUnknownFields and Schemaless, because recursive validation is not possible.
+             */
+            items?: {[key: string]: any};
+            /**
+             * MaxItems is the max length of an array variable. NOTE: Can only be set if type is array.
+             */
+            maxItems?: number;
+            /**
+             * MaxLength is the max length of a string variable. NOTE: Can only be set if type is string.
+             */
+            maxLength?: number;
+            /**
+             * Maximum is the maximum of an integer or number variable. If ExclusiveMaximum is false, the variable is valid if it is lower than, or equal to, the value of Maximum. If ExclusiveMaximum is true, the variable is valid if it is strictly lower than the value of Maximum. NOTE: Can only be set if type is integer or number.
+             */
+            maximum?: number;
+            /**
+             * MinItems is the min length of an array variable. NOTE: Can only be set if type is array.
+             */
+            minItems?: number;
+            /**
+             * MinLength is the min length of a string variable. NOTE: Can only be set if type is string.
+             */
+            minLength?: number;
+            /**
+             * Minimum is the minimum of an integer or number variable. If ExclusiveMinimum is false, the variable is valid if it is greater than, or equal to, the value of Minimum. If ExclusiveMinimum is true, the variable is valid if it is strictly greater than the value of Minimum. NOTE: Can only be set if type is integer or number.
+             */
+            minimum?: number;
+            /**
+             * Pattern is the regex which a string variable must match. NOTE: Can only be set if type is string.
+             */
+            pattern?: string;
+            /**
+             * Properties specifies fields of an object. NOTE: Can only be set if type is object. NOTE: Properties is mutually exclusive with AdditionalProperties. NOTE: This field uses PreserveUnknownFields and Schemaless, because recursive validation is not possible.
+             */
+            properties?: {[key: string]: any};
+            /**
+             * Required specifies which fields of an object are required. NOTE: Can only be set if type is object.
+             */
+            required?: string[];
+            /**
+             * Type is the type of the variable. Valid values are: object, array, string, integer, number or boolean.
+             */
+            type: string;
+            /**
+             * UniqueItems specifies if items in an array must be unique. NOTE: Can only be set if type is array.
+             */
+            uniqueItems?: boolean;
+            /**
+             * XPreserveUnknownFields allows setting fields in a variable object which are not defined in the variable schema. This affects fields recursively, except if nested properties or additionalProperties are specified in the schema.
+             */
+            'x-kubernetes-preserve-unknown-fields'?: boolean;
+        }
+
+        /**
+         * Workers describes the worker nodes for the cluster. It is a collection of node types which can be used to create the worker nodes of the cluster.
+         */
+        export interface ClusterClassSpecWorkers {
+            /**
+             * MachineDeployments is a list of machine deployment classes that can be used to create a set of worker nodes.
+             */
+            machineDeployments?: outputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeployments[];
+        }
+
+        /**
+         * MachineDeploymentClass serves as a template to define a set of worker nodes of the cluster provisioned using the `ClusterClass`.
+         */
+        export interface ClusterClassSpecWorkersMachineDeployments {
+            /**
+             * Class denotes a type of worker node present in the cluster, this name MUST be unique within a ClusterClass and can be referenced in the Cluster to create a managed MachineDeployment.
+             */
+            class: string;
+            /**
+             * FailureDomain is the failure domain the machines will be created in. Must match a key in the FailureDomains map stored on the cluster object. NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+             */
+            failureDomain?: string;
+            /**
+             * MachineHealthCheck defines a MachineHealthCheck for this MachineDeploymentClass.
+             */
+            machineHealthCheck?: outputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsMachineHealthCheck;
+            /**
+             * Minimum number of seconds for which a newly created machine should be ready. Defaults to 0 (machine will be considered available as soon as it is ready) NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+             */
+            minReadySeconds?: number;
+            /**
+             * NamingStrategy allows changing the naming pattern used when creating the MachineDeployment.
+             */
+            namingStrategy?: outputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsNamingStrategy;
+            /**
+             * NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely. Defaults to 10 seconds. NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+             */
+            nodeDeletionTimeout?: string;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout` NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+             */
+            nodeDrainTimeout?: string;
+            /**
+             * NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations. NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+             */
+            nodeVolumeDetachTimeout?: string;
+            /**
+             * The deployment strategy to use to replace existing machines with new ones. NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+             */
+            strategy?: outputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsStrategy;
+            /**
+             * Template is a local struct containing a collection of templates for creation of MachineDeployment objects representing a set of worker nodes.
+             */
+            template: outputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsTemplate;
+        }
+
+        /**
+         * MachineHealthCheck defines a MachineHealthCheck for this MachineDeploymentClass.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsMachineHealthCheck {
+            /**
+             * Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by "selector" are not healthy.
+             */
+            maxUnhealthy?: number | string;
+            /**
+             * Machines older than this duration without a node will be considered to have failed and will be remediated. If you wish to disable this feature, set the value explicitly to 0.
+             */
+            nodeStartupTimeout?: string;
+            /**
+             * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+             *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+             */
+            remediationTemplate?: outputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsMachineHealthCheckRemediationTemplate;
+            /**
+             * UnhealthyConditions contains a list of the conditions that determine whether a node is considered unhealthy. The conditions are combined in a logical OR, i.e. if any of the conditions is met, the node is unhealthy.
+             */
+            unhealthyConditions?: outputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditions[];
+            /**
+             * Any further remediation is only allowed if the number of machines selected by "selector" as not healthy is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy. Eg. "[3-5]" - This means that remediation will be allowed only when: (a) there are at least 3 unhealthy machines (and) (b) there are at most 5 unhealthy machines
+             */
+            unhealthyRange?: string;
+        }
+
+        /**
+         * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+         *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsMachineHealthCheckRemediationTemplate {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * UnhealthyCondition represents a Node condition type and value with a timeout specified as a duration.  When the named condition has been in the given status for at least the timeout value, a node is considered unhealthy.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditions {
+            status: string;
+            timeout: string;
+            type: string;
+        }
+
+        /**
+         * NamingStrategy allows changing the naming pattern used when creating the MachineDeployment.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsNamingStrategy {
+            /**
+             * Template defines the template to use for generating the name of the MachineDeployment object. If not defined, it will fallback to `{{ .cluster.name }}-{{ .machineDeployment.topologyName }}-{{ .random }}`. If the templated string exceeds 63 characters, it will be trimmed to 58 characters and will get concatenated with a random suffix of length 5. The templating mechanism provides the following arguments: * `.cluster.name`: The name of the cluster object. * `.random`: A random alphanumeric string, without vowels, of length 5. * `.machineDeployment.topologyName`: The name of the MachineDeployment topology (Cluster.spec.topology.workers.machineDeployments[].name).
+             */
+            template?: string;
+        }
+
+        /**
+         * The deployment strategy to use to replace existing machines with new ones. NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsStrategy {
+            /**
+             * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+             */
+            rollingUpdate?: outputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsStrategyRollingUpdate;
+            /**
+             * Type of deployment. Default is RollingUpdate.
+             */
+            type?: string;
+        }
+
+        /**
+         * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsStrategyRollingUpdate {
+            /**
+             * DeletePolicy defines the policy used by the MachineDeployment to identify nodes to delete when downscaling. Valid values are "Random, "Newest", "Oldest" When no value is supplied, the default DeletePolicy of MachineSet is used
+             */
+            deletePolicy?: string;
+            /**
+             * The maximum number of machines that can be scheduled above the desired number of machines. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up. Defaults to 1. Example: when this is set to 30%, the new MachineSet can be scaled up immediately when the rolling update starts, such that the total number of old and new machines do not exceed 130% of desired machines. Once old machines have been killed, new MachineSet can be scaled up further, ensuring that total number of machines running at any time during the update is at most 130% of desired machines.
+             */
+            maxSurge?: number | string;
+            /**
+             * The maximum number of machines that can be unavailable during the update. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). Absolute number is calculated from percentage by rounding down. This can not be 0 if MaxSurge is 0. Defaults to 0. Example: when this is set to 30%, the old MachineSet can be scaled down to 70% of desired machines immediately when the rolling update starts. Once new machines are ready, old MachineSet can be scaled down further, followed by scaling up the new MachineSet, ensuring that the total number of machines available at all times during the update is at least 70% of desired machines.
+             */
+            maxUnavailable?: number | string;
+        }
+
+        /**
+         * Template is a local struct containing a collection of templates for creation of MachineDeployment objects representing a set of worker nodes.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplate {
+            /**
+             * Bootstrap contains the bootstrap template reference to be used for the creation of worker Machines.
+             */
+            bootstrap: outputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsTemplateBootstrap;
+            /**
+             * Infrastructure contains the infrastructure template reference to be used for the creation of worker Machines.
+             */
+            infrastructure: outputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsTemplateInfrastructure;
+            /**
+             * Metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment. At runtime this metadata is merged with the corresponding metadata from the topology.
+             */
+            metadata?: outputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsTemplateMetadata;
+        }
+
+        /**
+         * Bootstrap contains the bootstrap template reference to be used for the creation of worker Machines.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateBootstrap {
+            /**
+             * Ref is a required reference to a custom resource offered by a provider.
+             */
+            ref: outputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsTemplateBootstrapRef;
+        }
+
+        /**
+         * Ref is a required reference to a custom resource offered by a provider.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateBootstrapRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * Infrastructure contains the infrastructure template reference to be used for the creation of worker Machines.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateInfrastructure {
+            /**
+             * Ref is a required reference to a custom resource offered by a provider.
+             */
+            ref: outputs.cluster.v1beta1.ClusterClassSpecWorkersMachineDeploymentsTemplateInfrastructureRef;
+        }
+
+        /**
+         * Ref is a required reference to a custom resource offered by a provider.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * Metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment. At runtime this metadata is merged with the corresponding metadata from the topology.
+         */
+        export interface ClusterClassSpecWorkersMachineDeploymentsTemplateMetadata {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: {[key: string]: string};
+        }
+
+        /**
+         * ClusterClassStatus defines the observed state of the ClusterClass.
+         */
+        export interface ClusterClassStatus {
+            /**
+             * Conditions defines current observed state of the ClusterClass.
+             */
+            conditions?: outputs.cluster.v1beta1.ClusterClassStatusConditions[];
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: number;
+            /**
+             * Variables is a list of ClusterClassStatusVariable that are defined for the ClusterClass.
+             */
+            variables?: outputs.cluster.v1beta1.ClusterClassStatusVariables[];
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ClusterClassStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * ClusterClassStatusVariable defines a variable which appears in the status of a ClusterClass.
+         */
+        export interface ClusterClassStatusVariables {
+            /**
+             * Definitions is a list of definitions for a variable.
+             */
+            definitions: outputs.cluster.v1beta1.ClusterClassStatusVariablesDefinitions[];
+            /**
+             * DefinitionsConflict specifies whether or not there are conflicting definitions for a single variable name.
+             */
+            definitionsConflict?: boolean;
+            /**
+             * Name is the name of the variable.
+             */
+            name: string;
+        }
+
+        /**
+         * ClusterClassStatusVariableDefinition defines a variable which appears in the status of a ClusterClass.
+         */
+        export interface ClusterClassStatusVariablesDefinitions {
+            /**
+             * From specifies the origin of the variable definition. This will be `inline` for variables defined in the ClusterClass or the name of a patch defined in the ClusterClass for variables discovered from a DiscoverVariables runtime extensions.
+             */
+            from: string;
+            /**
+             * Required specifies if the variable is required. Note: this applies to the variable as a whole and thus the top-level object defined in the schema. If nested fields are required, this will be specified inside the schema.
+             */
+            required: boolean;
+            /**
+             * Schema defines the schema of the variable.
+             */
+            schema: outputs.cluster.v1beta1.ClusterClassStatusVariablesDefinitionsSchema;
+        }
+
+        /**
+         * Schema defines the schema of the variable.
+         */
+        export interface ClusterClassStatusVariablesDefinitionsSchema {
+            /**
+             * OpenAPIV3Schema defines the schema of a variable via OpenAPI v3 schema. The schema is a subset of the schema used in Kubernetes CRDs.
+             */
+            openAPIV3Schema: outputs.cluster.v1beta1.ClusterClassStatusVariablesDefinitionsSchemaOpenAPIV3Schema;
+        }
+
+        /**
+         * OpenAPIV3Schema defines the schema of a variable via OpenAPI v3 schema. The schema is a subset of the schema used in Kubernetes CRDs.
+         */
+        export interface ClusterClassStatusVariablesDefinitionsSchemaOpenAPIV3Schema {
+            /**
+             * AdditionalProperties specifies the schema of values in a map (keys are always strings). NOTE: Can only be set if type is object. NOTE: AdditionalProperties is mutually exclusive with Properties. NOTE: This field uses PreserveUnknownFields and Schemaless, because recursive validation is not possible.
+             */
+            additionalProperties?: {[key: string]: any};
+            /**
+             * Default is the default value of the variable. NOTE: Can be set for all types.
+             */
+            default?: {[key: string]: any};
+            /**
+             * Description is a human-readable description of this variable.
+             */
+            description?: string;
+            /**
+             * Enum is the list of valid values of the variable. NOTE: Can be set for all types.
+             */
+            enum?: {[key: string]: any}[];
+            /**
+             * Example is an example for this variable.
+             */
+            example?: {[key: string]: any};
+            /**
+             * ExclusiveMaximum specifies if the Maximum is exclusive. NOTE: Can only be set if type is integer or number.
+             */
+            exclusiveMaximum?: boolean;
+            /**
+             * ExclusiveMinimum specifies if the Minimum is exclusive. NOTE: Can only be set if type is integer or number.
+             */
+            exclusiveMinimum?: boolean;
+            /**
+             * Format is an OpenAPI v3 format string. Unknown formats are ignored. For a list of supported formats please see: (of the k8s.io/apiextensions-apiserver version we're currently using) https://github.com/kubernetes/apiextensions-apiserver/blob/master/pkg/apiserver/validation/formats.go NOTE: Can only be set if type is string.
+             */
+            format?: string;
+            /**
+             * Items specifies fields of an array. NOTE: Can only be set if type is array. NOTE: This field uses PreserveUnknownFields and Schemaless, because recursive validation is not possible.
+             */
+            items?: {[key: string]: any};
+            /**
+             * MaxItems is the max length of an array variable. NOTE: Can only be set if type is array.
+             */
+            maxItems?: number;
+            /**
+             * MaxLength is the max length of a string variable. NOTE: Can only be set if type is string.
+             */
+            maxLength?: number;
+            /**
+             * Maximum is the maximum of an integer or number variable. If ExclusiveMaximum is false, the variable is valid if it is lower than, or equal to, the value of Maximum. If ExclusiveMaximum is true, the variable is valid if it is strictly lower than the value of Maximum. NOTE: Can only be set if type is integer or number.
+             */
+            maximum?: number;
+            /**
+             * MinItems is the min length of an array variable. NOTE: Can only be set if type is array.
+             */
+            minItems?: number;
+            /**
+             * MinLength is the min length of a string variable. NOTE: Can only be set if type is string.
+             */
+            minLength?: number;
+            /**
+             * Minimum is the minimum of an integer or number variable. If ExclusiveMinimum is false, the variable is valid if it is greater than, or equal to, the value of Minimum. If ExclusiveMinimum is true, the variable is valid if it is strictly greater than the value of Minimum. NOTE: Can only be set if type is integer or number.
+             */
+            minimum?: number;
+            /**
+             * Pattern is the regex which a string variable must match. NOTE: Can only be set if type is string.
+             */
+            pattern?: string;
+            /**
+             * Properties specifies fields of an object. NOTE: Can only be set if type is object. NOTE: Properties is mutually exclusive with AdditionalProperties. NOTE: This field uses PreserveUnknownFields and Schemaless, because recursive validation is not possible.
+             */
+            properties?: {[key: string]: any};
+            /**
+             * Required specifies which fields of an object are required. NOTE: Can only be set if type is object.
+             */
+            required?: string[];
+            /**
+             * Type is the type of the variable. Valid values are: object, array, string, integer, number or boolean.
+             */
+            type: string;
+            /**
+             * UniqueItems specifies if items in an array must be unique. NOTE: Can only be set if type is array.
+             */
+            uniqueItems?: boolean;
+            /**
+             * XPreserveUnknownFields allows setting fields in a variable object which are not defined in the variable schema. This affects fields recursively, except if nested properties or additionalProperties are specified in the schema.
+             */
+            'x-kubernetes-preserve-unknown-fields'?: boolean;
+        }
+
+        /**
+         * ClusterSpec defines the desired state of Cluster.
+         */
+        export interface ClusterSpec {
+            /**
+             * Cluster network configuration.
+             */
+            clusterNetwork?: outputs.cluster.v1beta1.ClusterSpecClusterNetwork;
+            /**
+             * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+             */
+            controlPlaneEndpoint?: outputs.cluster.v1beta1.ClusterSpecControlPlaneEndpoint;
+            /**
+             * ControlPlaneRef is an optional reference to a provider-specific resource that holds the details for provisioning the Control Plane for a Cluster.
+             */
+            controlPlaneRef?: outputs.cluster.v1beta1.ClusterSpecControlPlaneRef;
+            /**
+             * InfrastructureRef is a reference to a provider-specific resource that holds the details for provisioning infrastructure for a cluster in said provider.
+             */
+            infrastructureRef?: outputs.cluster.v1beta1.ClusterSpecInfrastructureRef;
+            /**
+             * Paused can be used to prevent controllers from processing the Cluster and all its associated objects.
+             */
+            paused?: boolean;
+            /**
+             * This encapsulates the topology for the cluster. NOTE: It is required to enable the ClusterTopology feature gate flag to activate managed topologies support; this feature is highly experimental, and parts of it might still be not implemented.
+             */
+            topology?: outputs.cluster.v1beta1.ClusterSpecTopology;
+        }
+
+        /**
+         * Cluster network configuration.
+         */
+        export interface ClusterSpecClusterNetwork {
+            /**
+             * APIServerPort specifies the port the API Server should bind to. Defaults to 6443.
+             */
+            apiServerPort?: number;
+            /**
+             * The network ranges from which Pod networks are allocated.
+             */
+            pods?: outputs.cluster.v1beta1.ClusterSpecClusterNetworkPods;
+            /**
+             * Domain name for services.
+             */
+            serviceDomain?: string;
+            /**
+             * The network ranges from which service VIPs are allocated.
+             */
+            services?: outputs.cluster.v1beta1.ClusterSpecClusterNetworkServices;
+        }
+
+        /**
+         * The network ranges from which Pod networks are allocated.
+         */
+        export interface ClusterSpecClusterNetworkPods {
+            cidrBlocks: string[];
+        }
+
+        /**
+         * The network ranges from which service VIPs are allocated.
+         */
+        export interface ClusterSpecClusterNetworkServices {
+            cidrBlocks: string[];
+        }
+
+        /**
+         * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+         */
+        export interface ClusterSpecControlPlaneEndpoint {
+            /**
+             * The hostname on which the API server is serving.
+             */
+            host: string;
+            /**
+             * The port on which the API server is serving.
+             */
+            port: number;
+        }
+
+        /**
+         * ControlPlaneRef is an optional reference to a provider-specific resource that holds the details for provisioning the Control Plane for a Cluster.
+         */
+        export interface ClusterSpecControlPlaneRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * InfrastructureRef is a reference to a provider-specific resource that holds the details for provisioning infrastructure for a cluster in said provider.
+         */
+        export interface ClusterSpecInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * This encapsulates the topology for the cluster. NOTE: It is required to enable the ClusterTopology feature gate flag to activate managed topologies support; this feature is highly experimental, and parts of it might still be not implemented.
+         */
+        export interface ClusterSpecTopology {
+            /**
+             * The name of the ClusterClass object to create the topology.
+             */
+            class: string;
+            /**
+             * ControlPlane describes the cluster control plane.
+             */
+            controlPlane?: outputs.cluster.v1beta1.ClusterSpecTopologyControlPlane;
+            /**
+             * RolloutAfter performs a rollout of the entire cluster one component at a time, control plane first and then machine deployments. 
+             *  Deprecated: This field has no function and is going to be removed in the next apiVersion.
+             */
+            rolloutAfter?: string;
+            /**
+             * Variables can be used to customize the Cluster through patches. They must comply to the corresponding VariableClasses defined in the ClusterClass.
+             */
+            variables?: outputs.cluster.v1beta1.ClusterSpecTopologyVariables[];
+            /**
+             * The Kubernetes version of the cluster.
+             */
+            version: string;
+            /**
+             * Workers encapsulates the different constructs that form the worker nodes for the cluster.
+             */
+            workers?: outputs.cluster.v1beta1.ClusterSpecTopologyWorkers;
+        }
+
+        /**
+         * ControlPlane describes the cluster control plane.
+         */
+        export interface ClusterSpecTopologyControlPlane {
+            /**
+             * MachineHealthCheck allows to enable, disable and override the MachineHealthCheck configuration in the ClusterClass for this control plane.
+             */
+            machineHealthCheck?: outputs.cluster.v1beta1.ClusterSpecTopologyControlPlaneMachineHealthCheck;
+            /**
+             * Metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane if the ControlPlaneTemplate referenced by the ClusterClass is machine based. If not, it is applied only to the ControlPlane. At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
+             */
+            metadata?: outputs.cluster.v1beta1.ClusterSpecTopologyControlPlaneMetadata;
+            /**
+             * NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely. Defaults to 10 seconds.
+             */
+            nodeDeletionTimeout?: string;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: string;
+            /**
+             * NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
+             */
+            nodeVolumeDetachTimeout?: string;
+            /**
+             * Replicas is the number of control plane nodes. If the value is nil, the ControlPlane object is created without the number of Replicas and it's assumed that the control plane controller does not implement support for this field. When specified against a control plane provider that lacks support for this field, this value will be ignored.
+             */
+            replicas?: number;
+        }
+
+        /**
+         * MachineHealthCheck allows to enable, disable and override the MachineHealthCheck configuration in the ClusterClass for this control plane.
+         */
+        export interface ClusterSpecTopologyControlPlaneMachineHealthCheck {
+            /**
+             * Enable controls if a MachineHealthCheck should be created for the target machines. 
+             *  If false: No MachineHealthCheck will be created. 
+             *  If not set(default): A MachineHealthCheck will be created if it is defined here or in the associated ClusterClass. If no MachineHealthCheck is defined then none will be created. 
+             *  If true: A MachineHealthCheck is guaranteed to be created. Cluster validation will block if `enable` is true and no MachineHealthCheck definition is available.
+             */
+            enable?: boolean;
+            /**
+             * Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by "selector" are not healthy.
+             */
+            maxUnhealthy?: number | string;
+            /**
+             * Machines older than this duration without a node will be considered to have failed and will be remediated. If you wish to disable this feature, set the value explicitly to 0.
+             */
+            nodeStartupTimeout?: string;
+            /**
+             * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+             *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+             */
+            remediationTemplate?: outputs.cluster.v1beta1.ClusterSpecTopologyControlPlaneMachineHealthCheckRemediationTemplate;
+            /**
+             * UnhealthyConditions contains a list of the conditions that determine whether a node is considered unhealthy. The conditions are combined in a logical OR, i.e. if any of the conditions is met, the node is unhealthy.
+             */
+            unhealthyConditions?: outputs.cluster.v1beta1.ClusterSpecTopologyControlPlaneMachineHealthCheckUnhealthyConditions[];
+            /**
+             * Any further remediation is only allowed if the number of machines selected by "selector" as not healthy is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy. Eg. "[3-5]" - This means that remediation will be allowed only when: (a) there are at least 3 unhealthy machines (and) (b) there are at most 5 unhealthy machines
+             */
+            unhealthyRange?: string;
+        }
+
+        /**
+         * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+         *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+         */
+        export interface ClusterSpecTopologyControlPlaneMachineHealthCheckRemediationTemplate {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * UnhealthyCondition represents a Node condition type and value with a timeout specified as a duration.  When the named condition has been in the given status for at least the timeout value, a node is considered unhealthy.
+         */
+        export interface ClusterSpecTopologyControlPlaneMachineHealthCheckUnhealthyConditions {
+            status: string;
+            timeout: string;
+            type: string;
+        }
+
+        /**
+         * Metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane if the ControlPlaneTemplate referenced by the ClusterClass is machine based. If not, it is applied only to the ControlPlane. At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
+         */
+        export interface ClusterSpecTopologyControlPlaneMetadata {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: {[key: string]: string};
+        }
+
+        /**
+         * ClusterVariable can be used to customize the Cluster through patches. Each ClusterVariable is associated with a Variable definition in the ClusterClass `status` variables.
+         */
+        export interface ClusterSpecTopologyVariables {
+            /**
+             * DefinitionFrom specifies where the definition of this Variable is from. DefinitionFrom is `inline` when the definition is from the ClusterClass `.spec.variables` or the name of a patch defined in the ClusterClass `.spec.patches` where the patch is external and provides external variables. This field is mandatory if the variable has `DefinitionsConflict: true` in ClusterClass `status.variables[]`
+             */
+            definitionFrom?: string;
+            /**
+             * Name of the variable.
+             */
+            name: string;
+            /**
+             * Value of the variable. Note: the value will be validated against the schema of the corresponding ClusterClassVariable from the ClusterClass. Note: We have to use apiextensionsv1.JSON instead of a custom JSON type, because controller-tools has a hard-coded schema for apiextensionsv1.JSON which cannot be produced by another type via controller-tools, i.e. it is not possible to have no type field. Ref: https://github.com/kubernetes-sigs/controller-tools/blob/d0e03a142d0ecdd5491593e941ee1d6b5d91dba6/pkg/crd/known_types.go#L106-L111
+             */
+            value: {[key: string]: any};
+        }
+
+        /**
+         * Workers encapsulates the different constructs that form the worker nodes for the cluster.
+         */
+        export interface ClusterSpecTopologyWorkers {
+            /**
+             * MachineDeployments is a list of machine deployments in the cluster.
+             */
+            machineDeployments?: outputs.cluster.v1beta1.ClusterSpecTopologyWorkersMachineDeployments[];
+        }
+
+        /**
+         * MachineDeploymentTopology specifies the different parameters for a set of worker nodes in the topology. This set of nodes is managed by a MachineDeployment object whose lifecycle is managed by the Cluster controller.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeployments {
+            /**
+             * Class is the name of the MachineDeploymentClass used to create the set of worker nodes. This should match one of the deployment classes defined in the ClusterClass object mentioned in the `Cluster.Spec.Class` field.
+             */
+            class: string;
+            /**
+             * FailureDomain is the failure domain the machines will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: string;
+            /**
+             * MachineHealthCheck allows to enable, disable and override the MachineHealthCheck configuration in the ClusterClass for this MachineDeployment.
+             */
+            machineHealthCheck?: outputs.cluster.v1beta1.ClusterSpecTopologyWorkersMachineDeploymentsMachineHealthCheck;
+            /**
+             * Metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment. At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
+             */
+            metadata?: outputs.cluster.v1beta1.ClusterSpecTopologyWorkersMachineDeploymentsMetadata;
+            /**
+             * Minimum number of seconds for which a newly created machine should be ready. Defaults to 0 (machine will be considered available as soon as it is ready)
+             */
+            minReadySeconds?: number;
+            /**
+             * Name is the unique identifier for this MachineDeploymentTopology. The value is used with other unique identifiers to create a MachineDeployment's Name (e.g. cluster's name, etc). In case the name is greater than the allowed maximum length, the values are hashed together.
+             */
+            name: string;
+            /**
+             * NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely. Defaults to 10 seconds.
+             */
+            nodeDeletionTimeout?: string;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: string;
+            /**
+             * NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
+             */
+            nodeVolumeDetachTimeout?: string;
+            /**
+             * Replicas is the number of worker nodes belonging to this set. If the value is nil, the MachineDeployment is created without the number of Replicas (defaulting to 1) and it's assumed that an external entity (like cluster autoscaler) is responsible for the management of this value.
+             */
+            replicas?: number;
+            /**
+             * The deployment strategy to use to replace existing machines with new ones.
+             */
+            strategy?: outputs.cluster.v1beta1.ClusterSpecTopologyWorkersMachineDeploymentsStrategy;
+            /**
+             * Variables can be used to customize the MachineDeployment through patches.
+             */
+            variables?: outputs.cluster.v1beta1.ClusterSpecTopologyWorkersMachineDeploymentsVariables;
+        }
+
+        /**
+         * MachineHealthCheck allows to enable, disable and override the MachineHealthCheck configuration in the ClusterClass for this MachineDeployment.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeploymentsMachineHealthCheck {
+            /**
+             * Enable controls if a MachineHealthCheck should be created for the target machines. 
+             *  If false: No MachineHealthCheck will be created. 
+             *  If not set(default): A MachineHealthCheck will be created if it is defined here or in the associated ClusterClass. If no MachineHealthCheck is defined then none will be created. 
+             *  If true: A MachineHealthCheck is guaranteed to be created. Cluster validation will block if `enable` is true and no MachineHealthCheck definition is available.
+             */
+            enable?: boolean;
+            /**
+             * Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by "selector" are not healthy.
+             */
+            maxUnhealthy?: number | string;
+            /**
+             * Machines older than this duration without a node will be considered to have failed and will be remediated. If you wish to disable this feature, set the value explicitly to 0.
+             */
+            nodeStartupTimeout?: string;
+            /**
+             * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+             *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+             */
+            remediationTemplate?: outputs.cluster.v1beta1.ClusterSpecTopologyWorkersMachineDeploymentsMachineHealthCheckRemediationTemplate;
+            /**
+             * UnhealthyConditions contains a list of the conditions that determine whether a node is considered unhealthy. The conditions are combined in a logical OR, i.e. if any of the conditions is met, the node is unhealthy.
+             */
+            unhealthyConditions?: outputs.cluster.v1beta1.ClusterSpecTopologyWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditions[];
+            /**
+             * Any further remediation is only allowed if the number of machines selected by "selector" as not healthy is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy. Eg. "[3-5]" - This means that remediation will be allowed only when: (a) there are at least 3 unhealthy machines (and) (b) there are at most 5 unhealthy machines
+             */
+            unhealthyRange?: string;
+        }
+
+        /**
+         * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+         *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeploymentsMachineHealthCheckRemediationTemplate {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * UnhealthyCondition represents a Node condition type and value with a timeout specified as a duration.  When the named condition has been in the given status for at least the timeout value, a node is considered unhealthy.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditions {
+            status: string;
+            timeout: string;
+            type: string;
+        }
+
+        /**
+         * Metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment. At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeploymentsMetadata {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: {[key: string]: string};
+        }
+
+        /**
+         * The deployment strategy to use to replace existing machines with new ones.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeploymentsStrategy {
+            /**
+             * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+             */
+            rollingUpdate?: outputs.cluster.v1beta1.ClusterSpecTopologyWorkersMachineDeploymentsStrategyRollingUpdate;
+            /**
+             * Type of deployment. Default is RollingUpdate.
+             */
+            type?: string;
+        }
+
+        /**
+         * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeploymentsStrategyRollingUpdate {
+            /**
+             * DeletePolicy defines the policy used by the MachineDeployment to identify nodes to delete when downscaling. Valid values are "Random, "Newest", "Oldest" When no value is supplied, the default DeletePolicy of MachineSet is used
+             */
+            deletePolicy?: string;
+            /**
+             * The maximum number of machines that can be scheduled above the desired number of machines. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up. Defaults to 1. Example: when this is set to 30%, the new MachineSet can be scaled up immediately when the rolling update starts, such that the total number of old and new machines do not exceed 130% of desired machines. Once old machines have been killed, new MachineSet can be scaled up further, ensuring that total number of machines running at any time during the update is at most 130% of desired machines.
+             */
+            maxSurge?: number | string;
+            /**
+             * The maximum number of machines that can be unavailable during the update. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). Absolute number is calculated from percentage by rounding down. This can not be 0 if MaxSurge is 0. Defaults to 0. Example: when this is set to 30%, the old MachineSet can be scaled down to 70% of desired machines immediately when the rolling update starts. Once new machines are ready, old MachineSet can be scaled down further, followed by scaling up the new MachineSet, ensuring that the total number of machines available at all times during the update is at least 70% of desired machines.
+             */
+            maxUnavailable?: number | string;
+        }
+
+        /**
+         * Variables can be used to customize the MachineDeployment through patches.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeploymentsVariables {
+            /**
+             * Overrides can be used to override Cluster level variables.
+             */
+            overrides?: outputs.cluster.v1beta1.ClusterSpecTopologyWorkersMachineDeploymentsVariablesOverrides[];
+        }
+
+        /**
+         * ClusterVariable can be used to customize the Cluster through patches. Each ClusterVariable is associated with a Variable definition in the ClusterClass `status` variables.
+         */
+        export interface ClusterSpecTopologyWorkersMachineDeploymentsVariablesOverrides {
+            /**
+             * DefinitionFrom specifies where the definition of this Variable is from. DefinitionFrom is `inline` when the definition is from the ClusterClass `.spec.variables` or the name of a patch defined in the ClusterClass `.spec.patches` where the patch is external and provides external variables. This field is mandatory if the variable has `DefinitionsConflict: true` in ClusterClass `status.variables[]`
+             */
+            definitionFrom?: string;
+            /**
+             * Name of the variable.
+             */
+            name: string;
+            /**
+             * Value of the variable. Note: the value will be validated against the schema of the corresponding ClusterClassVariable from the ClusterClass. Note: We have to use apiextensionsv1.JSON instead of a custom JSON type, because controller-tools has a hard-coded schema for apiextensionsv1.JSON which cannot be produced by another type via controller-tools, i.e. it is not possible to have no type field. Ref: https://github.com/kubernetes-sigs/controller-tools/blob/d0e03a142d0ecdd5491593e941ee1d6b5d91dba6/pkg/crd/known_types.go#L106-L111
+             */
+            value: {[key: string]: any};
+        }
+
+        /**
+         * ClusterStatus defines the observed state of Cluster.
+         */
+        export interface ClusterStatus {
+            /**
+             * Conditions defines current service state of the cluster.
+             */
+            conditions?: outputs.cluster.v1beta1.ClusterStatusConditions[];
+            /**
+             * ControlPlaneReady defines if the control plane is ready.
+             */
+            controlPlaneReady?: boolean;
+            /**
+             * FailureDomains is a slice of failure domain objects synced from the infrastructure provider.
+             */
+            failureDomains?: {[key: string]: outputs.cluster.v1beta1.ClusterStatusFailureDomains};
+            /**
+             * FailureMessage indicates that there is a fatal problem reconciling the state, and will be set to a descriptive error message.
+             */
+            failureMessage?: string;
+            /**
+             * FailureReason indicates that there is a fatal problem reconciling the state, and will be set to a token value suitable for programmatic interpretation.
+             */
+            failureReason?: string;
+            /**
+             * InfrastructureReady is the state of the infrastructure provider.
+             */
+            infrastructureReady?: boolean;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: number;
+            /**
+             * Phase represents the current phase of cluster actuation. E.g. Pending, Running, Terminating, Failed etc.
+             */
+            phase?: string;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ClusterStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * FailureDomainSpec is the Schema for Cluster API failure domains. It allows controllers to understand how many failure domains a cluster can optionally span across.
+         */
+        export interface ClusterStatusFailureDomains {
+            /**
+             * Attributes is a free form map of attributes an infrastructure provider might use or require.
+             */
+            attributes?: {[key: string]: string};
+            /**
+             * ControlPlane determines if this failure domain is suitable for use by control plane machines.
+             */
+            controlPlane?: boolean;
+        }
+
+        /**
+         * MachineDeploymentSpec defines the desired state of MachineDeployment.
+         */
+        export interface MachineDeploymentSpec {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * MinReadySeconds is the minimum number of seconds for which a Node for a newly created machine should be ready before considering the replica available. Defaults to 0 (machine will be considered available as soon as the Node is ready)
+             */
+            minReadySeconds?: number;
+            /**
+             * Indicates that the deployment is paused.
+             */
+            paused?: boolean;
+            /**
+             * The maximum time in seconds for a deployment to make progress before it is considered to be failed. The deployment controller will continue to process failed deployments and a condition with a ProgressDeadlineExceeded reason will be surfaced in the deployment status. Note that progress will not be estimated during the time a deployment is paused. Defaults to 600s.
+             */
+            progressDeadlineSeconds?: number;
+            /**
+             * Number of desired machines. This is a pointer to distinguish between explicit zero and not specified. 
+             *  Defaults to: * if the Kubernetes autoscaler min size and max size annotations are set: - if it's a new MachineDeployment, use min size - if the replicas field of the old MachineDeployment is < min size, use min size - if the replicas field of the old MachineDeployment is > max size, use max size - if the replicas field of the old MachineDeployment is in the (min size, max size) range, keep the value from the oldMD * otherwise use 1 Note: Defaulting will be run whenever the replicas field is not set: * A new MachineDeployment is created with replicas not set. * On an existing MachineDeployment the replicas field was first set and is now unset. Those cases are especially relevant for the following Kubernetes autoscaler use cases: * A new MachineDeployment is created and replicas should be managed by the autoscaler * An existing MachineDeployment which initially wasn't controlled by the autoscaler should be later controlled by the autoscaler
+             */
+            replicas?: number;
+            /**
+             * The number of old MachineSets to retain to allow rollback. This is a pointer to distinguish between explicit zero and not specified. Defaults to 1.
+             */
+            revisionHistoryLimit?: number;
+            /**
+             * RolloutAfter is a field to indicate a rollout should be performed after the specified time even if no changes have been made to the MachineDeployment. Example: In the YAML the time can be specified in the RFC3339 format. To specify the rolloutAfter target as March 9, 2023, at 9 am UTC use "2023-03-09T09:00:00Z".
+             */
+            rolloutAfter?: string;
+            /**
+             * Label selector for machines. Existing MachineSets whose machines are selected by this will be the ones affected by this deployment. It must match the machine template's labels.
+             */
+            selector: outputs.cluster.v1beta1.MachineDeploymentSpecSelector;
+            /**
+             * The deployment strategy to use to replace existing machines with new ones.
+             */
+            strategy?: outputs.cluster.v1beta1.MachineDeploymentSpecStrategy;
+            /**
+             * Template describes the machines that will be created.
+             */
+            template: outputs.cluster.v1beta1.MachineDeploymentSpecTemplate;
+        }
+
+        /**
+         * Label selector for machines. Existing MachineSets whose machines are selected by this will be the ones affected by this deployment. It must match the machine template's labels.
+         */
+        export interface MachineDeploymentSpecSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.cluster.v1beta1.MachineDeploymentSpecSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface MachineDeploymentSpecSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * The deployment strategy to use to replace existing machines with new ones.
+         */
+        export interface MachineDeploymentSpecStrategy {
+            /**
+             * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+             */
+            rollingUpdate?: outputs.cluster.v1beta1.MachineDeploymentSpecStrategyRollingUpdate;
+            /**
+             * Type of deployment. Default is RollingUpdate.
+             */
+            type?: string;
+        }
+
+        /**
+         * Rolling update config params. Present only if MachineDeploymentStrategyType = RollingUpdate.
+         */
+        export interface MachineDeploymentSpecStrategyRollingUpdate {
+            /**
+             * DeletePolicy defines the policy used by the MachineDeployment to identify nodes to delete when downscaling. Valid values are "Random, "Newest", "Oldest" When no value is supplied, the default DeletePolicy of MachineSet is used
+             */
+            deletePolicy?: string;
+            /**
+             * The maximum number of machines that can be scheduled above the desired number of machines. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). This can not be 0 if MaxUnavailable is 0. Absolute number is calculated from percentage by rounding up. Defaults to 1. Example: when this is set to 30%, the new MachineSet can be scaled up immediately when the rolling update starts, such that the total number of old and new machines do not exceed 130% of desired machines. Once old machines have been killed, new MachineSet can be scaled up further, ensuring that total number of machines running at any time during the update is at most 130% of desired machines.
+             */
+            maxSurge?: number | string;
+            /**
+             * The maximum number of machines that can be unavailable during the update. Value can be an absolute number (ex: 5) or a percentage of desired machines (ex: 10%). Absolute number is calculated from percentage by rounding down. This can not be 0 if MaxSurge is 0. Defaults to 0. Example: when this is set to 30%, the old MachineSet can be scaled down to 70% of desired machines immediately when the rolling update starts. Once new machines are ready, old MachineSet can be scaled down further, followed by scaling up the new MachineSet, ensuring that the total number of machines available at all times during the update is at least 70% of desired machines.
+             */
+            maxUnavailable?: number | string;
+        }
+
+        /**
+         * Template describes the machines that will be created.
+         */
+        export interface MachineDeploymentSpecTemplate {
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata?: outputs.cluster.v1beta1.MachineDeploymentSpecTemplateMetadata;
+            /**
+             * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+             */
+            spec?: outputs.cluster.v1beta1.MachineDeploymentSpecTemplateSpec;
+        }
+
+        /**
+         * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface MachineDeploymentSpecTemplateMetadata {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: {[key: string]: string};
+        }
+
+        /**
+         * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+         */
+        export interface MachineDeploymentSpecTemplateSpec {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: outputs.cluster.v1beta1.MachineDeploymentSpecTemplateSpecBootstrap;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: string;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: outputs.cluster.v1beta1.MachineDeploymentSpecTemplateSpecInfrastructureRef;
+            /**
+             * NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely. Defaults to 10 seconds.
+             */
+            nodeDeletionTimeout?: string;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: string;
+            /**
+             * NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
+             */
+            nodeVolumeDetachTimeout?: string;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: string;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: string;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachineDeploymentSpecTemplateSpecBootstrap {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+             */
+            configRef?: outputs.cluster.v1beta1.MachineDeploymentSpecTemplateSpecBootstrapConfigRef;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: string;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+         */
+        export interface MachineDeploymentSpecTemplateSpecBootstrapConfigRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachineDeploymentSpecTemplateSpecInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * MachineDeploymentStatus defines the observed state of MachineDeployment.
+         */
+        export interface MachineDeploymentStatus {
+            /**
+             * Total number of available machines (ready for at least minReadySeconds) targeted by this deployment.
+             */
+            availableReplicas?: number;
+            /**
+             * Conditions defines current service state of the MachineDeployment.
+             */
+            conditions?: outputs.cluster.v1beta1.MachineDeploymentStatusConditions[];
+            /**
+             * The generation observed by the deployment controller.
+             */
+            observedGeneration?: number;
+            /**
+             * Phase represents the current phase of a MachineDeployment (ScalingUp, ScalingDown, Running, Failed, or Unknown).
+             */
+            phase?: string;
+            /**
+             * Total number of ready machines targeted by this deployment.
+             */
+            readyReplicas?: number;
+            /**
+             * Total number of non-terminated machines targeted by this deployment (their labels match the selector).
+             */
+            replicas?: number;
+            /**
+             * Selector is the same as the label selector but in the string format to avoid introspection by clients. The string will be in the same format as the query-param syntax. More info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors
+             */
+            selector?: string;
+            /**
+             * Total number of unavailable machines targeted by this deployment. This is the total number of machines that are still required for the deployment to have 100% available capacity. They may either be machines that are running but not yet available or machines that still have not been created.
+             */
+            unavailableReplicas?: number;
+            /**
+             * Total number of non-terminated machines targeted by this deployment that have the desired template spec.
+             */
+            updatedReplicas?: number;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachineDeploymentStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * Specification of machine health check policy
+         */
+        export interface MachineHealthCheckSpec {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by "selector" are not healthy.
+             */
+            maxUnhealthy?: number | string;
+            /**
+             * Machines older than this duration without a node will be considered to have failed and will be remediated. If not set, this value is defaulted to 10 minutes. If you wish to disable this feature, set the value explicitly to 0.
+             */
+            nodeStartupTimeout?: string;
+            /**
+             * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+             *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+             */
+            remediationTemplate?: outputs.cluster.v1beta1.MachineHealthCheckSpecRemediationTemplate;
+            /**
+             * Label selector to match machines whose health will be exercised
+             */
+            selector: outputs.cluster.v1beta1.MachineHealthCheckSpecSelector;
+            /**
+             * UnhealthyConditions contains a list of the conditions that determine whether a node is considered unhealthy.  The conditions are combined in a logical OR, i.e. if any of the conditions is met, the node is unhealthy.
+             */
+            unhealthyConditions: outputs.cluster.v1beta1.MachineHealthCheckSpecUnhealthyConditions[];
+            /**
+             * Any further remediation is only allowed if the number of machines selected by "selector" as not healthy is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy. Eg. "[3-5]" - This means that remediation will be allowed only when: (a) there are at least 3 unhealthy machines (and) (b) there are at most 5 unhealthy machines
+             */
+            unhealthyRange?: string;
+        }
+
+        /**
+         * RemediationTemplate is a reference to a remediation template provided by an infrastructure provider. 
+         *  This field is completely optional, when filled, the MachineHealthCheck controller creates a new object from the template referenced and hands off remediation of the machine to a controller that lives outside of Cluster API.
+         */
+        export interface MachineHealthCheckSpecRemediationTemplate {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * Label selector to match machines whose health will be exercised
+         */
+        export interface MachineHealthCheckSpecSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.cluster.v1beta1.MachineHealthCheckSpecSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface MachineHealthCheckSpecSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * UnhealthyCondition represents a Node condition type and value with a timeout specified as a duration.  When the named condition has been in the given status for at least the timeout value, a node is considered unhealthy.
+         */
+        export interface MachineHealthCheckSpecUnhealthyConditions {
+            status: string;
+            timeout: string;
+            type: string;
+        }
+
+        /**
+         * Most recently observed status of MachineHealthCheck resource
+         */
+        export interface MachineHealthCheckStatus {
+            /**
+             * Conditions defines current service state of the MachineHealthCheck.
+             */
+            conditions?: outputs.cluster.v1beta1.MachineHealthCheckStatusConditions[];
+            /**
+             * total number of healthy machines counted by this machine health check
+             */
+            currentHealthy?: number;
+            /**
+             * total number of machines counted by this machine health check
+             */
+            expectedMachines?: number;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: number;
+            /**
+             * RemediationsAllowed is the number of further remediations allowed by this machine health check before maxUnhealthy short circuiting will be applied
+             */
+            remediationsAllowed?: number;
+            /**
+             * Targets shows the current list of machines the machine health check is watching
+             */
+            targets?: string[];
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachineHealthCheckStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * MachinePoolSpec defines the desired state of MachinePool.
+         */
+        export interface MachinePoolSpec {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * FailureDomains is the list of failure domains this MachinePool should be attached to.
+             */
+            failureDomains?: string[];
+            /**
+             * Minimum number of seconds for which a newly created machine instances should be ready. Defaults to 0 (machine instance will be considered available as soon as it is ready) NOTE: No logic is implemented for this field and it currently has no behaviour.
+             */
+            minReadySeconds?: number;
+            /**
+             * ProviderIDList are the identification IDs of machine instances provided by the provider. This field must match the provider IDs as seen on the node objects corresponding to a machine pool's machine instances.
+             */
+            providerIDList?: string[];
+            /**
+             * Number of desired machines. Defaults to 1. This is a pointer to distinguish between explicit zero and not specified.
+             */
+            replicas?: number;
+            /**
+             * Template describes the machines that will be created.
+             */
+            template: outputs.cluster.v1beta1.MachinePoolSpecTemplate;
+        }
+
+        /**
+         * Template describes the machines that will be created.
+         */
+        export interface MachinePoolSpecTemplate {
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata?: outputs.cluster.v1beta1.MachinePoolSpecTemplateMetadata;
+            /**
+             * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+             */
+            spec?: outputs.cluster.v1beta1.MachinePoolSpecTemplateSpec;
+        }
+
+        /**
+         * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface MachinePoolSpecTemplateMetadata {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: {[key: string]: string};
+        }
+
+        /**
+         * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+         */
+        export interface MachinePoolSpecTemplateSpec {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: outputs.cluster.v1beta1.MachinePoolSpecTemplateSpecBootstrap;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: string;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: outputs.cluster.v1beta1.MachinePoolSpecTemplateSpecInfrastructureRef;
+            /**
+             * NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely. Defaults to 10 seconds.
+             */
+            nodeDeletionTimeout?: string;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: string;
+            /**
+             * NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
+             */
+            nodeVolumeDetachTimeout?: string;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: string;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: string;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachinePoolSpecTemplateSpecBootstrap {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+             */
+            configRef?: outputs.cluster.v1beta1.MachinePoolSpecTemplateSpecBootstrapConfigRef;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: string;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+         */
+        export interface MachinePoolSpecTemplateSpecBootstrapConfigRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachinePoolSpecTemplateSpecInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * MachinePoolStatus defines the observed state of MachinePool.
+         */
+        export interface MachinePoolStatus {
+            /**
+             * The number of available replicas (ready for at least minReadySeconds) for this MachinePool.
+             */
+            availableReplicas?: number;
+            /**
+             * BootstrapReady is the state of the bootstrap provider.
+             */
+            bootstrapReady?: boolean;
+            /**
+             * Conditions define the current service state of the MachinePool.
+             */
+            conditions?: outputs.cluster.v1beta1.MachinePoolStatusConditions[];
+            /**
+             * FailureMessage indicates that there is a problem reconciling the state, and will be set to a descriptive error message.
+             */
+            failureMessage?: string;
+            /**
+             * FailureReason indicates that there is a problem reconciling the state, and will be set to a token value suitable for programmatic interpretation.
+             */
+            failureReason?: string;
+            /**
+             * InfrastructureReady is the state of the infrastructure provider.
+             */
+            infrastructureReady?: boolean;
+            /**
+             * NodeRefs will point to the corresponding Nodes if it they exist.
+             */
+            nodeRefs?: outputs.cluster.v1beta1.MachinePoolStatusNodeRefs[];
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: number;
+            /**
+             * Phase represents the current phase of cluster actuation. E.g. Pending, Running, Terminating, Failed etc.
+             */
+            phase?: string;
+            /**
+             * The number of ready replicas for this MachinePool. A machine is considered ready when the node has been created and is "Ready".
+             */
+            readyReplicas?: number;
+            /**
+             * Replicas is the most recently observed number of replicas.
+             */
+            replicas?: number;
+            /**
+             * Total number of unavailable machine instances targeted by this machine pool. This is the total number of machine instances that are still required for the machine pool to have 100% available capacity. They may either be machine instances that are running but not yet available or machine instances that still have not been created.
+             */
+            unavailableReplicas?: number;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachinePoolStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface MachinePoolStatusNodeRefs {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * MachineSetSpec defines the desired state of MachineSet.
+         */
+        export interface MachineSetSpec {
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * DeletePolicy defines the policy used to identify nodes to delete when downscaling. Defaults to "Random".  Valid values are "Random, "Newest", "Oldest"
+             */
+            deletePolicy?: string;
+            /**
+             * MinReadySeconds is the minimum number of seconds for which a Node for a newly created machine should be ready before considering the replica available. Defaults to 0 (machine will be considered available as soon as the Node is ready)
+             */
+            minReadySeconds?: number;
+            /**
+             * Replicas is the number of desired replicas. This is a pointer to distinguish between explicit zero and unspecified. Defaults to 1.
+             */
+            replicas?: number;
+            /**
+             * Selector is a label query over machines that should match the replica count. Label keys and values that must match in order to be controlled by this MachineSet. It must match the machine template's labels. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
+             */
+            selector: outputs.cluster.v1beta1.MachineSetSpecSelector;
+            /**
+             * Template is the object that describes the machine that will be created if insufficient replicas are detected. Object references to custom resources are treated as templates.
+             */
+            template?: outputs.cluster.v1beta1.MachineSetSpecTemplate;
+        }
+        /**
+         * machineSetSpecProvideDefaults sets the appropriate defaults for MachineSetSpec
+         */
+        export function machineSetSpecProvideDefaults(val: MachineSetSpec): MachineSetSpec {
+            return {
+                ...val,
+                replicas: (val.replicas) ?? 1,
+            };
+        }
+
+        /**
+         * Selector is a label query over machines that should match the replica count. Label keys and values that must match in order to be controlled by this MachineSet. It must match the machine template's labels. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
+         */
+        export interface MachineSetSpecSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.cluster.v1beta1.MachineSetSpecSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface MachineSetSpecSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * Template is the object that describes the machine that will be created if insufficient replicas are detected. Object references to custom resources are treated as templates.
+         */
+        export interface MachineSetSpecTemplate {
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata?: outputs.cluster.v1beta1.MachineSetSpecTemplateMetadata;
+            /**
+             * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+             */
+            spec?: outputs.cluster.v1beta1.MachineSetSpecTemplateSpec;
+        }
+
+        /**
+         * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface MachineSetSpecTemplateMetadata {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: {[key: string]: string};
+        }
+
+        /**
+         * Specification of the desired behavior of the machine. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+         */
+        export interface MachineSetSpecTemplateSpec {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: outputs.cluster.v1beta1.MachineSetSpecTemplateSpecBootstrap;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: string;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: outputs.cluster.v1beta1.MachineSetSpecTemplateSpecInfrastructureRef;
+            /**
+             * NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely. Defaults to 10 seconds.
+             */
+            nodeDeletionTimeout?: string;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: string;
+            /**
+             * NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
+             */
+            nodeVolumeDetachTimeout?: string;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: string;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: string;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachineSetSpecTemplateSpecBootstrap {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+             */
+            configRef?: outputs.cluster.v1beta1.MachineSetSpecTemplateSpecBootstrapConfigRef;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: string;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+         */
+        export interface MachineSetSpecTemplateSpecBootstrapConfigRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachineSetSpecTemplateSpecInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * MachineSetStatus defines the observed state of MachineSet.
+         */
+        export interface MachineSetStatus {
+            /**
+             * The number of available replicas (ready for at least minReadySeconds) for this MachineSet.
+             */
+            availableReplicas?: number;
+            /**
+             * Conditions defines current service state of the MachineSet.
+             */
+            conditions?: outputs.cluster.v1beta1.MachineSetStatusConditions[];
+            failureMessage?: string;
+            /**
+             * In the event that there is a terminal problem reconciling the replicas, both FailureReason and FailureMessage will be set. FailureReason will be populated with a succinct value suitable for machine interpretation, while FailureMessage will contain a more verbose string suitable for logging and human consumption. 
+             *  These fields should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the MachineTemplate's spec or the configuration of the machine controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the machine controller, or the responsible machine controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the MachineSet object and/or logged in the controller's output.
+             */
+            failureReason?: string;
+            /**
+             * The number of replicas that have labels matching the labels of the machine template of the MachineSet.
+             */
+            fullyLabeledReplicas?: number;
+            /**
+             * ObservedGeneration reflects the generation of the most recently observed MachineSet.
+             */
+            observedGeneration?: number;
+            /**
+             * The number of ready replicas for this MachineSet. A machine is considered ready when the node has been created and is "Ready".
+             */
+            readyReplicas?: number;
+            /**
+             * Replicas is the most recently observed number of replicas.
+             */
+            replicas?: number;
+            /**
+             * Selector is the same as the label selector but in the string format to avoid introspection by clients. The string will be in the same format as the query-param syntax. More info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors
+             */
+            selector?: string;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachineSetStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * MachineSpec defines the desired state of Machine.
+         */
+        export interface MachineSpec {
+            /**
+             * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+             */
+            bootstrap: outputs.cluster.v1beta1.MachineSpecBootstrap;
+            /**
+             * ClusterName is the name of the Cluster this object belongs to.
+             */
+            clusterName: string;
+            /**
+             * FailureDomain is the failure domain the machine will be created in. Must match a key in the FailureDomains map stored on the cluster object.
+             */
+            failureDomain?: string;
+            /**
+             * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureRef: outputs.cluster.v1beta1.MachineSpecInfrastructureRef;
+            /**
+             * NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely. Defaults to 10 seconds.
+             */
+            nodeDeletionTimeout?: string;
+            /**
+             * NodeDrainTimeout is the total amount of time that the controller will spend on draining a node. The default value is 0, meaning that the node can be drained without any time limitations. NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
+             */
+            nodeDrainTimeout?: string;
+            /**
+             * NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
+             */
+            nodeVolumeDetachTimeout?: string;
+            /**
+             * ProviderID is the identification ID of the machine provided by the provider. This field must match the provider ID as seen on the node object corresponding to this machine. This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out machines at provider which could not get registered as Kubernetes nodes. With cluster-api as a generic out-of-tree provider for autoscaler, this field is required by autoscaler to be able to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver and then a comparison is done to find out unregistered machines and are marked for delete. This field will be set by the actuators and consumed by higher level entities like autoscaler that will be interfacing with cluster-api as generic provider.
+             */
+            providerID?: string;
+            /**
+             * Version defines the desired Kubernetes version. This field is meant to be optionally used by bootstrap providers.
+             */
+            version?: string;
+        }
+
+        /**
+         * Bootstrap is a reference to a local struct which encapsulates fields to configure the Machine’s bootstrapping mechanism.
+         */
+        export interface MachineSpecBootstrap {
+            /**
+             * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+             */
+            configRef?: outputs.cluster.v1beta1.MachineSpecBootstrapConfigRef;
+            /**
+             * DataSecretName is the name of the secret that stores the bootstrap data script. If nil, the Machine should remain in the Pending state.
+             */
+            dataSecretName?: string;
+        }
+
+        /**
+         * ConfigRef is a reference to a bootstrap provider-specific resource that holds configuration details. The reference is optional to allow users/operators to specify Bootstrap.DataSecretName without the need of a controller.
+         */
+        export interface MachineSpecBootstrapConfigRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * InfrastructureRef is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface MachineSpecInfrastructureRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * MachineStatus defines the observed state of Machine.
+         */
+        export interface MachineStatus {
+            /**
+             * Addresses is a list of addresses assigned to the machine. This field is copied from the infrastructure provider reference.
+             */
+            addresses?: outputs.cluster.v1beta1.MachineStatusAddresses[];
+            /**
+             * BootstrapReady is the state of the bootstrap provider.
+             */
+            bootstrapReady?: boolean;
+            /**
+             * CertificatesExpiryDate is the expiry date of the machine certificates. This value is only set for control plane machines.
+             */
+            certificatesExpiryDate?: string;
+            /**
+             * Conditions defines current service state of the Machine.
+             */
+            conditions?: outputs.cluster.v1beta1.MachineStatusConditions[];
+            /**
+             * FailureMessage will be set in the event that there is a terminal problem reconciling the Machine and will contain a more verbose string suitable for logging and human consumption. 
+             *  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+             */
+            failureMessage?: string;
+            /**
+             * FailureReason will be set in the event that there is a terminal problem reconciling the Machine and will contain a succinct value suitable for machine interpretation. 
+             *  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+             */
+            failureReason?: string;
+            /**
+             * InfrastructureReady is the state of the infrastructure provider.
+             */
+            infrastructureReady?: boolean;
+            /**
+             * LastUpdated identifies when the phase of the Machine last transitioned.
+             */
+            lastUpdated?: string;
+            /**
+             * NodeInfo is a set of ids/uuids to uniquely identify the node. More info: https://kubernetes.io/docs/concepts/nodes/node/#info
+             */
+            nodeInfo?: outputs.cluster.v1beta1.MachineStatusNodeInfo;
+            /**
+             * NodeRef will point to the corresponding Node if it exists.
+             */
+            nodeRef?: outputs.cluster.v1beta1.MachineStatusNodeRef;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: number;
+            /**
+             * Phase represents the current phase of machine actuation. E.g. Pending, Running, Terminating, Failed etc.
+             */
+            phase?: string;
+        }
+
+        /**
+         * MachineAddress contains information for the node's address.
+         */
+        export interface MachineStatusAddresses {
+            /**
+             * The machine address.
+             */
+            address: string;
+            /**
+             * Machine address type, one of Hostname, ExternalIP, InternalIP, ExternalDNS or InternalDNS.
+             */
+            type: string;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MachineStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * NodeInfo is a set of ids/uuids to uniquely identify the node. More info: https://kubernetes.io/docs/concepts/nodes/node/#info
+         */
+        export interface MachineStatusNodeInfo {
+            /**
+             * The Architecture reported by the node
+             */
+            architecture: string;
+            /**
+             * Boot ID reported by the node.
+             */
+            bootID: string;
+            /**
+             * ContainerRuntime Version reported by the node through runtime remote API (e.g. containerd://1.4.2).
+             */
+            containerRuntimeVersion: string;
+            /**
+             * Kernel Version reported by the node from 'uname -r' (e.g. 3.16.0-0.bpo.4-amd64).
+             */
+            kernelVersion: string;
+            /**
+             * KubeProxy Version reported by the node.
+             */
+            kubeProxyVersion: string;
+            /**
+             * Kubelet Version reported by the node.
+             */
+            kubeletVersion: string;
+            /**
+             * MachineID reported by the node. For unique machine identification in the cluster this field is preferred. Learn more from man(5) machine-id: http://man7.org/linux/man-pages/man5/machine-id.5.html
+             */
+            machineID: string;
+            /**
+             * The Operating System reported by the node
+             */
+            operatingSystem: string;
+            /**
+             * OS Image reported by the node from /etc/os-release (e.g. Debian GNU/Linux 7 (wheezy)).
+             */
+            osImage: string;
+            /**
+             * SystemUUID reported by the node. For unique machine identification MachineID is preferred. This field is specific to Red Hat hosts https://access.redhat.com/documentation/en-us/red_hat_subscription_management/1/html/rhsm/uuid
+             */
+            systemUUID: string;
+        }
+
+        /**
+         * NodeRef will point to the corresponding Node if it exists.
+         */
+        export interface MachineStatusNodeRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+    }
+}
+
+export namespace controlplane {
+    export namespace v1alpha3 {
+        /**
+         * TalosControlPlaneSpec defines the desired state of TalosControlPlane
+         */
+        export interface TalosControlPlaneSpec {
+            /**
+             * ControlPlaneConfig is a two TalosConfigSpecs to use for initializing and joining machines to the control plane.
+             */
+            controlPlaneConfig: outputs.controlplane.v1alpha3.TalosControlPlaneSpecControlPlaneConfig;
+            /**
+             * InfrastructureTemplate is a required reference to a custom resource offered by an infrastructure provider.
+             */
+            infrastructureTemplate: outputs.controlplane.v1alpha3.TalosControlPlaneSpecInfrastructureTemplate;
+            /**
+             * Number of desired machines. Defaults to 1. When stacked etcd is used only odd numbers are permitted, as per [etcd best practice](https://etcd.io/docs/v3.3.12/faq/#why-an-odd-number-of-cluster-members). This is a pointer to distinguish between explicit zero and not specified.
+             */
+            replicas?: number;
+            /**
+             * The RolloutStrategy to use to replace control plane machines with new ones.
+             */
+            rolloutStrategy?: outputs.controlplane.v1alpha3.TalosControlPlaneSpecRolloutStrategy;
+            /**
+             * Version defines the desired Kubernetes version.
+             */
+            version: string;
+        }
+        /**
+         * talosControlPlaneSpecProvideDefaults sets the appropriate defaults for TalosControlPlaneSpec
+         */
+        export function talosControlPlaneSpecProvideDefaults(val: TalosControlPlaneSpec): TalosControlPlaneSpec {
+            return {
+                ...val,
+                rolloutStrategy: (val.rolloutStrategy ? outputs.controlplane.v1alpha3.talosControlPlaneSpecRolloutStrategyProvideDefaults(val.rolloutStrategy) : undefined),
+            };
+        }
+
+        /**
+         * ControlPlaneConfig is a two TalosConfigSpecs to use for initializing and joining machines to the control plane.
+         */
+        export interface TalosControlPlaneSpecControlPlaneConfig {
+            /**
+             * TalosConfigSpec defines the desired state of TalosConfig
+             */
+            controlplane: outputs.controlplane.v1alpha3.TalosControlPlaneSpecControlPlaneConfigControlplane;
+            /**
+             * Deprecated: starting from cacppt v0.4.0 provider doesn't use init configs.
+             */
+            init?: outputs.controlplane.v1alpha3.TalosControlPlaneSpecControlPlaneConfigInit;
+        }
+
+        /**
+         * TalosConfigSpec defines the desired state of TalosConfig
+         */
+        export interface TalosControlPlaneSpecControlPlaneConfigControlplane {
+            configPatches?: outputs.controlplane.v1alpha3.TalosControlPlaneSpecControlPlaneConfigControlplaneConfigPatches[];
+            data?: string;
+            generateType: string;
+            /**
+             * Set hostname in the machine configuration to some value.
+             */
+            hostname?: outputs.controlplane.v1alpha3.TalosControlPlaneSpecControlPlaneConfigControlplaneHostname;
+            talosVersion?: string;
+        }
+
+        export interface TalosControlPlaneSpecControlPlaneConfigControlplaneConfigPatches {
+            op: string;
+            path: string;
+            value?: {[key: string]: any};
+        }
+
+        /**
+         * Set hostname in the machine configuration to some value.
+         */
+        export interface TalosControlPlaneSpecControlPlaneConfigControlplaneHostname {
+            /**
+             * Source of the hostname. 
+             *  Allowed values: "MachineName" (use linked Machine's Name).
+             */
+            source?: string;
+        }
+
+        /**
+         * Deprecated: starting from cacppt v0.4.0 provider doesn't use init configs.
+         */
+        export interface TalosControlPlaneSpecControlPlaneConfigInit {
+            configPatches?: outputs.controlplane.v1alpha3.TalosControlPlaneSpecControlPlaneConfigInitConfigPatches[];
+            data?: string;
+            generateType: string;
+            /**
+             * Set hostname in the machine configuration to some value.
+             */
+            hostname?: outputs.controlplane.v1alpha3.TalosControlPlaneSpecControlPlaneConfigInitHostname;
+            talosVersion?: string;
+        }
+
+        export interface TalosControlPlaneSpecControlPlaneConfigInitConfigPatches {
+            op: string;
+            path: string;
+            value?: {[key: string]: any};
+        }
+
+        /**
+         * Set hostname in the machine configuration to some value.
+         */
+        export interface TalosControlPlaneSpecControlPlaneConfigInitHostname {
+            /**
+             * Source of the hostname. 
+             *  Allowed values: "MachineName" (use linked Machine's Name).
+             */
+            source?: string;
+        }
+
+        /**
+         * InfrastructureTemplate is a required reference to a custom resource offered by an infrastructure provider.
+         */
+        export interface TalosControlPlaneSpecInfrastructureTemplate {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * The RolloutStrategy to use to replace control plane machines with new ones.
+         */
+        export interface TalosControlPlaneSpecRolloutStrategy {
+            /**
+             * Rolling update config params. Present only if RolloutStrategyType = RollingUpdate.
+             */
+            rollingUpdate?: outputs.controlplane.v1alpha3.TalosControlPlaneSpecRolloutStrategyRollingUpdate;
+            /**
+             * Change rollout strategy. 
+             *  Supported strategies: * "RollingUpdate". * "OnDelete" 
+             *  Default is RollingUpdate.
+             */
+            type?: string;
+        }
+        /**
+         * talosControlPlaneSpecRolloutStrategyProvideDefaults sets the appropriate defaults for TalosControlPlaneSpecRolloutStrategy
+         */
+        export function talosControlPlaneSpecRolloutStrategyProvideDefaults(val: TalosControlPlaneSpecRolloutStrategy): TalosControlPlaneSpecRolloutStrategy {
+            return {
+                ...val,
+                rollingUpdate: (val.rollingUpdate ? outputs.controlplane.v1alpha3.talosControlPlaneSpecRolloutStrategyRollingUpdateProvideDefaults(val.rollingUpdate) : undefined),
+                type: (val.type) ?? "RollingUpdate",
+            };
+        }
+
+        /**
+         * Rolling update config params. Present only if RolloutStrategyType = RollingUpdate.
+         */
+        export interface TalosControlPlaneSpecRolloutStrategyRollingUpdate {
+            /**
+             * The maximum number of control planes that can be scheduled above or under the desired number of control planes. Value can be an absolute number 1 or 0. Defaults to 1. Example: when this is set to 1, the control plane can be scaled up immediately when the rolling update starts.
+             */
+            maxSurge?: number | string;
+        }
+        /**
+         * talosControlPlaneSpecRolloutStrategyRollingUpdateProvideDefaults sets the appropriate defaults for TalosControlPlaneSpecRolloutStrategyRollingUpdate
+         */
+        export function talosControlPlaneSpecRolloutStrategyRollingUpdateProvideDefaults(val: TalosControlPlaneSpecRolloutStrategyRollingUpdate): TalosControlPlaneSpecRolloutStrategyRollingUpdate {
+            return {
+                ...val,
+                maxSurge: (val.maxSurge) ?? 1,
+            };
+        }
+
+        /**
+         * TalosControlPlaneStatus defines the observed state of TalosControlPlane
+         */
+        export interface TalosControlPlaneStatus {
+            /**
+             * Bootstrapped denotes whether any nodes received bootstrap request which is required to start etcd and Kubernetes components in Talos.
+             */
+            bootstrapped?: boolean;
+            /**
+             * Conditions defines current service state of the KubeadmControlPlane.
+             */
+            conditions?: outputs.controlplane.v1alpha3.TalosControlPlaneStatusConditions[];
+            /**
+             * ErrorMessage indicates that there is a terminal problem reconciling the state, and will be set to a descriptive error message.
+             */
+            failureMessage?: string;
+            /**
+             * FailureReason indicates that there is a terminal problem reconciling the state, and will be set to a token value suitable for programmatic interpretation.
+             */
+            failureReason?: string;
+            /**
+             * Initialized denotes whether or not the control plane has the uploaded talos-config configmap.
+             */
+            initialized?: boolean;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: number;
+            /**
+             * Ready denotes that the TalosControlPlane API Server is ready to receive requests.
+             */
+            ready?: boolean;
+            /**
+             * Total number of fully running and ready control plane machines.
+             */
+            readyReplicas?: number;
+            /**
+             * Total number of non-terminated machines targeted by this control plane (their labels match the selector).
+             */
+            replicas?: number;
+            /**
+             * Selector is the label selector in string format to avoid introspection by clients, and is used to provide the CRD-based integration for the scale subresource and additional integrations for things like kubectl describe.. The string will be in the same format as the query-param syntax. More info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors
+             */
+            selector?: string;
+            /**
+             * Total number of unavailable machines targeted by this control plane. This is the total number of machines that are still required for the deployment to have 100% available capacity. They may either be machines that are running but not yet ready or machines that still have not been created.
+             */
+            unavailableReplicas?: number;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface TalosControlPlaneStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+    }
+}
+
+export namespace infrastructure {
+    export namespace v1alpha2 {
+        /**
+         * MetalClusterSpec defines the desired state of MetalCluster.
+         */
+        export interface MetalClusterSpec {
+            apiEndpoints?: outputs.infrastructure.v1alpha2.MetalClusterSpecApiEndpoints[];
+        }
+
+        export interface MetalClusterSpecApiEndpoints {
+            /**
+             * The hostname on which the API server is serving.
+             */
+            host: string;
+            /**
+             * The port on which the API server is serving.
+             */
+            port: number;
+        }
+
+        /**
+         * MetalClusterStatus defines the observed state of MetalCluster.
+         */
+        export interface MetalClusterStatus {
+            /**
+             * APIEndpoints represents the endpoints to communicate with the control plane.
+             */
+            apiEndpoints?: outputs.infrastructure.v1alpha2.MetalClusterStatusApiEndpoints[];
+            ready: boolean;
+        }
+
+        export interface MetalClusterStatusApiEndpoints {
+            /**
+             * The hostname on which the API server is serving.
+             */
+            host: string;
+            /**
+             * The port on which the API server is serving.
+             */
+            port: number;
+        }
+
+        /**
+         * MetalMachineSpec defines the desired state of MetalMachine.
+         */
+        export interface MetalMachineSpec {
+            /**
+             * ProviderID is the unique identifier as specified by the cloud provider.
+             */
+            providerID?: string;
+            /**
+             * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+             *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+             */
+            serverRef?: outputs.infrastructure.v1alpha2.MetalMachineSpecServerRef;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface MetalMachineSpecServerRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * MetalMachineStatus defines the observed state of MetalMachine.
+         */
+        export interface MetalMachineStatus {
+            /**
+             * ErrorMessage will be set in the event that there is a terminal problem reconciling the Machine and will contain a more verbose string suitable for logging and human consumption. 
+             *  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+             */
+            errorMessage?: string;
+            /**
+             * ErrorReason will be set in the event that there is a terminal problem reconciling the Machine and will contain a succinct value suitable for machine interpretation. 
+             *  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+             */
+            errorReason?: string;
+            ready: boolean;
+        }
+
+        /**
+         * MetalMachineTemplateSpec defines the desired state of MetalMachineTemplate.
+         */
+        export interface MetalMachineTemplateSpec {
+            template: outputs.infrastructure.v1alpha2.MetalMachineTemplateSpecTemplate;
+        }
+
+        export interface MetalMachineTemplateSpecTemplate {
+            /**
+             * Spec is the specification of the desired behavior of the machine.
+             */
+            spec: outputs.infrastructure.v1alpha2.MetalMachineTemplateSpecTemplateSpec;
+        }
+
+        /**
+         * Spec is the specification of the desired behavior of the machine.
+         */
+        export interface MetalMachineTemplateSpecTemplateSpec {
+            /**
+             * ProviderID is the unique identifier as specified by the cloud provider.
+             */
+            providerID?: string;
+            /**
+             * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+             *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+             */
+            serverRef?: outputs.infrastructure.v1alpha2.MetalMachineTemplateSpecTemplateSpecServerRef;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface MetalMachineTemplateSpecTemplateSpecServerRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+    }
+
+    export namespace v1alpha3 {
+        /**
+         * MetalClusterSpec defines the desired state of MetalCluster.
+         */
+        export interface MetalClusterSpec {
+            /**
+             * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+             */
+            controlPlaneEndpoint?: outputs.infrastructure.v1alpha3.MetalClusterSpecControlPlaneEndpoint;
+        }
+
+        /**
+         * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+         */
+        export interface MetalClusterSpecControlPlaneEndpoint {
+            /**
+             * The hostname on which the API server is serving.
+             */
+            host: string;
+            /**
+             * The port on which the API server is serving.
+             */
+            port: number;
+        }
+
+        /**
+         * MetalClusterStatus defines the observed state of MetalCluster.
+         */
+        export interface MetalClusterStatus {
+            ready: boolean;
+        }
+
+        /**
+         * MetalMachineSpec defines the desired state of MetalMachine.
+         */
+        export interface MetalMachineSpec {
+            /**
+             * ProviderID is the unique identifier as specified by the cloud provider.
+             */
+            providerID?: string;
+            /**
+             * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+             *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+             */
+            serverClassRef?: outputs.infrastructure.v1alpha3.MetalMachineSpecServerClassRef;
+            /**
+             * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+             *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+             */
+            serverRef?: outputs.infrastructure.v1alpha3.MetalMachineSpecServerRef;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface MetalMachineSpecServerClassRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface MetalMachineSpecServerRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * MetalMachineStatus defines the observed state of MetalMachine.
+         */
+        export interface MetalMachineStatus {
+            /**
+             * Addresses contains the Metal machine associated addresses.
+             */
+            addresses?: outputs.infrastructure.v1alpha3.MetalMachineStatusAddresses[];
+            /**
+             * Conditions defines current state of the MetalMachine.
+             */
+            conditions?: outputs.infrastructure.v1alpha3.MetalMachineStatusConditions[];
+            /**
+             * FailureMessage will be set in the event that there is a terminal problem reconciling the Machine and will contain a more verbose string suitable for logging and human consumption. 
+             *  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+             */
+            failureMessage?: string;
+            /**
+             * FailureReason will be set in the event that there is a terminal problem reconciling the Machine and will contain a succinct value suitable for machine interpretation. 
+             *  This field should not be set for transitive errors that a controller faces that are expected to be fixed automatically over time (like service outages), but instead indicate that something is fundamentally wrong with the Machine's spec or the configuration of the controller, and that manual intervention is required. Examples of terminal errors would be invalid combinations of settings in the spec, values that are unsupported by the controller, or the responsible controller itself being critically misconfigured. 
+             *  Any transient errors that occur during the reconciliation of Machines can be added as events to the Machine object and/or logged in the controller's output.
+             */
+            failureReason?: string;
+            ready?: boolean;
+        }
+
+        /**
+         * MachineAddress contains information for the node's address.
+         */
+        export interface MetalMachineStatusAddresses {
+            /**
+             * The machine address.
+             */
+            address: string;
+            /**
+             * Machine address type, one of Hostname, ExternalIP, InternalIP, ExternalDNS or InternalDNS.
+             */
+            type: string;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface MetalMachineStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * MetalMachineTemplateSpec defines the desired state of MetalMachineTemplate.
+         */
+        export interface MetalMachineTemplateSpec {
+            template: outputs.infrastructure.v1alpha3.MetalMachineTemplateSpecTemplate;
+        }
+
+        export interface MetalMachineTemplateSpecTemplate {
+            /**
+             * Spec is the specification of the desired behavior of the machine.
+             */
+            spec: outputs.infrastructure.v1alpha3.MetalMachineTemplateSpecTemplateSpec;
+        }
+
+        /**
+         * Spec is the specification of the desired behavior of the machine.
+         */
+        export interface MetalMachineTemplateSpecTemplateSpec {
+            /**
+             * ProviderID is the unique identifier as specified by the cloud provider.
+             */
+            providerID?: string;
+            /**
+             * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+             *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+             */
+            serverClassRef?: outputs.infrastructure.v1alpha3.MetalMachineTemplateSpecTemplateSpecServerClassRef;
+            /**
+             * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+             *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+             */
+            serverRef?: outputs.infrastructure.v1alpha3.MetalMachineTemplateSpecTemplateSpecServerRef;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface MetalMachineTemplateSpecTemplateSpecServerClassRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface MetalMachineTemplateSpecTemplateSpecServerRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * ServerBindingSpec defines the spec of the ServerBinding object.
+         */
+        export interface ServerBindingSpec {
+            /**
+             * Addresses describes node addresses for the server.
+             */
+            addresses?: string[];
+            /**
+             * Hostname describes node hostname for the server.
+             */
+            hostname?: string;
+            /**
+             * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+             *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+             */
+            metalMachineRef: outputs.infrastructure.v1alpha3.ServerBindingSpecMetalMachineRef;
+            /**
+             * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+             *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+             */
+            serverClassRef?: outputs.infrastructure.v1alpha3.ServerBindingSpecServerClassRef;
+            /**
+             * SideroLink describes state of the SideroLink tunnel.
+             */
+            siderolink?: outputs.infrastructure.v1alpha3.ServerBindingSpecSiderolink;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface ServerBindingSpecMetalMachineRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface ServerBindingSpecServerClassRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * SideroLink describes state of the SideroLink tunnel.
+         */
+        export interface ServerBindingSpecSiderolink {
+            /**
+             * NodeAddress is the tunnel address of the node.
+             */
+            address: string;
+            /**
+             * NodePublicKey is the Wireguard public key of the node.
+             */
+            publicKey: string;
+        }
+
+        /**
+         * ServerBindingState defines the observed state of ServerBinding.
+         */
+        export interface ServerBindingStatus {
+            /**
+             * Conditions defines current state of the ServerBinding.
+             */
+            conditions?: outputs.infrastructure.v1alpha3.ServerBindingStatusConditions[];
+            /**
+             * Ready is true when matching server is found.
+             */
+            ready?: boolean;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ServerBindingStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+    }
+
+    export namespace v1beta1 {
+        /**
+         * ProxmoxClusterSpec defines the desired state of ProxmoxCluster
+         */
+        export interface ProxmoxClusterSpec {
+            /**
+             * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+             */
+            controlPlaneEndpoint?: outputs.infrastructure.v1beta1.ProxmoxClusterSpecControlPlaneEndpoint;
+            /**
+             * ServerRef is used for configuring Proxmox client
+             */
+            serverRef: outputs.infrastructure.v1beta1.ProxmoxClusterSpecServerRef;
+            /**
+             * storage is used for storing cloud init snippet
+             */
+            storage?: outputs.infrastructure.v1beta1.ProxmoxClusterSpecStorage;
+        }
+
+        /**
+         * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+         */
+        export interface ProxmoxClusterSpecControlPlaneEndpoint {
+            /**
+             * The hostname on which the API server is serving.
+             */
+            host: string;
+            /**
+             * The port on which the API server is serving.
+             */
+            port: number;
+        }
+
+        /**
+         * ServerRef is used for configuring Proxmox client
+         */
+        export interface ProxmoxClusterSpecServerRef {
+            /**
+             * endpoint is the address of the Proxmox-VE REST API endpoint.
+             */
+            endpoint: string;
+            /**
+             * SecretRef is a reference for secret which contains proxmox login secrets
+             */
+            secretRef: outputs.infrastructure.v1beta1.ProxmoxClusterSpecServerRefSecretRef;
+        }
+
+        /**
+         * SecretRef is a reference for secret which contains proxmox login secrets
+         */
+        export interface ProxmoxClusterSpecServerRefSecretRef {
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+        }
+
+        /**
+         * storage is used for storing cloud init snippet
+         */
+        export interface ProxmoxClusterSpecStorage {
+            name?: string;
+            path?: string;
+        }
+
+        /**
+         * ProxmoxClusterStatus defines the observed state of ProxmoxCluster
+         */
+        export interface ProxmoxClusterStatus {
+            /**
+             * Conditions
+             */
+            conditions?: outputs.infrastructure.v1beta1.ProxmoxClusterStatusConditions[];
+            /**
+             * FailureDomains
+             */
+            failureDomains?: {[key: string]: outputs.infrastructure.v1beta1.ProxmoxClusterStatusFailureDomains};
+            /**
+             * Ready
+             */
+            ready: boolean;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ProxmoxClusterStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * FailureDomainSpec is the Schema for Cluster API failure domains. It allows controllers to understand how many failure domains a cluster can optionally span across.
+         */
+        export interface ProxmoxClusterStatusFailureDomains {
+            /**
+             * Attributes is a free form map of attributes an infrastructure provider might use or require.
+             */
+            attributes?: {[key: string]: string};
+            /**
+             * ControlPlane determines if this failure domain is suitable for use by control plane machines.
+             */
+            controlPlane?: boolean;
+        }
+
+        /**
+         * ProxmoxMachineSpec defines the desired state of ProxmoxMachine
+         */
+        export interface ProxmoxMachineSpec {
+            /**
+             * CloudInit defines options related to the bootstrapping systems where CloudInit is used.
+             */
+            cloudInit?: outputs.infrastructure.v1beta1.ProxmoxMachineSpecCloudInit;
+            /**
+             * FailureDomain is the failure domain unique identifier this Machine should be attached to, as defined in Cluster API.
+             */
+            failureDomain?: string;
+            /**
+             * Hardware
+             */
+            hardware?: outputs.infrastructure.v1beta1.ProxmoxMachineSpecHardware;
+            /**
+             * Image is the image to be provisioned
+             */
+            image: outputs.infrastructure.v1beta1.ProxmoxMachineSpecImage;
+            /**
+             * Network
+             */
+            network?: outputs.infrastructure.v1beta1.ProxmoxMachineSpecNetwork;
+            /**
+             * Node is proxmox node hosting vm instance which used for ProxmoxMachine
+             */
+            node?: string;
+            /**
+             * Options for QEMU instance
+             */
+            options?: outputs.infrastructure.v1beta1.ProxmoxMachineSpecOptions;
+            /**
+             * ProviderID
+             */
+            providerID?: string;
+            /**
+             * Storage is name of proxmox storage used by this node. The storage must support "images(VM Disks)" type of content. cappx will use random storage if empty
+             */
+            storage?: string;
+            /**
+             * VMID is proxmox qemu's id
+             */
+            vmID?: number;
+        }
+        /**
+         * proxmoxMachineSpecProvideDefaults sets the appropriate defaults for ProxmoxMachineSpec
+         */
+        export function proxmoxMachineSpecProvideDefaults(val: ProxmoxMachineSpec): ProxmoxMachineSpec {
+            return {
+                ...val,
+                hardware: (val.hardware ? outputs.infrastructure.v1beta1.proxmoxMachineSpecHardwareProvideDefaults(val.hardware) : undefined),
+            };
+        }
+
+        /**
+         * CloudInit defines options related to the bootstrapping systems where CloudInit is used.
+         */
+        export interface ProxmoxMachineSpecCloudInit {
+            user?: outputs.infrastructure.v1beta1.ProxmoxMachineSpecCloudInitUser;
+        }
+
+        export interface ProxmoxMachineSpecCloudInitUser {
+            bootcmd?: string[];
+            ca_certs?: outputs.infrastructure.v1beta1.ProxmoxMachineSpecCloudInitUserCaCerts;
+            chpasswd?: outputs.infrastructure.v1beta1.ProxmoxMachineSpecCloudInitUserChpasswd;
+            manage_etc_hosts?: boolean;
+            no_ssh_fingerprints?: boolean;
+            package_update?: boolean;
+            package_upgrade?: boolean;
+            packages?: string[];
+            password?: string;
+            runCmd?: string[];
+            ssh?: outputs.infrastructure.v1beta1.ProxmoxMachineSpecCloudInitUserSsh;
+            ssh_authorized_keys?: string[];
+            ssh_keys?: outputs.infrastructure.v1beta1.ProxmoxMachineSpecCloudInitUserSshKeys;
+            ssh_pwauth?: boolean;
+            user?: string;
+            users?: outputs.infrastructure.v1beta1.ProxmoxMachineSpecCloudInitUserUsers[];
+            writeFiles?: outputs.infrastructure.v1beta1.ProxmoxMachineSpecCloudInitUserWriteFiles[];
+        }
+
+        export interface ProxmoxMachineSpecCloudInitUserCaCerts {
+            remove_defaults?: boolean;
+            trusted?: string[];
+        }
+
+        export interface ProxmoxMachineSpecCloudInitUserChpasswd {
+            expire?: string;
+        }
+
+        export interface ProxmoxMachineSpecCloudInitUserSsh {
+            emit_keys_to_console?: boolean;
+        }
+
+        export interface ProxmoxMachineSpecCloudInitUserSshKeys {
+            dsa_private?: string;
+            dsa_public?: string;
+            ecdsa_private?: string;
+            ecdsa_public?: string;
+            rsa_private?: string;
+            rsa_public?: string;
+        }
+
+        export interface ProxmoxMachineSpecCloudInitUserUsers {
+            expiredate?: string;
+            gecos?: string;
+            groups?: string[];
+            homedir?: string;
+            inactive?: number;
+            lock_passwd?: boolean;
+            name: string;
+            no_create_home?: boolean;
+            no_log_init?: boolean;
+            no_user_group?: boolean;
+            passwd?: string;
+            primary_group?: string;
+            selinux_user?: string;
+            shell?: string;
+            snapuser?: string;
+            ssh_authorized_keys?: string[];
+            ssh_import_id?: string[];
+            ssh_redirect_user?: boolean;
+            sudo?: string[];
+            system?: boolean;
+        }
+
+        export interface ProxmoxMachineSpecCloudInitUserWriteFiles {
+            content?: string;
+            defer?: boolean;
+            encoding?: string;
+            owner?: string;
+            path?: string;
+            permissions?: string;
+        }
+
+        /**
+         * Hardware
+         */
+        export interface ProxmoxMachineSpecHardware {
+            /**
+             * Select BIOS implementation. Defaults to seabios. seabios or ovmf. Defaults to seabios.
+             */
+            bios?: string;
+            /**
+             * number of CPU cores : 1 ~
+             */
+            cpu?: number;
+            /**
+             * Limit of CPU usage. If the computer has 2 CPUs, it has total of '2' CPU time. Value '0' indicates no CPU limit. Defaults to 0.
+             */
+            cpuLimit?: number;
+            /**
+             * hard disk size
+             */
+            disk?: string;
+            /**
+             * amount of RAM for the VM in MiB : 16 ~
+             */
+            memory?: number;
+            /**
+             * The number of CPU sockets. Defaults to 1.
+             */
+            sockets?: number;
+        }
+        /**
+         * proxmoxMachineSpecHardwareProvideDefaults sets the appropriate defaults for ProxmoxMachineSpecHardware
+         */
+        export function proxmoxMachineSpecHardwareProvideDefaults(val: ProxmoxMachineSpecHardware): ProxmoxMachineSpecHardware {
+            return {
+                ...val,
+                cpu: (val.cpu) ?? 2,
+                disk: (val.disk) ?? "50G",
+                memory: (val.memory) ?? 4096,
+            };
+        }
+
+        /**
+         * Image is the image to be provisioned
+         */
+        export interface ProxmoxMachineSpecImage {
+            /**
+             * Checksum Always better to specify checksum otherwise cappx will download same image for every time. If checksum is specified, cappx will try to avoid downloading existing image.
+             */
+            checksum?: string;
+            /**
+             * ChecksumType
+             */
+            checksumType?: string;
+            /**
+             * URL is a location of an image to deploy. supported formats are iso/qcow2/qed/raw/vdi/vpc/vmdk.
+             */
+            url: string;
+        }
+
+        /**
+         * Network
+         */
+        export interface ProxmoxMachineSpecNetwork {
+            /**
+             * to do : should accept multiple IPConfig
+             */
+            ipConfig?: outputs.infrastructure.v1beta1.ProxmoxMachineSpecNetworkIpConfig;
+            /**
+             * DNS server
+             */
+            nameServer?: string;
+            /**
+             * search domain
+             */
+            searchDomain?: string;
+        }
+
+        /**
+         * to do : should accept multiple IPConfig
+         */
+        export interface ProxmoxMachineSpecNetworkIpConfig {
+            /**
+             * gateway IPv4
+             */
+            gateway?: string;
+            /**
+             * gateway IPv6
+             */
+            gateway6?: string;
+            /**
+             * IPv4 with CIDR
+             */
+            ip?: string;
+            /**
+             * IPv6 with CIDR
+             */
+            ip6?: string;
+        }
+
+        /**
+         * Options for QEMU instance
+         */
+        export interface ProxmoxMachineSpecOptions {
+            /**
+             * Enable/Disable ACPI. Defaults to true.
+             */
+            acpi?: boolean;
+            /**
+             * Virtual processor architecture. Defaults to the host. x86_64 or aarch64.
+             */
+            arch?: string;
+            /**
+             * Amount of target RAM for the VM in MiB. Using zero disables the ballon driver.
+             */
+            balloon?: number;
+            /**
+             * Description for the VM. Shown in the web-interface VM's summary. This is saved as comment inside the configuration file.
+             */
+            description?: string;
+            /**
+             * enable/disable hugepages memory. 0 or 2 or 1024. 0 indicated 'any'
+             */
+            hugePages?: number;
+            /**
+             * Use together with hugepages. If enabled, hugepages will not not be deleted after VM shutdown and can be used for subsequent starts. Defaults to false.
+             */
+            keepHugePages?: boolean;
+            /**
+             * Enable/disable KVM hardware virtualization. Defaults to true.
+             */
+            kvm?: boolean;
+            /**
+             * Set the real time clock (RTC) to local time. This is enabled by default if the `ostype` indicates a Microsoft Windows OS.
+             */
+            localTime?: boolean;
+            /**
+             * Lock/unlock the VM.
+             */
+            lock?: string;
+            /**
+             * Enable/disable NUMA.
+             */
+            numa?: boolean;
+            /**
+             * Specifies whether a VM will be started during system bootup.
+             */
+            onBoot?: boolean;
+            /**
+             * Specify guest operating system. This is used to enable special optimization/features for specific operating systems.
+             */
+            osType?: string;
+            /**
+             * Sets the protection flag of the VM. This will disable the remove VM and remove disk operations. Defaults to false.
+             */
+            protection?: boolean;
+            /**
+             * Allow reboot. If set to 'false' the VM exit on reboot. Defaults to true.
+             */
+            reboot?: boolean;
+            /**
+             * Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning. Auto-ballooning is done by pvestatd. 0 ~ 5000. Defaults to 1000.
+             */
+            shares?: number;
+            /**
+             * Enable/disable the USB tablet device. This device is usually needed to allow absolute mouse positioning with VNC. Else the mouse runs out of sync with normal VNC clients. If you're running lots of console-only guests on one host, you may consider disabling this to save some context switches. This is turned off by default if you use spice (`qm set <vmid> --vga qxl`). Defaults to true.
+             */
+            tablet?: boolean;
+            /**
+             * Tags of the VM. This is only meta information.
+             */
+            tags?: string[];
+            /**
+             * Enable/disable Template. Defaults to false.
+             */
+            template?: boolean;
+            /**
+             * Enable/disable time drift fix. Defaults to false.
+             */
+            timeDriftFix?: boolean;
+            /**
+             * Number of hotplugged vcpus. Defaults to 0.
+             */
+            vcpus?: number;
+            /**
+             * The VM generation ID (vmgenid) device exposes a 128-bit integer value identifier to the guest OS. This allows to notify the guest operating system when the virtual machine is executed with a different configuration (e.g. snapshot execution or creation from a template). The guest operating system notices the change, and is then able to react as appropriate by marking its copies of distributed databases as dirty, re-initializing its random number generator, etc. Note that auto-creation only works when done through API/CLI create or update methods, but not when manually editing the config file. regex: (?:[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}|[01]). Defaults to 1 (autogenerated)
+             */
+            vmGenerationID?: string;
+        }
+
+        /**
+         * ProxmoxMachineStatus defines the observed state of ProxmoxMachine
+         */
+        export interface ProxmoxMachineStatus {
+            /**
+             * Addresses
+             */
+            addresses?: outputs.infrastructure.v1beta1.ProxmoxMachineStatusAddresses[];
+            /**
+             * Conditions
+             */
+            conditions?: outputs.infrastructure.v1beta1.ProxmoxMachineStatusConditions[];
+            /**
+             * Configuration
+             */
+            config?: outputs.infrastructure.v1beta1.ProxmoxMachineStatusConfig;
+            /**
+             * FailureMessage
+             */
+            failureMessage?: string;
+            /**
+             * FailureReason
+             */
+            failureReason?: string;
+            /**
+             * InstanceStatus is the status of the proxmox instance for this machine.
+             */
+            instanceStatus?: string;
+            /**
+             * Ready is true when the provider resource is ready.
+             */
+            ready?: boolean;
+        }
+
+        /**
+         * MachineAddress contains information for the node's address.
+         */
+        export interface ProxmoxMachineStatusAddresses {
+            /**
+             * The machine address.
+             */
+            address: string;
+            /**
+             * Machine address type, one of Hostname, ExternalIP, InternalIP, ExternalDNS or InternalDNS.
+             */
+            type: string;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ProxmoxMachineStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * Configuration
+         */
+        export interface ProxmoxMachineStatusConfig {
+            /**
+             * Enable/disable ACPI.
+             */
+            acpi?: number;
+            /**
+             * List of host cores used to execute guest processes, for example: 0,5,8-11
+             */
+            affinity?: string;
+            /**
+             * Enable/disable communication with the QEMU Guest Agent and its properties.
+             */
+            agent?: string;
+            /**
+             * Virtual processor architecture. Defaults to the host.
+             */
+            arch?: string;
+            /**
+             * Arbitrary arguments passed to kvm, for example: args: -no-reboot -no-hpet NOTE: this option is for experts only.
+             */
+            args?: string;
+            /**
+             * Configure a audio device, useful in combination with QXL/Spice.
+             */
+            audio0?: string;
+            /**
+             * Automatic restart after crash (currently ignored).
+             */
+            autostart?: number;
+            /**
+             * Amount of target RAM for the VM in MiB. Using zero disables the ballon driver.
+             */
+            balloon?: number;
+            /**
+             * Select BIOS implementation.
+             */
+            bios?: string;
+            /**
+             * boot order. ";" separated. : 'order=device1;device2;device3'
+             */
+            boot?: string;
+            /**
+             * This is an alias for option -ide2
+             */
+            cdrom?: string;
+            /**
+             * cloud-init: Specify custom files to replace the automatically generated ones at start.
+             */
+            cicustom?: string;
+            /**
+             * cloud-init: Password to assign the user. Using this is generally not recommended. Use ssh keys instead. Also note that older cloud-init versions do not support hashed passwords.
+             */
+            cipassword?: string;
+            /**
+             * Specifies the cloud-init configuration format. The default depends on the configured operating system type (`ostype`. We use the `nocloud` format for Linux, and `configdrive2` for windows.
+             */
+            citype?: string;
+            /**
+             * cloud-init: User name to change ssh keys and password for instead of the image's configured default user.
+             */
+            ciuser?: string;
+            /**
+             * The number of cores per socket. : 1 ~
+             */
+            cores?: number;
+            /**
+             * emulated cpu type
+             */
+            cpu?: string;
+            /**
+             * Limit of CPU usage. NOTE: If the computer has 2 CPUs, it has total of '2' CPU time. Value '0' indicates no CPU limit.
+             */
+            cpulimit?: number;
+            /**
+             * CPU weight for a VM. Argument is used in the kernel fair scheduler. The larger the number is, the more CPU time this VM gets. Number is relative to weights of all the other running VMs.
+             */
+            cpuunits?: number;
+            description?: string;
+            efidisk0?: number;
+            freeze?: number;
+            hookscript?: string;
+            hostpci0?: string;
+            hostpci1?: string;
+            hostpci2?: string;
+            hostpci3?: string;
+            hotplug?: string;
+            hugepages?: string;
+            ide0?: string;
+            ide1?: string;
+            ide2?: string;
+            ide3?: string;
+            ipconfig0?: string;
+            ipconfig1?: string;
+            ipconfig10?: string;
+            ipconfig11?: string;
+            ipconfig12?: string;
+            ipconfig13?: string;
+            ipconfig14?: string;
+            ipconfig15?: string;
+            ipconfig16?: string;
+            ipconfig17?: string;
+            ipconfig18?: string;
+            ipconfig19?: string;
+            ipconfig2?: string;
+            ipconfig20?: string;
+            ipconfig21?: string;
+            ipconfig22?: string;
+            ipconfig23?: string;
+            ipconfig24?: string;
+            ipconfig25?: string;
+            ipconfig26?: string;
+            ipconfig27?: string;
+            ipconfig28?: string;
+            ipconfig29?: string;
+            ipconfig3?: string;
+            ipconfig30?: string;
+            ipconfig31?: string;
+            ipconfig4?: string;
+            ipconfig5?: string;
+            ipconfig6?: string;
+            ipconfig7?: string;
+            ipconfig8?: string;
+            ipconfig9?: string;
+            ivshmem?: string;
+            keephugepages?: number;
+            keyboard?: string;
+            /**
+             * enable/disable KVM hardware virtualization
+             */
+            kvm?: number;
+            localtime?: number;
+            lock?: string;
+            /**
+             * specifies the QEMU machine type
+             */
+            machine?: string;
+            /**
+             * amount of RAM for the VM in MiB : 16 ~
+             */
+            memory?: number;
+            /**
+             * A Number represents a JSON number literal.
+             */
+            migrate_downtime?: string;
+            migrate_speed?: number;
+            /**
+             * name for VM. Only used on the configuration web interface
+             */
+            name?: string;
+            /**
+             * cloud-init: Sets DNS server IP address for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
+             */
+            nameserver?: string;
+            net0?: string;
+            net1?: string;
+            net10?: string;
+            net11?: string;
+            net12?: string;
+            net13?: string;
+            net14?: string;
+            net15?: string;
+            net16?: string;
+            net17?: string;
+            net18?: string;
+            net19?: string;
+            net2?: string;
+            net20?: string;
+            net21?: string;
+            net22?: string;
+            net23?: string;
+            net24?: string;
+            net25?: string;
+            net26?: string;
+            net27?: string;
+            net28?: string;
+            net29?: string;
+            net3?: string;
+            net30?: string;
+            net31?: string;
+            net4?: string;
+            net5?: string;
+            net6?: string;
+            net7?: string;
+            net8?: string;
+            net9?: string;
+            numa?: number;
+            numa0?: string;
+            numa1?: string;
+            numa2?: string;
+            numa3?: string;
+            numa4?: string;
+            numa5?: string;
+            numa6?: string;
+            numa7?: string;
+            /**
+             * specifies whether a VM will be started during system bootup
+             */
+            onboot?: number;
+            /**
+             * quest OS
+             */
+            ostype?: string;
+            parallel0?: string;
+            parallel1?: string;
+            parallel2?: string;
+            protection?: number;
+            /**
+             * Allow reboot. if set to '0' the VM exit on reboot
+             */
+            reboot?: number;
+            rng0?: string;
+            sata0?: string;
+            sata1?: string;
+            sata2?: string;
+            sata3?: string;
+            sata4?: string;
+            sata5?: string;
+            scsi0?: string;
+            scsi1?: string;
+            scsi10?: string;
+            scsi11?: string;
+            scsi12?: string;
+            scsi13?: string;
+            scsi14?: string;
+            scsi15?: string;
+            scsi16?: string;
+            scsi17?: string;
+            scsi18?: string;
+            scsi19?: string;
+            scsi2?: string;
+            scsi20?: string;
+            scsi21?: string;
+            scsi22?: string;
+            scsi23?: string;
+            scsi24?: string;
+            scsi25?: string;
+            scsi26?: string;
+            scsi27?: string;
+            scsi28?: string;
+            scsi29?: string;
+            scsi3?: string;
+            scsi30?: string;
+            scsi4?: string;
+            scsi5?: string;
+            scsi6?: string;
+            scsi7?: string;
+            scsi8?: string;
+            scsi9?: string;
+            /**
+             * SCSI controller model
+             */
+            scsihw?: string;
+            /**
+             * cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
+             */
+            searchdomain?: string;
+            serial0?: string;
+            serial1?: string;
+            serial2?: string;
+            serial3?: string;
+            shares?: number;
+            smbios1?: string;
+            smp?: number;
+            /**
+             * number of sockets
+             */
+            sockets?: number;
+            spice_enhancements?: string;
+            /**
+             * cloud-init setup public ssh keys (one key per line, OpenSSH format)
+             */
+            sshkeys?: string;
+            startdate?: string;
+            startup?: number;
+            tablet?: number;
+            /**
+             * tags of the VM. only for meta information
+             */
+            tags?: string;
+            tdf?: number;
+            /**
+             * enable/disable template
+             */
+            template?: number;
+            tpmstate?: string;
+            unused0?: string;
+            unused1?: string;
+            unused2?: string;
+            unused3?: string;
+            unused4?: string;
+            unused5?: string;
+            unused6?: string;
+            unused7?: string;
+            vcpus?: number;
+            vga?: string;
+            virtio0?: string;
+            virtio1?: string;
+            virtio10?: string;
+            virtio11?: string;
+            virtio12?: string;
+            virtio13?: string;
+            virtio14?: string;
+            virtio15?: string;
+            virtio2?: string;
+            virtio3?: string;
+            virtio4?: string;
+            virtio5?: string;
+            virtio6?: string;
+            virtio7?: string;
+            virtio8?: string;
+            virtio9?: string;
+            vmgenid?: string;
+            vmstatestorage?: string;
+            watchdog?: string;
+        }
+
+        /**
+         * ProxmoxMachineTemplateSpec defines the desired state of ProxmoxMachineTemplate
+         */
+        export interface ProxmoxMachineTemplateSpec {
+            template: outputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplate;
+        }
+        /**
+         * proxmoxMachineTemplateSpecProvideDefaults sets the appropriate defaults for ProxmoxMachineTemplateSpec
+         */
+        export function proxmoxMachineTemplateSpecProvideDefaults(val: ProxmoxMachineTemplateSpec): ProxmoxMachineTemplateSpec {
+            return {
+                ...val,
+                template: outputs.infrastructure.v1beta1.proxmoxMachineTemplateSpecTemplateProvideDefaults(val.template),
+            };
+        }
+
+        export interface ProxmoxMachineTemplateSpecTemplate {
+            /**
+             * ObjectMeta is metadata that all persisted resources must have, which includes all objects users must create. This is a copy of customizable fields from metav1.ObjectMeta. 
+             *  ObjectMeta is embedded in `Machine.Spec`, `MachineDeployment.Template` and `MachineSet.Template`, which are not top-level Kubernetes objects. Given that metav1.ObjectMeta has lots of special cases and read-only fields which end up in the generated CRD validation, having it as a subset simplifies the API and some issues that can impact user experience. 
+             *  During the [upgrade to controller-tools@v2](https://github.com/kubernetes-sigs/cluster-api/pull/1054) for v1alpha2, we noticed a failure would occur running Cluster API test suite against the new CRDs, specifically `spec.metadata.creationTimestamp in body must be of type string: "null"`. The investigation showed that `controller-tools@v2` behaves differently than its previous version when handling types from [metav1](k8s.io/apimachinery/pkg/apis/meta/v1) package. 
+             *  In more details, we found that embedded (non-top level) types that embedded `metav1.ObjectMeta` had validation properties, including for `creationTimestamp` (metav1.Time). The `metav1.Time` type specifies a custom json marshaller that, when IsZero() is true, returns `null` which breaks validation because the field isn't marked as nullable. 
+             *  In future versions, controller-tools@v2 might allow overriding the type and validation for embedded types. When that happens, this hack should be revisited.
+             */
+            metadata.omitempty?: outputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateMetadataOmitempty;
+            /**
+             * ProxmoxMachineSpec defines the desired state of ProxmoxMachine
+             */
+            spec: outputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpec;
+        }
+        /**
+         * proxmoxMachineTemplateSpecTemplateProvideDefaults sets the appropriate defaults for ProxmoxMachineTemplateSpecTemplate
+         */
+        export function proxmoxMachineTemplateSpecTemplateProvideDefaults(val: ProxmoxMachineTemplateSpecTemplate): ProxmoxMachineTemplateSpecTemplate {
+            return {
+                ...val,
+                spec: outputs.infrastructure.v1beta1.proxmoxMachineTemplateSpecTemplateSpecProvideDefaults(val.spec),
+            };
+        }
+
+        /**
+         * ObjectMeta is metadata that all persisted resources must have, which includes all objects users must create. This is a copy of customizable fields from metav1.ObjectMeta. 
+         *  ObjectMeta is embedded in `Machine.Spec`, `MachineDeployment.Template` and `MachineSet.Template`, which are not top-level Kubernetes objects. Given that metav1.ObjectMeta has lots of special cases and read-only fields which end up in the generated CRD validation, having it as a subset simplifies the API and some issues that can impact user experience. 
+         *  During the [upgrade to controller-tools@v2](https://github.com/kubernetes-sigs/cluster-api/pull/1054) for v1alpha2, we noticed a failure would occur running Cluster API test suite against the new CRDs, specifically `spec.metadata.creationTimestamp in body must be of type string: "null"`. The investigation showed that `controller-tools@v2` behaves differently than its previous version when handling types from [metav1](k8s.io/apimachinery/pkg/apis/meta/v1) package. 
+         *  In more details, we found that embedded (non-top level) types that embedded `metav1.ObjectMeta` had validation properties, including for `creationTimestamp` (metav1.Time). The `metav1.Time` type specifies a custom json marshaller that, when IsZero() is true, returns `null` which breaks validation because the field isn't marked as nullable. 
+         *  In future versions, controller-tools@v2 might allow overriding the type and validation for embedded types. When that happens, this hack should be revisited.
+         */
+        export interface ProxmoxMachineTemplateSpecTemplateMetadataOmitempty {
+            /**
+             * Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations
+             */
+            annotations?: {[key: string]: string};
+            /**
+             * Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels
+             */
+            labels?: {[key: string]: string};
+        }
+
+        /**
+         * ProxmoxMachineSpec defines the desired state of ProxmoxMachine
+         */
+        export interface ProxmoxMachineTemplateSpecTemplateSpec {
+            /**
+             * CloudInit defines options related to the bootstrapping systems where CloudInit is used.
+             */
+            cloudInit?: outputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecCloudInit;
+            /**
+             * FailureDomain is the failure domain unique identifier this Machine should be attached to, as defined in Cluster API.
+             */
+            failureDomain?: string;
+            /**
+             * Hardware
+             */
+            hardware?: outputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecHardware;
+            /**
+             * Image is the image to be provisioned
+             */
+            image: outputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecImage;
+            /**
+             * Network
+             */
+            network?: outputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecNetwork;
+            /**
+             * Node is proxmox node hosting vm instance which used for ProxmoxMachine
+             */
+            node?: string;
+            /**
+             * Options for QEMU instance
+             */
+            options?: outputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecOptions;
+            /**
+             * ProviderID
+             */
+            providerID?: string;
+            /**
+             * Storage is name of proxmox storage used by this node. The storage must support "images(VM Disks)" type of content. cappx will use random storage if empty
+             */
+            storage?: string;
+            /**
+             * VMID is proxmox qemu's id
+             */
+            vmID?: number;
+        }
+        /**
+         * proxmoxMachineTemplateSpecTemplateSpecProvideDefaults sets the appropriate defaults for ProxmoxMachineTemplateSpecTemplateSpec
+         */
+        export function proxmoxMachineTemplateSpecTemplateSpecProvideDefaults(val: ProxmoxMachineTemplateSpecTemplateSpec): ProxmoxMachineTemplateSpecTemplateSpec {
+            return {
+                ...val,
+                hardware: (val.hardware ? outputs.infrastructure.v1beta1.proxmoxMachineTemplateSpecTemplateSpecHardwareProvideDefaults(val.hardware) : undefined),
+            };
+        }
+
+        /**
+         * CloudInit defines options related to the bootstrapping systems where CloudInit is used.
+         */
+        export interface ProxmoxMachineTemplateSpecTemplateSpecCloudInit {
+            user?: outputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecCloudInitUser;
+        }
+
+        export interface ProxmoxMachineTemplateSpecTemplateSpecCloudInitUser {
+            bootcmd?: string[];
+            ca_certs?: outputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserCaCerts;
+            chpasswd?: outputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserChpasswd;
+            manage_etc_hosts?: boolean;
+            no_ssh_fingerprints?: boolean;
+            package_update?: boolean;
+            package_upgrade?: boolean;
+            packages?: string[];
+            password?: string;
+            runCmd?: string[];
+            ssh?: outputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserSsh;
+            ssh_authorized_keys?: string[];
+            ssh_keys?: outputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserSshKeys;
+            ssh_pwauth?: boolean;
+            user?: string;
+            users?: outputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserUsers[];
+            writeFiles?: outputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserWriteFiles[];
+        }
+
+        export interface ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserCaCerts {
+            remove_defaults?: boolean;
+            trusted?: string[];
+        }
+
+        export interface ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserChpasswd {
+            expire?: string;
+        }
+
+        export interface ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserSsh {
+            emit_keys_to_console?: boolean;
+        }
+
+        export interface ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserSshKeys {
+            dsa_private?: string;
+            dsa_public?: string;
+            ecdsa_private?: string;
+            ecdsa_public?: string;
+            rsa_private?: string;
+            rsa_public?: string;
+        }
+
+        export interface ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserUsers {
+            expiredate?: string;
+            gecos?: string;
+            groups?: string[];
+            homedir?: string;
+            inactive?: number;
+            lock_passwd?: boolean;
+            name: string;
+            no_create_home?: boolean;
+            no_log_init?: boolean;
+            no_user_group?: boolean;
+            passwd?: string;
+            primary_group?: string;
+            selinux_user?: string;
+            shell?: string;
+            snapuser?: string;
+            ssh_authorized_keys?: string[];
+            ssh_import_id?: string[];
+            ssh_redirect_user?: boolean;
+            sudo?: string[];
+            system?: boolean;
+        }
+
+        export interface ProxmoxMachineTemplateSpecTemplateSpecCloudInitUserWriteFiles {
+            content?: string;
+            defer?: boolean;
+            encoding?: string;
+            owner?: string;
+            path?: string;
+            permissions?: string;
+        }
+
+        /**
+         * Hardware
+         */
+        export interface ProxmoxMachineTemplateSpecTemplateSpecHardware {
+            /**
+             * Select BIOS implementation. Defaults to seabios. seabios or ovmf. Defaults to seabios.
+             */
+            bios?: string;
+            /**
+             * number of CPU cores : 1 ~
+             */
+            cpu?: number;
+            /**
+             * Limit of CPU usage. If the computer has 2 CPUs, it has total of '2' CPU time. Value '0' indicates no CPU limit. Defaults to 0.
+             */
+            cpuLimit?: number;
+            /**
+             * hard disk size
+             */
+            disk?: string;
+            /**
+             * amount of RAM for the VM in MiB : 16 ~
+             */
+            memory?: number;
+            /**
+             * The number of CPU sockets. Defaults to 1.
+             */
+            sockets?: number;
+        }
+        /**
+         * proxmoxMachineTemplateSpecTemplateSpecHardwareProvideDefaults sets the appropriate defaults for ProxmoxMachineTemplateSpecTemplateSpecHardware
+         */
+        export function proxmoxMachineTemplateSpecTemplateSpecHardwareProvideDefaults(val: ProxmoxMachineTemplateSpecTemplateSpecHardware): ProxmoxMachineTemplateSpecTemplateSpecHardware {
+            return {
+                ...val,
+                cpu: (val.cpu) ?? 2,
+                disk: (val.disk) ?? "50G",
+                memory: (val.memory) ?? 4096,
+            };
+        }
+
+        /**
+         * Image is the image to be provisioned
+         */
+        export interface ProxmoxMachineTemplateSpecTemplateSpecImage {
+            /**
+             * Checksum Always better to specify checksum otherwise cappx will download same image for every time. If checksum is specified, cappx will try to avoid downloading existing image.
+             */
+            checksum?: string;
+            /**
+             * ChecksumType
+             */
+            checksumType?: string;
+            /**
+             * URL is a location of an image to deploy. supported formats are iso/qcow2/qed/raw/vdi/vpc/vmdk.
+             */
+            url: string;
+        }
+
+        /**
+         * Network
+         */
+        export interface ProxmoxMachineTemplateSpecTemplateSpecNetwork {
+            /**
+             * to do : should accept multiple IPConfig
+             */
+            ipConfig?: outputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateSpecNetworkIpConfig;
+            /**
+             * DNS server
+             */
+            nameServer?: string;
+            /**
+             * search domain
+             */
+            searchDomain?: string;
+        }
+
+        /**
+         * to do : should accept multiple IPConfig
+         */
+        export interface ProxmoxMachineTemplateSpecTemplateSpecNetworkIpConfig {
+            /**
+             * gateway IPv4
+             */
+            gateway?: string;
+            /**
+             * gateway IPv6
+             */
+            gateway6?: string;
+            /**
+             * IPv4 with CIDR
+             */
+            ip?: string;
+            /**
+             * IPv6 with CIDR
+             */
+            ip6?: string;
+        }
+
+        /**
+         * Options for QEMU instance
+         */
+        export interface ProxmoxMachineTemplateSpecTemplateSpecOptions {
+            /**
+             * Enable/Disable ACPI. Defaults to true.
+             */
+            acpi?: boolean;
+            /**
+             * Virtual processor architecture. Defaults to the host. x86_64 or aarch64.
+             */
+            arch?: string;
+            /**
+             * Amount of target RAM for the VM in MiB. Using zero disables the ballon driver.
+             */
+            balloon?: number;
+            /**
+             * Description for the VM. Shown in the web-interface VM's summary. This is saved as comment inside the configuration file.
+             */
+            description?: string;
+            /**
+             * enable/disable hugepages memory. 0 or 2 or 1024. 0 indicated 'any'
+             */
+            hugePages?: number;
+            /**
+             * Use together with hugepages. If enabled, hugepages will not not be deleted after VM shutdown and can be used for subsequent starts. Defaults to false.
+             */
+            keepHugePages?: boolean;
+            /**
+             * Enable/disable KVM hardware virtualization. Defaults to true.
+             */
+            kvm?: boolean;
+            /**
+             * Set the real time clock (RTC) to local time. This is enabled by default if the `ostype` indicates a Microsoft Windows OS.
+             */
+            localTime?: boolean;
+            /**
+             * Lock/unlock the VM.
+             */
+            lock?: string;
+            /**
+             * Enable/disable NUMA.
+             */
+            numa?: boolean;
+            /**
+             * Specifies whether a VM will be started during system bootup.
+             */
+            onBoot?: boolean;
+            /**
+             * Specify guest operating system. This is used to enable special optimization/features for specific operating systems.
+             */
+            osType?: string;
+            /**
+             * Sets the protection flag of the VM. This will disable the remove VM and remove disk operations. Defaults to false.
+             */
+            protection?: boolean;
+            /**
+             * Allow reboot. If set to 'false' the VM exit on reboot. Defaults to true.
+             */
+            reboot?: boolean;
+            /**
+             * Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning. Auto-ballooning is done by pvestatd. 0 ~ 5000. Defaults to 1000.
+             */
+            shares?: number;
+            /**
+             * Enable/disable the USB tablet device. This device is usually needed to allow absolute mouse positioning with VNC. Else the mouse runs out of sync with normal VNC clients. If you're running lots of console-only guests on one host, you may consider disabling this to save some context switches. This is turned off by default if you use spice (`qm set <vmid> --vga qxl`). Defaults to true.
+             */
+            tablet?: boolean;
+            /**
+             * Tags of the VM. This is only meta information.
+             */
+            tags?: string[];
+            /**
+             * Enable/disable Template. Defaults to false.
+             */
+            template?: boolean;
+            /**
+             * Enable/disable time drift fix. Defaults to false.
+             */
+            timeDriftFix?: boolean;
+            /**
+             * Number of hotplugged vcpus. Defaults to 0.
+             */
+            vcpus?: number;
+            /**
+             * The VM generation ID (vmgenid) device exposes a 128-bit integer value identifier to the guest OS. This allows to notify the guest operating system when the virtual machine is executed with a different configuration (e.g. snapshot execution or creation from a template). The guest operating system notices the change, and is then able to react as appropriate by marking its copies of distributed databases as dirty, re-initializing its random number generator, etc. Note that auto-creation only works when done through API/CLI create or update methods, but not when manually editing the config file. regex: (?:[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}|[01]). Defaults to 1 (autogenerated)
+             */
+            vmGenerationID?: string;
+        }
+
+    }
+}
+
+export namespace ipam {
+    export namespace v1alpha1 {
+        /**
+         * IPAddressClaimSpec is the desired state of an IPAddressClaim.
+         */
+        export interface IPAddressClaimSpec {
+            /**
+             * PoolRef is a reference to the pool from which an IP address should be created.
+             */
+            poolRef: outputs.ipam.v1alpha1.IPAddressClaimSpecPoolRef;
+        }
+
+        /**
+         * PoolRef is a reference to the pool from which an IP address should be created.
+         */
+        export interface IPAddressClaimSpecPoolRef {
+            /**
+             * APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
+             */
+            apiGroup: string;
+            /**
+             * Kind is the type of resource being referenced
+             */
+            kind: string;
+            /**
+             * Name is the name of resource being referenced
+             */
+            name: string;
+        }
+
+        /**
+         * IPAddressClaimStatus is the observed status of a IPAddressClaim.
+         */
+        export interface IPAddressClaimStatus {
+            /**
+             * AddressRef is a reference to the address that was created for this claim.
+             */
+            addressRef?: outputs.ipam.v1alpha1.IPAddressClaimStatusAddressRef;
+            /**
+             * Conditions summarises the current state of the IPAddressClaim
+             */
+            conditions?: outputs.ipam.v1alpha1.IPAddressClaimStatusConditions[];
+        }
+
+        /**
+         * AddressRef is a reference to the address that was created for this claim.
+         */
+        export interface IPAddressClaimStatusAddressRef {
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+             */
+            name?: string;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface IPAddressClaimStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * IPAddressSpec is the desired state of an IPAddress.
+         */
+        export interface IPAddressSpec {
+            /**
+             * Address is the IP address.
+             */
+            address: string;
+            /**
+             * ClaimRef is a reference to the claim this IPAddress was created for.
+             */
+            claimRef: outputs.ipam.v1alpha1.IPAddressSpecClaimRef;
+            /**
+             * Gateway is the network gateway of the network the address is from.
+             */
+            gateway?: string;
+            /**
+             * PoolRef is a reference to the pool that this IPAddress was created from.
+             */
+            poolRef: outputs.ipam.v1alpha1.IPAddressSpecPoolRef;
+            /**
+             * Prefix is the prefix of the address.
+             */
+            prefix: number;
+        }
+
+        /**
+         * ClaimRef is a reference to the claim this IPAddress was created for.
+         */
+        export interface IPAddressSpecClaimRef {
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+             */
+            name?: string;
+        }
+
+        /**
+         * PoolRef is a reference to the pool that this IPAddress was created from.
+         */
+        export interface IPAddressSpecPoolRef {
+            /**
+             * APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
+             */
+            apiGroup: string;
+            /**
+             * Kind is the type of resource being referenced
+             */
+            kind: string;
+            /**
+             * Name is the name of resource being referenced
+             */
+            name: string;
+        }
+
+    }
+}
+
+export namespace metal {
+    export namespace v1alpha1 {
+        /**
+         * EnvironmentSpec defines the desired state of Environment.
+         */
+        export interface EnvironmentSpec {
+            initrd?: outputs.metal.v1alpha1.EnvironmentSpecInitrd;
+            kernel?: outputs.metal.v1alpha1.EnvironmentSpecKernel;
+        }
+
+        export interface EnvironmentSpecInitrd {
+            sha512?: string;
+            url?: string;
+        }
+
+        export interface EnvironmentSpecKernel {
+            args?: string[];
+            sha512?: string;
+            url?: string;
+        }
+
+        /**
+         * EnvironmentStatus defines the observed state of Environment.
+         */
+        export interface EnvironmentStatus {
+            conditions?: outputs.metal.v1alpha1.EnvironmentStatusConditions[];
+        }
+
+        export interface EnvironmentStatusConditions {
+            sha512?: string;
+            status: string;
+            type: string;
+            url?: string;
+        }
+
+        /**
+         * ServerClassSpec defines the desired state of ServerClass.
+         */
+        export interface ServerClassSpec {
+            /**
+             * BootFromDiskMethod specifies the method to exit iPXE to force boot from disk. 
+             *  If not set, controller default is used. Valid values: ipxe-exit, http-404, ipxe-sanboot.
+             */
+            bootFromDiskMethod?: string;
+            /**
+             * Set of config patches to apply to the machine configuration to the servers provisioned via this server class.
+             */
+            configPatches?: outputs.metal.v1alpha1.ServerClassSpecConfigPatches[];
+            /**
+             * Reference to the environment which should be used to provision the servers via this server class.
+             */
+            environmentRef?: outputs.metal.v1alpha1.ServerClassSpecEnvironmentRef;
+            /**
+             * Qualifiers to match on the server spec. 
+             *  If qualifiers are empty, they match all servers. Server should match both qualifiers and selector conditions to be included into the server class.
+             */
+            qualifiers?: outputs.metal.v1alpha1.ServerClassSpecQualifiers;
+            /**
+             * Label selector to filter the matching servers based on labels. A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+             */
+            selector?: outputs.metal.v1alpha1.ServerClassSpecSelector;
+        }
+
+        export interface ServerClassSpecConfigPatches {
+            op: string;
+            path: string;
+            value?: {[key: string]: any};
+        }
+
+        /**
+         * Reference to the environment which should be used to provision the servers via this server class.
+         */
+        export interface ServerClassSpecEnvironmentRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * Qualifiers to match on the server spec. 
+         *  If qualifiers are empty, they match all servers. Server should match both qualifiers and selector conditions to be included into the server class.
+         */
+        export interface ServerClassSpecQualifiers {
+            cpu?: outputs.metal.v1alpha1.ServerClassSpecQualifiersCpu[];
+            labelSelectors?: {[key: string]: string}[];
+            systemInformation?: outputs.metal.v1alpha1.ServerClassSpecQualifiersSystemInformation[];
+        }
+
+        export interface ServerClassSpecQualifiersCpu {
+            manufacturer?: string;
+            version?: string;
+        }
+
+        export interface ServerClassSpecQualifiersSystemInformation {
+            family?: string;
+            manufacturer?: string;
+            productName?: string;
+            serialNumber?: string;
+            skuNumber?: string;
+            version?: string;
+        }
+
+        /**
+         * Label selector to filter the matching servers based on labels. A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+         */
+        export interface ServerClassSpecSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.metal.v1alpha1.ServerClassSpecSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ServerClassSpecSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * ServerClassStatus defines the observed state of ServerClass.
+         */
+        export interface ServerClassStatus {
+            serversAvailable: string[];
+            serversInUse: string[];
+        }
+
+        /**
+         * ServerSpec defines the desired state of Server.
+         */
+        export interface ServerSpec {
+            accepted: boolean;
+            /**
+             * BMC defines data about how to talk to the node via ipmitool.
+             */
+            bmc?: outputs.metal.v1alpha1.ServerSpecBmc;
+            /**
+             * BootFromDiskMethod specifies the method to exit iPXE to force boot from disk. 
+             *  If not set, controller default is used. Valid values: ipxe-exit, http-404, ipxe-sanboot.
+             */
+            bootFromDiskMethod?: string;
+            configPatches?: outputs.metal.v1alpha1.ServerSpecConfigPatches[];
+            cordoned?: boolean;
+            cpu?: outputs.metal.v1alpha1.ServerSpecCpu;
+            /**
+             * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+             *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+             */
+            environmentRef?: outputs.metal.v1alpha1.ServerSpecEnvironmentRef;
+            hostname?: string;
+            /**
+             * ManagementAPI defines data about how to talk to the node via simple HTTP API.
+             */
+            managementApi?: outputs.metal.v1alpha1.ServerSpecManagementApi;
+            pxeBootAlways?: boolean;
+            /**
+             * PXEMode specifies the method to trigger PXE boot via IPMI. 
+             *  If not set, controller default is used. Valid values: uefi, bios.
+             */
+            pxeMode?: string;
+            system?: outputs.metal.v1alpha1.ServerSpecSystem;
+        }
+
+        /**
+         * BMC defines data about how to talk to the node via ipmitool.
+         */
+        export interface ServerSpecBmc {
+            /**
+             * BMC endpoint.
+             */
+            endpoint: string;
+            /**
+             * BMC Interface Type. Defaults to lanplus.
+             */
+            interface?: string;
+            /**
+             * BMC password value.
+             */
+            pass?: string;
+            /**
+             * Source for the password value. Cannot be used if Pass is not empty.
+             */
+            passFrom?: outputs.metal.v1alpha1.ServerSpecBmcPassFrom;
+            /**
+             * BMC port. Defaults to 623.
+             */
+            port?: number;
+            /**
+             * BMC user value.
+             */
+            user?: string;
+            /**
+             * Source for the user value. Cannot be used if User is not empty.
+             */
+            userFrom?: outputs.metal.v1alpha1.ServerSpecBmcUserFrom;
+        }
+
+        /**
+         * Source for the password value. Cannot be used if Pass is not empty.
+         */
+        export interface ServerSpecBmcPassFrom {
+            /**
+             * SecretKeyRef defines a ref to a given key within a secret.
+             */
+            secretKeyRef?: outputs.metal.v1alpha1.ServerSpecBmcPassFromSecretKeyRef;
+        }
+
+        /**
+         * SecretKeyRef defines a ref to a given key within a secret.
+         */
+        export interface ServerSpecBmcPassFromSecretKeyRef {
+            /**
+             * Key to select
+             */
+            key: string;
+            name: string;
+            /**
+             * Namespace and name of credential secret nb: can't use namespacedname here b/c it doesn't have json tags in the struct :(
+             */
+            namespace: string;
+        }
+
+        /**
+         * Source for the user value. Cannot be used if User is not empty.
+         */
+        export interface ServerSpecBmcUserFrom {
+            /**
+             * SecretKeyRef defines a ref to a given key within a secret.
+             */
+            secretKeyRef?: outputs.metal.v1alpha1.ServerSpecBmcUserFromSecretKeyRef;
+        }
+
+        /**
+         * SecretKeyRef defines a ref to a given key within a secret.
+         */
+        export interface ServerSpecBmcUserFromSecretKeyRef {
+            /**
+             * Key to select
+             */
+            key: string;
+            name: string;
+            /**
+             * Namespace and name of credential secret nb: can't use namespacedname here b/c it doesn't have json tags in the struct :(
+             */
+            namespace: string;
+        }
+
+        export interface ServerSpecConfigPatches {
+            op: string;
+            path: string;
+            value?: {[key: string]: any};
+        }
+
+        export interface ServerSpecCpu {
+            manufacturer?: string;
+            version?: string;
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface ServerSpecEnvironmentRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * ManagementAPI defines data about how to talk to the node via simple HTTP API.
+         */
+        export interface ServerSpecManagementApi {
+            endpoint: string;
+        }
+
+        export interface ServerSpecSystem {
+            family?: string;
+            manufacturer?: string;
+            productName?: string;
+            serialNumber?: string;
+            skuNumber?: string;
+            version?: string;
+        }
+
+        /**
+         * ServerStatus defines the observed state of Server.
+         */
+        export interface ServerStatus {
+            /**
+             * Addresses lists discovered node IPs.
+             */
+            addresses?: outputs.metal.v1alpha1.ServerStatusAddresses[];
+            /**
+             * Conditions defines current service state of the Server.
+             */
+            conditions?: outputs.metal.v1alpha1.ServerStatusConditions[];
+            /**
+             * InUse is true when server is assigned to some MetalMachine.
+             */
+            inUse?: boolean;
+            /**
+             * IsClean is true when server disks are wiped.
+             */
+            isClean?: boolean;
+            /**
+             * Power is the current power state of the server: "on", "off" or "unknown".
+             */
+            power?: string;
+            /**
+             * Ready is true when server is accepted and in use.
+             */
+            ready?: boolean;
+        }
+
+        /**
+         * NodeAddress contains information for the node's address.
+         */
+        export interface ServerStatusAddresses {
+            /**
+             * The node address.
+             */
+            address: string;
+            /**
+             * Node address type, one of Hostname, ExternalIP or InternalIP.
+             */
+            type: string;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ServerStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+    }
+
+    export namespace v1alpha2 {
+        /**
+         * EnvironmentSpec defines the desired state of Environment.
+         */
+        export interface EnvironmentSpec {
+            initrd?: outputs.metal.v1alpha2.EnvironmentSpecInitrd;
+            kernel?: outputs.metal.v1alpha2.EnvironmentSpecKernel;
+        }
+
+        export interface EnvironmentSpecInitrd {
+            sha512?: string;
+            url?: string;
+        }
+
+        export interface EnvironmentSpecKernel {
+            args?: string[];
+            sha512?: string;
+            url?: string;
+        }
+
+        /**
+         * EnvironmentStatus defines the observed state of Environment.
+         */
+        export interface EnvironmentStatus {
+            conditions?: outputs.metal.v1alpha2.EnvironmentStatusConditions[];
+        }
+
+        export interface EnvironmentStatusConditions {
+            sha512?: string;
+            status: string;
+            type: string;
+            url?: string;
+        }
+
+        /**
+         * ServerClassSpec defines the desired state of ServerClass.
+         */
+        export interface ServerClassSpec {
+            /**
+             * BootFromDiskMethod specifies the method to exit iPXE to force boot from disk. 
+             *  If not set, controller default is used. Valid values: ipxe-exit, http-404, ipxe-sanboot.
+             */
+            bootFromDiskMethod?: string;
+            /**
+             * Set of config patches to apply to the machine configuration to the servers provisioned via this server class.
+             */
+            configPatches?: outputs.metal.v1alpha2.ServerClassSpecConfigPatches[];
+            /**
+             * Reference to the environment which should be used to provision the servers via this server class.
+             */
+            environmentRef?: outputs.metal.v1alpha2.ServerClassSpecEnvironmentRef;
+            /**
+             * Qualifiers to match on the server spec. 
+             *  If qualifiers are empty, they match all servers. Server should match both qualifiers and selector conditions to be included into the server class.
+             */
+            qualifiers?: outputs.metal.v1alpha2.ServerClassSpecQualifiers;
+            /**
+             * Label selector to filter the matching servers based on labels. A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+             */
+            selector?: outputs.metal.v1alpha2.ServerClassSpecSelector;
+        }
+
+        export interface ServerClassSpecConfigPatches {
+            op: string;
+            path: string;
+            value?: {[key: string]: any};
+        }
+
+        /**
+         * Reference to the environment which should be used to provision the servers via this server class.
+         */
+        export interface ServerClassSpecEnvironmentRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * Qualifiers to match on the server spec. 
+         *  If qualifiers are empty, they match all servers. Server should match both qualifiers and selector conditions to be included into the server class.
+         */
+        export interface ServerClassSpecQualifiers {
+            hardware?: outputs.metal.v1alpha2.ServerClassSpecQualifiersHardware[];
+            labelSelectors?: {[key: string]: string}[];
+        }
+
+        export interface ServerClassSpecQualifiersHardware {
+            compute?: outputs.metal.v1alpha2.ServerClassSpecQualifiersHardwareCompute;
+            memory?: outputs.metal.v1alpha2.ServerClassSpecQualifiersHardwareMemory;
+            network?: outputs.metal.v1alpha2.ServerClassSpecQualifiersHardwareNetwork;
+            storage?: outputs.metal.v1alpha2.ServerClassSpecQualifiersHardwareStorage;
+            system?: outputs.metal.v1alpha2.ServerClassSpecQualifiersHardwareSystem;
+        }
+
+        export interface ServerClassSpecQualifiersHardwareCompute {
+            processorCount?: number;
+            processors?: outputs.metal.v1alpha2.ServerClassSpecQualifiersHardwareComputeProcessors[];
+            totalCoreCount?: number;
+            totalThreadCount?: number;
+        }
+
+        export interface ServerClassSpecQualifiersHardwareComputeProcessors {
+            coreCount?: number;
+            manufacturer?: string;
+            productName?: string;
+            serialNumber?: string;
+            /**
+             * Speed is in megahertz (Mhz)
+             */
+            speed?: number;
+            threadCount?: number;
+        }
+
+        export interface ServerClassSpecQualifiersHardwareMemory {
+            moduleCount?: number;
+            modules?: outputs.metal.v1alpha2.ServerClassSpecQualifiersHardwareMemoryModules[];
+            totalSize?: string;
+        }
+
+        export interface ServerClassSpecQualifiersHardwareMemoryModules {
+            manufacturer?: string;
+            productName?: string;
+            serialNumber?: string;
+            /**
+             * Size is in megabytes (MB)
+             */
+            size?: number;
+            /**
+             * Speed is in megatransfers per second (MT/S)
+             */
+            speed?: number;
+            type?: string;
+        }
+
+        export interface ServerClassSpecQualifiersHardwareNetwork {
+            interfaceCount?: number;
+            interfaces?: outputs.metal.v1alpha2.ServerClassSpecQualifiersHardwareNetworkInterfaces[];
+        }
+
+        export interface ServerClassSpecQualifiersHardwareNetworkInterfaces {
+            addresses?: string[];
+            flags?: string;
+            index?: number;
+            mac?: string;
+            mtu?: number;
+            name?: string;
+        }
+
+        export interface ServerClassSpecQualifiersHardwareStorage {
+            deviceCount?: number;
+            devices?: outputs.metal.v1alpha2.ServerClassSpecQualifiersHardwareStorageDevices[];
+            totalSize?: string;
+        }
+
+        export interface ServerClassSpecQualifiersHardwareStorageDevices {
+            deviceName?: string;
+            name?: string;
+            productName?: string;
+            serialNumber?: string;
+            /**
+             * Size is in bytes
+             */
+            size?: number;
+            type?: string;
+            uuid?: string;
+            wwid?: string;
+        }
+
+        export interface ServerClassSpecQualifiersHardwareSystem {
+            family?: string;
+            manufacturer?: string;
+            productName?: string;
+            serialNumber?: string;
+            skuNumber?: string;
+            uuid?: string;
+            version?: string;
+        }
+
+        /**
+         * Label selector to filter the matching servers based on labels. A label selector is a label query over a set of resources. The result of matchLabels and matchExpressions are ANDed. An empty label selector matches all objects. A null label selector matches no objects.
+         */
+        export interface ServerClassSpecSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.metal.v1alpha2.ServerClassSpecSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ServerClassSpecSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * ServerClassStatus defines the observed state of ServerClass.
+         */
+        export interface ServerClassStatus {
+            serversAvailable: string[];
+            serversInUse: string[];
+        }
+
+        /**
+         * ServerSpec defines the desired state of Server.
+         */
+        export interface ServerSpec {
+            accepted: boolean;
+            /**
+             * BMC defines data about how to talk to the node via ipmitool.
+             */
+            bmc?: outputs.metal.v1alpha2.ServerSpecBmc;
+            /**
+             * BootFromDiskMethod specifies the method to exit iPXE to force boot from disk. 
+             *  If not set, controller default is used. Valid values: ipxe-exit, http-404, ipxe-sanboot.
+             */
+            bootFromDiskMethod?: string;
+            configPatches?: outputs.metal.v1alpha2.ServerSpecConfigPatches[];
+            cordoned?: boolean;
+            /**
+             * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+             *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+             */
+            environmentRef?: outputs.metal.v1alpha2.ServerSpecEnvironmentRef;
+            hardware?: outputs.metal.v1alpha2.ServerSpecHardware;
+            hostname?: string;
+            /**
+             * ManagementAPI defines data about how to talk to the node via simple HTTP API.
+             */
+            managementApi?: outputs.metal.v1alpha2.ServerSpecManagementApi;
+            pxeBootAlways?: boolean;
+            /**
+             * PXEMode specifies the method to trigger PXE boot via IPMI. 
+             *  If not set, controller default is used. Valid values: uefi, bios.
+             */
+            pxeMode?: string;
+        }
+
+        /**
+         * BMC defines data about how to talk to the node via ipmitool.
+         */
+        export interface ServerSpecBmc {
+            /**
+             * BMC endpoint.
+             */
+            endpoint: string;
+            /**
+             * BMC Interface Type. Defaults to lanplus.
+             */
+            interface?: string;
+            /**
+             * BMC password value.
+             */
+            pass?: string;
+            /**
+             * Source for the password value. Cannot be used if Pass is not empty.
+             */
+            passFrom?: outputs.metal.v1alpha2.ServerSpecBmcPassFrom;
+            /**
+             * BMC port. Defaults to 623.
+             */
+            port?: number;
+            /**
+             * BMC user value.
+             */
+            user?: string;
+            /**
+             * Source for the user value. Cannot be used if User is not empty.
+             */
+            userFrom?: outputs.metal.v1alpha2.ServerSpecBmcUserFrom;
+        }
+
+        /**
+         * Source for the password value. Cannot be used if Pass is not empty.
+         */
+        export interface ServerSpecBmcPassFrom {
+            /**
+             * SecretKeyRef defines a ref to a given key within a secret.
+             */
+            secretKeyRef?: outputs.metal.v1alpha2.ServerSpecBmcPassFromSecretKeyRef;
+        }
+
+        /**
+         * SecretKeyRef defines a ref to a given key within a secret.
+         */
+        export interface ServerSpecBmcPassFromSecretKeyRef {
+            /**
+             * Key to select
+             */
+            key: string;
+            name: string;
+            /**
+             * Namespace and name of credential secret nb: can't use namespacedname here b/c it doesn't have json tags in the struct :(
+             */
+            namespace: string;
+        }
+
+        /**
+         * Source for the user value. Cannot be used if User is not empty.
+         */
+        export interface ServerSpecBmcUserFrom {
+            /**
+             * SecretKeyRef defines a ref to a given key within a secret.
+             */
+            secretKeyRef?: outputs.metal.v1alpha2.ServerSpecBmcUserFromSecretKeyRef;
+        }
+
+        /**
+         * SecretKeyRef defines a ref to a given key within a secret.
+         */
+        export interface ServerSpecBmcUserFromSecretKeyRef {
+            /**
+             * Key to select
+             */
+            key: string;
+            name: string;
+            /**
+             * Namespace and name of credential secret nb: can't use namespacedname here b/c it doesn't have json tags in the struct :(
+             */
+            namespace: string;
+        }
+
+        export interface ServerSpecConfigPatches {
+            op: string;
+            path: string;
+            value?: {[key: string]: any};
+        }
+
+        /**
+         * ObjectReference contains enough information to let you inspect or modify the referred object. --- New uses of this type are discouraged because of difficulty describing its usage when embedded in APIs. 1. Ignored fields.  It includes many fields which are not generally honored.  For instance, ResourceVersion and FieldPath are both very rarely valid in actual usage. 2. Invalid usage help.  It is impossible to add specific help for individual usage.  In most embedded usages, there are particular restrictions like, "must refer only to types A and B" or "UID not honored" or "name must be restricted". Those cannot be well described when embedded. 3. Inconsistent validation.  Because the usages are different, the validation rules are different by usage, which makes it hard for users to predict what will happen. 4. The fields are both imprecise and overly precise.  Kind is not a precise mapping to a URL. This can produce ambiguity during interpretation and require a REST mapping.  In most cases, the dependency is on the group,resource tuple and the version of the actual struct is irrelevant. 5. We cannot easily change it.  Because this type is embedded in many locations, updates to this type will affect numerous schemas.  Don't make new APIs embed an underspecified API type they do not control. 
+         *  Instead of using this type, create a locally provided and used type that is well-focused on your reference. For example, ServiceReferences for admission registration: https://github.com/kubernetes/api/blob/release-1.17/admissionregistration/v1/types.go#L533 .
+         */
+        export interface ServerSpecEnvironmentRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        export interface ServerSpecHardware {
+            compute?: outputs.metal.v1alpha2.ServerSpecHardwareCompute;
+            memory?: outputs.metal.v1alpha2.ServerSpecHardwareMemory;
+            network?: outputs.metal.v1alpha2.ServerSpecHardwareNetwork;
+            storage?: outputs.metal.v1alpha2.ServerSpecHardwareStorage;
+            system?: outputs.metal.v1alpha2.ServerSpecHardwareSystem;
+        }
+
+        export interface ServerSpecHardwareCompute {
+            processorCount?: number;
+            processors?: outputs.metal.v1alpha2.ServerSpecHardwareComputeProcessors[];
+            totalCoreCount?: number;
+            totalThreadCount?: number;
+        }
+
+        export interface ServerSpecHardwareComputeProcessors {
+            coreCount?: number;
+            manufacturer?: string;
+            productName?: string;
+            serialNumber?: string;
+            /**
+             * Speed is in megahertz (Mhz)
+             */
+            speed?: number;
+            threadCount?: number;
+        }
+
+        export interface ServerSpecHardwareMemory {
+            moduleCount?: number;
+            modules?: outputs.metal.v1alpha2.ServerSpecHardwareMemoryModules[];
+            totalSize?: string;
+        }
+
+        export interface ServerSpecHardwareMemoryModules {
+            manufacturer?: string;
+            productName?: string;
+            serialNumber?: string;
+            /**
+             * Size is in megabytes (MB)
+             */
+            size?: number;
+            /**
+             * Speed is in megatransfers per second (MT/S)
+             */
+            speed?: number;
+            type?: string;
+        }
+
+        export interface ServerSpecHardwareNetwork {
+            interfaceCount?: number;
+            interfaces?: outputs.metal.v1alpha2.ServerSpecHardwareNetworkInterfaces[];
+        }
+
+        export interface ServerSpecHardwareNetworkInterfaces {
+            addresses?: string[];
+            flags?: string;
+            index?: number;
+            mac?: string;
+            mtu?: number;
+            name?: string;
+        }
+
+        export interface ServerSpecHardwareStorage {
+            deviceCount?: number;
+            devices?: outputs.metal.v1alpha2.ServerSpecHardwareStorageDevices[];
+            totalSize?: string;
+        }
+
+        export interface ServerSpecHardwareStorageDevices {
+            deviceName?: string;
+            name?: string;
+            productName?: string;
+            serialNumber?: string;
+            /**
+             * Size is in bytes
+             */
+            size?: number;
+            type?: string;
+            uuid?: string;
+            wwid?: string;
+        }
+
+        export interface ServerSpecHardwareSystem {
+            family?: string;
+            manufacturer?: string;
+            productName?: string;
+            serialNumber?: string;
+            skuNumber?: string;
+            uuid?: string;
+            version?: string;
+        }
+
+        /**
+         * ManagementAPI defines data about how to talk to the node via simple HTTP API.
+         */
+        export interface ServerSpecManagementApi {
+            endpoint: string;
+        }
+
+        /**
+         * ServerStatus defines the observed state of Server.
+         */
+        export interface ServerStatus {
+            /**
+             * Addresses lists discovered node IPs.
+             */
+            addresses?: outputs.metal.v1alpha2.ServerStatusAddresses[];
+            /**
+             * Conditions defines current service state of the Server.
+             */
+            conditions?: outputs.metal.v1alpha2.ServerStatusConditions[];
+            /**
+             * InUse is true when server is assigned to some MetalMachine.
+             */
+            inUse?: boolean;
+            /**
+             * IsClean is true when server disks are wiped.
+             */
+            isClean?: boolean;
+            /**
+             * Power is the current power state of the server: "on", "off" or "unknown".
+             */
+            power?: string;
+            /**
+             * Ready is true when server is accepted and in use.
+             */
+            ready?: boolean;
+        }
+
+        /**
+         * NodeAddress contains information for the node's address.
+         */
+        export interface ServerStatusAddresses {
+            /**
+             * The node address.
+             */
+            address: string;
+            /**
+             * Node address type, one of Hostname, ExternalIP or InternalIP.
+             */
+            type: string;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ServerStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+    }
+}
+
+export namespace runtime {
+    export namespace v1alpha1 {
+        /**
+         * ExtensionConfigSpec is the desired state of the ExtensionConfig
+         */
+        export interface ExtensionConfigSpec {
+            /**
+             * ClientConfig defines how to communicate with the Extension server.
+             */
+            clientConfig: outputs.runtime.v1alpha1.ExtensionConfigSpecClientConfig;
+            /**
+             * NamespaceSelector decides whether to call the hook for an object based on whether the namespace for that object matches the selector. Defaults to the empty LabelSelector, which matches all objects.
+             */
+            namespaceSelector?: outputs.runtime.v1alpha1.ExtensionConfigSpecNamespaceSelector;
+            /**
+             * Settings defines key value pairs to be passed to all calls to all supported RuntimeExtensions. Note: Settings can be overridden on the ClusterClass.
+             */
+            settings?: {[key: string]: string};
+        }
+
+        /**
+         * ClientConfig defines how to communicate with the Extension server.
+         */
+        export interface ExtensionConfigSpecClientConfig {
+            /**
+             * CABundle is a PEM encoded CA bundle which will be used to validate the Extension server's server certificate.
+             */
+            caBundle?: string;
+            /**
+             * Service is a reference to the Kubernetes service for the Extension server. Note: Exactly one of `url` or `service` must be specified. 
+             *  If the Extension server is running within a cluster, then you should use `service`.
+             */
+            service?: outputs.runtime.v1alpha1.ExtensionConfigSpecClientConfigService;
+            /**
+             * URL gives the location of the Extension server, in standard URL form (`scheme://host:port/path`). Note: Exactly one of `url` or `service` must be specified. 
+             *  The scheme must be "https". 
+             *  The `host` should not refer to a service running in the cluster; use the `service` field instead. 
+             *  A path is optional, and if present may be any string permissible in a URL. If a path is set it will be used as prefix to the hook-specific path. 
+             *  Attempting to use a user or basic auth e.g. "user:password@" is not allowed. Fragments ("#...") and query parameters ("?...") are not allowed either.
+             */
+            url?: string;
+        }
+
+        /**
+         * Service is a reference to the Kubernetes service for the Extension server. Note: Exactly one of `url` or `service` must be specified. 
+         *  If the Extension server is running within a cluster, then you should use `service`.
+         */
+        export interface ExtensionConfigSpecClientConfigService {
+            /**
+             * Name is the name of the service.
+             */
+            name: string;
+            /**
+             * Namespace is the namespace of the service.
+             */
+            namespace: string;
+            /**
+             * Path is an optional URL path and if present may be any string permissible in a URL. If a path is set it will be used as prefix to the hook-specific path.
+             */
+            path?: string;
+            /**
+             * Port is the port on the service that's hosting the Extension server. Defaults to 443. Port should be a valid port number (1-65535, inclusive).
+             */
+            port?: number;
+        }
+
+        /**
+         * NamespaceSelector decides whether to call the hook for an object based on whether the namespace for that object matches the selector. Defaults to the empty LabelSelector, which matches all objects.
+         */
+        export interface ExtensionConfigSpecNamespaceSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions?: outputs.runtime.v1alpha1.ExtensionConfigSpecNamespaceSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels?: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+         */
+        export interface ExtensionConfigSpecNamespaceSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+             */
+            values?: string[];
+        }
+
+        /**
+         * ExtensionConfigStatus is the current state of the ExtensionConfig
+         */
+        export interface ExtensionConfigStatus {
+            /**
+             * Conditions define the current service state of the ExtensionConfig.
+             */
+            conditions?: outputs.runtime.v1alpha1.ExtensionConfigStatusConditions[];
+            /**
+             * Handlers defines the current ExtensionHandlers supported by an Extension.
+             */
+            handlers?: outputs.runtime.v1alpha1.ExtensionConfigStatusHandlers[];
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface ExtensionConfigStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+        /**
+         * ExtensionHandler specifies the details of a handler for a particular runtime hook registered by an Extension server.
+         */
+        export interface ExtensionConfigStatusHandlers {
+            /**
+             * FailurePolicy defines how failures in calls to the ExtensionHandler should be handled by a client. Defaults to Fail if not set.
+             */
+            failurePolicy?: string;
+            /**
+             * Name is the unique name of the ExtensionHandler.
+             */
+            name: string;
+            /**
+             * RequestHook defines the versioned runtime hook which this ExtensionHandler serves.
+             */
+            requestHook: outputs.runtime.v1alpha1.ExtensionConfigStatusHandlersRequestHook;
+            /**
+             * TimeoutSeconds defines the timeout duration for client calls to the ExtensionHandler. Defaults to 10 is not set.
+             */
+            timeoutSeconds?: number;
+        }
+
+        /**
+         * RequestHook defines the versioned runtime hook which this ExtensionHandler serves.
+         */
+        export interface ExtensionConfigStatusHandlersRequestHook {
+            /**
+             * APIVersion is the group and version of the Hook.
+             */
+            apiVersion: string;
+            /**
+             * Hook is the name of the hook.
+             */
+            hook: string;
         }
 
     }
