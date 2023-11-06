@@ -28,7 +28,6 @@
         ".+?: (?<currentValue>\\S*) # renovate depName=(?<depName>\\S*)(?: extractVersion=(?<extractVersion>\\S*))*"
       ],
       "versioningTemplate": "semver-coerced",
-      "extractVersionTemplate": "{{#if extractVersion}}{{{extractVersion}}}{{else}}^v(?<version>.*){{/if}}",
       "datasourceTemplate": "github-tags"
     }
   ],
@@ -45,8 +44,7 @@
         "siderolabs/talos",
         "sp-yduck/cluster-api-provider-proxmox"
       ],
-      "dependencyDashboardApproval": true,
-      "extractVersion": "^v(?<version>.*)"
+      "dependencyDashboardApproval": true
     },
     {
       "matchPackagePatterns": [
