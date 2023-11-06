@@ -6,3 +6,4 @@ config:
     - clusterapi
     - proxmox
     - sidero
+    - pulumiOperator

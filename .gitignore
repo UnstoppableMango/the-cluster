@@ -34,3 +34,4 @@ tmp/
 # Generated code
 generated.yaml
 output.yaml
+*.bac
