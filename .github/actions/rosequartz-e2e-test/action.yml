@@ -43,6 +43,27 @@ runs:
       shell: bash
 
     - run: npm ci
+      working-directory: apps/crds
+      shell: bash
+
+    - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
+      working-directory: apps/crds
+      shell: bash
+
+    - run: pulumi stack init "${{ inputs.stack }}" --copy-config-from rosequartz
+      working-directory: apps/crds
+      shell: bash
+
+    - uses: pulumi/actions@v4
+      with:
+        stack-name: UnstoppableMango/thecluster-crds/${{ inputs.stack }}
+        command: up
+        work-dir: apps/crds
+        pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
+        comment-on-pr: false
+        comment-on-summary: false
+
+    - run: npm ci
       working-directory: apps/cert-manager
       shell: bash
 
