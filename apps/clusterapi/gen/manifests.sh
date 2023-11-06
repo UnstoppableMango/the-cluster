@@ -58,6 +58,8 @@ export SIDERO_CONTROLLER_MANAGER_DEPLOYMENT_STRATEGY=Recreate
 export SIDERO_CONTROLLER_MANAGER_API_ENDPOINT="$(pulumi -C "$root" config get sideroApiEndpoint)"
 export SIDERO_CONTROLLER_MANAGER_AUTO_BMC_SETUP=false
 
+"$root/gen/clusterctl-config.sh"
+
 gen --core "cluster-api" $coreVersion
 gen --bootstrap "talos" $cabptVersion
 gen --control-plane "talos" $cacpptVersion
