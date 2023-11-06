@@ -9,4 +9,4 @@ config:
       sidero: 0.6.1 # renovate depName=siderolabs/sidero
       cabpt: 0.6.2 # renovate depName=siderolabs/cluster-api-bootstrap-provider-talos
       cacppt: 0.5.3 # renovate depName=siderolabs/cluster-api-control-plane-provider-talos
-      cert-manager: 1.13.1 # renovate depName="cert-manager/cert-manager"
+      cert-manager: 1.13.1 # renovate depName=cert-manager/cert-manager
