@@ -16033,6 +16033,1721 @@ export namespace metal {
     }
 }
 
+export namespace pulumi {
+    export namespace v1 {
+        export interface ProgramProgram {
+            /**
+             * configuration specifies the Pulumi config inputs to the deployment. Either type or default is required.
+             */
+            configuration?: {[key: string]: outputs.pulumi.v1.ProgramProgramConfiguration};
+            /**
+             * outputs specifies the Pulumi stack outputs of the program and how they are computed from the resources.
+             */
+            outputs?: {[key: string]: {[key: string]: any}};
+            /**
+             * resources declares the Pulumi resources that will be deployed and managed by the program.
+             */
+            resources?: {[key: string]: outputs.pulumi.v1.ProgramProgramResources};
+            /**
+             * variables specifies intermediate values of the program; the values of variables are expressions that can be re-used.
+             */
+            variables?: {[key: string]: {[key: string]: any}};
+        }
+
+        export interface ProgramProgramConfiguration {
+            /**
+             * default is a value of the appropriate type for the template to use if no value is specified.
+             */
+            default?: {[key: string]: any};
+            /**
+             * type is the (required) data type for the parameter.
+             */
+            type?: string;
+        }
+
+        export interface ProgramProgramResources {
+            /**
+             * A getter function for the resource. Supplying get is mutually exclusive to properties.
+             */
+            get?: outputs.pulumi.v1.ProgramProgramResourcesGet;
+            /**
+             * options contains all resource options supported by Pulumi.
+             */
+            options?: outputs.pulumi.v1.ProgramProgramResourcesOptions;
+            /**
+             * properties contains the primary resource-specific keys and values to initialize the resource state.
+             */
+            properties?: {[key: string]: {[key: string]: any}};
+            /**
+             * type is the Pulumi type token for this resource.
+             */
+            type: string;
+        }
+
+        /**
+         * A getter function for the resource. Supplying get is mutually exclusive to properties.
+         */
+        export interface ProgramProgramResourcesGet {
+            /**
+             * The ID of the resource to import.
+             */
+            id: string;
+            /**
+             * state contains the known properties (input & output) of the resource. This assists the provider in figuring out the correct resource.
+             */
+            state?: {[key: string]: {[key: string]: any}};
+        }
+
+        /**
+         * options contains all resource options supported by Pulumi.
+         */
+        export interface ProgramProgramResourcesOptions {
+            /**
+             * additionalSecretOutputs specifies properties that must be encrypted as secrets.
+             */
+            additionalSecretOutputs?: string[];
+            /**
+             * aliases specifies names that this resource used to have, so that renaming or refactoring doesn’t replace it.
+             */
+            aliases?: string[];
+            /**
+             * customTimeouts overrides the default retry/timeout behavior for resource provisioning.
+             */
+            customTimeouts?: outputs.pulumi.v1.ProgramProgramResourcesOptionsCustomTimeouts;
+            /**
+             * deleteBeforeReplace overrides the default create-before-delete behavior when replacing.
+             */
+            deleteBeforeReplace?: boolean;
+            /**
+             * dependsOn adds explicit dependencies in addition to the ones in the dependency graph.
+             */
+            dependsOn?: {[key: string]: any}[];
+            /**
+             * ignoreChanges declares that changes to certain properties should be ignored when diffing.
+             */
+            ignoreChanges?: string[];
+            /**
+             * import adopts an existing resource from your cloud account under the control of Pulumi.
+             */
+            import?: string;
+            /**
+             * parent resource option specifies a parent for a resource. It is used to associate children with the parents that encapsulate or are responsible for them.
+             */
+            parent?: {[key: string]: any};
+            /**
+             * protect prevents accidental deletion of a resource.
+             */
+            protect?: boolean;
+            /**
+             * provider resource option sets a provider for the resource.
+             */
+            provider?: {[key: string]: any};
+            /**
+             * providers resource option sets a map of providers for the resource and its children.
+             */
+            providers?: {[key: string]: {[key: string]: any}};
+            /**
+             * version specifies a provider plugin version that should be used when operating on a resource.
+             */
+            version?: string;
+        }
+
+        /**
+         * customTimeouts overrides the default retry/timeout behavior for resource provisioning.
+         */
+        export interface ProgramProgramResourcesOptionsCustomTimeouts {
+            /**
+             * create is the custom timeout for create operations.
+             */
+            create?: string;
+            /**
+             * delete is the custom timeout for delete operations.
+             */
+            delete?: string;
+            /**
+             * update is the custom timeout for update operations.
+             */
+            update?: string;
+        }
+
+        /**
+         * StackSpec defines the desired state of Pulumi Stack being managed by this operator.
+         */
+        export interface StackSpec {
+            /**
+             * (optional) AccessTokenSecret is the name of a Secret containing the PULUMI_ACCESS_TOKEN for Pulumi access. Deprecated: use EnvRefs with a "secret" entry with the key PULUMI_ACCESS_TOKEN instead.
+             */
+            accessTokenSecret?: string;
+            /**
+             * (optional) Backend is an optional backend URL to use for all Pulumi operations.<br/> Examples:<br/> - Pulumi Service:              "https://app.pulumi.com" (default)<br/> - Self-managed Pulumi Service: "https://pulumi.acmecorp.com" <br/> - Local:                       "file://./einstein" <br/> - AWS:                         "s3://<my-pulumi-state-bucket>" <br/> - Azure:                       "azblob://<my-pulumi-state-bucket>" <br/> - GCP:                         "gs://<my-pulumi-state-bucket>" <br/> See: https://www.pulumi.com/docs/intro/concepts/state/
+             */
+            backend?: string;
+            /**
+             * (optional) Branch is the branch name to deploy, either the simple or fully qualified ref name, e.g. refs/heads/master. This is mutually exclusive with the Commit setting. Either value needs to be specified. When specified, the operator will periodically poll to check if the branch has any new commits. The frequency of the polling is configurable through ResyncFrequencySeconds, defaulting to every 60 seconds.
+             */
+            branch?: string;
+            /**
+             * (optional) Commit is the hash of the commit to deploy. If used, HEAD will be in detached mode. This is mutually exclusive with the Branch setting. Either value needs to be specified.
+             */
+            commit?: string;
+            /**
+             * (optional) Config is the configuration for this stack, which can be optionally specified inline. If this is omitted, configuration is assumed to be checked in and taken from the source repository.
+             */
+            config?: {[key: string]: string};
+            /**
+             * (optional) ContinueResyncOnCommitMatch - when true - informs the operator to continue trying to update stacks even if the revision of the source matches. This might be useful in environments where Pulumi programs have dynamic elements for example, calls to internal APIs where GitOps style commit tracking is not sufficient.  Defaults to false, i.e. when a particular revision is successfully run, the operator will not attempt to rerun the program at that revision again.
+             */
+            continueResyncOnCommitMatch?: boolean;
+            /**
+             * (optional) DestroyOnFinalize can be set to true to destroy the stack completely upon deletion of the Stack custom resource.
+             */
+            destroyOnFinalize?: boolean;
+            /**
+             * (optional) EnvRefs is an optional map containing environment variables as keys and stores descriptors to where the variables' values should be loaded from (one of literal, environment variable, file on the filesystem, or Kubernetes Secret) as values.
+             */
+            envRefs?: {[key: string]: outputs.pulumi.v1.StackSpecEnvRefs};
+            /**
+             * (optional) SecretEnvs is an optional array of Secret names containing environment variables to set. Deprecated: use EnvRefs instead.
+             */
+            envSecrets?: string[];
+            /**
+             * (optional) Envs is an optional array of config maps containing environment variables to set. Deprecated: use EnvRefs instead.
+             */
+            envs?: string[];
+            /**
+             * (optional) ExpectNoRefreshChanges can be set to true if a stack is not expected to have changes during a refresh before the update is run. This could occur, for example, is a resource's state is changing outside of Pulumi (e.g., metadata, timestamps).
+             */
+            expectNoRefreshChanges?: boolean;
+            /**
+             * FluxSource specifies how to fetch source code from a Flux source object.
+             */
+            fluxSource?: outputs.pulumi.v1.StackSpecFluxSource;
+            /**
+             * (optional) GitAuth allows configuring git authentication options There are 3 different authentication options: * SSH private key (and its optional password) * Personal access token * Basic auth username and password Only one authentication mode will be considered if more than one option is specified, with ssh private key/password preferred first, then personal access token, and finally basic auth credentials.
+             */
+            gitAuth?: outputs.pulumi.v1.StackSpecGitAuth;
+            /**
+             * (optional) GitAuthSecret is the the name of a Secret containing an authentication option for the git repository. There are 3 different authentication options: * Personal access token * SSH private key (and it's optional password) * Basic auth username and password Only one authentication mode will be considered if more than one option is specified, with ssh private key/password preferred first, then personal access token, and finally basic auth credentials. Deprecated. Use GitAuth instead.
+             */
+            gitAuthSecret?: string;
+            /**
+             * (optional) Prerequisites is a list of references to other stacks, each with a constraint on how long ago it must have succeeded. This can be used to make sure e.g., state is re-evaluated before running a stack that depends on it.
+             */
+            prerequisites?: outputs.pulumi.v1.StackSpecPrerequisites[];
+            /**
+             * ProgramRef refers to a Program object, to be used as the source for the stack.
+             */
+            programRef?: outputs.pulumi.v1.StackSpecProgramRef;
+            /**
+             * ProjectRepo is the git source control repository from which we fetch the project code and configuration.
+             */
+            projectRepo?: string;
+            /**
+             * (optional) Refresh can be set to true to refresh the stack before it is updated.
+             */
+            refresh?: boolean;
+            /**
+             * (optional) RepoDir is the directory to work from in the project's source repository where Pulumi.yaml is located. It is used in case Pulumi.yaml is not in the project source root.
+             */
+            repoDir?: string;
+            /**
+             * (optional) ResyncFrequencySeconds when set to a non-zero value, triggers a resync of the stack at the specified frequency even if no changes to the custom resource are detected. If branch tracking is enabled (branch is non-empty), commit polling will occur at this frequency. The minimal resync frequency supported is 60 seconds. The default value for this field is 60 seconds.
+             */
+            resyncFrequencySeconds?: number;
+            /**
+             * (optional) RetryOnUpdateConflict issues a stack update retry reconciliation loop in the event that the update hits a HTTP 409 conflict due to another update in progress. This is only recommended if you are sure that the stack updates are idempotent, and if you are willing to accept retry loops until all spawned retries succeed. This will also create a more populated, and randomized activity timeline for the stack in the Pulumi Service.
+             */
+            retryOnUpdateConflict?: boolean;
+            /**
+             * (optional) Secrets is the secret configuration for this stack, which can be optionally specified inline. If this is omitted, secrets configuration is assumed to be checked in and taken from the source repository. Deprecated: use SecretRefs instead.
+             */
+            secrets?: {[key: string]: string};
+            /**
+             * (optional) SecretsProvider is used to initialize a Stack with alternative encryption. Examples: - AWS:   "awskms:///arn:aws:kms:us-east-1:111122223333:key/1234abcd-12ab-34bc-56ef-1234567890ab?region=us-east-1" - Azure: "azurekeyvault://acmecorpvault.vault.azure.net/keys/mykeyname" - GCP:   "gcpkms://projects/MYPROJECT/locations/MYLOCATION/keyRings/MYKEYRING/cryptoKeys/MYKEY" - See: https://www.pulumi.com/docs/intro/concepts/secrets/#initializing-a-stack-with-alternative-encryption
+             */
+            secretsProvider?: string;
+            /**
+             * (optional) SecretRefs is the secret configuration for this stack which can be specified through ResourceRef. If this is omitted, secrets configuration is assumed to be checked in and taken from the source repository.
+             */
+            secretsRef?: {[key: string]: outputs.pulumi.v1.StackSpecSecretsRef};
+            /**
+             * Stack is the fully qualified name of the stack to deploy (<org>/<stack>).
+             */
+            stack: string;
+            /**
+             * (optional) Targets is a list of URNs of resources to update exclusively. If supplied, only resources mentioned will be updated.
+             */
+            targets?: string[];
+            /**
+             * (optional) UseLocalStackOnly can be set to true to prevent the operator from creating stacks that do not exist in the tracking git repo. The default behavior is to create a stack if it doesn't exist.
+             */
+            useLocalStackOnly?: boolean;
+        }
+
+        /**
+         * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+         */
+        export interface StackSpecEnvRefs {
+            /**
+             * Env selects an environment variable set on the operator process
+             */
+            env?: outputs.pulumi.v1.StackSpecEnvRefsEnv;
+            /**
+             * FileSystem selects a file on the operator's file system
+             */
+            filesystem?: outputs.pulumi.v1.StackSpecEnvRefsFilesystem;
+            /**
+             * LiteralRef refers to a literal value
+             */
+            literal?: outputs.pulumi.v1.StackSpecEnvRefsLiteral;
+            /**
+             * SecretRef refers to a Kubernetes Secret
+             */
+            secret?: outputs.pulumi.v1.StackSpecEnvRefsSecret;
+            /**
+             * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
+             */
+            type: string;
+        }
+
+        /**
+         * Env selects an environment variable set on the operator process
+         */
+        export interface StackSpecEnvRefsEnv {
+            /**
+             * Name of the environment variable
+             */
+            name: string;
+        }
+
+        /**
+         * FileSystem selects a file on the operator's file system
+         */
+        export interface StackSpecEnvRefsFilesystem {
+            /**
+             * Path on the filesystem to use to load information from.
+             */
+            path: string;
+        }
+
+        /**
+         * LiteralRef refers to a literal value
+         */
+        export interface StackSpecEnvRefsLiteral {
+            /**
+             * Value to load
+             */
+            value: string;
+        }
+
+        /**
+         * SecretRef refers to a Kubernetes Secret
+         */
+        export interface StackSpecEnvRefsSecret {
+            /**
+             * Key within the Secret to use.
+             */
+            key: string;
+            /**
+             * Name of the Secret
+             */
+            name: string;
+            /**
+             * Namespace where the Secret is stored. Deprecated; non-empty values will be considered invalid unless namespace isolation is disabled in the controller.
+             */
+            namespace?: string;
+        }
+
+        /**
+         * FluxSource specifies how to fetch source code from a Flux source object.
+         */
+        export interface StackSpecFluxSource {
+            /**
+             * Dir gives the subdirectory containing the Pulumi project (i.e., containing Pulumi.yaml) of interest, within the fetched source.
+             */
+            dir?: string;
+            sourceRef: outputs.pulumi.v1.StackSpecFluxSourceSourceRef;
+        }
+
+        export interface StackSpecFluxSourceSourceRef {
+            apiVersion: string;
+            kind: string;
+            name: string;
+        }
+
+        /**
+         * (optional) GitAuth allows configuring git authentication options There are 3 different authentication options: * SSH private key (and its optional password) * Personal access token * Basic auth username and password Only one authentication mode will be considered if more than one option is specified, with ssh private key/password preferred first, then personal access token, and finally basic auth credentials.
+         */
+        export interface StackSpecGitAuth {
+            /**
+             * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+             */
+            accessToken?: outputs.pulumi.v1.StackSpecGitAuthAccessToken;
+            /**
+             * BasicAuth configures git authentication through basic auth — i.e. username and password. Both UserName and Password are required.
+             */
+            basicAuth?: outputs.pulumi.v1.StackSpecGitAuthBasicAuth;
+            /**
+             * SSHAuth configures ssh-based auth for git authentication. SSHPrivateKey is required but password is optional.
+             */
+            sshAuth?: outputs.pulumi.v1.StackSpecGitAuthSshAuth;
+        }
+
+        /**
+         * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+         */
+        export interface StackSpecGitAuthAccessToken {
+            /**
+             * Env selects an environment variable set on the operator process
+             */
+            env?: outputs.pulumi.v1.StackSpecGitAuthAccessTokenEnv;
+            /**
+             * FileSystem selects a file on the operator's file system
+             */
+            filesystem?: outputs.pulumi.v1.StackSpecGitAuthAccessTokenFilesystem;
+            /**
+             * LiteralRef refers to a literal value
+             */
+            literal?: outputs.pulumi.v1.StackSpecGitAuthAccessTokenLiteral;
+            /**
+             * SecretRef refers to a Kubernetes Secret
+             */
+            secret?: outputs.pulumi.v1.StackSpecGitAuthAccessTokenSecret;
+            /**
+             * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
+             */
+            type: string;
+        }
+
+        /**
+         * Env selects an environment variable set on the operator process
+         */
+        export interface StackSpecGitAuthAccessTokenEnv {
+            /**
+             * Name of the environment variable
+             */
+            name: string;
+        }
+
+        /**
+         * FileSystem selects a file on the operator's file system
+         */
+        export interface StackSpecGitAuthAccessTokenFilesystem {
+            /**
+             * Path on the filesystem to use to load information from.
+             */
+            path: string;
+        }
+
+        /**
+         * LiteralRef refers to a literal value
+         */
+        export interface StackSpecGitAuthAccessTokenLiteral {
+            /**
+             * Value to load
+             */
+            value: string;
+        }
+
+        /**
+         * SecretRef refers to a Kubernetes Secret
+         */
+        export interface StackSpecGitAuthAccessTokenSecret {
+            /**
+             * Key within the Secret to use.
+             */
+            key: string;
+            /**
+             * Name of the Secret
+             */
+            name: string;
+            /**
+             * Namespace where the Secret is stored. Deprecated; non-empty values will be considered invalid unless namespace isolation is disabled in the controller.
+             */
+            namespace?: string;
+        }
+
+        /**
+         * BasicAuth configures git authentication through basic auth — i.e. username and password. Both UserName and Password are required.
+         */
+        export interface StackSpecGitAuthBasicAuth {
+            /**
+             * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+             */
+            password: outputs.pulumi.v1.StackSpecGitAuthBasicAuthPassword;
+            /**
+             * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+             */
+            userName: outputs.pulumi.v1.StackSpecGitAuthBasicAuthUserName;
+        }
+
+        /**
+         * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+         */
+        export interface StackSpecGitAuthBasicAuthPassword {
+            /**
+             * Env selects an environment variable set on the operator process
+             */
+            env?: outputs.pulumi.v1.StackSpecGitAuthBasicAuthPasswordEnv;
+            /**
+             * FileSystem selects a file on the operator's file system
+             */
+            filesystem?: outputs.pulumi.v1.StackSpecGitAuthBasicAuthPasswordFilesystem;
+            /**
+             * LiteralRef refers to a literal value
+             */
+            literal?: outputs.pulumi.v1.StackSpecGitAuthBasicAuthPasswordLiteral;
+            /**
+             * SecretRef refers to a Kubernetes Secret
+             */
+            secret?: outputs.pulumi.v1.StackSpecGitAuthBasicAuthPasswordSecret;
+            /**
+             * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
+             */
+            type: string;
+        }
+
+        /**
+         * Env selects an environment variable set on the operator process
+         */
+        export interface StackSpecGitAuthBasicAuthPasswordEnv {
+            /**
+             * Name of the environment variable
+             */
+            name: string;
+        }
+
+        /**
+         * FileSystem selects a file on the operator's file system
+         */
+        export interface StackSpecGitAuthBasicAuthPasswordFilesystem {
+            /**
+             * Path on the filesystem to use to load information from.
+             */
+            path: string;
+        }
+
+        /**
+         * LiteralRef refers to a literal value
+         */
+        export interface StackSpecGitAuthBasicAuthPasswordLiteral {
+            /**
+             * Value to load
+             */
+            value: string;
+        }
+
+        /**
+         * SecretRef refers to a Kubernetes Secret
+         */
+        export interface StackSpecGitAuthBasicAuthPasswordSecret {
+            /**
+             * Key within the Secret to use.
+             */
+            key: string;
+            /**
+             * Name of the Secret
+             */
+            name: string;
+            /**
+             * Namespace where the Secret is stored. Deprecated; non-empty values will be considered invalid unless namespace isolation is disabled in the controller.
+             */
+            namespace?: string;
+        }
+
+        /**
+         * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+         */
+        export interface StackSpecGitAuthBasicAuthUserName {
+            /**
+             * Env selects an environment variable set on the operator process
+             */
+            env?: outputs.pulumi.v1.StackSpecGitAuthBasicAuthUserNameEnv;
+            /**
+             * FileSystem selects a file on the operator's file system
+             */
+            filesystem?: outputs.pulumi.v1.StackSpecGitAuthBasicAuthUserNameFilesystem;
+            /**
+             * LiteralRef refers to a literal value
+             */
+            literal?: outputs.pulumi.v1.StackSpecGitAuthBasicAuthUserNameLiteral;
+            /**
+             * SecretRef refers to a Kubernetes Secret
+             */
+            secret?: outputs.pulumi.v1.StackSpecGitAuthBasicAuthUserNameSecret;
+            /**
+             * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
+             */
+            type: string;
+        }
+
+        /**
+         * Env selects an environment variable set on the operator process
+         */
+        export interface StackSpecGitAuthBasicAuthUserNameEnv {
+            /**
+             * Name of the environment variable
+             */
+            name: string;
+        }
+
+        /**
+         * FileSystem selects a file on the operator's file system
+         */
+        export interface StackSpecGitAuthBasicAuthUserNameFilesystem {
+            /**
+             * Path on the filesystem to use to load information from.
+             */
+            path: string;
+        }
+
+        /**
+         * LiteralRef refers to a literal value
+         */
+        export interface StackSpecGitAuthBasicAuthUserNameLiteral {
+            /**
+             * Value to load
+             */
+            value: string;
+        }
+
+        /**
+         * SecretRef refers to a Kubernetes Secret
+         */
+        export interface StackSpecGitAuthBasicAuthUserNameSecret {
+            /**
+             * Key within the Secret to use.
+             */
+            key: string;
+            /**
+             * Name of the Secret
+             */
+            name: string;
+            /**
+             * Namespace where the Secret is stored. Deprecated; non-empty values will be considered invalid unless namespace isolation is disabled in the controller.
+             */
+            namespace?: string;
+        }
+
+        /**
+         * SSHAuth configures ssh-based auth for git authentication. SSHPrivateKey is required but password is optional.
+         */
+        export interface StackSpecGitAuthSshAuth {
+            /**
+             * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+             */
+            password?: outputs.pulumi.v1.StackSpecGitAuthSshAuthPassword;
+            /**
+             * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+             */
+            sshPrivateKey: outputs.pulumi.v1.StackSpecGitAuthSshAuthSshPrivateKey;
+        }
+
+        /**
+         * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+         */
+        export interface StackSpecGitAuthSshAuthPassword {
+            /**
+             * Env selects an environment variable set on the operator process
+             */
+            env?: outputs.pulumi.v1.StackSpecGitAuthSshAuthPasswordEnv;
+            /**
+             * FileSystem selects a file on the operator's file system
+             */
+            filesystem?: outputs.pulumi.v1.StackSpecGitAuthSshAuthPasswordFilesystem;
+            /**
+             * LiteralRef refers to a literal value
+             */
+            literal?: outputs.pulumi.v1.StackSpecGitAuthSshAuthPasswordLiteral;
+            /**
+             * SecretRef refers to a Kubernetes Secret
+             */
+            secret?: outputs.pulumi.v1.StackSpecGitAuthSshAuthPasswordSecret;
+            /**
+             * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
+             */
+            type: string;
+        }
+
+        /**
+         * Env selects an environment variable set on the operator process
+         */
+        export interface StackSpecGitAuthSshAuthPasswordEnv {
+            /**
+             * Name of the environment variable
+             */
+            name: string;
+        }
+
+        /**
+         * FileSystem selects a file on the operator's file system
+         */
+        export interface StackSpecGitAuthSshAuthPasswordFilesystem {
+            /**
+             * Path on the filesystem to use to load information from.
+             */
+            path: string;
+        }
+
+        /**
+         * LiteralRef refers to a literal value
+         */
+        export interface StackSpecGitAuthSshAuthPasswordLiteral {
+            /**
+             * Value to load
+             */
+            value: string;
+        }
+
+        /**
+         * SecretRef refers to a Kubernetes Secret
+         */
+        export interface StackSpecGitAuthSshAuthPasswordSecret {
+            /**
+             * Key within the Secret to use.
+             */
+            key: string;
+            /**
+             * Name of the Secret
+             */
+            name: string;
+            /**
+             * Namespace where the Secret is stored. Deprecated; non-empty values will be considered invalid unless namespace isolation is disabled in the controller.
+             */
+            namespace?: string;
+        }
+
+        /**
+         * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+         */
+        export interface StackSpecGitAuthSshAuthSshPrivateKey {
+            /**
+             * Env selects an environment variable set on the operator process
+             */
+            env?: outputs.pulumi.v1.StackSpecGitAuthSshAuthSshPrivateKeyEnv;
+            /**
+             * FileSystem selects a file on the operator's file system
+             */
+            filesystem?: outputs.pulumi.v1.StackSpecGitAuthSshAuthSshPrivateKeyFilesystem;
+            /**
+             * LiteralRef refers to a literal value
+             */
+            literal?: outputs.pulumi.v1.StackSpecGitAuthSshAuthSshPrivateKeyLiteral;
+            /**
+             * SecretRef refers to a Kubernetes Secret
+             */
+            secret?: outputs.pulumi.v1.StackSpecGitAuthSshAuthSshPrivateKeySecret;
+            /**
+             * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
+             */
+            type: string;
+        }
+
+        /**
+         * Env selects an environment variable set on the operator process
+         */
+        export interface StackSpecGitAuthSshAuthSshPrivateKeyEnv {
+            /**
+             * Name of the environment variable
+             */
+            name: string;
+        }
+
+        /**
+         * FileSystem selects a file on the operator's file system
+         */
+        export interface StackSpecGitAuthSshAuthSshPrivateKeyFilesystem {
+            /**
+             * Path on the filesystem to use to load information from.
+             */
+            path: string;
+        }
+
+        /**
+         * LiteralRef refers to a literal value
+         */
+        export interface StackSpecGitAuthSshAuthSshPrivateKeyLiteral {
+            /**
+             * Value to load
+             */
+            value: string;
+        }
+
+        /**
+         * SecretRef refers to a Kubernetes Secret
+         */
+        export interface StackSpecGitAuthSshAuthSshPrivateKeySecret {
+            /**
+             * Key within the Secret to use.
+             */
+            key: string;
+            /**
+             * Name of the Secret
+             */
+            name: string;
+            /**
+             * Namespace where the Secret is stored. Deprecated; non-empty values will be considered invalid unless namespace isolation is disabled in the controller.
+             */
+            namespace?: string;
+        }
+
+        /**
+         * PrerequisiteRef refers to another stack, and gives requirements for the prerequisite to be considered satisfied.
+         */
+        export interface StackSpecPrerequisites {
+            /**
+             * Name is the name of the Stack resource that is a prerequisite.
+             */
+            name: string;
+            /**
+             * Requirement gives specific requirements for the prerequisite; the base requirement is that the referenced stack is in a successful state.
+             */
+            requirement?: outputs.pulumi.v1.StackSpecPrerequisitesRequirement;
+        }
+
+        /**
+         * Requirement gives specific requirements for the prerequisite; the base requirement is that the referenced stack is in a successful state.
+         */
+        export interface StackSpecPrerequisitesRequirement {
+            /**
+             * SucceededWithinDuration gives a duration within which the prerequisite must have reached a succeeded state; e.g., "1h" means "the prerequisite must be successful, and have become so in the last hour". Fields (should there ever be more than one) are not intended to be mutually exclusive.
+             */
+            succeededWithinDuration?: string;
+        }
+
+        /**
+         * ProgramRef refers to a Program object, to be used as the source for the stack.
+         */
+        export interface StackSpecProgramRef {
+            name: string;
+        }
+
+        /**
+         * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+         */
+        export interface StackSpecSecretsRef {
+            /**
+             * Env selects an environment variable set on the operator process
+             */
+            env?: outputs.pulumi.v1.StackSpecSecretsRefEnv;
+            /**
+             * FileSystem selects a file on the operator's file system
+             */
+            filesystem?: outputs.pulumi.v1.StackSpecSecretsRefFilesystem;
+            /**
+             * LiteralRef refers to a literal value
+             */
+            literal?: outputs.pulumi.v1.StackSpecSecretsRefLiteral;
+            /**
+             * SecretRef refers to a Kubernetes Secret
+             */
+            secret?: outputs.pulumi.v1.StackSpecSecretsRefSecret;
+            /**
+             * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
+             */
+            type: string;
+        }
+
+        /**
+         * Env selects an environment variable set on the operator process
+         */
+        export interface StackSpecSecretsRefEnv {
+            /**
+             * Name of the environment variable
+             */
+            name: string;
+        }
+
+        /**
+         * FileSystem selects a file on the operator's file system
+         */
+        export interface StackSpecSecretsRefFilesystem {
+            /**
+             * Path on the filesystem to use to load information from.
+             */
+            path: string;
+        }
+
+        /**
+         * LiteralRef refers to a literal value
+         */
+        export interface StackSpecSecretsRefLiteral {
+            /**
+             * Value to load
+             */
+            value: string;
+        }
+
+        /**
+         * SecretRef refers to a Kubernetes Secret
+         */
+        export interface StackSpecSecretsRefSecret {
+            /**
+             * Key within the Secret to use.
+             */
+            key: string;
+            /**
+             * Name of the Secret
+             */
+            name: string;
+            /**
+             * Namespace where the Secret is stored. Deprecated; non-empty values will be considered invalid unless namespace isolation is disabled in the controller.
+             */
+            namespace?: string;
+        }
+
+        /**
+         * StackStatus defines the observed state of Stack
+         */
+        export interface StackStatus {
+            conditions?: outputs.pulumi.v1.StackStatusConditions[];
+            /**
+             * LastUpdate contains details of the status of the last update.
+             */
+            lastUpdate?: outputs.pulumi.v1.StackStatusLastUpdate;
+            /**
+             * ObservedGeneration records the value of .meta.generation at the point the controller last processed this object
+             */
+            observedGeneration?: number;
+            /**
+             * ObservedReconcileRequest records the value of the annotation named for `ReconcileRequestAnnotation` when it was last seen.
+             */
+            observedReconcileRequest?: string;
+            /**
+             * Outputs contains the exported stack output variables resulting from a deployment.
+             */
+            outputs?: {[key: string]: {[key: string]: any}};
+        }
+
+        /**
+         * Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, type FooStatus struct{ // Represents the observations of a foo's current state. // Known .status.conditions.type are: "Available", "Progressing", and "Degraded" // +patchMergeKey=type // +patchStrategy=merge // +listType=map // +listMapKey=type Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"` 
+         *  // other fields }
+         */
+        export interface StackStatusConditions {
+            /**
+             * lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime: string;
+            /**
+             * message is a human readable message indicating details about the transition. This may be an empty string.
+             */
+            message: string;
+            /**
+             * observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance.
+             */
+            observedGeneration?: number;
+            /**
+             * reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty.
+             */
+            reason: string;
+            /**
+             * status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+             */
+            type: string;
+        }
+
+        /**
+         * LastUpdate contains details of the status of the last update.
+         */
+        export interface StackStatusLastUpdate {
+            /**
+             * Last commit attempted
+             */
+            lastAttemptedCommit?: string;
+            /**
+             * LastResyncTime contains a timestamp for the last time a resync of the stack took place.
+             */
+            lastResyncTime?: string;
+            /**
+             * Last commit successfully applied
+             */
+            lastSuccessfulCommit?: string;
+            /**
+             * Permalink is the Pulumi Console URL of the stack operation.
+             */
+            permalink?: string;
+            /**
+             * State is the state of the stack update - one of `succeeded` or `failed`
+             */
+            state?: string;
+        }
+
+    }
+
+    export namespace v1alpha1 {
+        /**
+         * StackSpec defines the desired state of Pulumi Stack being managed by this operator.
+         */
+        export interface StackSpec {
+            /**
+             * (optional) AccessTokenSecret is the name of a Secret containing the PULUMI_ACCESS_TOKEN for Pulumi access. Deprecated: use EnvRefs with a "secret" entry with the key PULUMI_ACCESS_TOKEN instead.
+             */
+            accessTokenSecret?: string;
+            /**
+             * (optional) Backend is an optional backend URL to use for all Pulumi operations.<br/> Examples:<br/> - Pulumi Service:              "https://app.pulumi.com" (default)<br/> - Self-managed Pulumi Service: "https://pulumi.acmecorp.com" <br/> - Local:                       "file://./einstein" <br/> - AWS:                         "s3://<my-pulumi-state-bucket>" <br/> - Azure:                       "azblob://<my-pulumi-state-bucket>" <br/> - GCP:                         "gs://<my-pulumi-state-bucket>" <br/> See: https://www.pulumi.com/docs/intro/concepts/state/
+             */
+            backend?: string;
+            /**
+             * (optional) Branch is the branch name to deploy, either the simple or fully qualified ref name, e.g. refs/heads/master. This is mutually exclusive with the Commit setting. Either value needs to be specified. When specified, the operator will periodically poll to check if the branch has any new commits. The frequency of the polling is configurable through ResyncFrequencySeconds, defaulting to every 60 seconds.
+             */
+            branch?: string;
+            /**
+             * (optional) Commit is the hash of the commit to deploy. If used, HEAD will be in detached mode. This is mutually exclusive with the Branch setting. Either value needs to be specified.
+             */
+            commit?: string;
+            /**
+             * (optional) Config is the configuration for this stack, which can be optionally specified inline. If this is omitted, configuration is assumed to be checked in and taken from the source repository.
+             */
+            config?: {[key: string]: string};
+            /**
+             * (optional) ContinueResyncOnCommitMatch - when true - informs the operator to continue trying to update stacks even if the revision of the source matches. This might be useful in environments where Pulumi programs have dynamic elements for example, calls to internal APIs where GitOps style commit tracking is not sufficient.  Defaults to false, i.e. when a particular revision is successfully run, the operator will not attempt to rerun the program at that revision again.
+             */
+            continueResyncOnCommitMatch?: boolean;
+            /**
+             * (optional) DestroyOnFinalize can be set to true to destroy the stack completely upon deletion of the Stack custom resource.
+             */
+            destroyOnFinalize?: boolean;
+            /**
+             * (optional) EnvRefs is an optional map containing environment variables as keys and stores descriptors to where the variables' values should be loaded from (one of literal, environment variable, file on the filesystem, or Kubernetes Secret) as values.
+             */
+            envRefs?: {[key: string]: outputs.pulumi.v1alpha1.StackSpecEnvRefs};
+            /**
+             * (optional) SecretEnvs is an optional array of Secret names containing environment variables to set. Deprecated: use EnvRefs instead.
+             */
+            envSecrets?: string[];
+            /**
+             * (optional) Envs is an optional array of config maps containing environment variables to set. Deprecated: use EnvRefs instead.
+             */
+            envs?: string[];
+            /**
+             * (optional) ExpectNoRefreshChanges can be set to true if a stack is not expected to have changes during a refresh before the update is run. This could occur, for example, is a resource's state is changing outside of Pulumi (e.g., metadata, timestamps).
+             */
+            expectNoRefreshChanges?: boolean;
+            /**
+             * FluxSource specifies how to fetch source code from a Flux source object.
+             */
+            fluxSource?: outputs.pulumi.v1alpha1.StackSpecFluxSource;
+            /**
+             * (optional) GitAuth allows configuring git authentication options There are 3 different authentication options: * SSH private key (and its optional password) * Personal access token * Basic auth username and password Only one authentication mode will be considered if more than one option is specified, with ssh private key/password preferred first, then personal access token, and finally basic auth credentials.
+             */
+            gitAuth?: outputs.pulumi.v1alpha1.StackSpecGitAuth;
+            /**
+             * (optional) GitAuthSecret is the the name of a Secret containing an authentication option for the git repository. There are 3 different authentication options: * Personal access token * SSH private key (and it's optional password) * Basic auth username and password Only one authentication mode will be considered if more than one option is specified, with ssh private key/password preferred first, then personal access token, and finally basic auth credentials. Deprecated. Use GitAuth instead.
+             */
+            gitAuthSecret?: string;
+            /**
+             * (optional) Prerequisites is a list of references to other stacks, each with a constraint on how long ago it must have succeeded. This can be used to make sure e.g., state is re-evaluated before running a stack that depends on it.
+             */
+            prerequisites?: outputs.pulumi.v1alpha1.StackSpecPrerequisites[];
+            /**
+             * ProgramRef refers to a Program object, to be used as the source for the stack.
+             */
+            programRef?: outputs.pulumi.v1alpha1.StackSpecProgramRef;
+            /**
+             * ProjectRepo is the git source control repository from which we fetch the project code and configuration.
+             */
+            projectRepo?: string;
+            /**
+             * (optional) Refresh can be set to true to refresh the stack before it is updated.
+             */
+            refresh?: boolean;
+            /**
+             * (optional) RepoDir is the directory to work from in the project's source repository where Pulumi.yaml is located. It is used in case Pulumi.yaml is not in the project source root.
+             */
+            repoDir?: string;
+            /**
+             * (optional) ResyncFrequencySeconds when set to a non-zero value, triggers a resync of the stack at the specified frequency even if no changes to the custom resource are detected. If branch tracking is enabled (branch is non-empty), commit polling will occur at this frequency. The minimal resync frequency supported is 60 seconds. The default value for this field is 60 seconds.
+             */
+            resyncFrequencySeconds?: number;
+            /**
+             * (optional) RetryOnUpdateConflict issues a stack update retry reconciliation loop in the event that the update hits a HTTP 409 conflict due to another update in progress. This is only recommended if you are sure that the stack updates are idempotent, and if you are willing to accept retry loops until all spawned retries succeed. This will also create a more populated, and randomized activity timeline for the stack in the Pulumi Service.
+             */
+            retryOnUpdateConflict?: boolean;
+            /**
+             * (optional) Secrets is the secret configuration for this stack, which can be optionally specified inline. If this is omitted, secrets configuration is assumed to be checked in and taken from the source repository. Deprecated: use SecretRefs instead.
+             */
+            secrets?: {[key: string]: string};
+            /**
+             * (optional) SecretsProvider is used to initialize a Stack with alternative encryption. Examples: - AWS:   "awskms:///arn:aws:kms:us-east-1:111122223333:key/1234abcd-12ab-34bc-56ef-1234567890ab?region=us-east-1" - Azure: "azurekeyvault://acmecorpvault.vault.azure.net/keys/mykeyname" - GCP:   "gcpkms://projects/MYPROJECT/locations/MYLOCATION/keyRings/MYKEYRING/cryptoKeys/MYKEY" - See: https://www.pulumi.com/docs/intro/concepts/secrets/#initializing-a-stack-with-alternative-encryption
+             */
+            secretsProvider?: string;
+            /**
+             * (optional) SecretRefs is the secret configuration for this stack which can be specified through ResourceRef. If this is omitted, secrets configuration is assumed to be checked in and taken from the source repository.
+             */
+            secretsRef?: {[key: string]: outputs.pulumi.v1alpha1.StackSpecSecretsRef};
+            /**
+             * Stack is the fully qualified name of the stack to deploy (<org>/<stack>).
+             */
+            stack: string;
+            /**
+             * (optional) Targets is a list of URNs of resources to update exclusively. If supplied, only resources mentioned will be updated.
+             */
+            targets?: string[];
+            /**
+             * (optional) UseLocalStackOnly can be set to true to prevent the operator from creating stacks that do not exist in the tracking git repo. The default behavior is to create a stack if it doesn't exist.
+             */
+            useLocalStackOnly?: boolean;
+        }
+
+        /**
+         * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+         */
+        export interface StackSpecEnvRefs {
+            /**
+             * Env selects an environment variable set on the operator process
+             */
+            env?: outputs.pulumi.v1alpha1.StackSpecEnvRefsEnv;
+            /**
+             * FileSystem selects a file on the operator's file system
+             */
+            filesystem?: outputs.pulumi.v1alpha1.StackSpecEnvRefsFilesystem;
+            /**
+             * LiteralRef refers to a literal value
+             */
+            literal?: outputs.pulumi.v1alpha1.StackSpecEnvRefsLiteral;
+            /**
+             * SecretRef refers to a Kubernetes Secret
+             */
+            secret?: outputs.pulumi.v1alpha1.StackSpecEnvRefsSecret;
+            /**
+             * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
+             */
+            type: string;
+        }
+
+        /**
+         * Env selects an environment variable set on the operator process
+         */
+        export interface StackSpecEnvRefsEnv {
+            /**
+             * Name of the environment variable
+             */
+            name: string;
+        }
+
+        /**
+         * FileSystem selects a file on the operator's file system
+         */
+        export interface StackSpecEnvRefsFilesystem {
+            /**
+             * Path on the filesystem to use to load information from.
+             */
+            path: string;
+        }
+
+        /**
+         * LiteralRef refers to a literal value
+         */
+        export interface StackSpecEnvRefsLiteral {
+            /**
+             * Value to load
+             */
+            value: string;
+        }
+
+        /**
+         * SecretRef refers to a Kubernetes Secret
+         */
+        export interface StackSpecEnvRefsSecret {
+            /**
+             * Key within the Secret to use.
+             */
+            key: string;
+            /**
+             * Name of the Secret
+             */
+            name: string;
+            /**
+             * Namespace where the Secret is stored. Deprecated; non-empty values will be considered invalid unless namespace isolation is disabled in the controller.
+             */
+            namespace?: string;
+        }
+
+        /**
+         * FluxSource specifies how to fetch source code from a Flux source object.
+         */
+        export interface StackSpecFluxSource {
+            /**
+             * Dir gives the subdirectory containing the Pulumi project (i.e., containing Pulumi.yaml) of interest, within the fetched source.
+             */
+            dir?: string;
+            sourceRef: outputs.pulumi.v1alpha1.StackSpecFluxSourceSourceRef;
+        }
+
+        export interface StackSpecFluxSourceSourceRef {
+            apiVersion: string;
+            kind: string;
+            name: string;
+        }
+
+        /**
+         * (optional) GitAuth allows configuring git authentication options There are 3 different authentication options: * SSH private key (and its optional password) * Personal access token * Basic auth username and password Only one authentication mode will be considered if more than one option is specified, with ssh private key/password preferred first, then personal access token, and finally basic auth credentials.
+         */
+        export interface StackSpecGitAuth {
+            /**
+             * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+             */
+            accessToken?: outputs.pulumi.v1alpha1.StackSpecGitAuthAccessToken;
+            /**
+             * BasicAuth configures git authentication through basic auth — i.e. username and password. Both UserName and Password are required.
+             */
+            basicAuth?: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuth;
+            /**
+             * SSHAuth configures ssh-based auth for git authentication. SSHPrivateKey is required but password is optional.
+             */
+            sshAuth?: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuth;
+        }
+
+        /**
+         * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+         */
+        export interface StackSpecGitAuthAccessToken {
+            /**
+             * Env selects an environment variable set on the operator process
+             */
+            env?: outputs.pulumi.v1alpha1.StackSpecGitAuthAccessTokenEnv;
+            /**
+             * FileSystem selects a file on the operator's file system
+             */
+            filesystem?: outputs.pulumi.v1alpha1.StackSpecGitAuthAccessTokenFilesystem;
+            /**
+             * LiteralRef refers to a literal value
+             */
+            literal?: outputs.pulumi.v1alpha1.StackSpecGitAuthAccessTokenLiteral;
+            /**
+             * SecretRef refers to a Kubernetes Secret
+             */
+            secret?: outputs.pulumi.v1alpha1.StackSpecGitAuthAccessTokenSecret;
+            /**
+             * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
+             */
+            type: string;
+        }
+
+        /**
+         * Env selects an environment variable set on the operator process
+         */
+        export interface StackSpecGitAuthAccessTokenEnv {
+            /**
+             * Name of the environment variable
+             */
+            name: string;
+        }
+
+        /**
+         * FileSystem selects a file on the operator's file system
+         */
+        export interface StackSpecGitAuthAccessTokenFilesystem {
+            /**
+             * Path on the filesystem to use to load information from.
+             */
+            path: string;
+        }
+
+        /**
+         * LiteralRef refers to a literal value
+         */
+        export interface StackSpecGitAuthAccessTokenLiteral {
+            /**
+             * Value to load
+             */
+            value: string;
+        }
+
+        /**
+         * SecretRef refers to a Kubernetes Secret
+         */
+        export interface StackSpecGitAuthAccessTokenSecret {
+            /**
+             * Key within the Secret to use.
+             */
+            key: string;
+            /**
+             * Name of the Secret
+             */
+            name: string;
+            /**
+             * Namespace where the Secret is stored. Deprecated; non-empty values will be considered invalid unless namespace isolation is disabled in the controller.
+             */
+            namespace?: string;
+        }
+
+        /**
+         * BasicAuth configures git authentication through basic auth — i.e. username and password. Both UserName and Password are required.
+         */
+        export interface StackSpecGitAuthBasicAuth {
+            /**
+             * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+             */
+            password: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuthPassword;
+            /**
+             * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+             */
+            userName: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuthUserName;
+        }
+
+        /**
+         * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+         */
+        export interface StackSpecGitAuthBasicAuthPassword {
+            /**
+             * Env selects an environment variable set on the operator process
+             */
+            env?: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuthPasswordEnv;
+            /**
+             * FileSystem selects a file on the operator's file system
+             */
+            filesystem?: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuthPasswordFilesystem;
+            /**
+             * LiteralRef refers to a literal value
+             */
+            literal?: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuthPasswordLiteral;
+            /**
+             * SecretRef refers to a Kubernetes Secret
+             */
+            secret?: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuthPasswordSecret;
+            /**
+             * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
+             */
+            type: string;
+        }
+
+        /**
+         * Env selects an environment variable set on the operator process
+         */
+        export interface StackSpecGitAuthBasicAuthPasswordEnv {
+            /**
+             * Name of the environment variable
+             */
+            name: string;
+        }
+
+        /**
+         * FileSystem selects a file on the operator's file system
+         */
+        export interface StackSpecGitAuthBasicAuthPasswordFilesystem {
+            /**
+             * Path on the filesystem to use to load information from.
+             */
+            path: string;
+        }
+
+        /**
+         * LiteralRef refers to a literal value
+         */
+        export interface StackSpecGitAuthBasicAuthPasswordLiteral {
+            /**
+             * Value to load
+             */
+            value: string;
+        }
+
+        /**
+         * SecretRef refers to a Kubernetes Secret
+         */
+        export interface StackSpecGitAuthBasicAuthPasswordSecret {
+            /**
+             * Key within the Secret to use.
+             */
+            key: string;
+            /**
+             * Name of the Secret
+             */
+            name: string;
+            /**
+             * Namespace where the Secret is stored. Deprecated; non-empty values will be considered invalid unless namespace isolation is disabled in the controller.
+             */
+            namespace?: string;
+        }
+
+        /**
+         * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+         */
+        export interface StackSpecGitAuthBasicAuthUserName {
+            /**
+             * Env selects an environment variable set on the operator process
+             */
+            env?: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuthUserNameEnv;
+            /**
+             * FileSystem selects a file on the operator's file system
+             */
+            filesystem?: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuthUserNameFilesystem;
+            /**
+             * LiteralRef refers to a literal value
+             */
+            literal?: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuthUserNameLiteral;
+            /**
+             * SecretRef refers to a Kubernetes Secret
+             */
+            secret?: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuthUserNameSecret;
+            /**
+             * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
+             */
+            type: string;
+        }
+
+        /**
+         * Env selects an environment variable set on the operator process
+         */
+        export interface StackSpecGitAuthBasicAuthUserNameEnv {
+            /**
+             * Name of the environment variable
+             */
+            name: string;
+        }
+
+        /**
+         * FileSystem selects a file on the operator's file system
+         */
+        export interface StackSpecGitAuthBasicAuthUserNameFilesystem {
+            /**
+             * Path on the filesystem to use to load information from.
+             */
+            path: string;
+        }
+
+        /**
+         * LiteralRef refers to a literal value
+         */
+        export interface StackSpecGitAuthBasicAuthUserNameLiteral {
+            /**
+             * Value to load
+             */
+            value: string;
+        }
+
+        /**
+         * SecretRef refers to a Kubernetes Secret
+         */
+        export interface StackSpecGitAuthBasicAuthUserNameSecret {
+            /**
+             * Key within the Secret to use.
+             */
+            key: string;
+            /**
+             * Name of the Secret
+             */
+            name: string;
+            /**
+             * Namespace where the Secret is stored. Deprecated; non-empty values will be considered invalid unless namespace isolation is disabled in the controller.
+             */
+            namespace?: string;
+        }
+
+        /**
+         * SSHAuth configures ssh-based auth for git authentication. SSHPrivateKey is required but password is optional.
+         */
+        export interface StackSpecGitAuthSshAuth {
+            /**
+             * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+             */
+            password?: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuthPassword;
+            /**
+             * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+             */
+            sshPrivateKey: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuthSshPrivateKey;
+        }
+
+        /**
+         * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+         */
+        export interface StackSpecGitAuthSshAuthPassword {
+            /**
+             * Env selects an environment variable set on the operator process
+             */
+            env?: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuthPasswordEnv;
+            /**
+             * FileSystem selects a file on the operator's file system
+             */
+            filesystem?: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuthPasswordFilesystem;
+            /**
+             * LiteralRef refers to a literal value
+             */
+            literal?: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuthPasswordLiteral;
+            /**
+             * SecretRef refers to a Kubernetes Secret
+             */
+            secret?: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuthPasswordSecret;
+            /**
+             * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
+             */
+            type: string;
+        }
+
+        /**
+         * Env selects an environment variable set on the operator process
+         */
+        export interface StackSpecGitAuthSshAuthPasswordEnv {
+            /**
+             * Name of the environment variable
+             */
+            name: string;
+        }
+
+        /**
+         * FileSystem selects a file on the operator's file system
+         */
+        export interface StackSpecGitAuthSshAuthPasswordFilesystem {
+            /**
+             * Path on the filesystem to use to load information from.
+             */
+            path: string;
+        }
+
+        /**
+         * LiteralRef refers to a literal value
+         */
+        export interface StackSpecGitAuthSshAuthPasswordLiteral {
+            /**
+             * Value to load
+             */
+            value: string;
+        }
+
+        /**
+         * SecretRef refers to a Kubernetes Secret
+         */
+        export interface StackSpecGitAuthSshAuthPasswordSecret {
+            /**
+             * Key within the Secret to use.
+             */
+            key: string;
+            /**
+             * Name of the Secret
+             */
+            name: string;
+            /**
+             * Namespace where the Secret is stored. Deprecated; non-empty values will be considered invalid unless namespace isolation is disabled in the controller.
+             */
+            namespace?: string;
+        }
+
+        /**
+         * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+         */
+        export interface StackSpecGitAuthSshAuthSshPrivateKey {
+            /**
+             * Env selects an environment variable set on the operator process
+             */
+            env?: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuthSshPrivateKeyEnv;
+            /**
+             * FileSystem selects a file on the operator's file system
+             */
+            filesystem?: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuthSshPrivateKeyFilesystem;
+            /**
+             * LiteralRef refers to a literal value
+             */
+            literal?: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuthSshPrivateKeyLiteral;
+            /**
+             * SecretRef refers to a Kubernetes Secret
+             */
+            secret?: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuthSshPrivateKeySecret;
+            /**
+             * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
+             */
+            type: string;
+        }
+
+        /**
+         * Env selects an environment variable set on the operator process
+         */
+        export interface StackSpecGitAuthSshAuthSshPrivateKeyEnv {
+            /**
+             * Name of the environment variable
+             */
+            name: string;
+        }
+
+        /**
+         * FileSystem selects a file on the operator's file system
+         */
+        export interface StackSpecGitAuthSshAuthSshPrivateKeyFilesystem {
+            /**
+             * Path on the filesystem to use to load information from.
+             */
+            path: string;
+        }
+
+        /**
+         * LiteralRef refers to a literal value
+         */
+        export interface StackSpecGitAuthSshAuthSshPrivateKeyLiteral {
+            /**
+             * Value to load
+             */
+            value: string;
+        }
+
+        /**
+         * SecretRef refers to a Kubernetes Secret
+         */
+        export interface StackSpecGitAuthSshAuthSshPrivateKeySecret {
+            /**
+             * Key within the Secret to use.
+             */
+            key: string;
+            /**
+             * Name of the Secret
+             */
+            name: string;
+            /**
+             * Namespace where the Secret is stored. Deprecated; non-empty values will be considered invalid unless namespace isolation is disabled in the controller.
+             */
+            namespace?: string;
+        }
+
+        /**
+         * PrerequisiteRef refers to another stack, and gives requirements for the prerequisite to be considered satisfied.
+         */
+        export interface StackSpecPrerequisites {
+            /**
+             * Name is the name of the Stack resource that is a prerequisite.
+             */
+            name: string;
+            /**
+             * Requirement gives specific requirements for the prerequisite; the base requirement is that the referenced stack is in a successful state.
+             */
+            requirement?: outputs.pulumi.v1alpha1.StackSpecPrerequisitesRequirement;
+        }
+
+        /**
+         * Requirement gives specific requirements for the prerequisite; the base requirement is that the referenced stack is in a successful state.
+         */
+        export interface StackSpecPrerequisitesRequirement {
+            /**
+             * SucceededWithinDuration gives a duration within which the prerequisite must have reached a succeeded state; e.g., "1h" means "the prerequisite must be successful, and have become so in the last hour". Fields (should there ever be more than one) are not intended to be mutually exclusive.
+             */
+            succeededWithinDuration?: string;
+        }
+
+        /**
+         * ProgramRef refers to a Program object, to be used as the source for the stack.
+         */
+        export interface StackSpecProgramRef {
+            name: string;
+        }
+
+        /**
+         * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
+         */
+        export interface StackSpecSecretsRef {
+            /**
+             * Env selects an environment variable set on the operator process
+             */
+            env?: outputs.pulumi.v1alpha1.StackSpecSecretsRefEnv;
+            /**
+             * FileSystem selects a file on the operator's file system
+             */
+            filesystem?: outputs.pulumi.v1alpha1.StackSpecSecretsRefFilesystem;
+            /**
+             * LiteralRef refers to a literal value
+             */
+            literal?: outputs.pulumi.v1alpha1.StackSpecSecretsRefLiteral;
+            /**
+             * SecretRef refers to a Kubernetes Secret
+             */
+            secret?: outputs.pulumi.v1alpha1.StackSpecSecretsRefSecret;
+            /**
+             * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
+             */
+            type: string;
+        }
+
+        /**
+         * Env selects an environment variable set on the operator process
+         */
+        export interface StackSpecSecretsRefEnv {
+            /**
+             * Name of the environment variable
+             */
+            name: string;
+        }
+
+        /**
+         * FileSystem selects a file on the operator's file system
+         */
+        export interface StackSpecSecretsRefFilesystem {
+            /**
+             * Path on the filesystem to use to load information from.
+             */
+            path: string;
+        }
+
+        /**
+         * LiteralRef refers to a literal value
+         */
+        export interface StackSpecSecretsRefLiteral {
+            /**
+             * Value to load
+             */
+            value: string;
+        }
+
+        /**
+         * SecretRef refers to a Kubernetes Secret
+         */
+        export interface StackSpecSecretsRefSecret {
+            /**
+             * Key within the Secret to use.
+             */
+            key: string;
+            /**
+             * Name of the Secret
+             */
+            name: string;
+            /**
+             * Namespace where the Secret is stored. Deprecated; non-empty values will be considered invalid unless namespace isolation is disabled in the controller.
+             */
+            namespace?: string;
+        }
+
+        /**
+         * StackStatus defines the observed state of Stack
+         */
+        export interface StackStatus {
+            /**
+             * LastUpdate contains details of the status of the last update.
+             */
+            lastUpdate?: outputs.pulumi.v1alpha1.StackStatusLastUpdate;
+            /**
+             * Outputs contains the exported stack output variables resulting from a deployment.
+             */
+            outputs?: {[key: string]: {[key: string]: any}};
+        }
+
+        /**
+         * LastUpdate contains details of the status of the last update.
+         */
+        export interface StackStatusLastUpdate {
+            /**
+             * Last commit attempted
+             */
+            lastAttemptedCommit?: string;
+            /**
+             * LastResyncTime contains a timestamp for the last time a resync of the stack took place.
+             */
+            lastResyncTime?: string;
+            /**
+             * Last commit successfully applied
+             */
+            lastSuccessfulCommit?: string;
+            /**
+             * Permalink is the Pulumi Console URL of the stack operation.
+             */
+            permalink?: string;
+            /**
+             * State is the state of the stack update - one of `succeeded` or `failed`
+             */
+            state?: string;
+        }
+
+    }
+}
+
 export namespace runtime {
     export namespace v1alpha1 {
         /**
