@@ -14526,7 +14526,7 @@ export namespace infrastructure {
              *  In more details, we found that embedded (non-top level) types that embedded `metav1.ObjectMeta` had validation properties, including for `creationTimestamp` (metav1.Time). The `metav1.Time` type specifies a custom json marshaller that, when IsZero() is true, returns `null` which breaks validation because the field isn't marked as nullable. 
              *  In future versions, controller-tools@v2 might allow overriding the type and validation for embedded types. When that happens, this hack should be revisited.
              */
-            metadata.omitempty?: outputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateMetadataOmitempty;
+            'metadata.omitempty'?: outputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateMetadataOmitempty;
             /**
              * ProxmoxMachineSpec defines the desired state of ProxmoxMachine
              */

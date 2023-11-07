@@ -37,6 +37,8 @@ crd2pulumi --nodejsPath="$libDir" --force \
 echo "Fixing quotes..."
 sed -i '' "s/x-kubernetes-preserve-unknown-fields/'x-kubernetes-preserve-unknown-fields'/" "$libDir/types/input.ts"
 sed -i '' "s/x-kubernetes-preserve-unknown-fields/'x-kubernetes-preserve-unknown-fields'/" "$libDir/types/output.ts"
+sed -i '' "s/metadata.omitempty/'metadata.omitempty'/" "$libDir/types/input.ts"
+sed -i '' "s/metadata.omitempty/'metadata.omitempty'/" "$libDir/types/output.ts"
 
 echo "Switching back to stack $oldStack..."
 pulumi -C "$root" stack select "$oldStack"
