@@ -4,6 +4,7 @@
   "scripts": {
     "dry-run": "cd ../../ && renovate --dry-run=full --platform=local",
     "stats": "LOG_FORMAT=json npm run dry-run | sed '1,4d' | jq '.stats | select(. != null)'",
+    "github-deps": "LOG_FORMAT=json npm run dry-run | sed '1,4d' | jq '.githubDeps | select(. != null)'",
     "test": "jest",
     "validate": "cd ../../ && renovate-config-validator --strict"
   },
