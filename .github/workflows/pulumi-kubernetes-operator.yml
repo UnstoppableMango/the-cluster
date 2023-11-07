@@ -45,7 +45,6 @@ jobs:
         with:
           context: apps/pulumi-k8s-operator
           file: apps/pulumi-k8s-operator/Dockerfile
-          target: pulumi-kubernetes-operator-nodejs
           provenance: true
           platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
