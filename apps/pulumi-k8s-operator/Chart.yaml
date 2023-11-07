@@ -1,0 +1,9 @@
+apiVersion: v2
+name: pulumi-kubernetes-operator
+description: Pulumi Kubernetes Operator install for THECLUSTER
+type: application
+version: 0.1.0
+dependencies:
+  - name: pulumi-kubernetes-operator
+    repository: oci://ghcr.io/pulumi/helm-charts
+    version: 0.3.0
