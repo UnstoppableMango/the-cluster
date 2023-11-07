@@ -284,6 +284,7 @@ jobs:
         working-directory: lib/crds
 
       - run: npm ci
+      - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
 
       - id: setup-config
         uses: ./.github/actions/setup-config
