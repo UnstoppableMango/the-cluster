@@ -43,7 +43,7 @@ describe('regex manager fileMatch', () => {
   });
 
   it('should match files', () => {
-    expect(files).toHaveLength(9);
+    expect(files).toHaveLength(10);
   });
 
   it('should match github workflows', () => {
@@ -101,7 +101,6 @@ describe('regex manager matchStrings', () => {
   });
 
   it('should match multiple yaml deps', () => {
-    console.log(act('multiple-simple.yml'));
     const groups = act('multiple-simple.yml').map(x => x.groups);
 
     expect(groups).toEqual(expect.arrayContaining([
@@ -123,6 +122,16 @@ describe('regex manager matchStrings', () => {
       depName: 'test',
       currentValue: '1.2.3',
       extractVersion: '^v(?<version>.*)',
+    }));
+  });
+
+  it('should capture github tags', () => {
+    const groups = act('github-tag.yml').map(x => x.groups);
+
+    expect(groups).toContainEqual(expect.objectContaining({
+      depName: 'test/repo',
+      currentDigest: '1f546c2c36b80c1268d758fac3e81190581949ea',
+      currentValue: 'testTag',
     }));
   });
 });
