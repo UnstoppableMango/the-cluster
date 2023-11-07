@@ -36,11 +36,9 @@
         "^.*Pulumi.*\\.(yml|yaml)$"
       ],
       "matchStrings": [
-        ".+?: (?<currentDigest>[a-f0-9]{40}) # renovate (?<repoOwner>[^/?#]+)\\/(?<depName>[^/?#]+) branch=(?<currentValue>\\S+)\\n"
+        ".+?: (?<currentDigest>[a-f0-9]{40}) # renovate depName=(?<depName>[^/?#]+\\/[^/?#]+) tag=(?<currentValue>\\S+)\\n"
       ],
-      "packageNameTemplate": "https://github.com/{{repoOwner}}/{{depName}}",
-      "datasourceTemplate": "git-refs",
-      "versioningTemplate": "git"
+      "datasourceTemplate": "github-tags"
     }
   ],
   "packageRules": [
