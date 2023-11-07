@@ -1,1 +1,1 @@
-someDep: 1.2.3 # renovate depName=test tag=testTag
+someDep: 1f546c2c36b80c1268d758fac3e81190581949ea # renovate depName=test/repo tag=testTag
