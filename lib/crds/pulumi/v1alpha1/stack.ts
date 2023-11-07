@@ -44,11 +44,11 @@ export class Stack extends pulumi.CustomResource {
     /**
      * StackSpec defines the desired state of Pulumi Stack being managed by this operator.
      */
-    public readonly spec!: pulumi.Output<outputs.pulumi.v1alpha1.StackSpec | undefined>;
+    public readonly spec!: pulumi.Output<outputs.pulumiOperator.v1alpha1.StackSpec | undefined>;
     /**
      * StackStatus defines the observed state of Stack
      */
-    public readonly status!: pulumi.Output<outputs.pulumi.v1alpha1.StackStatus | undefined>;
+    public readonly status!: pulumi.Output<outputs.pulumiOperator.v1alpha1.StackStatus | undefined>;
 
     /**
      * Create a Stack resource with the given unique name, arguments, and options.
@@ -88,9 +88,9 @@ export interface StackArgs {
     /**
      * StackSpec defines the desired state of Pulumi Stack being managed by this operator.
      */
-    spec?: pulumi.Input<inputs.pulumi.v1alpha1.StackSpecArgs>;
+    spec?: pulumi.Input<inputs.pulumiOperator.v1alpha1.StackSpecArgs>;
     /**
      * StackStatus defines the observed state of Stack
      */
-    status?: pulumi.Input<inputs.pulumi.v1alpha1.StackStatusArgs>;
+    status?: pulumi.Input<inputs.pulumiOperator.v1alpha1.StackStatusArgs>;
 }

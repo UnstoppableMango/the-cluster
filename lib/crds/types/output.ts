@@ -14526,7 +14526,7 @@ export namespace infrastructure {
              *  In more details, we found that embedded (non-top level) types that embedded `metav1.ObjectMeta` had validation properties, including for `creationTimestamp` (metav1.Time). The `metav1.Time` type specifies a custom json marshaller that, when IsZero() is true, returns `null` which breaks validation because the field isn't marked as nullable. 
              *  In future versions, controller-tools@v2 might allow overriding the type and validation for embedded types. When that happens, this hack should be revisited.
              */
-            metadata.omitempty?: outputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateMetadataOmitempty;
+            'metadata.omitempty'?: outputs.infrastructure.v1beta1.ProxmoxMachineTemplateSpecTemplateMetadataOmitempty;
             /**
              * ProxmoxMachineSpec defines the desired state of ProxmoxMachine
              */
@@ -16033,13 +16033,13 @@ export namespace metal {
     }
 }
 
-export namespace pulumi {
+export namespace pulumiOperator {
     export namespace v1 {
         export interface ProgramProgram {
             /**
              * configuration specifies the Pulumi config inputs to the deployment. Either type or default is required.
              */
-            configuration?: {[key: string]: outputs.pulumi.v1.ProgramProgramConfiguration};
+            configuration?: {[key: string]: outputs.pulumiOperator.v1.ProgramProgramConfiguration};
             /**
              * outputs specifies the Pulumi stack outputs of the program and how they are computed from the resources.
              */
@@ -16047,7 +16047,7 @@ export namespace pulumi {
             /**
              * resources declares the Pulumi resources that will be deployed and managed by the program.
              */
-            resources?: {[key: string]: outputs.pulumi.v1.ProgramProgramResources};
+            resources?: {[key: string]: outputs.pulumiOperator.v1.ProgramProgramResources};
             /**
              * variables specifies intermediate values of the program; the values of variables are expressions that can be re-used.
              */
@@ -16069,11 +16069,11 @@ export namespace pulumi {
             /**
              * A getter function for the resource. Supplying get is mutually exclusive to properties.
              */
-            get?: outputs.pulumi.v1.ProgramProgramResourcesGet;
+            get?: outputs.pulumiOperator.v1.ProgramProgramResourcesGet;
             /**
              * options contains all resource options supported by Pulumi.
              */
-            options?: outputs.pulumi.v1.ProgramProgramResourcesOptions;
+            options?: outputs.pulumiOperator.v1.ProgramProgramResourcesOptions;
             /**
              * properties contains the primary resource-specific keys and values to initialize the resource state.
              */
@@ -16113,7 +16113,7 @@ export namespace pulumi {
             /**
              * customTimeouts overrides the default retry/timeout behavior for resource provisioning.
              */
-            customTimeouts?: outputs.pulumi.v1.ProgramProgramResourcesOptionsCustomTimeouts;
+            customTimeouts?: outputs.pulumiOperator.v1.ProgramProgramResourcesOptionsCustomTimeouts;
             /**
              * deleteBeforeReplace overrides the default create-before-delete behavior when replacing.
              */
@@ -16205,7 +16205,7 @@ export namespace pulumi {
             /**
              * (optional) EnvRefs is an optional map containing environment variables as keys and stores descriptors to where the variables' values should be loaded from (one of literal, environment variable, file on the filesystem, or Kubernetes Secret) as values.
              */
-            envRefs?: {[key: string]: outputs.pulumi.v1.StackSpecEnvRefs};
+            envRefs?: {[key: string]: outputs.pulumiOperator.v1.StackSpecEnvRefs};
             /**
              * (optional) SecretEnvs is an optional array of Secret names containing environment variables to set. Deprecated: use EnvRefs instead.
              */
@@ -16221,11 +16221,11 @@ export namespace pulumi {
             /**
              * FluxSource specifies how to fetch source code from a Flux source object.
              */
-            fluxSource?: outputs.pulumi.v1.StackSpecFluxSource;
+            fluxSource?: outputs.pulumiOperator.v1.StackSpecFluxSource;
             /**
              * (optional) GitAuth allows configuring git authentication options There are 3 different authentication options: * SSH private key (and its optional password) * Personal access token * Basic auth username and password Only one authentication mode will be considered if more than one option is specified, with ssh private key/password preferred first, then personal access token, and finally basic auth credentials.
              */
-            gitAuth?: outputs.pulumi.v1.StackSpecGitAuth;
+            gitAuth?: outputs.pulumiOperator.v1.StackSpecGitAuth;
             /**
              * (optional) GitAuthSecret is the the name of a Secret containing an authentication option for the git repository. There are 3 different authentication options: * Personal access token * SSH private key (and it's optional password) * Basic auth username and password Only one authentication mode will be considered if more than one option is specified, with ssh private key/password preferred first, then personal access token, and finally basic auth credentials. Deprecated. Use GitAuth instead.
              */
@@ -16233,11 +16233,11 @@ export namespace pulumi {
             /**
              * (optional) Prerequisites is a list of references to other stacks, each with a constraint on how long ago it must have succeeded. This can be used to make sure e.g., state is re-evaluated before running a stack that depends on it.
              */
-            prerequisites?: outputs.pulumi.v1.StackSpecPrerequisites[];
+            prerequisites?: outputs.pulumiOperator.v1.StackSpecPrerequisites[];
             /**
              * ProgramRef refers to a Program object, to be used as the source for the stack.
              */
-            programRef?: outputs.pulumi.v1.StackSpecProgramRef;
+            programRef?: outputs.pulumiOperator.v1.StackSpecProgramRef;
             /**
              * ProjectRepo is the git source control repository from which we fetch the project code and configuration.
              */
@@ -16269,7 +16269,7 @@ export namespace pulumi {
             /**
              * (optional) SecretRefs is the secret configuration for this stack which can be specified through ResourceRef. If this is omitted, secrets configuration is assumed to be checked in and taken from the source repository.
              */
-            secretsRef?: {[key: string]: outputs.pulumi.v1.StackSpecSecretsRef};
+            secretsRef?: {[key: string]: outputs.pulumiOperator.v1.StackSpecSecretsRef};
             /**
              * Stack is the fully qualified name of the stack to deploy (<org>/<stack>).
              */
@@ -16291,19 +16291,19 @@ export namespace pulumi {
             /**
              * Env selects an environment variable set on the operator process
              */
-            env?: outputs.pulumi.v1.StackSpecEnvRefsEnv;
+            env?: outputs.pulumiOperator.v1.StackSpecEnvRefsEnv;
             /**
              * FileSystem selects a file on the operator's file system
              */
-            filesystem?: outputs.pulumi.v1.StackSpecEnvRefsFilesystem;
+            filesystem?: outputs.pulumiOperator.v1.StackSpecEnvRefsFilesystem;
             /**
              * LiteralRef refers to a literal value
              */
-            literal?: outputs.pulumi.v1.StackSpecEnvRefsLiteral;
+            literal?: outputs.pulumiOperator.v1.StackSpecEnvRefsLiteral;
             /**
              * SecretRef refers to a Kubernetes Secret
              */
-            secret?: outputs.pulumi.v1.StackSpecEnvRefsSecret;
+            secret?: outputs.pulumiOperator.v1.StackSpecEnvRefsSecret;
             /**
              * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
              */
@@ -16366,7 +16366,7 @@ export namespace pulumi {
              * Dir gives the subdirectory containing the Pulumi project (i.e., containing Pulumi.yaml) of interest, within the fetched source.
              */
             dir?: string;
-            sourceRef: outputs.pulumi.v1.StackSpecFluxSourceSourceRef;
+            sourceRef: outputs.pulumiOperator.v1.StackSpecFluxSourceSourceRef;
         }
 
         export interface StackSpecFluxSourceSourceRef {
@@ -16382,15 +16382,15 @@ export namespace pulumi {
             /**
              * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
              */
-            accessToken?: outputs.pulumi.v1.StackSpecGitAuthAccessToken;
+            accessToken?: outputs.pulumiOperator.v1.StackSpecGitAuthAccessToken;
             /**
              * BasicAuth configures git authentication through basic auth — i.e. username and password. Both UserName and Password are required.
              */
-            basicAuth?: outputs.pulumi.v1.StackSpecGitAuthBasicAuth;
+            basicAuth?: outputs.pulumiOperator.v1.StackSpecGitAuthBasicAuth;
             /**
              * SSHAuth configures ssh-based auth for git authentication. SSHPrivateKey is required but password is optional.
              */
-            sshAuth?: outputs.pulumi.v1.StackSpecGitAuthSshAuth;
+            sshAuth?: outputs.pulumiOperator.v1.StackSpecGitAuthSshAuth;
         }
 
         /**
@@ -16400,19 +16400,19 @@ export namespace pulumi {
             /**
              * Env selects an environment variable set on the operator process
              */
-            env?: outputs.pulumi.v1.StackSpecGitAuthAccessTokenEnv;
+            env?: outputs.pulumiOperator.v1.StackSpecGitAuthAccessTokenEnv;
             /**
              * FileSystem selects a file on the operator's file system
              */
-            filesystem?: outputs.pulumi.v1.StackSpecGitAuthAccessTokenFilesystem;
+            filesystem?: outputs.pulumiOperator.v1.StackSpecGitAuthAccessTokenFilesystem;
             /**
              * LiteralRef refers to a literal value
              */
-            literal?: outputs.pulumi.v1.StackSpecGitAuthAccessTokenLiteral;
+            literal?: outputs.pulumiOperator.v1.StackSpecGitAuthAccessTokenLiteral;
             /**
              * SecretRef refers to a Kubernetes Secret
              */
-            secret?: outputs.pulumi.v1.StackSpecGitAuthAccessTokenSecret;
+            secret?: outputs.pulumiOperator.v1.StackSpecGitAuthAccessTokenSecret;
             /**
              * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
              */
@@ -16474,11 +16474,11 @@ export namespace pulumi {
             /**
              * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
              */
-            password: outputs.pulumi.v1.StackSpecGitAuthBasicAuthPassword;
+            password: outputs.pulumiOperator.v1.StackSpecGitAuthBasicAuthPassword;
             /**
              * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
              */
-            userName: outputs.pulumi.v1.StackSpecGitAuthBasicAuthUserName;
+            userName: outputs.pulumiOperator.v1.StackSpecGitAuthBasicAuthUserName;
         }
 
         /**
@@ -16488,19 +16488,19 @@ export namespace pulumi {
             /**
              * Env selects an environment variable set on the operator process
              */
-            env?: outputs.pulumi.v1.StackSpecGitAuthBasicAuthPasswordEnv;
+            env?: outputs.pulumiOperator.v1.StackSpecGitAuthBasicAuthPasswordEnv;
             /**
              * FileSystem selects a file on the operator's file system
              */
-            filesystem?: outputs.pulumi.v1.StackSpecGitAuthBasicAuthPasswordFilesystem;
+            filesystem?: outputs.pulumiOperator.v1.StackSpecGitAuthBasicAuthPasswordFilesystem;
             /**
              * LiteralRef refers to a literal value
              */
-            literal?: outputs.pulumi.v1.StackSpecGitAuthBasicAuthPasswordLiteral;
+            literal?: outputs.pulumiOperator.v1.StackSpecGitAuthBasicAuthPasswordLiteral;
             /**
              * SecretRef refers to a Kubernetes Secret
              */
-            secret?: outputs.pulumi.v1.StackSpecGitAuthBasicAuthPasswordSecret;
+            secret?: outputs.pulumiOperator.v1.StackSpecGitAuthBasicAuthPasswordSecret;
             /**
              * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
              */
@@ -16562,19 +16562,19 @@ export namespace pulumi {
             /**
              * Env selects an environment variable set on the operator process
              */
-            env?: outputs.pulumi.v1.StackSpecGitAuthBasicAuthUserNameEnv;
+            env?: outputs.pulumiOperator.v1.StackSpecGitAuthBasicAuthUserNameEnv;
             /**
              * FileSystem selects a file on the operator's file system
              */
-            filesystem?: outputs.pulumi.v1.StackSpecGitAuthBasicAuthUserNameFilesystem;
+            filesystem?: outputs.pulumiOperator.v1.StackSpecGitAuthBasicAuthUserNameFilesystem;
             /**
              * LiteralRef refers to a literal value
              */
-            literal?: outputs.pulumi.v1.StackSpecGitAuthBasicAuthUserNameLiteral;
+            literal?: outputs.pulumiOperator.v1.StackSpecGitAuthBasicAuthUserNameLiteral;
             /**
              * SecretRef refers to a Kubernetes Secret
              */
-            secret?: outputs.pulumi.v1.StackSpecGitAuthBasicAuthUserNameSecret;
+            secret?: outputs.pulumiOperator.v1.StackSpecGitAuthBasicAuthUserNameSecret;
             /**
              * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
              */
@@ -16636,11 +16636,11 @@ export namespace pulumi {
             /**
              * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
              */
-            password?: outputs.pulumi.v1.StackSpecGitAuthSshAuthPassword;
+            password?: outputs.pulumiOperator.v1.StackSpecGitAuthSshAuthPassword;
             /**
              * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
              */
-            sshPrivateKey: outputs.pulumi.v1.StackSpecGitAuthSshAuthSshPrivateKey;
+            sshPrivateKey: outputs.pulumiOperator.v1.StackSpecGitAuthSshAuthSshPrivateKey;
         }
 
         /**
@@ -16650,19 +16650,19 @@ export namespace pulumi {
             /**
              * Env selects an environment variable set on the operator process
              */
-            env?: outputs.pulumi.v1.StackSpecGitAuthSshAuthPasswordEnv;
+            env?: outputs.pulumiOperator.v1.StackSpecGitAuthSshAuthPasswordEnv;
             /**
              * FileSystem selects a file on the operator's file system
              */
-            filesystem?: outputs.pulumi.v1.StackSpecGitAuthSshAuthPasswordFilesystem;
+            filesystem?: outputs.pulumiOperator.v1.StackSpecGitAuthSshAuthPasswordFilesystem;
             /**
              * LiteralRef refers to a literal value
              */
-            literal?: outputs.pulumi.v1.StackSpecGitAuthSshAuthPasswordLiteral;
+            literal?: outputs.pulumiOperator.v1.StackSpecGitAuthSshAuthPasswordLiteral;
             /**
              * SecretRef refers to a Kubernetes Secret
              */
-            secret?: outputs.pulumi.v1.StackSpecGitAuthSshAuthPasswordSecret;
+            secret?: outputs.pulumiOperator.v1.StackSpecGitAuthSshAuthPasswordSecret;
             /**
              * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
              */
@@ -16724,19 +16724,19 @@ export namespace pulumi {
             /**
              * Env selects an environment variable set on the operator process
              */
-            env?: outputs.pulumi.v1.StackSpecGitAuthSshAuthSshPrivateKeyEnv;
+            env?: outputs.pulumiOperator.v1.StackSpecGitAuthSshAuthSshPrivateKeyEnv;
             /**
              * FileSystem selects a file on the operator's file system
              */
-            filesystem?: outputs.pulumi.v1.StackSpecGitAuthSshAuthSshPrivateKeyFilesystem;
+            filesystem?: outputs.pulumiOperator.v1.StackSpecGitAuthSshAuthSshPrivateKeyFilesystem;
             /**
              * LiteralRef refers to a literal value
              */
-            literal?: outputs.pulumi.v1.StackSpecGitAuthSshAuthSshPrivateKeyLiteral;
+            literal?: outputs.pulumiOperator.v1.StackSpecGitAuthSshAuthSshPrivateKeyLiteral;
             /**
              * SecretRef refers to a Kubernetes Secret
              */
-            secret?: outputs.pulumi.v1.StackSpecGitAuthSshAuthSshPrivateKeySecret;
+            secret?: outputs.pulumiOperator.v1.StackSpecGitAuthSshAuthSshPrivateKeySecret;
             /**
              * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
              */
@@ -16802,7 +16802,7 @@ export namespace pulumi {
             /**
              * Requirement gives specific requirements for the prerequisite; the base requirement is that the referenced stack is in a successful state.
              */
-            requirement?: outputs.pulumi.v1.StackSpecPrerequisitesRequirement;
+            requirement?: outputs.pulumiOperator.v1.StackSpecPrerequisitesRequirement;
         }
 
         /**
@@ -16829,19 +16829,19 @@ export namespace pulumi {
             /**
              * Env selects an environment variable set on the operator process
              */
-            env?: outputs.pulumi.v1.StackSpecSecretsRefEnv;
+            env?: outputs.pulumiOperator.v1.StackSpecSecretsRefEnv;
             /**
              * FileSystem selects a file on the operator's file system
              */
-            filesystem?: outputs.pulumi.v1.StackSpecSecretsRefFilesystem;
+            filesystem?: outputs.pulumiOperator.v1.StackSpecSecretsRefFilesystem;
             /**
              * LiteralRef refers to a literal value
              */
-            literal?: outputs.pulumi.v1.StackSpecSecretsRefLiteral;
+            literal?: outputs.pulumiOperator.v1.StackSpecSecretsRefLiteral;
             /**
              * SecretRef refers to a Kubernetes Secret
              */
-            secret?: outputs.pulumi.v1.StackSpecSecretsRefSecret;
+            secret?: outputs.pulumiOperator.v1.StackSpecSecretsRefSecret;
             /**
              * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
              */
@@ -16900,11 +16900,11 @@ export namespace pulumi {
          * StackStatus defines the observed state of Stack
          */
         export interface StackStatus {
-            conditions?: outputs.pulumi.v1.StackStatusConditions[];
+            conditions?: outputs.pulumiOperator.v1.StackStatusConditions[];
             /**
              * LastUpdate contains details of the status of the last update.
              */
-            lastUpdate?: outputs.pulumi.v1.StackStatusLastUpdate;
+            lastUpdate?: outputs.pulumiOperator.v1.StackStatusLastUpdate;
             /**
              * ObservedGeneration records the value of .meta.generation at the point the controller last processed this object
              */
@@ -17014,7 +17014,7 @@ export namespace pulumi {
             /**
              * (optional) EnvRefs is an optional map containing environment variables as keys and stores descriptors to where the variables' values should be loaded from (one of literal, environment variable, file on the filesystem, or Kubernetes Secret) as values.
              */
-            envRefs?: {[key: string]: outputs.pulumi.v1alpha1.StackSpecEnvRefs};
+            envRefs?: {[key: string]: outputs.pulumiOperator.v1alpha1.StackSpecEnvRefs};
             /**
              * (optional) SecretEnvs is an optional array of Secret names containing environment variables to set. Deprecated: use EnvRefs instead.
              */
@@ -17030,11 +17030,11 @@ export namespace pulumi {
             /**
              * FluxSource specifies how to fetch source code from a Flux source object.
              */
-            fluxSource?: outputs.pulumi.v1alpha1.StackSpecFluxSource;
+            fluxSource?: outputs.pulumiOperator.v1alpha1.StackSpecFluxSource;
             /**
              * (optional) GitAuth allows configuring git authentication options There are 3 different authentication options: * SSH private key (and its optional password) * Personal access token * Basic auth username and password Only one authentication mode will be considered if more than one option is specified, with ssh private key/password preferred first, then personal access token, and finally basic auth credentials.
              */
-            gitAuth?: outputs.pulumi.v1alpha1.StackSpecGitAuth;
+            gitAuth?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuth;
             /**
              * (optional) GitAuthSecret is the the name of a Secret containing an authentication option for the git repository. There are 3 different authentication options: * Personal access token * SSH private key (and it's optional password) * Basic auth username and password Only one authentication mode will be considered if more than one option is specified, with ssh private key/password preferred first, then personal access token, and finally basic auth credentials. Deprecated. Use GitAuth instead.
              */
@@ -17042,11 +17042,11 @@ export namespace pulumi {
             /**
              * (optional) Prerequisites is a list of references to other stacks, each with a constraint on how long ago it must have succeeded. This can be used to make sure e.g., state is re-evaluated before running a stack that depends on it.
              */
-            prerequisites?: outputs.pulumi.v1alpha1.StackSpecPrerequisites[];
+            prerequisites?: outputs.pulumiOperator.v1alpha1.StackSpecPrerequisites[];
             /**
              * ProgramRef refers to a Program object, to be used as the source for the stack.
              */
-            programRef?: outputs.pulumi.v1alpha1.StackSpecProgramRef;
+            programRef?: outputs.pulumiOperator.v1alpha1.StackSpecProgramRef;
             /**
              * ProjectRepo is the git source control repository from which we fetch the project code and configuration.
              */
@@ -17078,7 +17078,7 @@ export namespace pulumi {
             /**
              * (optional) SecretRefs is the secret configuration for this stack which can be specified through ResourceRef. If this is omitted, secrets configuration is assumed to be checked in and taken from the source repository.
              */
-            secretsRef?: {[key: string]: outputs.pulumi.v1alpha1.StackSpecSecretsRef};
+            secretsRef?: {[key: string]: outputs.pulumiOperator.v1alpha1.StackSpecSecretsRef};
             /**
              * Stack is the fully qualified name of the stack to deploy (<org>/<stack>).
              */
@@ -17100,19 +17100,19 @@ export namespace pulumi {
             /**
              * Env selects an environment variable set on the operator process
              */
-            env?: outputs.pulumi.v1alpha1.StackSpecEnvRefsEnv;
+            env?: outputs.pulumiOperator.v1alpha1.StackSpecEnvRefsEnv;
             /**
              * FileSystem selects a file on the operator's file system
              */
-            filesystem?: outputs.pulumi.v1alpha1.StackSpecEnvRefsFilesystem;
+            filesystem?: outputs.pulumiOperator.v1alpha1.StackSpecEnvRefsFilesystem;
             /**
              * LiteralRef refers to a literal value
              */
-            literal?: outputs.pulumi.v1alpha1.StackSpecEnvRefsLiteral;
+            literal?: outputs.pulumiOperator.v1alpha1.StackSpecEnvRefsLiteral;
             /**
              * SecretRef refers to a Kubernetes Secret
              */
-            secret?: outputs.pulumi.v1alpha1.StackSpecEnvRefsSecret;
+            secret?: outputs.pulumiOperator.v1alpha1.StackSpecEnvRefsSecret;
             /**
              * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
              */
@@ -17175,7 +17175,7 @@ export namespace pulumi {
              * Dir gives the subdirectory containing the Pulumi project (i.e., containing Pulumi.yaml) of interest, within the fetched source.
              */
             dir?: string;
-            sourceRef: outputs.pulumi.v1alpha1.StackSpecFluxSourceSourceRef;
+            sourceRef: outputs.pulumiOperator.v1alpha1.StackSpecFluxSourceSourceRef;
         }
 
         export interface StackSpecFluxSourceSourceRef {
@@ -17191,15 +17191,15 @@ export namespace pulumi {
             /**
              * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
              */
-            accessToken?: outputs.pulumi.v1alpha1.StackSpecGitAuthAccessToken;
+            accessToken?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthAccessToken;
             /**
              * BasicAuth configures git authentication through basic auth — i.e. username and password. Both UserName and Password are required.
              */
-            basicAuth?: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuth;
+            basicAuth?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthBasicAuth;
             /**
              * SSHAuth configures ssh-based auth for git authentication. SSHPrivateKey is required but password is optional.
              */
-            sshAuth?: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuth;
+            sshAuth?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthSshAuth;
         }
 
         /**
@@ -17209,19 +17209,19 @@ export namespace pulumi {
             /**
              * Env selects an environment variable set on the operator process
              */
-            env?: outputs.pulumi.v1alpha1.StackSpecGitAuthAccessTokenEnv;
+            env?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthAccessTokenEnv;
             /**
              * FileSystem selects a file on the operator's file system
              */
-            filesystem?: outputs.pulumi.v1alpha1.StackSpecGitAuthAccessTokenFilesystem;
+            filesystem?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthAccessTokenFilesystem;
             /**
              * LiteralRef refers to a literal value
              */
-            literal?: outputs.pulumi.v1alpha1.StackSpecGitAuthAccessTokenLiteral;
+            literal?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthAccessTokenLiteral;
             /**
              * SecretRef refers to a Kubernetes Secret
              */
-            secret?: outputs.pulumi.v1alpha1.StackSpecGitAuthAccessTokenSecret;
+            secret?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthAccessTokenSecret;
             /**
              * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
              */
@@ -17283,11 +17283,11 @@ export namespace pulumi {
             /**
              * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
              */
-            password: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuthPassword;
+            password: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthBasicAuthPassword;
             /**
              * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
              */
-            userName: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuthUserName;
+            userName: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthBasicAuthUserName;
         }
 
         /**
@@ -17297,19 +17297,19 @@ export namespace pulumi {
             /**
              * Env selects an environment variable set on the operator process
              */
-            env?: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuthPasswordEnv;
+            env?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthBasicAuthPasswordEnv;
             /**
              * FileSystem selects a file on the operator's file system
              */
-            filesystem?: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuthPasswordFilesystem;
+            filesystem?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthBasicAuthPasswordFilesystem;
             /**
              * LiteralRef refers to a literal value
              */
-            literal?: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuthPasswordLiteral;
+            literal?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthBasicAuthPasswordLiteral;
             /**
              * SecretRef refers to a Kubernetes Secret
              */
-            secret?: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuthPasswordSecret;
+            secret?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthBasicAuthPasswordSecret;
             /**
              * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
              */
@@ -17371,19 +17371,19 @@ export namespace pulumi {
             /**
              * Env selects an environment variable set on the operator process
              */
-            env?: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuthUserNameEnv;
+            env?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthBasicAuthUserNameEnv;
             /**
              * FileSystem selects a file on the operator's file system
              */
-            filesystem?: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuthUserNameFilesystem;
+            filesystem?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthBasicAuthUserNameFilesystem;
             /**
              * LiteralRef refers to a literal value
              */
-            literal?: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuthUserNameLiteral;
+            literal?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthBasicAuthUserNameLiteral;
             /**
              * SecretRef refers to a Kubernetes Secret
              */
-            secret?: outputs.pulumi.v1alpha1.StackSpecGitAuthBasicAuthUserNameSecret;
+            secret?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthBasicAuthUserNameSecret;
             /**
              * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
              */
@@ -17445,11 +17445,11 @@ export namespace pulumi {
             /**
              * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
              */
-            password?: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuthPassword;
+            password?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthSshAuthPassword;
             /**
              * ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
              */
-            sshPrivateKey: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuthSshPrivateKey;
+            sshPrivateKey: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthSshAuthSshPrivateKey;
         }
 
         /**
@@ -17459,19 +17459,19 @@ export namespace pulumi {
             /**
              * Env selects an environment variable set on the operator process
              */
-            env?: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuthPasswordEnv;
+            env?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthSshAuthPasswordEnv;
             /**
              * FileSystem selects a file on the operator's file system
              */
-            filesystem?: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuthPasswordFilesystem;
+            filesystem?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthSshAuthPasswordFilesystem;
             /**
              * LiteralRef refers to a literal value
              */
-            literal?: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuthPasswordLiteral;
+            literal?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthSshAuthPasswordLiteral;
             /**
              * SecretRef refers to a Kubernetes Secret
              */
-            secret?: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuthPasswordSecret;
+            secret?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthSshAuthPasswordSecret;
             /**
              * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
              */
@@ -17533,19 +17533,19 @@ export namespace pulumi {
             /**
              * Env selects an environment variable set on the operator process
              */
-            env?: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuthSshPrivateKeyEnv;
+            env?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthSshAuthSshPrivateKeyEnv;
             /**
              * FileSystem selects a file on the operator's file system
              */
-            filesystem?: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuthSshPrivateKeyFilesystem;
+            filesystem?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthSshAuthSshPrivateKeyFilesystem;
             /**
              * LiteralRef refers to a literal value
              */
-            literal?: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuthSshPrivateKeyLiteral;
+            literal?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthSshAuthSshPrivateKeyLiteral;
             /**
              * SecretRef refers to a Kubernetes Secret
              */
-            secret?: outputs.pulumi.v1alpha1.StackSpecGitAuthSshAuthSshPrivateKeySecret;
+            secret?: outputs.pulumiOperator.v1alpha1.StackSpecGitAuthSshAuthSshPrivateKeySecret;
             /**
              * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
              */
@@ -17611,7 +17611,7 @@ export namespace pulumi {
             /**
              * Requirement gives specific requirements for the prerequisite; the base requirement is that the referenced stack is in a successful state.
              */
-            requirement?: outputs.pulumi.v1alpha1.StackSpecPrerequisitesRequirement;
+            requirement?: outputs.pulumiOperator.v1alpha1.StackSpecPrerequisitesRequirement;
         }
 
         /**
@@ -17638,19 +17638,19 @@ export namespace pulumi {
             /**
              * Env selects an environment variable set on the operator process
              */
-            env?: outputs.pulumi.v1alpha1.StackSpecSecretsRefEnv;
+            env?: outputs.pulumiOperator.v1alpha1.StackSpecSecretsRefEnv;
             /**
              * FileSystem selects a file on the operator's file system
              */
-            filesystem?: outputs.pulumi.v1alpha1.StackSpecSecretsRefFilesystem;
+            filesystem?: outputs.pulumiOperator.v1alpha1.StackSpecSecretsRefFilesystem;
             /**
              * LiteralRef refers to a literal value
              */
-            literal?: outputs.pulumi.v1alpha1.StackSpecSecretsRefLiteral;
+            literal?: outputs.pulumiOperator.v1alpha1.StackSpecSecretsRefLiteral;
             /**
              * SecretRef refers to a Kubernetes Secret
              */
-            secret?: outputs.pulumi.v1alpha1.StackSpecSecretsRefSecret;
+            secret?: outputs.pulumiOperator.v1alpha1.StackSpecSecretsRefSecret;
             /**
              * SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
              */
@@ -17712,7 +17712,7 @@ export namespace pulumi {
             /**
              * LastUpdate contains details of the status of the last update.
              */
-            lastUpdate?: outputs.pulumi.v1alpha1.StackStatusLastUpdate;
+            lastUpdate?: outputs.pulumiOperator.v1alpha1.StackStatusLastUpdate;
             /**
              * Outputs contains the exported stack output variables resulting from a deployment.
              */

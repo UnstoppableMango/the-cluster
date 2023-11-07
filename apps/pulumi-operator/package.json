@@ -1,11 +1,14 @@
 {
     "name": "deploy-operator-ts",
     "dependencies": {
-        "@pulumi/docker": "^4.4.4",
         "@pulumi/kubernetes": "^3.30.2",
-        "@pulumi/pulumi": "^3.92.0"
+        "@pulumi/pulumi": "^3.92.0",
+        "@pulumi/pulumiservice": "^0.14.0"
     },
     "devDependencies": {
         "@types/node": "^20.8.10"
-    }
+    },
+    "workspaces": [
+        "../../lib/crds"
+    ]
 }

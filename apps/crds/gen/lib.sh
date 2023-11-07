@@ -16,8 +16,16 @@ if [ 0 -ge $(ls "$root"/manifests/*/output.yaml | wc -l) ]; then
     exit 1
 fi
 
-echo "Selecting codegen stack..."
 oldStack="$(pulumi -C "$root" stack --show-name)"
+
+function cleanup() {
+    echo "Switching back to stack $oldStack..."
+    pulumi -C "$root" stack select "$oldStack"
+}
+
+trap cleanup EXIT
+
+echo "Selecting codegen stack..."
 pulumi -C "$root" stack select codegen
 
 echo "Getting versions..."
@@ -37,6 +45,24 @@ crd2pulumi --nodejsPath="$libDir" --force \
 echo "Fixing quotes..."
 sed -i '' "s/x-kubernetes-preserve-unknown-fields/'x-kubernetes-preserve-unknown-fields'/" "$libDir/types/input.ts"
 sed -i '' "s/x-kubernetes-preserve-unknown-fields/'x-kubernetes-preserve-unknown-fields'/" "$libDir/types/output.ts"
+sed -i '' "s/metadata.omitempty/'metadata.omitempty'/" "$libDir/types/input.ts"
+sed -i '' "s/metadata.omitempty/'metadata.omitempty'/" "$libDir/types/output.ts"
 
-echo "Switching back to stack $oldStack..."
-pulumi -C "$root" stack select "$oldStack"
+function renamePulumi() {
+    echo "Fixing $1..."
+    sed -i '' 's/namespace pulumi/namespace pulumiOperator/' "$1"
+    sed -i '' 's/pulumi.v1/pulumiOperator.v1/' "$1"
+    sed -i '' 's/pulumi from ".\/pulumi"/pulumiOperator from ".\/pulumi"/' "$1"
+    sed -i '' 's/pulumi,/pulumiOperator,/' "$1"
+}
+
+export -f renamePulumi
+find "$libDir/pulumi" -type f -exec bash -c 'renamePulumi "$0"' {} \;
+renamePulumi "$libDir/types/input.ts"
+renamePulumi "$libDir/types/output.ts"
+renamePulumi "$libDir/index.ts"
+
+echo "Installing packages..."
+trap popd EXIT
+pushd "$libDir"
+npm install
