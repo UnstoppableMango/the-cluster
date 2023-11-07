@@ -24,8 +24,6 @@ runs:
         command: up
         work-dir: clusters/rosequartz
         pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
-        comment-on-pr: false
-        comment-on-summary: false
 
     - id: setup-config
       uses: ./.github/actions/setup-config
@@ -60,8 +58,6 @@ runs:
         command: up
         work-dir: apps/crds
         pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
-        comment-on-pr: false
-        comment-on-summary: false
 
     - run: npm ci
       working-directory: apps/cert-manager
@@ -81,8 +77,6 @@ runs:
         command: up
         work-dir: apps/cert-manager
         pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
-        comment-on-pr: false
-        comment-on-summary: false
 
     - run: ./spec/validation.sh
       working-directory: apps/cert-manager
@@ -107,8 +101,6 @@ runs:
         command: up
         work-dir: apps/metrics-server
         pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
-        comment-on-pr: false
-        comment-on-summary: false
 
     - name: Validate Metrics Server
       run: ./spec/validation.sh
@@ -134,8 +126,6 @@ runs:
         command: up
         work-dir: apps/clusterapi
         pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
-        comment-on-pr: false
-        comment-on-summary: false
 
     - name: Validate Cluster API
       run: ./spec/validation.sh
