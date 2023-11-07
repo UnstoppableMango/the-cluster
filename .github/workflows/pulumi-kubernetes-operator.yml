@@ -4,11 +4,11 @@ on:
   pull_request:
     branches: ['main']
     paths:
-      - apps/pululmi-k8s-operator/Dockerfile
+      - apps/pulumi-k8s-operator/Dockerfile
   push:
     branches: ['main']
     paths:
-      - apps/pululmi-k8s-operator/Dockerfile
+      - apps/pulumi-k8s-operator/Dockerfile
 
 jobs:
   docker:
