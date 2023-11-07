@@ -1,0 +1,3 @@
+config:
+  thecluster-pulumi-operator:versions:
+    customImage: sha-c5bf76d
