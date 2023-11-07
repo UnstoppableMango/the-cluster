@@ -128,10 +128,18 @@ describe('regex manager matchStrings', () => {
   it('should capture github tags', () => {
     const groups = act('github-tag.yml').map(x => x.groups);
 
-    expect(groups).toContainEqual(expect.objectContaining({
-      depName: 'test/repo',
-      currentDigest: '1f546c2c36b80c1268d758fac3e81190581949ea',
-      currentValue: 'testTag',
-    }));
+    expect(groups).toEqual(expect.arrayContaining([
+      {
+        depName: 'test/repo',
+        currentDigest: '1f546c2c36b80c1268d758fac3e81190581949ea',
+        currentValue: 'testTag',
+      },
+      {
+        depName: 'test/repo2',
+        currentDigest: '2f546c2c36b80c1268d758fac3e81190581949ae',
+        currentValue: 'testTag2',
+        extractVersion: 'rosequartz\\/v2',
+      },
+    ]));
   });
 });
