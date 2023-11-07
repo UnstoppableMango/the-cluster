@@ -1,0 +1,3 @@
+name: thecluster-pulumi-k8s-operator
+runtime: nodejs
+description: Pulumi Kubernetes Operator install for THECLUSTER
