@@ -273,10 +273,15 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-          cache-dependency-path: apps/pulumi-operator/package-lock.json
+          cache-dependency-path: |
+            lib/crds/package-lock.json
+            apps/pulumi-operator/package-lock.json
 
       - name: Setup tools
         uses: ./.github/actions/setup-tools
+
+      - run: npm ci
+        working-directory: lib/crds
 
       - run: npm ci
 
