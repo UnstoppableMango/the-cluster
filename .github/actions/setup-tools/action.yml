@@ -4,6 +4,11 @@ inputs: {}
 runs:
   using: composite
   steps:
+    - name: Setup pulumi
+      uses: pulumi/actions@v4
+      with:
+        pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
+
     - name: Setup kubectl-slice
       uses: jaxxstorm/action-install-gh-release@v1
       with:

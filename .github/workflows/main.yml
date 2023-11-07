@@ -50,12 +50,6 @@ jobs:
           cache: npm
           cache-dependency-path: clusters/rosequartz/package-lock.json
 
-      - uses: pulumi/actions@v4
-        with:
-          pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
-          comment-on-pr: false
-          comment-on-summary: false
-
       - name: Setup tools
         uses: ./.github/actions/setup-tools
 
@@ -65,7 +59,7 @@ jobs:
         if: github.event_name == 'pull_request'
 
       - name: Tear down rosequartz
-        if: always()
+        if: github.event_name == 'pull_request' && always()
         continue-on-error: true
         working-directory: clusters/rosequartz
         run: pulumi stack rm -yf "${{ env.RQ_STACK }}"
@@ -92,11 +86,6 @@ jobs:
       - name: Setup tools
         uses: ./.github/actions/setup-tools
 
-      - name: Setup pulumi
-        uses: pulumi/actions@v4
-        with:
-          pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
-
       - run: npm ci
       - run: pulumi stack select UnstoppableMango/thecluster-crds/rosequartz
       - run: ./gen/capi.sh
@@ -114,6 +103,7 @@ jobs:
           stack-name: UnstoppableMango/thecluster-crds/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: apps/crds
+          comment-on-pr: true
         env:
           KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
 
@@ -155,7 +145,7 @@ jobs:
           stack-name: UnstoppableMango/thecluster-cert-manager/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: apps/cert-manager
-          pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
+          comment-on-pr: true
         env:
           KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
 
@@ -197,7 +187,7 @@ jobs:
           stack-name: UnstoppableMango/thecluster-metrics-server/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: apps/metrics-server
-          pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
+          comment-on-pr: true
         env:
           KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
 
@@ -227,11 +217,6 @@ jobs:
       - name: Setup tools
         uses: ./.github/actions/setup-tools
 
-      - name: Setup pulumi
-        uses: pulumi/actions@v4
-        with:
-          pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
-
       - run: npm ci
       - run: pulumi stack select UnstoppableMango/thecluster-clusterapi/rosequartz
       - run: ./gen/manifests.sh
@@ -249,6 +234,7 @@ jobs:
           stack-name: UnstoppableMango/thecluster-clusterapi/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: apps/clusterapi
+          comment-on-pr: true
         env:
           KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
 
@@ -299,6 +285,6 @@ jobs:
           stack-name: UnstoppableMango/thecluster-pulumi-operator/rosequartz
           command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           work-dir: apps/pulumi-operator
-          pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
+          comment-on-pr: true
         env:
           KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
