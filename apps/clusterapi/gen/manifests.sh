@@ -53,9 +53,11 @@ function gen() {
         > "$manifestDir/$providerName/output.yaml"
 }
 
+sideroEndpoint="$(pulumi -C "$root" config get sideroEndpoint)"
 export SIDERO_CONTROLLER_MANAGER_HOST_NETWORK=true
 export SIDERO_CONTROLLER_MANAGER_DEPLOYMENT_STRATEGY=Recreate
-export SIDERO_CONTROLLER_MANAGER_API_ENDPOINT="$(pulumi -C "$root" config get sideroApiEndpoint)"
+export SIDERO_CONTROLLER_MANAGER_API_ENDPOINT="$sideroEndpoint"
+export SIDERO_CONTROLLER_MANAGER_SIDEROLINK_ENDPOINT="$sideroEndpoint"
 export SIDERO_CONTROLLER_MANAGER_AUTO_BMC_SETUP=false
 
 "$root/gen/clusterctl-config.sh"

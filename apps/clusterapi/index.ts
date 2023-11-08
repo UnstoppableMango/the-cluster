@@ -9,6 +9,9 @@ interface Versions {
 const config = new pulumi.Config();
 const versions = config.requireObject<Versions>('versions');
 const stack = pulumi.getStack();
+const metallbStack = new pulumi.StackReference('metallb', {
+  name: `UnstoppableMango/thecluster-metallb/${stack}`,
+});
 
 const core = new k8s.yaml.ConfigFile('core', {
   file: path.join('manifests', stack, 'cluster-api-core', 'output.yaml'),
@@ -40,7 +43,7 @@ const infrastructure = new k8s.yaml.ConfigGroup('infrastructure', {
     'sidero-infrastructure',
     'proxmox-infrastructure',
   ].map(x => path.join('manifests', stack, x, 'output.yaml')),
-  transformations: [patchSidero, patchProxmoxService],
+  transformations: [patchSideroManager, patchProxmoxService, patchSideroServices],
 }, {
   dependsOn: controlplane.ready,
   ignoreChanges: [
@@ -72,7 +75,7 @@ function patchProxmoxService(obj: any, opts: pulumi.CustomResourceOptions): void
   obj.spec.selector['cluster.x-k8s.io/aggregate-to-manager'] = undefined
 }
 
-function patchSidero(obj: any, opts: pulumi.CustomResourceOptions): void {
+function patchSideroManager(obj: any, opts: pulumi.CustomResourceOptions): void {
   if (obj.kind !== 'Deployment') return;
   if (obj.metadata.name !== 'sidero-controller-manager') return;
 
@@ -105,4 +108,14 @@ function patchSidero(obj: any, opts: pulumi.CustomResourceOptions): void {
     mountPath: '/var/lib/sidero/tftp',
     name: 'tftp-folder',
   });
+}
+
+function patchSideroServices(obj: any, opts: pulumi.CustomResourceOptions): void {
+  if (obj.kind !== 'Service') return;
+  const services = ['sidero-dhcp', 'sidero-tftp', 'sidero-siderolink', 'sidero-http'];
+  if (!services.includes(obj.metadata.name)) return;
+
+  if (!obj.metadata.annotations) obj.metadata.annotations = {};
+  obj.metadata.annotations['metallb.universe.tf/address-pool'] = metallbStack.requireOutput('sideroPoolName');
+  obj.spec.type = 'LoadBalancer';
 }
