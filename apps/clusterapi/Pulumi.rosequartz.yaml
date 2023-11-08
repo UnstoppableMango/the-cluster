@@ -1,2 +1,2 @@
 config:
-  thecluster-clusterapi:sideroApiEndpoint: 192.168.1.99
+  thecluster-clusterapi:sideroApiEndpoint: 192.168.1.98
