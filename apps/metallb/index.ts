@@ -1,4 +1,7 @@
+import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
+
+const config = new pulumi.Config();
 
 const ns = new k8s.core.v1.Namespace('metallb-system', {
   metadata: {
@@ -21,11 +24,12 @@ const chart = new k8s.helm.v3.Chart('metallb', {
     metallb: {
       // The CRDs are templated and a pain to install other ways
       crds: { enabled: true },
-      loadBalancerClass: 'metallb',
+      loadBalancerClass: config.require('loadBalancerClass'),
     },
   },
 });
 
+// TODO: this and the advertisement should probably live in the sidero stack
 const sideroPool = new k8s.apiextensions.CustomResource('sidero', {
   apiVersion: 'metallb.io/v1beta1',
   kind: 'IPAddressPool',
@@ -36,6 +40,10 @@ const sideroPool = new k8s.apiextensions.CustomResource('sidero', {
   spec: {
     addresses: ['192.168.1.98/32'],
     autoAssign: true,
+    avoidBuggyIPs: true,
+    serviceAllocation: {
+      namespaces: ['sidero-system'],
+    },
   },
 }, { dependsOn: chart.ready });
 
@@ -52,3 +60,4 @@ const advertisement = new k8s.apiextensions.CustomResource('primary', {
 }, { dependsOn: chart.ready });
 
 export const sideroPoolName = sideroPool.metadata.name;
+export const loadBalancerClass = config.require('loadBalancerClass');

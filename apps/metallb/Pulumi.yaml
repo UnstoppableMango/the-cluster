@@ -1,3 +1,5 @@
 name: thecluster-metallb
 runtime: nodejs
 description: MetalLB install for THECLUSTER
+config:
+  loadBalancerClass: metallb
