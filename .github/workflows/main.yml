@@ -331,3 +331,7 @@ jobs:
           comment-on-pr: true
         env:
           KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
+
+      - name: Verify
+        if: github.event_name == 'push'
+        run: ./spec/verify.sh
