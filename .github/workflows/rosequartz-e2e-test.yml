@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - .github/actions/rosequartz-e2e-test/**
-      - .github/workflows/rosequartz-e2e-test.yaml
+      - .github/workflows/rosequartz-e2e-test.yml
       - apps/crds/package-lock.json
       - apps/cert-manager/package-lock.json
       - apps/cert-manager/Chart.lock
@@ -23,12 +23,6 @@ jobs:
       STACK: e2e-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
-
-      - uses: pulumi/actions@v4
-        with:
-          pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
-          comment-on-pr: false
-          comment-on-summary: false
 
       - uses: actions/setup-node@v4
         with:
@@ -87,12 +81,6 @@ jobs:
           sparse-checkout: |
             apps
             clusters
-
-      - uses: pulumi/actions@v4
-        with:
-          pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
-          comment-on-pr: false
-          comment-on-summary: false
 
       - uses: actions/setup-node@v4
         with:
