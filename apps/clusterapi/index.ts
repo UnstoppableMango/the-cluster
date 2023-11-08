@@ -9,6 +9,9 @@ interface Versions {
 const config = new pulumi.Config();
 const versions = config.requireObject<Versions>('versions');
 const stack = pulumi.getStack();
+const metallbStack = new pulumi.StackReference('metallb', {
+  name: `UnstoppableMango/thecluster-metallb/${stack}`,
+});
 
 const core = new k8s.yaml.ConfigFile('core', {
   file: path.join('manifests', stack, 'cluster-api-core', 'output.yaml'),
@@ -40,13 +43,53 @@ const infrastructure = new k8s.yaml.ConfigGroup('infrastructure', {
     'sidero-infrastructure',
     'proxmox-infrastructure',
   ].map(x => path.join('manifests', stack, x, 'output.yaml')),
-  transformations: [patchSidero, patchProxmoxService],
+  transformations: [patchSideroManager, patchProxmoxService],
 }, {
   dependsOn: controlplane.ready,
   ignoreChanges: [
     'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
   ],
 });
+
+const sideroLb = new k8s.core.v1.Service('siderolb', {
+  metadata: {
+    name: 'siderolb',
+    namespace: 'sidero-system'
+  },
+  spec: {
+    type: k8s.types.enums.core.v1.ServiceSpecType.LoadBalancer,
+    loadBalancerClass: metallbStack.requireOutput('loadBalancerClass'),
+    ports: [{
+      name: 'dhcp',
+      port: 67,
+      protocol: 'UDP',
+      targetPort: 'dhcp',
+    }, {
+      name: 'http',
+      port: 8081,
+      protocol: 'TCP',
+      targetPort: 'http',
+    }, {
+      name: 'siderolink',
+      port: 51821,
+      protocol: 'UDP',
+      targetPort: 'siderolink',
+    }, {
+      name: 'tftp',
+      port: 69,
+      protocol: 'UDP',
+      targetPort: 'tftp',
+    }],
+    selector: {
+      app: 'sidero',
+      'cluster.x-k8s.io/provider': 'sidero',
+      'cluster.x-k8s.io/v1alpha3': 'v1alpha3',
+      'cluster.x-k8s.io/v1alpha4': 'v1alpha3',
+      'cluster.x-k8s.io/v1beta1': 'v1alpha3',
+      'control-plane': 'sidero-controller-manager',
+    },
+  },
+}, { dependsOn: infrastructure.ready });
 
 function patchControllerManagerPorts(obj: any, opts: pulumi.CustomResourceOptions): void {
   if (obj.kind !== 'Deployment') return;
@@ -72,7 +115,7 @@ function patchProxmoxService(obj: any, opts: pulumi.CustomResourceOptions): void
   obj.spec.selector['cluster.x-k8s.io/aggregate-to-manager'] = undefined
 }
 
-function patchSidero(obj: any, opts: pulumi.CustomResourceOptions): void {
+function patchSideroManager(obj: any, opts: pulumi.CustomResourceOptions): void {
   if (obj.kind !== 'Deployment') return;
   if (obj.metadata.name !== 'sidero-controller-manager') return;
 
