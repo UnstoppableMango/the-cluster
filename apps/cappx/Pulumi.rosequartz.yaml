@@ -1,0 +1,2 @@
+config:
+  thecluster-clusterapi:sideroEndpoint: 192.168.1.98
