@@ -31,7 +31,6 @@ pulumi -C "$root" stack select codegen
 echo "Getting versions..."
 certManagerVersion="$(pulumi -C "$root" config get --path 'versions.certManager')"
 pulumiOperatorVersion="$(pulumi -C "$root" config get --path 'versions.pulumiOperator')"
-metallbVersion="$(pulumi -C "$root" config get --path 'versions.metallb')"
 
 echo "Cleaning lib dir..."
 [ -d "$libDir" ] && rm -r "$libDir"
@@ -41,7 +40,6 @@ crd2pulumi --nodejsPath="$libDir" --force \
     "https://github.com/cert-manager/cert-manager/releases/download/v$certManagerVersion/cert-manager.crds.yaml" \
     "https://raw.githubusercontent.com/pulumi/pulumi-kubernetes-operator/v$pulumiOperatorVersion/deploy/crds/pulumi.com_programs.yaml" \
     "https://raw.githubusercontent.com/pulumi/pulumi-kubernetes-operator/v$pulumiOperatorVersion/deploy/crds/pulumi.com_stacks.yaml" \
-    "https://raw.githubusercontent.com/metallb/metallb/v$metallbVersion/charts/metallb/charts/crds/templates/crds.yaml" \
     "$root"/manifests/*/output.yaml
 
 echo "Fixing quotes..."
