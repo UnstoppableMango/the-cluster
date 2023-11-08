@@ -58,7 +58,7 @@ const sideroLb = new k8s.core.v1.Service('siderolb', {
   },
   spec: {
     type: k8s.types.enums.core.v1.ServiceSpecType.LoadBalancer,
-    loadBalancerClass: 'metallb',
+    loadBalancerClass: metallbStack.requireOutput('loadBalancerClass'),
     ports: [{
       name: 'dhcp',
       port: 67,
