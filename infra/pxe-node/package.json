@@ -1,0 +1,11 @@
+{
+    "name": "thecluster-pxe-node",
+    "main": "index.ts",
+    "dependencies": {
+        "@pulumi/libvirt": "^0.4.2",
+        "@pulumi/pulumi": "^3.92.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.9.0"
+    }
+}
