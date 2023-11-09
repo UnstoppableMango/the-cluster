@@ -6,27 +6,14 @@ inputs:
     required: true
   stack:
     description: The stack of the configuration to use
-    required: true
+    required: false
+    default: 'prod'
   endpoint:
     description: The public endpoint to use to connect to
     required: false
 runs:
   using: composite
   steps:
-    - uses: actions/setup-node@v4
-      with:
-        node-version-file: .nvmrc
-        cache: npm
-        cache-dependency-path: 'clusters/${{ inputs.cluster }}/package-lock.json'
-
-    - uses: pulumi/actions@v4
-      with:
-        pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
-
-    - run: npm ci
-      working-directory: clusters/${{ inputs.cluster }}
-      shell: bash
-
     - id: set-outputs
       run: |
         KUBECONFIG="${KUBECONFIG:-"$GITHUB_WORKSPACE/kubeconfig"}"

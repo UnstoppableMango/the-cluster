@@ -3,50 +3,86 @@ name: Deploy
 on:
   workflow_call:
     inputs:
-      kind:
-        required: true
+      project:
+        description: |
+          The name project to deploy. This should match both the name of
+          a directory under `apps/` or `clusters/` and the name of the
+          pulumi project stripped of the `thecluster-` prefix.
         type: string
-      name:
         required: true
-        type: string
       stack:
-        required: true
+        description: The name of the pulumi stack to deploy
         type: string
-      tf-stack:
         required: true
+      kind:
+        description: |
+          The kind of stack to deploy. Acceptable values are `app` or `cluster`
         type: string
-      op:
-        required: true
+        required: false
+        default: app
+      verify-script:
+        description: |
+          The path to a verification script to run after deploying.
+          This path should be relative to the project directory.
         type: string
+        required: false
+        default: ''
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: apps/dashboard
+        working-directory: ${{ inputs.kind }}s/${{ inputs.project }}
     env:
-      TF_WORKSPACE: ${{ inputs.tf-stack }}
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+      PROJECT_DIR: ${{ inputs.kind }}s/${{ inputs.project }}
+      OPERATION: ${{ github.event_name == 'push' && 'up' || 'preview' }}
     steps:
+      - name: Validate kind input
+        run: |
+          case "${{ inputs.kind }}" in
+            app | cluster) ;;
+            *) echo "Invalid kind" && exit 1;;
+          esac
+
       - uses: actions/checkout@v4
 
-      - uses: hashicorp/setup-terraform@v2
+      - uses: actions/setup-node@v4
         with:
-          terraform_version: 1.5.7 # renovate depName=hashicorp/terraform
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-          terraform_wrapper: false
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: ${{ env.PROJECT_DIR }}/package-lock.json
 
-      - uses: ./.github/actions/setup-rq-deploy
+      - uses: ./.github/actions/setup-tools
         with:
-          tf-workspace: ${{ inputs.tf-stack }}
-          talosconfig: ./talosconfig
-          kubeconfig: ./kubeconfig
+          all: true
+
+      - uses: ./.github/actions/setup-config
+        if: inputs.kind != 'cluster'
+        with:
+          cluster: rosequartz
+
+      - run: npm ci
+
+      - run: |
+          [ $(ls -1 Chart.{yml,yaml} 2>/dev/null | wc -l) -gt 0 ] && helm dependency update
+
+      - name: Pulumi ${{ env.OPERATION }}
+        uses: pulumi/actions@v4
+        with:
+          stack-name: UnstoppableMango/thecluster-${{ inputs.project }}/${{ inputs.stack }}
+          command: ${{ env.OPERATION }}
+          work-dir: ${{ env.PROJECT_DIR }}
+
+      - name: Validate
+        if: ${{ inputs.verify-script != '' }}
+        run: ${{ inputs.verify-script }}
 
       - uses: ./.github/actions/pulumi-deploy
         with:
           kind: ${{ inputs.kind }}
-          name: ${{ inputs.name }}
+          project: ${{ inputs.project }}
           stack: ${{ inputs.stack }}
           op: ${{ github.event_name == 'push' && 'up' || 'preview' }}
           validate: ${{ github.event_name == 'push' }}

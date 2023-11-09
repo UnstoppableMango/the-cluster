@@ -4,11 +4,11 @@ inputs:
   kind:
     description: Directory stack is located in (clusters/apps)
     required: true
-  name:
-    description: Name of the stack to deploy
+  project:
+    description: Name of the project to deploy
     required: true
   stack:
-    description: Name of the stack configuration to deploy
+    description: Name of the stack to deploy
     required: true
   op:
     description: The pulumi operation to perform
@@ -39,7 +39,6 @@ runs:
         stack-name: UnstoppableMango/thecluster-clusterapi/rosequartz
         command: ${{ inptus.op }}
         work-dir: ${{ inputs.kind }}/${{ inputs.name }}
-        pulumi-version: 3.89.0 # renovate depName=pulumi/pulumi
 
     - name: Validate
       if: ${{ inputs.validate }}

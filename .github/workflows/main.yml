@@ -86,6 +86,10 @@ jobs:
 
       - name: Setup tools
         uses: ./.github/actions/setup-tools
+        with:
+          kubectl-slice: true
+          clusterctl: true
+          crd2pulumi: true
 
       - run: npm ci
       - run: pulumi stack select UnstoppableMango/thecluster-crds/rosequartz
