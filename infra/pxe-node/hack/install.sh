@@ -2,7 +2,7 @@
 set -eum
 
 sudo virt-install \
-    --network bridge:vmbr0 \
+    --network network=macvtap-net \
     --pxe \
     --name pxe \
     --memory 2048 \
