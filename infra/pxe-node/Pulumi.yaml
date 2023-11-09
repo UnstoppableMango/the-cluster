@@ -1,3 +1,0 @@
-name: thecluster-pxe-node
-runtime: nodejs
-description: Creates VMs to test PXE booting nodes into THECLUSTER
