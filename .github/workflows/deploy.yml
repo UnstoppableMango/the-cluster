@@ -54,6 +54,7 @@ jobs:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       PROJECT_DIR: ${{ inputs.kind }}s/${{ inputs.project }}
       OPERATION: ${{ github.event_name == 'push' && 'up' || 'preview' }}
+      STACK: ${{ inputs.stack }}
     defaults:
       run:
         working-directory: ${{ env.PROJECT_DIR }}
