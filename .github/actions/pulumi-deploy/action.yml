@@ -12,6 +12,10 @@ inputs:
       The name of the pulumi stack to deploy. For clusters this is typically
       `prod`, for apps this is the name of the cluster to deploy to.
     required: true
+  endpoint:
+    description: |
+      The endpoint to use to connect to the cluster. Required when kind == 'app'.
+    required: false
   kind:
     description: |
       The kind of stack to deploy. Acceptable values are `app` or `cluster`.
@@ -32,14 +36,26 @@ inputs:
       This path should be relative to the project directory.
     required: false
     default: './spec/verify.sh'
+  uses-crds:
+    description: Whether the stack uses the CRDs library.
+    required: false
+    default: 'false'
+  pre-deploy-script:
+    description: The path to a script to run before deploying.
+    required: false
 runs:
   using: composite
   steps:
     - name: Validate inputs
       shell: bash
       run: |
-        case "${{ inputs.kind }}" in
-          app | cluster) ;;
+        case '${{ inputs.kind }}' in
+          app)
+            if [ -z '${{ inputs.endpoint }}' ]; then
+              echo "Endpoint is required"
+              exit 1
+            fi;;
+          cluster);;
           *) echo "Invalid kind" && exit 1;;
         esac
 
@@ -48,13 +64,20 @@ runs:
           *) echo "Invalid operation" && exit 1;;
         esac
 
-    - uses: ./.github/actions/setup-config
+    - id: setup
+      uses: ./.github/actions/setup-config
       if: inputs.kind != 'cluster'
       with:
         cluster: ${{ inputs.stack }}
+        endpoint: ${{ inputs.endpoint }}
 
     - shell: bash
       run: npm ci
+
+    - if: inputs.uses-crds == 'true'
+      shell: bash
+      run: npm ci
+      working-directory: lib/crds
 
     - shell: bash
       run: |
@@ -69,8 +92,13 @@ runs:
         command: ${{ inputs.op }}
         work-dir: ${{ inputs.kind }}s/${{ inputs.project }}
         comment-on-pr: true
+      env:
+        KUBECONFIG: ${{ steps.setup.outputs.kubeconfig }}
 
     - name: Validate
       if: ${{ inputs.verify == 'true' }}
       shell: bash
       run: ${{ inputs.verify-script }}
+      env:
+        KUBECONFIG: ${{ steps.setup.outputs.kubeconfig }}
+        TALOSCONFIG: ${{ steps.setup.outputs.talosconfig }}

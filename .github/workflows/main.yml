@@ -42,300 +42,81 @@ jobs:
         working-directory: clusters/rosequartz
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-      RQ_STACK: rq-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-          cache-dependency-path: clusters/rosequartz/package-lock.json
-
       - name: Setup tools
         uses: ./.github/actions/setup-tools
 
-      - run: npm ci
+      - id: setup-config
+        uses: ./.github/actions/setup-config
+        with:
+          cluster: rosequartz
+          endpoint: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
 
-      - run: ./spec/e2e.sh
-        if: github.event_name == 'pull_request'
-
-      - name: Tear down rosequartz
-        if: github.event_name == 'pull_request' && always()
-        continue-on-error: true
-        working-directory: clusters/rosequartz
-        run: pulumi stack rm -yf "${{ env.RQ_STACK }}"
+      - name: Health check
+        run: talosctl health --nodes 192.168.1.101
 
   crds:
     name: CRDs
-    runs-on: ubuntu-latest
-    needs: [setup]
+    needs: [setup, rosequartz]
     if: fromJson(needs.setup.outputs.crds) && !failure() && !cancelled()
     concurrency: crds-${{ github.ref }}
-    defaults:
-      run:
-        working-directory: apps/crds
-    env:
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-          cache-dependency-path: apps/crds/package-lock.json
-
-      - name: Setup tools
-        uses: ./.github/actions/setup-tools
-        with:
-          kubectl-slice: true
-          clusterctl: true
-          crd2pulumi: true
-
-      - run: npm ci
-      - run: pulumi stack select UnstoppableMango/thecluster-crds/rosequartz
-      - run: ./gen/capi.sh
-
-      - id: setup-config
-        uses: ./.github/actions/setup-config
-        with:
-          cluster: rosequartz
-          stack: prod
-          endpoint: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
-
-      - name: Pulumi Action
-        uses: pulumi/actions@v4
-        with:
-          stack-name: UnstoppableMango/thecluster-crds/rosequartz
-          command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
-          work-dir: apps/crds
-          comment-on-pr: true
-        env:
-          KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
+    uses: './.github/workflows/deploy.yml'
+    with:
+      project: crds
+      stack: rosequartz
+      verify: false
+      pre-deploy-script: ./gen/capi.sh
 
   cert-manager:
     name: Cert Manager
-    runs-on: ubuntu-latest
-    needs: [setup, crds]
+    needs: [setup, rosequartz, crds]
     if: fromJson(needs.setup.outputs.cert-manager) && !failure() && !cancelled()
     concurrency: cert-manager-${{ github.ref }}
-    defaults:
-      run:
-        working-directory: apps/cert-manager
-    env:
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-          cache-dependency-path: apps/cert-manager/package-lock.json
-
-      - name: Setup tools
-        uses: ./.github/actions/setup-tools
-
-      - run: npm ci
-      - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
-
-      - id: setup-config
-        uses: ./.github/actions/setup-config
-        with:
-          cluster: rosequartz
-          stack: prod
-          endpoint: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
-
-      - name: Pulumi Action
-        uses: pulumi/actions@v4
-        with:
-          stack-name: UnstoppableMango/thecluster-cert-manager/rosequartz
-          command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
-          work-dir: apps/cert-manager
-          comment-on-pr: true
-        env:
-          KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
+    uses: './.github/workflows/deploy.yml'
+    with:
+      project: cert-manager
+      stack: rosequartz
 
   metrics-server:
     name: Metrics Server
-    runs-on: ubuntu-latest
-    needs: [setup]
+    needs: [setup, rosequartz]
     if: fromJson(needs.setup.outputs.metrics-server) && !failure() && !cancelled()
     concurrency: metrics-server-${{ github.ref }}
-    defaults:
-      run:
-        working-directory: apps/metrics-server
-    env:
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-          cache-dependency-path: apps/metrics-server/package-lock.json
-
-      - name: Setup tools
-        uses: ./.github/actions/setup-tools
-
-      - run: npm ci
-      - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
-
-      - id: setup-config
-        uses: ./.github/actions/setup-config
-        with:
-          cluster: rosequartz
-          stack: prod
-          endpoint: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
-
-      - name: Pulumi Action
-        uses: pulumi/actions@v4
-        with:
-          stack-name: UnstoppableMango/thecluster-metrics-server/rosequartz
-          command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
-          work-dir: apps/metrics-server
-          comment-on-pr: true
-        env:
-          KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
-
-      - name: Validate
-        if: github.event_name == 'push'
-        run: ./spec/validation.sh
+    uses: './.github/workflows/deploy.yml'
+    with:
+      project: metrics-server
+      stack: rosequartz
 
   clusterapi:
     name: Cluster API
-    runs-on: ubuntu-latest
     needs: [setup, cert-manager, crds]
     if: fromJson(needs.setup.outputs.clusterapi) && !failure() && !cancelled()
     concurrency: clusterapi-${{ github.ref }}
-    defaults:
-      run:
-        working-directory: apps/clusterapi
-    env:
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-          cache-dependency-path: apps/clusterapi/package-lock.json
-
-      - name: Setup tools
-        uses: ./.github/actions/setup-tools
-
-      - run: npm ci
-      - run: pulumi stack select UnstoppableMango/thecluster-clusterapi/rosequartz
-      - run: ./gen/manifests.sh
-
-      - id: setup-config
-        uses: ./.github/actions/setup-config
-        with:
-          cluster: rosequartz
-          stack: prod
-          endpoint: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
-
-      - name: Pulumi Action
-        uses: pulumi/actions@v4
-        with:
-          stack-name: UnstoppableMango/thecluster-clusterapi/rosequartz
-          command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
-          work-dir: apps/clusterapi
-          comment-on-pr: true
-        env:
-          KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
-
-      - name: Validate
-        if: github.event_name == 'push'
-        run: ./spec/validation.sh
+    uses: './.github/workflows/deploy.yml'
+    with:
+      project: clusterapi
+      stack: rosequartz
+      verify: false
+      pre-deploy-script: ./gen/manifests.sh
 
   pulumi-operator:
     name: Pulumi Kubernetes Operator
-    runs-on: ubuntu-latest
-    needs: [setup, crds]
+    needs: [setup, rosequartz, crds]
     if: fromJson(needs.setup.outputs.pulumi-operator) && !failure() && !cancelled()
     concurrency: pulumi-operator-${{ github.ref }}
-    defaults:
-      run:
-        working-directory: apps/pulumi-operator
-    env:
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-          cache-dependency-path: |
-            lib/crds/package-lock.json
-            apps/pulumi-operator/package-lock.json
-
-      - name: Setup tools
-        uses: ./.github/actions/setup-tools
-
-      - run: npm ci
-        working-directory: lib/crds
-
-      - run: npm ci
-      - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
-
-      - id: setup-config
-        uses: ./.github/actions/setup-config
-        with:
-          cluster: rosequartz
-          stack: prod
-          endpoint: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
-
-      - name: Pulumi Action
-        uses: pulumi/actions@v4
-        with:
-          stack-name: UnstoppableMango/thecluster-pulumi-operator/rosequartz
-          command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
-          work-dir: apps/pulumi-operator
-          comment-on-pr: true
-        env:
-          KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
+    uses: './.github/workflows/deploy.yml'
+    with:
+      project: pulumi-operator
+      stack: rosequartz
+      verify: false
+      uses-crds: true
 
   metallb:
     name: MetalLB
-    runs-on: ubuntu-latest
     needs: [setup]
     if: fromJson(needs.setup.outputs.metallb) && !failure() && !cancelled()
     concurrency: metallb-${{ github.ref }}
-    defaults:
-      run:
-        working-directory: apps/metallb
-    env:
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-          cache-dependency-path: apps/metallb/package-lock.json
-
-      - name: Setup tools
-        uses: ./.github/actions/setup-tools
-
-      - run: npm ci
-      - run: helm dependency update # Ugh https://github.com/helm/helm/issues/9903
-
-      - id: setup-config
-        uses: ./.github/actions/setup-config
-        with:
-          cluster: rosequartz
-          stack: prod
-          endpoint: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
-
-      - name: Pulumi Action
-        uses: pulumi/actions@v4
-        with:
-          stack-name: UnstoppableMango/thecluster-metallb/rosequartz
-          command: ${{ github.event_name == 'push' && 'up' || 'preview' }}
-          work-dir: apps/metallb
-          comment-on-pr: true
-        env:
-          KUBECONFIG: ${{ steps.setup-config.outputs.kubeconfig }}
-
-      - name: Verify
-        if: github.event_name == 'push'
-        run: ./spec/verify.sh
+    uses: './.github/workflows/deploy.yml'
+    with:
+      project: metallb
+      stack: rosequartz

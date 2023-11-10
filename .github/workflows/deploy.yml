@@ -32,6 +32,15 @@ on:
         type: string
         required: false
         default: './spec/verify.sh'
+      uses-crds:
+        description: Whether the stack uses the CRDs library.
+        type: boolean
+        required: false
+        default: false
+      pre-deploy-script:
+        description: The path to a script to run before deploying the stack.
+        type: string
+        required: false
 
 jobs:
   deploy:
@@ -57,7 +66,9 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-          cache-dependency-path: ${{ env.PROJECT_DIR }}/package-lock.json
+          cache-dependency-path: |
+            ${{ env.PROJECT_DIR }}/package-lock.json
+            lib/crds/package-lock.json
 
       - uses: ./.github/actions/setup-tools
         with:
@@ -68,6 +79,9 @@ jobs:
           project: ${{ inputs.project }}
           stack: ${{ inputs.stack }}
           kind: ${{ inputs.kind }}
+          endpoint: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
           op: ${{ env.OPERATION }}
           verify: ${{ inputs.verify }}
           verify-script: ${{ inputs.verify-script }}
+          uses-crds: ${{ inputs.uses-crds }}
+          pre-deploy-script: ${{ inputs.pre-deploy-script }}
