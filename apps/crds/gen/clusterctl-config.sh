@@ -7,9 +7,20 @@ if ! command -v pulumi >/dev/null 2>&1; then
 fi
 
 root="$(git rev-parse --show-toplevel)/apps/crds"
+oldStack="$(pulumi -C "$root" stack --show-name 2>/dev/null || true)"
+
+function cleanup() {
+    if [ -z "$oldStack" ]; then
+        pulumi -C "$root" stack unselect
+    else
+        echo "Switching back to stack $oldStack..."
+        pulumi -C "$root" stack select "$oldStack"
+    fi
+}
+
+trap cleanup EXIT
 
 echo "Selecting codegen stack..."
-oldStack="$(pulumi -C "$root" stack --show-name)"
 pulumi -C "$root" stack select codegen
 
 function version() {
@@ -24,12 +35,10 @@ sideroVersion="$(version "sidero")"
 cabptVersion="$(version "cabpt")"
 cacpptVersion="$(version "cacppt")"
 
+echo "Writing clusterctl.yaml file..."
 cat >"$root/clusterctl.yaml" <<EOL
 providers:
   - name: proxmox
     url: https://github.com/sp-yduck/cluster-api-provider-proxmox/releases/v$proxmoxVersion/infrastructure-components.yaml
     type: InfrastructureProvider
 EOL
-
-echo "Switching back to stack $oldStack..."
-pulumi -C "$root" stack select "$oldStack"

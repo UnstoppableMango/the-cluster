@@ -7,6 +7,21 @@ if ! command -v pulumi >/dev/null 2>&1; then
 fi
 
 root="$(git rev-parse --show-toplevel)/apps/clusterapi"
+stack="$(pulumi -C "$root" stack --show-name 2>/dev/null || echo "$STACK")"
+
+if [ -z "$stack" ]; then
+    echo "Please select a stack with \`pulumi stack select\` or set the STACK environment variable"
+    exit 1
+fi
+
+function cleanup() {
+    [ -z "$stack" ] && return 0
+    echo "Switching back to stack $stack..."
+    pulumi -C "$root" stack select "$stack"
+}
+
+trap cleanup EXIT
+pulumi -C "$root" stack select "$stack"
 
 function version() {
     dep=$1

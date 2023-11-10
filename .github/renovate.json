@@ -37,6 +37,7 @@
       "matchDepNames": [
         "cert-manager/cert-manager",
         "kubernetes/kubernetes",
+        "kubernetes/kubectl",
         "kubernetes-sigs/cluster-api",
         "pulumi/pulumi",
         "siderolabs/cluster-api-bootstrap-provider-talos",
@@ -52,6 +53,13 @@
         "talos"
       ],
       "groupName": "talos"
+    },
+    {
+      "matchPackagePatterns": [
+        "kubernetes",
+        "kubectl"
+      ],
+      "groupName": "kubernetes"
     },
     {
       "matchPackagePatterns": [

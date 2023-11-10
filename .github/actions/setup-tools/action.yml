@@ -1,39 +1,49 @@
 name: Setup Tools
 description: Setup tools
-inputs: {}
+inputs:
+  pulumi:
+    description: Install pulumi
+    required: false
+    default: 'true'
+  talosctl:
+    description: Install talosctl
+    required: false
+    default: 'true'
+  kubectl:
+    description: Install kubectl
+    required: false
+    default: 'true'
+  kubectl-slice:
+    description: Install kubectl-slice
+    required: false
+    default: 'false'
+  crd2pulumi:
+    description: Install crd2pulumi
+    required: false
+    default: 'false'
+  clusterctl:
+    description: Install clusterctl
+    required: false
+    default: 'false'
+  helm:
+    description: Install helm
+    required: false
+    default: 'false'
+  all:
+    description: Install all tools
+    required: false
+    default: 'false'
 runs:
   using: composite
   steps:
     - name: Setup pulumi
+      if: inputs.pulumi == 'true' || inputs.all == 'true'
       uses: pulumi/actions@v4
       with:
         pulumi-version: 3.92.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
 
-    - name: Setup kubectl-slice
-      uses: jaxxstorm/action-install-gh-release@v1
-      with:
-        repo: patrickdappollonio/kubectl-slice
-        tag: v1.2.7 # renovate depName=patrickdappollonio/kubectl-slice
-        cache: enable
-
-    - name: Setup crd2pulumi
-      uses: jaxxstorm/action-install-gh-release@v1
-      with:
-        repo: pulumi/crd2pulumi
-        tag: v1.2.5 # renovate depName=pulumi/crd2pulumi
-        cache: enable
-
-    - name: Setup clusterctl
-      uses: jaxxstorm/action-install-gh-release@v1
-      with:
-        repo: kubernetes-sigs/cluster-api
-        tag: v1.5.3 # renovate depName=kubernetes-sigs/cluster-api
-        extension-matching: disable
-        rename-to: clusterctl
-        chmod: 0755
-        cache: enable
-
     # - name: Setup talosctl
+    #   if: inputs.talosctl == 'true'
     #   uses: jaxxstorm/action-install-gh-release@v1
     #   with:
     #     repo: siderolabs/talos
@@ -45,7 +55,47 @@ runs:
 
     # TODO: Get a specfic version
     - name: Install talosctl
+      if: inputs.talosctl == 'true' || inputs.all == 'true'
       run: curl -sL https://talos.dev/install | sh
       shell: bash
+
+    - name: Setup kubectl
+      if: inputs.kubectl == 'true' || inputs.all == 'true'
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'v1.28.0' # renovate depName=kubernetes/kubernetes
+
+    - name: Setup helm
+      if: inputs.helm == 'true' || inputs.all == 'true'
+      uses: azure/setup-helm@v3
+      with:
+        version: '3.13.2' # renovate depName=helm/helm extractVersion=extractVersion=^v(?<version>.*)
+
+    - name: Setup kubectl-slice
+      if: inputs.kubectl-slice == 'true' || inputs.all == 'true'
+      uses: jaxxstorm/action-install-gh-release@v1
+      with:
+        repo: patrickdappollonio/kubectl-slice
+        tag: v1.2.7 # renovate depName=patrickdappollonio/kubectl-slice
+        cache: enable
+
+    - name: Setup crd2pulumi
+      if: inputs.crd2pulumi == 'true' || inputs.all == 'true'
+      uses: jaxxstorm/action-install-gh-release@v1
+      with:
+        repo: pulumi/crd2pulumi
+        tag: v1.2.5 # renovate depName=pulumi/crd2pulumi
+        cache: enable
+
+    - name: Setup clusterctl
+      if: inputs.clusterctl == 'true' || inputs.all == 'true'
+      uses: jaxxstorm/action-install-gh-release@v1
+      with:
+        repo: kubernetes-sigs/cluster-api
+        tag: v1.5.3 # renovate depName=kubernetes-sigs/cluster-api
+        extension-matching: disable
+        rename-to: clusterctl
+        chmod: 0755
+        cache: enable
 
 outputs: {}

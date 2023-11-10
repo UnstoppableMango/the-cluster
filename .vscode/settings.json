@@ -2,8 +2,10 @@
   "files.associations": {
     "*.{yml,yaml}": "yaml",
     "config": "yaml",
-    "talosconfig": "yaml",
-    ".versions": "yaml"
+    "talosconfig": "yaml"
   },
-  "FSharp.inlayHints.typeAnnotations": false
+  "yaml.schemas": {
+    "https://json.schemastore.org/github-workflow.json": "file:///**/.github/workflows/*.yml",
+    "https://json.schemastore.org/github-action.json": "file:///**/.github/actions/*/action.yml"
+  }
 }
