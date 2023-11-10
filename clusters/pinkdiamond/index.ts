@@ -20,17 +20,8 @@ const publicEndpoint = new cloudflare.Record('pd.thecluster.io', {
   value: config.requireSecret('publicIp'),
 });
 
-const ns = new k8s.core.v1.Namespace('pink-diamond', {
-  metadata: { name: 'pink-diamond' },
-});
-
-const manifests = new k8s.kustomize.Directory('manifests', {
-  directory: './manifests',
-}, {
-  dependsOn: [publicEndpoint, ns],
-  ignoreChanges: [
-    'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
-  ],
+const ns = new k8s.core.v1.Namespace('pinkdiamond', {
+  metadata: { name: 'pinkdiamond' },
 });
 
 const rpi4ServerClass = metal.ServerClass.get(
