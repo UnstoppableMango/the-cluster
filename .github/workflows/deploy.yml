@@ -53,14 +53,14 @@ jobs:
       run:
         working-directory: ${{ env.PROJECT_DIR }}
     steps:
+      - uses: actions/checkout@v4
+
       - name: Validate inputs
         run: |
           case "${{ inputs.kind }}" in
             app | cluster);;
             *) echo "Invalid kind" && exit 1;;
           esac
-
-      - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
