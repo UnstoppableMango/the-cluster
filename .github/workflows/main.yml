@@ -44,9 +44,6 @@ jobs:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          sparse-checkout: .github/actions
-          sparse-checkout-cone-mode: false
 
       - name: Setup tools
         uses: ./.github/actions/setup-tools
