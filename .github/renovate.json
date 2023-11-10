@@ -25,11 +25,22 @@
         "^.*Pulumi.*\\.(yml|yaml)$"
       ],
       "matchStrings": [
-        ".+?: (?<currentValue>\\S*) # renovate depName=(?<depName>\\S*)(?: extractVersion=(?<extractVersion>\\S*))*",
+        ".+?: (?<currentValue>\\S+) # renovate depName=(?<depName>\\S+)(?: extractVersion=(?<extractVersion>\\S+))*",
         ".+?: (?<currentDigest>[a-f0-9]{40}) # renovate depName=(?<depName>[^/?#]+\\/[^/?#]+) tag=(?<currentValue>\\S+)(?: extractVersion=(?<extractVersion>\\S*))*"
       ],
       "versioningTemplate": "semver-coerced",
       "datasourceTemplate": "github-tags"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "^Dockerfile$"
+      ],
+      "matchStrings": [
+        "depName=(?<depName>\\S+)(?: extractVersion=(?<extractVersion>\\S+))?\\s(?:ARG|ENV) \\S+_?=(?<currentValue>[\\d\\.]+)"
+      ],
+      "depNameTemplate": "yarn",
+      "datasourceTemplate": "npm"
     }
   ],
   "packageRules": [
