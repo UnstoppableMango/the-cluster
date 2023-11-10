@@ -85,6 +85,7 @@ runs:
         if [ $(ls -1 Chart.{yml,yaml} 2>/dev/null | wc -l) -gt 0 ]; then
           helm dependency update
         fi
+      working-directory: ${{ inputs.kind }}s/${{ inputs.project }}
 
     - name: Pulumi ${{ inputs.op }}
       uses: pulumi/actions@v4
@@ -103,3 +104,4 @@ runs:
       env:
         KUBECONFIG: ${{ steps.setup.outputs.kubeconfig }}
         TALOSCONFIG: ${{ steps.setup.outputs.talosconfig }}
+      working-directory: ${{ inputs.kind }}s/${{ inputs.project }}
