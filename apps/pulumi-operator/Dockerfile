@@ -1,7 +1,9 @@
 #syntax=docker/dockerfile:1
 
 FROM golang:1.21 as build
-ARG VERSION=1.13.0
+
+# renovate depName=pulumi/pulumi-kubernetes-operator extractVersion=^v(?<version>.*)
+ARG VERSION=1.14.0
 
 ADD https://github.com/pulumi/pulumi-kubernetes-operator.git#v${VERSION} /src
 
