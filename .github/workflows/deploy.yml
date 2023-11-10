@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ${{ inputs.kind }}s/${{ inputs.project }}
+        working-directory: ${{ env.PROJECT_DIR }}
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       PROJECT_DIR: ${{ inputs.kind }}s/${{ inputs.project }}
@@ -66,7 +66,9 @@ jobs:
       - run: npm ci
 
       - run: |
-          [ $(ls -1 Chart.{yml,yaml} 2>/dev/null | wc -l) -gt 0 ] && helm dependency update
+          if [ $(ls -1 Chart.{yml,yaml} 2>/dev/null | wc -l) -gt 0 ]; then
+            helm dependency update
+          fi
 
       - name: Pulumi ${{ env.OPERATION }}
         uses: pulumi/actions@v4
