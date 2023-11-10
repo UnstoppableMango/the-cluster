@@ -24,21 +24,21 @@ fi
 repoRoot="$(git rev-parse --show-toplevel)"
 root="$repoRoot/apps/crds"
 manifestDir="$root/manifests"
-stack="$(pulumi -C "$root" stack --show-name 2>/dev/null || echo "$STACK")"
-
-if [ -z "$stack" ]; then
-    echo "Please select a stack with \`pulumi stack select\` or set the STACK environment variable"
-    exit 1
-fi
+oldStack="$(pulumi -C "$root" stack --show-name 2>/dev/null || true)"
 
 function cleanup() {
-    [ -z "$oldStack" ] && return 0
-    echo "Switching back to stack $oldStack..."
-    pulumi -C "$root" stack select "$oldStack"
+    if [ -z "$oldStack" ]; then
+        pulumi -C "$root" stack unselect
+    else
+        echo "Switching back to stack $oldStack..."
+        pulumi -C "$root" stack select "$oldStack"
+    fi
 }
 
 trap cleanup EXIT
-pulumi -C "$root" stack select "$stack"
+
+echo "Selecting codegen stack..."
+pulumi -C "$root" stack select codegen
 
 function version() {
     dep=$1
