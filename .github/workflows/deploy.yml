@@ -41,6 +41,11 @@ on:
         description: The path to a script to run before deploying the stack.
         type: string
         required: false
+    secrets:
+      RQ_PRIMARY_DNS_NAME:
+        required: true
+      PULUMI_ACCESS_TOKEN:
+        required: true
 
 jobs:
   deploy:

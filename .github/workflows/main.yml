@@ -68,6 +68,9 @@ jobs:
       stack: rosequartz
       verify: false
       pre-deploy-script: ./gen/capi.sh
+    secrets:
+      RQ_PRIMARY_DNS_NAME: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
   cert-manager:
     name: Cert Manager
@@ -78,6 +81,9 @@ jobs:
     with:
       project: cert-manager
       stack: rosequartz
+    secrets:
+      RQ_PRIMARY_DNS_NAME: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
   metrics-server:
     name: Metrics Server
@@ -88,6 +94,9 @@ jobs:
     with:
       project: metrics-server
       stack: rosequartz
+    secrets:
+      RQ_PRIMARY_DNS_NAME: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
   clusterapi:
     name: Cluster API
@@ -100,6 +109,9 @@ jobs:
       stack: rosequartz
       verify: false
       pre-deploy-script: ./gen/manifests.sh
+    secrets:
+      RQ_PRIMARY_DNS_NAME: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
   pulumi-operator:
     name: Pulumi Kubernetes Operator
@@ -112,6 +124,9 @@ jobs:
       stack: rosequartz
       verify: false
       uses-crds: true
+    secrets:
+      RQ_PRIMARY_DNS_NAME: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
   metallb:
     name: MetalLB
@@ -122,3 +137,6 @@ jobs:
     with:
       project: metallb
       stack: rosequartz
+    secrets:
+      RQ_PRIMARY_DNS_NAME: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
