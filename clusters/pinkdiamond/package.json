@@ -10,6 +10,6 @@
         "@types/node": "^20.8.7"
     },
     "workspaces": [
-      "../../apps/clusterapi/crds"
+      "../../lib/crds"
     ]
 }
