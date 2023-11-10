@@ -73,6 +73,7 @@ runs:
 
     - shell: bash
       run: npm ci
+      working-directory: ${{ inputs.kind }}s/${{ inputs.project }}
 
     - if: inputs.uses-crds == 'true'
       shell: bash
