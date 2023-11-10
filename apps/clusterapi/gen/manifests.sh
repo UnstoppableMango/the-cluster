@@ -31,9 +31,9 @@ if [ -z "$stack" ]; then
 fi
 
 function cleanup() {
-    [ -z "$oldStack" ] && return 0
-    echo "Switching back to stack $oldStack..."
-    pulumi -C "$root" stack select "$oldStack"
+    [ -z "$stack" ] && return 0
+    echo "Switching back to stack $stack..."
+    pulumi -C "$root" stack select "$stack"
 }
 
 trap cleanup EXIT
