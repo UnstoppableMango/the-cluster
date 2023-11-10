@@ -87,6 +87,11 @@ runs:
         fi
       working-directory: ${{ inputs.kind }}s/${{ inputs.project }}
 
+    - if: inputs.pre-deploy-script != 'true'
+      shell: bash
+      run: ${{ inputs.pre-deploy-script }}
+      working-directory: ${{ inputs.kind }}s/${{ inputs.project }}
+
     - name: Pulumi ${{ inputs.op }}
       uses: pulumi/actions@v4
       with:
