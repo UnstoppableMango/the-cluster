@@ -1,47 +1,76 @@
 name: Pulumi Deploy
 description: Deploy a Pulumi stack
 inputs:
-  kind:
-    description: Directory stack is located in (clusters/apps)
-    required: true
   project:
-    description: Name of the project to deploy
+    description: |
+      The name project to deploy. This should match both the name of
+      a directory under `apps/` or `clusters/` and the name of the
+      pulumi project stripped of the `thecluster-` prefix.
     required: true
   stack:
-    description: Name of the stack to deploy
+    description: |
+      The name of the pulumi stack to deploy. For clusters this is typically
+      `prod`, for apps this is the name of the cluster to deploy to.
     required: true
+  kind:
+    description: |
+      The kind of stack to deploy. Acceptable values are `app` or `cluster`.
+    required: false
+    default: app
   op:
-    description: The pulumi operation to perform
-    required: true
-  validate:
-    description: Whether to run stack validation script
+    description: |
+      The pulumi operation to perform. Acceptable values are `preview` or `up`.
+    required: false
+    default: 'preview'
+  verify:
+    description: Whether to run a verification script or not
+    required: false
+    default: 'true'
+  verify-script:
+    description: |
+      The path to a verification script to run after deploying.
+      This path should be relative to the project directory.
+    required: false
+    default: './spec/verify.sh'
 runs:
   using: composite
   steps:
-    - uses: actions/setup-node@v4
+    - name: Validate inputs
+      shell: bash
+      run: |
+        case "${{ inputs.kind }}" in
+          app | cluster) ;;
+          *) echo "Invalid kind" && exit 1;;
+        esac
+
+        case "${{ inputs.op }}" in
+          preview | up);;
+          *) echo "Invalid operation" && exit 1;;
+        esac
+
+    - uses: ./.github/actions/setup-config
+      if: inputs.kind != 'cluster'
       with:
-        node-version-file: .nvmrc
-        cache: npm
-        cache-dependency-path: ${{ inputs.kind }}/${{ inputs.name }}/package-lock.json
+        cluster: ${{ inputs.stack }}
 
-    - run: npm ci
-      shell: bash
-      working-directory: ${{ inputs.kind }}/${{ inputs.name }}
+    - shell: bash
+      run: npm ci
 
-    - run: |
-        [ $(ls -1 Chart.{yml,yaml} 2>/dev/null | wc -l) -gt 0 ] && helm dependency update
-      shell: bash
-      working-directory: ${{ inputs.kind }}/${{ inputs.name }}
+    - shell: bash
+      run: |
+        if [ $(ls -1 Chart.{yml,yaml} 2>/dev/null | wc -l) -gt 0 ]; then
+          helm dependency update
+        fi
 
-    - name: Pulumi Action
+    - name: Pulumi ${{ inputs.op }}
       uses: pulumi/actions@v4
       with:
-        stack-name: UnstoppableMango/thecluster-clusterapi/rosequartz
-        command: ${{ inptus.op }}
-        work-dir: ${{ inputs.kind }}/${{ inputs.name }}
+        stack-name: UnstoppableMango/thecluster-${{ inputs.project }}/${{ inputs.stack }}
+        command: ${{ inputs.op }}
+        work-dir: ${{ inputs.kind }}s/${{ inputs.project }}
+        comment-on-pr: true
 
     - name: Validate
-      if: ${{ inputs.validate }}
-      run: ./spec/validation.sh
+      if: ${{ inputs.verify == 'true' }}
       shell: bash
-      working-directory: ${{ inputs.kind }}/${{ inputs.name }}
+      run: ${{ inputs.verify-script }}

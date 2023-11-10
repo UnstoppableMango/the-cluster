@@ -20,29 +20,34 @@ on:
         type: string
         required: false
         default: app
+      verify:
+        description: Whether to run a verification script or not
+        type: boolean
+        required: false
+        default: true
       verify-script:
         description: |
           The path to a verification script to run after deploying.
           This path should be relative to the project directory.
         type: string
         required: false
-        default: ''
+        default: './spec/verify.sh'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ env.PROJECT_DIR }}
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       PROJECT_DIR: ${{ inputs.kind }}s/${{ inputs.project }}
       OPERATION: ${{ github.event_name == 'push' && 'up' || 'preview' }}
+    defaults:
+      run:
+        working-directory: ${{ env.PROJECT_DIR }}
     steps:
-      - name: Validate kind input
+      - name: Validate inputs
         run: |
           case "${{ inputs.kind }}" in
-            app | cluster) ;;
+            app | cluster);;
             *) echo "Invalid kind" && exit 1;;
           esac
 
@@ -58,33 +63,11 @@ jobs:
         with:
           all: true
 
-      - uses: ./.github/actions/setup-config
-        if: inputs.kind != 'cluster'
-        with:
-          cluster: rosequartz
-
-      - run: npm ci
-
-      - run: |
-          if [ $(ls -1 Chart.{yml,yaml} 2>/dev/null | wc -l) -gt 0 ]; then
-            helm dependency update
-          fi
-
-      - name: Pulumi ${{ env.OPERATION }}
-        uses: pulumi/actions@v4
-        with:
-          stack-name: UnstoppableMango/thecluster-${{ inputs.project }}/${{ inputs.stack }}
-          command: ${{ env.OPERATION }}
-          work-dir: ${{ env.PROJECT_DIR }}
-
-      - name: Validate
-        if: ${{ inputs.verify-script != '' }}
-        run: ${{ inputs.verify-script }}
-
       - uses: ./.github/actions/pulumi-deploy
         with:
-          kind: ${{ inputs.kind }}
           project: ${{ inputs.project }}
           stack: ${{ inputs.stack }}
-          op: ${{ github.event_name == 'push' && 'up' || 'preview' }}
-          validate: ${{ github.event_name == 'push' }}
+          kind: ${{ inputs.kind }}
+          op: ${{ env.OPERATION }}
+          verify: ${{ inputs.verify }}
+          verify-script: ${{ inputs.verify-script }}
