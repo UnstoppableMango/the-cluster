@@ -21,6 +21,10 @@ inputs:
     description: Install clusterctl
     required: false
     default: 'false'
+  helm:
+    description: Install helm
+    required: false
+    default: 'false'
   all:
     description: Install all tools
     required: false
@@ -51,8 +55,14 @@ runs:
       run: curl -sL https://talos.dev/install | sh
       shell: bash
 
+    - name: Setup helm
+      if: inputs.helm == 'true' || inputs.all == 'true'
+      uses: azure/setup-helm@v3
+      with:
+        version: '3.13.2' # renovate depName=helm/helm extractVersion=extractVersion=^v(?<version>.*)
+
     - name: Setup kubectl-slice
-      if: inputs.kubectl-slice == 'true'
+      if: inputs.kubectl-slice == 'true' || inputs.all == 'true'
       uses: jaxxstorm/action-install-gh-release@v1
       with:
         repo: patrickdappollonio/kubectl-slice
