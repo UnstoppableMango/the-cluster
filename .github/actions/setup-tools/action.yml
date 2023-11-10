@@ -9,6 +9,10 @@ inputs:
     description: Install talosctl
     required: false
     default: 'true'
+  kubectl:
+    description: Install kubectl
+    required: false
+    default: 'true'
   kubectl-slice:
     description: Install kubectl-slice
     required: false
@@ -54,6 +58,12 @@ runs:
       if: inputs.talosctl == 'true' || inputs.all == 'true'
       run: curl -sL https://talos.dev/install | sh
       shell: bash
+
+    - name: Setup kubectl
+      if: inputs.kubectl == 'true' || inputs.all == 'true'
+      uses: azure/setup-kubectl@v3
+      with:
+        version: '0.28.0' # renovate depName=kubernetes/kubectl extractVersion=extractVersion=^kubernetes-v(?<version>.*)
 
     - name: Setup helm
       if: inputs.helm == 'true' || inputs.all == 'true'
