@@ -39,7 +39,6 @@
         "kubernetes/kubernetes",
         "kubernetes/kubectl",
         "kubernetes-sigs/cluster-api",
-        "pulumi/pulumi",
         "siderolabs/cluster-api-bootstrap-provider-talos",
         "siderolabs/cluster-api-control-plane-provider-talos",
         "siderolabs/sidero",
