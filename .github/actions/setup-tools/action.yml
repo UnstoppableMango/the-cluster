@@ -63,7 +63,7 @@ runs:
       if: inputs.kubectl == 'true' || inputs.all == 'true'
       uses: azure/setup-kubectl@v3
       with:
-        version: '1.28.0' # renovate depName=kubernetes/kubernetes extractVersion=extractVersion=^v(?<version>.*)
+        version: 'v1.28.0' # renovate depName=kubernetes/kubernetes
 
     - name: Setup helm
       if: inputs.helm == 'true' || inputs.all == 'true'
