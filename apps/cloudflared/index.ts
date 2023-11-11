@@ -261,3 +261,50 @@ const daemonset = new k8s.apps.v1.DaemonSet('apiserver-tunnel', {
 //   }>[];
 //   namespace?: pulumi.Input<string>;
 // }
+
+// ------------------------------------------------------
+// - Usage from v1
+// ------------------------------------------------------
+// const unmangoTunnel = new Tunnel('unmango-net', {
+//   namespace: tunnelNamespace.name,
+//   cloudflare: {
+//     accountId: cfConfig.accountId,
+//     zone: 'unmango.net',
+//   },
+//   dnsRecords: ['plex'],
+//   ingresses: [{
+//     hostname: 'plex.unmango.net',
+//     service: 'http://192.168.1.70:32400',
+//   }],
+// });
+
+// const tunnel = new Tunnel('thecluster-io', {
+//   namespace: tunnelNamespace.name,
+//   cloudflare: {
+//     accountId: cfConfig.accountId,
+//     zone: 'thecluster.io',
+//   },
+//   dnsRecords: [
+//     'auth',
+//     'dash',
+//     'deemix',
+//     'deluge',
+//     'media',
+//     'rancher',
+//     'requests',
+//     'satisfactory',
+//     'minecraft',
+//     'unstoppablemango-actions',
+//     'unmango-actions',
+//   ],
+//   // Point to the internal traefik url for two reasons:
+//   // - No hard dependency on an IP if it changes
+//   // - I didn't include an IP in the SAN of any of my certs...
+//   ingresses: [{
+//     hostname: 'thecluster.io',
+//     service: 'https://traefik.int.unmango.net',
+//   }, {
+//     hostname: '*.thecluster.io',
+//     service: 'https://traefik.int.unmango.net',
+//   }],
+// });
