@@ -108,10 +108,14 @@ function patchControllerManagerPorts(obj: any, opts: pulumi.CustomResourceOption
 
 function patchProxmoxService(obj: any, opts: pulumi.CustomResourceOptions): void {
   if (obj.kind !== 'Service') return;
-  if (obj.metadata.name !== 'cluster-api-provider-proxmox-controller-manager-metrics-service') return;
+  const names = [
+    'cluster-api-provider-proxmox-controller-manager-metrics-service',
+    'cappx-controller-manager-metrics-service',
+  ];
+  if (!names.includes(obj.metadata.name)) return;
 
-  obj.metadata.labels['control-plane'] = 'capp-controller-manager';
-  obj.spec.selector['control-plane'] = 'capp-controller-manager';
+  obj.metadata.labels['control-plane'] = 'cappx-controller-manager';
+  obj.spec.selector['control-plane'] = 'cappx-controller-manager';
   obj.spec.selector['cluster.x-k8s.io/aggregate-to-manager'] = undefined
 }
 
