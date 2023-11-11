@@ -1,0 +1,3 @@
+name: thecluster-cloudflared
+runtime: nodejs
+description: Cloudflared install for THECLUSTER

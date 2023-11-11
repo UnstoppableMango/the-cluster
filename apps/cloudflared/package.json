@@ -1,0 +1,10 @@
+{
+    "name": "thecluster-cloudflared",
+    "main": "index.ts",
+    "dependencies": {
+        "@pulumi/pulumi": "^3.93.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.9.0"
+    }
+}
