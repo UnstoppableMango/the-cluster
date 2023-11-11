@@ -2,6 +2,8 @@
     "name": "thecluster-cloudflared",
     "main": "index.ts",
     "dependencies": {
+        "@pulumi/cloudflare": "^5.14.0",
+        "@pulumi/kubernetes": "^4.5.4",
         "@pulumi/pulumi": "^3.93.0"
     },
     "devDependencies": {
