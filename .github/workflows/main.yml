@@ -43,6 +43,7 @@ jobs:
       kind: infra
       project: dns
       stack: prod
+      verify: false
     secrets:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
