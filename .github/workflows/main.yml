@@ -165,6 +165,7 @@ jobs:
     with:
       project: cloudflared
       stack: rosequartz
+      verify: false
     secrets:
       RQ_PRIMARY_DNS_NAME: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
