@@ -11,17 +11,17 @@ on:
         type: string
         required: true
       stack:
-        description: The name of the pulumi stack to deploy
+        description: The name of the pulumi stack to deploy.
         type: string
         required: true
       kind:
         description: |
-          The kind of stack to deploy. Acceptable values are `app` or `cluster`
+          The kind of stack to deploy. Acceptable values are `apps` `clusters`, or `infra`.
         type: string
         required: false
-        default: app
+        default: apps
       verify:
-        description: Whether to run a verification script or not
+        description: Whether to run a verification script or not.
         type: boolean
         required: false
         default: true
@@ -43,7 +43,7 @@ on:
         required: false
     secrets:
       RQ_PRIMARY_DNS_NAME:
-        required: true
+        required: false
       PULUMI_ACCESS_TOKEN:
         required: true
 
@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-      PROJECT_DIR: ${{ inputs.kind }}s/${{ inputs.project }}
+      PROJECT_DIR: ${{ inputs.kind }}/${{ inputs.project }}
       OPERATION: ${{ github.event_name == 'push' && 'up' || 'preview' }}
       STACK: ${{ inputs.stack }}
     defaults:
@@ -64,7 +64,7 @@ jobs:
       - name: Validate inputs
         run: |
           case "${{ inputs.kind }}" in
-            app | cluster);;
+            apps | clusters | infra);;
             *) echo "Invalid kind" && exit 1;;
           esac
 

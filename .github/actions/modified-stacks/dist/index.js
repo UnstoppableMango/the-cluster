@@ -30018,20 +30018,8 @@ function getRootDir() {
   return execSync('git rev-parse --show-toplevel', { encoding: 'utf-8' }).trim();
 }
 
-function getClusterDir(root) {
-  return path.join(root, 'clusters');
-}
-
-function getAppDir(root) {
-  return path.join(root, 'apps');
-}
-
-function getClusters(clusterDir) {
-  return readdirSync(clusterDir, 'utf-8').map(x => path.join('clusters', x));
-}
-
-function getApps(appDir) {
-  return readdirSync(appDir, 'utf-8').map(x => path.join('apps', x));
+function getStacks(root, roots) {
+  return roots.flatMap(r => readdirSync(path.join(root, r), 'utf-8').map(x => path.join(r, x)));
 }
 
 function getTargetRef() {
@@ -30045,10 +30033,10 @@ function getModifiedFiles(target) {
   return !diff ? [] : diff.split(os.EOL);
 }
 
-function getModifiedStacks(files) {
+function getModifiedStacks(files, roots) {
   return files.map(x => x.split(path.sep))
     .filter(x => x.length > 2) // Only look at directories
-    .filter(x => ['clusters', 'apps'].includes(x[0]))
+    .filter(x => roots.includes(x[0]))
     .map(x => path.join(x[0], x[1]))
     .filter((x, i, a) => a.indexOf(x) === i); // Distinct
 }
@@ -30061,23 +30049,18 @@ function getNodeStacks(root, stacks) {
 }
 
 const root = getRootDir();
-const clustersDir = getClusterDir(root);
-const appsDir = getAppDir(root);
-const clusters = getClusters(clustersDir);
-const apps = getApps(appsDir);
-const stacks = [...clusters, ...apps];
+const roots = ['apps', 'clusters', 'infra'];
+const stacks = getStacks(root, roots);
 const nodeStacks = getNodeStacks(root, stacks);
 const target = getTargetRef();
 const files = getModifiedFiles(target);
-const modified = getModifiedStacks(files);
+const modified = getModifiedStacks(files, roots);
 const isPush = github.context.eventName === 'push';
 const nodeUpdate = files.some(x => x.includes('.nvmrc'));
 const workflowUpdate = files.some(x => /\.github\/(workflows|actions)/g.test(x))
 const override = isPush || workflowUpdate;
 
 console.log(`Using root:        ${root}`);
-console.log(`Using clustersDir: ${clustersDir}`);
-console.log(`Using appsDir:     ${appsDir}`);
 console.log('All stacks:        ', stacks);
 console.log('Node stacks:       ', nodeStacks);
 console.log(`Using target ref:  origin/${target}`);

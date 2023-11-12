@@ -31,6 +31,21 @@ jobs:
       crds: ${{ steps.stacks.outputs.crds }}
       pulumi-operator: ${{ steps.stacks.outputs.pulumi-operator }}
       metallb: ${{ steps.stacks.outputs.metallb }}
+      cloudflared: ${{ steps.stacks.outputs.cloudflared }}
+      dns: ${{ steps.stacks.outputs.dns }}
+
+  dns:
+    name: DNS Infrastructure
+    needs: [setup]
+    if: fromJson(needs.setup.outputs.dns) && !failure() && !cancelled()
+    uses: './.github/workflows/deploy.yml'
+    with:
+      kind: infra
+      project: dns
+      stack: prod
+      verify: false
+    secrets:
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
 
   rosequartz:
     name: Rosequartz
@@ -137,6 +152,20 @@ jobs:
     with:
       project: metallb
       stack: rosequartz
+    secrets:
+      RQ_PRIMARY_DNS_NAME: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+  cloudflared:
+    name: Cloudflared
+    needs: [setup, rosequartz]
+    if: fromJson(needs.setup.outputs.cloudflared) && !failure() && !cancelled()
+    concurrency: cloudflared-${{ github.ref }}
+    uses: './.github/workflows/deploy.yml'
+    with:
+      project: cloudflared
+      stack: rosequartz
+      verify: false
     secrets:
       RQ_PRIMARY_DNS_NAME: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

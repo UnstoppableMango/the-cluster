@@ -1,0 +1,11 @@
+{
+    "name": "thecluster-dns",
+    "main": "index.ts",
+    "dependencies": {
+        "@pulumi/cloudflare": "^5.14.0",
+        "@pulumi/pulumi": "^3.93.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.9.0"
+    }
+}

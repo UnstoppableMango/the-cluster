@@ -14,13 +14,13 @@ inputs:
     required: true
   endpoint:
     description: |
-      The endpoint to use to connect to the cluster. Required when kind == 'app'.
+      The endpoint to use to connect to the cluster. Required when kind == 'apps'.
     required: false
   kind:
     description: |
-      The kind of stack to deploy. Acceptable values are `app` or `cluster`.
+      The kind of stack to deploy. Acceptable values are `apps`, `clusters`, or `infra`.
     required: false
-    default: app
+    default: apps
   op:
     description: |
       The pulumi operation to perform. Acceptable values are `preview` or `up`.
@@ -50,12 +50,12 @@ runs:
       shell: bash
       run: |
         case '${{ inputs.kind }}' in
-          app)
+          apps)
             if [ -z '${{ inputs.endpoint }}' ]; then
               echo "Endpoint is required"
               exit 1
             fi;;
-          cluster);;
+          clusters | infra);;
           *) echo "Invalid kind" && exit 1;;
         esac
 
@@ -66,14 +66,14 @@ runs:
 
     - id: setup
       uses: ./.github/actions/setup-config
-      if: inputs.kind != 'cluster'
+      if: inputs.kind == 'apps'
       with:
         cluster: ${{ inputs.stack }}
         endpoint: ${{ inputs.endpoint }}
 
     - shell: bash
       run: npm ci
-      working-directory: ${{ inputs.kind }}s/${{ inputs.project }}
+      working-directory: ${{ inputs.kind }}/${{ inputs.project }}
 
     - if: inputs.uses-crds == 'true'
       shell: bash
@@ -85,19 +85,19 @@ runs:
         if [ $(ls -1 Chart.{yml,yaml} 2>/dev/null | wc -l) -gt 0 ]; then
           helm dependency update
         fi
-      working-directory: ${{ inputs.kind }}s/${{ inputs.project }}
+      working-directory: ${{ inputs.kind }}/${{ inputs.project }}
 
     - if: inputs.pre-deploy-script != 'true'
       shell: bash
       run: ${{ inputs.pre-deploy-script }}
-      working-directory: ${{ inputs.kind }}s/${{ inputs.project }}
+      working-directory: ${{ inputs.kind }}/${{ inputs.project }}
 
     - name: Pulumi ${{ inputs.op }}
       uses: pulumi/actions@v4
       with:
         stack-name: UnstoppableMango/thecluster-${{ inputs.project }}/${{ inputs.stack }}
         command: ${{ inputs.op }}
-        work-dir: ${{ inputs.kind }}s/${{ inputs.project }}
+        work-dir: ${{ inputs.kind }}/${{ inputs.project }}
         comment-on-pr: true
       env:
         KUBECONFIG: ${{ steps.setup.outputs.kubeconfig }}
@@ -109,4 +109,4 @@ runs:
       env:
         KUBECONFIG: ${{ steps.setup.outputs.kubeconfig }}
         TALOSCONFIG: ${{ steps.setup.outputs.talosconfig }}
-      working-directory: ${{ inputs.kind }}s/${{ inputs.project }}
+      working-directory: ${{ inputs.kind }}/${{ inputs.project }}
