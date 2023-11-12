@@ -1,7 +1,12 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as cloudflare from '@pulumi/cloudflare';
 
+function appendIf(x: string, o?: string | undefined | null): string {
+  return o ? x + o : x;
+}
+
 const config = new pulumi.Config();
+const suffix = config.get('suffix');
 const fullSslHosts = config.requireObject<string[]>('fullSslHosts');
 
 const zone = cloudflare.getZonesOutput({
@@ -11,8 +16,8 @@ const zone = cloudflare.getZonesOutput({
   },
 }).apply(z => z.zones[0]);
 
-const ssl = new cloudflare.Ruleset('ssl', {
-  name: `THECLUSTER`,
+export const ssl = new cloudflare.Ruleset('ssl', {
+  name: appendIf('THECLUSTER', suffix),
   description: `SSL rules for THECLUSTER`,
   kind: 'zone',
   zoneId: zone.apply(x => x.id ?? ''),

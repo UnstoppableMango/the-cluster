@@ -36,22 +36,7 @@ if (config.requireBoolean('createDnsRecord')) {
     type: 'A',
     value: publicIp,
     proxied: false,
-  }, { protect: true });
-
-  const ssl = new cloudflare.Ruleset('ssl', {
-    name: `${dnsName} SSL`,
-    description: `Set SSL to a value that works for ${dnsName}`,
-    kind: 'zone',
-    zoneId: zoneId,
-    phase: 'http_config_settings',
-    rules: [{
-      action: 'set_config',
-      actionParameters: {
-        ssl: 'full',
-      },
-      expression: `(http.host eq "${dnsName}") or (http.host eq "pd.thecluster.io")`,
-    }],
-  })
+  });
 }
 
 const clusterName = config.require('clusterName');
