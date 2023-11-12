@@ -8,6 +8,14 @@ interface Versions {
   cloudflared: string;
 }
 
+function jsonStringify(obj: pulumi.Inputs): pulumi.Output<string> {
+  return pulumi.output(obj).apply(x => JSON.stringify(x));
+}
+
+function yamlStringify(obj: pulumi.Inputs): pulumi.Output<string> {
+  return pulumi.output(obj).apply(x => YAML.stringify(x));
+}
+
 const stack = pulumi.getStack();
 const config = new pulumi.Config();
 const versions = config.requireObject<Versions>('versions');
@@ -15,16 +23,30 @@ const versions = config.requireObject<Versions>('versions');
 const ns = k8s.core.v1.Namespace.get('kube-system', 'kube-system');
 const apiServer = k8s.core.v1.Service.get('apiserver', 'default/kubernetes');
 
-const tunnelPassword = new random.RandomPassword('apiserver-tunnel', {
-  length: 32, // At least 32 bytes. A 32 character UTF-16 string should be more than enough.
+const tunnelPassword = new random.RandomId('apiserver-tunnel', {
+  byteLength: 32,
 });
+
+const zone = cloudflare.getZonesOutput({
+  filter: {
+    accountId: config.require('accountId'),
+    name: 'thecluster.io',
+  },
+}).apply(z => z.zones[0]);
 
 const tunnel = new cloudflare.Tunnel(`${stack}-apiserver`, {
   name: `${stack}-apiserver`,
   accountId: config.require('accountId'),
-  secret: tunnelPassword.result.apply(x => Buffer.from(x).toString('base64')),
-  configSrc: 'local',
+  secret: tunnelPassword.b64Std,
 });
+
+const dnsRecord = new cloudflare.Record('apiserver-tunnel', {
+  name: config.require('dnsName'),
+  zoneId: zone.apply(x => x.id ?? ''),
+  type: 'CNAME',
+  value: tunnel.cname,
+  proxied: true,
+}, { protect: true });
 
 const credentialsSecret = new k8s.core.v1.Secret('credentials.json', {
   metadata: {
@@ -32,7 +54,7 @@ const credentialsSecret = new k8s.core.v1.Secret('credentials.json', {
     namespace: ns.metadata.name,
   },
   stringData: {
-    'credentials.json': JSON.stringify({
+    'credentials.json': jsonStringify({
       AccountTag: tunnel.accountId,
       TunnelId: tunnel.id,
       TunnelSecret: tunnel.secret,
@@ -46,8 +68,8 @@ const configMap = new k8s.core.v1.ConfigMap('config.yaml', {
     namespace: ns.metadata.name,
   },
   data: {
-    'config.yaml': YAML.stringify({
-      tunnel: `${stack}-apiserver`,
+    'config.yaml': yamlStringify({
+      tunnel: tunnel.name,
       'credentials-file': '/etc/cloudflared/creds/credentials.json',
       metrics: '0.0.0.0:2000',
       'no-autoupdate': true,
