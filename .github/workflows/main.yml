@@ -33,6 +33,7 @@ jobs:
       metallb: ${{ steps.stacks.outputs.metallb }}
       cloudflared: ${{ steps.stacks.outputs.cloudflared }}
       dns: ${{ steps.stacks.outputs.dns }}
+      capi-templates: ${{ steps.stacks.outputs.capi-templates }}
 
   dns:
     name: DNS Infrastructure
@@ -164,6 +165,20 @@ jobs:
     uses: './.github/workflows/deploy.yml'
     with:
       project: cloudflared
+      stack: rosequartz
+      verify: false
+    secrets:
+      RQ_PRIMARY_DNS_NAME: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
+      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+
+  capi-templates:
+    name: Cluster API Templates
+    needs: [setup, rosequartz]
+    if: fromJson(needs.setup.outputs.capi-templates) && !failure() && !cancelled()
+    concurrency: capi-templates-${{ github.ref }}
+    uses: './.github/workflows/deploy.yml'
+    with:
+      project: capi-templates
       stack: rosequartz
       verify: false
     secrets:
