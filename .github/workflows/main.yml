@@ -173,7 +173,7 @@ jobs:
 
   capi-templates:
     name: Cluster API Templates
-    needs: [setup, rosequartz]
+    needs: [setup, rosequartz, crds]
     if: fromJson(needs.setup.outputs.capi-templates) && !failure() && !cancelled()
     concurrency: capi-templates-${{ github.ref }}
     uses: './.github/workflows/deploy.yml'
