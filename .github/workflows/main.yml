@@ -180,6 +180,7 @@ jobs:
     with:
       project: capi-templates
       stack: rosequartz
+      uses-crds: true
       verify: false
     secrets:
       RQ_PRIMARY_DNS_NAME: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
