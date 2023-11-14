@@ -49,7 +49,8 @@ function newNode(type: string): (data: Node, i: number) => pve.vm.VirtualMachine
       cores: data.cpu,
     },
     memory: {
-      shared: data.mem,
+      shared: data.mem, // TODO
+      // dedicated: data.mem,
     },
     efiDisk: {
       datastoreId: 'spool',
