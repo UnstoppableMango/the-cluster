@@ -1,0 +1,27 @@
+config:
+  thecluster-proxmox:proxmox:
+    endpoint: https://zeus.unmango.net
+    insecure: false
+    password:
+      secure: AAABAPAQBeYZnw/dCpwtg1ON42h/WpwC0BKhyN+FsNShm2OtfkD6nHHUHhySXlf9/RMY6BxAwvsa7OY/CPc=
+    username: pulumi@pam
+  thecluster-proxmox:controlPlanes:
+    - node: zeus
+      cpu: 4
+      mem: 4096
+    - node: zeus
+      cpu: 4
+      mem: 4096
+    - node: apollo
+      cpu: 4
+      mem: 4096
+  thecluster-proxmox:workers:
+    - node: zeus
+      cpu: 8
+      mem: 8192
+    - node: zeus
+      cpu: 8
+      mem: 8192
+    - node: apollo
+      cpu: 8
+      mem: 8192

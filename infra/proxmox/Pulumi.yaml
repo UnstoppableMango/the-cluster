@@ -1,3 +1,11 @@
 name: thecluster-proxmox
 runtime: nodejs
 description: Proxmox infrastructure for THECLUSTER
+config:
+  nodes:
+    value:
+      - zeus
+      - apollo
+  versions:
+    value:
+      talos: 1.5.4 # renovate depName=siderolabs/talos extractVersion=^v(?<version>.*)
