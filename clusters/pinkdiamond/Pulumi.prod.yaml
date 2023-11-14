@@ -1,16 +1,8 @@
 config:
   cloudflare:apiToken:
     secure: AAABAMTpWxUKesQ46o7HhfvL8giqa3twXkm7WPNqJRtGv9gtFnvPR3RkcflKC568puubj4Z2nasCADKyvVeApE/+M1qE6N4v
-  thecluster-pinkdiamond:cloudflare:
-    accountId: 265a046434c952eeecb9710cfd76617c
-    zoneId: 22f1d42ba0fbe4f924905e1c6597055c
-  thecluster-pinkdiamond:primaryDnsName:
-    secure: AAABAJtsMhF8bCrsDBGGISh7OQz5LB6orwDgFgXPGBBqIQDGeJkESOZwFg0AvBL4
-  thecluster-pinkdiamond:proxmox:
-    endpoint: https://192.168.1.10:8006/api2/json
-    password:
-      secure: AAABAG5Ueogo7t8cs8jG7EecGnx4E/7oPQTPzJrEqzAvLJOtSkcwEArxlaynNCaePEF0TUFSAVk=
-    username: root@pam
+  thecluster-pinkdiamond:accountId: 265a046434c952eeecb9710cfd76617c
+  thecluster-pinkdiamond:k8sVersion: 1.28.2
   thecluster-pinkdiamond:publicIp:
     secure: AAABADPLkIpbRLRNksFw06Tyf5Cbgja7Yd4rVmeNjzyJlkLnSLu/4/MoAA==
-  thecluster-pinkdiamond:vip: 192.168.1.100
+  thecluster-pinkdiamond:zoneId: 22f1d42ba0fbe4f924905e1c6597055c
