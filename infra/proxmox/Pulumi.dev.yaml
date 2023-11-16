@@ -12,7 +12,7 @@ config:
     username: pulumi@pam
   thecluster-proxmox:suffix: -dev
   thecluster-proxmox:workers:
-    - cpu: 8
-      mem: 8192
+    - cpu: 4
+      mem: 4096
       node: apollo
       net: vmbr0
