@@ -3,3 +3,16 @@ runtime: nodejs
 description: The Pink Diamond cluster
 config:
   clusterName: pinkdiamond
+  controlPlane:
+    value:
+      machineCount: 3
+  worker:
+    value:
+      machineCount: 3
+  versions:
+    value:
+      talos: 1.5.4
+      k8s: 1.28.0
+      ksca: 0.7.6
+      sidero: 0.6.1
+      cloud-provider-proxmox: v0.0.4-rc1 # renovate depName=sp-yduck/cloud-provider-proxmox

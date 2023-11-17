@@ -2,9 +2,13 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as cloudflare from '@pulumi/cloudflare';
 import * as cluster from '@pulumi/crds/cluster/v1beta1';
+import * as bootstrap from '@pulumi/crds/bootstrap/v1alpha3';
 import * as infra from '@pulumi/crds/infrastructure';
-import * as metal from '@pulumi/crds/metal/v1alpha2';
 import * as controlPlane from '@pulumi/crds/controlplane/v1alpha3';
+import * as addons from '@pulumi/crds/addons/v1beta1';
+import ns from './namespace';
+import { rpi4Md, pxApolloMd, pxZeusMd } from './machineTemplates';
+import { configMap, secret } from './proxmox';
 import { ControlPlaneConfig, Proxmox, Versions } from './types';
 
 const templatesRef = new pulumi.StackReference('templates', {
@@ -16,33 +20,24 @@ const controlPlaneConfig = config.requireObject<ControlPlaneConfig>('controlPlan
 const versions = config.requireObject<Versions>('versions');
 const proxmox = config.requireObject<Proxmox>('proxmox');
 
+// TODO: Tunnel
+// const publicEndpoint = new cloudflare.Record('pd.thecluster.io', {
+//   name: 'pd.thecluster.io',
+//   type: 'A',
+//   zoneId: config.require('zoneId'),
+//   proxied: false,
+//   value: config.requireSecret('publicIp'),
+// });
+
 const commonLabels: Record<string, string> = {
   'cluster.x-k8s.io/cluster-name': config.require('clusterName'),
 };
 
-// TODO: Tunnel
-const publicEndpoint = new cloudflare.Record('pd.thecluster.io', {
-  name: 'pd.thecluster.io',
-  type: 'A',
-  zoneId: config.require('zoneId'),
-  proxied: false,
-  value: config.requireSecret('publicIp'),
-});
-
-const ns = new k8s.core.v1.Namespace('pinkdiamond', {
-  metadata: { name: 'pinkdiamond' },
-});
-
 // Subject Alternative Names to use for certificates
 const certSans = [
-  // // The first in the array seems to get ignored for some reason, so we add it twice
-  // config.require('localIp'),
-  config.require('localIp'),
   config.require('primaryDnsName'),
   config.require('vip'),
 ];
-
-const controlPlaneTemplate = templatesRef.requireOutput('rp4.md') as pulumi.Output<infra.v1alpha3.MetalMachineTemplate>;
 
 const talosControlPlane = new controlPlane.TalosControlPlane('pinkdiamond', {
   metadata: {
@@ -94,24 +89,109 @@ const talosControlPlane = new controlPlane.TalosControlPlane('pinkdiamond', {
       },
     },
     infrastructureTemplate: {
-      apiVersion: controlPlaneTemplate.apiVersion.apply(x => x ?? ''),
-      kind: controlPlaneTemplate.kind.apply(x => x ?? ''),
-      name: pulumi.output(controlPlaneTemplate.metadata).apply(x => x?.name ?? ''),
+      apiVersion: rpi4Md.apiVersion.apply(x => x ?? ''),
+      kind: rpi4Md.kind.apply(x => x ?? ''),
+      name: pulumi.output(rpi4Md.metadata).apply(x => x?.name ?? ''),
     },
+  },
+});
+
+const talosBootstrap = new bootstrap.TalosConfigTemplate('pinkdiamond', {
+  metadata: {
+    name: 'pinkdiamond',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    template: {
+      spec: {
+        generateType: 'join',
+        talosVersion: `v${versions.talos}`,
+      },
+    },
+  },
+});
+
+const pxTmpl = new Map([['zeus', pxZeusMd], ['apollo', pxApolloMd]]);
+const proxmoxDeployments = [...pxTmpl.entries()].map(([host, tmpl]) => new cluster.MachineDeployment(host, {
+  metadata: {
+    name: host,
+    namespace: ns.metadata.name,
+    labels: commonLabels,
+  },
+  spec: {
+    clusterName: config.require('clusterName'),
+    replicas: 2,
+    selector: {
+      matchLabels: commonLabels,
+    },
+    template: {
+      metadata: {
+        labels: commonLabels,
+      },
+      spec: {
+        clusterName: config.require('clusterName'),
+        bootstrap: {
+          configRef: {
+            apiVersion: talosBootstrap.apiVersion.apply(x => x ?? ''),
+            kind: talosBootstrap.kind.apply(x => x ?? ''),
+            name: pulumi.output(talosBootstrap.metadata).apply(x => x?.name ?? ''),
+          },
+        },
+        infrastructureRef: {
+          apiVersion: tmpl.apiVersion.apply(x => x ?? ''),
+          kind: tmpl.kind.apply(x => x ?? ''),
+          name: pulumi.output(tmpl.metadata).apply(x => x?.name ?? ''),
+        },
+      },
+    },
+  },
+}));
+
+const crs = new addons.ClusterResourceSet('pinkdiamond', {
+  metadata: {
+    name: 'pinkdiamond',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    clusterSelector: {
+      matchLabels: commonLabels,
+    },
+    resources: [{
+      kind: configMap.kind,
+      name: configMap.metadata.name,
+    }],
+    strategy: 'Reconcile',
   },
 });
 
 const proxmoxCluster = new infra.v1beta1.ProxmoxCluster('pinkdiamond', {
   metadata: {
-    name: 'pink-diamond',
+    name: 'pinkdiamond',
     namespace: ns.metadata.name,
   },
   spec: {
+    controlPlaneEndpoint: {
+      host: config.require('vip'),
+      port: 6443,
+    },
     serverRef: {
       endpoint: proxmox.endpoint,
       secretRef: {
-        name: '', // TODO
+        name: secret.metadata.name,
       },
+    },
+  },
+});
+
+const metalCluster = new infra.v1alpha3.MetalCluster('pinkdiamond', {
+  metadata: {
+    name: 'pinkdiamond',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    controlPlaneEndpoint: {
+      host: config.require('vip'),
+      port: 6443,
     },
   },
 });
@@ -137,9 +217,9 @@ const pinkdiamondCluster = new cluster.Cluster('pinkdiamond', {
       name: pulumi.output(talosControlPlane.metadata).apply(x => x?.name ?? ''),
     },
     infrastructureRef: {
-      apiVersion: proxmoxCluster.apiVersion.apply(x => x ?? ''),
-      kind: proxmoxCluster.kind.apply(x => x ?? ''),
-      name: pulumi.output(proxmoxCluster.metadata).apply(x => x?.name ?? ''),
+      apiVersion: metalCluster.apiVersion.apply(x => x ?? ''),
+      kind: metalCluster.kind.apply(x => x ?? ''),
+      name: pulumi.output(metalCluster.metadata).apply(x => x?.name ?? ''),
     },
   },
 });

@@ -16,3 +16,8 @@ export interface Proxmox {
   username: string;
   password: string;
 }
+
+export interface Cloudflare {
+  accountId: string;
+  zoneId: string;
+}
