@@ -14,6 +14,9 @@ export default new infra.ProxmoxMachineTemplate('px.apollo.md', {
   spec: {
     template: {
       spec: {
+        options: {
+          onBoot: true,
+        },
         image: {
           url: `https://github.com/siderolabs/talos/releases/download/v${versions.talos}/metal-amd64.iso`,
         },

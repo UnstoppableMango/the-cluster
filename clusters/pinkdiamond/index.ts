@@ -180,6 +180,10 @@ const proxmoxCluster = new infra.v1beta1.ProxmoxCluster('pinkdiamond', {
         name: secret.metadata.name,
       },
     },
+    storage: {
+      name: 'local',
+      path: 'cappx',
+    },
   },
 });
 
