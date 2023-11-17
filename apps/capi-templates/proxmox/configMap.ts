@@ -148,6 +148,6 @@ export default new k8s.core.v1.ConfigMap('cloud-controller-manager', {
       clusterRoleBinding,
       daemonSet,
       secret,
-    ].join('\n---\n'),
+    ].join('---\n'),
   },
 });
