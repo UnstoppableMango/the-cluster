@@ -40,7 +40,7 @@ runs:
       if: inputs.pulumi == 'true' || inputs.all == 'true'
       uses: pulumi/actions@v4
       with:
-        pulumi-version: 3.94.1 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
+        pulumi-version: 3.94.2 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
 
     # - name: Setup talosctl
     #   if: inputs.talosctl == 'true'

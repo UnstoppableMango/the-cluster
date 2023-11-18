@@ -27,7 +27,7 @@ jobs:
 
       - uses: pulumi/actions@v4
         with:
-          pulumi-version: 3.94.1 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
+          pulumi-version: 3.94.2 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
           comment-on-pr: false
           comment-on-summary: false
 
@@ -91,7 +91,7 @@ jobs:
 
       - uses: pulumi/actions@v4
         with:
-          pulumi-version: 3.94.1 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
+          pulumi-version: 3.94.2 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
           comment-on-pr: false
           comment-on-summary: false
 
