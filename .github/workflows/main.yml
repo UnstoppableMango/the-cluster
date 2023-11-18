@@ -45,8 +45,7 @@ jobs:
       project: dns
       stack: prod
       verify: false
-    secrets:
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    secrets: inherit
 
   rosequartz:
     name: Rosequartz
@@ -63,6 +62,8 @@ jobs:
 
       - name: Setup tools
         uses: ./.github/actions/setup-tools
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - id: setup-config
         uses: ./.github/actions/setup-config
@@ -84,9 +85,7 @@ jobs:
       stack: rosequartz
       verify: false
       pre-deploy-script: ./gen/capi.sh
-    secrets:
-      RQ_PRIMARY_DNS_NAME: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    secrets: inherit
 
   cert-manager:
     name: Cert Manager
@@ -97,9 +96,7 @@ jobs:
     with:
       project: cert-manager
       stack: rosequartz
-    secrets:
-      RQ_PRIMARY_DNS_NAME: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    secrets: inherit
 
   metrics-server:
     name: Metrics Server
@@ -110,9 +107,7 @@ jobs:
     with:
       project: metrics-server
       stack: rosequartz
-    secrets:
-      RQ_PRIMARY_DNS_NAME: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    secrets: inherit
 
   clusterapi:
     name: Cluster API
@@ -125,9 +120,7 @@ jobs:
       stack: rosequartz
       verify: false
       pre-deploy-script: ./gen/manifests.sh
-    secrets:
-      RQ_PRIMARY_DNS_NAME: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    secrets: inherit
 
   pulumi-operator:
     name: Pulumi Kubernetes Operator
@@ -140,9 +133,7 @@ jobs:
       stack: rosequartz
       verify: false
       uses-crds: true
-    secrets:
-      RQ_PRIMARY_DNS_NAME: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    secrets: inherit
 
   metallb:
     name: MetalLB
@@ -153,9 +144,7 @@ jobs:
     with:
       project: metallb
       stack: rosequartz
-    secrets:
-      RQ_PRIMARY_DNS_NAME: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    secrets: inherit
 
   cloudflared:
     name: Cloudflared
@@ -167,9 +156,7 @@ jobs:
       project: cloudflared
       stack: rosequartz
       verify: false
-    secrets:
-      RQ_PRIMARY_DNS_NAME: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    secrets: inherit
 
   capi-templates:
     name: Cluster API Templates
@@ -182,6 +169,4 @@ jobs:
       stack: rosequartz
       uses-crds: true
       verify: false
-    secrets:
-      RQ_PRIMARY_DNS_NAME: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    secrets: inherit

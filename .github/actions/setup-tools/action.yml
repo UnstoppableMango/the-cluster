@@ -1,6 +1,9 @@
 name: Setup Tools
 description: Setup tools
 inputs:
+  token:
+    description: A GitHub token to use for authenticating requests
+    required: true
   pulumi:
     description: Install pulumi
     required: false
@@ -41,6 +44,8 @@ runs:
       uses: pulumi/actions@v4
       with:
         pulumi-version: 3.94.2 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
 
     # - name: Setup talosctl
     #   if: inputs.talosctl == 'true'
@@ -64,12 +69,16 @@ runs:
       uses: azure/setup-kubectl@v3
       with:
         version: 'v1.28.0' # renovate depName=kubernetes/kubernetes
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
 
     - name: Setup helm
       if: inputs.helm == 'true' || inputs.all == 'true'
       uses: azure/setup-helm@v3
       with:
         version: '3.13.2' # renovate depName=helm/helm extractVersion=extractVersion=^v(?<version>.*)
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
 
     - name: Setup kubectl-slice
       if: inputs.kubectl-slice == 'true' || inputs.all == 'true'
@@ -78,6 +87,8 @@ runs:
         repo: patrickdappollonio/kubectl-slice
         tag: v1.2.7 # renovate depName=patrickdappollonio/kubectl-slice
         cache: enable
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
 
     - name: Setup crd2pulumi
       if: inputs.crd2pulumi == 'true' || inputs.all == 'true'
@@ -86,6 +97,8 @@ runs:
         repo: pulumi/crd2pulumi
         tag: v1.2.5 # renovate depName=pulumi/crd2pulumi
         cache: enable
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
 
     - name: Setup clusterctl
       if: inputs.clusterctl == 'true' || inputs.all == 'true'
@@ -97,5 +110,5 @@ runs:
         rename-to: clusterctl
         chmod: 0755
         cache: enable
-
-outputs: {}
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}

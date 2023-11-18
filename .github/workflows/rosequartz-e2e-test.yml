@@ -39,6 +39,8 @@ jobs:
 
       - name: Setup tools
         uses: ./.github/actions/setup-tools
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create test node
         working-directory: clusters/rosequartz
@@ -103,6 +105,8 @@ jobs:
 
       - name: Setup tools
         uses: ./.github/actions/setup-tools
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create test node
         working-directory: clusters/rosequartz

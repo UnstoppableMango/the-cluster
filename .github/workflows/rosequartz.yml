@@ -30,6 +30,7 @@ jobs:
           pulumi: true
           talosctl: true
           kubectl: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - run: npm ci
       - run: ./spec/e2e.sh
