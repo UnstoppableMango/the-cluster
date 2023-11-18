@@ -41,11 +41,6 @@ on:
         description: The path to a script to run before deploying the stack.
         type: string
         required: false
-    secrets:
-      RQ_PRIMARY_DNS_NAME:
-        required: false
-      PULUMI_ACCESS_TOKEN:
-        required: true
 
 jobs:
   deploy:
@@ -79,6 +74,7 @@ jobs:
       - uses: ./.github/actions/setup-tools
         with:
           all: true
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: ./.github/actions/pulumi-deploy
         with:
