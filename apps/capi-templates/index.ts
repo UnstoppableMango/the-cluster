@@ -2,14 +2,24 @@ import ns from './namespace';
 import * as mt from './machineTemplates';
 import * as sc from './serverClasses';
 import * as px from './proxmox';
+import { MachineTemplatesOutput, ProxmoxOutput, ServerClassesOutput } from './types';
 
-export * from './environments';
 const namespace = ns;
-export const rpi4MdTemplate = mt.rpi4Md;
-export const ryzenGen1MdTemplate = mt.ryzenGen1Md;
-export const pxZeusMdTemplate = mt.pxZeusMd;
-export const pxApolloMdTemplate = mt.pxApolloMd;
-export const rpi4MdServerClass = sc.rpi4Md;
-export const ryzenGen1MdServerClass = sc.ryzenGen1Md;
-const proxmoxConfigMapId = px.configMap.id;
-const proxmoxSecretId = px.secret.id;
+export * from './environments';
+
+export const serverClasses: ServerClassesOutput = {
+  'rpi4.md.id': { id: sc.rpi4Md.id },
+  'ryzen.gen1.md.id': { id: sc.ryzenGen1Md.id },
+}
+
+export const machineTemplates: MachineTemplatesOutput = {
+  'rpi4.md': { id: mt.rpi4Md.id },
+  'ryzen.gen1.md': { id: mt.ryzenGen1Md.id },
+  'px.zeus.md': { id: mt.pxZeusMd.id },
+  'px.apollo.md': { id: mt.pxApolloMd.id },
+}
+
+export const proxmox: ProxmoxOutput = {
+  configMap: { id: px.configMap.id },
+  secret: { id: px.secret.id },
+}

@@ -67,6 +67,8 @@ function gen() {
         > "$manifestDir/$providerName/output.yaml"
 }
 
+export EXP_CLUSTER_RESOURCE_SET=true
+export CLUSTER_TOPOLOGY=true
 sideroEndpoint="$(pulumi -C "$root" config get sideroEndpoint)"
 export SIDERO_CONTROLLER_MANAGER_HOST_NETWORK=false
 export SIDERO_CONTROLLER_MANAGER_DEPLOYMENT_STRATEGY=RollingUpdate
