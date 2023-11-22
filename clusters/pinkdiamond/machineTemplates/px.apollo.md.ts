@@ -24,6 +24,7 @@ export default new infra.ProxmoxMachineTemplate('px.apollo.md', {
         hardware: {
           cpu: 8,
           memory: 8192,
+          disk: '100Gb',
         },
         storage: 'spool',
       },
