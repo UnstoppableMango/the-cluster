@@ -5,6 +5,8 @@ config:
     password:
       secure: AAABAIIYTNJk2e60etNsYhk7MbO4wIh3fv9W8TIOhjNJ13Yx5y52jwgkhAXbjIJ07X6s4iwyOf8lb9Cz3TM=
     username: pulumi@pam
+  thecluster-proxmox:iso:
+    node: zeus
   thecluster-proxmox:controlPlanes: [] # ControlPlane uses rpi4s
   thecluster-proxmox:workers:
     - node: zeus

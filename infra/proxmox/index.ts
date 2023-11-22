@@ -3,31 +3,28 @@ import * as pve from '@muhlba91/pulumi-proxmoxve';
 import { Versions, Node } from './types';
 
 const config = new pulumi.Config();
-const suffix = config.get('suffix');
+const suffix = config.get('suffix') ?? '';
 const versions = config.requireObject<Versions>('versions');
 const controlPlaneConfig = config.requireObject<Node[]>('controlPlanes');
 const workerConfig = config.requireObject<Node[]>('workers');
+const iso = config.requireObject<{ node: string }>('iso');
 const provider = new pve.Provider('zeus', config.requireObject('proxmox'));
 const commonOpts: pulumi.CustomResourceOptions = { provider };
 
-const pveNodes = [...controlPlaneConfig]
-  .map(x => x.node)
-  .filter((x, i, a) => a.indexOf(x) === i);
+// const pveNodes = [...controlPlaneConfig]
+//   .map(x => x.node)
+//   .filter((x, i, a) => a.indexOf(x) === i);
 
-const talosIsos = pveNodes.reduce<Record<string, pve.storage.File>>((p, node) => {
-  p[node] = new pve.storage.File(`talos-${node}${suffix}`, {
-    datastoreId: 'isos',
-    nodeName: node,
-    overwrite: true,
-    sourceFile: {
-      path: `https://github.com/siderolabs/talos/releases/download/v${versions.talos}/metal-amd64.iso`,
-      // checksum: '9bdbd2ecd35fe94298d017bc137540a439ab3ca4c077e24712632aef2d202bf7',
-      fileName: `talos-${versions.talos}-metal-amd64.iso`,
-    },
-  }, commonOpts);
-
-  return p;
-}, {});
+const talosIso = new pve.storage.File(`talos${suffix}`, {
+  datastoreId: 'isos',
+  nodeName: iso.node,
+  overwrite: true,
+  sourceFile: {
+    path: `https://github.com/siderolabs/talos/releases/download/v${versions.talos}/metal-amd64.iso`,
+    // checksum: '9bdbd2ecd35fe94298d017bc137540a439ab3ca4c077e24712632aef2d202bf7',
+    fileName: `talos-${versions.talos}-metal-amd64.iso`,
+  },
+}, commonOpts);
 
 const controlPlanes = controlPlaneConfig.map(newNode('c'));
 const workers = workerConfig.map(newNode('w'));
@@ -45,21 +42,22 @@ function newNode(type: string): (data: Node, i: number) => pve.vm.VirtualMachine
       fileFormat: 'raw',
     },
     onBoot: true,
-    // cpu: {
-    //   // https://www.talos.dev/v1.5/talos-guides/install/virtualized-platforms/proxmox/#create-vms
-    //   type: 'kvm64',
-    //   // flags: [
-    //   //   '+cx16',
-    //   //   '+lahf_lm',
-    //   //   '+popcnt',
-    //   //   '+sse3',
-    //   //   '+ssse3',
-    //   //   '+sse4.1',
-    //   //   '+sse4.2',
-    //   // ],
-    //   cores: data.cpu,
-    //   units: 1024,
-    // },
+    // kvmArguments: '-cpu kvm64,+cx16,+lahf_lm,+popcnt,+sse3,+ssse3,+sse4.1,+sse4.2',
+    cpu: {
+      // https://www.talos.dev/v1.5/talos-guides/install/virtualized-platforms/proxmox/#create-vms
+      type: 'host',
+      // flags: [
+      //   '+cx16',
+      //   '+lahf_lm',
+      //   '+popcnt',
+      //   '+sse3',
+      //   '+ssse3',
+      //   '+sse4.1',
+      //   '+sse4.2',
+      // ],
+      cores: data.cpu,
+      units: 1024,
+    },
     memory: {
       dedicated: data.mem,
     },
@@ -70,7 +68,7 @@ function newNode(type: string): (data: Node, i: number) => pve.vm.VirtualMachine
     ],
     cdrom: {
       enabled: true,
-      fileId: talosIsos['zeus'].id,
+      fileId: talosIso.id,
       interface: 'ide2',
     },
     scsiHardware: 'virtio-scsi-single',
