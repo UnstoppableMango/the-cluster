@@ -182,7 +182,7 @@ const proxmoxCluster = new infra.v1beta1.ProxmoxCluster('pinkdiamond', {
     },
     storage: {
       name: 'local',
-      path: 'cappx',
+      path: '/var/lib/vz',
     },
   },
 });
