@@ -1,0 +1,16 @@
+{
+    "name": "thecluster-pinkdiamond",
+    "main": "index.ts",
+    "dependencies": {
+        "@pulumi/cloudflare": "^5.12.0",
+        "@pulumi/kubernetes": "^4.4.0",
+        "@pulumi/pulumi": "^3.89.0",
+        "yaml": "^2.3.4"
+    },
+    "devDependencies": {
+        "@types/node": "^20.8.7"
+    },
+    "workspaces": [
+        "../../lib/crds"
+    ]
+}

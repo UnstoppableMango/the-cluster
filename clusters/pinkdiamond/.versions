@@ -1,0 +1,3 @@
+kubernetes/kubernetes: 1.28.2
+siderolabs/talos: 1.5.3
+siderolabs/sidero: 0.6.0
