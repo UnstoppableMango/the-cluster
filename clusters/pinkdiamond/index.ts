@@ -11,9 +11,9 @@ import { rpi4Md, pxApolloMd, pxZeusMd } from './machineTemplates';
 import { configMap, secret } from './proxmox';
 import { ControlPlaneConfig, Proxmox, Versions } from './types';
 
-const templatesRef = new pulumi.StackReference('templates', {
-  name: 'UnstoppableMango/thecluster-capi-templates/rosequartz',
-});
+// const templatesRef = new pulumi.StackReference('templates', {
+//   name: 'UnstoppableMango/thecluster-capi-templates/rosequartz',
+// });
 
 const config = new pulumi.Config();
 const controlPlaneConfig = config.requireObject<ControlPlaneConfig>('controlPlane');
