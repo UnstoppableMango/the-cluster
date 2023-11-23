@@ -28,6 +28,7 @@ clusterctl.yaml
 .envrc
 .talos/
 .kube/
+.config/
 tmp/
 .backups/
 
