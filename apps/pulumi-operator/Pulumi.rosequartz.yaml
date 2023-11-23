@@ -1,4 +1,4 @@
 config:
   thecluster-pulumi-operator:stack:
-    commit: bc4472e2c6dc43896892429ddfbd343254513ec1 # renovate depName=UnstoppableMango/the-cluster tag=2.0.5 extractVersion=^rosequartz\/v(?<version>.+)
+    commit: 95d3ff42a0bb56194326f6a011fab0cee11fcd4d # renovate depName=UnstoppableMango/the-cluster tag=2.0.6 extractVersion=^rosequartz\/v(?<version>.+)
     name: rosequartz
