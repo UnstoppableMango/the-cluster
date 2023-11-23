@@ -1,0 +1,2 @@
+config:
+  thecluster-cert-manager:useStackRef: "true"

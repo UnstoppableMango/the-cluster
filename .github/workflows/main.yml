@@ -129,15 +129,26 @@ jobs:
       pre-deploy-script: ./gen/capi.sh
     secrets: inherit
 
-  cert-manager:
-    name: Cert Manager
+  cert-manager-rq:
+    name: Rosequartz Cert Manager
     needs: [setup, rosequartz, crds-rq]
     if: fromJson(needs.setup.outputs.cert-manager) && !failure() && !cancelled()
-    concurrency: cert-manager-${{ github.ref }}
+    concurrency: rq-cert-manager-${{ github.ref }}
     uses: './.github/workflows/deploy.yml'
     with:
       project: cert-manager
       stack: rosequartz
+    secrets: inherit
+
+  cert-manager-pd:
+    name: Pink Diamond Cert Manager
+    needs: [setup, pinkdiamond, crds-pd]
+    if: fromJson(needs.setup.outputs.cert-manager) && !failure() && !cancelled()
+    concurrency: pd-cert-manager-${{ github.ref }}
+    uses: './.github/workflows/deploy.yml'
+    with:
+      project: cert-manager
+      stack: pinkdiamond
     secrets: inherit
 
   metrics-server-rq:
