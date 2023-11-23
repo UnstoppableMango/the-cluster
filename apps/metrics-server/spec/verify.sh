@@ -14,10 +14,6 @@ else
     exitCode=1
 fi
 
-duration=10
-echo "Sleeping for $duration"s
-sleep $duration
-
 echo "kubectl top node"
 if kubectl top nodes; then
     echo -e "✅ kubectl top node works!\n"
