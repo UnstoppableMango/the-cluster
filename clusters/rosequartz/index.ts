@@ -20,7 +20,6 @@ interface Versions {
 }
 
 const config = new pulumi.Config();
-
 const certSans = config.requireObject<string[]>('certSans');
 
 if (config.requireBoolean('createDnsRecord')) {

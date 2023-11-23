@@ -1,229 +1,178 @@
 import * as pulumi from '@pulumi/pulumi';
-import * as k8s from '@pulumi/kubernetes';
 import * as cloudflare from '@pulumi/cloudflare';
-import * as cluster from '@pulumi/crds/cluster/v1beta1';
-import * as bootstrap from '@pulumi/crds/bootstrap/v1alpha3';
-import * as infra from '@pulumi/crds/infrastructure';
-import * as controlPlane from '@pulumi/crds/controlplane/v1alpha3';
-import * as addons from '@pulumi/crds/addons/v1beta1';
-import ns from './namespace';
-import { rpi4Md, pxApolloMd, pxZeusMd } from './machineTemplates';
-import { configMap, secret } from './proxmox';
-import { ControlPlaneConfig, Proxmox, Versions } from './types';
-
-// const templatesRef = new pulumi.StackReference('templates', {
-//   name: 'UnstoppableMango/thecluster-capi-templates/rosequartz',
-// });
+import * as talos from '@pulumiverse/talos';
+import * as YAML from 'yaml';
+import { Node, Versions } from './types';
 
 const config = new pulumi.Config();
-const controlPlaneConfig = config.requireObject<ControlPlaneConfig>('controlPlane');
+const controlPlanes = config.requireObject<Node[]>('controlplanes');
+const workers = config.requireObject<Node[]>('workers');
+const certSans = config.requireObject<string[]>('certSans');
 const versions = config.requireObject<Versions>('versions');
-const proxmox = config.requireObject<Proxmox>('proxmox');
 
-// TODO: Tunnel
-// const publicEndpoint = new cloudflare.Record('pd.thecluster.io', {
-//   name: 'pd.thecluster.io',
-//   type: 'A',
-//   zoneId: config.require('zoneId'),
-//   proxied: false,
-//   value: config.requireSecret('publicIp'),
-// });
+if (config.getBoolean('public') ?? false) {
+  const zoneId = '22f1d42ba0fbe4f924905e1c6597055c';
+  const publicIp = config.require('publicIp');
+  const dnsName = config.require('primaryDnsName');
 
-const commonLabels: Record<string, string> = {
-  'cluster.x-k8s.io/cluster-name': config.require('clusterName'),
-};
+  certSans.push(publicIp, dnsName);
 
-// Subject Alternative Names to use for certificates
-const certSans = [
-  config.require('primaryDnsName'),
-  config.require('vip'),
-];
+  const primaryDns = new cloudflare.Record('primary-dns', {
+    name: dnsName,
+    zoneId: zoneId,
+    type: 'A',
+    value: publicIp,
+    proxied: false,
+  });
+}
 
-const talosControlPlane = new controlPlane.TalosControlPlane('pinkdiamond', {
-  metadata: {
-    name: 'pinkdiamond',
-    namespace: ns.metadata.name,
-  },
-  spec: {
-    version: `v${versions.k8s}`,
-    replicas: controlPlaneConfig.machineCount,
-    controlPlaneConfig: {
-      controlplane: {
-        generateType: 'controlplane',
-        talosVersion: `v${versions.talos}`,
-        configPatches: [{
-          op: 'replace',
-          path: '/cluster/extraManifests',
-          value: [
-            `https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/v${versions.ksca}/deploy/standalone-install.yaml`,
-          ],
-        }, {
-          op: 'replace',
-          path: '/cluster/apiServer/certSANs',
-          value: certSans,
-        }, {
-          op: 'replace',
-          path: '/machine/certSANs',
-          value: certSans,
-        }, {
-          op: 'add',
-          path: '/machine/kubelet/extraArgs',
-          value: {
-            'rotate-server-certificates': true,
-          },
-        }, {
-          op: 'add',
-          path: '/machine/network',
-          value: {
-            interfaces: [{
-              deviceSelector: {
-                hardwareAddr: 'd8:3a:dd:*',
-              },
-              dhcp: true,
-              vip: {
-                ip: config.require('vip'),
-              },
-            }],
-          },
+const clusterName = config.require('clusterName');
+const endpoint = config.require('endpoint');
+certSans.push(endpoint);
+
+const vip = config.get('vip');
+if (vip) certSans.push(vip);
+
+const clusterEndpoint = config.require('clusterEndpoint');
+const controlplanePatches: string[] = [];
+
+if (vip) {
+  controlplanePatches.push(YAML.stringify({
+    machine: {
+      network: {
+        interfaces: [{
+          deviceSelector: { hardwareAddr: 'd8:3a:dd:*' },
+          dhcp: true,
+          vip: { ip: vip },
         }],
       },
     },
-    infrastructureTemplate: {
-      apiVersion: rpi4Md.apiVersion.apply(x => x ?? ''),
-      kind: rpi4Md.kind.apply(x => x ?? ''),
-      name: pulumi.output(rpi4Md.metadata).apply(x => x?.name ?? ''),
-    },
-  },
-});
+  }));
+}
 
-const talosBootstrap = new bootstrap.TalosConfigTemplate('pinkdiamond', {
-  metadata: {
-    name: 'pinkdiamond',
-    namespace: ns.metadata.name,
-  },
-  spec: {
-    template: {
-      spec: {
-        generateType: 'join',
-        talosVersion: `v${versions.talos}`,
-      },
-    },
-  },
-});
+const secrets = new talos.machine.Secrets('secrets', { talosVersion: `v${versions.talos}` });
 
-const pxTmpl = new Map([['zeus', pxZeusMd], ['apollo', pxApolloMd]]);
-const proxmoxDeployments = [...pxTmpl.entries()].map(([host, tmpl]) => new cluster.MachineDeployment(host, {
-  metadata: {
-    name: host,
-    namespace: ns.metadata.name,
-    labels: commonLabels,
-  },
-  spec: {
-    clusterName: config.require('clusterName'),
-    replicas: 2,
-    selector: {
-      matchLabels: commonLabels,
-    },
-    template: {
-      metadata: {
-        labels: commonLabels,
+const controlplaneConfig = talos.machine.getConfigurationOutput({
+  clusterName: clusterName,
+  clusterEndpoint: clusterEndpoint,
+  machineType: 'controlplane',
+  machineSecrets: secrets.machineSecrets,
+  docs: false,
+  examples: false,
+  talosVersion: `v${versions.talos}`,
+  kubernetesVersion: versions.k8s,
+  configPatches: [
+    ...controlplanePatches,
+    YAML.stringify({
+      cluster: {
+        apiServer: {
+          certSANs: certSans,
+        },
       },
-      spec: {
-        clusterName: config.require('clusterName'),
-        bootstrap: {
-          configRef: {
-            apiVersion: talosBootstrap.apiVersion.apply(x => x ?? ''),
-            kind: talosBootstrap.kind.apply(x => x ?? ''),
-            name: pulumi.output(talosBootstrap.metadata).apply(x => x?.name ?? ''),
+      machine: {
+        install: {
+          image: `ghcr.io/siderolabs/installer:v${versions.talos}`,
+        },
+        certSANs: certSans,
+        kubelet: {
+          extraArgs: {
+            'rotate-server-certificates': true,
           },
         },
-        infrastructureRef: {
-          apiVersion: tmpl.apiVersion.apply(x => x ?? ''),
-          kind: tmpl.kind.apply(x => x ?? ''),
-          name: pulumi.output(tmpl.metadata).apply(x => x?.name ?? ''),
+      }
+    }),
+  ],
+});
+
+const workerConfig = talos.machine.getConfigurationOutput({
+  clusterName: clusterName,
+  clusterEndpoint: clusterEndpoint,
+  machineType: 'worker',
+  machineSecrets: secrets.machineSecrets,
+  docs: false,
+  examples: false,
+  talosVersion: `v${versions.talos}`,
+  kubernetesVersion: versions.k8s,
+  configPatches: [
+    YAML.stringify({
+      machine: {
+        install: {
+          image: `ghcr.io/siderolabs/installer:v${versions.talos}`,
         },
-      },
-    },
-  },
-}));
+        certSANs: certSans,
+        kubelet: {
+          extraArgs: {
+            'rotate-server-certificates': true,
+          },
+        },
+      }
+    }),
+  ],
+});
 
-const crs = new addons.ClusterResourceSet('pinkdiamond', {
-  metadata: {
-    name: 'pinkdiamond',
-    namespace: ns.metadata.name,
-  },
-  spec: {
-    clusterSelector: {
-      matchLabels: commonLabels,
-    },
-    resources: [{
-      kind: configMap.kind,
-      name: configMap.metadata.name,
-    }],
-    strategy: 'Reconcile',
+const clientConfig = talos.client.configurationOutput({
+  clusterName: clusterName,
+  clientConfiguration: secrets.clientConfiguration,
+  endpoints: controlPlanes.map(x => x.ip),
+  nodes: [controlPlanes[0].ip],
+});
+
+const controlPlaneConfigApply: talos.machine.ConfigurationApply[] = controlPlanes
+  .map(x => (new talos.machine.ConfigurationApply(x.ip, {
+    clientConfiguration: secrets.clientConfiguration,
+    machineConfigurationInput: controlplaneConfig.machineConfiguration,
+    node: x.ip,
+    configPatches: [
+      YAML.stringify({
+        cluster: {
+          extraManifests: [
+            `https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/v${versions.ksca}/deploy/ha-install.yaml`,
+          ],
+        },
+        machine: {
+          install: {
+            disk: x.installDisk,
+          },
+        },
+      }),
+    ],
+  })));
+
+const workerConfigApply: talos.machine.ConfigurationApply[] = workers
+  .map(x => (new talos.machine.ConfigurationApply(x.ip, {
+    clientConfiguration: secrets.clientConfiguration,
+    machineConfigurationInput: workerConfig.machineConfiguration,
+    node: x.ip,
+    configPatches: [
+      YAML.stringify({
+        machine: {
+          install: {
+            disk: x.installDisk,
+          },
+        },
+      }),
+    ],
+  })));
+
+const bootstrap = new talos.machine.Bootstrap(`bootstrap`, {
+  clientConfiguration: secrets.clientConfiguration,
+  node: endpoint,
+  endpoint: endpoint,
+}, {
+  dependsOn: [
+    ...controlPlaneConfigApply,
+    ...workerConfigApply,
+  ]
+});
+
+const kubeconfigOutput = talos.cluster.kubeconfigOutput({
+  clientConfiguration: secrets.clientConfiguration,
+  node: controlPlanes[0].ip,
+  endpoint: endpoint,
+  timeouts: {
+    read: config.require('kubeconfigTimeout'),
   },
 });
 
-const proxmoxCluster = new infra.v1beta1.ProxmoxCluster('pinkdiamond', {
-  metadata: {
-    name: 'pinkdiamond',
-    namespace: ns.metadata.name,
-  },
-  spec: {
-    controlPlaneEndpoint: {
-      host: config.require('vip'),
-      port: 6443,
-    },
-    serverRef: {
-      endpoint: proxmox.endpoint,
-      secretRef: {
-        name: secret.metadata.name,
-      },
-    },
-    storage: {
-      name: 'local',
-      path: '/var/lib/vz',
-    },
-  },
-});
-
-const metalCluster = new infra.v1alpha3.MetalCluster('pinkdiamond', {
-  metadata: {
-    name: 'pinkdiamond',
-    namespace: ns.metadata.name,
-  },
-  spec: {
-    controlPlaneEndpoint: {
-      host: config.require('vip'),
-      port: 6443,
-    },
-  },
-});
-
-const pinkdiamondCluster = new cluster.Cluster('pinkdiamond', {
-  metadata: {
-    name: config.require('clusterName'),
-    namespace: ns.metadata.name,
-    labels: commonLabels,
-  },
-  spec: {
-    clusterNetwork: {
-      pods: {
-        cidrBlocks: ['10.244.0.0/16'],
-      },
-      services: {
-        cidrBlocks: ['10.96.0.0/12'],
-      },
-    },
-    controlPlaneRef: {
-      apiVersion: talosControlPlane.apiVersion.apply(x => x ?? ''),
-      kind: talosControlPlane.kind.apply(x => x ?? ''),
-      name: pulumi.output(talosControlPlane.metadata).apply(x => x?.name ?? ''),
-    },
-    infrastructureRef: {
-      apiVersion: metalCluster.apiVersion.apply(x => x ?? ''),
-      kind: metalCluster.kind.apply(x => x ?? ''),
-      name: pulumi.output(metalCluster.metadata).apply(x => x?.name ?? ''),
-    },
-  },
-});
+export const talosconfig = clientConfig.talosConfig;
+export const kubeconfig = kubeconfigOutput.kubeconfigRaw;
