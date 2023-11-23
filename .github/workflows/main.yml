@@ -175,7 +175,7 @@ jobs:
 
   clusterapi:
     name: Cluster API
-    needs: [setup, rosequartz, cert-manager, crds-rq]
+    needs: [setup, rosequartz, cert-manager-rq, crds-rq]
     if: fromJson(needs.setup.outputs.clusterapi) && !failure() && !cancelled()
     concurrency: clusterapi-${{ github.ref }}
     uses: './.github/workflows/deploy.yml'
