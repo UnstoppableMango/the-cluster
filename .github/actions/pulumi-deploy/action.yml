@@ -50,12 +50,7 @@ runs:
       shell: bash
       run: |
         case '${{ inputs.kind }}' in
-          apps)
-            if [ -z '${{ inputs.endpoint }}' ]; then
-              echo "Endpoint is required"
-              exit 1
-            fi;;
-          clusters | infra);;
+          apps | clusters | infra);;
           *) echo "Invalid kind" && exit 1;;
         esac
 
