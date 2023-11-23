@@ -1,35 +1,178 @@
 import * as pulumi from '@pulumi/pulumi';
-import * as k8s from '@pulumi/kubernetes';
 import * as cloudflare from '@pulumi/cloudflare';
 import * as talos from '@pulumiverse/talos';
+import * as YAML from 'yaml';
 import { Node, Versions } from './types';
 
-const templatesRef = new pulumi.StackReference('templates', {
-  name: 'UnstoppableMango/thecluster-capi-templates/rosequartz',
-});
-
 const config = new pulumi.Config();
-const controlPlaneConfig = config.requireObject<Node[]>('controlPlanes');
-const workerConfig = config.requireObject<Node[]>('workers');
+const controlPlanes = config.requireObject<Node[]>('controlplanes');
+const workers = config.requireObject<Node[]>('workers');
+const certSans = config.requireObject<string[]>('certSans');
 const versions = config.requireObject<Versions>('versions');
 
-// TODO: Tunnel
-// const publicEndpoint = new cloudflare.Record('pd.thecluster.io', {
-//   name: 'pd.thecluster.io',
-//   type: 'A',
-//   zoneId: config.require('zoneId'),
-//   proxied: false,
-//   value: config.requireSecret('publicIp'),
-// });
+if (config.getBoolean('public') ?? false) {
+  const zoneId = '22f1d42ba0fbe4f924905e1c6597055c';
+  const publicIp = config.require('publicIp');
+  const dnsName = config.require('primaryDnsName');
 
-// Subject Alternative Names to use for certificates
-const certSans = [
-  // // The first in the array seems to get ignored for some reason, so we add it twice
-  // config.require('localIp'),
-  config.require('localIp'),
-  config.require('primaryDnsName'),
-  config.require('vip'),
-];
+  certSans.push(publicIp, dnsName);
 
-const controlPlaneTemplate = templatesRef.requireOutput('rp4.md') as pulumi.Output<infra.v1alpha3.MetalMachineTemplate>;
+  const primaryDns = new cloudflare.Record('primary-dns', {
+    name: dnsName,
+    zoneId: zoneId,
+    type: 'A',
+    value: publicIp,
+    proxied: false,
+  });
+}
 
+const clusterName = config.require('clusterName');
+const endpoint = config.require('endpoint');
+certSans.push(endpoint);
+
+const vip = config.get('vip');
+if (vip) certSans.push(vip);
+
+const clusterEndpoint = config.require('clusterEndpoint');
+const configPatches: string[] = [];
+
+if (vip) {
+  configPatches.push(YAML.stringify({
+    machine: {
+      network: {
+        interfaces: [{
+          deviceSelector: { hardwareAddr: 'd8:3a:dd:*' },
+          dhcp: true,
+          vip: { ip: vip },
+        }],
+      },
+    },
+  }));
+}
+
+const secrets = new talos.machine.Secrets('secrets', { talosVersion: `v${versions.talos}` });
+
+const controlplaneConfig = talos.machine.getConfigurationOutput({
+  clusterName: clusterName,
+  clusterEndpoint: clusterEndpoint,
+  machineType: 'controlplane',
+  machineSecrets: secrets.machineSecrets,
+  docs: false,
+  examples: false,
+  talosVersion: `v${versions.talos}`,
+  kubernetesVersion: versions.k8s,
+  configPatches: [
+    ...configPatches,
+    YAML.stringify({
+      cluster: {
+        apiServer: {
+          certSANs: certSans,
+        },
+      },
+      machine: {
+        install: {
+          image: `ghcr.io/siderolabs/installer:v${versions.talos}`,
+        },
+        certSANs: certSans,
+        kubelet: {
+          extraArgs: {
+            'rotate-server-certificates': true,
+          },
+        },
+      }
+    }),
+  ],
+});
+
+const workerConfig = talos.machine.getConfigurationOutput({
+  clusterName: clusterName,
+  clusterEndpoint: clusterEndpoint,
+  machineType: 'worker',
+  machineSecrets: secrets.machineSecrets,
+  docs: false,
+  examples: false,
+  talosVersion: `v${versions.talos}`,
+  kubernetesVersion: versions.k8s,
+  configPatches: [
+    YAML.stringify({
+      machine: {
+        install: {
+          image: `ghcr.io/siderolabs/installer:v${versions.talos}`,
+        },
+        certSANs: certSans,
+        kubelet: {
+          extraArgs: {
+            'rotate-server-certificates': true,
+          },
+        },
+      }
+    }),
+  ],
+});
+
+const clientConfig = talos.client.configurationOutput({
+  clusterName: clusterName,
+  clientConfiguration: secrets.clientConfiguration,
+  endpoints: controlPlanes.map(x => x.ip),
+  nodes: [controlPlanes[0].ip],
+});
+
+const controlPlaneConfigApply: talos.machine.ConfigurationApply[] = controlPlanes
+  .map(x => (new talos.machine.ConfigurationApply(x.ip, {
+    clientConfiguration: secrets.clientConfiguration,
+    machineConfigurationInput: controlplaneConfig.machineConfiguration,
+    node: x.ip,
+    configPatches: [
+      YAML.stringify({
+        cluster: {
+          extraManifests: [
+            `https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/v${versions.ksca}/deploy/ha-install.yaml`,
+          ],
+        },
+        machine: {
+          install: {
+            disk: x.installDisk,
+          },
+        },
+      }),
+    ],
+  })));
+
+const workerConfigApply: talos.machine.ConfigurationApply[] = workers
+  .map(x => (new talos.machine.ConfigurationApply(x.ip, {
+    clientConfiguration: secrets.clientConfiguration,
+    machineConfigurationInput: workerConfig.machineConfiguration,
+    node: x.ip,
+    configPatches: [
+      YAML.stringify({
+        machine: {
+          install: {
+            disk: x.installDisk,
+          },
+        },
+      }),
+    ],
+  })));
+
+const bootstrap = new talos.machine.Bootstrap(`bootstrap`, {
+  clientConfiguration: secrets.clientConfiguration,
+  node: endpoint,
+  endpoint: endpoint,
+}, {
+  dependsOn: [
+    ...controlPlaneConfigApply,
+    ...workerConfigApply,
+  ]
+});
+
+const kubeconfigOutput = talos.cluster.kubeconfigOutput({
+  clientConfiguration: secrets.clientConfiguration,
+  node: controlPlanes[0].ip,
+  endpoint: endpoint,
+  timeouts: {
+    read: config.require('kubeconfigTimeout'),
+  },
+});
+
+export const talosconfig = clientConfig.talosConfig;
+export const kubeconfig = kubeconfigOutput.kubeconfigRaw;
