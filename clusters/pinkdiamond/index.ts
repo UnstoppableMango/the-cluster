@@ -181,6 +181,6 @@ export const kubernetesClientConfig = kubeconfigOutput.kubernetesClientConfigura
 function setPublicEndpoint(kubeconfig: string): string {
   if (!config.getBoolean('public')) return kubeconfig;
   const kc = YAML.parse(kubeconfig);
-  kc.clusters[0].cluster.server = `https://${config.require('primaryDnsName')}:6443`;
+  kc.clusters[0].cluster.server = `https://${config.require('primaryDnsName')}:6444`;
   return YAML.stringify(kc);
 }
