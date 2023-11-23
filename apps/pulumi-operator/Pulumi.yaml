@@ -1,3 +1,7 @@
 name: thecluster-pulumi-operator
 runtime: nodejs
 description: Pulumi Kubernetes Operator install for THECLUSTER
+config:
+  versions:
+    value:
+      customImage: sha-c5bf76d

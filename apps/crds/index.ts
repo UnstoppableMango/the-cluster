@@ -1,16 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as path from 'path';
-
-interface Versions {
-  clusterapi: string;
-  proxmox: string;
-  sidero: string;
-  cabpt: string;
-  cacppt: string;
-  certManager: string;
-  pulumiOperator: string;
-}
+import { Versions } from './types';
 
 const config = new pulumi.Config();
 const enabled = config.requireObject<string[]>('enabled');

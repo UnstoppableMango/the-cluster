@@ -1,0 +1,2 @@
+config:
+  thecluster-metrics-server:useStackRef: "true"

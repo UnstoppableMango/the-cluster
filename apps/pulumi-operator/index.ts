@@ -3,20 +3,11 @@ import * as pulumi from '@pulumi/pulumi';
 import * as ps from '@pulumi/pulumiservice';
 import * as k8s from '@pulumi/kubernetes';
 import * as crds from '@pulumi/crds/pulumi/v1';
-
-interface Versions {
-  customImage: string;
-}
-
-interface Stacks {
-  rosequartz: {
-    commit: string;
-  };
-}
+import { Stacks, Versions } from './types';
 
 const config = new pulumi.Config();
 const versions = config.requireObject<Versions>('versions');
-const stacks = config.requireObject<Stacks>('stacks');
+const stack = config.requireObject<Stacks>('stack');
 
 const ns = new k8s.core.v1.Namespace('pulumi-operator', {
   metadata: { name: 'pulumi-operator' },
@@ -35,7 +26,7 @@ const chart = new k8s.helm.v3.Chart('pulumi-operator', {
   }],
 });
 
-const accessToken = new ps.AccessToken('pulumi-operator', {
+const accessToken = new ps.AccessToken(`pulumi-operator-${pulumi.getStack()}`, {
   description: 'Token for the operator to use to deploy stacks',
 });
 
@@ -49,17 +40,17 @@ const secret = new k8s.core.v1.Secret('pulumi-operator', {
   },
 });
 
-const stack = new crds.Stack('rosequartz', {
+const clusterStack = new crds.Stack(stack.name, {
   metadata: {
-    name: 'rosequartz',
+    name: stack.name,
     namespace: ns.metadata.name,
   },
   spec: {
-    stack: 'UnstoppableMango/thecluster-rosequartz/prod',
+    stack: `UnstoppableMango/thecluster-${stack.name}/prod`,
     accessTokenSecret: secret.metadata.name,
     projectRepo: 'https://github.com/UnstoppableMango/the-cluster',
-    repoDir: path.join('clusters', 'rosequartz'),
-    commit: stacks.rosequartz.commit,
+    repoDir: path.join('clusters', stack.name),
+    commit: stack.commit,
     destroyOnFinalize: false,
     useLocalStackOnly: true,
   },

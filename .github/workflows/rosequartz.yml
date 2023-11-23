@@ -34,6 +34,8 @@ jobs:
 
       - run: npm ci
       - run: ./spec/e2e.sh
+        env:
+          RQ_STACK: ${{ env.STACK }}
 
       - name: Tear down rosequartz
         if: always()
