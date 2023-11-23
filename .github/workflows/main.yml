@@ -100,6 +100,7 @@ jobs:
           endpoint: pd.thecluster.io
 
       - name: Health check
+        if: false # Port-forwarding isn't setup for pinkdiamond
         run: talosctl health --nodes 192.168.1.104
 
   crds:
