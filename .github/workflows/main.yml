@@ -103,11 +103,11 @@ jobs:
         if: false # Port-forwarding isn't setup for pinkdiamond
         run: talosctl health --nodes 192.168.1.104
 
-  crds:
-    name: CRDs
+  crds-rq:
+    name: Rosequartz CRDs
     needs: [setup, rosequartz]
     if: fromJson(needs.setup.outputs.crds) && !failure() && !cancelled()
-    concurrency: crds-${{ github.ref }}
+    concurrency: rq-crds-${{ github.ref }}
     uses: './.github/workflows/deploy.yml'
     with:
       project: crds
@@ -116,9 +116,22 @@ jobs:
       pre-deploy-script: ./gen/capi.sh
     secrets: inherit
 
+  crds-pd:
+    name: Pink Diamond CRDs
+    needs: [setup, pinkdiamond]
+    if: fromJson(needs.setup.outputs.crds) && !failure() && !cancelled()
+    concurrency: pd-crds-${{ github.ref }}
+    uses: './.github/workflows/deploy.yml'
+    with:
+      project: crds
+      stack: pinkdiamond
+      verify: false
+      pre-deploy-script: ./gen/capi.sh
+    secrets: inherit
+
   cert-manager:
     name: Cert Manager
-    needs: [setup, rosequartz, crds]
+    needs: [setup, rosequartz, crds-rq]
     if: fromJson(needs.setup.outputs.cert-manager) && !failure() && !cancelled()
     concurrency: cert-manager-${{ github.ref }}
     uses: './.github/workflows/deploy.yml'
@@ -127,20 +140,31 @@ jobs:
       stack: rosequartz
     secrets: inherit
 
-  metrics-server:
-    name: Metrics Server
+  metrics-server-rq:
+    name: Rosequartz Metrics Server
     needs: [setup, rosequartz]
     if: fromJson(needs.setup.outputs.metrics-server) && !failure() && !cancelled()
-    concurrency: metrics-server-${{ github.ref }}
+    concurrency: rq-metrics-server-${{ github.ref }}
     uses: './.github/workflows/deploy.yml'
     with:
       project: metrics-server
       stack: rosequartz
     secrets: inherit
 
+  metrics-server-pd:
+    name: Pink Diamond Metrics Server
+    needs: [setup, pinkdiamond]
+    if: fromJson(needs.setup.outputs.metrics-server) && !failure() && !cancelled()
+    concurrency: pd-metrics-server-${{ github.ref }}
+    uses: './.github/workflows/deploy.yml'
+    with:
+      project: metrics-server
+      stack: pinkdiamond
+    secrets: inherit
+
   clusterapi:
     name: Cluster API
-    needs: [setup, rosequartz, cert-manager, crds]
+    needs: [setup, rosequartz, cert-manager, crds-rq]
     if: fromJson(needs.setup.outputs.clusterapi) && !failure() && !cancelled()
     concurrency: clusterapi-${{ github.ref }}
     uses: './.github/workflows/deploy.yml'
@@ -151,15 +175,28 @@ jobs:
       pre-deploy-script: ./gen/manifests.sh
     secrets: inherit
 
-  pulumi-operator:
-    name: Pulumi Kubernetes Operator
-    needs: [setup, rosequartz, crds]
+  pulumi-operator-rq:
+    name: Rosequartz Pulumi Kubernetes Operator
+    needs: [setup, rosequartz, crds-rq]
     if: fromJson(needs.setup.outputs.pulumi-operator) && !failure() && !cancelled()
-    concurrency: pulumi-operator-${{ github.ref }}
+    concurrency: rq-pulumi-operator-${{ github.ref }}
     uses: './.github/workflows/deploy.yml'
     with:
       project: pulumi-operator
       stack: rosequartz
+      verify: false
+      uses-crds: true
+    secrets: inherit
+
+  pulumi-operator-pd:
+    name: Pink Diamond Pulumi Kubernetes Operator
+    needs: [setup, pinkdiamond, crds-pd]
+    if: fromJson(needs.setup.outputs.pulumi-operator) && !failure() && !cancelled()
+    concurrency: pd-pulumi-operator-${{ github.ref }}
+    uses: './.github/workflows/deploy.yml'
+    with:
+      project: pulumi-operator
+      stack: pinkdiamond
       verify: false
       uses-crds: true
     secrets: inherit
@@ -189,7 +226,7 @@ jobs:
 
   capi-templates:
     name: Cluster API Templates
-    needs: [setup, rosequartz, crds]
+    needs: [setup, rosequartz, crds-rq]
     if: fromJson(needs.setup.outputs.capi-templates) && !failure() && !cancelled()
     concurrency: capi-templates-${{ github.ref }}
     uses: './.github/workflows/deploy.yml'

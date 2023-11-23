@@ -81,7 +81,6 @@ jobs:
           project: ${{ inputs.project }}
           stack: ${{ inputs.stack }}
           kind: ${{ inputs.kind }}
-          endpoint: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
           op: ${{ env.OPERATION }}
           verify: ${{ inputs.verify }}
           verify-script: ${{ inputs.verify-script }}
