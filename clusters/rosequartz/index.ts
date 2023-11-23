@@ -67,8 +67,8 @@ const controlplaneConfig = talos.machine.configurationOutput({
 const clientConfig = talos.client.configurationOutput({
   clusterName: clusterName,
   clientConfiguration: secrets.clientConfiguration,
-  endpoints: Object.keys(allNodeData),
-  nodes: Object.keys(allNodeData),
+  endpoints: [config.get('primaryDnsName') ?? config.require('endpoint')],
+  nodes: [Object.keys(allNodeData)[0]],
 });
 
 const configPatches: string[] = [];
