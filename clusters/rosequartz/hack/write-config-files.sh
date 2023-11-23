@@ -3,15 +3,13 @@ set -eum
 
 root="$(git rev-parse --show-toplevel)/clusters/rosequartz"
 stack="$(pulumi -C "$root" stack --show-name)"
-k8sDir="$root/.kube/$stack"
-talosDir="$root/.talos/$stack"
-mkdir -p "$k8sDir"
-mkdir -p "$talosDir"
+configDir="$root/.config/$stack"
+mkdir -p "$configDir"
 
-echo "Writing kubeconfig to $k8sDir/config ..."
-pulumi stack output --show-secrets kubeconfig > "$k8sDir/config"
-chmod 600 "$k8sDir/config"
+echo "Writing kubeconfig to $configDir/kubeconfig..."
+pulumi stack output --show-secrets kubeconfig > "$configDir/kubeconfig"
+chmod 600 "$configDir/kubeconfig"
 
-echo "Writing talosconfig to $talosDir/talosconfig.yaml ..."
-pulumi stack output --show-secrets talosconfig > "$talosDir/talosconfig.yaml"
-chmod 600 "$talosDir/talosconfig.yaml"
+echo "Writing talosconfig to $configDir/talosconfig.yaml..."
+pulumi stack output --show-secrets talosconfig > "$configDir/talosconfig.yaml"
+chmod 600 "$configDir/talosconfig.yaml"
