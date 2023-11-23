@@ -34,10 +34,10 @@ const vip = config.get('vip');
 if (vip) certSans.push(vip);
 
 const clusterEndpoint = config.require('clusterEndpoint');
-const configPatches: string[] = [];
+const controlplanePatches: string[] = [];
 
 if (vip) {
-  configPatches.push(YAML.stringify({
+  controlplanePatches.push(YAML.stringify({
     machine: {
       network: {
         interfaces: [{
@@ -62,7 +62,7 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
   talosVersion: `v${versions.talos}`,
   kubernetesVersion: versions.k8s,
   configPatches: [
-    ...configPatches,
+    ...controlplanePatches,
     YAML.stringify({
       cluster: {
         apiServer: {

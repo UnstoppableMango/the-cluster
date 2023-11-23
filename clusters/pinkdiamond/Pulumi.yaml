@@ -27,7 +27,6 @@ config:
         installDisk: /dev/sda
   healthTimeout: 4m
   kubeconfigTimeout: 30s
-  createDnsRecord: false
   versions:
     value:
       k8s: 1.28.0 # renovate depName=kubernetes/kubernetes extractVersion=^v(?<version>.*)

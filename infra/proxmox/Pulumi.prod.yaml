@@ -18,3 +18,6 @@ config:
     - node: apollo
       cpu: 8
       mem: 8192
+    - node: apollo
+      cpu: 8
+      mem: 8192
