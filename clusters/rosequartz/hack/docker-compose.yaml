@@ -28,7 +28,7 @@ x-controlplane: &controlplane
 
 services:
   talos-controlplane-1:
-    container_name: rosequartz-talos-controlplane-1
+    container_name: rosequartz-controlplane-1
     <<: *controlplane
     networks:
       default:
@@ -42,7 +42,7 @@ services:
       - var1:/var
       - state1:/system/state
   talos-controlplane-2:
-    container_name: rosequartz-talos-controlplane-2
+    container_name: rosequartz-controlplane-2
     <<: *controlplane
     networks:
       default:
@@ -56,7 +56,7 @@ services:
       - var2:/var
       - state2:/system/state
   talos-controlplane-3:
-    container_name: rosequartz-talos-controlplane-3
+    container_name: rosequartz-controlplane-3
     <<: *controlplane
     networks:
       default:

@@ -175,4 +175,12 @@ const kubeconfigOutput = talos.cluster.kubeconfigOutput({
 });
 
 export const talosconfig = clientConfig.talosConfig;
-export const kubeconfig = kubeconfigOutput.kubeconfigRaw;
+export const kubeconfig = kubeconfigOutput.kubeconfigRaw.apply(setPublicEndpoint);
+export const kubernetesClientConfig = kubeconfigOutput.kubernetesClientConfiguration;
+
+function setPublicEndpoint(kubeconfig: string): string {
+  if (!config.getBoolean('public')) return kubeconfig;
+  const kc = YAML.parse(kubeconfig);
+  kc.clusters[0].cluster.server = `https://${config.require('primaryDnsName')}:6443`;
+  return YAML.stringify(kc);
+}

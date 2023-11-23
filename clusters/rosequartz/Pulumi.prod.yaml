@@ -6,7 +6,6 @@ config:
     - 192.168.1.102
     - 192.168.1.103
   thecluster-rosequartz:clusterEndpoint: https://192.168.1.99:6443
-  thecluster-rosequartz:createDnsRecord: "true"
   thecluster-rosequartz:endpoint: 192.168.1.101
   thecluster-rosequartz:nodeData:
     controlplanes:
@@ -19,6 +18,7 @@ config:
     workers: {}
   thecluster-rosequartz:primaryDnsName:
     secure: AAABANZfP+8BRRIgIe5jdq98xfkoi3kDdYCb7YxPi3UdV29gXt+05Tza0AyogQKAMA==
+  thecluster-rosequartz:public: "true"
   thecluster-rosequartz:publicIp:
     secure: AAABAAsbqFF6BCsc1S9Z1x+n+f/193NK+FF9G159XFtOUz13W1RRr3OUdQ==
   thecluster-rosequartz:vip: 192.168.1.99

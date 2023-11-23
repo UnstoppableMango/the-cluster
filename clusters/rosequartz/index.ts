@@ -22,7 +22,7 @@ interface Versions {
 const config = new pulumi.Config();
 const certSans = config.requireObject<string[]>('certSans');
 
-if (config.requireBoolean('createDnsRecord')) {
+if (config.getBoolean('public') ?? false) {
   const zoneId = '22f1d42ba0fbe4f924905e1c6597055c';
   const publicIp = config.require('publicIp');
   const dnsName = config.require('primaryDnsName');
@@ -145,4 +145,12 @@ const kubeconfigOutput = talos.cluster.kubeconfigOutput({
 });
 
 export const talosconfig = clientConfig.talosConfig;
-export const kubeconfig = kubeconfigOutput.kubeconfigRaw;
+export const kubeconfig = kubeconfigOutput.kubeconfigRaw.apply(setPublicEndpoint);
+export const kubernetesClientConfig = kubeconfigOutput.kubernetesClientConfiguration;
+
+function setPublicEndpoint(kubeconfig: string): string {
+  if (!config.getBoolean('public')) return kubeconfig;
+  const kc = YAML.parse(kubeconfig);
+  kc.clusters[0].cluster.server = `https://${config.require('primaryDnsName')}:6443`;
+  return YAML.stringify(kc);
+}
