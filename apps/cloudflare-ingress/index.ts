@@ -31,10 +31,10 @@ const apiToken = new cf.ApiToken('cloudflare-ingress', {
         x.zone['DNS Write'],
         x.account['Argo Tunnel Write'],
       ]),
-      resources: {
-        [`com.cloudflare.api.account.${zone.accountId}`]: '*',
-        [`com.cloudflare.api.account.zone.${zone.zoneId}`]: '*',
-      },
+      resources: pulumi.output(zone).apply(z => ({
+        [`com.cloudflare.api.account.${z.accountId}`]: '*',
+        [`com.cloudflare.api.account.zone.${z.zoneId}`]: '*',
+      })),
     },
   ],
 });
