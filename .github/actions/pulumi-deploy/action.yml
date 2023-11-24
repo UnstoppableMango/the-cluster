@@ -12,10 +12,6 @@ inputs:
       The name of the pulumi stack to deploy. For clusters this is typically
       `prod`, for apps this is the name of the cluster to deploy to.
     required: true
-  endpoint:
-    description: |
-      The endpoint to use to connect to the cluster. Required when kind == 'apps'.
-    required: false
   kind:
     description: |
       The kind of stack to deploy. Acceptable values are `apps`, `clusters`, or `infra`.
@@ -64,7 +60,6 @@ runs:
       if: inputs.kind == 'apps'
       with:
         cluster: ${{ inputs.stack }}
-        endpoint: ${{ inputs.endpoint }}
 
     - shell: bash
       run: npm ci
@@ -98,10 +93,16 @@ runs:
         KUBECONFIG: ${{ steps.setup.outputs.kubeconfig }}
 
     - name: Validate
-      if: ${{ inputs.verify == 'true' }}
+      if: inputs.op == 'up'
       shell: bash
-      run: ${{ inputs.verify-script }}
+      run: |
+        if [ -f "$SCRIPT" ]; then
+          $SCRIPT
+        else
+          echo "No verification script found at $SCRIPT"
+        fi
       env:
         KUBECONFIG: ${{ steps.setup.outputs.kubeconfig }}
         TALOSCONFIG: ${{ steps.setup.outputs.talosconfig }}
+        SCRIPT: ${{ inputs.verify-script }}
       working-directory: ${{ inputs.kind }}/${{ inputs.project }}

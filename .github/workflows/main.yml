@@ -70,7 +70,6 @@ jobs:
         uses: ./.github/actions/setup-config
         with:
           cluster: rosequartz
-          endpoint: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
 
       - name: Health check
         run: talosctl health --nodes 192.168.1.101
@@ -97,7 +96,6 @@ jobs:
         uses: ./.github/actions/setup-config
         with:
           cluster: pinkdiamond
-          endpoint: pd.thecluster.io
 
       - name: Health check
         if: false # Port-forwarding isn't setup for pinkdiamond
@@ -108,7 +106,7 @@ jobs:
     needs: [setup, rosequartz]
     if: fromJson(needs.setup.outputs.crds) && !failure() && !cancelled()
     concurrency: rq-crds-${{ github.ref }}
-    uses: './.github/workflows/deploy.yml'
+    uses: ./.github/workflows/deploy.yml
     with:
       project: crds
       stack: rosequartz
@@ -121,7 +119,7 @@ jobs:
     needs: [setup, pinkdiamond]
     if: fromJson(needs.setup.outputs.crds) && !failure() && !cancelled()
     concurrency: pd-crds-${{ github.ref }}
-    uses: './.github/workflows/deploy.yml'
+    uses: ./.github/workflows/deploy.yml
     with:
       project: crds
       stack: pinkdiamond
@@ -134,7 +132,7 @@ jobs:
     needs: [setup, rosequartz, crds-rq]
     if: fromJson(needs.setup.outputs.cert-manager) && !failure() && !cancelled()
     concurrency: rq-cert-manager-${{ github.ref }}
-    uses: './.github/workflows/deploy.yml'
+    uses: ./.github/workflows/deploy.yml
     with:
       project: cert-manager
       stack: rosequartz
@@ -145,7 +143,7 @@ jobs:
     needs: [setup, pinkdiamond, crds-pd]
     if: fromJson(needs.setup.outputs.cert-manager) && !failure() && !cancelled()
     concurrency: pd-cert-manager-${{ github.ref }}
-    uses: './.github/workflows/deploy.yml'
+    uses: ./.github/workflows/deploy.yml
     with:
       project: cert-manager
       stack: pinkdiamond
@@ -156,7 +154,7 @@ jobs:
     needs: [setup, rosequartz]
     if: fromJson(needs.setup.outputs.metrics-server) && !failure() && !cancelled()
     concurrency: rq-metrics-server-${{ github.ref }}
-    uses: './.github/workflows/deploy.yml'
+    uses: ./.github/workflows/deploy.yml
     with:
       project: metrics-server
       stack: rosequartz
@@ -167,7 +165,7 @@ jobs:
     needs: [setup, pinkdiamond]
     if: fromJson(needs.setup.outputs.metrics-server) && !failure() && !cancelled()
     concurrency: pd-metrics-server-${{ github.ref }}
-    uses: './.github/workflows/deploy.yml'
+    uses: ./.github/workflows/deploy.yml
     with:
       project: metrics-server
       stack: pinkdiamond
@@ -178,7 +176,7 @@ jobs:
     needs: [setup, rosequartz, cert-manager-rq, crds-rq]
     if: fromJson(needs.setup.outputs.clusterapi) && !failure() && !cancelled()
     concurrency: clusterapi-${{ github.ref }}
-    uses: './.github/workflows/deploy.yml'
+    uses: ./.github/workflows/deploy.yml
     with:
       project: clusterapi
       stack: rosequartz
@@ -191,7 +189,7 @@ jobs:
     needs: [setup, rosequartz, crds-rq]
     if: fromJson(needs.setup.outputs.pulumi-operator) && !failure() && !cancelled()
     concurrency: rq-pulumi-operator-${{ github.ref }}
-    uses: './.github/workflows/deploy.yml'
+    uses: ./.github/workflows/deploy.yml
     with:
       project: pulumi-operator
       stack: rosequartz
@@ -204,7 +202,7 @@ jobs:
     needs: [setup, pinkdiamond, crds-pd]
     if: fromJson(needs.setup.outputs.pulumi-operator) && !failure() && !cancelled()
     concurrency: pd-pulumi-operator-${{ github.ref }}
-    uses: './.github/workflows/deploy.yml'
+    uses: ./.github/workflows/deploy.yml
     with:
       project: pulumi-operator
       stack: pinkdiamond
@@ -217,7 +215,7 @@ jobs:
     needs: [setup, rosequartz]
     if: fromJson(needs.setup.outputs.metallb) && !failure() && !cancelled()
     concurrency: metallb-${{ github.ref }}
-    uses: './.github/workflows/deploy.yml'
+    uses: ./.github/workflows/deploy.yml
     with:
       project: metallb
       stack: rosequartz
@@ -228,7 +226,7 @@ jobs:
     needs: [setup, rosequartz]
     if: fromJson(needs.setup.outputs.cloudflared) && !failure() && !cancelled()
     concurrency: cloudflared-${{ github.ref }}
-    uses: './.github/workflows/deploy.yml'
+    uses: ./.github/workflows/deploy.yml
     with:
       project: cloudflared
       stack: rosequartz
@@ -240,10 +238,21 @@ jobs:
     needs: [setup, rosequartz, crds-rq]
     if: fromJson(needs.setup.outputs.capi-templates) && !failure() && !cancelled()
     concurrency: capi-templates-${{ github.ref }}
-    uses: './.github/workflows/deploy.yml'
+    uses: ./.github/workflows/deploy.yml
     with:
       project: capi-templates
       stack: rosequartz
       uses-crds: true
       verify: false
+    secrets: inherit
+
+  cloudflare-ingress:
+    name: Cloudflare Ingress Controller
+    needs: [setup, pinkdiamond]
+    if: fromJson(needs.setup.outputs.cloudflare-ingress) && !failure() && !cancelled()
+    concurrency: cloudflare-ingress-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: cloudflare-ingress
+      stack: pinkdiamond
     secrets: inherit
