@@ -1,0 +1,3 @@
+name: thecluster-oauth2-proxy
+runtime: nodejs
+description: Oauth2 Proxy install for THECLUSTER
