@@ -18,7 +18,7 @@ export SUBDOMAIN=$RANDOM
 envsubst < "$cwd/resources.template.yaml" > "$cwd/resources.yaml"
 
 echo "Verifying test resource generation..."
-host="$(cat "$cwd/resources.yaml" | yq -r 'select(.kind == "Ingress") | .spec.rules[].host')"
+host="$(yq -r 'select(.kind == "Ingress") | .spec.rules[].host' "$cwd/resources.yaml")"
 if [ "$SUBDOMAIN.thecluster.io" == "$host" ]; then
     echo -e "✅ Resources were properly templated\n"
 else
