@@ -70,7 +70,6 @@ jobs:
         uses: ./.github/actions/setup-config
         with:
           cluster: rosequartz
-          endpoint: ${{ secrets.RQ_PRIMARY_DNS_NAME }}
 
       - name: Health check
         run: talosctl health --nodes 192.168.1.101
@@ -97,7 +96,6 @@ jobs:
         uses: ./.github/actions/setup-config
         with:
           cluster: pinkdiamond
-          endpoint: pd.thecluster.io
 
       - name: Health check
         if: false # Port-forwarding isn't setup for pinkdiamond
