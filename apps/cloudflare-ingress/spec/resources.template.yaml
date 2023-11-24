@@ -18,19 +18,21 @@ spec:
         app: cf-ing-test
     spec:
       containers:
-      - name: cf-ing-test
-        image: nginx
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
-        ports:
-        - containerPort: 80
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop: ['ALL']
-          runAsNonRoot: true
+        - name: cf-ing-test
+          image: nginxinc/nginx-unprivileged
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8080
+          securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop: ['ALL']
+            runAsNonRoot: true
 ---
 apiVersion: v1
 kind: Service
@@ -42,7 +44,7 @@ spec:
     app: cf-ing-test
   ports:
   - port: 443
-    targetPort: 80
+    targetPort: 8080
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
