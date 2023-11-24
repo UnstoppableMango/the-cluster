@@ -15,6 +15,8 @@ trap cleanup EXIT
 
 echo -e "Generating test resources...\n"
 export SUBDOMAIN=$RANDOM
+INGRESS_CLASS_NAME="$(pulumi -C "$cwd" stack output ingressClass)"
+export INGRESS_CLASS_NAME
 envsubst < "$cwd/resources.template.yaml" > "$cwd/resources.yaml"
 
 echo "Verifying test resource generation..."
