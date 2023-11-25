@@ -35,6 +35,7 @@ jobs:
       cloudflared: ${{ steps.stacks.outputs.cloudflared }}
       dns: ${{ steps.stacks.outputs.dns }}
       capi-templates: ${{ steps.stacks.outputs.capi-templates }}
+      oauth2-proxy: ${{ steps.stacks.outputs.oauth2-proxy }}
 
   dns:
     name: DNS Infrastructure
@@ -254,5 +255,16 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     with:
       project: cloudflare-ingress
+      stack: pinkdiamond
+    secrets: inherit
+
+  oauth2-proxy:
+    name: OAuth2 Proxy
+    needs: [setup, pinkdiamond]
+    if: fromJson(needs.setup.outputs.oauth2-proxy) && !failure() && !cancelled()
+    concurrency: oauth2-proxy-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: oauth2-proxy
       stack: pinkdiamond
     secrets: inherit
