@@ -1,0 +1,9 @@
+apiVersion: v2
+name: oauth2-proxy
+description: Cert Manager install for THECLUSTER
+type: application
+version: 0.1.0
+dependencies:
+  - name: oauth2-proxy
+    repository: https://oauth2-proxy.github.io/manifests
+    version: 6.19.1
