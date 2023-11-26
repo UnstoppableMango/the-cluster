@@ -28,7 +28,7 @@ const chart = new k8s.helm.v3.Chart('ceph-csi', {
         create: true,
         name: 'cephfs',
         clusterID: clusterId,
-        fsName: 'thecluster',
+        fsName: 'kubernetes',
       },
     },
     'ceph-csi-rbd': {
