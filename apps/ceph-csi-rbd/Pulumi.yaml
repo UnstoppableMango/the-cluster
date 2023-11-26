@@ -1,3 +1,0 @@
-name: thecluster-ceph-csi-rbd
-runtime: nodejs
-description: Ceph CSI RBD install for THECLUSTER
