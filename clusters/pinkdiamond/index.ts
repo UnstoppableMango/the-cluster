@@ -67,10 +67,20 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
       cluster: {
         apiServer: {
           certSANs: certSans,
+          disablePodSecurityPolicy: true, // So we can exempt ceph
           admissionControl: [{
             // https://www.talos.dev/v1.5/reference/configuration/#apiserverconfig
             name: 'PodSecurity',
             configuration: {
+              apiVersion: 'pod-security.admission.config.k8s.io/v1alpha1',
+              kind: 'PodSecurityConfiguration',
+              defaults: {
+                audit: 'restricted',
+                'audit-version': 'latest',
+                enforce: 'baseline',
+                'enforce-version': 'latest',
+                warn: 'restricted',
+              },
               exemptions: {
                 namespaces: [
                   'ceph-system',
