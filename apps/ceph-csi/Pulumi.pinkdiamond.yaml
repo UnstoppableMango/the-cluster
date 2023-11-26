@@ -1,0 +1,3 @@
+config:
+  thecluster-ceph-csi:userKey:
+    secure: AAABAMYiEuCC3ZMzsbnx/UH/0p58cNzWkaZddx2nnyN9FpxPk2ZcoFbSMIhYCmQWatRNyMlrq6Q/+XfNVhOF5D4W4CZGdt5A

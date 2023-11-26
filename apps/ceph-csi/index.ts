@@ -3,6 +3,7 @@ import * as k8s from '@pulumi/kubernetes';
 import { provider } from './clusters';
 import { CsiConfig } from './types';
 
+const config = new pulumi.Config();
 const clusterId = 'f0f64d5b-8883-4b81-8603-680073516d79';
 
 const ns = new k8s.core.v1.Namespace('ceph-system', {
@@ -28,6 +29,7 @@ const chart = new k8s.helm.v3.Chart('ceph-csi', {
       },
       configMapName: 'ceph-csi-cephfs-config',
       cephConfConfigMapName: 'ceph-cephfs-config',
+      selinuxMount: false, // Talos doesn't seem to support this
       storageClass: {
         create: true,
         name: 'cephfs',
@@ -42,11 +44,39 @@ const chart = new k8s.helm.v3.Chart('ceph-csi', {
       },
       configMapName: 'ceph-csi-rbd-config',
       cephConfConfigMapName: 'ceph-rbd-config',
+      selinuxMount: false, // Talos doesn't seem to support this
       storageClass: {
         create: true,
         name: 'rbd',
+        annotations: {
+          'storageclass.kubernetes.io/is-default-class': 'true',
+        },
         clusterID: clusterId,
       },
     },
   },
 }, { provider });
+
+const cephfsSecret = new k8s.core.v1.Secret('cephfs-credentials', {
+  metadata: {
+    name: 'csi-cephfs-secret',
+    namespace: ns.metadata.name,
+  },
+  stringData: {
+    userID: 'client.thecluster',
+    userKey: config.require('userKey'),
+    // encryptionPassphrase: '',
+  },
+});
+
+const rbdSecret = new k8s.core.v1.Secret('rbd-credentials', {
+  metadata: {
+    name: 'csi-rbd-secret',
+    namespace: ns.metadata.name,
+  },
+  stringData: {
+    userID: 'client.thecluster',
+    userKey: config.require('userKey'),
+    // encryptionPassphrase: '',
+  },
+});
