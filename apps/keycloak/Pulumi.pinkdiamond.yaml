@@ -1,0 +1,7 @@
+config:
+  thecluster-keycloak:auth:
+    adminUser: admin
+  thecluster-keycloak:hostname: keycloak.thecluster.io
+  thecluster-keycloak:postgres:
+    username: keycloak
+  thecluster-keycloak:production: "true"
