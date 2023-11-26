@@ -60,6 +60,9 @@
       "matchPackagePatterns": [
         "talos"
       ],
+      "excludePackagePatterns": [
+        "pulumi"
+      ],
       "groupName": "talos"
     },
     {
