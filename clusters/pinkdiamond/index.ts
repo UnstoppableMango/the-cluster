@@ -67,6 +67,17 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
       cluster: {
         apiServer: {
           certSANs: certSans,
+          admissionControl: [{
+            // https://www.talos.dev/v1.5/reference/configuration/#apiserverconfig
+            name: 'PodSecurity',
+            configuration: {
+              exemptions: {
+                namespaces: [
+                  'ceph-system',
+                ],
+              },
+            },
+          }],
         },
       },
       machine: {
