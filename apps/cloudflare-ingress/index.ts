@@ -1,14 +1,12 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as cf from '@pulumi/cloudflare';
-import { Versions } from './types';
 
 function appendIf(x: string, o?: string | undefined | null): string {
   return o ? x + o : x;
 }
 
 const config = new pulumi.Config();
-const versions = config.requireObject<Versions>('versions');
 const cluster = config.require('cluster');
 export const ingressClass = 'cloudflare-ingress';
 
@@ -56,10 +54,6 @@ const chart = new k8s.helm.v3.Chart('cloudflare-ingress', {
       ingressClass: {
         name: ingressClass,
         isDefaultClass: true,
-      },
-      image: {
-        repository: config.require('imageName'),
-        tag: versions.image,
       },
       securityContext: {
         allowPrivilegeEscalation: false,
