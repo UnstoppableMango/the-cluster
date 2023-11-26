@@ -1,0 +1,3 @@
+name: thecluster-ceph-csi
+runtime: nodejs
+description: Ceph CSI install for THECLUSTER
