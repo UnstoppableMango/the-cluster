@@ -1,1 +1,26 @@
 FROM ubuntu:23.10
+
+ARG USERNAME=vscode
+ARG UID=1000
+ARG GID=$UID
+
+RUN groupadd --gid $GID $USERNAME \
+	&& useradd --uid $UID --gid $GID -m $USERNAME \
+	&& apt-get update && export DEBIAN_FRONTEND=noninteractive \
+	&& apt-get -y install --no-install-recommends \
+	zsh
+	# TODO
+
+USER $USERNAME
+WORKDIR /home/$USERNAME
+
+COPY .nvmrc .
+ENV NVM_DIR=/home/$USERNAME/.nvm
+
+RUN echo "source /usr/share/nvm/init-nvm.sh" > ~/.zprofile \
+	&& source /usr/share/nvm/init-nvm.sh \
+	&& nvm alias default "$(cat .nvmrc)" \
+	&& nvm install && nvm use
+
+ENV PATH=$NVM_DIR:$PATH
+WORKDIR /workspaces
