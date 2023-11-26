@@ -2,8 +2,4 @@ name: thecluster-cloudflare-ingress
 runtime: nodejs
 description: Cloudflare Ingress Controller install for THECLUSTER
 config:
-  imageName: ghcr.io/unstoppablemango/cloudflare-tunnel-ingress-controller
-  versions:
-    value:
-      image: sha-c92febc
   zoneName: thecluster.io
