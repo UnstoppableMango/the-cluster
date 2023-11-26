@@ -5,6 +5,8 @@ import { provider } from './clusters';
 import { github, hosts } from './config';
 import { ingressClass } from './apps/cloudflare-ingress';
 import { hostname, realm, provider as keycloakProvider } from './apps/keycloak';
+import { GitHub } from './types';
+import { host as dashHost } from './apps/dashboard';
 
 const ns = new k8s.core.v1.Namespace('oauth2-proxy', {
   metadata: { name: 'oauth2-proxy' },
@@ -28,6 +30,9 @@ const client = new keycloak.openid.Client('client', {
 // https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/generic_protocol_mapper
 // https://www.pulumi.com/registry/packages/keycloak/api-docs/genericprotocolmapper/
 
+const provider = new k8s.Provider(cluster, {
+  kubeconfig: stackRef.requireOutput('kubeconfig'),
+});
 // const scope = keycloak.openid.getClientScopeOutput({
 //   realmId: realm,
 //   name: pulumi.interpolate`${client.clientId}-dedicated`.apply(x => { console.log(x); return x; }),
@@ -72,6 +77,7 @@ const chart = new k8s.helm.v3.Chart('github', {
       },
       extraEnv: [
         { name: 'OAUTH2_PROXY_PROVIDER', value: 'keycloak-oidc' },
+        { name: 'OAUTH2_PROXY_UPSTREAMS', value: dashHost },
         // { name: 'OAUTH2_PROXY_PROVIDER', value: 'oidc' },
         { name: 'OAUTH2_PROXY_REDIRECT_URL', value: pulumi.interpolate`https://auth2.thecluster.io/oauth2/callback` },
         { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: pulumi.interpolate`https://auth2.thecluster.io/realms/${realm}` },
