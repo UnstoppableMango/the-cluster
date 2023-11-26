@@ -3,7 +3,7 @@ import * as k8s from '@pulumi/kubernetes';
 import * as keycloak from '@pulumi/keycloak';
 import * as random from '@pulumi/random';
 import { provider } from './clusters';
-import { auth, cluster, production, postgres, hostname } from './config';
+import { auth, cluster, production, postgres, hostname, github } from './config';
 import { rbdStorageClass } from './apps/ceph-csi';
 import { ingressClass } from './apps/cloudflare-ingress';
 
@@ -92,13 +92,43 @@ const keycloakProvider = new keycloak.Provider(cluster, {
   username: 'admin',
   password: adminPassword.result,
   clientId: 'admin-cli',
-});
+}, { dependsOn: chart.ready });
 
 const externalRealm = new keycloak.Realm('external', {
   realm: 'external',
-  adminTheme: '',
+  displayName: 'THECLUSTER',
+  displayNameHtml: 'THECLUSTER',
+  registrationAllowed: false, // Maybe later
+  registrationEmailAsUsername: false,
+  rememberMe: true,
+  verifyEmail: true,
+}, { provider: keycloakProvider });
+
+const githubIdp = new keycloak.oidc.IdentityProvider('github', {
+  realm: externalRealm.id,
+  enabled: true,
+  alias: 'github',
+  displayName: 'GitHub',
+  clientId: github.clientId,
+  clientSecret: github.clientSecret,
+  authorizationUrl: 'https://github.com/login/oauth/authorize',
+  tokenUrl: 'https://github.com/login/oauth/access_token',
+  trustEmail: true,
+  syncMode: 'IMPORT',
+}, { provider: keycloakProvider });
+
+const googleIdp = new keycloak.oidc.GoogleIdentityProvider('google', {
+  realm: externalRealm.id,
+  enabled: true,
+  clientId: '',
+  clientSecret: '',
+  trustEmail: true,
+  syncMode: 'IMPORT',
 }, { provider: keycloakProvider });
 
 const clusterRealm = new keycloak.Realm('cluster', {
   realm: 'cluster',
+  displayName: cluster,
+  displayNameHtml: cluster,
+  userManagedAccess: true,
 }, { provider: keycloakProvider });

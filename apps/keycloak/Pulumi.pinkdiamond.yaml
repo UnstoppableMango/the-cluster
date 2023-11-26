@@ -1,6 +1,10 @@
 config:
   thecluster-keycloak:auth:
     adminUser: admin
+  thecluster-keycloak:github:
+    clientId: d1f065d7f2d33f3cfbd6
+    clientSecret:
+      secure: AAABAFTazEz+1H5a+5mleMMICJq9C9n80a7tPfpPxlBtkb36MaVOtRITzxUXhxqaHkmEYzLMab0PtTuLaCjTG8YmiyV0l7hY
   thecluster-keycloak:hostname: keycloak.thecluster.io
   thecluster-keycloak:postgres:
     username: keycloak
