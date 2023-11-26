@@ -67,6 +67,9 @@
         "kubernetes",
         "kubectl"
       ],
+      "excludePackagePatterns": [
+        "pulumi"
+      ],
       "groupName": "kubernetes"
     },
     {
@@ -80,6 +83,12 @@
         "cert-manager"
       ],
       "groupName": "cert-manager"
+    },
+    {
+      "matchPackagePatterns": [
+        "ceph"
+      ],
+      "groupName": "ceph"
     },
     {
       "matchPackagePatterns": [
