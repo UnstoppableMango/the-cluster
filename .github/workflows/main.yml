@@ -36,6 +36,7 @@ jobs:
       dns: ${{ steps.stacks.outputs.dns }}
       capi-templates: ${{ steps.stacks.outputs.capi-templates }}
       oauth2-proxy: ${{ steps.stacks.outputs.oauth2-proxy }}
+      ceph-csi: ${{ steps.stacks.outputs.ceph-csi }}
 
   dns:
     name: DNS Infrastructure
@@ -266,5 +267,16 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     with:
       project: oauth2-proxy
+      stack: pinkdiamond
+    secrets: inherit
+
+  ceph-csi:
+    name: Ceph CSI
+    needs: [setup, pinkdiamond]
+    if: fromJson(needs.setup.outputs.ceph-csi) && !failure() && !cancelled()
+    concurrency: ceph-csi-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: ceph-csi
       stack: pinkdiamond
     secrets: inherit
