@@ -1,0 +1,3 @@
+name: thecluster-keycloak
+runtime: nodejs
+description: Keycloak install for THECLUSTER

@@ -1,0 +1,15 @@
+config:
+  thecluster-keycloak:auth:
+    adminUser: admin
+  thecluster-keycloak:github:
+    clientId: d1f065d7f2d33f3cfbd6
+    clientSecret:
+      secure: AAABAFTazEz+1H5a+5mleMMICJq9C9n80a7tPfpPxlBtkb36MaVOtRITzxUXhxqaHkmEYzLMab0PtTuLaCjTG8YmiyV0l7hY
+  thecluster-keycloak:google:
+    clientId: 186152974979-mbmlhacv2u1l1sv3enid4aagcl63df3u.apps.googleusercontent.com
+    clientSecret:
+      secure: AAABAIQ/t3itZQn4BU71DT5QU+6D0x6lhrnUS+uYw1xJiBRptCrzyrSY8EEOaBV5hsGn0nMVDx5TruRTvFRjY9LtIg==
+  thecluster-keycloak:hostname: keycloak.thecluster.io
+  thecluster-keycloak:postgres:
+    username: keycloak
+  thecluster-keycloak:production: "true"

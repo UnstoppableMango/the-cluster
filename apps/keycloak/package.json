@@ -1,0 +1,13 @@
+{
+  "name": "thecluster-keycloak",
+  "main": "index.ts",
+  "dependencies": {
+    "@pulumi/keycloak": "^5.2.1",
+    "@pulumi/kubernetes": "^4.5.4",
+    "@pulumi/pulumi": "^3.94.2",
+    "@pulumi/random": "^4.14.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0"
+  }
+}
