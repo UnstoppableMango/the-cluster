@@ -3,7 +3,7 @@ import * as k8s from '@pulumi/kubernetes';
 import * as keycloak from '@pulumi/keycloak';
 import * as random from '@pulumi/random';
 import { provider } from './clusters';
-import { auth, cluster, production, postgres, hostname, github } from './config';
+import { auth, cluster, production, postgres, hostname, github, google } from './config';
 import { rbdStorageClass } from './apps/ceph-csi';
 import { ingressClass } from './apps/cloudflare-ingress';
 
@@ -120,8 +120,8 @@ const githubIdp = new keycloak.oidc.IdentityProvider('github', {
 const googleIdp = new keycloak.oidc.GoogleIdentityProvider('google', {
   realm: externalRealm.id,
   enabled: true,
-  clientId: '',
-  clientSecret: '',
+  clientId: google.clientId,
+  clientSecret: google.clientSecret,
   trustEmail: true,
   syncMode: 'IMPORT',
 }, { provider: keycloakProvider });

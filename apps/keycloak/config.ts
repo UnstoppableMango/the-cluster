@@ -13,6 +13,11 @@ export interface GitHub {
   clientSecret: string;
 }
 
+export interface Google {
+  clientId: string;
+  clientSecret: string;
+}
+
 const config = new Config();
 export const cluster = getStack();
 
@@ -21,3 +26,4 @@ export const production = config.requireBoolean('production');
 export const postgres = config.requireObject<Postgres>('postgres');
 export const hostname = config.require('hostname');
 export const github = config.requireObject<GitHub>('github');
+export const google = config.requireObject<Google>('google');
