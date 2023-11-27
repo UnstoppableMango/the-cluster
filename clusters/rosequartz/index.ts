@@ -53,7 +53,7 @@ const allNodeData: Nodes = { ...nodeData.controlplanes, ...nodeData.workers };
 
 const secrets = new talos.machine.Secrets('secrets', { talosVersion: `v${versions.talos}` });
 
-const controlplaneConfig = talos.machine.configurationOutput({
+const controlplaneConfig = talos.machine.getConfigurationOutput({
   clusterName: clusterName,
   clusterEndpoint: clusterEndpoint,
   machineType: 'controlplane',
