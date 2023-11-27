@@ -37,6 +37,7 @@ jobs:
       capi-templates: ${{ steps.stacks.outputs.capi-templates }}
       oauth2-proxy: ${{ steps.stacks.outputs.oauth2-proxy }}
       ceph-csi: ${{ steps.stacks.outputs.ceph-csi }}
+      keycloak: ${{ steps.stacks.outputs.keycloak }}
 
   dns:
     name: DNS Infrastructure
@@ -261,7 +262,7 @@ jobs:
 
   oauth2-proxy:
     name: OAuth2 Proxy
-    needs: [setup, pinkdiamond]
+    needs: [setup, pinkdiamond, cloudflare-ingress]
     if: fromJson(needs.setup.outputs.oauth2-proxy) && !failure() && !cancelled()
     concurrency: oauth2-proxy-${{ github.ref }}
     uses: ./.github/workflows/deploy.yml
@@ -278,5 +279,16 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     with:
       project: ceph-csi
+      stack: pinkdiamond
+    secrets: inherit
+
+  keycloak:
+    name: Keycloak
+    needs: [setup, pinkdiamond, ceph-csi, cloudflare-ingress]
+    if: fromJson(needs.setup.outputs.keycloak) && !failure() && !cancelled()
+    concurrency: keycloak-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: keycloak
       stack: pinkdiamond
     secrets: inherit
