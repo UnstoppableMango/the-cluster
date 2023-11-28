@@ -72,9 +72,12 @@ const chart = new k8s.helm.v3.Chart('github', {
       },
       extraEnv: [
         { name: 'OAUTH2_PROXY_PROVIDER', value: 'keycloak-oidc' },
+        // { name: 'OAUTH2_PROXY_PROVIDER', value: 'oidc' },
         { name: 'OAUTH2_PROXY_REDIRECT_URL', value: pulumi.interpolate`https://auth2.thecluster.io/oauth2/callback` },
         { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: pulumi.interpolate`https://auth2.thecluster.io/realms/${realm}` },
-        { name: 'OAUTH2_PROXY_CODE_CHALLENGE_METHOD', value: 'S256' },
+        // { name: 'OAUTH2_PROXY_CODE_CHALLENGE_METHOD', value: 'S256' },
+        // { name: 'OAUTH2_PROXY_HTTP_ADDRESS', value: '0.0.0.0:4180' },
+        { name: 'QAUTH2_PROXY_ERRORS_TO_INFO_LOG', value: '' },
       ],
       ingress: {
         enabled: true,
