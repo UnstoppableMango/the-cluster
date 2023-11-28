@@ -1,0 +1,9 @@
+apiVersion: v2
+name: unifi
+description: Unifi install for THECLUSTER
+type: application
+version: 0.1.0
+dependencies:
+  - name: unifi
+    repository: https://charts.truecharts.org
+    version: 17.0.1
