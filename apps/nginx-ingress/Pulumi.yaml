@@ -1,0 +1,7 @@
+name: thecluster-nginx-ingress
+runtime: nodejs
+description: Nginx Ingress install for THECLUSTER
+config:
+  versions:
+    value:
+      nginxIngress: v3.3.2 # renovate depName=nginxinc/kubernetes-ingress

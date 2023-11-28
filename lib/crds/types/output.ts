@@ -5980,6 +5980,11 @@ export namespace certmanager {
     }
 }
 
+export namespace charts {
+    export namespace v1alpha1 {
+    }
+}
+
 export namespace cluster {
     export namespace v1alpha3 {
         /**

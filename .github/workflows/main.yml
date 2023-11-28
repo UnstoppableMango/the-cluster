@@ -40,6 +40,8 @@ jobs:
       keycloak: ${{ steps.stacks.outputs.keycloak }}
       kube-vip: ${{ steps.stacks.outputs.kube-vip }}
       qemu-guest-agent-talos: ${{ steps.stacks.outputs.qemu-guest-agent-talos }}
+      nginx-ingress: ${{ steps.stacks.outputs.nginx-ingress }}
+      nginx-ingress-operator: ${{ steps.stacks.outputs.nginx-ingress-operator }}
 
   dns:
     name: DNS Infrastructure
@@ -219,7 +221,7 @@ jobs:
     name: MetalLB - Rosequartz
     needs: [setup, rosequartz]
     if: fromJson(needs.setup.outputs.metallb) && !failure() && !cancelled()
-    concurrency: RQ-metallb-${{ github.ref }}
+    concurrency: rq-metallb-${{ github.ref }}
     uses: ./.github/workflows/deploy.yml
     with:
       project: metallb
@@ -227,7 +229,7 @@ jobs:
     secrets: inherit
 
   metallb-pd:
-    name: MetalLB - PInk Diamond
+    name: MetalLB - Pink Diamond
     needs: [setup, pinkdiamond]
     if: fromJson(needs.setup.outputs.metallb) && !failure() && !cancelled()
     concurrency: pd-metallb-${{ github.ref }}
@@ -316,4 +318,29 @@ jobs:
       project: qemu-guest-agent-talos
       stack: pinkdiamond
       verify: false
+    secrets: inherit
+
+  nginx-ingress-operator:
+    name: Nginx Ingress Operator
+    needs: [setup, pinkdiamond, metallb-pd]
+    if: fromJson(needs.setup.outputs.nginx-ingress-operator) && !failure() && !cancelled()
+    concurrency: nginx-ingress-operator-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: nginx-ingress-operator
+      stack: pinkdiamond
+      verify: false
+    secrets: inherit
+
+  nginx-ingress:
+    name: Nginx Ingress
+    needs: [setup, pinkdiamond, crds-pd, nginx-ingress-operator]
+    if: fromJson(needs.setup.outputs.nginx-ingress) && !failure() && !cancelled()
+    concurrency: nginx-ingress-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: nginx-ingress
+      stack: pinkdiamond
+      verify: false
+      uses-crds: true
     secrets: inherit
