@@ -23,14 +23,42 @@ const client = new keycloak.openid.Client('client', {
   ],
 }, { provider: keycloakProvider });
 
-const mapper = new keycloak.openid.AudienceProtocolMapper('oauth2-proxy', {
-  realmId: realm,
-  name: pulumi.interpolate`aud-mapper-${client.clientId}`,
-  clientId: client.clientId,
-  includedClientAudience: client.clientId,
-  addToIdToken: true,
-  addToAccessToken: true,
-}, { provider: keycloakProvider });
+// This is being a pain in the ass. Fix it later
+// https://oauth2-proxy.github.io/oauth2-proxy/docs/configuration/oauth_provider#keycloak-auth-provider
+// https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/generic_protocol_mapper
+// https://www.pulumi.com/registry/packages/keycloak/api-docs/genericprotocolmapper/
+
+// const scope = keycloak.openid.getClientScopeOutput({
+//   realmId: realm,
+//   name: pulumi.interpolate`${client.clientId}-dedicated`.apply(x => { console.log(x); return x; }),
+// }, { provider: keycloakProvider });
+
+// const scope = new keycloak.openid.ClientScope('oauth2-proxy-dedicated', {
+//   realmId: realm,
+//   name: pulumi.interpolate`${client.clientId}-dedicated`,
+// }, { provider: keycloakProvider });
+
+// const mapper = new keycloak.GenericProtocolMapper('oauth2-proxy', {
+//   realmId: realm,
+//   // name: 'oauth2-proxy',
+//   clientId: client.clientId,
+//   // clientScopeId: pulumi.interpolate`${client.clientId}-dedicated`,
+//   config: {
+//     aud: client.clientId,
+//   },
+//   protocol: 'openid-connect',
+//   protocolMapper: pulumi.interpolate`aud-${client.clientId}`,
+// }, { provider: keycloakProvider });
+
+// const mapper = new keycloak.openid.AudienceProtocolMapper('oauth2-proxy', {
+//   realmId: realm,
+//   name: pulumi.interpolate`aud-mapper-${client.clientId}`,
+//   // clientScopeId: scope.id,
+//   clientId: client.clientId,
+//   includedClientAudience: client.clientId,
+//   addToIdToken: true,
+//   addToAccessToken: true,
+// }, { provider: keycloakProvider });
 
 const chart = new k8s.helm.v3.Chart('github', {
   path: './',
@@ -39,13 +67,14 @@ const chart = new k8s.helm.v3.Chart('github', {
     'oauth2-proxy': {
       replicaCount: 2,
       config: {
-        clientID: github.clientId,
-        clientSecret: github.clientSecret,
+        clientID: client.clientId,
+        clientSecret: client.clientSecret,
       },
       extraEnv: [
         { name: 'OAUTH2_PROXY_PROVIDER', value: 'keycloak-oidc' },
-        { name: 'OAUTH2_PROXY_REDIRECT_URL', value: pulumi.interpolate`https://${hostname}/oauth2/callback` },
-        { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: pulumi.interpolate`https://${hostname}/realms/${realm}` },
+        { name: 'OAUTH2_PROXY_REDIRECT_URL', value: pulumi.interpolate`https://auth2.thecluster.io/oauth2/callback` },
+        { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: pulumi.interpolate`https://auth2.thecluster.io/realms/${realm}` },
+        { name: 'OAUTH2_PROXY_CODE_CHALLENGE_METHOD', value: 'S256' },
       ],
       ingress: {
         enabled: true,
