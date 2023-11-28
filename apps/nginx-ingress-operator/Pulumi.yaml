@@ -4,4 +4,4 @@ description: Nginx Ingress Operator install for THECLUSTER
 config:
   versions:
     value:
-      nginxIngressHelmOperator: v1.4.1
+      nginxIngressHelmOperator: v2.0.2

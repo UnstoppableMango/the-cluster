@@ -87,6 +87,7 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
                   'ceph-system',
                   'kube-vip',
                   'qemu-guest-agent',
+                  'internal-ingress',
                 ],
               },
             },
@@ -110,7 +111,6 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
             allowedKubernetesNamespaces: [
               'kube-system',
               'qemu-guest-agent',
-              'internal-ingress',
             ],
           },
         },
