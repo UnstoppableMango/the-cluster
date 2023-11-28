@@ -303,4 +303,5 @@ jobs:
     with:
       project: kube-vip
       stack: pinkdiamond
+      verify: false
     secrets: inherit
