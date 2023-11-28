@@ -229,7 +229,7 @@ jobs:
     secrets: inherit
 
   metallb-pd:
-    name: MetalLB - PInk Diamond
+    name: MetalLB - Pink Diamond
     needs: [setup, pinkdiamond]
     if: fromJson(needs.setup.outputs.metallb) && !failure() && !cancelled()
     concurrency: pd-metallb-${{ github.ref }}
