@@ -215,15 +215,26 @@ jobs:
       uses-crds: true
     secrets: inherit
 
-  metallb:
-    name: MetalLB
+  metallb-rq:
+    name: MetalLB - Rosequartz
     needs: [setup, rosequartz]
     if: fromJson(needs.setup.outputs.metallb) && !failure() && !cancelled()
-    concurrency: metallb-${{ github.ref }}
+    concurrency: RQ-metallb-${{ github.ref }}
     uses: ./.github/workflows/deploy.yml
     with:
       project: metallb
       stack: rosequartz
+    secrets: inherit
+
+  metallb-pd:
+    name: MetalLB - PInk Diamond
+    needs: [setup, pinkdiamond]
+    if: fromJson(needs.setup.outputs.metallb) && !failure() && !cancelled()
+    concurrency: pd-metallb-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: metallb
+      stack: pinkdiamond
     secrets: inherit
 
   cloudflared:

@@ -3,6 +3,7 @@ set -eu
 
 exitCode=0
 namespace="metallb-system"
+root="$(git rev-parse --show-toplevel)/apps/metallb"
 
 echo -e "Running metallb tests\n"
 
@@ -22,25 +23,27 @@ else
     exitCode=1
 fi
 
-echo "Verifying sidero IPs..."
-actual="$(kubectl get IPAddressPool sidero -n "$namespace" -o jsonpath='{.spec.addresses[0]}')"
-expected='192.168.1.98/32'
+echo "Verifying IPAddressPool..."
+name="$(pulumi -C "$root" stack output poolName)"
+actual="$(kubectl get IPAddressPool "$name" -n "$namespace" -o jsonpath='{.spec.addresses[0]}')"
+expected="$(pulumi -C "$root" stack output addresses)"
 if [ "$actual" == "$expected" ]; then
-    echo -e "✅ Sidero IPAddressPool had expected IP addresses!\n"
+    echo -e "✅ IPAddressPool had expected IP addresses!\n"
 else
-    echo "❌ Sidero IPAddressPool did not have expected IP addresses!"
+    echo "❌ IPAddressPool did not have expected IP addresses!"
     echo "Expected: $expected"
     echo -e "Actual:   $actual\n"
     exitCode=1
 fi
 
-echo "Verifying sidero L2 advertisement..."
-actual="$(kubectl get L2Advertisement sidero -n "$namespace" -o jsonpath='{.spec.ipAddressPools[0]}')"
-expected='sidero'
+echo "Verifying L2Advertisement..."
+name="$(pulumi -C "$root" stack output advertisementName)"
+actual="$(kubectl get L2Advertisement "$name" -n "$namespace" -o jsonpath='{.spec.ipAddressPools[0]}')"
+expected="$(pulumi -C "$root" stack output poolName)"
 if [ "$actual" == "$expected" ]; then
-    echo -e "✅ Sidero L2Advertisement had expected IP pools!\n"
+    echo -e "✅ L2Advertisement had expected IP pools!\n"
 else
-    echo "❌ Sidero L2Advertisement did not have expected IP pools!"
+    echo "❌ L2Advertisement did not have expected IP pools!"
     echo "Expected: $expected"
     echo -e "Actual:   $actual\n"
     exitCode=1
