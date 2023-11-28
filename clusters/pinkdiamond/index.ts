@@ -110,6 +110,7 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
             allowedKubernetesNamespaces: [
               'kube-system',
               'qemu-guest-agent',
+              'internal-ingress',
             ],
           },
         },
