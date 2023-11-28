@@ -80,11 +80,13 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
                 enforce: 'baseline',
                 'enforce-version': 'latest',
                 warn: 'restricted',
+                'warn-version': 'latest',
               },
               exemptions: {
                 namespaces: [
                   'ceph-system',
                   'kube-vip',
+                  'qemu-guest-agent',
                 ],
               },
             },
@@ -101,7 +103,17 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
             'rotate-server-certificates': true,
           },
         },
-      }
+        features: {
+          kubernetesTalosAPIAccess: {
+            enabled: true,
+            allowedRoles: ['os:admin'],
+            allowedKubernetesNamespaces: [
+              'kube-system',
+              'qemu-guest-agent',
+            ],
+          },
+        },
+      },
     }),
   ],
 });
