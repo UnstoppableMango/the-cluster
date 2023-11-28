@@ -1,4 +1,4 @@
 config:
   thecluster-pulumi-operator:stack:
-    commit: 7ccfdd85f3e02d1ae51a4765d365b4f080e86682 # renovate depName=UnstoppableMango/the-cluster tag=2.0.3 extractVersion=^pinkdiamond\/v(?<version>.+)
+    commit: 597203ec622c325d856b5d171ea20b11cca51fb5 # renovate depName=UnstoppableMango/the-cluster tag=2.0.4 extractVersion=^pinkdiamond\/v(?<version>.+)
     name: pinkdiamond
