@@ -5,7 +5,7 @@ import { versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('internal-ingress', {
   metadata: { name: 'internal-ingress' },
-});
+}, { provider });
 
 export const ingressClass = 'nginx';
 
@@ -26,9 +26,6 @@ const internal = new charts.NginxIngress('internal', {
       ingressClass: {
         name: ingressClass,
         setAsDefaultIngress: false, // Consider in the future
-      },
-      service: {
-        loadBalancerIp: '192.168.1.80',
       },
       nginxplus: false,
       enableCustomResources: true,
