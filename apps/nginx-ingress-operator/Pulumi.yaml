@@ -1,0 +1,7 @@
+name: thecluster-nginx-ingress-operator
+runtime: nodejs
+description: Nginx Ingress Operator install for THECLUSTER
+config:
+  versions:
+    value:
+      nginxIngressHelmOperator: v1.4.1
