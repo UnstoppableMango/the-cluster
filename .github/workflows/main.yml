@@ -39,6 +39,7 @@ jobs:
       ceph-csi: ${{ steps.stacks.outputs.ceph-csi }}
       keycloak: ${{ steps.stacks.outputs.keycloak }}
       kube-vip: ${{ steps.stacks.outputs.kube-vip }}
+      qemu-guest-agent-talos: ${{ steps.stacks.outputs.qemu-guest-agent-talos }}
 
   dns:
     name: DNS Infrastructure
@@ -302,6 +303,18 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     with:
       project: kube-vip
+      stack: pinkdiamond
+      verify: false
+    secrets: inherit
+
+  qemu-guest-agent-talos:
+    name: Qemu Guest Agent Talos
+    needs: [setup, pinkdiamond]
+    if: fromJson(needs.setup.outputs.qemu-guest-agent-talos) && !failure() && !cancelled()
+    concurrency: qemu-guest-agent-talos-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: qemu-guest-agent-talos
       stack: pinkdiamond
       verify: false
     secrets: inherit

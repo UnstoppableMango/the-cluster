@@ -38,6 +38,9 @@ function newNode(type: string): (data: Node, i: number) => pve.vm.VirtualMachine
       fileFormat: 'raw',
     },
     onBoot: true,
+    agent: {
+      enabled: true,
+    },
     cpu: {
       // https://www.talos.dev/v1.5/talos-guides/install/virtualized-platforms/proxmox/#create-vms
       type: 'host',
