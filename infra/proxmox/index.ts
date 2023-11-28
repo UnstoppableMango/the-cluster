@@ -24,6 +24,10 @@ const talosIso = new pve.storage.File(`talos${suffix}`, {
 
 export const controlPlanes = controlPlaneConfig.map(newNode('c'));
 export const workers = workerConfig.map(newNode('w'));
+export const interfaces = pulumi.all([
+  ...controlPlanes.map(x => x.networkInterfaceNames),
+  ...workers.map(x => x.networkInterfaceNames),
+]);
 
 function newNode(type: string): (data: Node, i: number) => pve.vm.VirtualMachine {
   return (data, i) => new pve.vm.VirtualMachine(`px${type}k8s${i}${suffix}`, {

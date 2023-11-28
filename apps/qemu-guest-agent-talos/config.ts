@@ -1,7 +1,8 @@
 import { Config } from '@pulumi/pulumi';
 
 export interface Versions {
-  'qemu-guest-agent-talos': string;
+  customImage: string;
+  qemuGuestAgentTalos: string;
 }
 
 const config = new Config();

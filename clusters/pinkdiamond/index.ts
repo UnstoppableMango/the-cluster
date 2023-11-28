@@ -103,13 +103,15 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
             'rotate-server-certificates': true,
           },
         },
-        kubernetesTalosAPIAccess: {
-          enabled: true,
-          allowedRoles: ['os:admin'],
-          allowedKubernetesNamespaces: [
-            'kube-system',
-            'qemu-guest-agent',
-          ],
+        features: {
+          kubernetesTalosAPIAccess: {
+            enabled: true,
+            allowedRoles: ['os:admin'],
+            allowedKubernetesNamespaces: [
+              'kube-system',
+              'qemu-guest-agent',
+            ],
+          },
         },
       },
     }),

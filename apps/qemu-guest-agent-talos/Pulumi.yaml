@@ -4,4 +4,5 @@ description: Qemu Guest Agent Talos install for THECLUSTER
 config:
   versions:
     value:
-      qemu-guest-agent-talos: v0.1.0 # renovate depName=crisobal/qemu-guest-agent-talos
+      qemuGuestAgentTalos: v0.1.0 # renovate depName=crisobal/qemu-guest-agent-talos
+      customImage: sha-01c21a1
