@@ -295,18 +295,6 @@ jobs:
       stack: pinkdiamond
     secrets: inherit
 
-  kube-vip:
-    name: Kube VIP
-    needs: [setup, pinkdiamond]
-    if: fromJson(needs.setup.outputs.kube-vip) && !failure() && !cancelled()
-    concurrency: kube-vip-${{ github.ref }}
-    uses: ./.github/workflows/deploy.yml
-    with:
-      project: kube-vip
-      stack: pinkdiamond
-      verify: false
-    secrets: inherit
-
   qemu-guest-agent-talos:
     name: Qemu Guest Agent Talos
     needs: [setup, pinkdiamond]
