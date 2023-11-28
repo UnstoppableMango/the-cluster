@@ -4,4 +4,4 @@ description: Nginx Ingress install for THECLUSTER
 config:
   versions:
     value:
-      nginxIngress: v3.3.2 # renovate depName=nginxinc/kubernetes-ingress
+      nginxIngress: 3.3.2 # renovate depName=nginxinc/kubernetes-ingress extractVersion=^v(?<version>.*)

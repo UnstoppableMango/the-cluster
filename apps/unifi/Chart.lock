@@ -1,0 +1,6 @@
+dependencies:
+- name: unifi
+  repository: https://charts.truecharts.org
+  version: 17.0.1
+digest: sha256:eeb9bb79debae86ed57d92483371f03956903282c7054d40cf94d9de90551754
+generated: "2023-11-28T00:16:26.896660468-06:00"
