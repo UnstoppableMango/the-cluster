@@ -84,6 +84,7 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
               exemptions: {
                 namespaces: [
                   'ceph-system',
+                  'kube-vip',
                 ],
               },
             },

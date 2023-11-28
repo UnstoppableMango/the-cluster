@@ -38,6 +38,7 @@ jobs:
       oauth2-proxy: ${{ steps.stacks.outputs.oauth2-proxy }}
       ceph-csi: ${{ steps.stacks.outputs.ceph-csi }}
       keycloak: ${{ steps.stacks.outputs.keycloak }}
+      kube-vip: ${{ steps.stacks.outputs.kube-vip }}
 
   dns:
     name: DNS Infrastructure
@@ -291,4 +292,16 @@ jobs:
     with:
       project: keycloak
       stack: pinkdiamond
+    secrets: inherit
+
+  kube-vip:
+    name: Kube VIP
+    needs: [setup, pinkdiamond]
+    if: fromJson(needs.setup.outputs.kube-vip) && !failure() && !cancelled()
+    concurrency: kube-vip-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: kube-vip
+      stack: pinkdiamond
+      verify: false
     secrets: inherit
