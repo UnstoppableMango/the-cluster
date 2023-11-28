@@ -333,7 +333,7 @@ jobs:
     secrets: inherit
 
   internal-nginx-ingress:
-    name: Keycloak
+    name: Internal Nginx Ingress
     needs: [setup, pinkdiamond, crds-pd, nginx-ingress-operator]
     if: fromJson(needs.setup.outputs.nginx-ingress) && !failure() && !cancelled()
     concurrency: nginx-ingress-${{ github.ref }}
