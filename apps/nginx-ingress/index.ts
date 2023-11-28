@@ -1,4 +1,3 @@
-import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as charts from '@pulumi/crds/charts/v1alpha1/nginxIngress';
 import { provider } from './clusters';

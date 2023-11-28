@@ -40,6 +40,8 @@ jobs:
       keycloak: ${{ steps.stacks.outputs.keycloak }}
       kube-vip: ${{ steps.stacks.outputs.kube-vip }}
       qemu-guest-agent-talos: ${{ steps.stacks.outputs.qemu-guest-agent-talos }}
+      nginx-ingress: ${{ steps.stacks.outputs.nginx-ingress }}
+      nginx-ingress-operator: ${{ steps.stacks.outputs.nginx-ingress-operator }}
 
   dns:
     name: DNS Infrastructure
@@ -316,4 +318,29 @@ jobs:
       project: qemu-guest-agent-talos
       stack: pinkdiamond
       verify: false
+    secrets: inherit
+
+  nginx-ingress-operator:
+    name: Nginx Ingress Operator
+    needs: [setup, pinkdiamond, metallb-pd]
+    if: fromJson(needs.setup.outputs.nginx-ingress-operator) && !failure() && !cancelled()
+    concurrency: nginx-ingress-operator-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: nginx-ingress-operator
+      stack: pinkdiamond
+      verify: false
+    secrets: inherit
+
+  internal-nginx-ingress:
+    name: Keycloak
+    needs: [setup, pinkdiamond, nginx-ingress-operator]
+    if: fromJson(needs.setup.outputs.nginx-ingress) && !failure() && !cancelled()
+    concurrency: nginx-ingress-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: nginx-ingress
+      stack: pinkdiamond-internal
+      verify: false
+      uses-crds: true
     secrets: inherit
