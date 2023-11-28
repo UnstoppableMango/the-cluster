@@ -221,7 +221,7 @@ jobs:
     name: MetalLB - Rosequartz
     needs: [setup, rosequartz]
     if: fromJson(needs.setup.outputs.metallb) && !failure() && !cancelled()
-    concurrency: RQ-metallb-${{ github.ref }}
+    concurrency: rq-metallb-${{ github.ref }}
     uses: ./.github/workflows/deploy.yml
     with:
       project: metallb
