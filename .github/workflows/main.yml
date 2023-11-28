@@ -334,7 +334,7 @@ jobs:
 
   internal-nginx-ingress:
     name: Keycloak
-    needs: [setup, pinkdiamond, nginx-ingress-operator]
+    needs: [setup, pinkdiamond, crds-pd, nginx-ingress-operator]
     if: fromJson(needs.setup.outputs.nginx-ingress) && !failure() && !cancelled()
     concurrency: nginx-ingress-${{ github.ref }}
     uses: ./.github/workflows/deploy.yml
