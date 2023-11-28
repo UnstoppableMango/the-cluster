@@ -332,15 +332,15 @@ jobs:
       verify: false
     secrets: inherit
 
-  internal-nginx-ingress:
-    name: Internal Nginx Ingress
+  nginx-ingress:
+    name: Nginx Ingress
     needs: [setup, pinkdiamond, crds-pd, nginx-ingress-operator]
     if: fromJson(needs.setup.outputs.nginx-ingress) && !failure() && !cancelled()
     concurrency: nginx-ingress-${{ github.ref }}
     uses: ./.github/workflows/deploy.yml
     with:
       project: nginx-ingress
-      stack: pinkdiamond-internal
+      stack: pinkdiamond
       verify: false
       uses-crds: true
     secrets: inherit
