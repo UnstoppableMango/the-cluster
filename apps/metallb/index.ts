@@ -50,7 +50,14 @@ if (stack === 'rosequartz') {
         namespaces: ['sidero-system'],
       },
     },
-  }, { provider, dependsOn: chart.ready });
+  }, {
+    provider, dependsOn: chart.ready,
+    // Would be nice to find a way to ignore just the aggregated manager role rules, not all rules
+    ignoreChanges: [
+      'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
+      'rules', // Aggregated ClusterRole will get rules filled in by controlplane
+    ],
+  });
 
   advertisement = new k8s.apiextensions.CustomResource('primary', {
     apiVersion: 'metallb.io/v1beta1',
@@ -62,7 +69,14 @@ if (stack === 'rosequartz') {
     spec: {
       ipAddressPools: [pool.metadata.name],
     },
-  }, { provider, dependsOn: chart.ready });
+  }, {
+    provider, dependsOn: chart.ready,
+    // Would be nice to find a way to ignore just the aggregated manager role rules, not all rules
+    ignoreChanges: [
+      'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
+      'rules', // Aggregated ClusterRole will get rules filled in by controlplane
+    ],
+  });
 }
 
 if (stack === 'pinkdiamond') {
@@ -79,7 +93,14 @@ if (stack === 'pinkdiamond') {
       autoAssign: true,
       avoidBuggyIPs: true,
     },
-  }, { provider, dependsOn: chart.ready });
+  }, {
+    provider, dependsOn: chart.ready,
+    // Would be nice to find a way to ignore just the aggregated manager role rules, not all rules
+    ignoreChanges: [
+      'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
+      'rules', // Aggregated ClusterRole will get rules filled in by controlplane
+    ],
+  });
 
   advertisement = new k8s.apiextensions.CustomResource('advertisement', {
     apiVersion: 'metallb.io/v1beta1',
@@ -91,7 +112,14 @@ if (stack === 'pinkdiamond') {
     spec: {
       ipAddressPools: [pool.metadata.name],
     },
-  }, { provider, dependsOn: chart.ready });
+  }, {
+    provider, dependsOn: chart.ready,
+    // Would be nice to find a way to ignore just the aggregated manager role rules, not all rules
+    ignoreChanges: [
+      'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
+      'rules', // Aggregated ClusterRole will get rules filled in by controlplane
+    ],
+  });
 }
 
 export const poolName = pool?.metadata.name
