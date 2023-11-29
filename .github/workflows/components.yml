@@ -1,4 +1,4 @@
-name: THECLUSTER Components
+name: Components
 
 on:
   pull_request:
