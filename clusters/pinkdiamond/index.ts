@@ -67,7 +67,7 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
       cluster: {
         apiServer: {
           certSANs: certSans,
-          disablePodSecurityPolicy: true, // So we can exempt ceph
+          disablePodSecurityPolicy: true, // So we can exempt things
           admissionControl: [{
             // https://www.talos.dev/v1.5/reference/configuration/#apiserverconfig
             name: 'PodSecurity',
@@ -140,7 +140,10 @@ const workerConfig = talos.machine.getConfigurationOutput({
             'rotate-server-certificates': true,
           },
         },
-      }
+        nodeLabels: {
+          'thecluster.io/qemu-agent': true,
+        },
+      },
     }),
   ],
 });

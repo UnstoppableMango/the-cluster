@@ -9,5 +9,8 @@ const resources = new k8s.yaml.ConfigGroup('qemu-guest-agent-talos', {
     if (obj.kind !== 'DaemonSet' && obj.metadata.name !== 'qemu-ga-talos') return;
 
     obj.spec.template.spec.containers[0].image = `ghcr.io/unstoppablemango/qemu-guest-agent-talos:${versions.customImage}`;
+    obj.spec.template.spec.nodeSelector = {
+      'thecluster.io/qemu-agent': 'true',
+    };
   }],
 }, { provider });
