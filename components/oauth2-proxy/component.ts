@@ -1,4 +1,4 @@
-import { ComponentResource, ComponentResourceOptions, Input, Inputs } from '@pulumi/pulumi';
+import { ComponentResource, ComponentResourceOptions, Input, Inputs, interpolate, output } from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 
 export interface Values {
@@ -42,7 +42,10 @@ export interface Values {
   }>[]>;
   containerPort?: Input<number>;
   extraArgs?: Inputs;
-  extraEnv?: Input<Inputs[]>;
+  extraEnv?: Input<Input<{
+    name: Input<string>;
+    value: Input<string>;
+  }>[]>;
   customLabels?: Inputs;
   authenticatedEmailsFile?: Input<{
     enabled?: Input<boolean>;
@@ -83,6 +86,7 @@ export interface Values {
       }>;
     }>[]>;
     labels?: Inputs;
+    annotations?: Inputs;
     tls?: Input<Input<{
       secretName: Input<string>;
       hosts: Input<Input<string>[]>;
@@ -108,7 +112,7 @@ export interface Values {
   tolerations?: Input<Inputs[]>;
   nodeSelector?: Inputs;
   proxyVarsAsSecrets?: Input<boolean>;
-  replicaCount: Input<number>;
+  replicaCount?: Input<number>;
   httpScheme?: Input<'http' | 'https'>;
   initContainers?: Input<{
     waitForRedis?: Input<{
@@ -157,8 +161,15 @@ export interface Values {
 }
 
 export interface Oauth2ProxyArgs {
-  redirectUrl: Input<string>;
+  namespace?: Input<string>;
+  redirectUrl?: Input<string>;
+  version?: Input<string>;
   values?: Input<Values>;
+  transformations?: k8s.helm.v3.ChartOpts['transformations'];
+  realm: Input<string>;
+  hostname: Input<string>;
+  clientId: Input<string>;
+  clientSecret: Input<string>;
 }
 
 export class Oauth2Proxy extends ComponentResource {
@@ -167,14 +178,56 @@ export class Oauth2Proxy extends ComponentResource {
   constructor(name: string, args: Oauth2ProxyArgs, opts?: ComponentResourceOptions) {
     super('thecluster:index:Oauth2Proxy', name, args, opts);
 
-    this.chart = new k8s.helm.v3.Chart(name, {
-      chart: '',
-      values: args.values,
+    const values = output(args.values).apply((x): Values => ({
+      ...x,
+      config: {
+        ...x?.config,
+        clientID: args.clientId,
+        clientSecret: args.clientSecret,
+      },
+      extraEnv: [
+        ...(x?.extraEnv ?? []),
+        { name: 'OAUTH2_PROXY_PROVIDER', value: 'keycloak-oidc' },
+        { name: 'OAUTH2_PROXY_REDIRECT_URL', value: interpolate`https://${args.hostname}/oauth2/callback` },
+        { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: interpolate`https://auth2.thecluster.io/realms/${args.realm}` },
+        // { name: 'OAUTH2_PROXY_CODE_CHALLENGE_METHOD', value: 'S256' },
+        // { name: 'OAUTH2_PROXY_HTTP_ADDRESS', value: '0.0.0.0:4180' },
+        { name: 'QAUTH2_PROXY_ERRORS_TO_INFO_LOG', value: 'true' },
+      ],
+      ingress: {
+        ...x?.ingress,
+        enabled: true,
+        className: x?.ingress?.className ?? 'cloudflare-ingress',
+        path: 'Prefix',
+        hosts: output(args.values).apply(x => x?.ingress?.hosts ?? [args.hostname]),
+        annotations: {
+          'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
+
+          // * Ingress .status.loadBalancer field was not updated with a hostname/IP address.
+          // for more information about this error, see https://pulumi.io/xdv72s
+          // https://github.com/pulumi/pulumi-kubernetes/issues/1812
+          // https://github.com/pulumi/pulumi-kubernetes/issues/1810
+          'pulumi.com/skipAwait': 'true',
+        },
+      },
+    }));
+
+    const chart = new k8s.helm.v3.Chart(name, {
+      repo: 'https://oauth2-proxy.github.io/manifests',
+      chart: 'oauth2-proxy',
+      namespace: args.namespace,
+      version: args.version,
+      values,
+      transformations: args.transformations,
     }, {
       parent: this,
     });
 
-    this.registerOutputs();
+    this.chart = chart;
+
+    this.registerOutputs({
+      chart,
+    });
   }
 
 }
