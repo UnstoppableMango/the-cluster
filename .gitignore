@@ -8,6 +8,7 @@ clusters/*/charts/
 bin/
 obj
 *.raw
+build/
 
 # IDE Configuration
 .vscode/
