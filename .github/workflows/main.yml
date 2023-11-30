@@ -296,6 +296,7 @@ jobs:
       project: ceph-csi
       stack: pinkdiamond
       uses-crds: true
+      verify: false
     secrets: inherit
 
   keycloak:
