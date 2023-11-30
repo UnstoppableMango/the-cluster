@@ -5,7 +5,6 @@ import { provider } from './clusters';
 import { github, hosts } from './config';
 import { ingressClass } from './apps/cloudflare-ingress';
 import { hostname, realm, provider as keycloakProvider } from './apps/keycloak';
-import { GitHub } from './types';
 import { host as dashHost } from './apps/dashboard';
 
 const ns = new k8s.core.v1.Namespace('oauth2-proxy', {
@@ -30,9 +29,6 @@ const client = new keycloak.openid.Client('client', {
 // https://registry.terraform.io/providers/mrparkers/keycloak/latest/docs/resources/generic_protocol_mapper
 // https://www.pulumi.com/registry/packages/keycloak/api-docs/genericprotocolmapper/
 
-const provider = new k8s.Provider(cluster, {
-  kubeconfig: stackRef.requireOutput('kubeconfig'),
-});
 // const scope = keycloak.openid.getClientScopeOutput({
 //   realmId: realm,
 //   name: pulumi.interpolate`${client.clientId}-dedicated`.apply(x => { console.log(x); return x; }),
