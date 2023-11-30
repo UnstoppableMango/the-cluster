@@ -288,13 +288,14 @@ jobs:
 
   ceph-csi:
     name: Ceph CSI
-    needs: [setup, pinkdiamond]
+    needs: [setup, pinkdiamond, crds-pd]
     if: fromJson(needs.setup.outputs.ceph-csi) && !failure() && !cancelled()
     concurrency: ceph-csi-${{ github.ref }}
     uses: ./.github/workflows/deploy.yml
     with:
       project: ceph-csi
       stack: pinkdiamond
+      uses-crds: true
     secrets: inherit
 
   keycloak:

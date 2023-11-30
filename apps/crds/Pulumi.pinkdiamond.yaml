@@ -2,3 +2,4 @@ config:
   thecluster-crds:enabled:
     - certManager
     - pulumiOperator
+    - externalSnapshotter

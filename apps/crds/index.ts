@@ -1,11 +1,7 @@
-import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as path from 'path';
-import { Versions } from './types';
-
-const config = new pulumi.Config();
-const enabled = config.requireObject<string[]>('enabled');
-const versions = config.requireObject<Versions>('versions');
+import { provider } from './clusters';
+import { enabled, versions } from './config';
 
 const paths: string[] = [];
 
@@ -40,9 +36,16 @@ if (enabled.includes('cacppt')) {
   paths.push(path.join('manifests', 'talos-control-plane', 'output.yaml'));
 }
 
+if (enabled.includes('externalSnapshotter')) {
+  new k8s.kustomize.Directory('external-snapshotter', {
+    directory: `https://github.com/kubernetes-csi/external-snapshotter/tree/${versions.externalSnapshotter}/client/config/crd`,
+  }, { provider });
+}
+
 const manifests = new k8s.yaml.ConfigGroup('crds', {
   files: paths,
 }, {
+  provider,
   ignoreChanges: [
     'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
   ],

@@ -1,6 +1,10 @@
 import { Config } from '@pulumi/pulumi';
 import { CsiConfig, Rbd, CephFS } from './types';
 
+export interface Versions {
+  externalSnapshotter: string;
+}
+
 const config = new Config();
 export const clusterId = 'f0f64d5b-8883-4b81-8603-680073516d79';
 
@@ -14,3 +18,4 @@ export const csi: CsiConfig = [{
 
 export const rbd = config.requireObject<Rbd>('rbd');
 export const cephfs = config.requireObject<CephFS>('cephfs');
+export const versions = config.requireObject<Versions>('versions');
