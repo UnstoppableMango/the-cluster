@@ -83,6 +83,7 @@ const chart = new k8s.helm.v3.Chart('keycloak', {
   },
 }, { provider });
 
+export { hostname }
 export const password = adminPassword.result;
 export const dbAdminPassword = postgresAdminPassword.result;
 export const dbPassword = postgresPassword.result;
@@ -125,6 +126,8 @@ const googleIdp = new keycloak.oidc.GoogleIdentityProvider('google', {
   trustEmail: true,
   syncMode: 'IMPORT',
 }, { provider: keycloakProvider });
+
+export const realm = externalRealm.realm;
 
 const clusterRealm = new keycloak.Realm('cluster', {
   realm: 'cluster',
