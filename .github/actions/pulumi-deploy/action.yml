@@ -89,6 +89,7 @@ runs:
         command: ${{ inputs.op }}
         work-dir: ${{ inputs.kind }}/${{ inputs.project }}
         comment-on-pr: true
+        refresh: true
       env:
         KUBECONFIG: ${{ steps.setup.outputs.kubeconfig }}
 
