@@ -26,8 +26,8 @@ const postgresPassword = new random.RandomPassword('postgres', {
   special: false,
 });
 
-const chart = new k8s.helm.v3.Chart('keycloak', {
-  path: './',
+const chart = new k8s.helm.v3.Release('keycloak', {
+  chart: './',
   namespace: ns.metadata.name,
   // https://github.com/bitnami/charts/tree/main/bitnami/keycloak/#parameters
   values: {
@@ -93,7 +93,7 @@ const keycloakProvider = new keycloak.Provider(cluster, {
   username: 'admin',
   password: adminPassword.result,
   clientId: 'admin-cli',
-}, { dependsOn: chart.ready });
+}, { dependsOn: chart });
 
 const externalRealm = new keycloak.Realm('external', {
   realm: 'external',

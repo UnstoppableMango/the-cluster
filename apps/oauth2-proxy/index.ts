@@ -2,7 +2,7 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as keycloak from '@pulumi/keycloak';
 import { provider } from './clusters';
-import { github, hosts } from './config';
+import { hosts } from './config';
 import { ingressClass } from './apps/cloudflare-ingress';
 import { hostname, realm, provider as keycloakProvider } from './apps/keycloak';
 import { host as dashHost } from './apps/dashboard';
@@ -20,7 +20,7 @@ const client = new keycloak.openid.Client('client', {
   standardFlowEnabled: true,
   directAccessGrantsEnabled: false,
   validRedirectUris: [
-    pulumi.interpolate`https://${hostname}/oauth2/callback`,
+    pulumi.interpolate`https://dashboard.thecluster.io/oauth2/callback`,
   ],
 }, { provider: keycloakProvider });
 
@@ -51,22 +51,20 @@ const client = new keycloak.openid.Client('client', {
 //   protocolMapper: pulumi.interpolate`aud-${client.clientId}`,
 // }, { provider: keycloakProvider });
 
-// const mapper = new keycloak.openid.AudienceProtocolMapper('oauth2-proxy', {
-//   realmId: realm,
-//   name: pulumi.interpolate`aud-mapper-${client.clientId}`,
-//   // clientScopeId: scope.id,
-//   clientId: client.clientId,
-//   includedClientAudience: client.clientId,
-//   addToIdToken: true,
-//   addToAccessToken: true,
-// }, { provider: keycloakProvider });
+const mapper = new keycloak.openid.AudienceProtocolMapper('oauth2-proxy', {
+  realmId: realm,
+  name: pulumi.interpolate`aud-mapper-${client.clientId}`,
+  clientId: client.id,
+  includedClientAudience: client.clientId,
+  addToIdToken: true,
+  addToAccessToken: true,
+}, { provider: keycloakProvider });
 
-const chart = new k8s.helm.v3.Chart('github', {
+const chart = new k8s.helm.v3.Chart('dashboard', {
   path: './',
   namespace: ns.metadata.name,
   values: {
     'oauth2-proxy': {
-      replicaCount: 2,
       config: {
         clientID: client.clientId,
         clientSecret: client.clientSecret,
@@ -75,11 +73,11 @@ const chart = new k8s.helm.v3.Chart('github', {
         { name: 'OAUTH2_PROXY_PROVIDER', value: 'keycloak-oidc' },
         { name: 'OAUTH2_PROXY_UPSTREAMS', value: dashHost },
         // { name: 'OAUTH2_PROXY_PROVIDER', value: 'oidc' },
-        { name: 'OAUTH2_PROXY_REDIRECT_URL', value: pulumi.interpolate`https://auth2.thecluster.io/oauth2/callback` },
-        { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: pulumi.interpolate`https://auth2.thecluster.io/realms/${realm}` },
-        // { name: 'OAUTH2_PROXY_CODE_CHALLENGE_METHOD', value: 'S256' },
+        { name: 'OAUTH2_PROXY_REDIRECT_URL', value: pulumi.interpolate`https://dashboard.thecluster.io/oauth2/callback` },
+        { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: pulumi.interpolate`https://${hostname}/realms/${realm}` },
+        { name: 'OAUTH2_PROXY_CODE_CHALLENGE_METHOD', value: 'S256' },
         // { name: 'OAUTH2_PROXY_HTTP_ADDRESS', value: '0.0.0.0:4180' },
-        { name: 'QAUTH2_PROXY_ERRORS_TO_INFO_LOG', value: '' },
+        { name: 'QAUTH2_PROXY_ERRORS_TO_INFO_LOG', value: 'true' },
       ],
       ingress: {
         enabled: true,
@@ -102,3 +100,4 @@ const chart = new k8s.helm.v3.Chart('github', {
 
 export const clientId = client.clientId;
 export const clientSecret = pulumi.secret(client.clientSecret);
+export const validRedirectUris = client.validRedirectUris;
