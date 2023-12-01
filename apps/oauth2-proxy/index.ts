@@ -7,9 +7,9 @@ import { ingressClass } from './apps/cloudflare-ingress';
 import { hostname, realm, provider as keycloakProvider } from './apps/keycloak';
 import { host as dashHost } from './apps/dashboard';
 
-const ns = new k8s.core.v1.Namespace('oauth2-proxy', {
-  metadata: { name: 'oauth2-proxy' },
-}, { provider });
+// const ns = new k8s.core.v1.Namespace('oauth2-proxy', {
+//   metadata: { name: 'oauth2-proxy' },
+// }, { provider });
 
 const client = new keycloak.openid.Client('client', {
   realmId: realm,
@@ -62,7 +62,7 @@ const mapper = new keycloak.openid.AudienceProtocolMapper('oauth2-proxy', {
 
 const chart = new k8s.helm.v3.Chart('dashboard', {
   path: './',
-  namespace: ns.metadata.name,
+  namespace: 'dashboard',
   values: {
     'oauth2-proxy': {
       config: {
