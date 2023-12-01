@@ -1,0 +1,3 @@
+config:
+  thecluster-dashboard:hosts:
+    - dashboard.thecluster.io
