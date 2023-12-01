@@ -23,6 +23,11 @@ const chart = new k8s.helm.v3.Release('dashboard', {
           pathType: 'Prefix',
           issuer: { scope: 'disabled' },
           // paths: { web: '/*' },
+          paths: { api: '/api/*' },
+          annotations: {
+            'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
+            'cloudflare-tunnel-ingress-controller.strrl.dev/ssl-verify': 'false',
+          },
         },
         settings: {
           global: {
@@ -40,7 +45,7 @@ const chart = new k8s.helm.v3.Release('dashboard', {
       },
     },
   },
-}, { provider });
+}, { provider, ignoreChanges: ['checksum'] });
 
 export const namespace = ns.metadata.name;
 export const service = 'dashboard-kubernetes-dashboard-web';
