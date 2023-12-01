@@ -23,7 +23,11 @@ const chart = new k8s.helm.v3.Release('dashboard', {
           pathType: 'Prefix',
           issuer: { scope: 'disabled' },
           // paths: { web: '/*' },
-          paths: { api: '/api/*' },
+          // paths: { api: '/api/*' },
+          // paths: {
+          //   web: '/*',
+          //   api: '/api/*',
+          // },
           annotations: {
             'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
             'cloudflare-tunnel-ingress-controller.strrl.dev/ssl-verify': 'false',
@@ -41,7 +45,13 @@ const chart = new k8s.helm.v3.Release('dashboard', {
         },
       },
       api: {
-        args: ['--enable-skip-login'],
+        image: { tag: 'latest' },
+        containers: {
+          args: ['--enable-skip-login'],
+        },
+      },
+      web: {
+        image: { tag: 'latest' },
       },
     },
   },
