@@ -1,7 +1,8 @@
 import * as k8s from '@pulumi/kubernetes';
 import { provider } from './clusters';
 import { hosts } from './config';
-import { ingressClass } from './apps/cloudflare-ingress';
+import { nginxClass } from './apps/nginx-ingress';
+import { cfClass } from './apps/cloudflare-ingress';
 
 const ns = new k8s.core.v1.Namespace('dashboard', {
   metadata: { name: 'dashboard' },
@@ -19,18 +20,21 @@ const chart = new k8s.helm.v3.Release('dashboard', {
       app: {
         ingress: {
           hosts,
-          ingressClassName: ingressClass,
-          pathType: 'Prefix',
-          issuer: { scope: 'disabled' },
+          ingressClassName: nginxClass,
+          // pathType: 'Prefix',
+          // issuer: { scope: 'disabled' },
           // paths: { web: '/*' },
           // paths: { api: '/api/*' },
           // paths: {
           //   web: '/*',
           //   api: '/api/*',
           // },
+          // annotations: {
+          //   'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
+          //   'cloudflare-tunnel-ingress-controller.strrl.dev/ssl-verify': 'false',
+          // },
           annotations: {
-            'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
-            'cloudflare-tunnel-ingress-controller.strrl.dev/ssl-verify': 'false',
+            'nginx.ingress.kubernetes.io/ssl-redirect': 'true',
           },
         },
         settings: {
@@ -44,15 +48,15 @@ const chart = new k8s.helm.v3.Release('dashboard', {
           },
         },
       },
-      api: {
-        image: { tag: 'latest' },
-        containers: {
-          args: ['--enable-skip-login'],
-        },
-      },
-      web: {
-        image: { tag: 'latest' },
-      },
+      // api: {
+      //   image: { tag: 'latest' },
+      //   containers: {
+      //     args: ['--enable-skip-login'],
+      //   },
+      // },
+      // web: {
+      //   image: { tag: 'latest' },
+      // },
     },
   },
 }, { provider, ignoreChanges: ['checksum'] });
