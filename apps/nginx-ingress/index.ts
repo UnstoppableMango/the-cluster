@@ -1,18 +1,16 @@
 import * as k8s from '@pulumi/kubernetes';
-import * as charts from '@pulumi/crds/charts/v1alpha1/nginxIngress';
+import * as nginx from '@pulumi/crds/charts/v1alpha1/nginxIngress';
 import { provider } from './clusters';
 import { versions } from './config';
 
-const ns = new k8s.core.v1.Namespace('internal-ingress', {
+const internalNs = new k8s.core.v1.Namespace('internal-ingress', {
   metadata: { name: 'internal-ingress' },
 }, { provider });
 
-export const ingressClass = 'nginx';
-
-const internal = new charts.NginxIngress('internal', {
+const internal = new nginx.NginxIngress('internal', {
   metadata: {
     name: 'internal',
-    namespace: ns.metadata.name,
+    namespace: internalNs.metadata.name,
   },
   spec: {
     controller: {
@@ -24,7 +22,7 @@ const internal = new charts.NginxIngress('internal', {
       name: 'internal-nginx',
       kind: 'daemonset',
       ingressClass: {
-        name: ingressClass,
+        name: 'nginx',
         setAsDefaultIngress: false, // Consider in the future
       },
       nginxplus: false,
@@ -36,3 +34,40 @@ const internal = new charts.NginxIngress('internal', {
     },
   },
 }, { provider });
+
+const clusterNs = new k8s.core.v1.Namespace('cluster-ingress', {
+  metadata: { name: 'cluster-ingress' },
+}, { provider });
+
+const cluster = new nginx.NginxIngress('cluster', {
+  metadata: {
+    name: 'cluster',
+    namespace: clusterNs.metadata.name,
+  },
+  spec: {
+    controller: {
+      image: {
+        pullPolicy: 'IfNotPresent',
+        repository: 'nginx/nginx-ingress',
+        tag: `${versions.nginxIngress}-ubi`,
+      },
+      name: 'cluster-nginx',
+      kind: 'daemonset',
+      ingressClass: {
+        name: 'cluster-nginx',
+      },
+      nginxplus: false,
+      enableCustomResources: true,
+      enableCertManager: true,
+      healthStatus: true,
+      hostnetwork: false,
+      enableSnippets: true,
+      service: {
+        type: 'ClusterIP',
+      },
+    },
+  },
+}, { provider });
+
+export const internalClass = internal.spec.apply(x => x?.controller.ingressClass.name);
+export const clusterClass = cluster.spec.apply(x => x?.controller.ingressClass.name);
