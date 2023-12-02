@@ -10,6 +10,7 @@ jobs:
   rosequartz:
     name: Rosequartz
     runs-on: ubuntu-latest
+    if: false
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       STACK: rq-${{ github.run_id }}-${{ github.run_attempt }}
