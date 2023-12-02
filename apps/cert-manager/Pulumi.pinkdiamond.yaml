@@ -1,2 +1,3 @@
 config:
-  thecluster-cert-manager:useStackRef: "true"
+  cloudflare:apiToken:
+    secure: AAABAMbpSYuQVOio8vT1o07qF3uzpN2lph6DauY4E4eER6tfr9NRId/sil51c6qsp8TZKVgBMXaohQaLg5XrGDOrEttPKNY4
