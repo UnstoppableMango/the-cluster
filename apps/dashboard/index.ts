@@ -48,12 +48,12 @@ const chart = new k8s.helm.v3.Release('dashboard', {
           },
         },
       },
-      // api: {
-      //   image: { tag: 'latest' },
-      //   containers: {
-      //     args: ['--enable-skip-login'],
-      //   },
-      // },
+      api: {
+        // image: { tag: 'latest' },
+        containers: {
+          args: ['--enable-skip-login'],
+        },
+      },
       // web: {
       //   image: { tag: 'latest' },
       // },
