@@ -3,6 +3,7 @@ import { provider } from './clusters';
 import { hosts } from './config';
 import { nginxClass } from './apps/nginx-ingress';
 import { cfClass } from './apps/cloudflare-ingress';
+import { issuer } from './apps/cert-manager';
 
 const ns = new k8s.core.v1.Namespace('dashboard', {
   metadata: { name: 'dashboard' },
@@ -22,7 +23,11 @@ const chart = new k8s.helm.v3.Release('dashboard', {
           hosts,
           ingressClassName: nginxClass,
           // pathType: 'Prefix',
-          // issuer: { scope: 'disabled' },
+          issuer: {
+            name: issuer,
+            scope: 'cluster',
+            // scope: 'disabled',
+          },
           // paths: { web: '/*' },
           // paths: { api: '/api/*' },
           // paths: {
