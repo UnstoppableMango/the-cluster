@@ -1,6 +1,7 @@
 import * as k8s from '@pulumi/kubernetes';
 import { provider } from './clusters';
 import { ingressClass } from './apps/nginx-ingress';
+import { issuer } from './apps/cert-manager';
 
 const ns = new k8s.core.v1.Namespace('unifi', {
   metadata: { name: 'unifi' },
@@ -24,6 +25,11 @@ const ingress = new k8s.networking.v1.Ingress('unifi', {
   metadata: {
     name: 'unifi',
     namespace: ns.metadata.name,
+    annotations: {
+      'pulumi.com/skipAwait': 'true',
+      'cert-manager.io/cluster-issuer': issuer,
+      // 'nginx.ingress.kubernetes.io/backend-protocol': 'HTTPS',
+    },
   },
   spec: {
     ingressClassName: ingressClass,
@@ -44,5 +50,9 @@ const ingress = new k8s.networking.v1.Ingress('unifi', {
         }],
       },
     }],
+    tls: [{
+      hosts: ['unifi.thecluster.io'],
+      secretName: 'unifi-tls',
+    }],
   },
-});
+}, { provider });
