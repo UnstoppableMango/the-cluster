@@ -1,88 +1,65 @@
-import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
-import { Buffer } from 'buffer';
-
-const config = new pulumi.Config();
+import { provider } from './clusters';
+import { hosts } from './config';
+import { nginxClass } from './apps/nginx-ingress';
+import { cfClass } from './apps/cloudflare-ingress';
 
 const ns = new k8s.core.v1.Namespace('dashboard', {
   metadata: { name: 'dashboard' },
-});
+}, { provider });
 
-const serviceAccount = new k8s.core.v1.ServiceAccount('admin', {
-  metadata: {
-    name: 'admin',
-    namespace: ns.metadata.name,
-  },
-});
-
-const chart = new k8s.helm.v3.Chart('dashboard', {
-  path: './',
+const chart = new k8s.helm.v3.Release('dashboard', {
+  name: 'dashboard',
+  chart: './',
   namespace: ns.metadata.name,
   values: {
     'kubernetes-dashboard': {
-      // v3 config
-      // nginx: { enabled: false },
-      // 'cert-manager': { enabled: false },
-      serviceAccount: {
-        create: false,
-        name: serviceAccount.metadata.name,
-      },
-      ingress: {
-        enabled: true,
-        className: 'cloudflare-tunnel',
-        hosts: [`${config.require('subdomain')}.thecluster.io`],
-        customPaths: [{
-          pathType: 'Prefix',
-          path: '/*',
-          backend: {
-            service: {
-              name: 'dashboard-kubernetes-dashboard',
-              port: {
-                number: 443,
-              },
-            },
+      nginx: { enabled: false },
+      'cert-manager': { enabled: false },
+      'metrics-server': { enabled: false },
+      app: {
+        ingress: {
+          hosts,
+          ingressClassName: nginxClass,
+          // pathType: 'Prefix',
+          // issuer: { scope: 'disabled' },
+          // paths: { web: '/*' },
+          // paths: { api: '/api/*' },
+          // paths: {
+          //   web: '/*',
+          //   api: '/api/*',
+          // },
+          // annotations: {
+          //   'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
+          //   'cloudflare-tunnel-ingress-controller.strrl.dev/ssl-verify': 'false',
+          // },
+          annotations: {
+            'nginx.ingress.kubernetes.io/ssl-redirect': 'true',
           },
-        }],
-        annotations: {
-          // https://github.com/STRRL/cloudflare-tunnel-ingress-controller/issues/11#issuecomment-1614542508
-          'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'https',
-          'cloudflare-tunnel-ingress-controller.strrl.dev/proxy-ssl-verify': 'off',
-
-          // * Ingress .status.loadBalancer field was not updated with a hostname/IP address.
-          // for more information about this error, see https://pulumi.io/xdv72s
-          // https://github.com/pulumi/pulumi-kubernetes/issues/1812
-          // https://github.com/pulumi/pulumi-kubernetes/issues/1810
-          'pulumi.com/skipAwait': 'true',
+        },
+        settings: {
+          global: {
+            clusterName: 'THECLUSTER',
+            // Default values: https://github.com/kubernetes/dashboard/blob/fdc83e5623f44fe52c5c94d245fd490a0b94a60d/charts/helm-chart/kubernetes-dashboard/values.yaml#L60
+            itemsPerPage: 10,
+            logsAutoRefreshTimeInterval: 5,
+            resourceAutoRefreshTimeInterval: 5,
+            disableAccessDeniedNotifications: false,
+          },
         },
       },
+      api: {
+        // image: { tag: 'latest' },
+        containers: {
+          args: ['--enable-skip-login'],
+        },
+      },
+      // web: {
+      //   image: { tag: 'latest' },
+      // },
     },
   },
-});
+}, { provider, ignoreChanges: ['checksum'] });
 
-const adminSecret = new k8s.core.v1.Secret('ui-token', {
-  metadata: {
-    name: 'ui-token',
-    namespace: ns.metadata.name,
-    annotations: {
-      'kubernetes.io/service-account.name': serviceAccount.metadata.name,
-    }
-  },
-  type: 'kubernetes.io/service-account-token',
-}, { dependsOn: chart.ready });
-
-const clusterRoleBinding = new k8s.rbac.v1.ClusterRoleBinding('admin', {
-  metadata: { name: 'dashboard-admin' },
-  roleRef: {
-    apiGroup: 'rbac.authorization.k8s.io',
-    kind: 'ClusterRole',
-    name: 'cluster-admin',
-  },
-  subjects: [{
-    kind: 'ServiceAccount',
-    name: serviceAccount.metadata.name,
-    namespace: ns.metadata.name,
-  }],
-});
-
-const btoa = (x: string) => Buffer.from(x, 'base64').toString('binary');
-export const uiToken = adminSecret.data['token'].apply(btoa);
+export const namespace = ns.metadata.name;
+export const service = 'dashboard-kubernetes-dashboard-web';

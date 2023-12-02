@@ -345,3 +345,15 @@ jobs:
       verify: false
       uses-crds: true
     secrets: inherit
+
+  dashboard:
+    name: Dashboard
+    needs: [setup, pinkdiamond, nginx-ingress]
+    if: fromJson(needs.setup.outputs.dashboard) && !failure() && !cancelled()
+    concurrency: dashboard-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: dashboard
+      stack: pinkdiamond
+      verify: false
+    secrets: inherit
