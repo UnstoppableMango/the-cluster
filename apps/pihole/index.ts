@@ -42,6 +42,7 @@ const chart = new k8s.helm.v3.Chart('pihole', {
         enabled: true,
         strict: false,
       },
+      priorityClassName: 'system-node-critical',
       image: { tag: versions.docker, },
       // Consider DNS over HTTPS
       ingress: {
