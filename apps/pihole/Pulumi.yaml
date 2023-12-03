@@ -1,0 +1,3 @@
+name: thecluster-pihole
+runtime: nodejs
+description: Pi-hole install for THECLUSTER
