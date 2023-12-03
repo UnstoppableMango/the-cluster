@@ -1,5 +1,7 @@
+import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
+import * as pihole from '@unmango/pulumi-pihole';
 import { provider } from './clusters';
 import { ip } from './config';
 import { pool } from './apps/metallb';
@@ -27,56 +29,72 @@ const chart = new k8s.helm.v3.Chart('pihole', {
   namespace: ns.metadata.name,
   // https://artifacthub.io/packages/helm/mojo2600/pihole#values
   values: {
-    DNS1: '1.1.1.1',
-    DNS2: '1.0.0.1',
-    admin: {
-      existingSecret: adminPasswordSecret.metadata.name,
-      passwordKey: 'adminPassword',
-    },
-    aniaff: {
-      enabled: true,
-      strict: false,
-    },
-    // Consider DNS over HTTPS
-    ingress: {
-      enabled: false, // We'll turn this on when we get oauth figured out
-    },
-    persistentVolumeClaim: {
-      enabled: true,
-    },
-    podDnsConfig: {
-      enabled: true,
-      policy: 'None',
-      nameservers: [
-        '127.0.0.1',
-        '1.1.1.1',
-      ],
-    },
-    serviceWeb: {
-      type: 'LoadBalancer',
-      loadBalancerIP: ip,
-      annotations: {
-        'metallb.universe.tf/allow-shared-ip': 'pihole-svc',
-        'metallb.universe.tf/address-pool': pool,
+    pihole: {
+      DNS1: '1.1.1.1',
+      DNS2: '1.0.0.1',
+      admin: {
+        existingSecret: adminPasswordSecret.metadata.name,
+        passwordKey: 'adminPassword',
       },
-    },
-    serviceDns: {
-      type: 'LoadBalancer',
-      loadBalancerIP: ip,
-      annotations: {
-        'metallb.universe.tf/allow-shared-ip': 'pihole-svc',
-        'metallb.universe.tf/address-pool': pool,
+      aniaff: {
+        enabled: true,
+        strict: false,
       },
-    },
-    serviceDhcp: {
-      type: 'LoadBalancer',
-      loadBalancerIP: ip,
-      annotations: {
-        'metallb.universe.tf/allow-shared-ip': 'pihole-svc',
-        'metallb.universe.tf/address-pool': pool,
+      // Consider DNS over HTTPS
+      ingress: {
+        enabled: false, // We'll turn this on when we get oauth figured out
+      },
+      persistentVolumeClaim: {
+        enabled: true,
+      },
+      podDnsConfig: {
+        enabled: true,
+        policy: 'None',
+        nameservers: [
+          '127.0.0.1',
+          '1.1.1.1',
+        ],
+      },
+      replicaCount: 3,
+      serviceDhcp: {
+        type: 'LoadBalancer',
+        loadBalancerIP: ip,
+        annotations: {
+          'metallb.universe.tf/allow-shared-ip': 'pihole-svc',
+          'metallb.universe.tf/address-pool': pool,
+        },
+      },
+      serviceDns: {
+        type: 'LoadBalancer',
+        loadBalancerIP: ip,
+        annotations: {
+          'metallb.universe.tf/allow-shared-ip': 'pihole-svc',
+          'metallb.universe.tf/address-pool': pool,
+        },
+      },
+      serviceWeb: {
+        type: 'LoadBalancer',
+        loadBalancerIP: ip,
+        annotations: {
+          'metallb.universe.tf/allow-shared-ip': 'pihole-svc',
+          'metallb.universe.tf/address-pool': pool,
+        },
       },
     },
   },
 }, { provider });
 
 export { ip };
+export const password = adminPassword.result;
+
+const piholeProvider = new pihole.Provider('pihole', {
+  url: pulumi.interpolate`http://${ip}`,
+  password,
+}, { dependsOn: chart.ready });
+
+const piholeRecord = new pihole.DnsRecord('pihole', {
+  domain: 'pihole.thecluster.lan',
+  ip,
+}, { provider: piholeProvider });
+
+export const domain = piholeRecord.domain;
