@@ -3,7 +3,7 @@ import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
 import * as pihole from '@unmango/pulumi-pihole';
 import { provider } from './clusters';
-import { ip } from './config';
+import { ip, versions } from './config';
 import { pool } from './apps/metallb';
 
 const ns = new k8s.core.v1.Namespace('pihole', {
@@ -40,12 +40,10 @@ const chart = new k8s.helm.v3.Chart('pihole', {
         enabled: true,
         strict: false,
       },
+      image: { tag: versions.docker, },
       // Consider DNS over HTTPS
       ingress: {
         enabled: false, // We'll turn this on when we get oauth figured out
-      },
-      persistentVolumeClaim: {
-        enabled: true,
       },
       podDnsConfig: {
         enabled: true,
@@ -87,6 +85,8 @@ const chart = new k8s.helm.v3.Chart('pihole', {
 export { ip };
 export const password = adminPassword.result;
 
+const deployment = chart.getResource('apps/v1/Deployment', 'pihole');
+
 const piholeProvider = new pihole.Provider('pihole', {
   url: pulumi.interpolate`http://${ip}`,
   password,
@@ -95,6 +95,6 @@ const piholeProvider = new pihole.Provider('pihole', {
 const piholeRecord = new pihole.DnsRecord('pihole', {
   domain: 'pihole.thecluster.lan',
   ip,
-}, { provider: piholeProvider });
+}, { provider: piholeProvider, dependsOn: deployment });
 
 export const domain = piholeRecord.domain;
