@@ -6,3 +6,4 @@ const ref = new StackReference('metallb', {
 });
 
 export const loadBalancerClass = ref.requireOutput('loadBalancerClass');
+export const pool = ref.requireOutput('poolName');
