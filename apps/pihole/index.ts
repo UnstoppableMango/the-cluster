@@ -13,7 +13,7 @@ const ns = new k8s.core.v1.Namespace('pihole', {
 }, { provider });
 
 const adminPassword = new random.RandomPassword('admin', {
-  length: 20,
+  length: 32,
 });
 
 const adminPasswordSecret = new k8s.core.v1.Secret('pihole', {
