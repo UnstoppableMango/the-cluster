@@ -23,7 +23,14 @@ const chart = new k8s.helm.v3.Chart('metallb', {
     metallb: {
       // The CRDs are templated and a pain to install other ways
       crds: { enabled: true },
-      loadBalancerClass,
+      // Doesn't like to assign IPs the normal way whe LB class is enabled
+      // loadBalancerClass,
+      controller: {
+        priorityClassName: 'system-cluster-critical',
+      },
+      speaker: {
+        priorityClassName: 'system-cluster-critical',
+      },
     },
   },
 }, { provider });
@@ -124,4 +131,6 @@ if (stack === 'pinkdiamond') {
 
 export const poolName = pool?.metadata.name
 export const advertisementName = advertisement?.metadata.name;
-export { loadBalancerClass, addresses };
+// Disabling loadBalancerClass for now
+// export { loadBalancerClass, addresses };
+export { addresses };

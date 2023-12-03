@@ -42,6 +42,7 @@ jobs:
       qemu-guest-agent-talos: ${{ steps.stacks.outputs.qemu-guest-agent-talos }}
       nginx-ingress: ${{ steps.stacks.outputs.nginx-ingress }}
       nginx-ingress-operator: ${{ steps.stacks.outputs.nginx-ingress-operator }}
+      pihole: ${{ steps.stacks.outputs.pihole }}
 
   dns:
     name: DNS Infrastructure
@@ -356,6 +357,18 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     with:
       project: dashboard
+      stack: pinkdiamond
+      verify: false
+    secrets: inherit
+
+  pihole:
+    name: Pi-hole
+    needs: [setup, pinkdiamond, metallb-pd]
+    if: fromJson(needs.setup.outputs.pihole) && !failure() && !cancelled()
+    concurrency: pihole-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: pihole
       stack: pinkdiamond
       verify: false
     secrets: inherit

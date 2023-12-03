@@ -2,8 +2,8 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as nginx from '@pulumi/crds/charts/v1alpha1/nginxIngress';
 import { provider } from './clusters';
-import { loadBalancerClass } from './apps/metallb';
-import { versions } from './config';
+import { loadBalancerClass, pool } from './apps/metallb';
+import { ip, versions } from './config';
 
 const internalNs = new k8s.core.v1.Namespace('internal-ingress', {
   metadata: { name: 'internal-ingress' },
@@ -33,42 +33,16 @@ const internal = new nginx.NginxIngress('internal', {
       healthStatus: true,
       hostnetwork: false,
       enableSnippets: true,
-      service: { create: false },
+      service: {
+        type: 'LoadBalancer',
+        loadBalancerIP: ip,
+        annotations: {
+          'metallb.universe.tf/address-pool': pool,
+        },
+      },
     },
   },
 }, { provider });
-
-const internalSvc = new k8s.core.v1.Service('internal', {
-  metadata: {
-    name: pulumi.interpolate`${internal.metadata.apply(x => x?.name)}-nginx-ingress-controller`,
-    namespace: internalNs.metadata.name,
-  },
-  spec: {
-    loadBalancerClass: loadBalancerClass,
-    // Copied from the template
-    type: 'LoadBalancer',
-    selector: {
-      'app.kubernetes.io/name': 'nginx-ingress',
-      'app.kubernetes.io/instance': 'internal',
-    },
-    allocateLoadBalancerNodePorts: true,
-    externalTrafficPolicy: 'Local',
-    ports: [
-      {
-        name: 'http',
-        protocol: 'TCP',
-        port: 80,
-        targetPort: 80,
-      },
-      {
-        name: 'https',
-        protocol: 'TCP',
-        port: 443,
-        targetPort: 443,
-      },
-    ],
-  },
-}, { provider, dependsOn: internal });
 
 const clusterNs = new k8s.core.v1.Namespace('cluster-ingress', {
   metadata: { name: 'cluster-ingress' },
