@@ -5,4 +5,4 @@ const ref = new StackReference('ceph-csi', {
   name: `UnstoppableMango/thecluster-ceph-csi/${cluster}`,
 });
 
-export const storageClass = ref.requireOutput('cephfsClass');
+export const storageClass = ref.requireOutput('rbdClass');

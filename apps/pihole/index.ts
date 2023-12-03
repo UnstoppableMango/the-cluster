@@ -3,7 +3,7 @@ import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
 import * as pihole from '@unmango/pulumi-pihole';
 import { provider } from './clusters';
-import { ip, versions } from './config';
+import { hostname, ip, versions } from './config';
 import { pool } from './apps/metallb';
 import { ingressClass } from './apps/cloudflare-ingress';
 import { storageClass } from './apps/ceph-csi';
@@ -47,7 +47,7 @@ const chart = new k8s.helm.v3.Chart('pihole', {
       ingress: {
         enabled: true,
         ingressClassName: ingressClass,
-        hosts: ['pihole.thecluster.io'],
+        hosts: [hostname],
         annotations: {
           'pulumi.com/skipAwait': 'true',
         },
@@ -55,7 +55,7 @@ const chart = new k8s.helm.v3.Chart('pihole', {
       persistentVolumeClaim: {
         enabled: true,
         storageClass,
-        accessModes: ['ReadWriteMany'],
+        accessModes: ['ReadWriteOnce'],
       },
       podDnsConfig: {
         enabled: true,
@@ -100,13 +100,13 @@ const chart = new k8s.helm.v3.Chart('pihole', {
   }],
 }, { provider });
 
-export { ip };
+export { ip, hostname };
 export const password = adminPassword.result;
 
 const deployment = chart.getResource('apps/v1/Deployment', 'pihole');
 
 const piholeProvider = new pihole.Provider('pihole', {
-  url: pulumi.interpolate`http://${ip}`,
+  url: pulumi.interpolate`https://${hostname}`,
   password,
 }, { dependsOn: chart.ready });
 
@@ -114,15 +114,5 @@ const piholeRecord = new pihole.DnsRecord('pihole', {
   domain: 'pihole.thecluster.lan',
   ip,
 }, { provider: piholeProvider, dependsOn: deployment });
-
-const adBlocker = new pihole.AdBlockerStatus('status', {
-  enabled: true,
-}, { provider: piholeProvider });
-
-const relaxedGroup = new pihole.Group('relaxed', {
-  name: 'relaxed',
-  description: 'A group for clients with more rleaxed allow/deny rules',
-  enabled: true,
-}, { provider: piholeProvider });
 
 export const domain = piholeRecord.domain;
