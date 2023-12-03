@@ -6,6 +6,7 @@ import { provider } from './clusters';
 import { ip, versions } from './config';
 import { pool } from './apps/metallb';
 import { ingressClass } from './apps/cloudflare-ingress';
+import { storageClass } from './apps/ceph-csi';
 
 const ns = new k8s.core.v1.Namespace('pihole', {
   metadata: { name: 'pihole' },
@@ -50,6 +51,11 @@ const chart = new k8s.helm.v3.Chart('pihole', {
         annotations: {
           'pulumi.com/skipAwait': 'true',
         },
+      },
+      persistentVolumeClaim: {
+        enabled: true,
+        storageClass,
+        accessModes: ['ReadWriteMany'],
       },
       podDnsConfig: {
         enabled: true,
