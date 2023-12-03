@@ -5,6 +5,7 @@ import * as pihole from '@unmango/pulumi-pihole';
 import { provider } from './clusters';
 import { ip, versions } from './config';
 import { pool } from './apps/metallb';
+import { ingressClass } from './apps/cloudflare-ingress';
 
 const ns = new k8s.core.v1.Namespace('pihole', {
   metadata: { name: 'pihole' },
@@ -43,7 +44,12 @@ const chart = new k8s.helm.v3.Chart('pihole', {
       image: { tag: versions.docker, },
       // Consider DNS over HTTPS
       ingress: {
-        enabled: false, // We'll turn this on when we get oauth figured out
+        enabled: true,
+        ingressClassName: ingressClass,
+        hosts: ['pihole.thecluster.io'],
+        annotations: {
+          'pulumi.com/skipAwait': 'true',
+        },
       },
       podDnsConfig: {
         enabled: true,
@@ -53,7 +59,8 @@ const chart = new k8s.helm.v3.Chart('pihole', {
           '1.1.1.1',
         ],
       },
-      replicaCount: 3,
+      // Pi-hole doesn't seem to HA well with the default config
+      // replicaCount: 3,
       serviceDhcp: {
         type: 'LoadBalancer',
         loadBalancerIP: ip,
@@ -80,6 +87,11 @@ const chart = new k8s.helm.v3.Chart('pihole', {
       },
     },
   },
+  transformations: [(obj: any, opts: pulumi.CustomResourceOptions) => {
+    if (obj.kind !== 'Ingress') return;
+
+    obj.spec.rules[0].http.paths[0].pathType = 'Prefix';
+  }],
 }, { provider });
 
 export { ip };
@@ -96,5 +108,15 @@ const piholeRecord = new pihole.DnsRecord('pihole', {
   domain: 'pihole.thecluster.lan',
   ip,
 }, { provider: piholeProvider, dependsOn: deployment });
+
+const adBlocker = new pihole.AdBlockerStatus('status', {
+  enabled: true,
+}, { provider: piholeProvider });
+
+const relaxedGroup = new pihole.Group('relaxed', {
+  name: 'relaxed',
+  description: 'A group for clients with more rleaxed allow/deny rules',
+  enabled: true,
+}, { provider: piholeProvider });
 
 export const domain = piholeRecord.domain;
