@@ -28,7 +28,7 @@ const ingress = new k8s.networking.v1.Ingress('unifi', {
     namespace: ns.metadata.name,
     annotations: {
       'pulumi.com/skipAwait': 'true',
-      'cert-manager.io/issuer': 'self-signed',
+      // 'cert-manager.io/issuer': 'selfsigned',
     },
   },
   spec: {
