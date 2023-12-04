@@ -279,17 +279,6 @@ jobs:
       stack: pinkdiamond
     secrets: inherit
 
-  oauth2-proxy:
-    name: OAuth2 Proxy
-    needs: [setup, pinkdiamond, cloudflare-ingress]
-    if: fromJson(needs.setup.outputs.oauth2-proxy) && !failure() && !cancelled()
-    concurrency: oauth2-proxy-${{ github.ref }}
-    uses: ./.github/workflows/deploy.yml
-    with:
-      project: oauth2-proxy
-      stack: pinkdiamond
-    secrets: inherit
-
   ceph-csi:
     name: Ceph CSI
     needs: [setup, pinkdiamond, crds-pd]
