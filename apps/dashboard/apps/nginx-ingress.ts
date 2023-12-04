@@ -6,3 +6,4 @@ const ref = new StackReference('cloudflare-ingress', {
 });
 
 export const nginxClass = ref.requireOutput('internalClass');
+export const ip = ref.requireOutput('ip');

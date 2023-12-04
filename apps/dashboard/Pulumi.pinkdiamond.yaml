@@ -1,3 +1,5 @@
 config:
   thecluster-dashboard:hosts:
     - dashboard.thecluster.io
+  thecluster-dashboard:internalHost: dashboard.thecluster.lan
+  thecluster-dashboard:publicHost: dashboard.thecluster.io
