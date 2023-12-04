@@ -1,15 +1,27 @@
 import * as path from 'path';
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
-import { versions } from './config';
-import { loadBalancerClass } from './apps/metallb';
+import { provider } from './clusters';
 
 const bootstrap = new k8s.yaml.ConfigGroup('bootstrap', {
-  files: path.join('manifests', 'output.yaml'),
+  files: [
+    'certificate',
+    'clusterrole',
+    'clusterrolebinding',
+    'deployment',
+    'issuer',
+    'namespace',
+    'role',
+    'rolebinding',
+    'service',
+    'validatingwebhookconfiguration',
+  ].map(x => path.join('manifests', `${x}.yaml`)),
   transformations: [patchControllerManagerPorts],
 }, {
+  provider,
   ignoreChanges: [
-    'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
+    // cert-manager injects `caBundle`s
+    'spec.conversion.webhook.clientConfig.caBundle',
   ],
 });
 
