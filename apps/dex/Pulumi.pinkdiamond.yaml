@@ -1,0 +1,3 @@
+config:
+  thecluster-dex:internalHost: dex.thecluster.lan
+  thecluster-dex:publicHost: dex.thecluster.io
