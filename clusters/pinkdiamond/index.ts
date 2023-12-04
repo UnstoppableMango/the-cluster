@@ -67,6 +67,10 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
       cluster: {
         apiServer: {
           certSANs: certSans,
+          extraArgs: {
+            'oidc-issuer-url': 'https://keycloak.thecluster.io/realms/external',
+            'oidc-client-id': 'dex',
+          },
           disablePodSecurityPolicy: true, // So we can exempt things
           admissionControl: [{
             // https://www.talos.dev/v1.5/reference/configuration/#apiserverconfig

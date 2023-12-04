@@ -43,6 +43,7 @@ jobs:
       nginx-ingress: ${{ steps.stacks.outputs.nginx-ingress }}
       nginx-ingress-operator: ${{ steps.stacks.outputs.nginx-ingress-operator }}
       pihole: ${{ steps.stacks.outputs.pihole }}
+      dex: ${{ steps.stacks.outputs.dex }}
 
   dns:
     name: DNS Infrastructure
@@ -369,6 +370,18 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     with:
       project: pihole
+      stack: pinkdiamond
+      verify: false
+    secrets: inherit
+
+  dex:
+    name: Dex
+    needs: [setup, pinkdiamond, cloudflare-ingress, keycloak]
+    if: fromJson(needs.setup.outputs.dex) && !failure() && !cancelled()
+    concurrency: dex-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: dex
       stack: pinkdiamond
       verify: false
     secrets: inherit
