@@ -16,71 +16,19 @@ if ! command -v kubectl-slice >/dev/null 2>&1; then
     exit 1
 fi
 
-if [ -z "${GITHUB_TOKEN+x}" ]; then
-    echo "It is recommended to set GITHUB_TOKEN to avoid rate limiting"
-    echo "https://cluster-api.sigs.k8s.io/clusterctl/overview.html#avoiding-github-rate-limiting"
-fi
-
-root="$(git rev-parse --show-toplevel)/apps/clusterapi"
-stack="$(pulumi -C "$root" stack --show-name 2>/dev/null || echo "$STACK")"
-manifestDir="$root/manifests/$stack"
-
-if [ -z "$stack" ]; then
-    echo "Please select a stack with \`pulumi stack select\` or set the STACK environment variable"
-    exit 1
-fi
-
-function cleanup() {
-    [ -z "$stack" ] && return 0
-    echo "Switching back to stack $stack..."
-    pulumi -C "$root" stack select "$stack"
-}
-
-trap cleanup EXIT
-pulumi -C "$root" stack select "$stack"
-
-function version() {
-    dep=$1
-    pulumi -C "$root" config get --path "versions.$dep"
-}
-
-coreVersion="$(version "clusterapi")"
-proxmoxVersion="$(version "proxmox")"
-sideroVersion="$(version "sidero")"
-cabptVersion="$(version "cabpt")"
-cacpptVersion="$(version "cacppt")"
+rootDir="$(git rev-parse --show-toplevel)"
+repoDir="$rootDir/apps/cabpt"
+manifestDir="$repoDir/manifests"
+cabptVersion="$(pulumi -C "$repoDir" -s codegen config get --path "versions.cabpt")"
 
 [ -d "$manifestDir" ] && rm -r "$manifestDir"
 mkdir -p "$manifestDir"
 
-function gen() {
-    component=$1
-    module=$2
-    version=$3
-    config="--config $root/clusterctl.yaml"
-    providerName="${module}${component:1}"
-
-    echo "Generating CRDs for $module $version"
-    mkdir -p "$manifestDir/$providerName"
-    "$root/gen/provider.sh" $component $module $version $config ${@:4} \
-        | kubectl slice --exclude-kind CustomResourceDefinition --stdout \
-        > "$manifestDir/$providerName/output.yaml"
-}
-
-export EXP_CLUSTER_RESOURCE_SET=true
-export CLUSTER_TOPOLOGY=true
-sideroEndpoint="$(pulumi -C "$root" config get sideroEndpoint)"
-export SIDERO_CONTROLLER_MANAGER_HOST_NETWORK=false
-export SIDERO_CONTROLLER_MANAGER_DEPLOYMENT_STRATEGY=RollingUpdate
-export SIDERO_CONTROLLER_MANAGER_API_ENDPOINT="$sideroEndpoint"
-export SIDERO_CONTROLLER_MANAGER_SIDEROLINK_ENDPOINT="$sideroEndpoint"
-export SIDERO_CONTROLLER_MANAGER_AUTO_BMC_SETUP=false
-export SIDERO_CONTROLLER_MANAGER_BOOT_FROM_DISK_METHOD='ipxe-sanboot'
-
-"$root/gen/clusterctl-config.sh"
-
-gen --core "cluster-api" $coreVersion
-gen --bootstrap "talos" $cabptVersion
-gen --control-plane "talos" $cacpptVersion
-gen --infrastructure "sidero" $sideroVersion
-gen --infrastructure "proxmox" $proxmoxVersion -n cappx-system
+"$rootDir/gen/capi/provider.sh" \
+    --component bootstrap \
+    --module talos \
+    --version "$cabptVersion" \
+    | kubectl slice \
+    --exclude-kind CustomResourceDefinition \
+    --template '{{.kind | lower}}.yaml' \
+    --output-dir "$manifestDir"
