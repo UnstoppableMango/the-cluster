@@ -1,8 +1,7 @@
-import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as nginx from '@pulumi/crds/charts/v1alpha1/nginxIngress';
 import { provider } from './clusters';
-import { loadBalancerClass, pool } from './apps/metallb';
+import { pool } from './apps/metallb';
 import { ip, versions } from './config';
 
 const internalNs = new k8s.core.v1.Namespace('internal-ingress', {
@@ -80,3 +79,4 @@ const cluster = new nginx.NginxIngress('cluster', {
 
 export const internalClass = internal.spec.apply(x => x?.controller.ingressClass.name);
 export const clusterClass = cluster.spec.apply(x => x?.controller.ingressClass.name);
+export { ip };

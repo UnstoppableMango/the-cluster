@@ -5,4 +5,5 @@ const ref = new StackReference('nginx-ingress', {
   name: `UnstoppableMango/thecluster-nginx-ingress/${cluster}`,
 });
 
-export const ingressClass = ref.requireOutput('ingressClass');
+export const ingressClass = ref.requireOutput('internalClass');
+export const ip = ref.requireOutput('ip');

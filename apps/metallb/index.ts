@@ -18,7 +18,7 @@ const ns = new k8s.core.v1.Namespace('metallb-system', {
 const chart = new k8s.helm.v3.Chart('metallb', {
   path: './',
   namespace: ns.metadata.name,
-  skipCRDRendering: true,
+  skipCRDRendering: false,
   values: {
     metallb: {
       // The CRDs are templated and a pain to install other ways
@@ -131,6 +131,4 @@ if (stack === 'pinkdiamond') {
 
 export const poolName = pool?.metadata.name
 export const advertisementName = advertisement?.metadata.name;
-// Disabling loadBalancerClass for now
-// export { loadBalancerClass, addresses };
-export { addresses };
+export { loadBalancerClass, addresses };
