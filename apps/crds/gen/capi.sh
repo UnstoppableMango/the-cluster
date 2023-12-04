@@ -24,25 +24,10 @@ fi
 repoRoot="$(git rev-parse --show-toplevel)"
 root="$repoRoot/apps/crds"
 manifestDir="$root/manifests"
-oldStack="$(pulumi -C "$root" stack --show-name 2>/dev/null || true)"
-
-function cleanup() {
-    if [ -z "$oldStack" ]; then
-        pulumi -C "$root" stack unselect
-    else
-        echo "Switching back to stack $oldStack..."
-        pulumi -C "$root" stack select "$oldStack"
-    fi
-}
-
-trap cleanup EXIT
-
-echo "Selecting codegen stack..."
-pulumi -C "$root" stack select codegen
 
 function version() {
     dep=$1
-    pulumi -C "$root" config get --path "versions.$dep"
+    pulumi -C "$root" -s codegen config get --path "versions.$dep"
 }
 
 echo "Getting versions..."

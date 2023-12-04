@@ -16,25 +16,13 @@ if [ 0 -ge "$(ls "$root"/manifests/*/output.yaml | wc -l)" ]; then
     exit 1
 fi
 
-oldStack="$(pulumi -C "$root" stack --show-name)"
-
-function cleanup() {
-    echo "Switching back to stack $oldStack..."
-    pulumi -C "$root" stack select "$oldStack"
-}
-
-trap cleanup EXIT
-
-echo "Selecting codegen stack..."
-pulumi -C "$root" stack select codegen
-
 echo "Getting versions..."
-certManagerVersion="$(pulumi -C "$root" config get --path 'versions.certManager')"
-pulumiOperatorVersion="$(pulumi -C "$root" config get --path 'versions.pulumiOperator')"
-nginxIngressOperatorVersion="$(pulumi -C "$root" config get --path 'versions.nginxIngressHelmOperator')"
+certManagerVersion="$(pulumi -C "$root" -s 'codegen' config get --path 'versions.certManager')"
+pulumiOperatorVersion="$(pulumi -C "$root" -s 'codegen' config get --path 'versions.pulumiOperator')"
+nginxIngressOperatorVersion="$(pulumi -C "$root" -s 'codegen' config get --path 'versions.nginxIngressHelmOperator')"
 
 echo "Kustomizing Nginx Ingress Operator..."
-nginxIngressOperatorYaml="$(mktemp /tmp/nginx-ingress-operator-XXXX.yaml)"
+nginxIngressOperatorYaml="$(mktemp /tmp/nginx-ingress-operator.yaml.XXXX)"
 kustomize build "https://github.com/nginxinc/nginx-ingress-helm-operator//config/default/?timeout=120&ref=$nginxIngressOperatorVersion" \
   > "$nginxIngressOperatorYaml"
 echo "$nginxIngressOperatorYaml"
@@ -51,17 +39,17 @@ crd2pulumi --nodejsPath="$libDir" --force \
     "$root"/manifests/*/output.yaml
 
 echo "Fixing quotes..."
-sed -i "s/x-kubernetes-preserve-unknown-fields/'x-kubernetes-preserve-unknown-fields'/" "$libDir/types/input.ts"
-sed -i "s/x-kubernetes-preserve-unknown-fields/'x-kubernetes-preserve-unknown-fields'/" "$libDir/types/output.ts"
-sed -i "s/metadata.omitempty/'metadata.omitempty'/" "$libDir/types/input.ts"
-sed -i "s/metadata.omitempty/'metadata.omitempty'/" "$libDir/types/output.ts"
+sed -i '' "s/x-kubernetes-preserve-unknown-fields/'x-kubernetes-preserve-unknown-fields'/" "$libDir/types/input.ts"
+sed -i '' "s/x-kubernetes-preserve-unknown-fields/'x-kubernetes-preserve-unknown-fields'/" "$libDir/types/output.ts"
+sed -i '' "s/metadata.omitempty/'metadata.omitempty'/" "$libDir/types/input.ts"
+sed -i '' "s/metadata.omitempty/'metadata.omitempty'/" "$libDir/types/output.ts"
 
 function renamePulumi() {
     echo "Fixing $1..."
-    sed -i 's/namespace pulumi/namespace pulumiOperator/' "$1"
-    sed -i 's/pulumi.v1/pulumiOperator.v1/' "$1"
-    sed -i 's/pulumi from ".\/pulumi"/pulumiOperator from ".\/pulumi"/' "$1"
-    sed -i 's/pulumi,/pulumiOperator,/' "$1"
+    sed -i '' 's/namespace pulumi/namespace pulumiOperator/' "$1"
+    sed -i '' 's/pulumi.v1/pulumiOperator.v1/' "$1"
+    sed -i '' 's/pulumi from ".\/pulumi"/pulumiOperator from ".\/pulumi"/' "$1"
+    sed -i '' 's/pulumi,/pulumiOperator,/' "$1"
 }
 
 export -f renamePulumi
