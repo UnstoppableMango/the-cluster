@@ -2,7 +2,6 @@ import * as k8s from '@pulumi/kubernetes';
 import * as pihole from '@unmango/pulumi-pihole';
 import { provider } from './clusters';
 import { ingressClass, ip } from './apps/nginx-ingress';
-import { issuer } from './apps/cert-manager';
 import { provider as piholeProvider } from './apps/pihole';
 
 const ns = new k8s.core.v1.Namespace('unifi', {
@@ -29,8 +28,7 @@ const ingress = new k8s.networking.v1.Ingress('unifi', {
     namespace: ns.metadata.name,
     annotations: {
       'pulumi.com/skipAwait': 'true',
-      'cert-manager.io/cluster-issuer': issuer,
-      // 'nginx.ingress.kubernetes.io/backend-protocol': 'HTTPS',
+      'cert-manager.io/issuer': 'self-signed',
     },
   },
   spec: {
@@ -53,7 +51,7 @@ const ingress = new k8s.networking.v1.Ingress('unifi', {
       },
     }],
     tls: [{
-      hosts: ['unifi.thecluster.io'],
+      hosts: ['unifi.thecluster.lan'],
       secretName: 'unifi-tls',
     }],
   },
