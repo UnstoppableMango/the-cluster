@@ -1,7 +1,7 @@
 import { StackReference } from '@pulumi/pulumi';
 import { cluster } from '../config';
 
-const ref = new StackReference('cloudflare-ingress', {
+const ref = new StackReference('nginx-ingress', {
   name: `UnstoppableMango/thecluster-nginx-ingress/${cluster}`,
 });
 
