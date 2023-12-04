@@ -131,6 +131,4 @@ if (stack === 'pinkdiamond') {
 
 export const poolName = pool?.metadata.name
 export const advertisementName = advertisement?.metadata.name;
-// Disabling loadBalancerClass for now
-// export { loadBalancerClass, addresses };
-export { addresses };
+export { loadBalancerClass, addresses };

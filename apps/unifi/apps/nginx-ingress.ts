@@ -6,3 +6,4 @@ const ref = new StackReference('nginx-ingress', {
 });
 
 export const ingressClass = ref.requireOutput('internalClass');
+export const ip = ref.requireOutput('ip');

@@ -1,7 +1,9 @@
 import * as k8s from '@pulumi/kubernetes';
+import * as pihole from '@unmango/pulumi-pihole';
 import { provider } from './clusters';
-import { ingressClass } from './apps/nginx-ingress';
+import { ingressClass, ip } from './apps/nginx-ingress';
 import { issuer } from './apps/cert-manager';
+import { provider as piholeProvider } from './apps/pihole';
 
 const ns = new k8s.core.v1.Namespace('unifi', {
   metadata: { name: 'unifi' },
@@ -34,7 +36,7 @@ const ingress = new k8s.networking.v1.Ingress('unifi', {
   spec: {
     ingressClassName: ingressClass,
     rules: [{
-      host: 'unifi.thecluster.io',
+      host: 'unifi.thecluster.lan',
       http: {
         paths: [{
           backend: {
@@ -56,3 +58,8 @@ const ingress = new k8s.networking.v1.Ingress('unifi', {
     }],
   },
 }, { provider });
+
+const dnsRecord = new pihole.DnsRecord('unifi', {
+  domain: 'unifi.thecluster.lan',
+  ip,
+}, { provider: piholeProvider });
