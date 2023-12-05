@@ -1,11 +1,10 @@
-import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as keycloak from '@pulumi/keycloak';
 import * as random from '@pulumi/random';
-import { provider } from './clusters';
+import { provider } from '@unmango/thecluster/cluster/from-stack';
+import { rbdStorageClass } from '@unmango/thecluster/apps/ceph-csi';
+import { ingressClass } from '@unmango/thecluster/apps/cloudflare-ingress';
 import { auth, cluster, production, postgres, hostname, github, google } from './config';
-import { rbdStorageClass } from './apps/ceph-csi';
-import { ingressClass } from './apps/cloudflare-ingress';
 
 const ns = new k8s.core.v1.Namespace('keycloak', {
   metadata: { name: 'keycloak' },
@@ -41,18 +40,6 @@ const chart = new k8s.helm.v3.Chart('keycloak', {
       },
       production,
       proxy: 'edge',
-      replicaCount: 2,
-      // TODO: Figure out good values for these
-      // resources: {
-      //   limits: {
-      //     cpu: '',
-      //     mem: '',
-      //   },
-      //   requests: {
-      //     cpu: '',
-      //     mem: '',
-      //   },
-      // },
       ingress: {
         enabled: true,
         ingressClassName: ingressClass,
@@ -69,7 +56,7 @@ const chart = new k8s.helm.v3.Chart('keycloak', {
         },
       },
       pdb: { create: true },
-      autoscaling: { enabled: false }, // One day...
+      autoscaling: { enabled: true },
       postgresql: {
         auth: {
           postgresPassword: postgresAdminPassword.result,

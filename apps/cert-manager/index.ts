@@ -1,14 +1,10 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as cf from '@pulumi/cloudflare';
-import * as acme from '@pulumi/crds/acme/v1';
 import * as cm from '@pulumi/crds/certmanager/v1';
-import { provider } from './clusters';
+import { appendIf, CertManagerOutputs } from '@unmango/thecluster';
+import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { permissionGroups, suffix, zone } from './config';
-
-function appendIf(x: string, o?: string | undefined | null): string {
-  return o ? x + o : x;
-}
 
 const ns = new k8s.core.v1.Namespace('cert-manager', {
   metadata: { name: 'cert-manager' },
@@ -40,6 +36,13 @@ const apiToken = new cf.ApiToken('cert-manager', {
     },
   ],
 });
+
+const selfSignedIssuer = new cm.ClusterIssuer('selfsigned', {
+  metadata: { name: 'selfsigned' },
+  spec: {
+    selfSigned: {},
+  },
+}, { provider });
 
 const tokenSecret = new k8s.core.v1.Secret('cloudflare-api-token', {
   metadata: {
@@ -95,5 +98,11 @@ const cloudflareIssuer = new cm.ClusterIssuer('le-cloudflare', {
   },
 }, { provider });
 
-export const staging = pulumi.output(cloudflareStagingIssuer.metadata).apply(x => x?.name);
-export const prod = pulumi.output(cloudflareIssuer.metadata).apply(x => x?.name);
+export const staging = pulumi.output(cloudflareStagingIssuer.metadata).apply(x => x?.name ?? '');
+export const prod = pulumi.output(cloudflareIssuer.metadata).apply(x => x?.name ?? '');
+
+export const clusterIssuers: CertManagerOutputs['clusterIssuers'] = {
+  staging: pulumi.output(cloudflareStagingIssuer.metadata).apply(x => x?.name ?? ''),
+  prod: pulumi.output(cloudflareIssuer.metadata).apply(x => x?.name ?? ''),
+  selfSigned: pulumi.output(selfSignedIssuer.metadata).apply(x => x?.name ?? ''),
+}
