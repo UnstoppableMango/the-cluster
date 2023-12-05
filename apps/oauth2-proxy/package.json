@@ -2,8 +2,10 @@
     "name": "thecluster-oauth2-proxy",
     "main": "index.ts",
     "dependencies": {
+        "@pulumi/keycloak": "^5.2.1",
         "@pulumi/kubernetes": "^4.5.4",
-        "@pulumi/pulumi": "^3.94.2"
+        "@pulumi/pulumi": "^3.94.2",
+        "@unmango/pulumi-pihole": "^0.1.3"
     },
     "devDependencies": {
         "@types/node": "^20.10.0"
