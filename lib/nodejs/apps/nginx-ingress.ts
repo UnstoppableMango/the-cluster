@@ -6,4 +6,4 @@ const ref = new StackReference('nginx-ingress', {
 });
 
 export const internalClass = ref.requireOutput('internalClass');
-export const clsuterClass = ref.requireOutput('clusterClass');
+export const clusterClass = ref.requireOutput('clusterClass');
