@@ -1,5 +1,5 @@
 import * as k8s from '@pulumi/kubernetes';
-import { provider } from './clusters';
+import { provider } from '@unmango/thecluster/clusters/from-stack';
 import { versions, channel } from './config';
 
 const crds = new k8s.yaml.ConfigFile('gateway-api', {

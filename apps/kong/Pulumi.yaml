@@ -1,0 +1,3 @@
+name: thecluster-kong
+runtime: nodejs
+description: Kong install for THECLUSTER
