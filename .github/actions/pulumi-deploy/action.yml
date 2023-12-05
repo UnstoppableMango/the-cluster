@@ -36,74 +36,83 @@ inputs:
     description: Whether the stack uses the CRDs library.
     required: false
     default: 'false'
+  uses-lib:
+    description: Whether the stack uses the shared library.
+    required: false
+    default: 'true'
   pre-deploy-script:
     description: The path to a script to run before deploying.
     required: false
 runs:
   using: composite
   steps:
-    - name: Validate inputs
-      shell: bash
-      run: |
-        case '${{ inputs.kind }}' in
-          apps | clusters | infra);;
-          *) echo "Invalid kind" && exit 1;;
-        esac
+  - name: Validate inputs
+    shell: bash
+    run: |
+      case '${{ inputs.kind }}' in
+        apps | clusters | infra);;
+        *) echo "Invalid kind" && exit 1;;
+      esac
 
-        case "${{ inputs.op }}" in
-          preview | up);;
-          *) echo "Invalid operation" && exit 1;;
-        esac
+      case "${{ inputs.op }}" in
+        preview | up);;
+        *) echo "Invalid operation" && exit 1;;
+      esac
 
-    - id: setup
-      uses: ./.github/actions/setup-config
-      if: inputs.kind == 'apps'
-      with:
-        cluster: ${{ inputs.stack }}
+  - id: setup
+    uses: ./.github/actions/setup-config
+    if: inputs.kind == 'apps'
+    with:
+      cluster: ${{ inputs.stack }}
 
-    - shell: bash
-      run: npm ci
-      working-directory: ${{ inputs.kind }}/${{ inputs.project }}
+  - shell: bash
+    run: npm ci
+    working-directory: ${{ inputs.kind }}/${{ inputs.project }}
 
-    - if: inputs.uses-crds == 'true'
-      shell: bash
-      run: npm ci
-      working-directory: lib/crds
+  - if: inputs.uses-crds == 'true'
+    shell: bash
+    run: npm ci
+    working-directory: lib/crds
 
-    - shell: bash
-      run: |
-        if [ $(ls -1 Chart.{yml,yaml} 2>/dev/null | wc -l) -gt 0 ]; then
-          helm dependency update
-        fi
-      working-directory: ${{ inputs.kind }}/${{ inputs.project }}
+  - if: inputs.uses-lib == 'true'
+    shell: bash
+    run: npm ci
+    working-directory: lib/nodejs
 
-    - if: inputs.pre-deploy-script != 'true'
-      shell: bash
-      run: ${{ inputs.pre-deploy-script }}
-      working-directory: ${{ inputs.kind }}/${{ inputs.project }}
+  - shell: bash
+    run: |
+      if [ $(ls -1 Chart.{yml,yaml} 2>/dev/null | wc -l) -gt 0 ]; then
+        helm dependency update
+      fi
+    working-directory: ${{ inputs.kind }}/${{ inputs.project }}
 
-    - name: Pulumi ${{ inputs.op }}
-      uses: pulumi/actions@v4
-      with:
-        stack-name: UnstoppableMango/thecluster-${{ inputs.project }}/${{ inputs.stack }}
-        command: ${{ inputs.op }}
-        work-dir: ${{ inputs.kind }}/${{ inputs.project }}
-        comment-on-pr: true
-        refresh: true
-      env:
-        KUBECONFIG: ${{ steps.setup.outputs.kubeconfig }}
+  - if: inputs.pre-deploy-script != 'true'
+    shell: bash
+    run: ${{ inputs.pre-deploy-script }}
+    working-directory: ${{ inputs.kind }}/${{ inputs.project }}
 
-    - name: Validate
-      if: inputs.op == 'up'
-      shell: bash
-      run: |
-        if [ -f "$SCRIPT" ]; then
-          $SCRIPT
-        else
-          echo "No verification script found at $SCRIPT"
-        fi
-      env:
-        KUBECONFIG: ${{ steps.setup.outputs.kubeconfig }}
-        TALOSCONFIG: ${{ steps.setup.outputs.talosconfig }}
-        SCRIPT: ${{ inputs.verify-script }}
-      working-directory: ${{ inputs.kind }}/${{ inputs.project }}
+  - name: Pulumi ${{ inputs.op }}
+    uses: pulumi/actions@v4
+    with:
+      stack-name: UnstoppableMango/thecluster-${{ inputs.project }}/${{ inputs.stack }}
+      command: ${{ inputs.op }}
+      work-dir: ${{ inputs.kind }}/${{ inputs.project }}
+      comment-on-pr: true
+      refresh: true
+    env:
+      KUBECONFIG: ${{ steps.setup.outputs.kubeconfig }}
+
+  - name: Validate
+    if: inputs.op == 'up'
+    shell: bash
+    run: |
+      if [ -f "$SCRIPT" ]; then
+        $SCRIPT
+      else
+        echo "No verification script found at $SCRIPT"
+      fi
+    env:
+      KUBECONFIG: ${{ steps.setup.outputs.kubeconfig }}
+      TALOSCONFIG: ${{ steps.setup.outputs.talosconfig }}
+      SCRIPT: ${{ inputs.verify-script }}
+    working-directory: ${{ inputs.kind }}/${{ inputs.project }}
