@@ -1,20 +1,12 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as cloudflare from '@pulumi/cloudflare';
+import * as pihole from '@unmango/pulumi-pihole';
+import { suffix, zone, fullSslHosts, lanDomains } from './config';
+import { provider as piholeProvider } from './apps/pihole';
 
 function appendIf(x: string, o?: string | undefined | null): string {
   return o ? x + o : x;
 }
-
-const config = new pulumi.Config();
-const suffix = config.get('suffix');
-const fullSslHosts = config.requireObject<string[]>('fullSslHosts');
-
-const zone = cloudflare.getZonesOutput({
-  filter: {
-    accountId: config.require('accountId'),
-    name: 'thecluster.io',
-  },
-}).apply(z => z.zones[0]);
 
 export const ssl = new cloudflare.Ruleset('ssl', {
   name: appendIf('THECLUSTER', suffix),
@@ -30,3 +22,8 @@ export const ssl = new cloudflare.Ruleset('ssl', {
     expression: fullSslHosts.map(x => `(http.host eq "${x}")`).join(' or '),
   }],
 });
+
+const records = lanDomains.map(d => new pihole.DnsRecord(d.name, {
+  domain: d.name,
+  ip: d.ip,
+}, { provider: piholeProvider }));
