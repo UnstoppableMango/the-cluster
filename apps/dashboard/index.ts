@@ -5,12 +5,12 @@ import * as pihole from '@unmango/pulumi-pihole';
 import { provider } from './clusters';
 import { publicHost, internalHost } from './config';
 import { cfClass } from './apps/cloudflare-ingress';
-import { ip } from './apps/nginx-ingress';
+import { ip, nginxClass } from './apps/nginx-ingress';
 import { issuer } from './apps/cert-manager';
 import { hostname as keycloakHost, realm, provider as keycloakProvider } from './apps/keycloak';
 import { provider as piholeProvider } from './apps/pihole';
 
-const host = internalHost;
+const host = publicHost;
 
 const ns = new k8s.core.v1.Namespace('dashboard', {
   metadata: { name: 'dashboard' },
@@ -51,19 +51,13 @@ const chart = new k8s.helm.v3.Release('dashboard', {
       app: {
         ingress: {
           enabled: true,
-          hosts: [host],
-          ingressClassName: cfClass,
+          hosts: [internalHost],
+          ingressClassName: nginxClass,
           // pathType: 'Prefix',
-          issuer: {
-            name: issuer,
-            // scope: 'cluster',
-            scope: 'disabled',
-          },
-          // paths: { web: '/*' },
-          // paths: { api: '/api/*' },
-          // paths: {
-          //   web: '/*',
-          //   api: '/api/*',
+          // issuer: {
+          //   name: issuer,
+          //   // scope: 'cluster',
+          //   scope: 'disabled',
           // },
           // annotations: {
           //   'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
@@ -87,14 +81,10 @@ const chart = new k8s.helm.v3.Release('dashboard', {
         },
       },
       api: {
-        // image: { tag: 'latest' },
         containers: {
           args: ['--enable-skip-login'],
         },
       },
-      // web: {
-      //   image: { tag: 'latest' },
-      // },
     },
     'oauth2-proxy': {
       config: {
@@ -103,7 +93,7 @@ const chart = new k8s.helm.v3.Release('dashboard', {
       },
       extraEnv: [
         { name: 'OAUTH2_PROXY_PROVIDER', value: 'keycloak-oidc' },
-        { name: 'OAUTH2_PROXY_UPSTREAMS', value: `http://dashboard-kubernetes-dashboard-web:8000` },
+        { name: 'OAUTH2_PROXY_UPSTREAMS', value: `http://0.0.0.0:8000` },
         { name: 'OAUTH2_PROXY_REDIRECT_URL', value: pulumi.interpolate`https://${host}/oauth2/callback` },
         { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: pulumi.interpolate`https://${keycloakHost}/realms/${realm}` },
         { name: 'OAUTH2_PROXY_CODE_CHALLENGE_METHOD', value: 'S256' },
@@ -113,18 +103,18 @@ const chart = new k8s.helm.v3.Release('dashboard', {
         { name: 'OAUTH2_PROXY_EMAIL_DOMAINS', value: '*' },
       ],
       ingress: {
-        enabled: false,
+        enabled: true,
         className: cfClass,
-        pathType: 'Prefix',
-        // path: '/oauth2',
-        hosts: [host],
+        // pathType: 'Prefix',
+        // path: '/*',
+        hosts: [publicHost],
         // tls: [{
         //   hosts: [host],
         //   secretName: 'dashboard-tls',
         // }],
         annotations: {
           // 'cert-manager.io/cluster-issuer': issuer,
-          // 'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
+          'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
           // 'pulumi.com/skipAwait': 'true',
         },
       },
