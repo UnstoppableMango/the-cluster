@@ -2,10 +2,10 @@
   "name": "thecluster-clusterapi",
   "main": "index.ts",
   "dependencies": {
-    "@pulumi/kubernetes": "^4.3.0",
-    "@pulumi/pulumi": "^3.0.0"
+    "@pulumi/kubernetes": "^4.5.5",
+    "@pulumi/pulumi": "^3.95.0"
   },
   "devDependencies": {
-    "@types/node": "^20.8.7"
+    "@types/node": "^20.10.3"
   }
 }
