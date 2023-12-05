@@ -1,0 +1,10 @@
+config:
+  thecluster-kong:hostnames:
+    admin: admin.kong.thecluster.lan
+    manager: manager.kong.thecluster.lan
+    portal: kong.thecluster.lan
+    portalapi: api.kong.thecluster.lan
+    proxy: proxy.kong.thecluster.lan
+    status: status.kong.thecluster.lan
+    udpProxy: udpproxy.kong.thecluster.lan
+  thecluster-kong:proxyHostname: proxy.kong.thecluster.lan
