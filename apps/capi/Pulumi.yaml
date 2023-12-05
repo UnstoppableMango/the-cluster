@@ -1,0 +1,7 @@
+name: thecluster-clusterapi
+runtime: nodejs
+description: Cluster API install for THECLUSTER
+config:
+  versions:
+    value:
+      capi: v1.5.3 # renovate depName=kubernetes-sigs/cluster-api

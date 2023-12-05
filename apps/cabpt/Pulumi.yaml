@@ -1,0 +1,7 @@
+name: thecluster-cabpt
+runtime: nodejs
+description: Cluster API Bootstrap Provider Talos install for THECLUSTER
+config:
+  versions:
+    value:
+      cabpt: v0.6.2 # renovate depName=siderolabs/cluster-api-bootstrap-provider-talos

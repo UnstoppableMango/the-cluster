@@ -2,7 +2,8 @@
   "files.associations": {
     "*.{yml,yaml}": "yaml",
     "config": "yaml",
-    "talosconfig": "yaml"
+    "talosconfig": "yaml",
+    "**/versions/**": "yaml"
   },
   "yaml.schemas": {
     "https://json.schemastore.org/github-workflow.json": "file:///**/.github/workflows/*.yml",
