@@ -14,13 +14,13 @@ jobs:
     name: Setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-      - name: Set modified stacks
-        id: stacks
-        uses: ./.github/actions/modified-stacks
+    - name: Set modified stacks
+      id: stacks
+      uses: ./.github/actions/modified-stacks
     outputs:
       rosequartz: ${{ steps.stacks.outputs.rosequartz }}
       pinkdiamond: ${{ steps.stacks.outputs.pinkdiamond }}
@@ -68,20 +68,20 @@ jobs:
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Setup tools
-        uses: ./.github/actions/setup-tools
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Setup tools
+      uses: ./.github/actions/setup-tools
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
 
-      - id: setup-config
-        uses: ./.github/actions/setup-config
-        with:
-          cluster: rosequartz
+    - id: setup-config
+      uses: ./.github/actions/setup-config
+      with:
+        cluster: rosequartz
 
-      - name: Health check
-        run: talosctl health --nodes 192.168.1.101
+    - name: Health check
+      run: talosctl health --nodes 192.168.1.101
 
   pinkdiamond:
     name: Pink Diamond
@@ -94,21 +94,21 @@ jobs:
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Setup tools
-        uses: ./.github/actions/setup-tools
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Setup tools
+      uses: ./.github/actions/setup-tools
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
 
-      - id: setup-config
-        uses: ./.github/actions/setup-config
-        with:
-          cluster: pinkdiamond
+    - id: setup-config
+      uses: ./.github/actions/setup-config
+      with:
+        cluster: pinkdiamond
 
-      - name: Health check
-        if: false # Port-forwarding isn't setup for pinkdiamond
-        run: talosctl health --nodes 192.168.1.104
+    - name: Health check
+      if: false # Port-forwarding isn't setup for pinkdiamond
+      run: talosctl health --nodes 192.168.1.104
 
   crds-rq:
     name: Rosequartz CRDs
@@ -146,6 +146,7 @@ jobs:
       project: cert-manager
       stack: rosequartz
       uses-crds: true
+      uses-lib: true
     secrets: inherit
 
   cert-manager-pd:
@@ -158,6 +159,7 @@ jobs:
       project: cert-manager
       stack: pinkdiamond
       uses-crds: true
+      uses-lib: true
     secrets: inherit
 
   metrics-server-rq:
@@ -289,6 +291,7 @@ jobs:
       project: ceph-csi
       stack: pinkdiamond
       uses-crds: true
+      uses-lib: true
     secrets: inherit
 
   keycloak:
@@ -300,6 +303,7 @@ jobs:
     with:
       project: keycloak
       stack: pinkdiamond
+      uses-lib: true
     secrets: inherit
 
   qemu-guest-agent-talos:
