@@ -5,3 +5,17 @@ config:
     - secure: AAABAI3soldnYfF2THZ4bd1/Gj9y9L0xpL9pg/nkQrZ6bl8tknOMJ5YuXueZwzd6Yg==
     - secure: AAABAFrn4+6RXVDbIwoAFnY9K4O49oogFTQHh3YbN85ucIc8EUn669EQsY5g6Le9
     - secure: AAABADQ+hJKPUcsyKD37av3jitMbNFEEqGjPv9FxxcFE1EmcBnH+NuoDrbh7HRpP
+  thecluster-dns:lanDomains:
+    - ip:
+        secure: AAABANnd+vamxEQfYDUP27C+3PxzjwxssrAo90tr6Vuv1SeKpylQ/tbFcrQ=
+      name:
+        secure: AAABAEdCq0PKc0vwpDX9epD1zUmm15wsL6VGjKYLpj7iFx/X5g==
+    - ip:
+        secure: AAABAHaaVuJlupPh3jGqw9MBCrR3tF6pYVIr5goQ1rqIN82OeMTOHzYMQzR/
+      name:
+        secure: AAABAGkhD2qrHV6xezqoBIenEH0gAlnRSDrI5kgDji1hRw5olEM=
+    - ip:
+        secure: AAABAANQhnAoykQpYhXwU3Sk7D0RnhkoN2FFVjGM8mas6iN7LhDZRGsncqQ=
+      name:
+        secure: AAABAMq5qNTNZcrLzgSImnS7aHhCGwqTfOR/cAMFCAquDMHffCMUhA/HtegGJOBx3O54P/0=
+  thecluster-dns:piholeStack: pinkdiamond
