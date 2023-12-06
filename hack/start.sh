@@ -55,7 +55,7 @@ export RQ_STACK="dev"
 root="$(git rev-parse --show-toplevel)"
 echo "root: $root"
 
-source $root/hack/select-option.sh
+source $root/scripts/util/select-option.sh
 
 start-rosequartz
 deploy-cert-manager
