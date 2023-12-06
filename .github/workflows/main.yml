@@ -44,6 +44,8 @@ jobs:
       nginx-ingress-operator: ${{ steps.stacks.outputs.nginx-ingress-operator }}
       pihole: ${{ steps.stacks.outputs.pihole }}
       dex: ${{ steps.stacks.outputs.dex }}
+      gateway-api: ${{ steps.stacks.outputs.gateway-api }}
+      kong: ${{ steps.stacks.outputs.kong }}
 
   dns:
     name: DNS Infrastructure
@@ -376,5 +378,31 @@ jobs:
     with:
       project: dex
       stack: pinkdiamond
+      verify: false
+    secrets: inherit
+
+  gateway-api:
+    name: Gateway API
+    needs: [setup, pinkdiamond]
+    if: fromJson(needs.setup.outputs.gateway-api) && !failure() && !cancelled()
+    concurrency: gateway-api-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: gateway-api
+      stack: pinkdiamond
+      uses-lib: true
+      verify: false
+    secrets: inherit
+
+  kong:
+    name: Kong
+    needs: [setup, pinkdiamond, cloudflare-ingress, keycloak, ceph-csi]
+    if: fromJson(needs.setup.outputs.kong) && !failure() && !cancelled()
+    concurrency: kong-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: kong
+      stack: pinkdiamond
+      uses-lib: true
       verify: false
     secrets: inherit

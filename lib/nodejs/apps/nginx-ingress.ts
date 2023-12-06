@@ -7,3 +7,4 @@ const ref = new StackReference('nginx-ingress', {
 
 export const internalClass = ref.requireOutput('internalClass');
 export const clusterClass = ref.requireOutput('clusterClass');
+export const loadBalancerIp = ref.requireOutput('ip');
