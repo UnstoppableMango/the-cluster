@@ -1,12 +1,8 @@
-name: thecluster-clusterapi
+name: thecluster-cappx
 runtime: nodejs
-description: Cluster API install for THECLUSTER
+description: Cluster API Provider Proxmox install for THECLUSTER
 config:
   versions:
     value:
-      clusterapi: 1.6.0 # renovate depName=kubernetes-sigs/cluster-api extractVersion=^v(?<version>.*)
-      proxmox: 0.3.4 # renovate depName=sp-yduck/cluster-api-provider-proxmox extractVersion=^v(?<version>.*)
-      sidero: 0.6.1 # renovate depName=siderolabs/sidero extractVersion=^v(?<version>.*)
-      cabpt: 0.6.2 # renovate depName=siderolabs/cluster-api-bootstrap-provider-talos extractVersion=^v(?<version>.*)
-      cacppt: 0.5.3 # renovate depName=siderolabs/cluster-api-control-plane-provider-talos extractVersion=^v(?<version>.*)
+      cappx: v0.3.3 # renovate depName=sp-yduck/cluster-api-provider-proxmox
       uefi: sha-22238b4

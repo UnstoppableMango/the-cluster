@@ -14,7 +14,7 @@ fi
 rootDir="$(git rev-parse --show-toplevel)"
 repoDir="$rootDir/apps/capi"
 manifestDir="$repoDir/manifests"
-capiVersion="$(pulumi -C "$repoDir" -s codegen config get --path "versions.capi")"
+version="$(pulumi -C "$repoDir" -s codegen config get --path "versions.capi")"
 
 [ -d "$manifestDir" ] && rm -r "$manifestDir"
 mkdir -p "$manifestDir"
@@ -22,7 +22,7 @@ mkdir -p "$manifestDir"
 "$rootDir/gen/capi/provider.sh" \
     --component core \
     --module cluster-api \
-    --version "$capiVersion" \
+    --version "$version" \
     | kubectl slice \
     --exclude-kind CustomResourceDefinition \
     --template '{{.kind | lower}}.yaml' \
