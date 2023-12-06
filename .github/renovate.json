@@ -72,7 +72,11 @@
         "kubectl"
       ],
       "excludePackagePatterns": [
-        "pulumi"
+        "pulumi",
+        "cluster-api",
+        "gateway-api",
+        "dashboard",
+        "nginx"
       ],
       "groupName": "kubernetes"
     },
