@@ -53,7 +53,7 @@ const chart = new k8s.helm.v3.Chart('kong', {
         type: 'ClusterIP',
         ingress: {
           enabled: true,
-          ingressClassName: nginxIngress,
+          ingressClassName: cloudflareIngress,
           hostname: hostnames.proxy,
           tls: 'kong-kong-proxy-cert',
         },
@@ -63,7 +63,7 @@ const chart = new k8s.helm.v3.Chart('kong', {
         type: 'ClusterIP',
         ingress: {
           enabled: true,
-          ingressClassName: nginxIngress,
+          ingressClassName: cloudflareIngress,
           hostname: hostnames.admin,
           tls: 'kong-kong-admin-cert',
         },
@@ -73,7 +73,7 @@ const chart = new k8s.helm.v3.Chart('kong', {
         type: 'ClusterIP',
         ingress: {
           enabled: true,
-          ingressClassName: nginxIngress,
+          ingressClassName: cloudflareIngress,
           hostname: hostnames.manager,
         },
       },
@@ -87,7 +87,7 @@ const chart = new k8s.helm.v3.Chart('kong', {
       },
       status: {
         enabled: true,
-        tls: { enabled: true },
+        // tls: { enabled: true },
       },
       ingressController: {
         ingressClass,
@@ -96,19 +96,19 @@ const chart = new k8s.helm.v3.Chart('kong', {
       },
       autoscaling: { enabled: true },
       podDistruptionBudget: { enabled: true },
-      certificates: {
-        enabled: true,
-        clusterIssuer: clusterIssuers.selfSigned,
-        proxy: {
-          commonName: 'proxy.kong.thecluster.lan',
-          dnsNames: ['proxy.kong.thecluster.lan'],
-        },
-        admin: {
-          commonName: 'admin.kong.thecluster.lan',
-          dnsNames: ['admin.kong.thecluster.lan'],
-        },
-        cluster: { enabled: false },
-      },
+      // certificates: {
+      //   enabled: true,
+      //   clusterIssuer: clusterIssuers.selfSigned,
+      //   proxy: {
+      //     commonName: 'proxy.kong.thecluster.lan',
+      //     dnsNames: ['proxy.kong.thecluster.lan'],
+      //   },
+      //   admin: {
+      //     commonName: 'admin.kong.thecluster.lan',
+      //     dnsNames: ['admin.kong.thecluster.lan'],
+      //   },
+      //   cluster: { enabled: false },
+      // },
       // https://github.com/bitnami/charts/tree/main/bitnami/postgresql
       postgresql: {
         // Worth noting this uses an old postgres version
@@ -127,22 +127,28 @@ const chart = new k8s.helm.v3.Chart('kong', {
       },
     },
   },
-  transformations: [(obj: any, opts: pulumi.CustomResourceOptions) => {
-    opts.ignoreChanges = ['data.["tls.crt"]', 'data.["tls.key"]', 'webhooks.[*].clientConfig.caBundle'];
-  }],
+  transformations: [
+    // (obj: any, opts: pulumi.CustomResourceOptions) => {
+    //   opts.ignoreChanges = ['data.["tls.crt"]', 'data.["tls.key"]', 'webhooks.[*].clientConfig.caBundle'];
+    // },
+    (obj: any, opts: pulumi.CustomResourceOptions) => {
+      if (obj.kind !== 'Ingress') return;
+      obj.metadata.annotations = { 'pulumi.com/skipAwait': 'true' };
+    },
+  ],
 }, { provider });
 
-const operator = new k8s.yaml.ConfigGroup('gateway-operator', {
-  files: [
-    `https://docs.konghq.com/assets/gateway-operator/${versions.gatewayOperator}/crds.yaml`,
-    `https://docs.konghq.com/assets/gateway-operator/${versions.gatewayOperator}/default.yaml`,
-  ],
-}, { provider, dependsOn: chart.ready })
+// const operator = new k8s.yaml.ConfigGroup('gateway-operator', {
+//   files: [
+//     `https://docs.konghq.com/assets/gateway-operator/${versions.gatewayOperator}/crds.yaml`,
+//     `https://docs.konghq.com/assets/gateway-operator/${versions.gatewayOperator}/default.yaml`,
+//   ],
+// }, { provider, dependsOn: chart.ready });
 
 export { hostnames };
 
-const dns = Object.entries(hostnames)
-  .map(([name, host]) => new pihole.DnsRecord(name, {
-    domain: host,
-    ip: loadBalancerIp,
-  }, { provider: piholeProvider, dependsOn: chart.ready }));
+// const dns = Object.entries(hostnames)
+//   .map(([name, host]) => new pihole.DnsRecord(name, {
+//     domain: host,
+//     ip: loadBalancerIp,
+//   }, { provider: piholeProvider, dependsOn: chart.ready }));
