@@ -1,0 +1,5 @@
+config:
+  thecluster-drone:github:
+    cliendId: fde8bd637eb184019fbc
+    clientSecret:
+      secure: AAABAI9RUiECtsRziqNkBJj9c5flZTqosCaQSC7rvCEWPP+n3WbjiLW8iW2PBEwuZK3Gdnq6ZJ4TX7p9yEBylRQ8KzGwPUyL

@@ -1,0 +1,3 @@
+name: thecluster-drone
+runtime: nodejs
+description: Drone CI install for THECLUSTER

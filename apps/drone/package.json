@@ -1,0 +1,15 @@
+{
+  "name": "thecluster-drone",
+  "main": "index.ts",
+  "dependencies": {
+    "@pulumi/kubernetes": "^4.5.5",
+    "@pulumi/pulumi": "^3.95.0",
+    "@pulumi/random": "^4.14.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.3"
+  },
+  "workspaces": [
+    "../../lib/nodejs"
+  ]
+}
