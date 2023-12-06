@@ -38,12 +38,6 @@ const chart = new k8s.helm.v3.Chart('kong', {
       },
       udpProxy: {
         enabled: true,
-        ingress: {
-          enabled: true,
-          ingressClassName: nginxIngress,
-          hostname: hostnames.udpProxy,
-          tls: 'udpProxy-tls',
-        },
       },
       admin: {
         enabled: true,
