@@ -1,12 +1,58 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
+import { Certificate, Issuer, ClusterIssuer } from '@pulumi/crds/certmanager/v1';
 import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { rbdStorageClass } from '@unmango/thecluster/storage';
+import { clusterIssuers } from '@unmango/thecluster/tls';
+import { required } from '@unmango/thecluster';
 import { keepers, username, database, versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('postgresql', {
   metadata: { name: 'postgresql' },
+}, { provider });
+
+// const tlsSecret = new k8s.core.v1.Secret('posgres-tls', {
+//   metadata: {
+//     name: 'postgres-tls',
+//     namespace: ns.metadata.name,
+//   },
+// }, { provider });
+
+const tlsSecretName = 'postgres-tls';
+
+const clusterIssuer = ClusterIssuer.get('selfsigned', clusterIssuers.selfSigned);
+const ca = new Certificate('postgres-ca', {
+  metadata: {
+    name: 'postgres-ca',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    isCA: true,
+    commonName: 'unmango-postgres-ca',
+    secretName: tlsSecretName,
+    privateKey: {
+      algorithm: 'ECDSA',
+      size: 256,
+    },
+    issuerRef: {
+      group: 'cert-manager.io',
+      kind: clusterIssuer.kind.apply(required),
+      name: clusterIssuers.selfSigned,
+    },
+  },
+}, { provider });
+
+const issuer = new Issuer('postgres', {
+  metadata: {
+    name: 'postgres',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    ca: {
+      secretName: tlsSecretName,
+    },
+  },
 }, { provider });
 
 const adminPassword = new random.RandomPassword('admin', {
@@ -33,7 +79,7 @@ const replicationPassword = new random.RandomPassword('replication', {
   },
 });
 
-const credSecert = new k8s.core.v1.Secret('credentials', {
+const credSecret = new k8s.core.v1.Secret('credentials', {
   metadata: {
     name: 'credentials',
     namespace: ns.metadata.name,
@@ -57,7 +103,7 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
           auth: {
             username,
             database,
-            existingSecret: credSecert.metadata.name,
+            existingSecret: credSecret.metadata.name,
             secretKeys: {
               adminPasswordKey: 'admin',
               userPasswordKey: 'user',
