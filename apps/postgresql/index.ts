@@ -14,7 +14,6 @@ const ns = new k8s.core.v1.Namespace('postgresql', {
 }, { provider });
 
 const tlsSecretName = 'postgres-tls';
-const clusterIssuer = ClusterIssuer.get('selfsigned', clusterIssuers.selfSigned);
 const ca = new Certificate('postgres-ca', {
   metadata: {
     name: 'postgres-ca',
@@ -30,7 +29,7 @@ const ca = new Certificate('postgres-ca', {
     },
     issuerRef: {
       group: 'cert-manager.io',
-      kind: clusterIssuer.kind.apply(required),
+      kind: 'ClusterIssuer',
       name: clusterIssuers.selfSigned,
     },
   },
@@ -50,30 +49,37 @@ const issuer = new Issuer('postgres', {
 
 const adminPassword = new random.RandomPassword('admin', {
   length: 48,
+  special: false,
   keepers: {
     // Manual password reset with `./scripts/reset-password.sh`
     manual: keepers.admin,
   },
 });
 
+const postgresUsername = 'postgres';
 const postgresPassword = new random.RandomPassword('postgres', {
   length: 48,
+  special: false,
   keepers: {
     // Manual password reset with `./scripts/reset-password.sh`
     manual: keepers.postgres,
   },
 });
 
+const repmgrUsername = 'rep_mgr';
 const repmgrPassword = new random.RandomPassword('repmgr', {
   length: 48,
+  special: false,
   keepers: {
     // Manual password reset with `./scripts/reset-password.sh`
     manual: keepers.repmgr,
   },
 });
 
+const pgpoolUsername = 'pgpool_admin';
 const pgpoolPassword = new random.RandomPassword('pgpool', {
   length: 48,
+  special: false,
   keepers: {
     // Manual password reset with `./scripts/reset-password.sh`
     manual: keepers.pgpool,
@@ -82,17 +88,30 @@ const pgpoolPassword = new random.RandomPassword('pgpool', {
 
 const userPassword = new random.RandomPassword('user', {
   length: 48,
+  special: false,
   keepers: {
     // Manual password reset with `./scripts/reset-password.sh`
     manual: keepers.user,
   },
 });
 
+const pgadminUsername = 'admin';
 const pgadminPassword = new random.RandomPassword('pgadmin', {
   length: 48,
+  special: false,
   keepers: {
     // Manual password reset with `./scripts/reset-password.sh`
     manual: keepers.pgadmin,
+  },
+});
+
+const pulumiUsername = 'pulumi';
+const pulumiPassword = new random.RandomPassword('pulumi', {
+  length: 48,
+  special: false,
+  keepers: {
+    // Manual password reset with `./scripts/reset-password.sh`
+    manual: keepers.pulumi,
   },
 });
 
@@ -126,8 +145,23 @@ const customUsersSecret = new k8s.core.v1.Secret('custom-users', {
   },
   // https://github.com/bitnami/charts/blob/c3649df3161b59164c53944058d145084796c666/bitnami/postgresql-ha/values.yaml#L1061-L1070
   stringData: {
-    usernames: username,
-    passwords: userPassword.result,
+    // The order of these two arrays must be the same!
+    usernames: [
+      postgresUsername,
+      username,
+      repmgrUsername,
+      pgpoolUsername,
+      pgadminUsername,
+      pulumiUsername,
+    ].join(','),
+    passwords: pulumi.all([
+      postgresPassword.result,
+      userPassword.result,
+      repmgrPassword.result,
+      pgpoolPassword.result,
+      pgadminPassword.result,
+      pulumiPassword.result,
+    ]).apply(p => p.join(',')),
   },
 }, { provider });
 
@@ -141,43 +175,24 @@ const pgadminSecret = new k8s.core.v1.Secret('pgadmin-credentials', {
   },
 }, { provider });
 
-// const primaryPvc = new k8s.core.v1.PersistentVolumeClaim('primary', {
-//   metadata: {
-//     name: 'primary',
-//     namespace: ns.metadata.name,
-//   },
-//   spec: {
-//     storageClassName: rbdStorageClass,
-//     accessModes: ['ReadWriteOnce'],
-//     resources: {
-//       requests: {
-//         storage: '250Gi',
-//       },
-//     },
-//   },
-// }, { provider });
-
 const chart = new k8s.helm.v3.Chart('postgresql', {
   path: './',
   namespace: ns.metadata.name,
   values: {
-    // https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
+    // https://github.com/bitnami/charts/blob/main/bitnami/postgresql-ha/values.yaml
     'postgresql-ha': {
       global: {
         storageClass: rbdStorageClass,
         postgresql: {
           username,
           database,
+          repmgrUsername: repmgrUsername,
+          repmgrDatabase: 'repmgr',
           existingSecret: postgresSecret.metadata.name,
-          pgpool: {
-            existingSecret: pgpoolSecret.metadata.name,
-          },
-          // This seems to have dissapeared...
-          // secretKeys: {
-          //   adminPasswordKey: 'admin',
-          //   userPasswordKey: 'user',
-          //   replicationPasswordKey: 'replication',
-          // },
+        },
+        pgpool: {
+          adminUsername: pgpoolUsername,
+          existingSecret: pgpoolSecret.metadata.name,
         },
       },
       kubeVersion: versions.k8s,
@@ -206,8 +221,7 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         image: {
           tag: versions.bitnami.pgpool,
         },
-        // This breaks it idk why
-        // customUsersSecret: customUsersSecret.metadata.name,
+        customUsersSecret: customUsersSecret.metadata.name,
         existingSecretName: pgpoolSecret.metadata.name,
         replicaCount: 3,
         priorityClassName: 'system-cluster-critical',
@@ -265,6 +279,21 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
       serviceAccount: {
         create: true,
       },
+      serverDefinitions: {
+        enabled: true,
+        resourceType: 'Secret',
+        servers: {
+          thecluster: {
+            Name: database,
+            Group: 'UnMango',
+            Port: 5432,
+            Username: postgresUsername,
+            Host: 'localhost',
+            SSLMode: 'prefer',
+            MaintenanceDB: 'postgres',
+          },
+        },
+      },
       ingress: {
         enabled: true,
         ingressClassName: ingressClass,
@@ -279,10 +308,13 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
           'pulumi.com/skipAwait': 'true',
         },
       },
-      email,
       existingSecret: pgadminSecret.metadata.name,
       secretKeys: {
         pgadminPasswordKey: 'password',
+      },
+      env: {
+        email,
+        password: pgadminPassword.result,
       },
       persistentVolume: {
         enabled: true,
@@ -295,14 +327,9 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
       namespace: ns.metadata.name,
     },
   },
-  // transformations: [(obj: any, opts: pulumi.CustomResourceOptions) => {
-  //   if (obj.kind !== 'Ingress') return;
-  // }],
 }, { provider });
 
 export const resources = chart.resources;
-export const service = chart.getResource('v1/Service', 'postgresql-postgresql-ha-postgresql');
-
 export const credentials = {
   admin: adminPassword.result,
   user: userPassword.result,

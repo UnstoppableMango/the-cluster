@@ -7,6 +7,7 @@ config:
     pgadmin: Wed Dec  6 10:42:44 PM CST 2023
     pgpool: Wed Dec  6 11:00:30 PM CST 2023
     postgres: Wed Dec  6 09:02:11 PM CST 2023
+    pulumi: Thu Dec  7 12:55:52 CST 2023
     replication: Wed Dec  6 11:42:43 CST 2023
     repmgr: Wed Dec  6 08:36:27 PM CST 2023
     user: Wed Dec  6 11:42:37 CST 2023

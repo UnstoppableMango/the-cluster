@@ -6,12 +6,6 @@ projDir="$root/apps/postgresql"
 # shellcheck source=/dev/null
 source "$root/scripts/util/yes-no.sh"
 name="$1"
-
-case "$name" in
-    admin|user|replication|repmgr|postgres|pgadmin|pgpool);;
-    *) echo "Invalid password name: $name"; exit 1;;
-esac
-
 stack="$(pulumi -C "$projDir" stack --show-name)"
 keeper="$(date)"
 

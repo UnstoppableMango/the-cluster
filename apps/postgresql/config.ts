@@ -8,6 +8,7 @@ export interface Keepers {
   postgres: string;
   pgadmin: string;
   pgpool: string;
+  pulumi: string;
 }
 
 export interface Versions {
