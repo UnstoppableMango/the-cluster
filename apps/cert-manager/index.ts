@@ -19,7 +19,39 @@ const release = new k8s.helm.v3.Release('cert-manager', {
   atomic: true,
   dependencyUpdate: true,
   lint: true,
-  skipCrds: true,
+  timeout: 60,
+  values: {
+    // https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/README.template.md#configuration
+    'cert-manager': {
+      installCRDs: false, // TODO: Enable, still switching over
+      podDisruptionBudget: {
+        enabled: true,
+        minAvailable: 1,
+      },
+      // Redundant, but QoL safeguard
+      // https://github.com/cert-manager/cert-manager/blob/4209de23716562f44f3f7295b1f162bbb69f6ccd/deploy/charts/cert-manager/values.yaml#L98-L101C14
+      namespace: ns.metadata.name,
+      enableCertificateOwnerRef: true,
+    },
+    // https://github.com/cert-manager/trust-manager/blob/main/deploy/charts/trust-manager/README.md#values
+    'trust-manager': {
+      secretTargets: {
+        enabled: true,
+        // Consider switching to `authorizedSecrets` so we're not granting
+        // cert-manager access to every secret in the cluster
+        authorizedSecretsAll: true,
+        // authorizedSecrets: [],
+      },
+      crds: {
+        enabled: true,
+      },
+      // Redundant, but QoL safeguard
+      // https://github.com/cert-manager/trust-manager/blob/01bd331abb8ee071025e2b8989930a2eb3b1d8e9/deploy/charts/trust-manager/values.yaml#L4-L7
+      namespace: ns.metadata.name,
+    },
+    // https://github.com/cert-manager/csi-driver/tree/main/deploy/charts/csi-driver#values
+    // 'cert-manager-csi-driver': {},
+  },
 }, { provider });
 
 const apiToken = new cf.ApiToken('cert-manager', {
@@ -106,3 +138,5 @@ export const clusterIssuers: CertManagerOutputs['clusterIssuers'] = {
   prod: pulumi.output(cloudflareIssuer.metadata).apply(x => x?.name ?? ''),
   selfSigned: pulumi.output(selfSignedIssuer.metadata).apply(x => x?.name ?? ''),
 }
+
+export const resources = release.resourceNames;
