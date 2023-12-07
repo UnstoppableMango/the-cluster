@@ -104,23 +104,7 @@ const primaryPvc = new k8s.core.v1.PersistentVolumeClaim('primary', {
     accessModes: ['ReadWriteOnce'],
     resources: {
       requests: {
-        storage: '500Gi',
-      },
-    },
-  },
-}, { provider });
-
-const readReplicaPvc = new k8s.core.v1.PersistentVolumeClaim('read-replica', {
-  metadata: {
-    name: 'read-replica',
-    namespace: ns.metadata.name,
-  },
-  spec: {
-    storageClassName: rbdStorageClass,
-    accessModes: ['ReadWriteOnce'],
-    resources: {
-      requests: {
-        storage: '500Gi',
+        storage: '250Gi',
       },
     },
   },
@@ -189,7 +173,9 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
           // clusterIP: '69.69.69.69',
         },
         persistence: {
-          existingClaim: readReplicaPvc.metadata.name,
+          storageClass: rbdStorageClass,
+          accessModes: ['ReadWriteOnce'],
+          size: '250Gi',
         },
       },
       serviceAccount: {
