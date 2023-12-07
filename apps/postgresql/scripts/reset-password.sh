@@ -2,13 +2,13 @@
 set -eum
 
 root="$(git rev-parse --show-toplevel)"
-projDir="$root/dbs/postgresql"
+projDir="$root/apps/postgresql"
 # shellcheck source=/dev/null
 source "$root/scripts/util/yes-no.sh"
 name="$1"
 
 case "$name" in
-    admin|user|replication);;
+    admin|user|replication|repmgr|postgres);;
     *) echo "Invalid password name: $name"; exit 1;;
 esac
 

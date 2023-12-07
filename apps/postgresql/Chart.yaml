@@ -4,6 +4,6 @@ description: PostgreSQL install for THECLUSTER
 type: application
 version: 0.1.0
 dependencies:
-- name: postgresql
+- name: postgresql-ha
   repository: oci://registry-1.docker.io/bitnamicharts
-  version: 13.2.24
+  version: 12.3.2

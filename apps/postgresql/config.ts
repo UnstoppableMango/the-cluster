@@ -4,6 +4,8 @@ export interface Keepers {
   admin: string;
   user: string;
   replication: string;
+  repmgr: string;
+  postgres: string;
 }
 
 export interface Versions {
@@ -11,6 +13,8 @@ export interface Versions {
   bitnami: {
     postgres: string;
     postgresExporter: string;
+    postgresqlRepmgr: string;
+    pgpool: string;
   };
 }
 

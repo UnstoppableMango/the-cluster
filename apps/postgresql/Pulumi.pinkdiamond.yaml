@@ -2,7 +2,8 @@ config:
   thecluster-postgresql:database: THECLUSTER
   thecluster-postgresql:keepers:
     admin: Wed Dec  6 11:42:32 CST 2023
+    postgres: Wed Dec  6 09:02:11 PM CST 2023
     replication: Wed Dec  6 11:42:43 CST 2023
+    repmgr: Wed Dec  6 08:36:27 PM CST 2023
     user: Wed Dec  6 11:42:37 CST 2023
-  thecluster-postgresql:user: unmango
   thecluster-postgresql:username: unmango
