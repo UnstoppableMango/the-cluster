@@ -10,6 +10,7 @@ export interface Versions {
   k8s: string;
   bitnami: {
     postgres: string;
+    postgresExporter: string;
   };
 }
 
