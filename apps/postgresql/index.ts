@@ -1,13 +1,18 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
-import { Certificate, Issuer, ClusterIssuer } from '@pulumi/crds/certmanager/v1';
+import * as keycloak from '@pulumi/keycloak';
+import * as pihole from '@unmango/pulumi-pihole';
+import { Certificate, Issuer } from '@pulumi/crds/certmanager/v1';
 import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { rbdStorageClass } from '@unmango/thecluster/storage';
 import { clusterIssuers } from '@unmango/thecluster/tls';
-import { ingressClass } from '@unmango/thecluster/apps/cloudflare-ingress';
-import { required } from '@unmango/thecluster';
-import { keepers, username, database, versions, email } from './config';
+import { external, externalIssuerUrl } from '@unmango/thecluster/realms';
+import { cloudflare as cfIngress, internal as internalIngress } from '@unmango/thecluster/ingress-classes';
+import { loadBalancerIp } from '@unmango/thecluster/apps/nginx-ingress';
+import { provider as keycloakProvider } from '@unmango/thecluster/apps/keycloak';
+import { provider as piholeProvider } from '@unmango/thecluster/apps/pihole';
+import { keepers, username, database, versions, email, hosts } from './config';
 
 const ns = new k8s.core.v1.Namespace('postgresql', {
   metadata: { name: 'postgresql' },
@@ -134,7 +139,7 @@ const pgpoolSecret = new k8s.core.v1.Secret('pgpool-credentials', {
     namespace: ns.metadata.name,
   },
   stringData: {
-    password: pgpoolPassword.result,
+    'admin-password': pgpoolPassword.result,
   },
 }, { provider });
 
@@ -164,6 +169,28 @@ const customUsersSecret = new k8s.core.v1.Secret('custom-users', {
     ]).apply(p => p.join(',')),
   },
 }, { provider });
+
+const client = new keycloak.openid.Client('pgadmin', {
+  realmId: external,
+  enabled: true,
+  name: 'pgAdmin4',
+  clientId: 'pgadmin4',
+  accessType: 'CONFIDENTIAL',
+  standardFlowEnabled: true,
+  directAccessGrantsEnabled: false,
+  validRedirectUris: [
+    pulumi.interpolate`https://${hosts.external}/oauth2/callback`,
+  ],
+}, { provider: keycloakProvider });
+
+const mapper = new keycloak.openid.AudienceProtocolMapper('pgadmin', {
+  realmId: external,
+  name: pulumi.interpolate`aud-mapper-${client.clientId}`,
+  clientId: client.id,
+  includedClientAudience: client.clientId,
+  addToIdToken: true,
+  addToAccessToken: true,
+}, { provider: keycloakProvider });
 
 const pgadminSecret = new k8s.core.v1.Secret('pgadmin-credentials', {
   metadata: {
@@ -221,7 +248,8 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         image: {
           tag: versions.bitnami.pgpool,
         },
-        customUsersSecret: customUsersSecret.metadata.name,
+        // This keeps breaking things jfc
+        // customUsersSecret: customUsersSecret.metadata.name,
         existingSecretName: pgpoolSecret.metadata.name,
         replicaCount: 3,
         priorityClassName: 'system-cluster-critical',
@@ -281,7 +309,7 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
       },
       serverDefinitions: {
         enabled: true,
-        resourceType: 'Secret',
+        resourceType: 'ConfigMap',
         servers: {
           thecluster: {
             Name: database,
@@ -296,17 +324,21 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
       },
       ingress: {
         enabled: true,
-        ingressClassName: ingressClass,
+        annotations: {
+          'cert-manager.io/cluster-issuer': clusterIssuers.staging,
+        },
+        ingressClassName: internalIngress,
         hosts: [{
-          host: 'pgadmin.thecluster.io',
+          host: hosts.internal,
           paths: [{
             path: '/',
             pathType: 'Prefix',
           }],
         }],
-        annotations: {
-          'pulumi.com/skipAwait': 'true',
-        },
+        tls: [{
+          secretName: 'pgadmin-tls',
+          hosts: [hosts.internal],
+        }],
       },
       existingSecret: pgadminSecret.metadata.name,
       secretKeys: {
@@ -326,10 +358,42 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
       },
       namespace: ns.metadata.name,
     },
+    'oauth2-proxy': {
+      config: {
+        clientID: client.clientId,
+        clientSecret: client.clientSecret,
+      },
+      extraEnv: [
+        { name: 'OAUTH2_PROXY_PROVIDER', value: 'keycloak-oidc' },
+        { name: 'OAUTH2_PROXY_UPSTREAMS', value: `http://127.0.0.1:3000` },
+        { name: 'OAUTH2_PROXY_HTTP_ADDRESS', value: 'http://0.0.0.0:4180' },
+        { name: 'OAUTH2_PROXY_REDIRECT_URL', value: pulumi.interpolate`https://${hosts.external}/oauth2/callback` },
+        { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: externalIssuerUrl },
+        { name: 'OAUTH2_PROXY_CODE_CHALLENGE_METHOD', value: 'S256' },
+        { name: 'OAUTH2_PROXY_ERRORS_TO_INFO_LOG', value: 'true' },
+        { name: 'OAUTH2_PROXY_PASS_ACCESS_TOKEN', value: 'true' },
+        { name: 'OAUTH2_PROXY_EMAIL_DOMAINS', value: '*' },
+      ],
+      ingress: {
+        enabled: true,
+        className: cfIngress,
+        pathType: 'Prefix',
+        hosts: [hosts.external],
+        annotations: {
+          'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
+          'pulumi.com/skipAwait': 'true',
+        },
+      },
+    },
   },
 }, { provider });
 
-export const resources = chart.resources;
+const internalDnsRecord = new pihole.DnsRecord('internal-pgadmin', {
+  domain: hosts.internal,
+  ip: loadBalancerIp,
+}, { provider: piholeProvider });
+
+export const chartResources = chart.resources;
 export const credentials = {
   admin: adminPassword.result,
   user: userPassword.result,
@@ -337,4 +401,8 @@ export const credentials = {
   postgres: postgresPassword.result,
   pgpool: pgpoolPassword.result,
   pgadmin: pgadminPassword.result,
+  pulumi: {
+    username: pulumiUsername,
+    password: pulumiPassword.result,
+  },
 };

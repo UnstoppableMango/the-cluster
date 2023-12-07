@@ -2,6 +2,9 @@ config:
   thecluster-postgresql:database: THECLUSTER
   thecluster-postgresql:email:
     secure: AAABAH0cwsAhdtm9kqKjoJ7pliaVVQSDls/nfsYILdDgUApYDxtKPgIo0OxKQsXIuZgb8Q+kaw==
+  thecluster-postgresql:hosts:
+    external: pgadmin.thecluster.io
+    internal: pgadmin.lan.thecluster.io
   thecluster-postgresql:keepers:
     admin: Wed Dec  6 11:42:32 CST 2023
     pgadmin: Wed Dec  6 10:42:44 PM CST 2023

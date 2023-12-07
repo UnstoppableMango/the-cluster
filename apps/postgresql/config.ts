@@ -1,5 +1,10 @@
 import { Config } from '@pulumi/pulumi';
 
+export interface Hosts {
+  external: string;
+  internal: string;
+}
+
 export interface Keepers {
   admin: string;
   user: string;
@@ -27,3 +32,4 @@ export const username = config.require('username');
 export const database = config.require('database');
 export const versions = config.requireObject<Versions>('versions');
 export const email = config.requireSecret('email');
+export const hosts = config.requireObject<Hosts>('hosts');
