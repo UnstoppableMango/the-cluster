@@ -5,8 +5,9 @@ import { Certificate, Issuer, ClusterIssuer } from '@pulumi/crds/certmanager/v1'
 import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { rbdStorageClass } from '@unmango/thecluster/storage';
 import { clusterIssuers } from '@unmango/thecluster/tls';
+import { ingressClass } from '@unmango/thecluster/apps/cloudflare-ingress';
 import { required } from '@unmango/thecluster';
-import { keepers, username, database, versions } from './config';
+import { keepers, username, database, versions, email } from './config';
 
 const ns = new k8s.core.v1.Namespace('postgresql', {
   metadata: { name: 'postgresql' },
@@ -71,11 +72,27 @@ const repmgrPassword = new random.RandomPassword('repmgr', {
   },
 });
 
+const pgpoolPassword = new random.RandomPassword('pgpool', {
+  length: 48,
+  keepers: {
+    // Manual password reset with `./scripts/reset-password.sh`
+    manual: keepers.pgpool,
+  },
+});
+
 const userPassword = new random.RandomPassword('user', {
   length: 48,
   keepers: {
     // Manual password reset with `./scripts/reset-password.sh`
     manual: keepers.user,
+  },
+});
+
+const pgadminPassword = new random.RandomPassword('pgadmin', {
+  length: 48,
+  keepers: {
+    // Manual password reset with `./scripts/reset-password.sh`
+    manual: keepers.pgadmin,
   },
 });
 
@@ -98,10 +115,7 @@ const pgpoolSecret = new k8s.core.v1.Secret('pgpool-credentials', {
     namespace: ns.metadata.name,
   },
   stringData: {
-    // 'admin-password': adminPassword.result,
-    // 'postgres-password': postgresPassword.result,
-    password: postgresPassword.result,
-    // 'repmgr-password': repmgrPassword.result,
+    password: pgpoolPassword.result,
   },
 }, { provider });
 
@@ -115,7 +129,17 @@ const customUsersSecret = new k8s.core.v1.Secret('custom-users', {
     usernames: username,
     passwords: userPassword.result,
   },
-}, { provider })
+}, { provider });
+
+const pgadminSecret = new k8s.core.v1.Secret('pgadmin-credentials', {
+  metadata: {
+    name: 'pgadmin-credentials',
+    namespace: ns.metadata.name,
+  },
+  stringData: {
+    password: pgadminPassword.result,
+  },
+}, { provider });
 
 // const primaryPvc = new k8s.core.v1.PersistentVolumeClaim('primary', {
 //   metadata: {
@@ -182,7 +206,9 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         image: {
           tag: versions.bitnami.pgpool,
         },
+        // This breaks it idk why
         // customUsersSecret: customUsersSecret.metadata.name,
+        existingSecretName: pgpoolSecret.metadata.name,
         replicaCount: 3,
         priorityClassName: 'system-cluster-critical',
         pdb: {
@@ -232,12 +258,56 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         // clusterIP: '69.69.69.69',
       },
     },
+    pgadmin4: {
+      service: {
+        type: 'ClusterIP',
+      },
+      serviceAccount: {
+        create: true,
+      },
+      ingress: {
+        enabled: true,
+        ingressClassName: ingressClass,
+        hosts: [{
+          host: 'pgadmin.thecluster.io',
+          paths: [{
+            path: '/',
+            pathType: 'Prefix',
+          }],
+        }],
+        annotations: {
+          'pulumi.com/skipAwait': 'true',
+        },
+      },
+      email,
+      existingSecret: pgadminSecret.metadata.name,
+      secretKeys: {
+        pgadminPasswordKey: 'password',
+      },
+      persistentVolume: {
+        enabled: true,
+        size: '10Gi',
+      },
+      autoscaling: {
+        enabled: true,
+        minReplicas: 1,
+      },
+      namespace: ns.metadata.name,
+    },
   },
+  // transformations: [(obj: any, opts: pulumi.CustomResourceOptions) => {
+  //   if (obj.kind !== 'Ingress') return;
+  // }],
 }, { provider });
+
+export const resources = chart.resources;
+export const service = chart.getResource('v1/Service', 'postgresql-postgresql-ha-postgresql');
 
 export const credentials = {
   admin: adminPassword.result,
   user: userPassword.result,
   repmgr: repmgrPassword.result,
   postgres: postgresPassword.result,
+  pgpool: pgpoolPassword.result,
+  pgadmin: pgadminPassword.result,
 };

@@ -8,7 +8,7 @@ source "$root/scripts/util/yes-no.sh"
 name="$1"
 
 case "$name" in
-    admin|user|replication|repmgr|postgres);;
+    admin|user|replication|repmgr|postgres|pgadmin|pgpool);;
     *) echo "Invalid password name: $name"; exit 1;;
 esac
 

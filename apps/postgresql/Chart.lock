@@ -2,5 +2,8 @@ dependencies:
 - name: postgresql-ha
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 12.3.2
-digest: sha256:8d073e9b0cadd821a2cf20d0271035c9fe9480e8cdaef1b67fadaae01a0f71ee
-generated: "2023-12-06T20:33:36.996182735-06:00"
+- name: pgadmin4
+  repository: https://helm.runix.net
+  version: 1.18.5
+digest: sha256:a6cd5c8e0cab75d3f8d0c1fe5d426a0e2c7bdc31aefae9d6c83acf47a6fe0e01
+generated: "2023-12-06T22:04:02.949422521-06:00"
