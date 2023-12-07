@@ -307,6 +307,10 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
       serviceAccount: {
         create: true,
       },
+      strategy: {
+        // To prevent multi-attach issues with the PVC
+        type: 'Recreate',
+      },
       serverDefinitions: {
         enabled: true,
         resourceType: 'ConfigMap',
@@ -351,6 +355,10 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
       persistentVolume: {
         enabled: true,
         size: '10Gi',
+        storageClass: rbdStorageClass,
+      },
+      containerPorts: {
+        http: 3000,
       },
       autoscaling: {
         enabled: true,
@@ -372,6 +380,8 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         { name: 'OAUTH2_PROXY_CODE_CHALLENGE_METHOD', value: 'S256' },
         { name: 'OAUTH2_PROXY_ERRORS_TO_INFO_LOG', value: 'true' },
         { name: 'OAUTH2_PROXY_PASS_ACCESS_TOKEN', value: 'true' },
+        { name: 'OAUTH2_PROXY_COOKIE_SECURE', value: 'true' },
+        { name: 'OAUTH2_PROXY_REVERSE_PROXY', value: 'true' },
         { name: 'OAUTH2_PROXY_EMAIL_DOMAINS', value: '*' },
       ],
       ingress: {
@@ -381,6 +391,7 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         hosts: [hosts.external],
         annotations: {
           'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
+          'cloudflare-tunnel-ingress-controller.strrl.dev/ssl-verify': 'false',
           'pulumi.com/skipAwait': 'true',
         },
       },
