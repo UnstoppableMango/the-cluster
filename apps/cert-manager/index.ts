@@ -19,6 +19,7 @@ const release = new k8s.helm.v3.Release('cert-manager', {
   atomic: true,
   dependencyUpdate: true,
   lint: true,
+  timeout: 60,
   values: {
     // https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/README.template.md#configuration
     'cert-manager': {
@@ -49,7 +50,7 @@ const release = new k8s.helm.v3.Release('cert-manager', {
       namespace: ns.metadata.name,
     },
     // https://github.com/cert-manager/csi-driver/tree/main/deploy/charts/csi-driver#values
-    'cert-manager-csi-driver': {},
+    // 'cert-manager-csi-driver': {},
   },
 }, { provider });
 
@@ -137,3 +138,5 @@ export const clusterIssuers: CertManagerOutputs['clusterIssuers'] = {
   prod: pulumi.output(cloudflareIssuer.metadata).apply(x => x?.name ?? ''),
   selfSigned: pulumi.output(selfSignedIssuer.metadata).apply(x => x?.name ?? ''),
 }
+
+export const resources = release.resourceNames;
