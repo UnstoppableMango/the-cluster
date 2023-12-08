@@ -53,15 +53,6 @@ const issuer = new Issuer('postgres', {
   },
 }, { provider });
 
-const adminPassword = new random.RandomPassword('admin', {
-  length: 48,
-  special: false,
-  keepers: {
-    // Manual password reset with `./scripts/reset-password.sh`
-    manual: keepers.admin,
-  },
-});
-
 const postgresUsername = 'postgres';
 const postgresPassword = new random.RandomPassword('postgres', {
   length: 48,
@@ -101,7 +92,7 @@ const userPassword = new random.RandomPassword('user', {
   },
 });
 
-const pgadminUsername = 'admin';
+const pgadminUsername = 'pgadmin';
 const pgadminPassword = new random.RandomPassword('pgadmin', {
   length: 48,
   special: false,
@@ -127,7 +118,6 @@ const postgresSecret = new k8s.core.v1.Secret('postgres-credentials', {
     namespace: ns.metadata.name,
   },
   stringData: {
-    'admin-password': adminPassword.result,
     'postgres-password': postgresPassword.result,
     'password': postgresPassword.result,
     'repmgr-password': repmgrPassword.result,
@@ -144,6 +134,7 @@ const pgpoolSecret = new k8s.core.v1.Secret('pgpool-credentials', {
   },
 }, { provider });
 
+const delimeter = ';';
 const customUsersSecret = new k8s.core.v1.Secret('custom-users', {
   metadata: {
     name: 'custom-users',
@@ -159,7 +150,7 @@ const customUsersSecret = new k8s.core.v1.Secret('custom-users', {
       pgpoolUsername,
       pgadminUsername,
       pulumiUsername,
-    ].join(';'),
+    ].join(delimeter),
     passwords: pulumi.all([
       postgresPassword.result,
       userPassword.result,
@@ -167,7 +158,7 @@ const customUsersSecret = new k8s.core.v1.Secret('custom-users', {
       pgpoolPassword.result,
       pgadminPassword.result,
       pulumiPassword.result,
-    ]).apply(p => p.join(';')),
+    ]).apply(p => p.join(delimeter)),
   },
 }, { provider });
 
@@ -230,7 +221,7 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
       global: {
         storageClass: rbdStorageClass,
         postgresql: {
-          username,
+          username: postgresUsername,
           database,
           repmgrUsername: repmgrUsername,
           repmgrDatabase: 'repmgr',
@@ -267,35 +258,33 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         image: {
           tag: versions.bitnami.pgpool,
         },
-        // This keeps breaking things jfc
-        // customUsersSecret: customUsersSecret.metadata.name,
+        customUsersSecret: customUsersSecret.metadata.name,
         existingSecretName: pgpoolSecret.metadata.name,
+        srCheckDatabase: database,
         replicaCount: 3,
         priorityClassName: 'system-cluster-critical',
         pdb: {
           create: true,
           minAvailable: 1,
         },
+        authenticationMethod: 'scram-sha-256',
         logConnections: true,
+        useLoadBalancing: true,
         tls: {
           // Maybe one day when I'm not an idiot
           enabled: false,
         },
       },
-      rbac: {
-        create: true,
-      },
-      serviceAccount: {
-        create: true,
-      },
+      rbac: { create: false },
+      serviceAccount: { create: true },
       metrics: {
         enabled: true,
         image: {
           tag: versions.bitnami.postgresExporter,
         },
         service: {
-          // TODO: Probably pin this so its easier to pass around
-          // clusterIP: '69.69.69.69',
+          type: 'ClusterIP',
+          clusterIP: '10.109.68.63',
         },
         serviceMonitor: {
           // Soon
@@ -318,6 +307,9 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
       service: {
         type: 'LoadBalancer',
         loadBalancerIp: ip,
+        ports: {
+          postgresql: port,
+        },
       },
     },
     // Still some bullshit in here but its mostly there
@@ -325,6 +317,7 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
     pgadmin4: {
       service: {
         type: 'ClusterIP',
+        clusterIP: '10.104.137.241',
       },
       serviceAccount: {
         create: true,
@@ -335,10 +328,9 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         servers: {
           thecluster: {
             Name: database,
-            // Group: 'UnMango',
-            Port: 5432,
+            Port: port,
             Username: postgresUsername,
-            Host: 'localhost',
+            Host: ip,
             SSLMode: 'prefer',
             MaintenanceDB: 'postgres',
           },
@@ -373,17 +365,17 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
       secretKeys: {
         pgadminPasswordKey: 'password',
       },
-      // Eventually...
-      // https://www.pgadmin.org/docs/pgadmin4/latest/oauth2.html
       env: {
         email,
         password: pgadminPassword.result,
         variables: [
           {
             name: 'CONFIG_DATABASE_URI',
-            value: pulumi.interpolate`postgresql://${postgresUsername}:${postgresPassword.result}@postgresql-postgresql-ha-postgresql:${port}/${database}`,
+            value: pulumi.interpolate`postgresql://${postgresUsername}:${postgresPassword.result}@${ip}:${port}/${database}`,
           },
           // Currently technically unused
+          // Eventually...
+          // https://www.pgadmin.org/docs/pgadmin4/latest/oauth2.html
           { name: 'OAUTH2_CLIENT_ID', value: client.clientId },
           { name: 'OAUTH2_CLIENT_SECRET', value: client.clientSecret },
           { name: 'OAUTH2_TOKEN_URL', value: external.tokenUrl },
@@ -419,6 +411,10 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         { name: 'OAUTH2_PROXY_EMAIL_DOMAINS', value: '*' },
         { name: 'OAUTH2_PROXY_SKIP_PROVIDER_BUTTON', value: 'true' },
       ],
+      service: {
+        type: 'ClusterIP',
+        clusterIP: '10.97.27.200',
+      },
       ingress: {
         enabled: true,
         className: cfIngress,
@@ -440,11 +436,6 @@ const internalDnsRecord = new pihole.DnsRecord('internal-pgadmin', {
 
 export const chartResources = chart.resources;
 export const credentials = {
-  admin: {
-    // username: adminUsername,
-    username: 'admin', // TODO: Double-check
-    password: adminPassword.result,
-  },
   user: { username, password: userPassword.result },
   repmgr: { username: repmgrUsername, password: repmgrPassword.result },
   postgres: { username: postgresUsername, password: postgresPassword.result },

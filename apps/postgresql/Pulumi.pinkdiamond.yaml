@@ -1,5 +1,5 @@
 config:
-  thecluster-postgresql:database: THECLUSTER
+  thecluster-postgresql:database: postgres
   thecluster-postgresql:email:
     secure: AAABAH0cwsAhdtm9kqKjoJ7pliaVVQSDls/nfsYILdDgUApYDxtKPgIo0OxKQsXIuZgb8Q+kaw==
   thecluster-postgresql:hosts:
