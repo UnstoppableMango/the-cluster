@@ -34,6 +34,19 @@
     {
       "customType": "regex",
       "fileMatch": [
+        "^\\.github\\/workflows\\/.*\\.(yml|yaml)$",
+        "^\\.github\\/.*\\/action\\.(yml|yaml)$",
+        "^.*Pulumi.*\\.(yml|yaml)$",
+        ".*/versions/.*"
+      ],
+      "matchStrings": [
+        ".+?: (?<currentValue>\\S+) # renovate depName=(?<depName>\\S+) datasource=docker*"
+      ],
+      "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "fileMatch": [
         "^Dockerfile$"
       ],
       "matchStrings": [
