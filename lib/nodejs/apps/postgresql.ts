@@ -8,9 +8,10 @@ const ref = new StackReference('postgresql', {
 });
 
 export const credentials = ref.requireOutput('credentials') as Output<PostgreSqlOutputs['credentials']>;
+export const hostname = ref.requireOutput('hostname') as Output<string>;
 export const database = ref.requireOutput('database') as Output<string>;
 export const port = ref.requireOutput('port') as Output<number>;
-export const ip = ref.requireOutput('ip');
+export const ip = ref.requireOutput('ip') as Output<string>;
 
 export const provider = new Provider('postgresql', {
   username: credentials.pulumi.username,

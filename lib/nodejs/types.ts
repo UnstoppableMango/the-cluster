@@ -37,7 +37,7 @@ export interface MetallbOutputs {
 
 export interface PostgreSqlOutputs {
   credentials: Output<{
-    postgresql: Output<{
+    postgres: Output<{
       username: Output<string>;
       password: Output<string>;
     }>;
