@@ -3,7 +3,7 @@ import { Provider } from '@pulumi/postgresql';
 import { cluster } from '../config';
 import { PostgreSqlOutputs } from '../types';
 
-const ref = new StackReference('keycloak', {
+const ref = new StackReference('postgresql', {
   name: `UnstoppableMango/thecluster-postgresql/${cluster}`,
 });
 

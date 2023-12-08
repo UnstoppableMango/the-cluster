@@ -1,15 +1,11 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
-import * as keycloak from '@pulumi/keycloak';
 import * as pihole from '@unmango/pulumi-pihole';
 import { Certificate, Issuer } from '@pulumi/crds/certmanager/v1';
 import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { rbdStorageClass } from '@unmango/thecluster/storage';
 import { clusterIssuers } from '@unmango/thecluster/tls';
-import { external } from '@unmango/thecluster/realms';
-import { internal as internalIngress } from '@unmango/thecluster/ingress-classes';
-import { provider as keycloakProvider } from '@unmango/thecluster/apps/keycloak';
 import { provider as piholeProvider } from '@unmango/thecluster/apps/pihole';
 import { keepers, username, database, versions, ip, port, hostname } from './config';
 
@@ -169,9 +165,6 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         },
       },
       kubeVersion: versions.k8s,
-      // TODO: See if one of these can make things prettier
-      // nameOverride: '',
-      // fullnameOverride: '',
       postgresql: {
         image: {
           tag: versions.bitnami.postgresqlRepmgr,
@@ -251,37 +244,10 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
   },
 }, { provider });
 
-const service = chart.getResource('v1/Service', 'postgresql', 'postgresql-postgresql-ha-pgpool');
-const ingress = new k8s.networking.v1.Ingress('postgresql-internal', {
-  metadata: {
-    name: 'postgresql-internal',
-    namespace: ns.metadata.name,
-    annotations: {
-      'cert-manager.io/cluster-issuer': clusterIssuers.prod,
-    },
-  },
-  spec: {
-    ingressClassName: internalIngress,
-    rules: [{
-      host: hostname,
-      http: {
-        paths: [{
-          pathType: 'ImplementationSpecific',
-          path: '/',
-          backend: {
-            service: {
-              name: service.metadata.name,
-              port: {
-                // TODO: Any way to avoid manual indexing?
-                name: service.spec.ports[0].name,
-              },
-            },
-          },
-        }],
-      },
-    }],
-  },
-}, { provider });
+const dnsRecord = new pihole.DnsRecord(
+  'internal',
+  { domain: hostname, ip },
+  { provider: piholeProvider });
 
 export { ip, database, port, hostname };
 // export const chartResources = chart.resources;
