@@ -34,3 +34,16 @@ export interface KeycloakOutputs {
 export interface MetallbOutputs {
   pool: Output<string>;
 }
+
+export interface PostgreSqlOutputs {
+  credentials: Output<{
+    postgresql: Output<{
+      username: Output<string>;
+      password: Output<string>;
+    }>;
+    pulumi: Output<{
+      username: Output<string>;
+      password: Output<string>;
+    }>;
+  }>;
+}

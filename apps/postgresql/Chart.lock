@@ -2,11 +2,5 @@ dependencies:
 - name: postgresql-ha
   repository: oci://registry-1.docker.io/bitnamicharts
   version: 12.3.2
-- name: pgadmin4
-  repository: https://helm.runix.net
-  version: 1.18.5
-- name: oauth2-proxy
-  repository: https://oauth2-proxy.github.io/manifests
-  version: 6.21.0
-digest: sha256:7159b6eb49fb6cc7c34cc7269c299bd87694598119b40ce397d826bf43508677
-generated: "2023-12-07T17:42:17.223943-06:00"
+digest: sha256:8d073e9b0cadd821a2cf20d0271035c9fe9480e8cdaef1b67fadaae01a0f71ee
+generated: "2023-12-08T15:10:27.738381-06:00"

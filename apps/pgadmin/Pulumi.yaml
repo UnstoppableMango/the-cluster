@@ -1,0 +1,3 @@
+name: thecluster-pgadmin
+runtime: nodejs
+description: pgAdmin4 install for THECLUSTER
