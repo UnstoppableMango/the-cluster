@@ -300,6 +300,7 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         // clusterIP: '69.69.69.69',
       },
     },
+    // https://github.com/rowanruseler/helm-charts/blob/main/charts/pgadmin4/values.yaml
     pgadmin4: {
       service: {
         type: 'ClusterIP',
@@ -348,6 +349,8 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
       secretKeys: {
         pgadminPasswordKey: 'password',
       },
+      // Eventually...
+      // https://www.pgadmin.org/docs/pgadmin4/latest/oauth2.html
       env: {
         email,
         password: pgadminPassword.result,
