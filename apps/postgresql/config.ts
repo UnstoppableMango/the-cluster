@@ -33,3 +33,5 @@ export const database = config.require('database');
 export const versions = config.requireObject<Versions>('versions');
 export const email = config.requireSecret('email');
 export const hosts = config.requireObject<Hosts>('hosts');
+export const ip = '192.168.1.82'; // Meh
+export const port = 5432; // Meh also
