@@ -163,7 +163,7 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
             name: 'CONFIG_DATABASE_URI',
             // value: pulumi.interpolate`postgresql://${credentials.postgres.username}:${credentials.postgres.password}@${ip}:${port}/${database}?options=-csearch_path=${schema}`,
             // value: pulumi.interpolate`postgresql://${username}@${ip}:${port}?options=-csearch_path=${schema}`,
-            value: pulumi.interpolate`postgresql://${username}:${password}@${ip}:${port}?options=-csearch_path=${schema}`,
+            value: pulumi.interpolate`postgresql://${username}:${password}@${ip}:${port}/${database}?options=-csearch_path=${schema}`,
           },
           // Currently technically unused
           // Eventually...
