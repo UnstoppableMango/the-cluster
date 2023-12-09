@@ -4,5 +4,3 @@ config:
   thecluster-pgadmin:hosts:
     external: pgadmin.thecluster.io
     internal: pgadmin.lan.thecluster.io
-  thecluster-pgadmin:keepers:
-    pgadmin: Fri Dec  8 14:25:55 CST 2023

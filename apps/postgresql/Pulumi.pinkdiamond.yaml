@@ -1,5 +1,7 @@
 config:
   thecluster-postgresql:database: postgres
+  thecluster-postgresql:hostname: postgres.db.thecluster.io
+  thecluster-postgresql:ip: 192.168.1.82
   thecluster-postgresql:keepers:
     admin: Wed Dec  6 11:42:32 CST 2023
     pgpool: Wed Dec  6 11:00:30 PM CST 2023
@@ -8,4 +10,10 @@ config:
     replication: Wed Dec  6 11:42:43 CST 2023
     repmgr: Wed Dec  6 08:36:27 PM CST 2023
     user: Wed Dec  6 11:42:37 CST 2023
-  thecluster-postgresql:username: unmango
+  thecluster-postgresql:port: "5432"
+  thecluster-postgresql:users:
+    - unmango
+    - pulumi
+    - pgadmin
+    - drone
+    - keycloak

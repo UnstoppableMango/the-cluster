@@ -1,0 +1,16 @@
+{
+  "name": "thecluster-postgres-db",
+  "main": "index.ts",
+  "dependencies": {
+    "@pulumi/postgresql": "^3.10.0",
+    "@pulumi/pulumi": "^3.96.2",
+    "@pulumi/random": "^4.14.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.4"
+  },
+  "workspaces": [
+    "../../lib/nodejs",
+    "../../lib/crds"
+  ]
+}

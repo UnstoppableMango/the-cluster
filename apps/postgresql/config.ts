@@ -6,14 +6,9 @@ export interface Hosts {
 }
 
 export interface Keepers {
-  admin: string;
-  user: string;
-  replication: string;
   repmgr: string;
   postgres: string;
-  pgadmin: string;
   pgpool: string;
-  pulumi: string;
 }
 
 export interface Versions {
@@ -28,9 +23,9 @@ export interface Versions {
 
 const config = new Config();
 export const keepers = config.requireObject<Keepers>('keepers');
-export const username = config.require('username');
+export const users = config.requireObject<string[]>('users');
 export const database = config.require('database');
 export const versions = config.requireObject<Versions>('versions');
-export const ip = '192.168.1.82'; // Meh
-export const port = 5432; // Meh also
-export const hostname = 'postgres.db.thecluster.io'; // I just can't care
+export const ip = config.require('ip');
+export const port = config.requireNumber('port');
+export const hostname = config.require('hostname');

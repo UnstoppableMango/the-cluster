@@ -1,6 +1,5 @@
 import * as fs from 'node:fs/promises';
 import * as pulumi from '@pulumi/pulumi';
-import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
 import * as keycloak from '@pulumi/keycloak';
 import * as pihole from '@unmango/pulumi-pihole';
@@ -10,23 +9,15 @@ import { cloudflare as cfIngress, internal as internalIngress } from '@unmango/t
 import { provider as keycloakProvider } from '@unmango/thecluster/apps/keycloak';
 import { provider as piholeProvider } from '@unmango/thecluster/apps/pihole';
 import { loadBalancerIp } from '@unmango/thecluster/apps/nginx-ingress';
-import { credentials as pgCreds } from '@unmango/thecluster/apps/postgresql';
+import { database, ip, hostname, port, users, schema } from '@unmango/thecluster/dbs/postgres';
 import { external } from '@unmango/thecluster/realms';
-import { database, email, hosts, ip, keepers, port } from './config';
+import { join } from '@unmango/thecluster';
+import { email, hosts } from './config';
+import * as YAML from 'yaml';
 
 const ns = new k8s.core.v1.Namespace('pgadmin', {
   metadata: { name: 'pgadmin' },
 }, { provider });
-
-const pgadminUsername = 'pgadmin';
-const pgadminPassword = new random.RandomPassword('pgadmin', {
-  length: 48,
-  special: false,
-  keepers: {
-    // Manual password reset with `./scripts/reset-password.sh`
-    manual: keepers.pgadmin,
-  },
-});
 
 const client = new keycloak.openid.Client('pgadmin', {
   realmId: external.realm,
@@ -55,13 +46,20 @@ const mapper = new keycloak.openid.AudienceProtocolMapper('pgadmin', {
   addToAccessToken: true,
 }, { provider: keycloakProvider });
 
+const user = pulumi.output(users).apply(x => x.find(y => y.username === 'pgadmin'));
+const username = user.apply(x => x?.username ?? '');
+const password = user.apply(x => x?.password ?? '');
 const pgadminSecret = new k8s.core.v1.Secret('pgadmin-credentials', {
   metadata: {
     name: 'pgadmin-credentials',
     namespace: ns.metadata.name,
   },
   stringData: {
-    password: pgadminPassword.result,
+    password: user.apply(x => x?.password ?? ''),
+    'pgadmin.pgpass': join(pulumi.output(users).apply(x => x.flatMap(user => ([
+      pulumi.interpolate`${hostname}:${port}:${user.username}:${user.password}`,
+      pulumi.interpolate`${ip}:${port}:${user.username}:${user.password}`,
+    ]))), '\n'),
   },
 }, { provider });
 
@@ -99,10 +97,10 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
           thecluster: {
             Name: database,
             Port: port,
-            Username: pgCreds.postgresql.username,
+            Username: username,
             Host: ip,
-            SSLMode: 'prefer',
-            MaintenanceDB: 'postgres',
+            SSLMode: 'disable',
+            MaintenanceDB: database, // idfk man, it was `postgres` before
           },
         },
       },
@@ -131,17 +129,41 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         mountPath: '/pgadmin4/config_local.py',
         readOnly: true,
       }],
+      extraSecretMounts: [{
+        name: 'pgpassfile',
+        secret: pgadminSecret.metadata.name,
+        subPath: 'pgadmin.pgpass',
+        mountPath: '/var/lib/pgadmin/storage/pgadmin/pgadmin.pgpass',
+        readOnly: true,
+      }],
+      // TODO: Make this better somehow
+      extraInitContainers: YAML.stringify([{
+        name: 'add-folder-for-pgpass',
+        image: 'dpage/pgadmin4:4.23',
+        command: ['/bin/mkdir', '-p', '/var/lib/pgadmin/storage/pgadmin'],
+        volumeMounts: [{
+          name: 'pgadmin-data',
+          mountPath: '/var/lib/pgadmin',
+        }],
+        securityContext: {
+          runAsUser: 5050,
+        },
+      }]),
+      VolumePermissions: { enabled: true },
       existingSecret: pgadminSecret.metadata.name,
       secretKeys: {
         pgadminPasswordKey: 'password',
       },
       env: {
         email,
-        password: pgadminPassword.result,
+        password: user.apply(x => x?.password),
+        pgpassfile: '/var/lib/pgadmin/storage/pgadmin/pgadmin.pgpass',
         variables: [
           {
             name: 'CONFIG_DATABASE_URI',
-            value: pulumi.interpolate`postgresql://${pgCreds.postgresql.username}:${pgCreds.postgresql.password}@${ip}:${port}/${database}`,
+            // value: pulumi.interpolate`postgresql://${credentials.postgres.username}:${credentials.postgres.password}@${ip}:${port}/${database}?options=-csearch_path=${schema}`,
+            // value: pulumi.interpolate`postgresql://${username}@${ip}:${port}?options=-csearch_path=${schema}`,
+            value: pulumi.interpolate`postgresql://${username}:${password}@${ip}:${port}/${database}?options=-csearch_path=${schema}`,
           },
           // Currently technically unused
           // Eventually...
@@ -204,7 +226,5 @@ const internalDnsRecord = new pihole.DnsRecord('internal-pgadmin', {
   ip: loadBalancerIp,
 }, { provider: piholeProvider });
 
-export const chartResources = chart.resources;
-export const credentials = {
-  pgadmin: { username: pgadminUsername, password: pgadminPassword.result },
-};
+// export const chartResources = chart.resources;
+export { hosts };

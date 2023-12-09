@@ -7,7 +7,7 @@ import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { rbdStorageClass } from '@unmango/thecluster/storage';
 import { clusterIssuers } from '@unmango/thecluster/tls';
 import { provider as piholeProvider } from '@unmango/thecluster/apps/pihole';
-import { keepers, username, database, versions, ip, port, hostname } from './config';
+import { keepers, users, database, versions, ip, port, hostname } from './config';
 
 const ns = new k8s.core.v1.Namespace('postgresql', {
   metadata: { name: 'postgresql' },
@@ -77,25 +77,6 @@ const pgpoolPassword = new random.RandomPassword('pgpool', {
   },
 });
 
-const userPassword = new random.RandomPassword('user', {
-  length: 48,
-  special: false,
-  keepers: {
-    // Manual password reset with `./scripts/reset-password.sh`
-    manual: keepers.user,
-  },
-});
-
-const pulumiUsername = 'pulumi';
-const pulumiPassword = new random.RandomPassword('pulumi', {
-  length: 48,
-  special: false,
-  keepers: {
-    // Manual password reset with `./scripts/reset-password.sh`
-    manual: keepers.pulumi,
-  },
-});
-
 const postgresSecret = new k8s.core.v1.Secret('postgres-credentials', {
   metadata: {
     name: 'postgres-credentials',
@@ -118,6 +99,14 @@ const pgpoolSecret = new k8s.core.v1.Secret('pgpool-credentials', {
   },
 }, { provider });
 
+const passwords = users.map(user => ({
+  username: pulumi.output(user),
+  password: new random.RandomPassword(user, {
+    length: 48,
+    special: false,
+  }).result,
+}));
+
 const delimeter = ';';
 const customUsersSecret = new k8s.core.v1.Secret('custom-users', {
   metadata: {
@@ -127,19 +116,17 @@ const customUsersSecret = new k8s.core.v1.Secret('custom-users', {
   // https://github.com/bitnami/charts/blob/c3649df3161b59164c53944058d145084796c666/bitnami/postgresql-ha/values.yaml#L1061-L1070
   stringData: {
     // The order of these two arrays must be the same!
-    usernames: [
+    usernames: pulumi.all([
       postgresUsername,
-      username,
       repmgrUsername,
       pgpoolUsername,
-      pulumiUsername,
-    ].join(delimeter),
+      ...passwords.map(x => x.username),
+    ]).apply(u => u.join(delimeter)),
     passwords: pulumi.all([
       postgresPassword.result,
-      userPassword.result,
       repmgrPassword.result,
       pgpoolPassword.result,
-      pulumiPassword.result,
+      ...passwords.map(x => x.password),
     ]).apply(p => p.join(delimeter)),
   },
 }, { provider });
@@ -250,11 +237,9 @@ const dnsRecord = new pihole.DnsRecord(
   { provider: piholeProvider });
 
 export { ip, database, port, hostname };
-// export const chartResources = chart.resources;
-export const credentials = {
-  user: { username, password: userPassword.result },
-  repmgr: { username: repmgrUsername, password: repmgrPassword.result },
-  postgres: { username: postgresUsername, password: postgresPassword.result },
-  pgpool: { username: pgpoolUsername, password: pgpoolPassword.result },
-  pulumi: { username: pulumiUsername, password: pulumiPassword.result },
-};
+export const credentials = [
+  { username: repmgrUsername, password: repmgrPassword.result },
+  { username: postgresUsername, password: postgresPassword.result },
+  { username: pgpoolUsername, password: pgpoolPassword.result },
+  ...passwords,
+];

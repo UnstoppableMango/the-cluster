@@ -36,14 +36,19 @@ export interface MetallbOutputs {
 }
 
 export interface PostgreSqlOutputs {
+  ip: Output<string>;
+  database: Output<string>;
+  port: Output<number>;
+  hostname: Output<string>;
   credentials: Output<{
-    postgresql: Output<{
-      username: Output<string>;
-      password: Output<string>;
-    }>;
-    pulumi: Output<{
-      username: Output<string>;
-      password: Output<string>;
-    }>;
-  }>;
+    username: Output<string>;
+    password: Output<string>;
+  }>[];
+}
+
+export interface PostgresDbOutputs {
+  users: Output<{
+    username: Output<string>;
+    password: Output<string>;
+  }>[];
 }
