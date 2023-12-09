@@ -1,4 +1,4 @@
-import { StackReference, Output } from '@pulumi/pulumi';
+import { StackReference, Output, output } from '@pulumi/pulumi';
 import { Provider } from '@pulumi/postgresql';
 import { cluster } from '../config';
 import { PostgreSqlOutputs } from '../types';
@@ -13,9 +13,12 @@ export const database = ref.requireOutput('database') as Output<string>;
 export const port = ref.requireOutput('port') as Output<number>;
 export const ip = ref.requireOutput('ip') as Output<string>;
 
+const user = output(credentials).apply(c => c.find(x => x.username === 'postgres'));
 export const provider = new Provider('postgresql', {
-  username: credentials.pulumi.username,
-  password: credentials.pulumi.password,
-  database,
+  username: user.apply(x => x?.username ?? ''),
+  password: user.apply(x => x?.password ?? ''),
+  host: hostname,
   port,
+  database,
+  sslmode: 'disable',
 });
