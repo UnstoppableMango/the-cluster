@@ -8,6 +8,10 @@ export function required(x: string | undefined): string {
   return x ?? '';
 }
 
+export function requireProp<T>(selector: (x: T) => string): (x?: T) => string {
+  return x => x ? selector(x) : '';
+}
+
 export function join(x: Input<Input<string>[]>, sep: string): Output<string> {
   return output(x).apply(y => y.join(sep));
 }
