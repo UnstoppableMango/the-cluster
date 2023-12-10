@@ -1,3 +1,7 @@
 name: thecluster-drone
 runtime: nodejs
 description: Drone CI install for THECLUSTER
+config:
+  versions:
+    value:
+      drone: 2.21.0 # renovate depName=drone/drone datasource=docker

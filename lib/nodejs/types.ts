@@ -52,3 +52,10 @@ export interface PostgresDbOutputs {
     password: Output<string>;
   }>[];
 }
+
+export interface DroneDbOutputs {
+  user: Output<{
+    username: Output<string>;
+    password: Output<string>;
+  }>;
+}

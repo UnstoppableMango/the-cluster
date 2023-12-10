@@ -2,5 +2,8 @@ dependencies:
 - name: drone
   repository: https://charts.drone.io
   version: 0.6.5
-digest: sha256:9e212e7c4413b17dcb07a06b43debf8a9a14adf6065cb12185d9468863b164d4
-generated: "2023-12-05T23:32:06.907745535-06:00"
+- name: oauth2-proxy
+  repository: https://oauth2-proxy.github.io/manifests
+  version: 6.21.1
+digest: sha256:a154217a7f5bff0cc91701c7cc99786dcb7ef8c64cef163331c27063870177f3
+generated: "2023-12-09T18:25:37.38524549-06:00"
