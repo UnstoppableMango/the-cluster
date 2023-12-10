@@ -1,3 +1,4 @@
+import * as fs from 'node:fs/promises';
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
@@ -22,6 +23,10 @@ const rpcToken = new random.RandomId('rpc', {
 });
 
 const encryptionKey = new random.RandomId('encryption', {
+  byteLength: 16,
+});
+
+const pluginKey = new random.RandomId('plugin', {
   byteLength: 16,
 });
 
@@ -67,6 +72,28 @@ const droneSecret = new k8s.core.v1.Secret('drone-secrets', {
     DRONE_GITHUB_CLIENT_SECRET: github.clientSecret,
     DRONE_RPC_SECRET: rpcToken.hex,
     DRONE_UI_PASSWORD: uiClient.clientSecret,
+    DRONE_YAML_SECRET: pluginKey.hex,
+  },
+}, { provider });
+
+const pluginSecret = new k8s.core.v1.Secret('plugin-secrets', {
+  metadata: {
+    name: 'plugin-secrets',
+    namespace: ns.metadata.name,
+  },
+  stringData: {
+    PLUGIN_SECRET: pluginKey.hex,
+    GITHUB_TOKEN: github.token,
+  },
+}, { provider });
+
+const droneTreeConfig = new k8s.core.v1.ConfigMap('drone-tree-config', {
+  metadata: {
+    name: 'drone-tree-config',
+    namespace: ns.metadata.name,
+  },
+  data: {
+    matchfile: fs.readFile('plugins/drone-tree-config/matchfile', 'utf-8'),
   },
 }, { provider });
 
@@ -114,6 +141,39 @@ const chart = new k8s.helm.v3.Chart('drone', {
           memory: '128Mi',
         },
       },
+      extraVolumes: [{
+        name: 'drone-tree-config',
+        configMap: {
+          name: droneTreeConfig.metadata.name,
+        },
+      }],
+      extraContainers: [{
+        name: 'drone-tree-config',
+        image: 'bitsbeats/drone-tree-config',
+        // https://github.com/bitsbeats/drone-tree-config#environment-variables
+        env: [
+          { name: 'PLUGIN_DEBUG', value: 'true' },
+          { name: 'PLUGIN_CONCAT', value: 'true' },
+          { name: 'PLUGIN_FALLBACK', value: 'true' },
+          { name: 'PLUGIN_MAXDEPTH', value: '5' },
+          { name: 'PLUGIN_ALWAYS_RUN_ALL', value: 'false' },
+          { name: 'PLUGIN_ADDRESS', value: ':3000' },
+          { name: 'PLUGIN_ALLOW_LIST_FILE', value: '/drone-tree-config-matchfile' },
+          { name: 'PLUGIN_CONSIDER_FILE', value: '.drone-consider' },
+          { name: 'PLUGIN_CACHE_TTL', value: '30m' },
+        ],
+        envFrom: [{
+          secretRef: {
+            name: pluginSecret.metadata.name,
+          },
+        }],
+        volumeMounts: [{
+          name: 'drone-tree-config',
+          subPath: 'matchfile',
+          mountPath: '/drone-tree-config-matchfile',
+          readOnly: true,
+        }],
+      }],
       persistentVolume: { enabled: false },
       extraSecretNamesForEnvFrom: [
         droneSecret.metadata.name,
@@ -124,6 +184,7 @@ const chart = new k8s.helm.v3.Chart('drone', {
         DRONE_DATABASE_DRIVER: 'postgres',
         DRONE_GITHUB_CLIENT_ID: github.clientId,
         DRONE_USER_FILTER: userFilter.join(','),
+        DRONE_YAML_ENDPOINT: 'http://localhost:3000',
       },
     },
     'oauth2-proxy': {

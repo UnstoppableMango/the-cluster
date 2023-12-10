@@ -1,0 +1,14 @@
+kind: pipeline
+type: kubernetes
+name: test
+
+metadata:
+  namespace: drone
+  annotations:
+    thecluster.io/pipeline: test
+
+steps:
+- name: echo
+  image: busybox
+  commands:
+  - echo "Hiya friendo"

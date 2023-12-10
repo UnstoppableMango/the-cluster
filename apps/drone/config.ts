@@ -3,6 +3,7 @@ import { Config } from '@pulumi/pulumi';
 export interface GitHub {
   clientId: string;
   clientSecret: string;
+  token: string;
 }
 
 export interface Hosts {
