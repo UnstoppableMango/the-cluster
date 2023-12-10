@@ -92,6 +92,7 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
                   'kube-vip',
                   'qemu-guest-agent',
                   'internal-ingress',
+                  'drone',
                 ],
               },
             },

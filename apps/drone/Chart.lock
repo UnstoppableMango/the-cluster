@@ -1,0 +1,12 @@
+dependencies:
+- name: drone
+  repository: https://charts.drone.io
+  version: 0.6.5
+- name: oauth2-proxy
+  repository: https://oauth2-proxy.github.io/manifests
+  version: 6.21.1
+- name: drone-runner-docker
+  repository: https://charts.drone.io
+  version: 0.6.2
+digest: sha256:42d2725b9ae96c895b315f818efcb53209121b552bcfbebd8c85908dcea86ccf
+generated: "2023-12-09T18:41:27.237262966-06:00"
