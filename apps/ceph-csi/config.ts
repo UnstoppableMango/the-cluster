@@ -1,5 +1,22 @@
 import { Config } from '@pulumi/pulumi';
-import { CsiConfig, Rbd, CephFS } from './types';
+
+export interface ClusterCsiConfig {
+  clusterID: string;
+  monitors: string[];
+}
+
+export type CsiConfig = ClusterCsiConfig[];
+
+export interface Rbd {
+  userId: string;
+  userKey: string;
+}
+
+export interface CephFS {
+  adminId: string;
+  adminKey: string;
+}
+
 
 export interface Versions {
   externalSnapshotter: string;
