@@ -11,7 +11,7 @@ import { provider as piholeProvider } from '@unmango/thecluster/apps/pihole';
 import { loadBalancerIp } from '@unmango/thecluster/apps/nginx-ingress';
 import { cloudflare as cfIngress, internal as internalIngress } from '@unmango/thecluster/ingress-classes';
 import { user as dbUser, database, ip as dbIp, port as dbPort } from '@unmango/thecluster/dbs/drone';
-import { github, hosts, userFilter, versions } from './config';
+import { dockerHost, github, hosts, userFilter, versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('drone', {
   metadata: { name: 'drone' },
@@ -140,6 +140,96 @@ const chart = new k8s.helm.v3.Chart('drone', {
           'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
           'pulumi.com/skipAwait': 'true',
         },
+      },
+    },
+    'drone-runner-docker': {
+      image: {
+        registry: 'docker.io',
+        repository: 'drone/drone-runner-docker',
+        tag: versions.droneRunnerDocker,
+      },
+      dind: {
+        registry: 'docker.io',
+        repository: 'docker',
+        tag: versions.dind,
+        command: ['dockerd'],
+        commandArgs: ['--host', dockerHost],
+        extraVolumeMounts: [],
+        resources: {
+          limits: {
+            cpu: '100m',
+            memory: '128Mi',
+          },
+          requests: {
+            cpu: '100m',
+            memory: '128Mi',
+          },
+        },
+      },
+      gc: {
+        enabled: true,
+        registry: 'docker.io',
+        repository: 'drone/gc',
+        tag: versions.droneGc,
+        env: {
+          GC_DEBUG: 'false',
+          GC_DEBUG_COLOR: 'true',
+          GC_DEBUG_PRETTY: 'true',
+          GC_IGNORE_IMAGES: '',
+          GC_IGNORE_CONTAINERS: '',
+          GC_INTERVAL: '5m',
+          GC_CACHE: '10gb',
+        },
+        resources: {
+          limits: {
+            cpu: '100m',
+            memory: '128Mi',
+          },
+          requests: {
+            cpu: '100m',
+            memory: '128Mi',
+          },
+        },
+      },
+      service: {
+        type: 'ClusterIP',
+        port: 80,
+      },
+      ingress: {
+        enabled: true,
+        className: cfIngress,
+        annotations: {
+          'pulumi.com/skipAwait': 'true',
+        },
+        hosts: [{
+          host: 'drone-runner.thecluster.io',
+          paths: [{
+            path: '/',
+            pathType: 'Prefix',
+          }],
+        }],
+      },
+      resources: {
+        limits: {
+          cpu: '100m',
+          memory: '128Mi',
+        },
+        requests: {
+          cpu: '100m',
+          memory: '128Mi',
+        },
+      },
+      autoscaling: {
+        enabled: true,
+        minReplicas: 3,
+      },
+      extraSecretNamesForEnvFrom: [
+        droneSecret.metadata.name,
+      ],
+      env: {
+        DOCKER_HOST: dockerHost,
+        DRONE_RPC_HOST: 'drone',
+        DRONE_RPC_PROTO: 'http',
       },
     },
   },
