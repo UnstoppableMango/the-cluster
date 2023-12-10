@@ -228,11 +228,17 @@ const chart = new k8s.helm.v3.Chart('drone', {
       ],
       env: {
         DOCKER_HOST: dockerHost,
-        DRONE_RPC_HOST: 'drone',
+        DRONE_RPC_HOST: pulumi.interpolate`drone:${port}`,
         DRONE_RPC_PROTO: 'http',
       },
     },
   },
+  transformations: [(obj: any, opts: pulumi.CustomResourceOptions) => {
+    if (obj.kind !== 'Service') return;
+    if (obj.metadata.name !== 'drone-drone-runner-docker') return;
+    // Same service bullshit that Sidero had
+    obj.spec.ports[0].targetPort = 'tcp';
+  }],
 }, { provider });
 
 const dns = new pihole.DnsRecord(hosts.internal, {
