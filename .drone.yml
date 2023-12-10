@@ -11,6 +11,7 @@ trigger:
     - push
   branch:
     - main
+    - drones
 
 steps:
 - name: echo
