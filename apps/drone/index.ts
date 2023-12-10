@@ -28,7 +28,7 @@ const encryptionKey = new random.RandomId('encryption', {
 const client = new keycloak.openid.Client('drone', {
   realmId: external.realm,
   enabled: true,
-  name: 'drone',
+  name: 'Drone',
   clientId: 'drone',
   accessType: 'CONFIDENTIAL',
   standardFlowEnabled: true,
@@ -48,6 +48,14 @@ const mapper = new keycloak.openid.AudienceProtocolMapper('drone', {
   addToAccessToken: true,
 }, { provider: keycloakProvider });
 
+const uiClient = new keycloak.openid.Client('runner-ui', {
+  realmId: external.realm,
+  enabled: true,
+  name: 'Drone Runner UI',
+  clientId: 'drone-runner-ui',
+  accessType: 'CONFIDENTIAL',
+}, { provider: keycloakProvider });
+
 const droneSecret = new k8s.core.v1.Secret('drone-secrets', {
   metadata: {
     name: 'drone-secrets',
@@ -58,6 +66,7 @@ const droneSecret = new k8s.core.v1.Secret('drone-secrets', {
     DRONE_DATABASE_DATASOURCE: pulumi.interpolate`postgres://${dbUser.username}:${dbUser.password}@${dbIp}:${dbPort}/${database}?sslmode=disable`,
     DRONE_GITHUB_CLIENT_SECRET: github.clientSecret,
     DRONE_RPC_SECRET: rpcToken.hex,
+    DRONE_UI_PASSWORD: uiClient.clientSecret,
   },
 }, { provider });
 
@@ -95,6 +104,16 @@ const chart = new k8s.helm.v3.Chart('drone', {
           hosts: [hosts.internal],
         }],
       },
+      resources: {
+        limits: {
+          cpu: '100m',
+          memory: '128Mi',
+        },
+        requests: {
+          cpu: '100m',
+          memory: '128Mi',
+        },
+      },
       persistentVolume: { enabled: false },
       extraSecretNamesForEnvFrom: [
         droneSecret.metadata.name,
@@ -103,7 +122,6 @@ const chart = new k8s.helm.v3.Chart('drone', {
         DRONE_SERVER_HOST: hosts.external,
         DRONE_SERVER_PROTO: 'https',
         DRONE_DATABASE_DRIVER: 'postgres',
-        // DRONE_GITHUB_SERVER: 'https://github.com',
         DRONE_GITHUB_CLIENT_ID: github.clientId,
         DRONE_USER_FILTER: userFilter.join(','),
       },
@@ -139,6 +157,16 @@ const chart = new k8s.helm.v3.Chart('drone', {
         annotations: {
           'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
           'pulumi.com/skipAwait': 'true',
+        },
+      },
+      resources: {
+        limits: {
+          cpu: '100m',
+          memory: '300Mi',
+        },
+        requests: {
+          cpu: '100m',
+          memory: '300Mi',
         },
       },
     },
@@ -228,11 +256,18 @@ const chart = new k8s.helm.v3.Chart('drone', {
       ],
       env: {
         DOCKER_HOST: dockerHost,
-        DRONE_RPC_HOST: 'drone',
+        DRONE_RPC_HOST: pulumi.interpolate`drone:${port}`,
         DRONE_RPC_PROTO: 'http',
+        DRONE_UI_USERNAME: uiClient.clientId,
       },
     },
   },
+  transformations: [(obj: any, opts: pulumi.CustomResourceOptions) => {
+    if (obj.kind !== 'Service') return;
+    if (obj.metadata.name !== 'drone-drone-runner-docker') return;
+    // Same service bullshit that Sidero had
+    obj.spec.ports[0].targetPort = 'tcp';
+  }],
 }, { provider });
 
 const dns = new pihole.DnsRecord(hosts.internal, {
