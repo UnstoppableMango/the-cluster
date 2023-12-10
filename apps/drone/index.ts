@@ -242,8 +242,11 @@ const chart = new k8s.helm.v3.Chart('drone', {
         repository: 'docker',
         tag: versions.dind,
         command: ['dockerd'],
-        commandArgs: ['--host', dockerHost],
-        extraVolumeMounts: [],
+        commandArgs: ['--host', 'tcp://127.0.0.1:2375'],
+        securityContext: {
+          privileged: true,
+        },
+        // extraVolumeMounts: [],
         resources: {
           limits: {
             cpu: '100m',
@@ -260,6 +263,12 @@ const chart = new k8s.helm.v3.Chart('drone', {
         registry: 'docker.io',
         repository: 'drone/gc',
         tag: versions.droneGc,
+        securityContext: {
+          capabilities: { drop: ['ALL'] },
+          readOnlyRootFilesystem: true,
+          runAsNonRoot: true,
+          runAsUser: 1000,
+        },
         env: {
           GC_DEBUG: 'false',
           GC_DEBUG_COLOR: 'true',
@@ -317,7 +326,7 @@ const chart = new k8s.helm.v3.Chart('drone', {
       },
       autoscaling: {
         enabled: true,
-        minReplicas: 3,
+        minReplicas: 4,
       },
       extraSecretNamesForEnvFrom: [
         droneSecret.metadata.name,
