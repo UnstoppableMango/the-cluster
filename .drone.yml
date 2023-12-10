@@ -6,9 +6,14 @@ name: test
 #   namespace: drone
 #   annotations:
 #     thecluster.io/pipeline: test
+trigger:
+  event:
+    - push
+  branch:
+    - main
 
 steps:
 - name: echo
-  image: busybox
+  image: plugins/docker
   commands:
   - echo "Hiya friendo"

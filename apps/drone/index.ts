@@ -116,7 +116,7 @@ const chart = new k8s.helm.v3.Chart('drone', {
       ingress: {
         enabled: true,
         annotations: {
-          'cert-manager.io/cluster-issuer': clusterIssuers.staging,
+          'cert-manager.io/cluster-issuer': clusterIssuers.prod,
         },
         className: internalIngress,
         hosts: [{
@@ -280,6 +280,12 @@ const chart = new k8s.helm.v3.Chart('drone', {
           },
         },
       },
+      securityContext: {
+        capabilities: { drop: ['ALL'] },
+        readOnlyRootFilesystem: true,
+        runAsNonRoot: true,
+        runAsUser: 1000,
+      },
       service: {
         type: 'ClusterIP',
         port: 80,
@@ -288,6 +294,7 @@ const chart = new k8s.helm.v3.Chart('drone', {
         enabled: true,
         className: cfIngress,
         annotations: {
+          'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
           'pulumi.com/skipAwait': 'true',
         },
         hosts: [{
@@ -338,3 +345,5 @@ const dns = new pihole.DnsRecord(hosts.internal, {
 
 export const clientId = client.clientId;
 export const clientSecret = client.clientSecret;
+export const uiUsername = uiClient.clientId;
+export const uiPassword = uiClient.clientSecret;

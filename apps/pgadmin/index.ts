@@ -107,7 +107,7 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
       ingress: {
         enabled: true,
         annotations: {
-          'cert-manager.io/cluster-issuer': clusterIssuers.prod,
+          'cert-manager.io/cluster-issuer': clusterIssuers.staging,
         },
         ingressClassName: internalIngress,
         hosts: [{
