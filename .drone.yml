@@ -1,11 +1,11 @@
 kind: pipeline
-type: kubernetes
+type: docker
 name: test
 
-metadata:
-  namespace: drone
-  annotations:
-    thecluster.io/pipeline: test
+# metadata:
+#   namespace: drone
+#   annotations:
+#     thecluster.io/pipeline: test
 
 steps:
 - name: echo
