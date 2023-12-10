@@ -9,7 +9,7 @@ config:
       sidero: 0.6.1 # renovate depName=siderolabs/sidero extractVersion=^v(?<version>.*)
       cabpt: 0.6.2 # renovate depName=siderolabs/cluster-api-bootstrap-provider-talos extractVersion=^v(?<version>.*)
       cacppt: 0.5.3 # renovate depName=siderolabs/cluster-api-control-plane-provider-talos extractVersion=^v(?<version>.*)
-      certManager: 1.13.3 # renovate depName=cert-manager/cert-manager extractVersion=^v(?<version>.*)
+      certManager: 1.13.2 # renovate depName=cert-manager/cert-manager extractVersion=^v(?<version>.*)
       pulumiOperator: 1.14.0 # renovate depName=pulumi/pulumi-kubernetes-operator extractVersion=^v(?<version>.*)
       nginxIngressHelmOperator: v2.0.2 # renovate depName=nginxinc/nginx-ingress-helm-operator
       externalSnapshotter: v6.3.2 # renovate depName=kubernetes-csi/external-snapshotter
