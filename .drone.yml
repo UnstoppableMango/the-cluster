@@ -1,20 +1,20 @@
 kind: pipeline
 type: docker
-name: test
+name: default
 
 # metadata:
 #   namespace: drone
 #   annotations:
 #     thecluster.io/pipeline: test
-trigger:
-  event:
-    - push
-  branch:
-    - main
-    - drones
+# trigger:
+#   event:
+#     - push
+#   branch:
+#     - main
+#     - drones
 
 steps:
 - name: echo
-  image: plugins/docker
+  image: pulumi/pulumi-nodejs
   commands:
   - echo "Hiya friendo"
