@@ -1,11 +1,14 @@
 {
-    "name": "thecluster-crds",
-    "main": "index.ts",
-    "dependencies": {
-        "@pulumi/kubernetes": "^4.5.3",
-        "@pulumi/pulumi": "^3.92.0"
-    },
-    "devDependencies": {
-        "@types/node": "^20.8.7"
-    }
+  "name": "thecluster-crds",
+  "main": "index.ts",
+  "dependencies": {
+    "@pulumi/kubernetes": "^4.5.3",
+    "@pulumi/pulumi": "^3.92.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.7"
+  },
+  "workspaces": [
+    "../../lib/nodejs"
+  ]
 }

@@ -1,6 +1,6 @@
 import * as k8s from '@pulumi/kubernetes';
 import * as path from 'path';
-import { provider } from './clusters';
+import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { enabled, versions } from './config';
 
 const paths: string[] = [];
