@@ -1,5 +1,6 @@
+import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
-import { provider } from './clusters';
+import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { cephfs, clusterId, csi, rbd, versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('ceph-system', {
@@ -33,6 +34,10 @@ const chart = new k8s.helm.v3.Chart('ceph-csi', {
         clusterID: clusterId,
         fsName: 'kubernetes',
       },
+      // https://github.com/ceph/ceph-csi/issues/4297
+      readAffinity: {
+        enabled: false,
+      },
     },
     'ceph-csi-rbd': {
       csiConfig: csi,
@@ -56,8 +61,24 @@ const chart = new k8s.helm.v3.Chart('ceph-csi', {
           'storageclass.kubernetes.io/is-default-class': 'true',
         },
       },
+      // https://github.com/ceph/ceph-csi/issues/4297
+      readAffinity: {
+        enabled: false,
+      },
     },
   },
+  transformations: [(obj: any, opts: pulumi.CustomResourceOptions) => {
+    // https://github.com/ceph/ceph-csi/issues/4306
+    if (obj.kind !== 'ClusterRole') return;
+    const targets = [
+      'ceph-csi-ceph-csi-cephfs-nodeplugin',
+      'ceph-csi-ceph-csi-rbd-nodeplugin',
+      'ceph-csi-ceph-csi-rbd-provisioner',
+    ];
+    if (!targets.includes(obj.metadata.name)) return;
+    if (!obj.rules) obj.rules = [];
+    obj.rules.push({ apiGroups: [''], resources: ['nodes'], verbs: ['get', 'list', 'watch'] });
+  }],
 }, { provider });
 
 export const rbdClass = chart.getResource('storage.k8s.io/v1/StorageClass', 'rbd').metadata.name;
