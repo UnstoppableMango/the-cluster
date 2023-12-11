@@ -23,4 +23,7 @@ export const github = config.requireObject<GitHub>('github');
 export const hosts = config.requireObject<Hosts>('hosts');
 export const versions = config.requireObject<Versions>('versions');
 export const userFilter = config.requireObject<string[]>('userFilter');
+export const repoFilter = config.requireObject<string[]>('repoFilter');
 export const dockerHost = config.require('dockerHost');
+export const runnerRepos = config.requireObject<string[]>('runnerRepos');
+export const seedUser = config.require('seedUser');

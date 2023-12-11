@@ -12,7 +12,7 @@ import { provider as piholeProvider } from '@unmango/thecluster/apps/pihole';
 import { loadBalancerIp } from '@unmango/thecluster/apps/nginx-ingress';
 import { cloudflare as cfIngress, internal as internalIngress } from '@unmango/thecluster/ingress-classes';
 import { user as dbUser, database, ip as dbIp, port as dbPort } from '@unmango/thecluster/dbs/drone';
-import { dockerHost, github, hosts, userFilter, versions } from './config';
+import { dockerHost, github, hosts, repoFilter, runnerRepos, seedUser, userFilter, versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('drone', {
   metadata: { name: 'drone' },
@@ -27,6 +27,10 @@ const encryptionKey = new random.RandomId('encryption', {
 });
 
 const pluginKey = new random.RandomId('plugin', {
+  byteLength: 16,
+});
+
+const seedToken = new random.RandomId('seed', {
   byteLength: 16,
 });
 
@@ -179,11 +183,24 @@ const chart = new k8s.helm.v3.Chart('drone', {
         droneSecret.metadata.name,
       ],
       env: {
+        // https://docs.drone.io/server/reference/
         DRONE_SERVER_HOST: hosts.external,
         DRONE_SERVER_PROTO: 'https',
         DRONE_DATABASE_DRIVER: 'postgres',
         DRONE_GITHUB_CLIENT_ID: github.clientId,
+        DRONE_GIT_ALWAYS_AUTH: 'true',
+        DRONE_LOGS_COLOR: 'true',
+        DRONE_LOGS_DEBUG: 'true',
+        DRONE_LOGS_PRETTY: 'true',
         DRONE_USER_FILTER: userFilter.join(','),
+        DRONE_REPOSITORY_FILTER: repoFilter.join(','),
+        // https://docs.drone.io/server/reference/drone-registration-closed/
+        // https://docs.drone.io/server/user/management/
+        DRONE_REGISTRATION_CLOSED: 'true',
+        DRONE_STARLARK_ENABLED: 'true',
+        DRONE_USER_CREATE: pulumi.interpolate`username:${seedUser},machine:false,admin:true,token:${seedToken.hex}`,
+        DRONE_STATUS_DISABLED: 'false',
+        DRONE_STATUS_NAME: 'continuous-integration/drone',
         DRONE_YAML_ENDPOINT: 'http://localhost:3000',
       },
     },
@@ -270,7 +287,7 @@ const chart = new k8s.helm.v3.Chart('drone', {
           runAsUser: 1000,
         },
         env: {
-          GC_DEBUG: 'false',
+          GC_DEBUG: 'true',
           GC_DEBUG_COLOR: 'true',
           GC_DEBUG_PRETTY: 'true',
           GC_IGNORE_IMAGES: '',
@@ -332,10 +349,16 @@ const chart = new k8s.helm.v3.Chart('drone', {
         droneSecret.metadata.name,
       ],
       env: {
+        // https://docs.drone.io/runner/docker/configuration/reference/
+        DRONE_DEBUG: 'true',
         DOCKER_HOST: dockerHost,
         DRONE_RPC_HOST: pulumi.interpolate`drone:${port}`,
         DRONE_RPC_PROTO: 'http',
+        DRONE_LIMIT_REPOS: runnerRepos.join(','),
+        DRONE_LIMIT_TRUSTED: 'true',
         DRONE_UI_USERNAME: uiClient.clientId,
+        // DRONE_RUNNER_VOLUMES: '', // TODO: Something for caching probably
+        // DRONE_RUNNER_ENVIRON: '', // TODO: Useful for paths or something probably
       },
     },
   },
@@ -352,7 +375,13 @@ const dns = new pihole.DnsRecord(hosts.internal, {
   ip: loadBalancerIp,
 }, { provider: piholeProvider });
 
+// const runnerDns = new pihole.DnsRecord('drone-runner.thecluster.io', {
+//   domain: 'drone-runner.thecluster.io',
+//   ip: loadBalancerIp,
+// }, { provider: piholeProvider });
+
 export const clientId = client.clientId;
 export const clientSecret = client.clientSecret;
 export const uiUsername = uiClient.clientId;
 export const uiPassword = uiClient.clientSecret;
+export const seedUserToken = seedToken.hex;
