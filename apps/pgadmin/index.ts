@@ -196,17 +196,17 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
           { name: 'OAUTH2_AUTHORIZATION_URL', value: externalRealm.authorizationUrl },
           { name: 'OAUTH2_API_BASE_URL', value: externalRealm.apiBaseUrl },
           // { name: 'OAUTH2_USERINFO_ENDPOINT', value: external.userinfoEndpoint },
-          // { name: 'OAUTH2_USERINFO_ENDPOINT', value: 'userinfo' },
+          { name: 'OAUTH2_USERINFO_ENDPOINT', value: 'userinfo' },
         ],
       },
       persistentVolume: { enabled: false },
       resources: {
         limits: {
-          cpu: '100m',
+          cpu: '500m',
           memory: '300Mi',
         },
         requests: {
-          cpu: '100m',
+          cpu: '500m',
           memory: '300Mi',
         },
       },

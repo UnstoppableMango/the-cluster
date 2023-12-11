@@ -14,3 +14,14 @@ config:
       secure: AAABALzQNgeN8pIMoQ+4Lkmot52fBkrFb6YFiwwOg5u++zv3
     lastName:
       secure: AAABAAK0FXJfNktXQsZd5q64l9XpHfO598t4n+Qk1yJK2ImBLmaaRBk=
+  thecluster-identity:stackExchange:
+    clientId: 27925
+    clientSecret:
+      secure: AAABACpJX7ZljddV7ar/sLHsO9Wu+f/xP+3ZGm0ApKitZnioXZv5qQBbgdQ+qOZwJVnwakm/y7U=
+    key:
+      secure: AAABANtoowabyKyCX7r0cR16C2/xYRfKVqvYpR23SiJUMIsh2+22B+DoY2agIPsWjjdOis8TJQM=
+  thecluster-identity:twitter:
+    clientId:
+      secure: AAABAHY3+0KchrrSuUchYdQ9CTcaafAV4OyPgchoJRO5LpY1zAxWTxG3XeoVrDVmtwBw6zE4KWWy6dYKjwIJXHlI
+    clientSecret:
+      secure: AAABABzRy2k8E8vC8DvUdVCWRTnEU6gztuGOdIlIN1+ZoyL1iPiJHZ5NePv7sFv8wmQRXeqgWj/zNf53qo3i9u7vJtblkJB2kfZxqQcScIYL0g==
