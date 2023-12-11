@@ -9,10 +9,25 @@ const ref = new StackReference('postgres-db', {
 export const users = ref.requireOutput('users') as Output<PostgresDbOutputs['users']>;
 export const schema = ref.requireOutput('schemaName') as Output<string>;
 
-export {
-  provider,
-  hostname,
-  ip,
-  port,
-  database,
-} from '../apps/postgresql';
+export const allPermissions = [
+  'SELECT',
+  'INSERT',
+  'UPDATE',
+  'DELETE',
+  'TRUNCATE',
+  'REFERENCES',
+  'TRIGGER',
+  'CREATE',
+  'CONNECT',
+  'TEMPORARY',
+  'EXECUTE',
+  'USAGE'
+];
+
+export const allDbPermissions = [
+  'CREATE',
+  'CONNECT',
+  'TEMPORARY',
+];
+
+export { provider, hostname, ip, port, database } from '../apps/postgresql';

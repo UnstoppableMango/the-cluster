@@ -1,6 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as pg from '@pulumi/postgresql';
 import { provider, credentials } from '@unmango/thecluster/apps/postgresql';
+import { allDbPermissions } from '@unmango/thecluster/dbs/postgres';
 import { requireProp } from '@unmango/thecluster';
 
 export const user = pulumi.output(credentials)
@@ -21,5 +22,12 @@ const db = new pg.Database('drone', {
   name: 'drone',
   owner: droneOwner.name,
 }, { provider, dependsOn: drone });
+
+const grant = new pg.Grant('all', {
+  objectType: 'database',
+  database: db.name,
+  privileges: allDbPermissions,
+  role: drone.name,
+}, { provider });
 
 export const database = db.name;

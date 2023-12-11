@@ -5,29 +5,29 @@ import { allDbPermissions } from '@unmango/thecluster/dbs/postgres';
 import { requireProp } from '@unmango/thecluster';
 
 export const user = pulumi.output(credentials)
-  .apply(x => x.find(y => y.username === 'keycloak'));
+  .apply(x => x.find(y => y.username === 'dex'));
 
-const keycloakOwner = new pg.Role('keycloak_owner', {
-  name: 'keycloak_owner',
+const dexOwner = new pg.Role('dex_owner', {
+  name: 'dex_owner',
 }, { provider });
 
-const keycloak = new pg.Role('keycloak', {
+const dex = new pg.Role('dex', {
   name: user.apply(requireProp(x => x.username)),
   login: true,
   password: user.apply(requireProp(x => x.password)),
-  roles: [keycloakOwner.name],
+  roles: [dexOwner.name],
 }, { provider });
 
-const db = new pg.Database('keycloak', {
-  name: 'keycloak',
-  owner: keycloakOwner.name,
-}, { provider, dependsOn: keycloak });
+const db = new pg.Database('dex', {
+  name: 'dex',
+  owner: dexOwner.name,
+}, { provider, dependsOn: dex });
 
 const grant = new pg.Grant('all', {
   objectType: 'database',
   database: db.name,
   privileges: allDbPermissions,
-  role: keycloak.name,
+  role: dex.name,
 }, { provider });
 
 export const database = db.name;
