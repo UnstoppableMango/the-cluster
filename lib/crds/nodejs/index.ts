@@ -12,8 +12,10 @@ utilities.lazyLoad(exports, ["Provider"], () => require("./provider"));
 
 
 // Export sub-modules:
+import * as acme from "./acme";
 import * as addons from "./addons";
 import * as bootstrap from "./bootstrap";
+import * as certmanager from "./certmanager";
 import * as charts from "./charts";
 import * as cluster from "./cluster";
 import * as controlplane from "./controlplane";
@@ -28,8 +30,10 @@ import * as trust from "./trust";
 import * as types from "./types";
 
 export {
+    acme,
     addons,
     bootstrap,
+    certmanager,
     charts,
     cluster,
     controlplane,
