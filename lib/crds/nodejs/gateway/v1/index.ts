@@ -20,27 +20,20 @@ export type HTTPRoute = import("./httproute").HTTPRoute;
 export const HTTPRoute: typeof import("./httproute").HTTPRoute = null as any;
 utilities.lazyLoad(exports, ["HTTPRoute"], () => require("./httproute"));
 
-export { ReferenceGrantArgs } from "./referenceGrant";
-export type ReferenceGrant = import("./referenceGrant").ReferenceGrant;
-export const ReferenceGrant: typeof import("./referenceGrant").ReferenceGrant = null as any;
-utilities.lazyLoad(exports, ["ReferenceGrant"], () => require("./referenceGrant"));
-
 
 const _module = {
     version: utilities.getVersion(),
     construct: (name: string, type: string, urn: string): pulumi.Resource => {
         switch (type) {
-            case "kubernetes:gateway.networking.k8s.io/v1beta1:Gateway":
+            case "kubernetes:gateway.networking.k8s.io/v1:Gateway":
                 return new Gateway(name, <any>undefined, { urn })
-            case "kubernetes:gateway.networking.k8s.io/v1beta1:GatewayClass":
+            case "kubernetes:gateway.networking.k8s.io/v1:GatewayClass":
                 return new GatewayClass(name, <any>undefined, { urn })
-            case "kubernetes:gateway.networking.k8s.io/v1beta1:HTTPRoute":
+            case "kubernetes:gateway.networking.k8s.io/v1:HTTPRoute":
                 return new HTTPRoute(name, <any>undefined, { urn })
-            case "kubernetes:gateway.networking.k8s.io/v1beta1:ReferenceGrant":
-                return new ReferenceGrant(name, <any>undefined, { urn })
             default:
                 throw new Error(`unknown resource type ${type}`);
         }
     },
 };
-pulumi.runtime.registerResourceModule("crds", "gateway.networking.k8s.io/v1beta1", _module)
+pulumi.runtime.registerResourceModule("crds", "gateway.networking.k8s.io/v1", _module)

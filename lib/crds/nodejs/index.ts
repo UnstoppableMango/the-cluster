@@ -15,18 +15,28 @@ utilities.lazyLoad(exports, ["Provider"], () => require("./provider"));
 import * as addons from "./addons";
 import * as bootstrap from "./bootstrap";
 import * as cluster from "./cluster";
+import * as controlplane from "./controlplane";
 import * as gateway from "./gateway";
+import * as gatewayoperator from "./gatewayoperator";
+import * as infrastructure from "./infrastructure";
 import * as ipam from "./ipam";
+import * as metal from "./metal";
 import * as runtime from "./runtime";
+import * as trust from "./trust";
 import * as types from "./types";
 
 export {
     addons,
     bootstrap,
     cluster,
+    controlplane,
     gateway,
+    gatewayoperator,
+    infrastructure,
     ipam,
+    metal,
     runtime,
+    trust,
     types,
 };
 pulumi.runtime.registerResourcePackage("crds", {

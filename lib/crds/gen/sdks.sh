@@ -17,8 +17,8 @@ if ! command -v dotnet >/dev/null 2>&1; then
 fi
 
 root="$(git rev-parse --show-toplevel)"
-crdsDir="$root/infra/crds/manifests"
 libDir="$root/lib/crds"
+crdsDir="$libDir/manifests"
 dotnetDir="$libDir/dotnet"
 goDir="$libDir/go"
 javaDir="$libDir/java"
@@ -33,11 +33,14 @@ echo "Cleaning lib directories..."
 [ -d "$pythonDir" ] && rm -r "$pythonDir"
 
 echo "Generating crds libs..."
+# crd2pulumi "$crdsDir"/*.yaml \
+#     --dotnetPath="$dotnetDir" \
+#     --goPath="$goDir" \
+#     --nodejsPath="$nodejsDir" \
+#     --pythonPath="$pythonDir" \
+#     --force
 crd2pulumi "$crdsDir"/*.yaml \
-    --dotnetPath="$dotnetDir" \
-    --goPath="$goDir" \
     --nodejsPath="$nodejsDir" \
-    --pythonPath="$pythonDir" \
     --force
 
 echo "Patching nodejs lib..."
@@ -60,7 +63,7 @@ renamePulumi "$nodejsDir/types/input.ts"
 renamePulumi "$nodejsDir/types/output.ts"
 renamePulumi "$nodejsDir/index.ts"
 
-# Make sure the last thing we do is pop back to the curr
+# Make sure the last thing we do is pop back
 # trap popd EXIT
 
 echo -e "Installing nodejs packages...\n"

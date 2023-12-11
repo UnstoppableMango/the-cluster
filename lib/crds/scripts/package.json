@@ -1,0 +1,10 @@
+{
+  "name": "@unmango/thecluster-crds",
+  "type": "module",
+  "scripts": {
+    "patch": "node patch.js"
+  },
+  "dependencies": {
+    "yaml": "^2.3.4"
+  }
+}
