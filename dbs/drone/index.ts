@@ -20,6 +20,6 @@ const drone = new pg.Role('drone', {
 const db = new pg.Database('drone', {
   name: 'drone',
   owner: droneOwner.name,
-}, { provider });
+}, { provider, dependsOn: drone });
 
 export const database = db.name;
