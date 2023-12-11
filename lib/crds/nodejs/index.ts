@@ -14,6 +14,7 @@ utilities.lazyLoad(exports, ["Provider"], () => require("./provider"));
 // Export sub-modules:
 import * as addons from "./addons";
 import * as bootstrap from "./bootstrap";
+import * as charts from "./charts";
 import * as cluster from "./cluster";
 import * as controlplane from "./controlplane";
 import * as gateway from "./gateway";
@@ -29,6 +30,7 @@ import * as types from "./types";
 export {
     addons,
     bootstrap,
+    charts,
     cluster,
     controlplane,
     gateway,
