@@ -1,5 +1,5 @@
 import * as pulumi from '@pulumi/pulumi';
-import * as metal from '@pulumi/crds/metal/v1alpha2';
+import * as metal from '@unmango/thecluster-crds/metal/v1alpha2';
 import * as env from '../environments';
 
 export default new metal.ServerClass('rpi4.md', {

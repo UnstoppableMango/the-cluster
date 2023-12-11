@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as pulumi from '@pulumi/pulumi';
 import * as ps from '@pulumi/pulumiservice';
 import * as k8s from '@pulumi/kubernetes';
-import * as crds from '@pulumi/crds/pulumi/v1';
+import * as crds from '@unmango/thecluster-crds/pulumi/v1';
 import { Stacks, Versions } from './types';
 
 const config = new pulumi.Config();

@@ -1,15 +1,15 @@
 {
-    "name": "thecluster-capi-templates",
-    "main": "index.ts",
-    "dependencies": {
-        "@pulumi/kubernetes": "^4.5.4",
-        "@pulumi/pulumi": "^3.93.0",
-        "yaml": "^2.3.4"
-    },
-    "devDependencies": {
-        "@types/node": "^20.9.0"
-    },
-    "workspaces": [
-        "../../lib/crds"
-    ]
+  "name": "thecluster-capi-templates",
+  "main": "index.ts",
+  "dependencies": {
+    "@pulumi/kubernetes": "^4.5.4",
+    "@pulumi/pulumi": "^3.93.0",
+    "yaml": "^2.3.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.0"
+  },
+  "workspaces": [
+    "../../lib/crds/nodejs"
+  ]
 }
