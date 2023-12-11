@@ -21,6 +21,7 @@ import * as gatewayoperator from "./gatewayoperator";
 import * as infrastructure from "./infrastructure";
 import * as ipam from "./ipam";
 import * as metal from "./metal";
+import * as pulumiOperator from "./pulumi";
 import * as runtime from "./runtime";
 import * as trust from "./trust";
 import * as types from "./types";
@@ -35,6 +36,7 @@ export {
     infrastructure,
     ipam,
     metal,
+    pulumiOperator,
     runtime,
     trust,
     types,
