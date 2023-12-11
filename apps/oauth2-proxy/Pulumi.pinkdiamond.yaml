@@ -1,8 +1,0 @@
-config:
-  thecluster-oauth2-proxy:github:
-    clientId: eeab86553cd61c50e4cf
-    clientSecret:
-      secure: AAABAEaUpn9sf/zDI1djOS70Xu2wcj3IMlSuz/lbr9jUgnpef6X+ik0qTmaZTT14jMleAyrErc9nGkVboWOI/HScqI+fWMWn
-  thecluster-oauth2-proxy:hosts:
-    - dashboard.thecluster.lan
-    - dashboard.thecluster.io

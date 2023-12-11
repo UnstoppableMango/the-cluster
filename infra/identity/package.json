@@ -1,9 +1,8 @@
 {
-  "name": "thecluster-sealed-secrets",
+  "name": "thecluster-identity",
   "main": "index.ts",
   "dependencies": {
     "@pulumi/keycloak": "^5.2.1",
-    "@pulumi/kubernetes": "^4.5.5",
     "@pulumi/pulumi": "^3.96.2"
   },
   "devDependencies": {

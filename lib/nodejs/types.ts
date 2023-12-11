@@ -59,3 +59,26 @@ export interface DroneDbOutputs {
     password: Output<string>;
   }>;
 }
+
+export interface KeycloakDbOutputs {
+  user: Output<{
+    username: Output<string>;
+    password: Output<string>;
+  }>;
+}
+
+export interface IdentityOutputs {
+  hostname: Output<string>;
+  username: Output<string>;
+  password: Output<string>;
+  realms: Output<{
+    external: Output<{
+      id: Output<string>;
+    }>;
+    cluster: Output<{
+      id: Output<string>;
+    }>;
+  }>;
+  groupNames: Output<Output<string>[]>;
+  groups: Output<Record<string, Output<string>>>;
+}

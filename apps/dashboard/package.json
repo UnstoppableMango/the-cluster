@@ -1,16 +1,18 @@
 {
-    "name": "thecluster-dashboard",
-    "main": "index.ts",
-    "dependencies": {
-        "@pulumi/keycloak": "^5.2.1",
-        "@pulumi/kubernetes": "^4.3.0",
-        "@pulumi/pulumi": "^3.0.0",
-        "@unmango/pulumi-pihole": "^0.1.3"
-    },
-    "devDependencies": {
-        "@types/node": "^20.8.7"
-    },
-    "workspaces": [
-        "../../components/oauth2-proxy"
-    ]
+  "name": "thecluster-dashboard",
+  "main": "index.ts",
+  "dependencies": {
+    "@pulumi/keycloak": "^5.2.1",
+    "@pulumi/kubernetes": "^4.3.0",
+    "@pulumi/pulumi": "^3.0.0",
+    "@unmango/pulumi-pihole": "^0.1.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.7"
+  },
+  "workspaces": [
+    "../../components/oauth2-proxy",
+    "../../lib/nodejs",
+    "../../lib/crds"
+  ]
 }

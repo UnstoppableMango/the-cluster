@@ -30,9 +30,10 @@ const chart = new k8s.helm.v3.Chart('external-dns', {
       domainFilters: [
         ...piholeConfig.externalDomains,
         ...piholeConfig.internalDomains.flatMap(domain => [
-          `*.lan.${domain}`,
-          `*.int.${domain}`,
-          `*.local.${domain}`,
+          `lan.${domain}`,
+          `int.${domain}`,
+          `local.${domain}`,
+          `db.${domain}`,
         ]),
       ],
       env: [{

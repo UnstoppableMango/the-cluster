@@ -10,3 +10,8 @@ dependencies:
   - name: oauth2-proxy
     repository: https://oauth2-proxy.github.io/manifests
     version: 6.21.1
+    alias: external-oauth
+  - name: oauth2-proxy
+    repository: https://oauth2-proxy.github.io/manifests
+    version: 6.21.1
+    alias: internal-oauth
