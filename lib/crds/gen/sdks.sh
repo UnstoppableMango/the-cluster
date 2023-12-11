@@ -28,6 +28,7 @@ pythonDir="$libDir/python"
 echo "Cleaning lib directories..."
 [ -d "$dotnetDir" ] && rm -r "$dotnetDir"
 [ -d "$goDir" ] && rm -r "$goDir"
+[ -d "$libDir/kubernetes" ] && rm -r "$libDir/kubernetes" # Also go dir I guess?
 [ -d "$javaDir" ] && rm -r "$javaDir"
 [ -d "$nodejsDir" ] && rm -r "$nodejsDir"
 [ -d "$pythonDir" ] && rm -r "$pythonDir"
@@ -63,12 +64,16 @@ renamePulumi "$nodejsDir/types/input.ts"
 renamePulumi "$nodejsDir/types/output.ts"
 renamePulumi "$nodejsDir/index.ts"
 
+echo "Updating nodejs lib name..."
+packageJson="$(cat "$nodejsDir/package.json")"
+echo "$packageJson" | jq '.name = "@unmango/thecluster-crds" | .version = "0.1.0"' >"$nodejsDir/package.json"
+
 # Make sure the last thing we do is pop back
 # trap popd EXIT
 
 echo -e "Installing nodejs packages...\n"
 pushd "$nodejsDir"
-npm install
+npm install @pulumi/pulumi@latest @pulumi/kubernetes@latest @types/node@latest typescript@latest
 popd
 
 # echo -e "Restoring dotnet packages...\n"
