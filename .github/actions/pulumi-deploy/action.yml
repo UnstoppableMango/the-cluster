@@ -72,7 +72,7 @@ runs:
   - if: inputs.uses-crds == 'true'
     shell: bash
     run: npm ci
-    working-directory: lib/crds
+    working-directory: lib/crds/nodejs
 
   - if: inputs.uses-lib == 'true'
     shell: bash
