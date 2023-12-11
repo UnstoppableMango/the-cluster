@@ -10,6 +10,6 @@ cappxVersion="$(yq -r '.value' "$root/gen/versions/cappx")"
 cat >"$root/gen/clusterctl/config.yaml" <<EOL
 providers:
   - name: proxmox
-    url: https://github.com/sp-yduck/cluster-api-provider-proxmox/releases/$cappxVersion/infrastructure-components.yaml
+    url: https://github.com/k8s-proxmox/cluster-api-provider-proxmox/releases/$cappxVersion/infrastructure-components.yaml
     type: InfrastructureProvider
 EOL

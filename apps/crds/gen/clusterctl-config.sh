@@ -14,16 +14,12 @@ function version() {
 }
 
 echo "Getting versions..."
-coreVersion="$(version "clusterapi")"
 proxmoxVersion="$(version "proxmox")"
-sideroVersion="$(version "sidero")"
-cabptVersion="$(version "cabpt")"
-cacpptVersion="$(version "cacppt")"
 
 echo "Writing clusterctl.yaml file..."
 cat >"$root/clusterctl.yaml" <<EOL
 providers:
   - name: proxmox
-    url: https://github.com/sp-yduck/cluster-api-provider-proxmox/releases/v$proxmoxVersion/infrastructure-components.yaml
+    url: https://github.com/k8s-proxmox/cluster-api-provider-proxmox/releases/v$proxmoxVersion/infrastructure-components.yaml
     type: InfrastructureProvider
 EOL
