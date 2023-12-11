@@ -1,4 +1,4 @@
-import { Output, StackReference, all } from '@pulumi/pulumi';
+import { Output, StackReference } from '@pulumi/pulumi';
 import { cluster } from '../config';
 import { PostgresDbOutputs } from '../types';
 

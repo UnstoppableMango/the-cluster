@@ -1,10 +1,12 @@
+import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as keycloak from '@pulumi/keycloak';
 import * as random from '@pulumi/random';
 import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { rbdStorageClass } from '@unmango/thecluster/apps/ceph-csi';
 import { ingressClass } from '@unmango/thecluster/apps/cloudflare-ingress';
-import { auth, cluster, production, postgres, hostname, github, google } from './config';
+import { user as dbUser, hostname as dbHost, port as dbPort, database } from '@unmango/thecluster/dbs/keycloak';
+import { auth, cluster, production, hosts, github, google, versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('keycloak', {
   metadata: { name: 'keycloak' },
@@ -15,65 +17,85 @@ const adminPassword = new random.RandomPassword('admin', {
   special: false,
 });
 
-const postgresAdminPassword = new random.RandomPassword('postgres-admin', {
-  length: 24,
-  special: false,
-});
-
-const postgresPassword = new random.RandomPassword('postgres', {
-  length: 24,
-  special: false,
-});
+const secret = new k8s.core.v1.Secret('keycloak', {
+  metadata: {
+    name: 'keycloak',
+    namespace: ns.metadata.name,
+  },
+  stringData: {
+    adminPassword: adminPassword.result,
+    dbHost: pulumi.interpolate`${dbHost}`,
+    dbPort: pulumi.interpolate`${dbPort}`,
+    dbUser: dbUser.username,
+    dbPassword: dbUser.password,
+    database,
+  },
+}, { provider });
 
 const chart = new k8s.helm.v3.Chart('keycloak', {
   path: './',
   namespace: ns.metadata.name,
-  // https://github.com/bitnami/charts/tree/main/bitnami/keycloak/#parameters
   values: {
+    // https://github.com/bitnami/charts/tree/main/bitnami/keycloak/#parameters
     keycloak: {
-      global: {
-        storageClass: rbdStorageClass,
+      image: {
+        registry: 'docker.io',
+        repository: 'bitnami/keycloak',
+        tag: versions.keycloak,
       },
       auth: {
         ...auth,
-        adminPassword: adminPassword.result,
+        existingSecret: secret.metadata.name,
+        passwordSecretKey: 'adminPassword',
       },
       production,
       proxy: 'edge',
+      containerPorts: {
+        http: 8080,
+        https: 8443,
+        infinispan: 7800,
+      },
+      podSecurityContext: { enabled: true },
+      containerSecurityContext: { enabled: true },
+      service: {
+        type: 'ClusterIP',
+        // clusterIP: '',
+        http: {
+          enabled: true,
+        },
+        ports: {
+          http: 80,
+          https: 443,
+        },
+      },
       ingress: {
         enabled: true,
         ingressClassName: ingressClass,
         pathType: 'Prefix',
-        hostname,
+        hostname: hosts.external,
         annotations: {
           'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
-  
-          // * Ingress .status.loadBalancer field was not updated with a hostname/IP address.
-          // for more information about this error, see https://pulumi.io/xdv72s
-          // https://github.com/pulumi/pulumi-kubernetes/issues/1812
-          // https://github.com/pulumi/pulumi-kubernetes/issues/1810
           'pulumi.com/skipAwait': 'true',
         },
       },
       pdb: { create: true },
       autoscaling: { enabled: true },
-      postgresql: {
-        auth: {
-          postgresPassword: postgresAdminPassword.result,
-          username: postgres.username,
-          password: postgresPassword.result,
-          database: 'keycloak',
-        },
-        architecture: 'replication',
+      metrics: { enabled: true },
+      postgresql: { enabled: false },
+      externalDatabase: {
+        existingSecret: secret.metadata.name,
+        existingSecretHostKey: 'dbHost',
+        existingSecretPortKey: 'dbPort',
+        existingSecretUserKey: 'dbUser',
+        existingSecretDatabaseKey: 'database',
+        existingSecretPasswordKey: 'dbPassword',
       },
     },
   },
 }, { provider });
 
-export { hostname }
+export const hostname = hosts.external;
 export const password = adminPassword.result;
-export const dbAdminPassword = postgresAdminPassword.result;
-export const dbPassword = postgresPassword.result;
 
 const keycloakProvider = new keycloak.Provider(cluster, {
   url: `https://${hostname}`,
@@ -92,18 +114,18 @@ const externalRealm = new keycloak.Realm('external', {
   verifyEmail: true,
 }, { provider: keycloakProvider });
 
-const githubIdp = new keycloak.oidc.IdentityProvider('github', {
-  realm: externalRealm.id,
-  enabled: true,
-  alias: 'github',
-  displayName: 'GitHub',
-  clientId: github.clientId,
-  clientSecret: github.clientSecret,
-  authorizationUrl: 'https://github.com/login/oauth/authorize',
-  tokenUrl: 'https://github.com/login/oauth/access_token',
-  trustEmail: true,
-  syncMode: 'IMPORT',
-}, { provider: keycloakProvider });
+// const githubIdp = new keycloak.oidc.IdentityProvider('github', {
+//   realm: externalRealm.id,
+//   enabled: true,
+//   alias: 'github',
+//   displayName: 'GitHub',
+//   clientId: github.clientId,
+//   clientSecret: github.clientSecret,
+//   authorizationUrl: 'https://github.com/login/oauth/authorize',
+//   tokenUrl: 'https://github.com/login/oauth/access_token',
+//   trustEmail: true,
+//   syncMode: 'IMPORT',
+// }, { provider: keycloakProvider });
 
 const googleIdp = new keycloak.oidc.GoogleIdentityProvider('google', {
   realm: externalRealm.id,
@@ -122,3 +144,16 @@ const clusterRealm = new keycloak.Realm('cluster', {
   displayNameHtml: cluster,
   userManagedAccess: true,
 }, { provider: keycloakProvider });
+
+// const myUser = new keycloak.User('UnstoppableMango', {
+//   realmId: realm,
+//   enabled: true,
+//   username: 'UnstoppableMango',
+//   email: myEmail,
+//   emailVerified: true,
+//   federatedIdentities: [{
+//     identityProvider: googleIdp.displayName,
+//     userName: myGoogleId,
+//     userId: myGoogleId,
+//   }],
+// }, { provider: keycloakProvider });

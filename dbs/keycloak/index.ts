@@ -23,11 +23,11 @@ const db = new pg.Database('keycloak', {
   owner: keycloakOwner.name,
 }, { provider, dependsOn: keycloak });
 
-const grant = new pg.Grant('all', {
-  objectType: 'database',
-  database: db.name,
-  privileges: allDbPermissions,
-  role: keycloak.name,
-}, { provider });
+// const grant = new pg.Grant('all', {
+//   objectType: 'database',
+//   database: db.name,
+//   privileges: allDbPermissions,
+//   role: keycloak.name,
+// }, { provider });
 
 export const database = db.name;

@@ -1,8 +1,7 @@
 import * as k8s from '@pulumi/kubernetes';
-import * as pihole from '@unmango/pulumi-pihole';
-import { provider } from './clusters';
-import { ingressClass, ip } from './apps/nginx-ingress';
-import { provider as piholeProvider } from './apps/pihole';
+import { provider } from '@unmango/thecluster/cluster/from-stack';
+import { internalClass } from '@unmango/thecluster/apps/nginx-ingress';
+import { clusterIssuers } from '@unmango/thecluster/tls';
 
 const ns = new k8s.core.v1.Namespace('unifi', {
   metadata: { name: 'unifi' },
@@ -28,15 +27,17 @@ const ingress = new k8s.networking.v1.Ingress('unifi', {
     namespace: ns.metadata.name,
     annotations: {
       'pulumi.com/skipAwait': 'true',
-      // 'cert-manager.io/issuer': 'selfsigned',
+      'cert-manager.io/cluster-issuer': clusterIssuers.staging,
     },
   },
   spec: {
-    ingressClassName: ingressClass,
+    ingressClassName: internalClass,
     rules: [{
-      host: 'unifi.thecluster.lan',
+      host: 'unifi.lan.thecluster.io',
       http: {
         paths: [{
+          path: '/',
+          pathType: 'ImplementationSpecific',
           backend: {
             service: {
               name: service.metadata.name,
@@ -45,19 +46,12 @@ const ingress = new k8s.networking.v1.Ingress('unifi', {
               },
             },
           },
-          path: '/',
-          pathType: 'ImplementationSpecific',
         }],
       },
     }],
     tls: [{
-      hosts: ['unifi.thecluster.lan'],
+      hosts: ['unifi.lan.thecluster.io'],
       secretName: 'unifi-tls',
     }],
   },
 }, { provider });
-
-const dnsRecord = new pihole.DnsRecord('unifi', {
-  domain: 'unifi.thecluster.lan',
-  ip,
-}, { provider: piholeProvider });

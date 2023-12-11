@@ -59,3 +59,11 @@ export interface DroneDbOutputs {
     password: Output<string>;
   }>;
 }
+
+
+export interface KeycloakDbOutputs {
+  user: Output<{
+    username: Output<string>;
+    password: Output<string>;
+  }>;
+}

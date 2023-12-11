@@ -9,7 +9,11 @@ config:
     clientId: 186152974979-mbmlhacv2u1l1sv3enid4aagcl63df3u.apps.googleusercontent.com
     clientSecret:
       secure: AAABAIQ/t3itZQn4BU71DT5QU+6D0x6lhrnUS+uYw1xJiBRptCrzyrSY8EEOaBV5hsGn0nMVDx5TruRTvFRjY9LtIg==
-  thecluster-keycloak:hostname: keycloak.thecluster.io
-  thecluster-keycloak:postgres:
-    username: keycloak
+  thecluster-keycloak:hosts:
+    external: keycloak.thecluster.io
+    internal: keycloak.lan.thecluster.io
+  thecluster-keycloak:myEmail:
+    secure: AAABALtjqGhAIl8JH+Hg33JQ+uqx5//ay/TCqlRTwiMJemqCsx0cQwLkDYWmsoyWeae0Iw05wA==
+  thecluster-keycloak:myGoogleId:
+    secure: AAABAItQL2RL42SYUNEtCY8s7xz2kIdYAwJl35S8TyeNXwxSgRbzjcsRp2ub+6qGU3umO6sT
   thecluster-keycloak:production: "true"

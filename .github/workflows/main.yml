@@ -59,32 +59,6 @@ jobs:
       verify: false
     secrets: inherit
 
-  rosequartz:
-    name: Rosequartz
-    runs-on: ubuntu-latest
-    needs: [setup]
-    if: fromJson(needs.setup.outputs.rosequartz) && !failure() && !cancelled() && false
-    defaults:
-      run:
-        working-directory: clusters/rosequartz
-    env:
-      PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Setup tools
-      uses: ./.github/actions/setup-tools
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-
-    - id: setup-config
-      uses: ./.github/actions/setup-config
-      with:
-        cluster: rosequartz
-
-    - name: Health check
-      run: talosctl health --nodes 192.168.1.101
-
   pinkdiamond:
     name: Pink Diamond
     runs-on: ubuntu-latest
@@ -112,19 +86,6 @@ jobs:
       if: false # Port-forwarding isn't setup for pinkdiamond
       run: talosctl health --nodes 192.168.1.104
 
-  crds-rq:
-    name: Rosequartz CRDs
-    needs: [setup, rosequartz]
-    if: fromJson(needs.setup.outputs.crds) && !failure() && !cancelled() && false
-    concurrency: rq-crds-${{ github.ref }}
-    uses: ./.github/workflows/deploy.yml
-    with:
-      project: crds
-      stack: rosequartz
-      verify: false
-      pre-deploy-script: ./gen/capi.sh
-    secrets: inherit
-
   crds-pd:
     name: Pink Diamond CRDs
     needs: [setup, pinkdiamond]
@@ -136,19 +97,6 @@ jobs:
       stack: pinkdiamond
       verify: false
       pre-deploy-script: ./gen/capi.sh
-    secrets: inherit
-
-  cert-manager-rq:
-    name: Rosequartz Cert Manager
-    needs: [setup, rosequartz, crds-rq]
-    if: fromJson(needs.setup.outputs.cert-manager) && !failure() && !cancelled() && false
-    concurrency: rq-cert-manager-${{ github.ref }}
-    uses: ./.github/workflows/deploy.yml
-    with:
-      project: cert-manager
-      stack: rosequartz
-      uses-crds: true
-      uses-lib: true
     secrets: inherit
 
   cert-manager-pd:
@@ -164,17 +112,6 @@ jobs:
       uses-lib: true
     secrets: inherit
 
-  metrics-server-rq:
-    name: Rosequartz Metrics Server
-    needs: [setup, rosequartz]
-    if: fromJson(needs.setup.outputs.metrics-server) && !failure() && !cancelled() && false
-    concurrency: rq-metrics-server-${{ github.ref }}
-    uses: ./.github/workflows/deploy.yml
-    with:
-      project: metrics-server
-      stack: rosequartz
-    secrets: inherit
-
   metrics-server-pd:
     name: Pink Diamond Metrics Server
     needs: [setup, pinkdiamond]
@@ -184,32 +121,6 @@ jobs:
     with:
       project: metrics-server
       stack: pinkdiamond
-    secrets: inherit
-
-  clusterapi:
-    name: Cluster API
-    needs: [setup, rosequartz, cert-manager-rq, crds-rq]
-    if: fromJson(needs.setup.outputs.clusterapi) && !failure() && !cancelled() && false
-    concurrency: clusterapi-${{ github.ref }}
-    uses: ./.github/workflows/deploy.yml
-    with:
-      project: clusterapi
-      stack: rosequartz
-      verify: false
-      pre-deploy-script: ./gen/manifests.sh
-    secrets: inherit
-
-  pulumi-operator-rq:
-    name: Rosequartz Pulumi Kubernetes Operator
-    needs: [setup, rosequartz, crds-rq]
-    if: fromJson(needs.setup.outputs.pulumi-operator) && !failure() && !cancelled() && false
-    concurrency: rq-pulumi-operator-${{ github.ref }}
-    uses: ./.github/workflows/deploy.yml
-    with:
-      project: pulumi-operator
-      stack: rosequartz
-      verify: false
-      uses-crds: true
     secrets: inherit
 
   pulumi-operator-pd:
@@ -225,17 +136,6 @@ jobs:
       uses-crds: true
     secrets: inherit
 
-  metallb-rq:
-    name: MetalLB - Rosequartz
-    needs: [setup, rosequartz]
-    if: fromJson(needs.setup.outputs.metallb) && !failure() && !cancelled() && false
-    concurrency: rq-metallb-${{ github.ref }}
-    uses: ./.github/workflows/deploy.yml
-    with:
-      project: metallb
-      stack: rosequartz
-    secrets: inherit
-
   metallb-pd:
     name: MetalLB - Pink Diamond
     needs: [setup, pinkdiamond]
@@ -245,31 +145,6 @@ jobs:
     with:
       project: metallb
       stack: pinkdiamond
-    secrets: inherit
-
-  cloudflared:
-    name: Cloudflared
-    needs: [setup, rosequartz]
-    if: fromJson(needs.setup.outputs.cloudflared) && !failure() && !cancelled()
-    concurrency: cloudflared-${{ github.ref }}
-    uses: ./.github/workflows/deploy.yml
-    with:
-      project: cloudflared
-      stack: rosequartz
-      verify: false
-    secrets: inherit
-
-  capi-templates:
-    name: Cluster API Templates
-    needs: [setup, rosequartz, crds-rq]
-    if: fromJson(needs.setup.outputs.capi-templates) && !failure() && !cancelled() && false
-    concurrency: capi-templates-${{ github.ref }}
-    uses: ./.github/workflows/deploy.yml
-    with:
-      project: capi-templates
-      stack: rosequartz
-      uses-crds: true
-      verify: false
     secrets: inherit
 
   cloudflare-ingress:
@@ -345,41 +220,41 @@ jobs:
       uses-crds: true
     secrets: inherit
 
-  dashboard:
-    name: Dashboard
-    needs: [setup, pinkdiamond, nginx-ingress]
-    if: fromJson(needs.setup.outputs.dashboard) && !failure() && !cancelled()
-    concurrency: dashboard-${{ github.ref }}
-    uses: ./.github/workflows/deploy.yml
-    with:
-      project: dashboard
-      stack: pinkdiamond
-      verify: false
-    secrets: inherit
+  # dashboard:
+  #   name: Dashboard
+  #   needs: [setup, pinkdiamond, nginx-ingress]
+  #   if: fromJson(needs.setup.outputs.dashboard) && !failure() && !cancelled()
+  #   concurrency: dashboard-${{ github.ref }}
+  #   uses: ./.github/workflows/deploy.yml
+  #   with:
+  #     project: dashboard
+  #     stack: pinkdiamond
+  #     verify: false
+  #   secrets: inherit
 
-  pihole:
-    name: Pi-hole
-    needs: [setup, pinkdiamond, metallb-pd]
-    if: fromJson(needs.setup.outputs.pihole) && !failure() && !cancelled()
-    concurrency: pihole-${{ github.ref }}
-    uses: ./.github/workflows/deploy.yml
-    with:
-      project: pihole
-      stack: pinkdiamond
-      verify: false
-    secrets: inherit
+  # pihole:
+  #   name: Pi-hole
+  #   needs: [setup, pinkdiamond, metallb-pd]
+  #   if: fromJson(needs.setup.outputs.pihole) && !failure() && !cancelled()
+  #   concurrency: pihole-${{ github.ref }}
+  #   uses: ./.github/workflows/deploy.yml
+  #   with:
+  #     project: pihole
+  #     stack: pinkdiamond
+  #     verify: false
+  #   secrets: inherit
 
-  dex:
-    name: Dex
-    needs: [setup, pinkdiamond, cloudflare-ingress, keycloak]
-    if: fromJson(needs.setup.outputs.dex) && !failure() && !cancelled()
-    concurrency: dex-${{ github.ref }}
-    uses: ./.github/workflows/deploy.yml
-    with:
-      project: dex
-      stack: pinkdiamond
-      verify: false
-    secrets: inherit
+  # dex:
+  #   name: Dex
+  #   needs: [setup, pinkdiamond, cloudflare-ingress, keycloak]
+  #   if: fromJson(needs.setup.outputs.dex) && !failure() && !cancelled()
+  #   concurrency: dex-${{ github.ref }}
+  #   uses: ./.github/workflows/deploy.yml
+  #   with:
+  #     project: dex
+  #     stack: pinkdiamond
+  #     verify: false
+  #   secrets: inherit
 
   gateway-api:
     name: Gateway API
