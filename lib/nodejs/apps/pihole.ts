@@ -6,8 +6,8 @@ const ref = new StackReference('pihole', {
   name: `UnstoppableMango/thecluster-pihole/${cluster}`,
 });
 
-const hostname = ref.requireOutput('hostname');
-const password = ref.requireOutput('password');
+export const hostname = ref.requireOutput('hostname');
+export const password = ref.requireOutput('password');
 
 export const provider = new Provider('pihole', {
   url: interpolate`https://${hostname}`,

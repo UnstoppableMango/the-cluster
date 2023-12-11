@@ -1,0 +1,15 @@
+apiVersion: v2
+name: external-dns
+description: External DNS install for THECLUSTER
+type: application
+version: 0.1.0
+dependencies:
+  - name: external-dns
+    repository: https://kubernetes-sigs.github.io/external-dns/
+    version: 1.13.1
+    alias: pihole-dns
+  - name: external-dns
+    repository: https://kubernetes-sigs.github.io/external-dns/
+    version: 1.13.1
+    alias: cloudflare-dns
+    condition: cloudflare-dns.enabled
