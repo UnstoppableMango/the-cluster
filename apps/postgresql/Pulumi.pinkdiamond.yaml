@@ -15,5 +15,6 @@ config:
     - unmango
     - pulumi
     - pgadmin
+    - dex
     - drone
     - keycloak
