@@ -25,8 +25,8 @@ version="$(pulumi -C "$repoDir" -s codegen config get --path "versions.cappx")"
 mkdir -p "$manifestDir"
 
 "$rootDir/gen/capi/provider.sh" \
-    --component bootstrap \
-    --module talos \
+    --component infrastructure \
+    --module proxmox \
     --version "$version" \
     | kubectl slice \
     --exclude-kind CustomResourceDefinition \

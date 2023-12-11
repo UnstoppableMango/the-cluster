@@ -9,3 +9,4 @@ version="$(pulumi -C "$repoDir" -s codegen config get --path "versions.cappx")"
     --component infrastructure \
     --module proxmox \
     --version "$version" \
+    --config "$repoDir/clusterctl.yaml"
