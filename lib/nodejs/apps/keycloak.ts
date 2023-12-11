@@ -7,8 +7,8 @@ const ref = new StackReference('keycloak', {
 });
 
 export const hostname = ref.requireOutput('hostname') as Output<string>;
-export const realm = ref.requireOutput('realm') as Output<string>;
-
+export const username = ref.requireOutput('username') as Output<string>;
+export const password = ref.requireOutput('password') as Output<string>;
 export const provider = new Provider('keycloak', {
   url: interpolate`https://${hostname}`,
   username: 'admin',

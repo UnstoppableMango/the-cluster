@@ -1,0 +1,16 @@
+config:
+  thecluster-identity:github:
+    clientId: d1f065d7f2d33f3cfbd6
+    clientSecret:
+      secure: AAABAMSUANx38hZNoW8+RU/nkzqYTAFvKHlyEok2agIcm0LQH7cKHNEpuby649WZyEVa3V+1FqgrfLnEKUvz1Erj1DMxpdKd
+  thecluster-identity:google:
+    clientId: 186152974979-mbmlhacv2u1l1sv3enid4aagcl63df3u.apps.googleusercontent.com
+    clientSecret:
+      secure: AAABAPMUEk8ctre0tYOO8LyyjeCf7YH0mDM9i2LWnw1TCR55/mKdlg370mU2v3ASaya0fNtfEF0TfMSUxVtlSSr+sg==
+  thecluster-identity:me:
+    email:
+      secure: AAABAGHrrEZPel5oVcGECWxhEVJkpxA0lXfu/Al8jmDsfyiSg0ySeMpmLtD1hKX6LfhwxTDh6w==
+    firstName:
+      secure: AAABALzQNgeN8pIMoQ+4Lkmot52fBkrFb6YFiwwOg5u++zv3
+    lastName:
+      secure: AAABAAK0FXJfNktXQsZd5q64l9XpHfO598t4n+Qk1yJK2ImBLmaaRBk=

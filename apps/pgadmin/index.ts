@@ -2,16 +2,13 @@ import * as fs from 'node:fs/promises';
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as keycloak from '@pulumi/keycloak';
-import * as pihole from '@unmango/pulumi-pihole';
 import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { clusterIssuers } from '@unmango/thecluster/tls';
 import { cloudflare as cfIngress, internal as internalIngress } from '@unmango/thecluster/ingress-classes';
 import { provider as keycloakProvider } from '@unmango/thecluster/apps/keycloak';
-import { provider as piholeProvider } from '@unmango/thecluster/apps/pihole';
-import { loadBalancerIp } from '@unmango/thecluster/apps/nginx-ingress';
 import { database, ip, hostname, port, users, schema } from '@unmango/thecluster/dbs/postgres';
-import { external } from '@unmango/thecluster/realms';
-import { join } from '@unmango/thecluster';
+import { external as externalRealm, groups, groupsScopeName } from '@unmango/thecluster/realms';
+import { join, requireProp } from '@unmango/thecluster';
 import { email, hosts } from './config';
 import * as YAML from 'yaml';
 
@@ -20,13 +17,14 @@ const ns = new k8s.core.v1.Namespace('pgadmin', {
 }, { provider });
 
 const client = new keycloak.openid.Client('pgadmin', {
-  realmId: external.realm,
+  realmId: externalRealm.realm,
   enabled: true,
   name: 'pgAdmin4',
   clientId: 'pgadmin4',
   accessType: 'CONFIDENTIAL',
   standardFlowEnabled: true,
   directAccessGrantsEnabled: false,
+  baseUrl: pulumi.interpolate`https://${hosts.external}`,
   validRedirectUris: [
     // oauth2-proxy
     pulumi.interpolate`https://${hosts.external}/oauth2/callback`,
@@ -38,7 +36,7 @@ const client = new keycloak.openid.Client('pgadmin', {
 }, { provider: keycloakProvider });
 
 const mapper = new keycloak.openid.AudienceProtocolMapper('pgadmin', {
-  realmId: external.realm,
+  realmId: externalRealm.realm,
   name: pulumi.interpolate`aud-mapper-${client.clientId}`,
   clientId: client.id,
   includedClientAudience: client.clientId,
@@ -46,16 +44,42 @@ const mapper = new keycloak.openid.AudienceProtocolMapper('pgadmin', {
   addToAccessToken: true,
 }, { provider: keycloakProvider });
 
+const loginRole = new keycloak.Role('pgadmin-login', {
+  realmId: externalRealm.realm,
+  clientId: client.id,
+  name: 'pgadmin-login',
+  description: 'PgAdmin4 Login',
+}, { provider: keycloakProvider });
+
+const readersGroup = new keycloak.Group('pgadmin-readers', {
+  realmId: externalRealm.realm,
+  name: 'PgAdmin4 Readers',
+  // Something is weird here
+  // parentId: pulumi.output(groups).apply(g => g['Web App Readers']),
+}, { provider: keycloakProvider });
+
+const readersGroupRoles = new keycloak.GroupRoles('pgadmin-readers', {
+  realmId: externalRealm.realm,
+  groupId: readersGroup.id,
+  roleIds: [loginRole.id],
+}, { provider: keycloakProvider });
+
+const optionalScopes = new keycloak.openid.ClientOptionalScopes('pgadmin', {
+  realmId: externalRealm.realm,
+  clientId: client.id,
+  optionalScopes: [groupsScopeName],
+}, { provider: keycloakProvider });
+
 const user = pulumi.output(users).apply(x => x.find(y => y.username === 'pgadmin'));
-const username = user.apply(x => x?.username ?? '');
-const password = user.apply(x => x?.password ?? '');
+const username = user.apply(requireProp(x => x.username));
+const password = user.apply(requireProp(x => x.password));
 const pgadminSecret = new k8s.core.v1.Secret('pgadmin-credentials', {
   metadata: {
     name: 'pgadmin-credentials',
     namespace: ns.metadata.name,
   },
   stringData: {
-    password: user.apply(x => x?.password ?? ''),
+    password: user.apply(requireProp(x => x.password)),
     'pgadmin.pgpass': join(pulumi.output(users).apply(x => x.flatMap(user => ([
       pulumi.interpolate`${hostname}:${port}:${user.username}:${user.password}`,
       pulumi.interpolate`${ip}:${port}:${user.username}:${user.password}`,
@@ -161,8 +185,6 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         variables: [
           {
             name: 'CONFIG_DATABASE_URI',
-            // value: pulumi.interpolate`postgresql://${credentials.postgres.username}:${credentials.postgres.password}@${ip}:${port}/${database}?options=-csearch_path=${schema}`,
-            // value: pulumi.interpolate`postgresql://${username}@${ip}:${port}?options=-csearch_path=${schema}`,
             value: pulumi.interpolate`postgresql://${username}:${password}@${ip}:${port}/${database}?options=-csearch_path=${schema}`,
           },
           // Currently technically unused
@@ -170,14 +192,24 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
           // https://www.pgadmin.org/docs/pgadmin4/latest/oauth2.html
           { name: 'OAUTH2_CLIENT_ID', value: client.clientId },
           { name: 'OAUTH2_CLIENT_SECRET', value: client.clientSecret },
-          { name: 'OAUTH2_TOKEN_URL', value: external.tokenUrl },
-          { name: 'OAUTH2_AUTHORIZATION_URL', value: external.authorizationUrl },
-          { name: 'OAUTH2_API_BASE_URL', value: external.apiBaseUrl },
+          { name: 'OAUTH2_TOKEN_URL', value: externalRealm.tokenUrl },
+          { name: 'OAUTH2_AUTHORIZATION_URL', value: externalRealm.authorizationUrl },
+          { name: 'OAUTH2_API_BASE_URL', value: externalRealm.apiBaseUrl },
           // { name: 'OAUTH2_USERINFO_ENDPOINT', value: external.userinfoEndpoint },
           // { name: 'OAUTH2_USERINFO_ENDPOINT', value: 'userinfo' },
         ],
       },
       persistentVolume: { enabled: false },
+      resources: {
+        limits: {
+          cpu: '100m',
+          memory: '300Mi',
+        },
+        requests: {
+          cpu: '100m',
+          memory: '300Mi',
+        },
+      },
       autoscaling: {
         enabled: true,
         minReplicas: 1,
@@ -194,7 +226,7 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         { name: 'OAUTH2_PROXY_UPSTREAMS', value: `http://postgresql-pgadmin4:80` },
         { name: 'OAUTH2_PROXY_HTTP_ADDRESS', value: 'http://0.0.0.0:4180' },
         { name: 'OAUTH2_PROXY_REDIRECT_URL', value: pulumi.interpolate`https://${hosts.external}/oauth2/callback` },
-        { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: external.issuerUrl },
+        { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: externalRealm.issuerUrl },
         { name: 'OAUTH2_PROXY_CODE_CHALLENGE_METHOD', value: 'S256' },
         { name: 'OAUTH2_PROXY_ERRORS_TO_INFO_LOG', value: 'true' },
         { name: 'OAUTH2_PROXY_PASS_ACCESS_TOKEN', value: 'true' },
@@ -202,6 +234,8 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         { name: 'OAUTH2_PROXY_REVERSE_PROXY', value: 'true' },
         { name: 'OAUTH2_PROXY_EMAIL_DOMAINS', value: '*' },
         { name: 'OAUTH2_PROXY_SKIP_PROVIDER_BUTTON', value: 'true' },
+        { name: 'OAUTH2_PROXY_ALLOWED_GROUPS', value: pulumi.interpolate`/${readersGroup.name}` },
+        { name: 'OAUTH2_PROXY_OIDC_GROUPS_CLAIM', value: groupsScopeName },
       ],
       service: {
         type: 'ClusterIP',
@@ -220,11 +254,6 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
     },
   },
 }, { provider });
-
-const internalDnsRecord = new pihole.DnsRecord('internal-pgadmin', {
-  domain: hosts.internal,
-  ip: loadBalancerIp,
-}, { provider: piholeProvider });
 
 // export const chartResources = chart.resources;
 export { hosts };
