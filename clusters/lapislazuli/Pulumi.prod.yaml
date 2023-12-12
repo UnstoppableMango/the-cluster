@@ -1,0 +1,6 @@
+config:
+  thecluster-lapislazuli:hosts:
+    external: ll.thecluster.io
+  thecluster-lapislazuli:managementCluster: rosequartz
+  thecluster-lapislazuli:ports:
+    external: 6443

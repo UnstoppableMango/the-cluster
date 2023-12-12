@@ -1,0 +1,9 @@
+name: thecluster-lapislazuli
+runtime: nodejs
+description: Lapis Lazuli configuration for THECLUSTER
+config:
+  versions:
+    value:
+      k0s: v1.28.2-k0s.0 # renovate depName=k0sproject/k0s
+      k8s: v1.28.2 # renovate depName=kubernetes/kubernetes
+      vcluster: v0.18.0 # renovate depName=loft-sh/vcluster
