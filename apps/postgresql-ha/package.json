@@ -1,5 +1,5 @@
 {
-  "name": "thecluster-postgresql",
+  "name": "thecluster-postgresql-ha",
   "main": "index.ts",
   "dependencies": {
     "@maienm/pulumi-bitwarden": "^0.6.1000",

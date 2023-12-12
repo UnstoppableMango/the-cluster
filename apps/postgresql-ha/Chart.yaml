@@ -1,6 +1,6 @@
 apiVersion: v2
-name: postgresql
-description: PostgreSQL install for THECLUSTER
+name: postgresql-ha
+description: PostgreSQL HA install for THECLUSTER
 type: application
 version: 0.1.0
 dependencies:

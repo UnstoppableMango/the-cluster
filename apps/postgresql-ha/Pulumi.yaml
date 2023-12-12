@@ -1,6 +1,6 @@
-name: thecluster-postgresql
+name: thecluster-postgresql-ha
 runtime: nodejs
-description: PostgreSQL install for THECLUSTER
+description: PostgreSQL HA install for THECLUSTER
 config:
   versions:
     value:

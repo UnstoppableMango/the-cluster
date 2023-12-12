@@ -4,7 +4,7 @@ import * as cf from '@pulumi/cloudflare';
 import * as cm from '@unmango/thecluster-crds/certmanager/v1';
 import { appendIf, CertManagerOutputs } from '@unmango/thecluster';
 import { provider } from '@unmango/thecluster/cluster/from-stack';
-import { permissionGroups, suffix, zone } from './config';
+import { cluster, permissionGroups, suffix, zone } from './config';
 
 const ns = new k8s.core.v1.Namespace('cert-manager', {
   metadata: { name: 'cert-manager' },
@@ -23,7 +23,7 @@ const release = new k8s.helm.v3.Release('cert-manager', {
   values: {
     // https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/README.template.md#configuration
     'cert-manager': {
-      installCRDs: false, // TODO: Enable, still switching over
+      installCRDs: true,
       podDisruptionBudget: {
         enabled: true,
         minAvailable: 1,
@@ -55,7 +55,7 @@ const release = new k8s.helm.v3.Release('cert-manager', {
 }, { provider });
 
 const apiToken = new cf.ApiToken('cert-manager', {
-  name: appendIf('THECLUSTER-cert-manager', suffix),
+  name: appendIf(`THECLUSTER-cert-manager-${cluster}`, suffix),
   policies: [
     {
       permissionGroups: permissionGroups.apply(g => [
