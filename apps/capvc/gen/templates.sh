@@ -17,18 +17,17 @@ if ! command -v kubectl-slice >/dev/null 2>&1; then
 fi
 
 rootDir="$(git rev-parse --show-toplevel)"
-repoDir="$rootDir/apps/cappx"
-manifestDir="$repoDir/manifests"
-version="$(pulumi -C "$repoDir" -s codegen config get --path "versions.cappx")"
+repoDir="$rootDir/apps/capvc"
+manifestDir="$repoDir/templates"
+version="$(pulumi -C "$repoDir" -s codegen config get --path "versions.capvc")"
 
 [ -d "$manifestDir" ] && rm -r "$manifestDir"
 mkdir -p "$manifestDir"
 
 "$rootDir/gen/capi/provider.sh" \
     --component infrastructure \
-    --module proxmox \
+    --module vcluster \
     --version "$version" \
     | kubectl slice \
-    --exclude-kind CustomResourceDefinition \
     --template '{{.kind | lower}}.yaml' \
     --output-dir "$manifestDir"

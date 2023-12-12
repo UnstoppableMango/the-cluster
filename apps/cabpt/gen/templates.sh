@@ -13,7 +13,7 @@ fi
 
 rootDir="$(git rev-parse --show-toplevel)"
 repoDir="$rootDir/apps/cabpt"
-manifestDir="$repoDir/manifests"
+manifestDir="$repoDir/templates"
 version="$(pulumi -C "$repoDir" -s codegen config get --path "versions.cabpt")"
 
 [ -d "$manifestDir" ] && rm -r "$manifestDir"
@@ -24,6 +24,5 @@ mkdir -p "$manifestDir"
     --module talos \
     --version "$version" \
     | kubectl slice \
-    --exclude-kind CustomResourceDefinition \
     --template '{{.kind | lower}}.yaml' \
     --output-dir "$manifestDir"

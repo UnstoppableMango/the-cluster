@@ -1,31 +1,13 @@
-import * as path from 'node:path';
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { loadBalancerClass } from '@unmango/thecluster/apps/metallb';
 import { versions } from './config';
 
-const sidero = new k8s.yaml.ConfigGroup('sidero', {
-  files: [
-    'certificate',
-    'clusterrole',
-    'clusterrolebinding',
-    'deployment',
-    'issuer',
-    'namespace',
-    'role',
-    'rolebinding',
-    'service',
-    'validatingwebhookconfiguration',
-  ].map(x => path.join('manifests', `${x}.yaml`)),
+const chart = new k8s.helm.v3.Chart('sidero', {
+  path: './',
   transformations: [patchSideroManager],
-}, {
-  provider,
-  ignoreChanges: [
-    // cert-manager injects `caBundle`s
-    'spec.conversion.webhook.clientConfig.caBundle',
-  ],
-});
+}, { provider });
 
 const sideroLb = new k8s.core.v1.Service('siderolb', {
   metadata: {
@@ -65,7 +47,7 @@ const sideroLb = new k8s.core.v1.Service('siderolb', {
       'control-plane': 'sidero-controller-manager',
     },
   },
-}, { provider, dependsOn: sidero.ready });
+}, { provider, dependsOn: chart.ready });
 
 function patchSideroManager(obj: any, opts: pulumi.CustomResourceOptions): void {
   if (obj.kind !== 'Deployment') return;
