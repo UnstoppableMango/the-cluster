@@ -24,6 +24,5 @@ mkdir -p "$manifestDir"
     --module cluster-api \
     --version "$version" \
     | kubectl slice \
-    --exclude-kind CustomResourceDefinition \
     --template '{{.kind | lower}}.yaml' \
     --output-dir "$manifestDir"

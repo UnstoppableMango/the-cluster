@@ -26,6 +26,7 @@ import * as ipam from "./ipam";
 import * as metal from "./metal";
 import * as pulumiOperator from "./pulumi";
 import * as runtime from "./runtime";
+import * as snapshot from "./snapshot";
 import * as trust from "./trust";
 import * as types from "./types";
 
@@ -44,6 +45,7 @@ export {
     metal,
     pulumiOperator,
     runtime,
+    snapshot,
     trust,
     types,
 };

@@ -1,14 +1,10 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import { provider } from '@unmango/thecluster/cluster/from-stack';
-import { cephfs, clusterId, csi, rbd, versions } from './config';
+import { cephfs, clusterId, csi, rbd } from './config';
 
 const ns = new k8s.core.v1.Namespace('ceph-system', {
   metadata: { name: 'ceph-system' },
-}, { provider });
-
-new k8s.kustomize.Directory('snapshot-controller', {
-  directory: `https://github.com/kubernetes-csi/external-snapshotter/tree/${versions.externalSnapshotter}/deploy/kubernetes/snapshot-controller`,
 }, { provider });
 
 const chart = new k8s.helm.v3.Chart('ceph-csi', {
