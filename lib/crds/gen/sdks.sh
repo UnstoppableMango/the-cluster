@@ -45,21 +45,21 @@ crd2pulumi "$crdsDir"/*.yaml \
     --force
 
 echo "Patching nodejs lib..."
-sed -i '' "s/x-kubernetes-preserve-unknown-fields/'x-kubernetes-preserve-unknown-fields'/" "$nodejsDir/types/input.ts"
-sed -i '' "s/x-kubernetes-preserve-unknown-fields/'x-kubernetes-preserve-unknown-fields'/" "$nodejsDir/types/output.ts"
-sed -i '' "s/metadata.omitempty/'metadata.omitempty'/" "$nodejsDir/types/input.ts"
-sed -i '' "s/metadata.omitempty/'metadata.omitempty'/" "$nodejsDir/types/output.ts"
+sed -i "s/x-kubernetes-preserve-unknown-fields/'x-kubernetes-preserve-unknown-fields'/" "$nodejsDir/types/input.ts"
+sed -i "s/x-kubernetes-preserve-unknown-fields/'x-kubernetes-preserve-unknown-fields'/" "$nodejsDir/types/output.ts"
+sed -i "s/metadata.omitempty/'metadata.omitempty'/" "$nodejsDir/types/input.ts"
+sed -i "s/metadata.omitempty/'metadata.omitempty'/" "$nodejsDir/types/output.ts"
 
 function renamePulumi() {
     echo "Fixing $1..."
-    sed -i '' 's/namespace pulumi/namespace pulumiOperator/' "$1"
-    sed -i '' 's/pulumi.v1/pulumiOperator.v1/' "$1"
-    sed -i '' 's/pulumi from ".\/pulumi"/pulumiOperator from ".\/pulumi"/' "$1"
-    sed -i '' 's/pulumi,/pulumiOperator,/' "$1"
+    sed -i 's/namespace pulumi/namespace pulumiOperator/' "$1"
+    sed -i 's/pulumi.v1/pulumiOperator.v1/' "$1"
+    sed -i 's/pulumi from ".\/pulumi"/pulumiOperator from ".\/pulumi"/' "$1"
+    sed -i 's/pulumi,/pulumiOperator,/' "$1"
 }
 
 export -f renamePulumi
-# find "$nodejsDir/pulumi" -type f -exec bash -c 'renamePulumi "$0"' {} \;
+find "$nodejsDir/pulumi" -type f -exec bash -c 'renamePulumi "$0"' {} \;
 renamePulumi "$nodejsDir/types/input.ts"
 renamePulumi "$nodejsDir/types/output.ts"
 renamePulumi "$nodejsDir/index.ts"

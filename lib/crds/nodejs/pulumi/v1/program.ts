@@ -41,7 +41,7 @@ export class Program extends pulumi.CustomResource {
     public readonly apiVersion!: pulumi.Output<"pulumi.com/v1" | undefined>;
     public readonly kind!: pulumi.Output<"Program" | undefined>;
     public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
-    public readonly program!: pulumi.Output<outputs.pulumi.v1.ProgramProgram | undefined>;
+    public readonly program!: pulumi.Output<outputs.pulumiOperator.v1.ProgramProgram | undefined>;
 
     /**
      * Create a Program resource with the given unique name, arguments, and options.
@@ -76,5 +76,5 @@ export interface ProgramArgs {
     apiVersion?: pulumi.Input<"pulumi.com/v1">;
     kind?: pulumi.Input<"Program">;
     metadata?: pulumi.Input<ObjectMeta>;
-    program?: pulumi.Input<inputs.pulumi.v1.ProgramProgramArgs>;
+    program?: pulumi.Input<inputs.pulumiOperator.v1.ProgramProgramArgs>;
 }
