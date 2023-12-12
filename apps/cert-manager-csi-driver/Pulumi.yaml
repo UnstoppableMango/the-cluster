@@ -1,0 +1,9 @@
+name: thecluster-cert-manager-csi-driver
+runtime: nodejs
+description: Cert Manager CSI Driver install for THECLUSTER
+config:
+  zoneName: thecluster.io
+  versions:
+    value:
+      certManagerCsi: v0.6.0 # renovate depName=cert-manager/csi-driver
+      csiNodeDriverRegistrar: v2.9.1

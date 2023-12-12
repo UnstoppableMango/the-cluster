@@ -1,5 +1,5 @@
 {
-  "name": "thecluster-cert-manager",
+  "name": "thecluster-cert-manager-csi-driver",
   "main": "index.ts",
   "dependencies": {
     "@pulumi/kubernetes": "^4.5.5",
@@ -9,7 +9,6 @@
     "@types/node": "^20.10.4"
   },
   "workspaces": [
-    "../../lib/crds/nodejs",
     "../../lib/nodejs"
   ]
 }

@@ -1,10 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
-import * as keycloak from '@pulumi/keycloak';
-import * as pihole from '@unmango/pulumi-pihole';
 import { provider } from '@unmango/thecluster/cluster/from-stack';
-import { provider as keycloakProvider } from '@unmango/thecluster/apps/keycloak';
-import { provider as piholeProvider, hostname, password } from '@unmango/thecluster/apps/pihole';
+import { hostname, password } from '@unmango/thecluster/apps/pihole';
 import { piholeConfig, versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('external-dns', {
@@ -90,7 +87,12 @@ const chart = new k8s.helm.v3.Chart('external-dns', {
       service: {
         port: 7979,
       },
-      sources: ['service', 'ingress', 'node', 'kong-tcpingress'],
+      sources: [
+        'service',
+        'ingress',
+        'node',
+        // 'kong-tcpingress',
+      ],
       triggerLoopOnEvent: true,
       txtOwnerId: undefined,
       txtPrefix: undefined,

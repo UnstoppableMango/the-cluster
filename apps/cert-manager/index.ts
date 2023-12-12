@@ -1,6 +1,5 @@
 import * as k8s from '@pulumi/kubernetes';
 import { provider } from '@unmango/thecluster/cluster/from-stack';
-import { versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('cert-manager', {
   metadata: { name: 'cert-manager' },
@@ -15,7 +14,6 @@ const release = new k8s.helm.v3.Release('cert-manager', {
   atomic: true,
   dependencyUpdate: true,
   lint: true,
-  timeout: 60,
   values: {
     // https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/README.template.md#configuration
     'cert-manager': {
@@ -29,37 +27,7 @@ const release = new k8s.helm.v3.Release('cert-manager', {
       namespace: ns.metadata.name,
       enableCertificateOwnerRef: true,
     },
-    // https://github.com/cert-manager/csi-driver/tree/main/deploy/charts/csi-driver#values
-    'cert-manager-csi-driver': {
-      app: {
-        driver: {
-          name: 'csi.cert-manager.io',
-          csiDataDir: '/tmp/cert-manager-csi-driver',
-          useTokenRequest: false,
-        },
-        kubeletRootDir: '/var/lib/kubelet',
-        logLevel: 1,
-      },
-      image: {
-        repository: 'quay.io/jetstack/cert-manager-csi-driver',
-        tag: versions.certManagerCsi,
-      },
-      nodeDriverRegistrarImage: {
-        repository: 'registry.k8s.io/sig-storage/csi-node-driver-registrar',
-        tag: versions.csiNodeDriverRegistrar,
-      },
-      resources: {
-        requests: {
-          cpu: '100m',
-          memory: '128Mi',
-        },
-        limits: {
-          cpu: '100m',
-          memroy: '128Mi',
-        },
-      },
-    },
   },
 }, { provider });
 
-export const resources = release.resourceNames;
+// export const resources = release.resourceNames;
