@@ -1,0 +1,4 @@
+config:
+  cloudflare:apiToken:
+    secure: AAABAHnwzQuIsOozRH35zB6xa+ZL8Rp9e/P/MXTkvFdjUVkavR3eRKQ0iEcBtEKDCOBZ8WNpW8yaDl50+ZH73ZtgaE6LWrDz
+  thecluster-pki:zoneName: thecluster.io

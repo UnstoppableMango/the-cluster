@@ -2,11 +2,11 @@
 set -eum
 
 root="$(git rev-parse --show-toplevel)"
-projDir="$root/apps/cert-manager"
+projDir="$root/apps/trust-manager"
 crdDir="$root/infra/crds/manifests"
 
 helm template "$projDir" \
-    --set 'cert-manager.installCRDs=true' \
+    --set 'trust-manager.crds.enabled=true' \
     | kubectl slice \
     --include-kind CustomResourceDefinition \
     --output-dir "$crdDir"
