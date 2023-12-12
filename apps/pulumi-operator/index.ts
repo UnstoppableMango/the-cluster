@@ -3,11 +3,7 @@ import * as pulumi from '@pulumi/pulumi';
 import * as ps from '@pulumi/pulumiservice';
 import * as k8s from '@pulumi/kubernetes';
 import * as crds from '@unmango/thecluster-crds/pulumi/v1';
-import { Stacks, Versions } from './types';
-
-const config = new pulumi.Config();
-const versions = config.requireObject<Versions>('versions');
-const stack = config.requireObject<Stacks>('stack');
+import { stack, versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('pulumi-operator', {
   metadata: { name: 'pulumi-operator' },
