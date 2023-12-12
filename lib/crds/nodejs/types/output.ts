@@ -42065,6 +42065,137 @@ export namespace gatewayoperator {
 }
 
 export namespace infrastructure {
+    export namespace v1alpha1 {
+        /**
+         * VClusterSpec defines the desired state of VCluster
+         */
+        export interface VClusterSpec {
+            /**
+             * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+             */
+            controlPlaneEndpoint?: outputs.infrastructure.v1alpha1.VClusterSpecControlPlaneEndpoint;
+            /**
+             * The helm release configuration for the virtual cluster. This is optional, but when filled, specified chart will be deployed.
+             */
+            helmRelease?: outputs.infrastructure.v1alpha1.VClusterSpecHelmRelease;
+            /**
+             * Kubernetes version that should be used in this vcluster instance, e.g. "1.23". Versions out of the supported range will be ignored, and earliest/latest supported version will be used instead.
+             */
+            kubernetesVersion?: string;
+        }
+
+        /**
+         * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+         */
+        export interface VClusterSpecControlPlaneEndpoint {
+            /**
+             * The hostname on which the API server is serving.
+             */
+            host: string;
+            /**
+             * The port on which the API server is serving.
+             */
+            port: number;
+        }
+
+        /**
+         * The helm release configuration for the virtual cluster. This is optional, but when filled, specified chart will be deployed.
+         */
+        export interface VClusterSpecHelmRelease {
+            /**
+             * infos about what chart to deploy
+             */
+            chart?: outputs.infrastructure.v1alpha1.VClusterSpecHelmReleaseChart;
+            /**
+             * the values for the given chart
+             */
+            values?: string;
+        }
+
+        /**
+         * infos about what chart to deploy
+         */
+        export interface VClusterSpecHelmReleaseChart {
+            /**
+             * the name of the helm chart
+             */
+            name?: string;
+            /**
+             * the repo of the helm chart
+             */
+            repo?: string;
+            /**
+             * the version of the helm chart to use
+             */
+            version?: string;
+        }
+
+        /**
+         * VClusterStatus defines the observed state of VCluster
+         */
+        export interface VClusterStatus {
+            /**
+             * Conditions holds several conditions the vcluster might be in
+             */
+            conditions?: outputs.infrastructure.v1alpha1.VClusterStatusConditions[];
+            /**
+             * Initialized defines if the virtual cluster control plane was initialized.
+             */
+            initialized?: boolean;
+            /**
+             * Message describes the reason in human readable form why the cluster is in the currrent phase
+             */
+            message?: string;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: number;
+            /**
+             * Phase describes the current phase the virtual cluster is in
+             */
+            phase?: string;
+            /**
+             * Ready defines if the virtual cluster control plane is ready.
+             */
+            ready?: boolean;
+            /**
+             * Reason describes the reason in machine readable form why the cluster is in the current phase
+             */
+            reason?: string;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface VClusterStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+    }
+
     export namespace v1alpha2 {
         /**
          * MetalClusterSpec defines the desired state of MetalCluster.

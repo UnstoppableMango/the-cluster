@@ -95,6 +95,8 @@
         "gatewayoperator/v1beta1/index.ts",
         "index.ts",
         "infrastructure/index.ts",
+        "infrastructure/v1alpha1/index.ts",
+        "infrastructure/v1alpha1/vcluster.ts",
         "infrastructure/v1alpha2/index.ts",
         "infrastructure/v1alpha2/metalCluster.ts",
         "infrastructure/v1alpha2/metalMachine.ts",

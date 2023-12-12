@@ -42049,6 +42049,136 @@ export namespace gatewayoperator {
 }
 
 export namespace infrastructure {
+    export namespace v1alpha1 {
+        /**
+         * VClusterSpec defines the desired state of VCluster
+         */
+        export interface VClusterSpecArgs {
+            /**
+             * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+             */
+            controlPlaneEndpoint?: pulumi.Input<inputs.infrastructure.v1alpha1.VClusterSpecControlPlaneEndpointArgs>;
+            /**
+             * The helm release configuration for the virtual cluster. This is optional, but when filled, specified chart will be deployed.
+             */
+            helmRelease?: pulumi.Input<inputs.infrastructure.v1alpha1.VClusterSpecHelmReleaseArgs>;
+            /**
+             * Kubernetes version that should be used in this vcluster instance, e.g. "1.23". Versions out of the supported range will be ignored, and earliest/latest supported version will be used instead.
+             */
+            kubernetesVersion?: pulumi.Input<string>;
+        }
+
+        /**
+         * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+         */
+        export interface VClusterSpecControlPlaneEndpointArgs {
+            /**
+             * The hostname on which the API server is serving.
+             */
+            host: pulumi.Input<string>;
+            /**
+             * The port on which the API server is serving.
+             */
+            port: pulumi.Input<number>;
+        }
+
+        /**
+         * The helm release configuration for the virtual cluster. This is optional, but when filled, specified chart will be deployed.
+         */
+        export interface VClusterSpecHelmReleaseArgs {
+            /**
+             * infos about what chart to deploy
+             */
+            chart?: pulumi.Input<inputs.infrastructure.v1alpha1.VClusterSpecHelmReleaseChartArgs>;
+            /**
+             * the values for the given chart
+             */
+            values?: pulumi.Input<string>;
+        }
+
+        /**
+         * infos about what chart to deploy
+         */
+        export interface VClusterSpecHelmReleaseChartArgs {
+            /**
+             * the name of the helm chart
+             */
+            name?: pulumi.Input<string>;
+            /**
+             * the repo of the helm chart
+             */
+            repo?: pulumi.Input<string>;
+            /**
+             * the version of the helm chart to use
+             */
+            version?: pulumi.Input<string>;
+        }
+
+        /**
+         * VClusterStatus defines the observed state of VCluster
+         */
+        export interface VClusterStatusArgs {
+            /**
+             * Conditions holds several conditions the vcluster might be in
+             */
+            conditions?: pulumi.Input<pulumi.Input<inputs.infrastructure.v1alpha1.VClusterStatusConditionsArgs>[]>;
+            /**
+             * Initialized defines if the virtual cluster control plane was initialized.
+             */
+            initialized?: pulumi.Input<boolean>;
+            /**
+             * Message describes the reason in human readable form why the cluster is in the currrent phase
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: pulumi.Input<number>;
+            /**
+             * Phase describes the current phase the virtual cluster is in
+             */
+            phase?: pulumi.Input<string>;
+            /**
+             * Ready defines if the virtual cluster control plane is ready.
+             */
+            ready?: pulumi.Input<boolean>;
+            /**
+             * Reason describes the reason in machine readable form why the cluster is in the current phase
+             */
+            reason?: pulumi.Input<string>;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface VClusterStatusConditionsArgs {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: pulumi.Input<string>;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: pulumi.Input<string>;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: pulumi.Input<string>;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: pulumi.Input<string>;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: pulumi.Input<string>;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: pulumi.Input<string>;
+        }
+    }
+
     export namespace v1alpha2 {
         /**
          * MetalClusterSpec defines the desired state of MetalCluster.
