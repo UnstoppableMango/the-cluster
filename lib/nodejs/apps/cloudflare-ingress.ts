@@ -1,8 +1,10 @@
-import { StackReference } from '@pulumi/pulumi';
-import { cluster } from '../config';
+import { Output } from '@pulumi/pulumi';
+import { AppRefs } from '../internal/apps';
 
-const ref = new StackReference('cloudflare-ingress', {
-  name: `UnstoppableMango/thecluster-cloudflare-ingress/${cluster}`,
-});
+export class CloudflareIngress {
+  constructor(private _refs: AppRefs) { }
 
-export const ingressClass = ref.requireOutput('ingressClass');
+  public get ingressClass(): Output<string> {
+    return this._refs.cloudflareIngress.requireOutput('ingressClass') as Output<string>;
+  }
+}

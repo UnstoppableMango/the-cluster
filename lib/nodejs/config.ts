@@ -1,4 +1,6 @@
 import { Config, getStack } from '@pulumi/pulumi';
 
-const config = new Config();
 export const cluster = getStack();
+
+const test = import('./apps');
+test.then(x => x.keycloakProvider);

@@ -1,10 +1,23 @@
-import { StackReference } from '@pulumi/pulumi';
-import { cluster } from '../config';
+import { Output } from '@pulumi/pulumi';
+import { AppRefs } from '../internal/apps';
 
-const ref = new StackReference('nginx-ingress', {
-  name: `UnstoppableMango/thecluster-nginx-ingress/${cluster}`,
-});
+export interface IngressClasses {
+  internal: Output<string>;
+  cluster: Output<string>;
+}
 
-export const internalClass = ref.requireOutput('internalClass');
-export const clusterClass = ref.requireOutput('clusterClass');
-export const loadBalancerIp = ref.requireOutput('ip');
+export class NginxIngress {
+  private _ref = this._refs.nginxIngress;
+  constructor(private _refs: AppRefs) { }
+
+  public get ingressClasses(): IngressClasses {
+    return {
+      internal: this._ref.requireOutput('internalClass') as Output<string>,
+      cluster: this._ref.requireOutput('clusterClass') as Output<string>,
+    };
+  }
+
+  public get loadBalancerIp(): Output<string> {
+    return this._ref.requireOutput('ip') as Output<string>;
+  }
+}

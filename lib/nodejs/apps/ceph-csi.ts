@@ -1,15 +1,18 @@
-import { Output, StackReference } from '@pulumi/pulumi';
-import { cluster } from '../config';
-import { CephCsiOutputs } from '../types';
+import { Output } from '@pulumi/pulumi';
+import { AppRefs } from '../internal/apps';
 
-const ref = new StackReference('ceph-csi', {
-  name: `UnstoppableMango/thecluster-ceph-csi/${cluster}`,
-});
+export interface StorageClasses {
+  rbd: Output<string>;
+  cephfs: Output<string>;
+}
 
-export const rbdStorageClass = ref.requireOutput('rbdClass') as Output<string>;
-export const cephfsStorageClass = ref.requireOutput('cephfsClass') as Output<string>;
+export class CephCsi {
+  constructor(private _refs: AppRefs) { }
 
-export const outputs: CephCsiOutputs = {
-  rbdStorageClass,
-  cephfsStorageClass,
+  public get storageClasses(): StorageClasses {
+    return {
+      rbd: this._refs.cephCsi.requireOutput('rbdClass') as Output<string>,
+      cephfs: this._refs.cephCsi.requireOutput('cephfsClass') as Output<string>,
+    }
+ }
 }

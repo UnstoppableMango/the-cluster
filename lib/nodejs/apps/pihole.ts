@@ -1,15 +1,28 @@
-import { StackReference, interpolate } from '@pulumi/pulumi';
+import { Output, interpolate } from '@pulumi/pulumi';
 import { Provider } from '@unmango/pulumi-pihole';
-import { cluster } from '../config';
+import { AppRefs } from '../internal/apps';
 
-const ref = new StackReference('pihole', {
-  name: `UnstoppableMango/thecluster-pihole/${cluster}`,
-});
+export class PiHole {
+  private _ref = this._refs.pihole;
+  private _provider: Provider | undefined;
+  constructor(private _refs: AppRefs) { }
 
-export const hostname = ref.requireOutput('hostname');
-export const password = ref.requireOutput('password');
+  public get hostname(): Output<string> {
+    return this._ref.requireOutput('hostname') as Output<string>;
+  }
 
-export const provider = new Provider('pihole', {
-  url: interpolate`https://${hostname}`,
-  password,
-});
+  public get password(): Output<string> {
+    return this._ref.requireOutput('password') as Output<string>;
+  }
+
+  public get provider(): Provider {
+    if (!this._provider) {
+      this._provider = new Provider('pihole', {
+        url: interpolate`https://${this.hostname}`,
+        password: this.password,
+      });
+    }
+
+    return this._provider;
+  }
+}

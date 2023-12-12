@@ -1,17 +1,34 @@
-import { StackReference, Output, interpolate } from '@pulumi/pulumi';
+import { Output, interpolate } from '@pulumi/pulumi';
 import { Provider } from '@pulumi/keycloak';
-import { cluster } from '../config';
+import { AppRefs } from '../internal/apps';
 
-const ref = new StackReference('keycloak', {
-  name: `UnstoppableMango/thecluster-keycloak/${cluster}`,
-});
+export class Keycloak {
+  private _ref = this._refs.keycloak;
+  private _provider: Provider | undefined;
+  constructor(private _refs: AppRefs) { }
 
-export const hostname = ref.requireOutput('hostname') as Output<string>;
-export const username = ref.requireOutput('username') as Output<string>;
-export const password = ref.requireOutput('password') as Output<string>;
-export const provider = new Provider('keycloak', {
-  url: interpolate`https://${hostname}`,
-  username: 'admin',
-  password: ref.requireOutput('password'),
-  clientId: 'admin-cli',
-});
+  public get hostname(): Output<string> {
+    return this._ref.requireOutput('hostname') as Output<string>;
+  }
+
+  public get username(): Output<string> {
+    return this._ref.requireOutput('username') as Output<string>;
+  }
+
+  public get password(): Output<string> {
+    return this._ref.requireOutput('password') as Output<string>;
+  }
+
+  public get provider(): Provider {
+    if (!this._provider) {
+      this._provider = new Provider('keycloak', {
+        url: interpolate`https://${this.hostname}`,
+        username: 'admin',
+        password: this.password,
+        clientId: 'admin-cli',
+      });
+    }
+
+    return this._provider;
+  }
+}

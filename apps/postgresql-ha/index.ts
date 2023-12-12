@@ -243,3 +243,18 @@ export const credentials = [
   { username: pgpoolUsername, password: pgpoolPassword.result },
   ...passwords,
 ];
+
+export const newUsers = {
+  repmgr: {
+    username: repmgrUsername,
+    password: repmgrPassword.result,
+  },
+  postgres: {
+    username: postgresUsername,
+    password: postgresPassword.result,
+  },
+  pgpool: {
+    username: pgpoolUsername,
+    password: pgpoolPassword.result,
+  },
+};
