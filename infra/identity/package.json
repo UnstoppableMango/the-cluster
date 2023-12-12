@@ -10,6 +10,6 @@
   },
   "workspaces": [
     "../../lib/nodejs",
-    "../../lib/crds"
+    "../../lib/crds/nodejs"
   ]
 }

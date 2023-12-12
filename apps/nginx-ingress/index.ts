@@ -1,5 +1,5 @@
 import * as k8s from '@pulumi/kubernetes';
-import * as nginx from '@pulumi/crds/charts/v1alpha1/nginxIngress';
+import * as nginx from '@unmango/thecluster-crds/charts/v1alpha1/nginxIngress';
 import { provider } from './clusters';
 import { pool } from './apps/metallb';
 import { ip, versions } from './config';

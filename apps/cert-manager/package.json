@@ -10,7 +10,7 @@
     "@types/node": "^20.8.7"
   },
   "workspaces": [
-    "../../lib/crds",
+    "../../lib/crds/nodejs",
     "../../lib/nodejs"
   ]
 }

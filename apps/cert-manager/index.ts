@@ -1,7 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as cf from '@pulumi/cloudflare';
-import * as cm from '@pulumi/crds/certmanager/v1';
+import * as cm from '@unmango/thecluster-crds/certmanager/v1';
 import { appendIf, CertManagerOutputs } from '@unmango/thecluster';
 import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { permissionGroups, suffix, zone } from './config';

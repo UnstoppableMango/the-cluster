@@ -2,16 +2,14 @@ import * as path from 'path';
 import * as pulumi from '@pulumi/pulumi';
 import * as ps from '@pulumi/pulumiservice';
 import * as k8s from '@pulumi/kubernetes';
-import * as crds from '@pulumi/crds/pulumi/v1';
-import { Stacks, Versions } from './types';
-
-const config = new pulumi.Config();
-const versions = config.requireObject<Versions>('versions');
-const stack = config.requireObject<Stacks>('stack');
+import * as crds from '@unmango/thecluster-crds/pulumi/v1';
+import { provider } from '@unmango/thecluster/cluster/from-stack';
+import { required } from '@unmango/thecluster';
+import { stack, versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('pulumi-operator', {
   metadata: { name: 'pulumi-operator' },
-});
+}, { provider });
 
 const chart = new k8s.helm.v3.Chart('pulumi-operator', {
   path: './',
@@ -24,7 +22,7 @@ const chart = new k8s.helm.v3.Chart('pulumi-operator', {
     const container = obj.spec.template.spec.containers[0];
     container.image = `ghcr.io/unstoppablemango/pulumi-kubernetes-operator-nodejs:${versions.customImage}`;
   }],
-});
+}, { provider });
 
 const accessToken = new ps.AccessToken(`pulumi-operator-${pulumi.getStack()}`, {
   description: 'Token for the operator to use to deploy stacks',
@@ -36,9 +34,9 @@ const secret = new k8s.core.v1.Secret('pulumi-operator', {
     namespace: ns.metadata.name,
   },
   stringData: {
-    accessToken: accessToken.value.apply(x => x ?? ''),
+    accessToken: accessToken.value.apply(required),
   },
-});
+}, { provider });
 
 const clusterStack = new crds.Stack(stack.name, {
   metadata: {
@@ -54,4 +52,4 @@ const clusterStack = new crds.Stack(stack.name, {
     destroyOnFinalize: false,
     useLocalStackOnly: true,
   },
-});
+}, { provider });

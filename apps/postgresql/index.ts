@@ -2,7 +2,7 @@ import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
 import * as pihole from '@unmango/pulumi-pihole';
-import { Certificate, Issuer } from '@pulumi/crds/certmanager/v1';
+import { Certificate, Issuer } from '@unmango/thecluster-crds/certmanager/v1';
 import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { rbdStorageClass } from '@unmango/thecluster/storage';
 import { clusterIssuers } from '@unmango/thecluster/tls';

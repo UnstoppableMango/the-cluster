@@ -13,6 +13,6 @@
   "workspaces": [
     "../../components/oauth2-proxy",
     "../../lib/nodejs",
-    "../../lib/crds"
+    "../../lib/crds/nodejs"
   ]
 }
