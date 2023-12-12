@@ -7,6 +7,7 @@ const capi = new k8s.yaml.ConfigGroup('capi', {
     'certificate',
     'clusterrole',
     'clusterrolebinding',
+    'customresourcedefinition',
     'deployment',
     'issuer',
     'mutatingwebhookconfiguration',
