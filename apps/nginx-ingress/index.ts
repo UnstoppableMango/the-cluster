@@ -1,7 +1,6 @@
 import * as k8s from '@pulumi/kubernetes';
-import * as nginx from '@unmango/thecluster-crds/charts/v1alpha1/nginxIngress';
-import { provider } from './clusters';
-import { pool } from './apps/metallb';
+import * as nginx from '@unmango/thecluster-crds/charts/v1alpha1';
+import { apps, provider } from '@unmango/thecluster/cluster/from-stack';
 import { ip, versions } from './config';
 
 const internalNs = new k8s.core.v1.Namespace('internal-ingress', {
@@ -36,7 +35,7 @@ const internal = new nginx.NginxIngress('internal', {
         type: 'LoadBalancer',
         loadBalancerIP: ip,
         annotations: {
-          'metallb.universe.tf/address-pool': pool,
+          'metallb.universe.tf/address-pool': apps.metallb.pool,
         },
       },
     },

@@ -2,9 +2,7 @@ import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
 import { Certificate, Issuer } from '@unmango/thecluster-crds/certmanager/v1';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
-import { rbdStorageClass } from '@unmango/thecluster/storage';
-import { clusterIssuers } from '@unmango/thecluster/tls';
+import { clusterIssuers, provider, storageClasses } from '@unmango/thecluster/cluster/from-stack';
 import { keepers, users as enabledUsers, database, versions, ip, port, hostname } from './config';
 
 const ns = new k8s.core.v1.Namespace('postgresql', {
@@ -28,7 +26,7 @@ const ca = new Certificate('postgres-ca', {
     issuerRef: {
       group: 'cert-manager.io',
       kind: 'ClusterIssuer',
-      name: clusterIssuers.selfSigned,
+      name: clusterIssuers.selfsigned,
     },
   },
 }, { provider });
@@ -136,7 +134,7 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
     // https://github.com/bitnami/charts/blob/main/bitnami/postgresql-ha/values.yaml
     'postgresql-ha': {
       global: {
-        storageClass: rbdStorageClass,
+        storageClass: storageClasses.rbd,
         postgresql: {
           username: postgresUsername,
           database,

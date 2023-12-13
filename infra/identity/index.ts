@@ -107,15 +107,8 @@ const myMemberships = new keycloak.GroupMemberships('UnstoppableMango', {
   members: [myUser.username],
 }, { provider });
 
-export const realms = {
-  external: {
-    id: externalRealm.realm,
-  },
-  cluster: {
-    id: clusterRealm.realm,
-  },
-};
-
+export const externalRealmId = externalRealm.id;
+export const clusterRealmId = clusterRealm.id;
 export const groupNames = [webAppReaders.name];
 export const groupsScopeName = groupsScope.name;
 export const groups = pulumi.all([webAppReaders.name, webAppReaders.id]).apply(([name, id]) => ({

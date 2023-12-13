@@ -1,6 +1,6 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
-import { provider } from './clusters';
+import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { versions } from './config';
 
 const resources = new k8s.yaml.ConfigGroup('qemu-guest-agent-talos', {

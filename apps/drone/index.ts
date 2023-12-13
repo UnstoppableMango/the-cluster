@@ -3,15 +3,7 @@ import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
 import * as keycloak from '@pulumi/keycloak';
-import * as pihole from '@unmango/pulumi-pihole';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
-import { external } from '@unmango/thecluster/realms';
-import { clusterIssuers } from '@unmango/thecluster/tls';
-import { provider as keycloakProvider } from '@unmango/thecluster/apps/keycloak';
-import { provider as piholeProvider } from '@unmango/thecluster/apps/pihole';
-import { loadBalancerIp } from '@unmango/thecluster/apps/nginx-ingress';
-import { cloudflare as cfIngress, internal as internalIngress } from '@unmango/thecluster/ingress-classes';
-import { user as dbUser, database, ip as dbIp, port as dbPort } from '@unmango/thecluster/dbs/drone';
+import { apps, clusterIssuers, databases, ingresses, provider, realms } from '@unmango/thecluster/cluster/from-stack';
 import { dockerHost, github, hosts, repoFilter, runnerRepos, seedUser, userFilter, versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('drone', {
@@ -35,7 +27,7 @@ const seedToken = new random.RandomId('seed', {
 });
 
 const client = new keycloak.openid.Client('drone', {
-  realmId: external.realm,
+  realmId: realms.external.id,
   enabled: true,
   name: 'Drone',
   clientId: 'drone',
@@ -46,24 +38,24 @@ const client = new keycloak.openid.Client('drone', {
     pulumi.interpolate`https://${hosts.external}/oauth2/callback`,
     pulumi.interpolate`https://${hosts.internal}/oauth2/callback`,
   ],
-}, { provider: keycloakProvider });
+}, { provider: apps.keycloak.provider });
 
 const mapper = new keycloak.openid.AudienceProtocolMapper('drone', {
-  realmId: external.realm,
+  realmId: realms.external.id,
   name: pulumi.interpolate`aud-mapper-${client.clientId}`,
   clientId: client.id,
   includedClientAudience: client.clientId,
   addToIdToken: true,
   addToAccessToken: true,
-}, { provider: keycloakProvider });
+}, { provider: apps.keycloak.provider });
 
 const uiClient = new keycloak.openid.Client('runner-ui', {
-  realmId: external.realm,
+  realmId: realms.external.id,
   enabled: true,
   name: 'Drone Runner UI',
   clientId: 'drone-runner-ui',
   accessType: 'CONFIDENTIAL',
-}, { provider: keycloakProvider });
+}, { provider: apps.keycloak.provider });
 
 const droneSecret = new k8s.core.v1.Secret('drone-secrets', {
   metadata: {
@@ -72,7 +64,7 @@ const droneSecret = new k8s.core.v1.Secret('drone-secrets', {
   },
   stringData: {
     DRONE_DATABASE_SECRET: encryptionKey.hex,
-    DRONE_DATABASE_DATASOURCE: pulumi.interpolate`postgres://${dbUser.username}:${dbUser.password}@${dbIp}:${dbPort}/${database}?sslmode=disable`,
+    DRONE_DATABASE_DATASOURCE: pulumi.interpolate`postgres://${databases.drone.username}:${databases.drone.password}@${apps.postgresql.ip}:${apps.postgresql.port}/${databases.drone.name}?sslmode=disable`,
     DRONE_GITHUB_CLIENT_SECRET: github.clientSecret,
     DRONE_RPC_SECRET: rpcToken.hex,
     DRONE_UI_PASSWORD: uiClient.clientSecret,
@@ -122,7 +114,7 @@ const chart = new k8s.helm.v3.Chart('drone', {
         annotations: {
           'cert-manager.io/cluster-issuer': clusterIssuers.prod,
         },
-        className: internalIngress,
+        className: ingresses.internal,
         hosts: [{
           host: hosts.internal,
           paths: [{
@@ -214,7 +206,7 @@ const chart = new k8s.helm.v3.Chart('drone', {
         { name: 'OAUTH2_PROXY_UPSTREAMS', value: `http://drone:${port}` },
         { name: 'OAUTH2_PROXY_HTTP_ADDRESS', value: 'http://0.0.0.0:4180' },
         { name: 'OAUTH2_PROXY_REDIRECT_URL', value: pulumi.interpolate`https://${hosts.external}/oauth2/callback` },
-        { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: external.issuerUrl },
+        { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: realms.external.issuerUrl },
         { name: 'OAUTH2_PROXY_CODE_CHALLENGE_METHOD', value: 'S256' },
         { name: 'OAUTH2_PROXY_ERRORS_TO_INFO_LOG', value: 'true' },
         { name: 'OAUTH2_PROXY_PASS_ACCESS_TOKEN', value: 'true' },
@@ -229,7 +221,7 @@ const chart = new k8s.helm.v3.Chart('drone', {
       },
       ingress: {
         enabled: true,
-        className: cfIngress,
+        className: ingresses.cloudflare,
         pathType: 'Prefix',
         hosts: [hosts.external],
         annotations: {
@@ -318,7 +310,7 @@ const chart = new k8s.helm.v3.Chart('drone', {
       },
       ingress: {
         enabled: true,
-        className: cfIngress,
+        className: ingresses.cloudflare,
         annotations: {
           'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
           'pulumi.com/skipAwait': 'true',
@@ -369,16 +361,6 @@ const chart = new k8s.helm.v3.Chart('drone', {
     obj.spec.ports[0].targetPort = 'tcp';
   }],
 }, { provider });
-
-const dns = new pihole.DnsRecord(hosts.internal, {
-  domain: hosts.internal,
-  ip: loadBalancerIp,
-}, { provider: piholeProvider });
-
-// const runnerDns = new pihole.DnsRecord('drone-runner.thecluster.io', {
-//   domain: 'drone-runner.thecluster.io',
-//   ip: loadBalancerIp,
-// }, { provider: piholeProvider });
 
 export const clientId = client.clientId;
 export const clientSecret = client.clientSecret;

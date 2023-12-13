@@ -12,15 +12,15 @@ import {
 import { Refs } from './refs';
 
 export class Apps {
-  private _cephCsi: CephCsi | undefined;
-  private _certManager: CertManager | undefined;
-  private _cloudflareIngress: CloudflareIngress | undefined;
-  private _keycloak: Keycloak | undefined;
-  private _metallb: Metallb | undefined;
-  private _nginxIngress: NginxIngress | undefined;
-  private _pihole: PiHole | undefined;
-  private _pki: Pki | undefined;
-  private _postgresql: PostgreSql | undefined;
+  private _cephCsi?: CephCsi;
+  private _certManager?: CertManager;
+  private _cloudflareIngress?: CloudflareIngress;
+  private _keycloak?: Keycloak;
+  private _metallb?: Metallb;
+  private _nginxIngress?: NginxIngress;
+  private _pihole?: PiHole;
+  private _pki?: Pki;
+  private _postgresql?: PostgreSql;
 
   constructor(private _refs: Refs) { }
 
@@ -82,7 +82,7 @@ export class Apps {
 
   public get pki(): Pki {
     if (!this._pki) {
-      this._pihole = new PiHole(this._refs);
+      this._pki = new Pki(this._refs);
     }
 
     return this._pki;

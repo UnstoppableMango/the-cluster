@@ -1,7 +1,6 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
-import { hostname, password } from '@unmango/thecluster/apps/pihole';
+import { apps, provider } from '@unmango/thecluster/cluster/from-stack';
 import { piholeConfig, versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('external-dns', {
@@ -14,7 +13,7 @@ const secret = new k8s.core.v1.Secret('exxternal-dns', {
     namespace: ns.metadata.name,
   },
   stringData: {
-    EXTERNAL_DNS_PIHOLE_PASSWORD: password,
+    EXTERNAL_DNS_PIHOLE_PASSWORD: apps.pihole.password,
   },
 }, { provider });
 
@@ -60,7 +59,7 @@ const chart = new k8s.helm.v3.Chart('external-dns', {
       policy: 'upsert-only', // 'upsert-only' or 'sync'
       priorityClassName: 'system-cluster-critical',
       provider: 'pihole',
-      extraArgs: [pulumi.interpolate`--pihole-server=https://${hostname}`],
+      extraArgs: [pulumi.interpolate`--pihole-server=https://${apps.pihole.hostname}`],
       rbac: { create: true },
       // Pi-hole doesn't support TXT records
       registry: 'noop', // 'txt', 'aws-sd', 'dynamodb', or 'noop'

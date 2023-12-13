@@ -1,11 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as keycloak from '@pulumi/keycloak';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
-import { provider as keycloakProvider } from '@unmango/thecluster/apps/keycloak';
-import { cloudflare as cfIngress, internal as internalIngress } from '@unmango/thecluster/ingress-classes';
-import { clusterIssuers } from '@unmango/thecluster/tls';
-import { external } from '@unmango/thecluster/realms';
+import { apps, clusterIssuers, ingresses, provider, realms } from '@unmango/thecluster/cluster/from-stack';
 import { hosts, versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('sealed-secrets', {
@@ -13,7 +9,7 @@ const ns = new k8s.core.v1.Namespace('sealed-secrets', {
 }, { provider });
 
 const client = new keycloak.openid.Client('drone', {
-  realmId: external.realm,
+  realmId: realms.external.id,
   enabled: true,
   name: 'Drone',
   clientId: 'drone',
@@ -24,21 +20,21 @@ const client = new keycloak.openid.Client('drone', {
     pulumi.interpolate`https://${hosts.external}/oauth2/callback`,
     pulumi.interpolate`https://${hosts.internal}/oauth2/callback`,
   ],
-}, { provider: keycloakProvider });
+}, { provider: apps.keycloak.provider });
 
 const mapper = new keycloak.openid.AudienceProtocolMapper('drone', {
-  realmId: external.realm,
+  realmId: realms.external.id,
   name: pulumi.interpolate`aud-mapper-${client.clientId}`,
   clientId: client.id,
   includedClientAudience: client.clientId,
   addToIdToken: true,
   addToAccessToken: true,
-}, { provider: keycloakProvider });
+}, { provider: apps.keycloak.provider });
 
 const role = new keycloak.Role('sealed-secrets', {
-  realmId: external.realm,
+  realmId: realms.external.id,
   name: 'Bitnami Labs Sealed Secrets',
-}, { provider: keycloakProvider });
+}, { provider: apps.keycloak.provider });
 
 const port = 8080;
 const chart = new k8s.helm.v3.Chart('sealed-secrets', {
@@ -70,7 +66,7 @@ const chart = new k8s.helm.v3.Chart('sealed-secrets', {
       },
       ingress: {
         enabled: true,
-        ingressClassName: internalIngress,
+        ingressClassName: ingresses.internal,
         hostname: hosts.internal,
         annotations: {
           'cert-manager.io/cluster-issuer': clusterIssuers.staging,
@@ -91,7 +87,7 @@ const chart = new k8s.helm.v3.Chart('sealed-secrets', {
         { name: 'OAUTH2_PROXY_UPSTREAMS', value: `http://sealed-secrets:${port}` },
         { name: 'OAUTH2_PROXY_HTTP_ADDRESS', value: 'http://0.0.0.0:4180' },
         { name: 'OAUTH2_PROXY_REDIRECT_URL', value: pulumi.interpolate`https://${hosts.external}/oauth2/callback` },
-        { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: external.issuerUrl },
+        { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: realms.external.issuerUrl },
         { name: 'OAUTH2_PROXY_CODE_CHALLENGE_METHOD', value: 'S256' },
         { name: 'OAUTH2_PROXY_ERRORS_TO_INFO_LOG', value: 'true' },
         { name: 'OAUTH2_PROXY_PASS_ACCESS_TOKEN', value: 'true' },
@@ -106,7 +102,7 @@ const chart = new k8s.helm.v3.Chart('sealed-secrets', {
       },
       ingress: {
         enabled: true,
-        className: cfIngress,
+        className: ingresses.cloudflare,
         pathType: 'Prefix',
         hosts: [hosts.external],
         annotations: {

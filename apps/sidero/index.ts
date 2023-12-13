@@ -1,7 +1,6 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
-import { loadBalancerClass } from '@unmango/thecluster/apps/metallb';
+import { loadBalancers, provider } from '@unmango/thecluster/cluster/from-stack';
 import { versions } from './config';
 
 const chart = new k8s.helm.v3.Chart('sidero', {
@@ -16,7 +15,7 @@ const sideroLb = new k8s.core.v1.Service('siderolb', {
   },
   spec: {
     type: k8s.types.enums.core.v1.ServiceSpecType.LoadBalancer,
-    loadBalancerClass,
+    loadBalancerClass: loadBalancers.metallb,
     ports: [{
       name: 'dhcp',
       port: 67,

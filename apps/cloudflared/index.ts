@@ -2,18 +2,10 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as cloudflare from '@pulumi/cloudflare';
 import * as random from '@pulumi/random';
-import * as YAML from 'yaml';
+import { jsonStringify, yamlStringify } from '@unmango/thecluster';
 
 interface Versions {
   cloudflared: string;
-}
-
-function jsonStringify(obj: pulumi.Inputs): pulumi.Output<string> {
-  return pulumi.output(obj).apply(x => JSON.stringify(x));
-}
-
-function yamlStringify(obj: pulumi.Inputs): pulumi.Output<string> {
-  return pulumi.output(obj).apply(x => YAML.stringify(x));
 }
 
 const stack = pulumi.getStack();

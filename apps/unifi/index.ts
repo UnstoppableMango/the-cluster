@@ -1,7 +1,5 @@
 import * as k8s from '@pulumi/kubernetes';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
-import { internalClass } from '@unmango/thecluster/apps/nginx-ingress';
-import { clusterIssuers } from '@unmango/thecluster/tls';
+import { clusterIssuers, ingresses, provider } from '@unmango/thecluster/cluster/from-stack';
 
 const ns = new k8s.core.v1.Namespace('unifi', {
   metadata: { name: 'unifi' },
@@ -31,7 +29,7 @@ const ingress = new k8s.networking.v1.Ingress('unifi', {
     },
   },
   spec: {
-    ingressClassName: internalClass,
+    ingressClassName: ingresses.internal,
     rules: [{
       host: 'unifi.lan.thecluster.io',
       http: {
