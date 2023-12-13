@@ -1,22 +1,11 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as cf from '@pulumi/cloudflare';
-
-function appendIf(x: string, o?: string | undefined | null): string {
-  return o ? x + o : x;
-}
+import { provider } from '@unmango/thecluster/cluster/from-stack';
+import { appendIf } from '@unmango/thecluster';
 
 const config = new pulumi.Config();
-const cluster = config.require('cluster');
 export const ingressClass = 'cloudflare-ingress';
-
-const stackRef = new pulumi.StackReference(cluster, {
-  name: `UnstoppableMango/thecluster-${cluster}/prod`,
-});
-
-const provider = new k8s.Provider(cluster, {
-  kubeconfig: stackRef.requireOutput('kubeconfig'),
-});
 
 const zone = cf.getZoneOutput({ name: config.require('zoneName') });
 const all = cf.getApiTokenPermissionGroups();

@@ -1,7 +1,9 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as keycloak from '@pulumi/keycloak';
-import { provider, hostname, username, password } from '@unmango/thecluster/apps/keycloak';
+import { apps } from '@unmango/thecluster/cluster/from-stack';
 import { cluster, google, me } from './config';
+
+const provider = apps.keycloak.provider;
 
 const externalRealm = new keycloak.Realm('external', {
   realm: 'external',
@@ -105,7 +107,6 @@ const myMemberships = new keycloak.GroupMemberships('UnstoppableMango', {
   members: [myUser.username],
 }, { provider });
 
-export { hostname, username, password };
 export const realms = {
   external: {
     id: externalRealm.realm,

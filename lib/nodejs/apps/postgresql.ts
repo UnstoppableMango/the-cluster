@@ -1,23 +1,22 @@
-import { StackReference, Output, all, output } from '@pulumi/pulumi';
+import { Output, output } from '@pulumi/pulumi';
 import { Provider } from '@pulumi/postgresql';
-import { cluster } from '../config';
-import { PostgreSqlOutputs } from '../types';
 import { AppRefs } from '../internal/apps';
 
-export interface Credentials {
+export interface User {
   username: Output<string>;
   password: Output<string>;
 }
 
+export interface Users {
+  repmgr: Output<User>;
+  postgres: Output<User>;
+  pgpool: Output<User>;
+}
+
 export class PostgreSql {
   private _provider: Provider | undefined;
-  private _user: Output<Credentials> | undefined;
   private _ref = this._refs.postgresql;
   constructor(private _refs: AppRefs) { }
-
-  public get credentials(): Output<Output<Credentials>[]> {
-    return this._ref.requireOutput('credentials') as Output<Output<Credentials>[]>;
-  }
 
   public get hostname(): Output<string> {
     return this._ref.requireOutput('hostname') as Output<string>;
@@ -35,22 +34,19 @@ export class PostgreSql {
     return this._ref.requireOutput('ip') as Output<string>;
   }
 
-  public get user(): Output<Credentials> {
-    if (!this._user) {
-      const user = output(this.credentials)
-        .apply(c => c.find(x => x.username === 'postgres'))
-        .apply(x => x ?? { username: '', password: '' });
-      this._user = output(user) as Output<Credentials>;
-    }
+  public get users(): Output<Users> {
+    return this._ref.requireOutput('users') as Output<Users>;
+  }
 
-    return this._user;
+  public get passwords(): Output<Output<User>[]> {
+    return this._ref.requireOutput('passwords') as Output<Output<User>[]>;
   }
 
   public get provider(): Provider {
     if (!this._provider) {
       this._provider = new Provider('postgresql', {
-        username: this.user.apply(x => x?.username ?? ''),
-        password: this.user.apply(x => x?.password ?? ''),
+        username: this.users.postgres.username,
+        password: this.users.postgres.password,
         host: this.hostname,
         port: this.port,
         database: this.database,
@@ -59,5 +55,9 @@ export class PostgreSql {
     }
 
     return this._provider;
+  }
+
+  public user(name: string): User {
+    return output(this.passwords).apply(x => x.filter(y => y.username === name)[0]);
   }
 }

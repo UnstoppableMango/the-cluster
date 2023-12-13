@@ -93,6 +93,7 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
                   'qemu-guest-agent',
                   'internal-ingress',
                   'drone',
+                  'cert-manager',
                 ],
               },
             },

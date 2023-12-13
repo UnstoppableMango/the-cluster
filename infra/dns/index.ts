@@ -1,15 +1,10 @@
-import * as pulumi from '@pulumi/pulumi';
 import * as cloudflare from '@pulumi/cloudflare';
 import * as pihole from '@unmango/pulumi-pihole';
-import { suffix, zone, fullSslHosts, lanDomains } from './config';
-import { provider as piholeProvider } from './apps/pihole';
+import { apps } from '@unmango/thecluster/cluster/from-config';
+import { zone, fullSslHosts, lanDomains } from './config';
 
-function appendIf(x: string, o?: string | undefined | null): string {
-  return o ? x + o : x;
-}
-
-export const ssl = new cloudflare.Ruleset('ssl', {
-  name: appendIf('THECLUSTER', suffix),
+const ssl = new cloudflare.Ruleset('ssl', {
+  name: 'THECLUSTER',
   description: `SSL rules for THECLUSTER`,
   kind: 'zone',
   zoneId: zone.apply(x => x.id ?? ''),
@@ -26,4 +21,4 @@ export const ssl = new cloudflare.Ruleset('ssl', {
 const records = lanDomains.map(d => new pihole.DnsRecord(d.name, {
   domain: d.name,
   ip: d.ip,
-}, { provider: piholeProvider }));
+}, { provider: apps.pihole.provider }));

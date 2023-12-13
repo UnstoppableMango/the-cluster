@@ -3,10 +3,9 @@ import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { versions } from './config';
 
 const ns = k8s.core.v1.Namespace.get('cert-manager', 'cert-manager');
-
-// Use a release because the cert-manager helm chart uses hooks
-const release = new k8s.helm.v3.Chart('cert-manager', {
+const chart = new k8s.helm.v3.Chart('cert-manager', {
   path: './',
+  namespace: ns.metadata.name,
   values: {
     // https://github.com/cert-manager/csi-driver/tree/main/deploy/charts/csi-driver#values
     'cert-manager-csi-driver': {

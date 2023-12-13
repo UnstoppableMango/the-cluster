@@ -1,7 +1,7 @@
-import { getStack } from '@pulumi/pulumi';
+import { Config } from '@pulumi/pulumi';
 import { System } from '../internal';
 
-const name = getStack();
+export const name = new Config().require('managementCluster');
 export const system = new System(name);
 export const kubeconfig = system.kubeconfig;
 export const provider = system.provider;

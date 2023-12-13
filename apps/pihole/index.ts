@@ -88,6 +88,7 @@ const chart = new k8s.helm.v3.Chart('pihole', {
         type: 'LoadBalancer',
         loadBalancerIP: ip,
         annotations: {
+          'external-dns.alpha.kubernetes.io/hostname': 'pihole.lan.thecluster.io',
           'metallb.universe.tf/allow-shared-ip': 'pihole-svc',
           'metallb.universe.tf/address-pool': pool,
         },
@@ -103,17 +104,3 @@ const chart = new k8s.helm.v3.Chart('pihole', {
 
 export { ip, hostname };
 export const password = adminPassword.result;
-
-const deployment = chart.getResource('apps/v1/Deployment', 'pihole');
-
-const piholeProvider = new pihole.Provider('pihole', {
-  url: pulumi.interpolate`https://${hostname}`,
-  password,
-}, { dependsOn: chart.ready });
-
-const piholeRecord = new pihole.DnsRecord('pihole', {
-  domain: 'pihole.thecluster.lan',
-  ip,
-}, { provider: piholeProvider, dependsOn: deployment });
-
-export const domain = piholeRecord.domain;

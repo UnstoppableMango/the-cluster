@@ -2,10 +2,6 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as keycloak from '@pulumi/keycloak';
 import { provider } from '@unmango/thecluster/cluster/from-stack';
-import { external } from '@unmango/thecluster/realms';
-import { clusterIssuers } from '@unmango/thecluster/tls';
-import { provider as keycloakProvider } from '@unmango/thecluster/apps/keycloak';
-import { cloudflare as cfIngress, internal as internalIngress } from '@unmango/thecluster/ingress-classes';
 import { hosts } from './config';
 
 const ns = new k8s.core.v1.Namespace('dashboard', {

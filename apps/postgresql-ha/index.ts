@@ -1,13 +1,11 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
-import * as pihole from '@unmango/pulumi-pihole';
 import { Certificate, Issuer } from '@unmango/thecluster-crds/certmanager/v1';
 import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { rbdStorageClass } from '@unmango/thecluster/storage';
 import { clusterIssuers } from '@unmango/thecluster/tls';
-import { provider as piholeProvider } from '@unmango/thecluster/apps/pihole';
-import { keepers, users, database, versions, ip, port, hostname } from './config';
+import { keepers, users as enabledUsers, database, versions, ip, port, hostname } from './config';
 
 const ns = new k8s.core.v1.Namespace('postgresql', {
   metadata: { name: 'postgresql' },
@@ -99,7 +97,7 @@ const pgpoolSecret = new k8s.core.v1.Secret('pgpool-credentials', {
   },
 }, { provider });
 
-const passwords = users.map(user => ({
+const passwords = enabledUsers.map(user => ({
   username: pulumi.output(user),
   password: new random.RandomPassword(user, {
     length: 48,
@@ -231,20 +229,8 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
   },
 }, { provider });
 
-const dnsRecord = new pihole.DnsRecord(
-  'internal',
-  { domain: hostname, ip },
-  { provider: piholeProvider });
-
-export { ip, database, port, hostname };
-export const credentials = [
-  { username: repmgrUsername, password: repmgrPassword.result },
-  { username: postgresUsername, password: postgresPassword.result },
-  { username: pgpoolUsername, password: pgpoolPassword.result },
-  ...passwords,
-];
-
-export const newUsers = {
+export { ip, database, port, hostname, passwords };
+export const users = {
   repmgr: {
     username: repmgrUsername,
     password: repmgrPassword.result,
