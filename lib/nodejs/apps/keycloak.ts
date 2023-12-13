@@ -1,11 +1,11 @@
 import { Output, interpolate } from '@pulumi/pulumi';
 import { Provider } from '@pulumi/keycloak';
-import { AppRefs } from '../internal/apps';
+import { Refs } from '../internal';
 
 export class Keycloak {
   private _ref = this._refs.keycloak;
   private _provider: Provider | undefined;
-  constructor(private _refs: AppRefs) { }
+  constructor(private _refs: Refs) { }
 
   public get hostname(): Output<string> {
     return this._ref.requireOutput('hostname') as Output<string>;

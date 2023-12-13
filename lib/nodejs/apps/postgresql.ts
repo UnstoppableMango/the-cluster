@@ -1,6 +1,6 @@
 import { Output, output } from '@pulumi/pulumi';
 import { Provider } from '@pulumi/postgresql';
-import { AppRefs } from '../internal/apps';
+import { Refs } from '../internal';
 
 export interface User {
   username: Output<string>;
@@ -16,7 +16,7 @@ export interface Users {
 export class PostgreSql {
   private _provider: Provider | undefined;
   private _ref = this._refs.postgresql;
-  constructor(private _refs: AppRefs) { }
+  constructor(private _refs: Refs) { }
 
   public get hostname(): Output<string> {
     return this._ref.requireOutput('hostname') as Output<string>;

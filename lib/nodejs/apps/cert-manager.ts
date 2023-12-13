@@ -1,6 +1,6 @@
 import { Output } from '@pulumi/pulumi';
-import { AppRefs } from '../internal/apps';
+import { Refs } from '../internal';
 
 export class CertManager {
-  constructor(private _refs: AppRefs) { }
+  constructor(private _refs: Refs) { }
 }

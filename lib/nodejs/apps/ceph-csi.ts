@@ -1,5 +1,5 @@
 import { Output } from '@pulumi/pulumi';
-import { AppRefs } from '../internal/apps';
+import { Refs } from '../internal';
 
 export interface StorageClasses {
   rbd: Output<string>;
@@ -7,12 +7,12 @@ export interface StorageClasses {
 }
 
 export class CephCsi {
-  constructor(private _refs: AppRefs) { }
+  constructor(private _refs: Refs) { }
 
   public get storageClasses(): StorageClasses {
     return {
       rbd: this._refs.cephCsi.requireOutput('rbdClass') as Output<string>,
       cephfs: this._refs.cephCsi.requireOutput('cephfsClass') as Output<string>,
     }
- }
+  }
 }

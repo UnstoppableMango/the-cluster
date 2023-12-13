@@ -1,8 +1,8 @@
 import { Output } from '@pulumi/pulumi';
-import { AppRefs } from '../internal/apps';
+import { Refs } from '../internal';
 
 export class CloudflareIngress {
-  constructor(private _refs: AppRefs) { }
+  constructor(private _refs: Refs) { }
 
   public get ingressClass(): Output<string> {
     return this._refs.cloudflareIngress.requireOutput('ingressClass') as Output<string>;

@@ -1,5 +1,5 @@
 import { Output } from '@pulumi/pulumi';
-import { AppRefs } from '../internal/apps';
+import { Refs } from '../internal';
 
 export interface IngressClasses {
   internal: Output<string>;
@@ -8,7 +8,7 @@ export interface IngressClasses {
 
 export class NginxIngress {
   private _ref = this._refs.nginxIngress;
-  constructor(private _refs: AppRefs) { }
+  constructor(private _refs: Refs) { }
 
   public get ingressClasses(): IngressClasses {
     return {

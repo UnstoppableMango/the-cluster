@@ -14,7 +14,7 @@ export class System {
   public identities = new Identities(this.apps);
   public ingresses = new Ingresses(this.apps);
   public loadBalancers = new LoadBalancers(this.apps);
-  public realms = new Realms(this.refs);
+  public realms = new Realms(this.refs, this.apps);
   public storageClasses = new StorageClasses(this.apps);
 
   constructor(private _cluster: string) { }

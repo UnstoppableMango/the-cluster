@@ -24,7 +24,7 @@ export class Refs {
       this._cephCsi = this.ref('ceph-csi');
     }
 
-    return this.cephCsi;
+    return this._cephCsi;
   }
 
   public get certManager(): StackReference {

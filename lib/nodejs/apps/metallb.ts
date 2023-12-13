@@ -1,9 +1,9 @@
 import { Output } from '@pulumi/pulumi';
-import { AppRefs } from '../internal/apps';
+import { Refs } from '../internal';
 
 export class Metallb {
   private _ref = this._refs.metallb;
-  constructor(private _refs: AppRefs) { }
+  constructor(private _refs: Refs) { }
 
   public get pool(): Output<string> {
     return this._ref.requireOutput('poolName') as Output<string>;
