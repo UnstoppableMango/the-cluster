@@ -2,6 +2,11 @@ import { Config, getProject } from '@pulumi/pulumi';
 
 export interface Hosts {
   external: string;
+  internal: string;
+  aliases: {
+    external: string[];
+    internal: string[];
+  };
 }
 
 export interface Ports {
@@ -9,6 +14,7 @@ export interface Ports {
 }
 
 export interface Versions {
+  coreDns: string;
   k0s: string;
   k8s: string;
   vcluster: string;
@@ -19,3 +25,4 @@ export const cluster = getProject();
 export const hosts = config.requireObject<Hosts>('hosts');
 export const ports = config.requireObject<Ports>('ports');
 export const versions = config.requireObject<Versions>('versions');
+export const ip = config.require('ip');

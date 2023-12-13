@@ -2,19 +2,17 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as infra from '@unmango/thecluster-crds/infrastructure/v1alpha1';
 import * as capi from '@unmango/thecluster-crds/cluster/v1beta1';
-import { provider } from '@unmango/thecluster/cluster/management';
-import { rbdStorageClass } from '@unmango/thecluster/storage';
-import { cloudflare as cfIngress } from '@unmango/thecluster/ingress-classes';
-import { requireProp, required, yamlStringify } from '@unmango/thecluster';
-import { cluster, hosts, ports, versions } from './config';
+import { ingresses, loadBalancers, provider, storageClasses } from '@unmango/thecluster/cluster/management';
+import { required, yamlStringify } from '@unmango/thecluster';
+import { cluster as clusterName, hosts, ip, ports, versions } from './config';
 
-const ns = new k8s.core.v1.Namespace(cluster, {
-  metadata: { name: cluster },
+const ns = new k8s.core.v1.Namespace(clusterName, {
+  metadata: { name: clusterName },
 }, { provider });
 
-const vcluster = new infra.VCluster(cluster, {
+const vcluster = new infra.VCluster(clusterName, {
   metadata: {
-    name: cluster,
+    name: clusterName,
     namespace: ns.metadata.name,
   },
   spec: {
@@ -35,48 +33,61 @@ const vcluster = new infra.VCluster(cluster, {
       values: yamlStringify({
         headless: false,
         sync: {
-          services: { enabled: true },
-          configmaps: {
-            enabled: true,
-            all: false,
-          },
-          secrets: {
-            enabled: true,
-            all: false,
-          },
-          endpoints: { enabled: true },
-          pods: {
-            enabled: true,
-            ephemeralContainers: false,
-            status: false,
-          },
-          events: { enabled: true },
-          persistentvolumeclaims: { enabled: true },
-          ingresses: { enabled: false },
-          ingressclasses: { enabled: true },
-          'fake-nodes': { enabled: true },
-          'fake-persistentvolumes': { enabled: true },
-          nodes: { enabled: false },
-          persistentvolumes: { enabled: false },
-          storageClasses: { enabled: true },
+          // Defaults:
+          // services: { enabled: true },
+          // configmaps: {
+          //   enabled: true,
+          //   all: false,
+          // },
+          // secrets: {
+          //   enabled: true,
+          //   all: false,
+          // },
+          // endpoints: { enabled: true },
+          // pods: {
+          //   enabled: true,
+          //   ephemeralContainers: false,
+          //   status: false,
+          // },
+          // events: { enabled: true },
+          // persistentvolumeclaims: { enabled: true },
+          // ingresses: { enabled: false },
+          // ingressclasses: { enabled: false },
+          // 'fake-nodes': { enabled: true },
+          // 'fake-persistentvolumes': { enabled: true },
+          // nodes: { enabled: false },
+          // persistentvolumes: { enabled: false },
+          // storageClasses: { enabled: false },
         },
-        fallbackHostDns: true,
+        // Not sure if I want to spin up another DNS server for THECLUSTER or not...
+        // fallbackHostDns: true,
         mapServices: {
           fromVirtual: [],
           fromHost: [],
         },
+        proxy: {
+          metricsServer: {
+            nodes: { enabled: true },
+            pods: { enabled: true },
+          },
+        },
         syncer: {
           image: 'ghcr.io/loft-sh/vcluster',
-          kubeConfigContextName: 'lapis-lazuli',
+          resources: {
+            requests: {
+              'ephemeral-storage': '8Gi',
+              memory: '2Gi',
+            },
+            limits: {
+              'ephemeral-storage': '200Mi',
+              cpu: '10m',
+              memory: '64Mi',
+            },
+          },
+          kubeConfigContextName: 'lapislazuli',
         },
         vcluster: {
           image: `k0sproject/k0s:${versions.k0s}`,
-          command: ['/k0s-binary/k0s'],
-          baseArgs: [
-            'controller',
-            '--config=/etc/k0s/config.yaml',
-            '--data-dir=/data/k0s',
-          ],
           extraArgs: [],
           resources: {
             limits: {
@@ -91,25 +102,28 @@ const vcluster = new infra.VCluster(cluster, {
         storage: {
           persistence: true,
           size: '15Gi',
-          className: rbdStorageClass,
+          className: storageClasses.rbd,
         },
         serviceAccount: {
           create: true,
         },
         replicas: 3,
+        autoDeletePersistentVolumeClaims: true,
+        affinity: {}, // Something to select the pi's
+        tolerations: [], // Tolerate the pi's
+        priorityClassName: 'system-clutser-critical',
         service: {
-          type: 'ClusterIP',
-          // loadBalancerIP: '',
-          // loadBalancerClass: '',
+          type: 'LoadBalancer',
+          loadBalancerIP: ip,
+          loadBalancerClass: loadBalancers.metallb,
         },
         ingress: {
           enabled: true,
           pathType: 'Prefix',
-          ingressClassName: cfIngress,
+          ingressClassName: ingresses.cloudflare,
           host: hosts.external,
           annotations: {
             'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'https',
-            // 'cloudflare-tunnel-ingress-controller.strrl.dev/ssl-verify': 'false',
             'pulumi.com/skipAwait': 'true',
           },
         },
@@ -121,19 +135,41 @@ const vcluster = new infra.VCluster(cluster, {
           runAsGroup: 1001,
           runAsNonRoot: true,
         },
-        // config: yamlStringify({}),
+        config: yamlStringify({
+          apiVersion: 'k0s.k0sproject.io/v1beta1',
+        }),
         coredns: {
           enabled: true,
-          replicas: 1,
+          replicas: 2,
+          image: pulumi.interpolate`coredns/coredns:${versions.coreDns}`,
+          config: pulumi.interpolate``, // TODO
+          service: {
+            type: 'ClusterIP',
+          },
+          resources: {
+            limits: {
+              cpu: '1000m',
+              memory: '512Mi',
+            },
+            requests: {
+              cpu: '20m',
+              memory: '64Mi',
+            },
+          },
         },
+        // https://github.com/loft-sh/vcluster/blob/52581de84156b35615afb134ab7e8e992da8d97a/charts/k0s/values.yaml#L407-L461
+        isolation: { enabled: false }, // Maybe I want this?
+        multiNamespaceMode: { enabled: false },
+        // Sneaky sneaky
+        telemetry: { disabled: true },
       }),
     },
   },
 }, { provider });
 
-const thing = new capi.Cluster(cluster, {
+const cluster = new capi.Cluster(clusterName, {
   metadata: {
-    name: cluster,
+    name: clusterName,
     namespace: ns.metadata.name,
   },
   spec: {
