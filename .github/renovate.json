@@ -89,7 +89,8 @@
         "cluster-api",
         "gateway-api",
         "dashboard",
-        "nginx"
+        "nginx",
+        "sigs"
       ],
       "groupName": "kubernetes"
     },
