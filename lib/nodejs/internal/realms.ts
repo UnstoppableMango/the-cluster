@@ -1,0 +1,50 @@
+import { Output, interpolate } from '@pulumi/pulumi';
+import { Refs } from './refs';
+import { Apps } from './apps';
+
+export interface Realm {
+  id: Output<string>;
+  issuerUrl: Output<string>;
+  tokenUrl: Output<string>;
+  authorizationUrl: Output<string>;
+  apiBaseUrl: Output<string>;
+  userinfoEndpoint: Output<string>;
+}
+
+export class Realms {
+  constructor(private _refs: Refs, private _apps: Apps) { }
+
+  public get external(): Realm {
+    return this.realm('externalRealmId');
+  }
+
+  public get cluster(): Realm {
+    return this.realm('clusterRealmId');
+  }
+
+  public get groupNames(): Output<Output<string>[]> {
+    return this._refs.identity.requireOutput('groupNames') as Output<Output<string>[]>;
+  }
+
+  public get groupsScopeName(): Output<string> {
+    return this._refs.identity.requireOutput('groupsScopeName') as Output<string>;
+  }
+
+  public get groups(): Output<Record<string, Output<string>>> {
+    return this._refs.identity.requireOutput('groups') as Output<Record<string, Output<string>>>;
+  }
+
+  private realm(idKey: string): Realm {
+    const id = this._refs.identity.requireOutput(idKey) as Output<string>;
+    const issuerUrl = interpolate`https://${this._apps.keycloak.hostname}/realms/${id}`;
+    const baseUrl = interpolate`${issuerUrl}/protocol/openid-connect`;
+    return {
+      id,
+      issuerUrl,
+      apiBaseUrl: baseUrl,
+      tokenUrl: interpolate`${baseUrl}/token`,
+      authorizationUrl: interpolate`${baseUrl}/auth`,
+      userinfoEndpoint: interpolate`${baseUrl}/userinfo`,
+    };
+  }
+}

@@ -1,13 +1,11 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as keycloak from '@pulumi/keycloak';
-import { provider } from './clusters';
-import {  publicHost, internalHost, versions } from './config';
-import { ingressClass } from './apps/cloudflare-ingress';
-import { provider as keycloakProvider, realm, hostname as keycloakHost } from './apps/keycloak';
+import { apps, ingresses, provider, realms } from '@unmango/thecluster/cluster/from-stack';
+import { publicHost, internalHost, versions } from './config';
 
 const client = new keycloak.openid.Client('dex', {
-  realmId: realm,
+  realmId: realms.external.id,
   enabled: true,
   name: 'Dex',
   clientId: 'dex',
@@ -20,41 +18,41 @@ const client = new keycloak.openid.Client('dex', {
     'http://localhost:8000',
     'http://localhost:18000',
   ],
-}, { provider: keycloakProvider });
+}, { provider: apps.keycloak.provider });
 
 const audMapper = new keycloak.openid.AudienceProtocolMapper('dex', {
-  realmId: realm,
+  realmId: realms.external.id,
   name: pulumi.interpolate`aud-mapper-${client.clientId}`,
   clientId: client.id,
   includedClientAudience: client.clientId,
   addToIdToken: true,
   addToAccessToken: true,
-}, { provider: keycloakProvider });
+}, { provider: apps.keycloak.provider });
 
 const adminGroup = new keycloak.Group('k8s-admin', {
-  realmId: realm,
+  realmId: realms.external.id,
   name: 'k8s-admin',
-}, { provider: keycloakProvider });
+}, { provider: apps.keycloak.provider });
 
 const adminRole = new keycloak.Role('k8s-admin', {
-  realmId: realm,
+  realmId: realms.external.id,
   name: 'admin',
-}, { provider: keycloakProvider });
+}, { provider: apps.keycloak.provider });
 
 const adminGroupRoles = new keycloak.GroupRoles('admin', {
-  realmId: realm,
+  realmId: realms.external.id,
   groupId: adminGroup.id,
   roleIds: [adminRole.id],
-}, { provider: keycloakProvider });
+}, { provider: apps.keycloak.provider });
 
 const groupMapper = new keycloak.openid.UserClientRoleProtocolMapper('kubernetes', {
-  realmId: realm,
+  realmId: realms.external.id,
   name: 'groups',
   claimName: 'groups',
   clientId: client.id,
   clientRolePrefix: 'kubernetes:',
   addToIdToken: true,
-}, { provider: keycloakProvider });
+}, { provider: apps.keycloak.provider });
 
 const crds = new k8s.yaml.ConfigGroup('crds', {
   files: [
@@ -81,7 +79,7 @@ const chart = new k8s.helm.v3.Chart('dex', {
   values: {
     dex: {
       config: {
-        issuer: pulumi.interpolate`https://${keycloakHost}/realms/${realm}`,
+        issuer: pulumi.interpolate`https://${apps.keycloak.hostname}/realms/${realms.external.id}`,
         storage: {
           type: 'kubernetes',
           config: {
@@ -93,7 +91,7 @@ const chart = new k8s.helm.v3.Chart('dex', {
           id: 'keycloak',
           name: 'Keycloak',
           config: {
-            issuer: pulumi.interpolate`https://${keycloakHost}/realms/${realm}`,
+            issuer: pulumi.interpolate`https://${apps.keycloak.hostname}/realms/${realms.external.id}`,
             clientID: client.clientId,
             clientSecret: client.clientSecret,
             redirectURI: pulumi.interpolate`https://${publicHost}/callback`,
@@ -102,7 +100,7 @@ const chart = new k8s.helm.v3.Chart('dex', {
       },
       ingress: {
         enabled: true,
-        className: ingressClass,
+        className: ingresses.cloudflare,
         hosts: [{
           host: publicHost,
           paths: [{
@@ -122,7 +120,7 @@ const clusterRoleBinding = new k8s.rbac.v1.ClusterRoleBinding('oidc-cluster-admi
   metadata: { name: 'oidc-cluster-admin' },
   subjects: [{
     kind: 'Group',
-    name: pulumi.interpolate`https://${keycloakHost}/realms/external#d0a4459b-3507-489a-8b15-bf1489645acf`,
+    name: pulumi.interpolate`https://${apps.keycloak.hostname}/realms/external#d0a4459b-3507-489a-8b15-bf1489645acf`,
   }],
   roleRef: {
     apiGroup: 'rbac.authorization.k8s.io',

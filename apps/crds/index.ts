@@ -36,12 +36,6 @@ if (enabled.includes('cacppt')) {
   paths.push(path.join('manifests', 'talos-control-plane', 'output.yaml'));
 }
 
-if (enabled.includes('externalSnapshotter')) {
-  new k8s.kustomize.Directory('external-snapshotter', {
-    directory: `https://github.com/kubernetes-csi/external-snapshotter/tree/${versions.externalSnapshotter}/client/config/crd`,
-  }, { provider });
-}
-
 const manifests = new k8s.yaml.ConfigGroup('crds', {
   files: paths,
 }, {

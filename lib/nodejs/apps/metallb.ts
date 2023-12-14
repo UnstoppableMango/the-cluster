@@ -1,18 +1,23 @@
-import { Output, StackReference } from '@pulumi/pulumi';
-import { cluster } from '../config';
+import { Output } from '@pulumi/pulumi';
+import { Refs } from '../internal';
 
-const ref = new StackReference('metallb', {
-  name: `UnstoppableMango/thecluster-metallb/${cluster}`,
-});
+export class Metallb {
+  private _ref = this._refs.metallb;
+  constructor(private _refs: Refs) { }
 
-export const pool = ref.requireOutput('poolName') as Output<string>;
-export const l2Advertisement = ref.requireOutput('advertisementName') as Output<string>;
-export const loadBalancerClass = ref.requireOutput('loadBalancerClass') as Output<string>;
-export const addresses = ref.requireOutput('addresses') as Output<string[]>;
+  public get pool(): Output<string> {
+    return this._ref.requireOutput('poolName') as Output<string>;
+  }
 
-export const outputs = {
-  pool,
-  l2Advertisement,
-  loadBalancerClass,
-  addresses,
-};
+  public get l2Advertisement(): Output<string> {
+    return this._ref.requireOutput('advertisementName') as Output<string>;
+  }
+
+  public get loadBalancerClass(): Output<string> {
+    return this._ref.requireOutput('loadBalancerClass') as Output<string>;
+  }
+
+  public get addresses(): Output<Output<string>[]> {
+    return this._ref.requireOutput('addresses') as Output<Output<string>[]>;
+  }
+}

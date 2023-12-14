@@ -1,12 +1,8 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
-import * as pihole from '@unmango/pulumi-pihole';
-import { provider } from './clusters';
+import { apps, ingresses, provider, storageClasses } from '@unmango/thecluster/cluster/from-stack';
 import { hostname, ip, versions } from './config';
-import { pool } from './apps/metallb';
-import { ingressClass } from './apps/cloudflare-ingress';
-import { storageClass } from './apps/ceph-csi';
 
 const ns = new k8s.core.v1.Namespace('pihole', {
   metadata: { name: 'pihole' },
@@ -47,7 +43,7 @@ const chart = new k8s.helm.v3.Chart('pihole', {
       // Consider DNS over HTTPS
       ingress: {
         enabled: true,
-        ingressClassName: ingressClass,
+        ingressClassName: ingresses.cloudflare,
         hosts: [hostname],
         annotations: {
           'pulumi.com/skipAwait': 'true',
@@ -55,7 +51,7 @@ const chart = new k8s.helm.v3.Chart('pihole', {
       },
       persistentVolumeClaim: {
         enabled: true,
-        storageClass,
+        storageClass: storageClasses.rbd,
         accessModes: ['ReadWriteOnce'],
       },
       podDnsConfig: {
@@ -73,7 +69,7 @@ const chart = new k8s.helm.v3.Chart('pihole', {
         loadBalancerIP: ip,
         annotations: {
           'metallb.universe.tf/allow-shared-ip': 'pihole-svc',
-          'metallb.universe.tf/address-pool': pool,
+          'metallb.universe.tf/address-pool': apps.metallb.pool,
         },
       },
       serviceDns: {
@@ -81,39 +77,25 @@ const chart = new k8s.helm.v3.Chart('pihole', {
         loadBalancerIP: ip,
         annotations: {
           'metallb.universe.tf/allow-shared-ip': 'pihole-svc',
-          'metallb.universe.tf/address-pool': pool,
+          'metallb.universe.tf/address-pool': apps.metallb.pool,
         },
       },
       serviceWeb: {
         type: 'LoadBalancer',
         loadBalancerIP: ip,
         annotations: {
+          'external-dns.alpha.kubernetes.io/hostname': 'pihole.lan.thecluster.io',
           'metallb.universe.tf/allow-shared-ip': 'pihole-svc',
-          'metallb.universe.tf/address-pool': pool,
+          'metallb.universe.tf/address-pool': apps.metallb.pool,
         },
       },
     },
   },
   transformations: [(obj: any, opts: pulumi.CustomResourceOptions) => {
     if (obj.kind !== 'Ingress') return;
-
     obj.spec.rules[0].http.paths[0].pathType = 'Prefix';
   }],
 }, { provider });
 
 export { ip, hostname };
 export const password = adminPassword.result;
-
-const deployment = chart.getResource('apps/v1/Deployment', 'pihole');
-
-const piholeProvider = new pihole.Provider('pihole', {
-  url: pulumi.interpolate`https://${hostname}`,
-  password,
-}, { dependsOn: chart.ready });
-
-const piholeRecord = new pihole.DnsRecord('pihole', {
-  domain: 'pihole.thecluster.lan',
-  ip,
-}, { provider: piholeProvider, dependsOn: deployment });
-
-export const domain = piholeRecord.domain;

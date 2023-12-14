@@ -42065,6 +42065,137 @@ export namespace gatewayoperator {
 }
 
 export namespace infrastructure {
+    export namespace v1alpha1 {
+        /**
+         * VClusterSpec defines the desired state of VCluster
+         */
+        export interface VClusterSpec {
+            /**
+             * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+             */
+            controlPlaneEndpoint?: outputs.infrastructure.v1alpha1.VClusterSpecControlPlaneEndpoint;
+            /**
+             * The helm release configuration for the virtual cluster. This is optional, but when filled, specified chart will be deployed.
+             */
+            helmRelease?: outputs.infrastructure.v1alpha1.VClusterSpecHelmRelease;
+            /**
+             * Kubernetes version that should be used in this vcluster instance, e.g. "1.23". Versions out of the supported range will be ignored, and earliest/latest supported version will be used instead.
+             */
+            kubernetesVersion?: string;
+        }
+
+        /**
+         * ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+         */
+        export interface VClusterSpecControlPlaneEndpoint {
+            /**
+             * The hostname on which the API server is serving.
+             */
+            host: string;
+            /**
+             * The port on which the API server is serving.
+             */
+            port: number;
+        }
+
+        /**
+         * The helm release configuration for the virtual cluster. This is optional, but when filled, specified chart will be deployed.
+         */
+        export interface VClusterSpecHelmRelease {
+            /**
+             * infos about what chart to deploy
+             */
+            chart?: outputs.infrastructure.v1alpha1.VClusterSpecHelmReleaseChart;
+            /**
+             * the values for the given chart
+             */
+            values?: string;
+        }
+
+        /**
+         * infos about what chart to deploy
+         */
+        export interface VClusterSpecHelmReleaseChart {
+            /**
+             * the name of the helm chart
+             */
+            name?: string;
+            /**
+             * the repo of the helm chart
+             */
+            repo?: string;
+            /**
+             * the version of the helm chart to use
+             */
+            version?: string;
+        }
+
+        /**
+         * VClusterStatus defines the observed state of VCluster
+         */
+        export interface VClusterStatus {
+            /**
+             * Conditions holds several conditions the vcluster might be in
+             */
+            conditions?: outputs.infrastructure.v1alpha1.VClusterStatusConditions[];
+            /**
+             * Initialized defines if the virtual cluster control plane was initialized.
+             */
+            initialized?: boolean;
+            /**
+             * Message describes the reason in human readable form why the cluster is in the currrent phase
+             */
+            message?: string;
+            /**
+             * ObservedGeneration is the latest generation observed by the controller.
+             */
+            observedGeneration?: number;
+            /**
+             * Phase describes the current phase the virtual cluster is in
+             */
+            phase?: string;
+            /**
+             * Ready defines if the virtual cluster control plane is ready.
+             */
+            ready?: boolean;
+            /**
+             * Reason describes the reason in machine readable form why the cluster is in the current phase
+             */
+            reason?: string;
+        }
+
+        /**
+         * Condition defines an observation of a Cluster API resource operational state.
+         */
+        export interface VClusterStatusConditions {
+            /**
+             * Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+             */
+            lastTransitionTime?: string;
+            /**
+             * A human readable message indicating details about the transition. This field may be empty.
+             */
+            message?: string;
+            /**
+             * The reason for the condition's last transition in CamelCase. The specific API may choose whether this field is considered a guaranteed API. This field may not be empty.
+             */
+            reason?: string;
+            /**
+             * Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+             */
+            severity?: string;
+            /**
+             * Status of the condition, one of True, False, Unknown.
+             */
+            status: string;
+            /**
+             * Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+             */
+            type: string;
+        }
+
+    }
+
     export namespace v1alpha2 {
         /**
          * MetalClusterSpec defines the desired state of MetalCluster.
@@ -47043,6 +47174,362 @@ export namespace runtime {
              * Hook is the name of the hook.
              */
             hook: string;
+        }
+
+    }
+}
+
+export namespace snapshot {
+    export namespace v1 {
+        /**
+         * spec defines properties of a VolumeSnapshotContent created by the underlying storage system. Required.
+         */
+        export interface VolumeSnapshotContentSpec {
+            /**
+             * deletionPolicy determines whether this VolumeSnapshotContent and its physical snapshot on the underlying storage system should be deleted when its bound VolumeSnapshot is deleted. Supported values are "Retain" and "Delete". "Retain" means that the VolumeSnapshotContent and its physical snapshot on underlying storage system are kept. "Delete" means that the VolumeSnapshotContent and its physical snapshot on underlying storage system are deleted. For dynamically provisioned snapshots, this field will automatically be filled in by the CSI snapshotter sidecar with the "DeletionPolicy" field defined in the corresponding VolumeSnapshotClass. For pre-existing snapshots, users MUST specify this field when creating the VolumeSnapshotContent object. Required.
+             */
+            deletionPolicy: string;
+            /**
+             * driver is the name of the CSI driver used to create the physical snapshot on the underlying storage system. This MUST be the same as the name returned by the CSI GetPluginName() call for that driver. Required.
+             */
+            driver: string;
+            /**
+             * source specifies whether the snapshot is (or should be) dynamically provisioned or already exists, and just requires a Kubernetes object representation. This field is immutable after creation. Required.
+             */
+            source: any;
+            /**
+             * SourceVolumeMode is the mode of the volume whose snapshot is taken. Can be either “Filesystem” or “Block”. If not specified, it indicates the source volume's mode is unknown. This field is immutable. This field is an alpha field.
+             */
+            sourceVolumeMode?: string;
+            /**
+             * name of the VolumeSnapshotClass from which this snapshot was (or will be) created. Note that after provisioning, the VolumeSnapshotClass may be deleted or recreated with different set of values, and as such, should not be referenced post-snapshot creation.
+             */
+            volumeSnapshotClassName?: string;
+            /**
+             * volumeSnapshotRef specifies the VolumeSnapshot object to which this VolumeSnapshotContent object is bound. VolumeSnapshot.Spec.VolumeSnapshotContentName field must reference to this VolumeSnapshotContent's name for the bidirectional binding to be valid. For a pre-existing VolumeSnapshotContent object, name and namespace of the VolumeSnapshot object MUST be provided for binding to happen. This field is immutable after creation. Required.
+             */
+            volumeSnapshotRef: outputs.snapshot.v1.VolumeSnapshotContentSpecVolumeSnapshotRef;
+        }
+
+        /**
+         * volumeSnapshotRef specifies the VolumeSnapshot object to which this VolumeSnapshotContent object is bound. VolumeSnapshot.Spec.VolumeSnapshotContentName field must reference to this VolumeSnapshotContent's name for the bidirectional binding to be valid. For a pre-existing VolumeSnapshotContent object, name and namespace of the VolumeSnapshot object MUST be provided for binding to happen. This field is immutable after creation. Required.
+         */
+        export interface VolumeSnapshotContentSpecVolumeSnapshotRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * status represents the current information of a snapshot.
+         */
+        export interface VolumeSnapshotContentStatus {
+            /**
+             * creationTime is the timestamp when the point-in-time snapshot is taken by the underlying storage system. In dynamic snapshot creation case, this field will be filled in by the CSI snapshotter sidecar with the "creation_time" value returned from CSI "CreateSnapshot" gRPC call. For a pre-existing snapshot, this field will be filled with the "creation_time" value returned from the CSI "ListSnapshots" gRPC call if the driver supports it. If not specified, it indicates the creation time is unknown. The format of this field is a Unix nanoseconds time encoded as an int64. On Unix, the command `date +%s%N` returns the current time in nanoseconds since 1970-01-01 00:00:00 UTC.
+             */
+            creationTime?: number;
+            /**
+             * error is the last observed error during snapshot creation, if any. Upon success after retry, this error field will be cleared.
+             */
+            error?: outputs.snapshot.v1.VolumeSnapshotContentStatusError;
+            /**
+             * readyToUse indicates if a snapshot is ready to be used to restore a volume. In dynamic snapshot creation case, this field will be filled in by the CSI snapshotter sidecar with the "ready_to_use" value returned from CSI "CreateSnapshot" gRPC call. For a pre-existing snapshot, this field will be filled with the "ready_to_use" value returned from the CSI "ListSnapshots" gRPC call if the driver supports it, otherwise, this field will be set to "True". If not specified, it means the readiness of a snapshot is unknown.
+             */
+            readyToUse?: boolean;
+            /**
+             * restoreSize represents the complete size of the snapshot in bytes. In dynamic snapshot creation case, this field will be filled in by the CSI snapshotter sidecar with the "size_bytes" value returned from CSI "CreateSnapshot" gRPC call. For a pre-existing snapshot, this field will be filled with the "size_bytes" value returned from the CSI "ListSnapshots" gRPC call if the driver supports it. When restoring a volume from this snapshot, the size of the volume MUST NOT be smaller than the restoreSize if it is specified, otherwise the restoration will fail. If not specified, it indicates that the size is unknown.
+             */
+            restoreSize?: number;
+            /**
+             * snapshotHandle is the CSI "snapshot_id" of a snapshot on the underlying storage system. If not specified, it indicates that dynamic snapshot creation has either failed or it is still in progress.
+             */
+            snapshotHandle?: string;
+            /**
+             * VolumeGroupSnapshotContentName is the name of the VolumeGroupSnapshotContent of which this VolumeSnapshotContent is a part of.
+             */
+            volumeGroupSnapshotContentName?: string;
+        }
+
+        /**
+         * error is the last observed error during snapshot creation, if any. Upon success after retry, this error field will be cleared.
+         */
+        export interface VolumeSnapshotContentStatusError {
+            /**
+             * message is a string detailing the encountered error during snapshot creation if specified. NOTE: message may be logged, and it should not contain sensitive information.
+             */
+            message?: string;
+            /**
+             * time is the timestamp when the error was encountered.
+             */
+            time?: string;
+        }
+
+        /**
+         * spec defines the desired characteristics of a snapshot requested by a user. More info: https://kubernetes.io/docs/concepts/storage/volume-snapshots#volumesnapshots Required.
+         */
+        export interface VolumeSnapshotSpec {
+            /**
+             * source specifies where a snapshot will be created from. This field is immutable after creation. Required.
+             */
+            source: any;
+            /**
+             * VolumeSnapshotClassName is the name of the VolumeSnapshotClass requested by the VolumeSnapshot. VolumeSnapshotClassName may be left nil to indicate that the default SnapshotClass should be used. A given cluster may have multiple default Volume SnapshotClasses: one default per CSI Driver. If a VolumeSnapshot does not specify a SnapshotClass, VolumeSnapshotSource will be checked to figure out what the associated CSI Driver is, and the default VolumeSnapshotClass associated with that CSI Driver will be used. If more than one VolumeSnapshotClass exist for a given CSI Driver and more than one have been marked as default, CreateSnapshot will fail and generate an event. Empty string is not allowed for this field.
+             */
+            volumeSnapshotClassName?: string;
+        }
+
+        /**
+         * status represents the current information of a snapshot. Consumers must verify binding between VolumeSnapshot and VolumeSnapshotContent objects is successful (by validating that both VolumeSnapshot and VolumeSnapshotContent point at each other) before using this object.
+         */
+        export interface VolumeSnapshotStatus {
+            /**
+             * boundVolumeSnapshotContentName is the name of the VolumeSnapshotContent object to which this VolumeSnapshot object intends to bind to. If not specified, it indicates that the VolumeSnapshot object has not been successfully bound to a VolumeSnapshotContent object yet. NOTE: To avoid possible security issues, consumers must verify binding between VolumeSnapshot and VolumeSnapshotContent objects is successful (by validating that both VolumeSnapshot and VolumeSnapshotContent point at each other) before using this object.
+             */
+            boundVolumeSnapshotContentName?: string;
+            /**
+             * creationTime is the timestamp when the point-in-time snapshot is taken by the underlying storage system. In dynamic snapshot creation case, this field will be filled in by the snapshot controller with the "creation_time" value returned from CSI "CreateSnapshot" gRPC call. For a pre-existing snapshot, this field will be filled with the "creation_time" value returned from the CSI "ListSnapshots" gRPC call if the driver supports it. If not specified, it may indicate that the creation time of the snapshot is unknown.
+             */
+            creationTime?: string;
+            /**
+             * error is the last observed error during snapshot creation, if any. This field could be helpful to upper level controllers(i.e., application controller) to decide whether they should continue on waiting for the snapshot to be created based on the type of error reported. The snapshot controller will keep retrying when an error occurs during the snapshot creation. Upon success, this error field will be cleared.
+             */
+            error?: outputs.snapshot.v1.VolumeSnapshotStatusError;
+            /**
+             * readyToUse indicates if the snapshot is ready to be used to restore a volume. In dynamic snapshot creation case, this field will be filled in by the snapshot controller with the "ready_to_use" value returned from CSI "CreateSnapshot" gRPC call. For a pre-existing snapshot, this field will be filled with the "ready_to_use" value returned from the CSI "ListSnapshots" gRPC call if the driver supports it, otherwise, this field will be set to "True". If not specified, it means the readiness of a snapshot is unknown.
+             */
+            readyToUse?: boolean;
+            /**
+             * restoreSize represents the minimum size of volume required to create a volume from this snapshot. In dynamic snapshot creation case, this field will be filled in by the snapshot controller with the "size_bytes" value returned from CSI "CreateSnapshot" gRPC call. For a pre-existing snapshot, this field will be filled with the "size_bytes" value returned from the CSI "ListSnapshots" gRPC call if the driver supports it. When restoring a volume from this snapshot, the size of the volume MUST NOT be smaller than the restoreSize if it is specified, otherwise the restoration will fail. If not specified, it indicates that the size is unknown.
+             */
+            restoreSize?: number | string;
+            /**
+             * VolumeGroupSnapshotName is the name of the VolumeGroupSnapshot of which this VolumeSnapshot is a part of.
+             */
+            volumeGroupSnapshotName?: string;
+        }
+
+        /**
+         * error is the last observed error during snapshot creation, if any. This field could be helpful to upper level controllers(i.e., application controller) to decide whether they should continue on waiting for the snapshot to be created based on the type of error reported. The snapshot controller will keep retrying when an error occurs during the snapshot creation. Upon success, this error field will be cleared.
+         */
+        export interface VolumeSnapshotStatusError {
+            /**
+             * message is a string detailing the encountered error during snapshot creation if specified. NOTE: message may be logged, and it should not contain sensitive information.
+             */
+            message?: string;
+            /**
+             * time is the timestamp when the error was encountered.
+             */
+            time?: string;
+        }
+
+    }
+
+    export namespace v1beta1 {
+        /**
+         * spec defines properties of a VolumeSnapshotContent created by the underlying storage system. Required.
+         */
+        export interface VolumeSnapshotContentSpec {
+            /**
+             * deletionPolicy determines whether this VolumeSnapshotContent and its physical snapshot on the underlying storage system should be deleted when its bound VolumeSnapshot is deleted. Supported values are "Retain" and "Delete". "Retain" means that the VolumeSnapshotContent and its physical snapshot on underlying storage system are kept. "Delete" means that the VolumeSnapshotContent and its physical snapshot on underlying storage system are deleted. For dynamically provisioned snapshots, this field will automatically be filled in by the CSI snapshotter sidecar with the "DeletionPolicy" field defined in the corresponding VolumeSnapshotClass. For pre-existing snapshots, users MUST specify this field when creating the  VolumeSnapshotContent object. Required.
+             */
+            deletionPolicy: string;
+            /**
+             * driver is the name of the CSI driver used to create the physical snapshot on the underlying storage system. This MUST be the same as the name returned by the CSI GetPluginName() call for that driver. Required.
+             */
+            driver: string;
+            /**
+             * source specifies whether the snapshot is (or should be) dynamically provisioned or already exists, and just requires a Kubernetes object representation. This field is immutable after creation. Required.
+             */
+            source: outputs.snapshot.v1beta1.VolumeSnapshotContentSpecSource;
+            /**
+             * name of the VolumeSnapshotClass from which this snapshot was (or will be) created. Note that after provisioning, the VolumeSnapshotClass may be deleted or recreated with different set of values, and as such, should not be referenced post-snapshot creation.
+             */
+            volumeSnapshotClassName?: string;
+            /**
+             * volumeSnapshotRef specifies the VolumeSnapshot object to which this VolumeSnapshotContent object is bound. VolumeSnapshot.Spec.VolumeSnapshotContentName field must reference to this VolumeSnapshotContent's name for the bidirectional binding to be valid. For a pre-existing VolumeSnapshotContent object, name and namespace of the VolumeSnapshot object MUST be provided for binding to happen. This field is immutable after creation. Required.
+             */
+            volumeSnapshotRef: outputs.snapshot.v1beta1.VolumeSnapshotContentSpecVolumeSnapshotRef;
+        }
+
+        /**
+         * source specifies whether the snapshot is (or should be) dynamically provisioned or already exists, and just requires a Kubernetes object representation. This field is immutable after creation. Required.
+         */
+        export interface VolumeSnapshotContentSpecSource {
+            /**
+             * snapshotHandle specifies the CSI "snapshot_id" of a pre-existing snapshot on the underlying storage system for which a Kubernetes object representation was (or should be) created. This field is immutable.
+             */
+            snapshotHandle?: string;
+            /**
+             * volumeHandle specifies the CSI "volume_id" of the volume from which a snapshot should be dynamically taken from. This field is immutable.
+             */
+            volumeHandle?: string;
+        }
+
+        /**
+         * volumeSnapshotRef specifies the VolumeSnapshot object to which this VolumeSnapshotContent object is bound. VolumeSnapshot.Spec.VolumeSnapshotContentName field must reference to this VolumeSnapshotContent's name for the bidirectional binding to be valid. For a pre-existing VolumeSnapshotContent object, name and namespace of the VolumeSnapshot object MUST be provided for binding to happen. This field is immutable after creation. Required.
+         */
+        export interface VolumeSnapshotContentSpecVolumeSnapshotRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion?: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+             */
+            fieldPath?: string;
+            /**
+             * Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind?: string;
+            /**
+             * Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name?: string;
+            /**
+             * Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace?: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion?: string;
+            /**
+             * UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid?: string;
+        }
+
+        /**
+         * status represents the current information of a snapshot.
+         */
+        export interface VolumeSnapshotContentStatus {
+            /**
+             * creationTime is the timestamp when the point-in-time snapshot is taken by the underlying storage system. In dynamic snapshot creation case, this field will be filled in by the CSI snapshotter sidecar with the "creation_time" value returned from CSI "CreateSnapshot" gRPC call. For a pre-existing snapshot, this field will be filled with the "creation_time" value returned from the CSI "ListSnapshots" gRPC call if the driver supports it. If not specified, it indicates the creation time is unknown. The format of this field is a Unix nanoseconds time encoded as an int64. On Unix, the command `date +%s%N` returns the current time in nanoseconds since 1970-01-01 00:00:00 UTC.
+             */
+            creationTime?: number;
+            /**
+             * error is the last observed error during snapshot creation, if any. Upon success after retry, this error field will be cleared.
+             */
+            error?: outputs.snapshot.v1beta1.VolumeSnapshotContentStatusError;
+            /**
+             * readyToUse indicates if a snapshot is ready to be used to restore a volume. In dynamic snapshot creation case, this field will be filled in by the CSI snapshotter sidecar with the "ready_to_use" value returned from CSI "CreateSnapshot" gRPC call. For a pre-existing snapshot, this field will be filled with the "ready_to_use" value returned from the CSI "ListSnapshots" gRPC call if the driver supports it, otherwise, this field will be set to "True". If not specified, it means the readiness of a snapshot is unknown.
+             */
+            readyToUse?: boolean;
+            /**
+             * restoreSize represents the complete size of the snapshot in bytes. In dynamic snapshot creation case, this field will be filled in by the CSI snapshotter sidecar with the "size_bytes" value returned from CSI "CreateSnapshot" gRPC call. For a pre-existing snapshot, this field will be filled with the "size_bytes" value returned from the CSI "ListSnapshots" gRPC call if the driver supports it. When restoring a volume from this snapshot, the size of the volume MUST NOT be smaller than the restoreSize if it is specified, otherwise the restoration will fail. If not specified, it indicates that the size is unknown.
+             */
+            restoreSize?: number;
+            /**
+             * snapshotHandle is the CSI "snapshot_id" of a snapshot on the underlying storage system. If not specified, it indicates that dynamic snapshot creation has either failed or it is still in progress.
+             */
+            snapshotHandle?: string;
+        }
+
+        /**
+         * error is the last observed error during snapshot creation, if any. Upon success after retry, this error field will be cleared.
+         */
+        export interface VolumeSnapshotContentStatusError {
+            /**
+             * message is a string detailing the encountered error during snapshot creation if specified. NOTE: message may be logged, and it should not contain sensitive information.
+             */
+            message?: string;
+            /**
+             * time is the timestamp when the error was encountered.
+             */
+            time?: string;
+        }
+
+        /**
+         * spec defines the desired characteristics of a snapshot requested by a user. More info: https://kubernetes.io/docs/concepts/storage/volume-snapshots#volumesnapshots Required.
+         */
+        export interface VolumeSnapshotSpec {
+            /**
+             * source specifies where a snapshot will be created from. This field is immutable after creation. Required.
+             */
+            source: outputs.snapshot.v1beta1.VolumeSnapshotSpecSource;
+            /**
+             * VolumeSnapshotClassName is the name of the VolumeSnapshotClass requested by the VolumeSnapshot. VolumeSnapshotClassName may be left nil to indicate that the default SnapshotClass should be used. A given cluster may have multiple default Volume SnapshotClasses: one default per CSI Driver. If a VolumeSnapshot does not specify a SnapshotClass, VolumeSnapshotSource will be checked to figure out what the associated CSI Driver is, and the default VolumeSnapshotClass associated with that CSI Driver will be used. If more than one VolumeSnapshotClass exist for a given CSI Driver and more than one have been marked as default, CreateSnapshot will fail and generate an event. Empty string is not allowed for this field.
+             */
+            volumeSnapshotClassName?: string;
+        }
+
+        /**
+         * source specifies where a snapshot will be created from. This field is immutable after creation. Required.
+         */
+        export interface VolumeSnapshotSpecSource {
+            /**
+             * persistentVolumeClaimName specifies the name of the PersistentVolumeClaim object representing the volume from which a snapshot should be created. This PVC is assumed to be in the same namespace as the VolumeSnapshot object. This field should be set if the snapshot does not exists, and needs to be created. This field is immutable.
+             */
+            persistentVolumeClaimName?: string;
+            /**
+             * volumeSnapshotContentName specifies the name of a pre-existing VolumeSnapshotContent object representing an existing volume snapshot. This field should be set if the snapshot already exists and only needs a representation in Kubernetes. This field is immutable.
+             */
+            volumeSnapshotContentName?: string;
+        }
+
+        /**
+         * status represents the current information of a snapshot. Consumers must verify binding between VolumeSnapshot and VolumeSnapshotContent objects is successful (by validating that both VolumeSnapshot and VolumeSnapshotContent point at each other) before using this object.
+         */
+        export interface VolumeSnapshotStatus {
+            /**
+             * boundVolumeSnapshotContentName is the name of the VolumeSnapshotContent object to which this VolumeSnapshot object intends to bind to. If not specified, it indicates that the VolumeSnapshot object has not been successfully bound to a VolumeSnapshotContent object yet. NOTE: To avoid possible security issues, consumers must verify binding between VolumeSnapshot and VolumeSnapshotContent objects is successful (by validating that both VolumeSnapshot and VolumeSnapshotContent point at each other) before using this object.
+             */
+            boundVolumeSnapshotContentName?: string;
+            /**
+             * creationTime is the timestamp when the point-in-time snapshot is taken by the underlying storage system. In dynamic snapshot creation case, this field will be filled in by the snapshot controller with the "creation_time" value returned from CSI "CreateSnapshot" gRPC call. For a pre-existing snapshot, this field will be filled with the "creation_time" value returned from the CSI "ListSnapshots" gRPC call if the driver supports it. If not specified, it may indicate that the creation time of the snapshot is unknown.
+             */
+            creationTime?: string;
+            /**
+             * error is the last observed error during snapshot creation, if any. This field could be helpful to upper level controllers(i.e., application controller) to decide whether they should continue on waiting for the snapshot to be created based on the type of error reported. The snapshot controller will keep retrying when an error occurs during the snapshot creation. Upon success, this error field will be cleared.
+             */
+            error?: outputs.snapshot.v1beta1.VolumeSnapshotStatusError;
+            /**
+             * readyToUse indicates if the snapshot is ready to be used to restore a volume. In dynamic snapshot creation case, this field will be filled in by the snapshot controller with the "ready_to_use" value returned from CSI "CreateSnapshot" gRPC call. For a pre-existing snapshot, this field will be filled with the "ready_to_use" value returned from the CSI "ListSnapshots" gRPC call if the driver supports it, otherwise, this field will be set to "True". If not specified, it means the readiness of a snapshot is unknown.
+             */
+            readyToUse?: boolean;
+            /**
+             * restoreSize represents the minimum size of volume required to create a volume from this snapshot. In dynamic snapshot creation case, this field will be filled in by the snapshot controller with the "size_bytes" value returned from CSI "CreateSnapshot" gRPC call. For a pre-existing snapshot, this field will be filled with the "size_bytes" value returned from the CSI "ListSnapshots" gRPC call if the driver supports it. When restoring a volume from this snapshot, the size of the volume MUST NOT be smaller than the restoreSize if it is specified, otherwise the restoration will fail. If not specified, it indicates that the size is unknown.
+             */
+            restoreSize?: number | string;
+        }
+
+        /**
+         * error is the last observed error during snapshot creation, if any. This field could be helpful to upper level controllers(i.e., application controller) to decide whether they should continue on waiting for the snapshot to be created based on the type of error reported. The snapshot controller will keep retrying when an error occurs during the snapshot creation. Upon success, this error field will be cleared.
+         */
+        export interface VolumeSnapshotStatusError {
+            /**
+             * message is a string detailing the encountered error during snapshot creation if specified. NOTE: message may be logged, and it should not contain sensitive information.
+             */
+            message?: string;
+            /**
+             * time is the timestamp when the error was encountered.
+             */
+            time?: string;
         }
 
     }

@@ -1,11 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as keycloak from '@pulumi/keycloak';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
-import { external } from '@unmango/thecluster/realms';
-import { clusterIssuers } from '@unmango/thecluster/tls';
-import { provider as keycloakProvider } from '@unmango/thecluster/apps/keycloak';
-import { cloudflare as cfIngress, internal as internalIngress } from '@unmango/thecluster/ingress-classes';
+import { apps, clusterIssuers, ingresses, provider, realms } from '@unmango/thecluster/cluster/from-stack';
 import { hosts } from './config';
 
 const ns = new k8s.core.v1.Namespace('dashboard', {
@@ -13,7 +9,7 @@ const ns = new k8s.core.v1.Namespace('dashboard', {
 }, { provider });
 
 const client = new keycloak.openid.Client('client', {
-  realmId: external.realm,
+  realmId: realms.external.id,
   enabled: true,
   name: 'Kubernetes Dashboard',
   clientId: 'k8s-dashboard',
@@ -24,16 +20,16 @@ const client = new keycloak.openid.Client('client', {
     pulumi.interpolate`https://${hosts.external}/oauth2/callback`,
     pulumi.interpolate`https://${hosts.internal}/oauth2/callback`,
   ],
-}, { provider: keycloakProvider });
+}, { provider: apps.keycloak.provider });
 
 const mapper = new keycloak.openid.AudienceProtocolMapper('dashboard', {
-  realmId: external.realm,
+  realmId: realms.external.id,
   name: pulumi.interpolate`aud-mapper-${client.clientId}`,
   clientId: client.id,
   includedClientAudience: client.clientId,
   addToIdToken: true,
   addToAccessToken: true,
-}, { provider: keycloakProvider });
+}, { provider: apps.keycloak.provider });
 
 const webPort = 8000, apiPort = 9000;
 const chart = new k8s.helm.v3.Release('dashboard', {
@@ -74,7 +70,7 @@ const chart = new k8s.helm.v3.Release('dashboard', {
         { name: 'OAUTH2_PROXY_UPSTREAMS', value: `http://dashboard-kubernetes-dashboard-web:${webPort}/,http://dashboard-kubernetes-dashboard-api:${apiPort}/api` },
         { name: 'OAUTH2_PROXY_HTTP_ADDRESS', value: 'http://0.0.0.0:4180' },
         { name: 'OAUTH2_PROXY_REDIRECT_URL', value: pulumi.interpolate`https://${hosts.external}/oauth2/callback` },
-        { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: external.issuerUrl },
+        { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: realms.external.issuerUrl },
         { name: 'OAUTH2_PROXY_CODE_CHALLENGE_METHOD', value: 'S256' },
         { name: 'OAUTH2_PROXY_ERRORS_TO_INFO_LOG', value: 'true' },
         { name: 'OAUTH2_PROXY_PASS_ACCESS_TOKEN', value: 'true' },
@@ -85,7 +81,7 @@ const chart = new k8s.helm.v3.Release('dashboard', {
       ],
       ingress: {
         enabled: true,
-        className: cfIngress,
+        className: ingresses.cloudflare,
         pathType: 'Prefix',
         // paths: { web: '/', api: '/api/*' },
         hosts: [hosts.external],
@@ -115,7 +111,7 @@ const chart = new k8s.helm.v3.Release('dashboard', {
         { name: 'OAUTH2_PROXY_UPSTREAMS', value: `http://dashboard-kubernetes-dashboard-web:${webPort}/,http://dashboard-kubernetes-dashboard-api:${apiPort}/api` },
         { name: 'OAUTH2_PROXY_HTTP_ADDRESS', value: 'http://0.0.0.0:4180' },
         { name: 'OAUTH2_PROXY_REDIRECT_URL', value: pulumi.interpolate`https://${hosts.internal}/oauth2/callback` },
-        { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: external.issuerUrl },
+        { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: realms.external.issuerUrl },
         { name: 'OAUTH2_PROXY_CODE_CHALLENGE_METHOD', value: 'S256' },
         { name: 'OAUTH2_PROXY_ERRORS_TO_INFO_LOG', value: 'true' },
         { name: 'OAUTH2_PROXY_PASS_ACCESS_TOKEN', value: 'true' },
@@ -126,7 +122,7 @@ const chart = new k8s.helm.v3.Release('dashboard', {
       ],
       ingress: {
         enabled: true,
-        className: internalIngress,
+        className: ingresses.internal,
         hosts: [hosts.internal],
         annotations: {
           'cert-manager.io/cluster-issuer': clusterIssuers.staging,

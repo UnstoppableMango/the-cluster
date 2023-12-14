@@ -1,7 +1,0 @@
-config:
-  cloudflare:apiToken:
-    secure: AAABAK1AqgqsUv2UhM3jznOR2YmWOWIiWcnmqAvlLO1EygP9VW90ij/6S++JVkVYDuhLY8ID/dw00sycWrhOzNWFdlgwKC8m
-  thecluster-dns:fullSslHosts:
-    - example.com
-    - test.example.com
-  thecluster-dns:suffix: dev

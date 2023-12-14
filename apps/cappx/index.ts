@@ -1,29 +1,11 @@
-import * as path from 'path';
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import { provider } from '@unmango/thecluster/cluster/from-stack';
 
-const proxmox = new k8s.yaml.ConfigGroup('proxmox', {
-  files: [
-    'certificate',
-    'clusterrole',
-    'clusterrolebinding',
-    'deployment',
-    'issuer',
-    'namespace',
-    'role',
-    'rolebinding',
-    'service',
-    'validatingwebhookconfiguration',
-  ].map(x => path.join('manifests', `${x}.yaml`)),
+const chart = new k8s.helm.v3.Chart('cappx', {
+  path: './',
   transformations: [patchProxmoxService],
-}, {
-  provider,
-  ignoreChanges: [
-    // cert-manager injects `caBundle`s
-    'spec.conversion.webhook.clientConfig.caBundle',
-  ],
-});
+}, { provider });
 
 function patchProxmoxService(obj: any, opts: pulumi.CustomResourceOptions): void {
   if (obj.kind !== 'Service') return;

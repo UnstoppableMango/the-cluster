@@ -8,7 +8,6 @@ export interface LanDomain {
 
 const config = new Config();
 export const suffix = config.get('suffix');
-export const piholeStack = config.require('piholeStack');
 export const fullSslHosts = config.requireObject<string[]>('fullSslHosts');
 export const lanDomains = config.requireObject<LanDomain[]>('lanDomains');
 

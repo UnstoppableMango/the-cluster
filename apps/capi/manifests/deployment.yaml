@@ -25,7 +25,8 @@ spec:
       containers:
       - args:
         - --leader-elect
-        - --metrics-bind-addr=localhost:8080
+        - --diagnostics-address=:8443
+        - --insecure-diagnostics=false
         - --feature-gates=MachinePool=false,ClusterResourceSet=true,ClusterTopology=true,RuntimeSDK=false,MachineSetPreflightChecks=false
         command:
         - /manager
@@ -42,7 +43,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.uid
-        image: registry.k8s.io/cluster-api/cluster-api-controller:v1.5.3
+        image: registry.k8s.io/cluster-api/cluster-api-controller:v1.6.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -55,6 +56,9 @@ spec:
           protocol: TCP
         - containerPort: 9440
           name: healthz
+          protocol: TCP
+        - containerPort: 8443
+          name: metrics
           protocol: TCP
         readinessProbe:
           httpGet:

@@ -1,0 +1,9 @@
+apiVersion: v2
+name: postgresql-ha
+description: PostgreSQL HA install for THECLUSTER
+type: application
+version: 0.1.0
+dependencies:
+- name: postgresql-ha
+  repository: oci://registry-1.docker.io/bitnamicharts
+  version: 12.3.2

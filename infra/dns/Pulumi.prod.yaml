@@ -1,6 +1,7 @@
 config:
   cloudflare:apiToken:
     secure: AAABAFOgKCJTvP4v5V8B4wWJA1SQFNk7N4lZCrJtmMz5WtoyBe/js+5aIUK7eKF5stj2U3rV1youNe9k6Ge3b9xkKa9opsHe
+  thecluster-dns:cluster: pinkdiamond
   thecluster-dns:fullSslHosts:
     - secure: AAABAI3soldnYfF2THZ4bd1/Gj9y9L0xpL9pg/nkQrZ6bl8tknOMJ5YuXueZwzd6Yg==
     - secure: AAABAFrn4+6RXVDbIwoAFnY9K4O49oogFTQHh3YbN85ucIc8EUn669EQsY5g6Le9

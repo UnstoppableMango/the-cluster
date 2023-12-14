@@ -1,9 +1,0 @@
-config:
-  thecluster-crds:enabled:
-    - cabpt
-    - cacppt
-    - certManager
-    - clusterapi
-    - proxmox
-    - sidero
-    - pulumiOperator

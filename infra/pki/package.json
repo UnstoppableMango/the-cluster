@@ -1,0 +1,16 @@
+{
+  "name": "thecluster-pki",
+  "main": "index.ts",
+  "dependencies": {
+    "@pulumi/cloudflare": "^5.16.0",
+    "@pulumi/kubernetes": "^4.5.5",
+    "@pulumi/pulumi": "^3.96.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.4"
+  },
+  "workspaces": [
+    "../../lib/nodejs",
+    "../../lib/crds/nodejs"
+  ]
+}

@@ -1,10 +1,6 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
-import * as keycloak from '@pulumi/keycloak';
-import * as pihole from '@unmango/pulumi-pihole';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
-import { provider as keycloakProvider } from '@unmango/thecluster/apps/keycloak';
-import { provider as piholeProvider, hostname, password } from '@unmango/thecluster/apps/pihole';
+import { apps, provider } from '@unmango/thecluster/cluster/from-stack';
 import { piholeConfig, versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('external-dns', {
@@ -17,7 +13,7 @@ const secret = new k8s.core.v1.Secret('exxternal-dns', {
     namespace: ns.metadata.name,
   },
   stringData: {
-    EXTERNAL_DNS_PIHOLE_PASSWORD: password,
+    EXTERNAL_DNS_PIHOLE_PASSWORD: apps.pihole.password,
   },
 }, { provider });
 
@@ -63,7 +59,7 @@ const chart = new k8s.helm.v3.Chart('external-dns', {
       policy: 'upsert-only', // 'upsert-only' or 'sync'
       priorityClassName: 'system-cluster-critical',
       provider: 'pihole',
-      extraArgs: [pulumi.interpolate`--pihole-server=https://${hostname}`],
+      extraArgs: [pulumi.interpolate`--pihole-server=https://${apps.pihole.hostname}`],
       rbac: { create: true },
       // Pi-hole doesn't support TXT records
       registry: 'noop', // 'txt', 'aws-sd', 'dynamodb', or 'noop'
@@ -90,7 +86,12 @@ const chart = new k8s.helm.v3.Chart('external-dns', {
       service: {
         port: 7979,
       },
-      sources: ['service', 'ingress', 'node', 'kong-tcpingress'],
+      sources: [
+        'service',
+        'ingress',
+        'node',
+        // 'kong-tcpingress',
+      ],
       triggerLoopOnEvent: true,
       txtOwnerId: undefined,
       txtPrefix: undefined,

@@ -1,5 +1,3 @@
 name: thecluster-cert-manager
 runtime: nodejs
 description: Cert Manager install for THECLUSTER
-config:
-  zoneName: thecluster.io

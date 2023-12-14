@@ -1,0 +1,5 @@
+name: thecluster-trust-manager
+runtime: nodejs
+description: Trust Manager install for THECLUSTER
+config:
+  zoneName: thecluster.io

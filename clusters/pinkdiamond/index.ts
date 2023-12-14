@@ -7,8 +7,8 @@ import { Node, Versions } from './types';
 const config = new pulumi.Config();
 const controlPlanes = config.requireObject<Node[]>('controlplanes');
 const workers = config.requireObject<Node[]>('workers');
-const certSans = config.requireObject<string[]>('certSans');
-const versions = config.requireObject<Versions>('versions');
+export const certSans = config.requireObject<string[]>('certSans');
+export const versions = config.requireObject<Versions>('versions');
 
 if (config.getBoolean('public') ?? false) {
   const zoneId = '22f1d42ba0fbe4f924905e1c6597055c';
@@ -26,14 +26,14 @@ if (config.getBoolean('public') ?? false) {
   });
 }
 
-const clusterName = config.require('clusterName');
-const endpoint = config.require('endpoint');
+export const clusterName = config.require('clusterName');
+export const endpoint = config.require('endpoint');
 certSans.push(endpoint);
 
-const vip = config.get('vip');
+export const vip = config.get('vip');
 if (vip) certSans.push(vip);
 
-const clusterEndpoint = config.require('clusterEndpoint');
+export const clusterEndpoint = config.require('clusterEndpoint');
 const controlplanePatches: string[] = [];
 
 if (vip) {
@@ -93,6 +93,7 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
                   'qemu-guest-agent',
                   'internal-ingress',
                   'drone',
+                  'cert-manager',
                 ],
               },
             },

@@ -1,9 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as random from '@pulumi/random';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
-import { ingressClass } from '@unmango/thecluster/apps/cloudflare-ingress';
-import { user as dbUser, ip as dbHost, port as dbPort, database } from '@unmango/thecluster/dbs/keycloak';
+import { apps, databases, ingresses, provider } from '@unmango/thecluster/cluster/from-stack';
 import { auth, production, hosts, versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('keycloak', {
@@ -22,11 +20,11 @@ const secret = new k8s.core.v1.Secret('keycloak', {
   },
   stringData: {
     adminPassword: adminPassword.result,
-    dbHost: pulumi.interpolate`${dbHost}`,
-    dbPort: pulumi.interpolate`${dbPort}`,
-    dbUser: dbUser.username,
-    dbPassword: dbUser.password,
-    database,
+    dbHost: pulumi.interpolate`${apps.postgresql.hostname}`,
+    dbPort: pulumi.interpolate`${apps.postgresql.port}`,
+    dbUser: databases.keycloak.username,
+    dbPassword: databases.keycloak.password,
+    database: databases.keycloak.name,
   },
 }, { provider });
 
@@ -68,7 +66,7 @@ const chart = new k8s.helm.v3.Chart('keycloak', {
       },
       ingress: {
         enabled: true,
-        ingressClassName: ingressClass,
+        ingressClassName: ingresses.cloudflare,
         pathType: 'Prefix',
         hostname: hosts.external,
         annotations: {

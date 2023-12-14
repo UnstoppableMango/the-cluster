@@ -1,15 +1,8 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as random from '@pulumi/random';
-import * as pihole from '@unmango/pulumi-pihole';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
-import { loadBalancerClass } from '@unmango/thecluster/apps/metallb';
-import { clusterIssuers } from '@unmango/thecluster/apps/cert-manager';
-import { ingressClass as cloudflareIngress } from '@unmango/thecluster/apps/cloudflare-ingress';
-import { internalClass as nginxIngress, loadBalancerIp } from '@unmango/thecluster/apps/nginx-ingress';
-import { rbdStorageClass } from '@unmango/thecluster/apps/ceph-csi';
-import { provider as piholeProvider } from '@unmango/thecluster/apps/pihole';
-import { hostnames, versions } from './config';
+import { ingresses, provider, storageClasses } from '@unmango/thecluster/cluster/from-stack';
+import { hostnames } from './config';
 
 const ns = new k8s.core.v1.Namespace('kong-system', {
   metadata: { name: 'kong-system' },
@@ -53,7 +46,7 @@ const chart = new k8s.helm.v3.Chart('kong', {
         type: 'ClusterIP',
         ingress: {
           enabled: true,
-          ingressClassName: cloudflareIngress,
+          ingressClassName: ingresses.cloudflare,
           hostname: hostnames.proxy,
           tls: 'kong-kong-proxy-cert',
         },
@@ -63,7 +56,7 @@ const chart = new k8s.helm.v3.Chart('kong', {
         type: 'ClusterIP',
         ingress: {
           enabled: true,
-          ingressClassName: cloudflareIngress,
+          ingressClassName: ingresses.cloudflare,
           hostname: hostnames.admin,
           tls: 'kong-kong-admin-cert',
         },
@@ -73,7 +66,7 @@ const chart = new k8s.helm.v3.Chart('kong', {
         type: 'ClusterIP',
         ingress: {
           enabled: true,
-          ingressClassName: cloudflareIngress,
+          ingressClassName: ingresses.cloudflare,
           hostname: hostnames.manager,
         },
       },
@@ -115,7 +108,7 @@ const chart = new k8s.helm.v3.Chart('kong', {
         // https://github.com/Kong/charts/blob/05ce54f3f5399174f37e0c8cae0b38e0b620e5f5/charts/kong/values.yaml#L702
         enabled: true,
         global: {
-          storageClass: rbdStorageClass,
+          storageClass: storageClasses.rbd,
         },
         auth: {
           existingSecret: pgSecret.metadata.name,
@@ -138,17 +131,4 @@ const chart = new k8s.helm.v3.Chart('kong', {
   ],
 }, { provider });
 
-// const operator = new k8s.yaml.ConfigGroup('gateway-operator', {
-//   files: [
-//     `https://docs.konghq.com/assets/gateway-operator/${versions.gatewayOperator}/crds.yaml`,
-//     `https://docs.konghq.com/assets/gateway-operator/${versions.gatewayOperator}/default.yaml`,
-//   ],
-// }, { provider, dependsOn: chart.ready });
-
 export { hostnames };
-
-// const dns = Object.entries(hostnames)
-//   .map(([name, host]) => new pihole.DnsRecord(name, {
-//     domain: host,
-//     ip: loadBalancerIp,
-//   }, { provider: piholeProvider, dependsOn: chart.ready }));

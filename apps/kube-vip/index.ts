@@ -1,6 +1,5 @@
-import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
-import { provider } from './clusters';
+import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('kube-vip', {

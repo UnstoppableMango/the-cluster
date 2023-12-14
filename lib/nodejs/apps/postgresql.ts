@@ -1,24 +1,63 @@
-import { StackReference, Output, output } from '@pulumi/pulumi';
+import { Output, output } from '@pulumi/pulumi';
 import { Provider } from '@pulumi/postgresql';
-import { cluster } from '../config';
-import { PostgreSqlOutputs } from '../types';
+import { Refs } from '../internal';
 
-const ref = new StackReference('postgresql', {
-  name: `UnstoppableMango/thecluster-postgresql/${cluster}`,
-});
+export interface User {
+  username: Output<string>;
+  password: Output<string>;
+}
 
-export const credentials = ref.requireOutput('credentials') as Output<PostgreSqlOutputs['credentials']>;
-export const hostname = ref.requireOutput('hostname') as Output<string>;
-export const database = ref.requireOutput('database') as Output<string>;
-export const port = ref.requireOutput('port') as Output<number>;
-export const ip = ref.requireOutput('ip') as Output<string>;
+export interface Users {
+  repmgr: Output<User>;
+  postgres: Output<User>;
+  pgpool: Output<User>;
+}
 
-const user = output(credentials).apply(c => c.find(x => x.username === 'postgres'));
-export const provider = new Provider('postgresql', {
-  username: user.apply(x => x?.username ?? ''),
-  password: user.apply(x => x?.password ?? ''),
-  host: hostname,
-  port,
-  database,
-  sslmode: 'disable',
-});
+export class PostgreSql {
+  private _provider: Provider | undefined;
+  private _ref = this._refs.postgresql;
+  constructor(private _refs: Refs) { }
+
+  public get hostname(): Output<string> {
+    return this._ref.requireOutput('hostname') as Output<string>;
+  }
+
+  public get database(): Output<string> {
+    return this._ref.requireOutput('database') as Output<string>;
+  }
+
+  public get port(): Output<number> {
+    return this._ref.requireOutput('port') as Output<number>;
+  }
+
+  public get ip(): Output<string> {
+    return this._ref.requireOutput('ip') as Output<string>;
+  }
+
+  public get users(): Output<Users> {
+    return this._ref.requireOutput('users') as Output<Users>;
+  }
+
+  public get passwords(): Output<Output<User>[]> {
+    return this._ref.requireOutput('passwords') as Output<Output<User>[]>;
+  }
+
+  public get provider(): Provider {
+    if (!this._provider) {
+      this._provider = new Provider('postgresql', {
+        username: this.users.postgres.username,
+        password: this.users.postgres.password,
+        host: this.hostname,
+        port: this.port,
+        database: this.database,
+        sslmode: 'disable',
+      });
+    }
+
+    return this._provider;
+  }
+
+  public user(name: string): User {
+    return output(this.passwords).apply(x => x.filter(y => y.username === name)[0]);
+  }
+}

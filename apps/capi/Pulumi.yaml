@@ -1,4 +1,4 @@
-name: thecluster-clusterapi
+name: thecluster-capi
 runtime: nodejs
 description: Cluster API install for THECLUSTER
 config:

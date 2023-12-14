@@ -1,20 +1,17 @@
-import * as pulumi from '@pulumi/pulumi';
 import * as pg from '@pulumi/postgresql';
-import { provider, credentials } from '@unmango/thecluster/apps/postgresql';
+import { apps, databases } from '@unmango/thecluster/cluster/from-stack';
 import { allDbPermissions } from '@unmango/thecluster/dbs/postgres';
-import { requireProp } from '@unmango/thecluster';
 
-export const user = pulumi.output(credentials)
-  .apply(x => x.find(y => y.username === 'dex'));
+const { provider } = apps.postgresql;
 
 const dexOwner = new pg.Role('dex_owner', {
   name: 'dex_owner',
 }, { provider });
 
 const dex = new pg.Role('dex', {
-  name: user.apply(requireProp(x => x.username)),
+  name: databases.dex.username,
   login: true,
-  password: user.apply(requireProp(x => x.password)),
+  password: databases.dex.password,
   roles: [dexOwner.name],
 }, { provider });
 
