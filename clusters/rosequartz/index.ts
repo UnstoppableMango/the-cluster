@@ -20,7 +20,7 @@ interface Versions {
 }
 
 const config = new pulumi.Config();
-const certSans = config.requireObject<string[]>('certSans');
+export const certSans = config.requireObject<string[]>('certSans');
 
 if (config.getBoolean('public') ?? false) {
   const zoneId = '22f1d42ba0fbe4f924905e1c6597055c';
@@ -38,19 +38,18 @@ if (config.getBoolean('public') ?? false) {
   });
 }
 
-const clusterName = config.require('clusterName');
-const endpoint = config.require('endpoint');
+export const clusterName = config.require('clusterName');
+export const endpoint = config.require('endpoint');
 certSans.push(endpoint);
 
-const vip = config.get('vip');
+export const vip = config.get('vip');
 if (vip) certSans.push(vip);
 
-const clusterEndpoint = config.require('clusterEndpoint');
+export const clusterEndpoint = config.require('clusterEndpoint');
 const nodeData = config.requireObject<Cluster>('nodeData');
-const versions = config.requireObject<Versions>('versions');
+export const versions = config.requireObject<Versions>('versions');
 
 const allNodeData: Nodes = { ...nodeData.controlplanes, ...nodeData.workers };
-
 const secrets = new talos.machine.Secrets('secrets', { talosVersion: `v${versions.talos}` });
 
 const controlplaneConfig = talos.machine.getConfigurationOutput({

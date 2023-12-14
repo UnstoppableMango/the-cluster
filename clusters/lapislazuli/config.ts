@@ -21,7 +21,7 @@ export interface Versions {
 }
 
 const config = new Config();
-export const cluster = getProject();
+export const cluster = getProject().replace('thecluster-', '');
 export const hosts = config.requireObject<Hosts>('hosts');
 export const ports = config.requireObject<Ports>('ports');
 export const versions = config.requireObject<Versions>('versions');

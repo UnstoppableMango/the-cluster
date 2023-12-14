@@ -2,13 +2,48 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as infra from '@unmango/thecluster-crds/infrastructure/v1alpha1';
 import * as capi from '@unmango/thecluster-crds/cluster/v1beta1';
-import { ingresses, loadBalancers, provider, storageClasses } from '@unmango/thecluster/cluster/management';
+import { ingresses, loadBalancers, provider, storageClasses } from '@unmango/thecluster/cluster/pinkdiamond';
+import { system as rosequartz } from '@unmango/thecluster/cluster/rosequartz';
+import { system as pinkdiamond } from '@unmango/thecluster/cluster/pinkdiamond';
 import { required, yamlStringify } from '@unmango/thecluster';
 import { cluster as clusterName, hosts, ip, ports, versions } from './config';
+import { System } from '@unmango/thecluster/internal';
 
 const ns = new k8s.core.v1.Namespace(clusterName, {
   metadata: { name: clusterName },
 }, { provider });
+
+function certOut(s: System): pulumi.Output<pulumi.Output<string>[]> {
+  return s.ref.requireOutput('certSans') as pulumi.Output<pulumi.Output<string>[]>;
+}
+
+const certSans = pulumi
+  .all([
+    certOut(rosequartz),
+    certOut(pinkdiamond),
+  ])
+  .apply(([r, p]) => {
+    return [
+      ...r,
+      ...p,
+      ...hosts.aliases.external,
+      ...hosts.aliases.internal,
+      hosts.external,
+      hosts.internal,
+      ip,
+      // Crap I need to add to the actual clusters at some point
+      'pinkdiamond.thecluster.io',
+      'pink.thecluster.io',
+      'pinkdiamond.lan.thecluster.io',
+      'pink.lan.thecluster.io',
+      'pd.lan.thecluster.io',
+      'rosequartz.thecluster.io',
+      'rose.thecluster.io',
+      'rosequartz.lan.thecluster.io',
+      'rose.lan.thecluster.io',
+      'rq.lan.thecluster.io',
+    ];
+  });
 
 const vcluster = new infra.VCluster(clusterName, {
   metadata: {
@@ -84,7 +119,7 @@ const vcluster = new infra.VCluster(clusterName, {
               memory: '64Mi',
             },
           },
-          kubeConfigContextName: 'lapislazuli',
+          kubeConfigContextName: clusterName,
         },
         vcluster: {
           image: `k0sproject/k0s:${versions.k0s}`,
@@ -137,12 +172,25 @@ const vcluster = new infra.VCluster(clusterName, {
         },
         config: yamlStringify({
           apiVersion: 'k0s.k0sproject.io/v1beta1',
+          kind: 'ClusterConfig',
+          metadata: {
+            name: clusterName,
+          },
+          spec: {
+            api: {
+              address: ip,
+              externalAddress: hosts.external,
+              // k0sApiPort: port, // TODO: I think
+              // port: port, // TODO: I think
+              sans: certSans,
+            },
+          },
         }),
         coredns: {
           enabled: true,
           replicas: 2,
           image: pulumi.interpolate`coredns/coredns:${versions.coreDns}`,
-          config: pulumi.interpolate``, // TODO
+          // config: pulumi.interpolate``, // TODO
           service: {
             type: 'ClusterIP',
           },

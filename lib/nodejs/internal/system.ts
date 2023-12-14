@@ -4,7 +4,8 @@ import { Refs, Apps, Databases, Ingresses, LoadBalancers, StorageClasses, Dns, I
 import * as cluster from '../cluster';
 
 export class System {
-  public kubeconfig = cluster.ref(this._cluster).requireOutput('kubeconfig') as Output<string>;
+  public ref = cluster.ref(this._cluster);
+  public kubeconfig = this.ref.requireOutput('kubeconfig') as Output<string>;
   public provider = new Provider(this._cluster, { kubeconfig: this.kubeconfig });
   public refs = new Refs(this._cluster);
   public apps = new Apps(this.refs);
