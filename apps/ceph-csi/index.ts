@@ -13,6 +13,13 @@ const chart = new k8s.helm.v3.Chart('ceph-csi', {
   values: {
     'ceph-csi-cephfs': {
       csiConfig: csi,
+      nodeplugin: {
+        tolerations: [{
+          key: 'node-role.kubernetes.io/control-plane',
+          operator: 'Exists',
+          effect: 'NoSchedule',
+        }],
+      },
       provisioner: {
         clustername: 'THECLUSTER',
       },
@@ -37,6 +44,13 @@ const chart = new k8s.helm.v3.Chart('ceph-csi', {
     },
     'ceph-csi-rbd': {
       csiConfig: csi,
+      nodeplugin: {
+        tolerations: [{
+          key: 'node-role.kubernetes.io/control-plane',
+          operator: 'Exists',
+          effect: 'NoSchedule',
+        }],
+      },
       provisioner: {
         clustername: 'THECLUSTER',
       },
