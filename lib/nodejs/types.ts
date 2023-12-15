@@ -6,16 +6,10 @@ export interface CephCsiOutputs {
 }
 
 export interface CertManagerOutputs {
-  /**
-   * @deprecated Use `clusterIssuers.stage` instead
-   */
-  stage: Output<string>;
-
-  /**
-   * @deprecated Use `clusterIssuers.prod` instead
-   */
-  prod: Output<string>;
   clusterIssuers: {
+    group: Output<string>;
+    kind: Output<string>;
+    stage: Output<string>;
     staging: Output<string>;
     prod: Output<string>;
     selfSigned: Output<string>;
