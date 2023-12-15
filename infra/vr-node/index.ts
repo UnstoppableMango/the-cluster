@@ -9,11 +9,11 @@ const stack = pulumi.getStack();
 //   path: path.join(__dirname, 'pools', stack),
 // });
 
-const domain = new libvirt.Domain('domain', {
-  name: stack,
-  vcpu: 1,
-  memory: 2048,
-  graphics: {
-    type: '',
-  }
+const domain = new libvirt.Domain('vrk8s1', {
+  name: 'vrk8s1',
+  vcpu: 8,
+  memory: 16_384,
+  // graphics: {
+  //   type: '',
+  // },
 });

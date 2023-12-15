@@ -1,0 +1,3 @@
+name: thecluster-vr-node
+runtime: nodejs
+description: THECLUSTER configuration for the VR machine
