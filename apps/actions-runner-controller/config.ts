@@ -19,6 +19,7 @@ export interface Versions {
   actionsRunnerController: string;
   dind: string;
   rbacProxy: string;
+  scaleSetController: string;
 }
 
 const config = new Config();

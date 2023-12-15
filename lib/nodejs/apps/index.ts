@@ -1,3 +1,4 @@
+export * from './actions-runner-controller';
 export * from './ceph-csi';
 export * from './cert-manager';
 export * from './cloudflare-ingress';

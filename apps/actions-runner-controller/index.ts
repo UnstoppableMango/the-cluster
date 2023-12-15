@@ -44,16 +44,6 @@ const actionsMetricsSecret = new k8s.core.v1.Secret('actions-metrics', {
   },
 }, { provider });
 
-const scaleSetSecret = new k8s.core.v1.Secret('scale-set', {
-  metadata: {
-    name: 'scale-set',
-    namespace: ns.metadata.name,
-  },
-  stringData: {
-    github_token: '', // TODO: Can we auth another way?
-  },
-}, { provider });
-
 const chart = new k8s.helm.v3.Chart('actions-runner-controller', {
   path: './',
   namespace: ns.metadata.name,
@@ -186,11 +176,45 @@ const chart = new k8s.helm.v3.Chart('actions-runner-controller', {
         },
       },
     },
-    'gha-runner-scale-set': {
-      githubConfigUrl: 'https://github.com/UnstoppableMango/the-cluster',
-      githubConfigSecret: {
-        name: scaleSetSecret.metadata.name, // TODO: Verify this key exists
+    // https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set-controller/values.yaml
+    'gha-runner-scale-set-controller': {
+      replicaCount: 2,
+      image: {
+        repository: 'ghcr.io/actions/gha-runner-scale-set-controller',
+        tag: versions.scaleSetController,
+      },
+      securityContext: {
+        capabilities: { drop: ['ALL'] },
+        readOnlyRootFilesystem: true,
+        runAsNonRoot: true,
+        runAsUser: 1001,
+      },
+      resources: {
+        limits: {
+          cpu: '100m',
+          memory: '128Mi',
+        },
+        requests: {
+          cpu: '100m',
+          memory: '128Mi',
+        },
+      },
+      metrics: {
+        controllerManagerAddr: ':8080',
+        listenerAddr: ':8080',
+        listenerEndpoint: '/metrics',
+      },
+      flags: {
+        // logLevel: '',
+        logFormat: 'text', // `text` or `json`
+        updateStrategy: 'eventual', // `immediate` or `eventual`
       },
     },
   },
 }, { provider });
+
+export const namespace = ns.metadata.name;
+export const serviceAccount = chart.getResource(
+  'v1/ServiceAccount',
+  'actions-runner-system/actions-runner-controller')
+  .metadata.name;
