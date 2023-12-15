@@ -19,4 +19,48 @@ config:
         secure: AAABAANQhnAoykQpYhXwU3Sk7D0RnhkoN2FFVjGM8mas6iN7LhDZRGsncqQ=
       name:
         secure: AAABAMq5qNTNZcrLzgSImnS7aHhCGwqTfOR/cAMFCAquDMHffCMUhA/HtegGJOBx3O54P/0=
+    - ip: 192.168.1.10
+      name: zeus
+    - ip: 192.168.1.10
+      name: zeus.int.unmango.net
+    - ip: 192.168.1.11
+      name: herra
+    - ip: 192.168.1.11
+      name: herra.int.unmango.net
+    - ip: 192.168.1.12
+      name: apollo
+    - ip: 192.168.1.12
+      name: apollo.int.unmango.net
+    - ip: 192.168.1.20
+      name: pihole
+    - ip: 192.168.1.20
+      name: pihole.int.unmango.net
+    - ip: 192.168.1.30
+      name: kcz
+    - ip: 192.168.1.30
+      name: kcz.int.unmango.net
+    - ip: 192.168.1.31
+      name: kch
+    - ip: 192.168.1.31
+      name: kch.int.unmango.net
+    - ip: 192.168.1.32
+      name: kca
+    - ip: 192.168.1.32
+      name: kca.int.unmango.net
+    - ip: 192.168.1.67
+      name: minecraft
+    - ip: 192.168.1.67
+      name: minecraft.int.unmango.net
+    - ip: 192.168.1.71
+      name: plex
+    - ip: 192.168.1.71
+      name: plex.int.unmango.net
+    - ip: 192.168.1.72
+      name: 2plex
+    - ip: 192.168.1.72
+      name: 2plex.int.unmango.net
+    - ip: 192.168.1.74
+      name: ps3
+    - ip: 192.168.1.74
+      name: ps3.int.unmango.net
   thecluster-dns:piholeStack: pinkdiamond
