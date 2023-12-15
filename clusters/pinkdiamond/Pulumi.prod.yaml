@@ -19,10 +19,16 @@ config:
   thecluster-pinkdiamond:vip: 192.168.1.100
   thecluster-pinkdiamond:workers:
     - installDisk: /dev/sda
+      ip: 192.168.1.107
+    - installDisk: /dev/sda
       ip: 192.168.1.108
+      qemu: true
     - installDisk: /dev/sda
       ip: 192.168.1.109
+      qemu: true
     - installDisk: /dev/sda
       ip: 192.168.1.110
+      qemu: true
     - installDisk: /dev/sda
       ip: 192.168.1.111
+      qemu: true

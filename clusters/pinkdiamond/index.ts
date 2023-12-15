@@ -146,9 +146,6 @@ const workerConfig = talos.machine.getConfigurationOutput({
             'rotate-server-certificates': true,
           },
         },
-        nodeLabels: {
-          'thecluster.io/qemu-agent': true,
-        },
       },
     }),
   ],
@@ -183,20 +180,30 @@ const controlPlaneConfigApply: talos.machine.ConfigurationApply[] = controlPlane
   })));
 
 const workerConfigApply: talos.machine.ConfigurationApply[] = workers
-  .map(x => (new talos.machine.ConfigurationApply(x.ip, {
-    clientConfiguration: secrets.clientConfiguration,
-    machineConfigurationInput: workerConfig.machineConfiguration,
-    node: x.ip,
-    configPatches: [
-      YAML.stringify({
-        machine: {
-          install: {
-            disk: x.installDisk,
-          },
+  .map(x => {
+    const patches = [YAML.stringify({
+      machine: {
+        install: {
+          disk: x.installDisk,
         },
-      }),
-    ],
-  })));
+      },
+    })];
+
+    if (x.qemu) patches.push(YAML.stringify({
+      machine: {
+        nodeLabels: {
+          'thecluster.io/qemu-agent': true,
+        },
+      },
+    }));
+
+    return new talos.machine.ConfigurationApply(x.ip, {
+      clientConfiguration: secrets.clientConfiguration,
+      machineConfigurationInput: workerConfig.machineConfiguration,
+      node: x.ip,
+      configPatches: patches,
+    });
+  });
 
 const bootstrap = new talos.machine.Bootstrap(`bootstrap`, {
   clientConfiguration: secrets.clientConfiguration,
