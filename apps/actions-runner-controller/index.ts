@@ -20,7 +20,7 @@ const authSecret = new k8s.core.v1.Secret('github-auth', {
   },
 }, { provider });
 
-export const webhookSecretToken = new random.RandomId('webhook-secret', {
+const webhookSecretToken = new random.RandomId('webhook-secret', {
   byteLength: 16,
 }).hex;
 
@@ -218,3 +218,5 @@ export const serviceAccount = chart.getResource(
   'v1/ServiceAccount',
   'actions-runner-system/actions-runner-controller')
   .metadata.name;
+
+export const webhookToken = pulumi.secret(webhookSecretToken);
