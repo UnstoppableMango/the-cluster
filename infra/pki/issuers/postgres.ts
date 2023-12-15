@@ -1,4 +1,5 @@
 import { output } from '@pulumi/pulumi';
+import { Secret } from '@pulumi/kubernetes/core/v1';
 import { Certificate, Issuer } from '@unmango/thecluster-crds/certmanager/v1';
 import { Bundle } from '@unmango/thecluster-crds/trust/v1alpha1';
 import { provider } from '@unmango/thecluster/cluster/from-stack';
@@ -7,6 +8,14 @@ import { ns } from '../namespace';
 import { issuer as rootIssuer } from './root';
 
 export const hostname = 'postgres.thecluster.io'; // TODO
+export const secret = new Secret(hostname, {
+  metadata: {
+    name: hostname,
+    namespace: ns.metadata.name,
+  },
+  type: 'kubernetes.io/tls',
+}, { provider });
+
 export const ca = new Certificate(hostname, {
   metadata: {
     name: hostname,
@@ -16,7 +25,7 @@ export const ca = new Certificate(hostname, {
     isCA: true,
     commonName: hostname,
     dnsNames: ['postgres-ha.thecluster.io'], // TODO
-    secretName: hostname,
+    secretName: secret.metadata.name,
     privateKey: {
       algorithm: 'ECDSA',
       size: 256,
@@ -36,7 +45,7 @@ export const issuer = new Issuer(hostname, {
   },
   spec: {
     ca: {
-      secretName: ca.status.apply(x => x?.nextPrivateKeySecretName ?? ''),
+      secretName: secret.metadata.name,
     },
   },
 }, { provider });
@@ -48,7 +57,7 @@ export const bundle = new Bundle(hostname, {
       { useDefaultCAs: true },
       {
         secret: {
-          name: ca.status.apply(x => x?.nextPrivateKeySecretName ?? ''),
+          name: secret.metadata.name,
           key: 'tls.crt',
         },
       },
