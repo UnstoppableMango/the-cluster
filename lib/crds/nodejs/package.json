@@ -6,8 +6,8 @@
     "install": "node scripts/install-pulumi-plugin.js resource crds "
   },
   "dependencies": {
-    "@pulumi/kubernetes": "^4.5.5",
-    "@pulumi/pulumi": "^3.96.2"
+    "@pulumi/kubernetes": "^4.6.1",
+    "@pulumi/pulumi": "^3.97.0"
   },
   "devDependencies": {
     "@types/node": "^20.10.4",
