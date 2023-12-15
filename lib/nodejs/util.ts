@@ -1,4 +1,4 @@
-import { Input, Inputs, Output, output } from '@pulumi/pulumi';
+import { Input, Inputs, Output, UnwrappedObject, output } from '@pulumi/pulumi';
 import * as YAML from 'yaml';
 
 export function appendIf(x: string, o?: string | undefined | null): string {
@@ -9,7 +9,20 @@ export function required(x: string | undefined): string {
   return x ?? '';
 }
 
-export function requireProp<T>(selector: (x: T) => string): (x?: T) => string {
+// export function requireProp<
+//   T extends UnwrappedObject<Record<string, R>>,
+//   R = unknown,
+//   P extends keyof T = keyof T,
+// >(prop: P): (x?: T) => R {
+//   return x => {
+//     if (!x) throw new Error(`Field ${String(prop)} is required`);
+//     return x[prop];
+//   }
+// }
+
+// const test = requireProp<{test:string}>('test');
+
+export function requireNested<T>(selector: (x: T) => string): (x?: T) => string {
   return x => x ? selector(x) : '';
 }
 

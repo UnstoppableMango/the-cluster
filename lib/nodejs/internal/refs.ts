@@ -12,6 +12,7 @@ export class Refs {
   private _pihole?: StackReference;
   private _pki?: StackReference;
   private _postgresql?: StackReference;
+  private _trustManager?: StackReference;
 
   constructor(private cluster: string) { }
 
@@ -97,5 +98,13 @@ export class Refs {
     }
 
     return this._postgresql;
+  }
+
+  public get trustManager(): StackReference {
+    if (!this._trustManager) {
+      this._trustManager = this.ref('trust-manager');
+    }
+
+    return this._trustManager;
   }
 }

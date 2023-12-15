@@ -7,3 +7,4 @@ export * from './nginx-ingress';
 export * from './pihole';
 export * from './pki';
 export * from './postgresql';
+export * from './trust-manager';
