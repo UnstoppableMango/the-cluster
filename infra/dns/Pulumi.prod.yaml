@@ -51,13 +51,13 @@ config:
       name: minecraft
     - ip: 192.168.1.67
       name: minecraft.int.unmango.net
-    - ip: 192.168.1.71
+    - ip: 192.168.1.70
       name: plex
-    - ip: 192.168.1.71
+    - ip: 192.168.1.70
       name: plex.int.unmango.net
-    - ip: 192.168.1.72
+    - ip: 192.168.1.71
       name: 2plex
-    - ip: 192.168.1.72
+    - ip: 192.168.1.71
       name: 2plex.int.unmango.net
     - ip: 192.168.1.74
       name: ps3
