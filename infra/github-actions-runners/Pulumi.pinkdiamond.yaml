@@ -11,7 +11,19 @@ config:
     maxRunners: 25
     volumeSize: 10Gi
     # https://github.com/actions/actions-runner-controller/blob/3e4201ac5f6c6d172a19b580154eaf5abf24a2ca/charts/gha-runner-scale-set/values.yaml#L162-L189
-    # podTemplate: {}
+    podTemplate:
+      spec:
+        topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              actions.github.com/scale-set-name: thecluster
+        containers:
+          - name: runner
+            image: ghcr.io/actions/actions-runner:latest
+            command: ["/home/runner/run.sh"]
   # - name: wishlists
   #   githubUrl: https://github.com/unmango/wishlists
   #   minRunners: 0
