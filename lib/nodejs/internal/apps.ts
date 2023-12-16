@@ -1,4 +1,5 @@
 import {
+  ActionsRunnerController,
   CephCsi,
   CertManager,
   CloudflareIngress,
@@ -13,6 +14,7 @@ import {
 import { Refs } from './refs';
 
 export class Apps {
+  private _actionsRunnerController?: ActionsRunnerController;
   private _cephCsi?: CephCsi;
   private _certManager?: CertManager;
   private _cloudflareIngress?: CloudflareIngress;
@@ -25,6 +27,14 @@ export class Apps {
   private _trustManager?: TrustManager;
 
   constructor(private _refs: Refs) { }
+
+  public get actionsRunnerController(): ActionsRunnerController {
+    if (!this._actionsRunnerController) {
+      this._actionsRunnerController = new ActionsRunnerController(this._refs);
+    }
+
+    return this._actionsRunnerController;
+  }
 
   public get cephCsi(): CephCsi {
     if (!this._cephCsi) {

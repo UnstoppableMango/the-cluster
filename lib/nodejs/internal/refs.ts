@@ -2,6 +2,7 @@ import { StackReference } from '@pulumi/pulumi';
 import * as app from '../app';
 
 export class Refs {
+  private _actionsRunnerController?: StackReference;
   private _cephCsi?: StackReference;
   private _certManager?: StackReference;
   private _cloudflareIngress?: StackReference;
@@ -18,6 +19,14 @@ export class Refs {
 
   private ref(project: string): StackReference {
     return app.ref(project, this.cluster);
+  }
+
+  public get actionsRunnerController(): StackReference {
+    if (!this._actionsRunnerController) {
+      this._actionsRunnerController = this.ref('actions-runner-controller');
+    }
+
+    return this._actionsRunnerController;
   }
 
   public get cephCsi(): StackReference {
