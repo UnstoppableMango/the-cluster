@@ -35,12 +35,12 @@ const chart = new k8s.helm.v3.Chart('actions-runner-controller', {
         repository: 'ghcr.io/actions/gha-runner-scale-set-controller',
         tag: versions.scaleSetController,
       },
-      securityContext: {
-        capabilities: { drop: ['ALL'] },
-        readOnlyRootFilesystem: true,
-        runAsNonRoot: true,
-        runAsUser: 1001,
-      },
+      // securityContext: {
+      //   capabilities: { drop: ['ALL'] },
+      //   readOnlyRootFilesystem: true,
+      //   runAsNonRoot: true,
+      //   runAsUser: 1001,
+      // },
       resources: {
         limits: {
           cpu: '100m',
