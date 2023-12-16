@@ -1,6 +1,6 @@
 dependencies:
 - name: unifi
   repository: https://charts.truecharts.org
-  version: 17.0.3
-digest: sha256:f973c0a5476ec489f68b1c156e6fe5a27382a95505595bfd8f8d3049be59b271
-generated: "2023-12-04T00:47:38.368998738Z"
+  version: 17.0.5
+digest: sha256:2c20ce51fc6582a020c9618ce89a3e44991acc36a505245adc96e55da318400f
+generated: "2023-12-16T15:27:09.201020472Z"
