@@ -6,7 +6,7 @@ on:
 
 jobs:
   setup:
-    runs-on: [self-hosted, thecluster]
+    runs-on: [self-hosted]
     container: pulumi/pulumi-nodejs:latest
     steps:
       - run: echo "yeet"
