@@ -14,6 +14,10 @@ export const secret = new Secret(hostname, {
     namespace: ns.metadata.name,
   },
   type: 'kubernetes.io/tls',
+  stringData: {
+    'tls.crt': '',
+    'tls.key': '',
+  },
 }, { provider });
 
 export const ca = new Certificate(hostname, {
@@ -63,8 +67,8 @@ export const bundle = new Bundle(hostname, {
       },
     ],
     target: {
-      configMap: {
-        key: 'postgres-bundle.pem',
+      secret: {
+        key: 'bundle.pem',
       },
       additionalFormats: {
         jks: { key: 'bundle.jks' },

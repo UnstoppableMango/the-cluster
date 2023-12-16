@@ -75,7 +75,7 @@ export const bundle = new Bundle('thecluster.io', {
     ],
     target: {
       configMap: {
-        key: 'root-bundle.pem',
+        key: 'bundle.pem',
       },
       additionalFormats: {
         jks: { key: 'bundle.jks' },

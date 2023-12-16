@@ -5,7 +5,12 @@ import { apps, provider, storageClasses } from '@unmango/thecluster/cluster/from
 import { keepers, users as enabledUsers, database, versions, ip, port, hosts, sharedIpKey } from './config';
 
 const ns = new k8s.core.v1.Namespace('postgresql', {
-  metadata: { name: 'postgresql' },
+  metadata: {
+    name: 'postgresql',
+    labels: {
+      'thecluster.io/inject-postgres-cert': 'true',
+    },
+  },
 }, { provider });
 
 const postgresUsername = 'postgres';
@@ -13,7 +18,6 @@ const postgresPassword = new random.RandomPassword('postgres', {
   length: 48,
   special: false,
   keepers: {
-    // Manual password reset with `./scripts/reset-password.sh`
     manual: keepers.postgres,
   },
 });
@@ -23,7 +27,6 @@ const repmgrPassword = new random.RandomPassword('repmgr', {
   length: 48,
   special: false,
   keepers: {
-    // Manual password reset with `./scripts/reset-password.sh`
     manual: keepers.repmgr,
   },
 });
@@ -33,7 +36,6 @@ const pgpoolPassword = new random.RandomPassword('pgpool', {
   length: 48,
   special: false,
   keepers: {
-    // Manual password reset with `./scripts/reset-password.sh`
     manual: keepers.pgpool,
   },
 });
@@ -92,6 +94,13 @@ const customUsersSecret = new k8s.core.v1.Secret('custom-users', {
   },
 }, { provider });
 
+const tls = new k8s.core.v1.Secret('tls', {
+  metadata: {
+    name: apps.pki.issuers.postgres,
+    namespace: ns.metadata.name,
+  },
+}, { provider });
+
 const chart = new k8s.helm.v3.Chart('postgresql', {
   path: './',
   namespace: ns.metadata.name,
@@ -126,10 +135,13 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         audit: {
           logConnections: true,
         },
-        tls: {
-          // Maybe one day when I'm not an idiot
-          enabled: false,
-        },
+        // Maybe one day when I'm not an idiot...
+        // tls: {
+        //   enabled: true,
+        //   certificatesSecret: tls.metadata.name,
+        //   certFilename: 'tls.crt',
+        //   certKeyFilename: 'postgres-bundle.pem',
+        // },
         resources: {
           limits: {
             cpu: '250m',
@@ -163,10 +175,14 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         authenticationMethod: 'scram-sha-256',
         logConnections: true,
         useLoadBalancing: true,
-        tls: {
-          // Maybe one day when I'm not an idiot
-          enabled: false,
-        },
+        // Maybe one day when I'm not an idiot...
+        // tls: {
+        //   enabled: true,
+        //   certificatesSecret: tls.metadata.name,
+        //   certFilename: 'tls.crt',
+        //   certKeyFilename: 'postgres-bundle.pem',
+        //   certCAFilename: '', // TODO: can haz?
+        // },
         resources: {
           limits: {
             cpu: '250m',
