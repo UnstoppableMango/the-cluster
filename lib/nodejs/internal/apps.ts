@@ -8,7 +8,7 @@ import {
   NginxIngress,
   PiHole,
   Pki,
-  PostgreSql,
+  PostgreHaSql,
   TrustManager
 } from '../apps';
 import { Refs } from './refs';
@@ -23,7 +23,7 @@ export class Apps {
   private _nginxIngress?: NginxIngress;
   private _pihole?: PiHole;
   private _pki?: Pki;
-  private _postgresql?: PostgreSql;
+  private _postgresql?: PostgreHaSql;
   private _trustManager?: TrustManager;
 
   constructor(private _refs: Refs) { }
@@ -78,7 +78,7 @@ export class Apps {
 
   public get nginxIngress(): NginxIngress {
     if (!this._nginxIngress) {
-      return new NginxIngress(this._refs);
+      this._nginxIngress = new NginxIngress(this._refs);
     }
 
     return this._nginxIngress;
@@ -100,12 +100,12 @@ export class Apps {
     return this._pki;
   }
 
-  public get postgresql(): PostgreSql {
+  public get postgresql(): PostgreHaSql {
     if (!this._postgresql) {
-      this._postgresql = new PostgreSql(this._refs);
+      this._postgresql = new PostgreHaSql(this._refs);
     }
 
-    return this.postgresql;
+    return this._postgresql;
   }
 
   public get trustManager(): TrustManager {
