@@ -1,0 +1,12 @@
+name: Fiddlin
+
+on:
+  push:
+    branches: ['piplins']
+
+jobs:
+  setup:
+    runs-on: [self-hosted, thecluster]
+    container: pulumi/pulumi-nodejs:latest
+    steps:
+      - run: echo "yeet"
