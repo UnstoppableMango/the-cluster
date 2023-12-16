@@ -17,7 +17,6 @@ export interface CephFS {
   adminKey: string;
 }
 
-
 export interface Versions {
   externalSnapshotter: string;
 }

@@ -5,12 +5,13 @@
     "@pulumi/keycloak": "^5.2.1",
     "@pulumi/kubernetes": "^4.5.5",
     "@pulumi/pulumi": "^3.95.0",
-    "@unmango/pulumi-pihole": "^0.1.3"
+    "fp-ts": "^2.16.1"
   },
   "devDependencies": {
     "@types/node": "^20.10.3"
   },
   "workspaces": [
-    "../../lib/nodejs"
+    "../../lib/nodejs",
+    "../../lib/crds/nodejs"
   ]
 }

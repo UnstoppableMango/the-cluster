@@ -1,0 +1,34 @@
+config:
+  thecluster-storage:actions-runner-controller:
+    count: 20
+  thecluster-storage:volumes:
+    - name: music
+      storageClass: cephfs
+      accessModes: ["ReadWriteMany"]
+      mode: Filesystem
+      size: 5Ti
+    - name: movies
+      storageClass: cephfs
+      accessModes: ["ReadWriteMany"]
+      mode: Filesystem
+      size: 20Ti
+    - name: tv
+      storageClass: cephfs
+      accessModes: ["ReadWriteMany"]
+      mode: Filesystem
+      size: 20Ti
+    - name: anime
+      storageClass: cephfs
+      accessModes: ["ReadWriteMany"]
+      mode: Filesystem
+      size: 15Ti
+    - name: movies4k
+      storageClass: cephfs
+      accessModes: ["ReadWriteMany"]
+      mode: Filesystem
+      size: 5Ti
+    - name: tv4k
+      storageClass: cephfs
+      accessModes: ["ReadWriteMany"]
+      mode: Filesystem
+      size: 5Ti

@@ -91,5 +91,6 @@ const chart = new k8s.helm.v3.Chart('ceph-csi', {
   }],
 }, { provider });
 
+export { clusterId };
 export const rbdClass = chart.getResource('storage.k8s.io/v1/StorageClass', 'rbd').metadata.name;
 export const cephfsClass = chart.getResource('storage.k8s.io/v1/StorageClass', 'cephfs').metadata.name;
