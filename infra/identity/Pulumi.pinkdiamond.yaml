@@ -14,12 +14,16 @@ config:
       secure: AAABABUcDUUj9Jp1z1s11ZAnhWftwmHsnUz6udBcttonEdwP
     lastName:
       secure: AAABAHc72NsjR0lU4DYD6/ba8mu9XFIb+TGcOrrGG0yTOh5qqp853uA=
-  # thecluster-identity:stackExchange:
-  #   clientId: 27925
-  #   clientSecret:
-  #     secure: AAABACpJX7ZljddV7ar/sLHsO9Wu+f/xP+3ZGm0ApKitZnioXZv5qQBbgdQ+qOZwJVnwakm/y7U=
-  #   key:
-  #     secure: AAABANtoowabyKyCX7r0cR16C2/xYRfKVqvYpR23SiJUMIsh2+22B+DoY2agIPsWjjdOis8TJQM=
+  thecluster-identity:microsoft:
+    clientId: 77a32bbd-4e2a-4195-bc7a-c9281c1c0051
+    clientSecret:
+      secure: AAABALTAN5hlie2mZsNpSJHANrxahZX3hsBD9nGnL3/NRPfMEhPxufL6DV+LY9tEDkKNtg8J6BboRZvDIJ03QfBT1iZen9vu
+    tenantId: cc1862e8-3663-4b04-afb6-da85f96a6111
+  thecluster-identity:stackExchange:
+    clientId: 27925
+    clientSecret:
+      secure: AAABADaedz2HTPN2cQk+wv3svzydfJ4q8qzUyqPp+kYNnYyfzx1TBdUp8nfH9ue/YjAk2YbbFzU=
+    key: 'oXerxTYcGZOPI*BF9qy5Lg(('
   thecluster-identity:twitter:
     clientId:
       secure: AAABACwiow8ms8kKWwW1EdkbqkHeTnpRY20MZ+LngGGF7zDCdb1Gm3hTutGN7nuoxmbcpFqSmP9EbVQKmJBuVWUf

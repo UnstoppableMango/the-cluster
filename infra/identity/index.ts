@@ -1,7 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as keycloak from '@pulumi/keycloak';
 import { apps } from '@unmango/thecluster/cluster/from-stack';
-import { cluster, google, me } from './config';
+import { cluster, github, google, me, microsoft, stackExchange, twitter } from './config';
 
 const provider = apps.keycloak.provider;
 
@@ -15,27 +15,81 @@ const externalRealm = new keycloak.Realm('external', {
   verifyEmail: true,
 }, { provider });
 
-// const githubIdp = new keycloak.oidc.IdentityProvider('github', {
-//   realm: externalRealm.id,
-//   enabled: true,
-//   alias: 'github',
-//   displayName: 'GitHub',
-//   clientId: github.clientId,
-//   clientSecret: github.clientSecret,
-//   authorizationUrl: 'https://github.com/login/oauth/authorize',
-//   tokenUrl: 'https://github.com/login/oauth/access_token',
-//   trustEmail: true,
-//   syncMode: 'IMPORT',
-// }, { provider: keycloakProvider });
+const githubIdp = new keycloak.oidc.IdentityProvider('github', {
+  realm: externalRealm.id,
+  enabled: true,
+  guiOrder: '1',
+  alias: 'github',
+  providerId: 'github',
+  displayName: 'GitHub',
+  clientId: github.clientId,
+  clientSecret: github.clientSecret,
+  authorizationUrl: 'https://github.com/login/oauth/authorize',
+  tokenUrl: 'https://github.com/login/oauth/access_token',
+  userInfoUrl: 'https://api.github.com/user',
+  defaultScopes: 'user:email',
+  trustEmail: true,
+  syncMode: 'IMPORT',
+}, { provider });
 
 const googleIdp = new keycloak.oidc.GoogleIdentityProvider('google', {
   realm: externalRealm.id,
   enabled: true,
+  guiOrder: '3',
   clientId: google.clientId,
   clientSecret: google.clientSecret,
   trustEmail: true,
   syncMode: 'IMPORT',
 }, { provider });
+
+const microsoftIdp = new keycloak.oidc.IdentityProvider('microsoft', {
+  realm: externalRealm.id,
+  enabled: true,
+  guiOrder: '2',
+  alias: 'microsoft',
+  providerId: 'microsoft',
+  displayName: 'Microsoft',
+  clientId: microsoft.clientId,
+  clientSecret: microsoft.clientSecret,
+  authorizationUrl: `https://login.microsoftonline.com/${microsoft.tenantId}/oauth2/v2.0/authorize`,
+  tokenUrl: `https://login.microsoftonline.com/${microsoft.tenantId}/oauth2/v2.0/token`,
+  trustEmail: true,
+  syncMode: 'IMPORT',
+}, { provider });
+
+const twitterIdp = new keycloak.oidc.IdentityProvider('twitter', {
+  realm: externalRealm.id,
+  enabled: true,
+  guiOrder: '4',
+  alias: 'twitter',
+  providerId: 'twitter',
+  displayName: 'X (formerly known as Twitter)',
+  clientId: twitter.clientId,
+  clientSecret: twitter.clientSecret,
+  authorizationUrl: 'https://twitter.com/i/oauth2/authorize',
+  tokenUrl: 'https://twitter.com/i/oauth2/token',
+  // userInfoUrl: 'https://api.github.com/user',
+  // defaultScopes: 'user:email',
+  trustEmail: true,
+  syncMode: 'IMPORT',
+}, { provider });
+
+// const stackExchangeIdp = new keycloak.oidc.IdentityProvider('stackexchange', {
+//   realm: externalRealm.id,
+//   enabled: true,
+//   guiOrder: '5',
+//   alias: 'stack-exchange',
+//   providerId: 'stackexchange',
+//   displayName: 'Stack Exchange',
+//   clientId: stackExchange.clientId,
+//   clientSecret: stackExchange.clientSecret,
+//   authorizationUrl: 'https://github.com/login/oauth/authorize',
+//   tokenUrl: 'https://github.com/login/oauth/access_token',
+//   userInfoUrl: 'https://api.github.com/user',
+//   defaultScopes: 'user:email',
+//   trustEmail: true,
+//   syncMode: 'IMPORT',
+// }, { provider });
 
 export const realm = externalRealm.realm;
 
@@ -46,19 +100,6 @@ const clusterRealm = new keycloak.Realm('cluster', {
   userManagedAccess: true,
 }, { provider });
 
-// const myUser = new keycloak.User('UnstoppableMango', {
-//   realmId: realm,
-//   enabled: true,
-//   username: 'UnstoppableMango',
-//   email: myEmail,
-//   emailVerified: true,
-//   federatedIdentities: [{
-//     identityProvider: googleIdp.displayName,
-//     userName: myGoogleId,
-//     userId: myGoogleId,
-//   }],
-// }, { provider: keycloakProvider });
-
 const webAppLogin = new keycloak.Role('webapp-login', {
   realmId: externalRealm.realm,
   name: 'webapp_login',
@@ -67,9 +108,7 @@ const webAppLogin = new keycloak.Role('webapp-login', {
 
 const webAppReaders = new keycloak.Group('webapp-readers', {
   realmId: externalRealm.realm,
-  // I'm probably gonna get bit by putting spaces here
-  // but there's no `displayName` or `description`
-  name: 'Web App Readers',
+  name: 'WebAppReaders',
 }, { provider });
 
 const webAppReaderRoles = new keycloak.GroupRoles('webapp-readers', {
@@ -85,11 +124,12 @@ const groupsScope = new keycloak.openid.ClientScope('groups', {
   includeInTokenScope: true,
 }, { provider });
 
-// const groupMembershipMapper = new keycloak.openid.GroupMembershipProtocolMapper('groups', {
-//   realmId: externalRealm.realm,
-//   claimName: 'groups',
-//   clientScopeId: groupsScope.id,
-// }, { provider });
+// TODO: Not sure if this is actually working yet...
+const groupMembershipMapper = new keycloak.openid.GroupMembershipProtocolMapper('groups', {
+  realmId: externalRealm.realm,
+  claimName: 'groups',
+  clientScopeId: groupsScope.id,
+}, { provider });
 
 const myUser = new keycloak.User('UnstoppableMango', {
   realmId: externalRealm.realm,
@@ -111,6 +151,7 @@ export const externalRealmId = externalRealm.id;
 export const clusterRealmId = clusterRealm.id;
 export const groupNames = [webAppReaders.name];
 export const groupsScopeName = groupsScope.name;
-export const groups = pulumi.all([webAppReaders.name, webAppReaders.id]).apply(([name, id]) => ({
-  [name]: id,
-}));
+export const groups = pulumi.all([webAppReaders.name, webAppReaders.id])
+  .apply(([name, id]) => ({
+    [name]: id,
+  }));
