@@ -11,6 +11,7 @@ on:
 jobs:
   firmware:
     runs-on: thecluster
+    container: pulumi/pulumi-nodejs:v3.97.0
     defaults:
       run:
         working-directory: infra/pkgs
