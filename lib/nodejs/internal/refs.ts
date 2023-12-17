@@ -12,7 +12,7 @@ export class Refs {
   private _nginxIngress?: StackReference;
   private _pihole?: StackReference;
   private _pki?: StackReference;
-  private _postgresql?: StackReference;
+  private _postgresqlHa?: StackReference;
   private _trustManager?: StackReference;
 
   constructor(private cluster: string) { }
@@ -101,12 +101,12 @@ export class Refs {
     return this._pki;
   }
 
-  public get postgresql(): StackReference {
-    if (!this._postgresql) {
-      this._postgresql = this.ref('postgresql');
+  public get postgresqlHa(): StackReference {
+    if (!this._postgresqlHa) {
+      this._postgresqlHa = this.ref('postgresql-ha');
     }
 
-    return this._postgresql;
+    return this._postgresqlHa;
   }
 
   public get trustManager(): StackReference {

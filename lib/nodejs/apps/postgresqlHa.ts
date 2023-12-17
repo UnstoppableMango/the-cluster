@@ -13,9 +13,9 @@ export interface Users {
   pgpool: Output<User>;
 }
 
-export class PostgreSql {
+export class PostgreHaSql {
   private _provider: Provider | undefined;
-  private _ref = this._refs.postgresql;
+  private _ref = this._refs.postgresqlHa;
   constructor(private _refs: Refs) { }
 
   public get hostname(): Output<string> {

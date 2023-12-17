@@ -22,7 +22,11 @@ const chart = new k8s.helm.v3.Chart('trust-manager', {
           namespace: trustNs.metadata.name,
         },
       },
-      secretTargets: { enabled: false },
+      secretTargets: {
+        enabled: true,
+        // Eh... managing the names manually sounds like hell
+        authorizedSecretsAll: true,
+      },
       crds: { enabled: true },
       // Redundant, but QoL safeguard
       // https://github.com/cert-manager/trust-manager/blob/01bd331abb8ee071025e2b8989930a2eb3b1d8e9/deploy/charts/trust-manager/values.yaml#L4-L7

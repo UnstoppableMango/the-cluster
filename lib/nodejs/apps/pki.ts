@@ -13,6 +13,7 @@ export interface Bundle {
 
 export interface Bundles {
   root: Output<Bundle>;
+  postgres: Output<Bundle>;
 }
 
 export interface ClusterIssusers {
@@ -28,6 +29,7 @@ export interface ClusterIssusers {
 export interface Issuers {
   group: Output<string>;
   kind: Output<string>;
+  postgres: Output<string>;
 }
 
 export class Pki {

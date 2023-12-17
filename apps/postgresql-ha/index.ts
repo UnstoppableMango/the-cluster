@@ -1,44 +1,14 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
-import { Certificate, Issuer } from '@unmango/thecluster-crds/certmanager/v1';
-import { clusterIssuers, provider, storageClasses } from '@unmango/thecluster/cluster/from-stack';
-import { keepers, users as enabledUsers, database, versions, ip, port, hostname } from './config';
+import { apps, provider, storageClasses } from '@unmango/thecluster/cluster/from-stack';
+import { keepers, users as enabledUsers, database, versions, ip, port, hosts, sharedIpKey } from './config';
 
 const ns = new k8s.core.v1.Namespace('postgresql', {
-  metadata: { name: 'postgresql' },
-}, { provider });
-
-const tlsSecretName = 'postgres-tls';
-const ca = new Certificate('postgres-ca', {
   metadata: {
-    name: 'postgres-ca',
-    namespace: ns.metadata.name,
-  },
-  spec: {
-    isCA: true,
-    commonName: 'unmango-postgres-ca',
-    secretName: tlsSecretName,
-    privateKey: {
-      algorithm: 'ECDSA',
-      size: 256,
-    },
-    issuerRef: {
-      group: 'cert-manager.io',
-      kind: 'ClusterIssuer',
-      name: clusterIssuers.selfsigned,
-    },
-  },
-}, { provider });
-
-const issuer = new Issuer('postgres', {
-  metadata: {
-    name: 'postgres',
-    namespace: ns.metadata.name,
-  },
-  spec: {
-    ca: {
-      secretName: tlsSecretName,
+    name: 'postgresql',
+    labels: {
+      'thecluster.io/inject-postgres-cert': 'true',
     },
   },
 }, { provider });
@@ -48,7 +18,6 @@ const postgresPassword = new random.RandomPassword('postgres', {
   length: 48,
   special: false,
   keepers: {
-    // Manual password reset with `./scripts/reset-password.sh`
     manual: keepers.postgres,
   },
 });
@@ -58,7 +27,6 @@ const repmgrPassword = new random.RandomPassword('repmgr', {
   length: 48,
   special: false,
   keepers: {
-    // Manual password reset with `./scripts/reset-password.sh`
     manual: keepers.repmgr,
   },
 });
@@ -68,7 +36,6 @@ const pgpoolPassword = new random.RandomPassword('pgpool', {
   length: 48,
   special: false,
   keepers: {
-    // Manual password reset with `./scripts/reset-password.sh`
     manual: keepers.pgpool,
   },
 });
@@ -127,6 +94,13 @@ const customUsersSecret = new k8s.core.v1.Secret('custom-users', {
   },
 }, { provider });
 
+const tls = new k8s.core.v1.Secret('tls', {
+  metadata: {
+    name: apps.pki.issuers.postgres,
+    namespace: ns.metadata.name,
+  },
+}, { provider });
+
 const chart = new k8s.helm.v3.Chart('postgresql', {
   path: './',
   namespace: ns.metadata.name,
@@ -152,7 +126,7 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         image: {
           tag: versions.bitnami.postgresqlRepmgr,
         },
-        replicaCount: 3,
+        replicaCount: 4,
         priorityClassName: 'system-cluster-critical',
         pdb: {
           create: true,
@@ -161,9 +135,22 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         audit: {
           logConnections: true,
         },
-        tls: {
-          // Maybe one day when I'm not an idiot
-          enabled: false,
+        // Maybe one day when I'm not an idiot...
+        // tls: {
+        //   enabled: true,
+        //   certificatesSecret: tls.metadata.name,
+        //   certFilename: 'tls.crt',
+        //   certKeyFilename: 'postgres-bundle.pem',
+        // },
+        resources: {
+          limits: {
+            cpu: '250m',
+            memory: '256Mi',
+          },
+          requests: {
+            cpu: '250m',
+            memory: '256Mi',
+          },
         },
       },
       pgpool: {
@@ -173,7 +160,16 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         customUsersSecret: customUsersSecret.metadata.name,
         existingSecretName: pgpoolSecret.metadata.name,
         srCheckDatabase: database,
-        replicaCount: 3,
+        serviceAnnotations: {
+          'external-dns.alpha.kubernetes.io/hostname': [
+            hosts.internal,
+            ...hosts.aliases.internal,
+          ].join(','),
+          'metallb.universe.tf/allow-shared-ip': sharedIpKey,
+          'metallb.universe.tf/address-pool': apps.metallb.pool,
+          'metallb.universe.tf/loadBalancerIPs': ip,
+        },
+        replicaCount: 2,
         priorityClassName: 'system-cluster-critical',
         pdb: {
           create: true,
@@ -182,9 +178,23 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         authenticationMethod: 'scram-sha-256',
         logConnections: true,
         useLoadBalancing: true,
-        tls: {
-          // Maybe one day when I'm not an idiot
-          enabled: false,
+        // Maybe one day when I'm not an idiot...
+        // tls: {
+        //   enabled: true,
+        //   certificatesSecret: tls.metadata.name,
+        //   certFilename: 'tls.crt',
+        //   certKeyFilename: 'postgres-bundle.pem',
+        //   certCAFilename: '', // TODO: can haz?
+        // },
+        resources: {
+          limits: {
+            cpu: '250m',
+            memory: '256Mi',
+          },
+          requests: {
+            cpu: '250m',
+            memory: '256Mi',
+          },
         },
       },
       rbac: { create: false },
@@ -206,6 +216,16 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
           // Soon
           enabled: false,
         },
+        resources: {
+          limits: {
+            cpu: '250m',
+            memory: '256Mi',
+          },
+          requests: {
+            cpu: '250m',
+            memory: '256Mi',
+          },
+        },
       },
       persistence: {
         enabled: true,
@@ -218,7 +238,6 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
       },
       service: {
         type: 'LoadBalancer',
-        loadBalancerIp: ip,
         ports: {
           postgresql: port,
         },
@@ -227,7 +246,8 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
   },
 }, { provider });
 
-export { ip, database, port, hostname, passwords };
+export const hostname = hosts.external;
+export { ip, database, port, passwords };
 export const users = {
   repmgr: {
     username: repmgrUsername,
@@ -241,4 +261,5 @@ export const users = {
     username: pgpoolUsername,
     password: pgpoolPassword.result,
   },
+  misc: passwords,
 };

@@ -3,6 +3,10 @@ import { Config } from '@pulumi/pulumi';
 export interface Hosts {
   external: string;
   internal: string;
+  aliases: {
+    external: string[];
+    internal: string[];
+  },
 }
 
 export interface Keepers {
@@ -28,4 +32,5 @@ export const database = config.require('database');
 export const versions = config.requireObject<Versions>('versions');
 export const ip = config.require('ip');
 export const port = config.requireNumber('port');
-export const hostname = config.require('hostname');
+export const hosts = config.requireObject<Hosts>('hosts');
+export const sharedIpKey = config.require('sharedIpKey');
