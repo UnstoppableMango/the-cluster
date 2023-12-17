@@ -11,7 +11,7 @@ export class System {
   public apps = new Apps(this.refs);
   public bundles = new Bundles(this.apps);
   public clusterIssuers = new ClusterIssusers(this.apps);
-  public databases = new Databases(this.apps);
+  public databases = new Databases(this.refs, this.apps);
   public dns = new Dns(this.apps);
   public identities = new Identities(this.apps);
   public ingresses = new Ingresses(this.apps);

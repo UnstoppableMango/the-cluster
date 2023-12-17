@@ -2,7 +2,7 @@ config:
   thecluster-identity:github:
     clientId: d1f065d7f2d33f3cfbd6
     clientSecret:
-      secure: AAABAMSUANx38hZNoW8+RU/nkzqYTAFvKHlyEok2agIcm0LQH7cKHNEpuby649WZyEVa3V+1FqgrfLnEKUvz1Erj1DMxpdKd
+      secure: AAABACwngoXuZS7TyIMX+stOmmHPnnBspkYcETrScsUGLAwmyUijjvUPi9i5VHzjOr+yWzf5AsKedT79tCQ2RZJBlrhL8opD
   thecluster-identity:google:
     clientId: 186152974979-mbmlhacv2u1l1sv3enid4aagcl63df3u.apps.googleusercontent.com
     clientSecret:

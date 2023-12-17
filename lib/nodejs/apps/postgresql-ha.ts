@@ -42,6 +42,10 @@ export class PostgresqlHa {
     return this._ref.requireOutput('passwords') as Output<Output<User>[]>;
   }
 
+  public get clusterIp(): Output<string> {
+    return this._ref.requireOutput('clusterIp') as Output<string>;
+  }
+
   public get provider(): Provider {
     if (!this._provider) {
       this._provider = new Provider('postgresql', {

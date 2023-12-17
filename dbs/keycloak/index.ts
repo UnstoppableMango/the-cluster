@@ -1,5 +1,5 @@
 import * as pg from '@pulumi/postgresql';
-import { apps, databases } from '@unmango/thecluster/cluster/from-stack';
+import { apps } from '@unmango/thecluster/cluster/from-stack';
 import { allDbPermissions } from '@unmango/thecluster/dbs/postgres';
 
 const provider = apps.postgresqlHa.provider;
@@ -8,10 +8,11 @@ const keycloakOwner = new pg.Role('keycloak_owner', {
   name: 'keycloak_owner',
 }, { provider });
 
+const user = apps.postgresqlHa.user('keycloak');
 const keycloak = new pg.Role('keycloak', {
-  name: databases.keycloak.username,
+  name: user.username,
   login: true,
-  password: databases.keycloak.password,
+  password: user.password,
   roles: [keycloakOwner.name],
 }, { provider });
 
@@ -27,4 +28,13 @@ const grant = new pg.Grant('all', {
   role: keycloak.name,
 }, { provider });
 
+export const clusterIp = apps.postgresqlHa.clusterIp;
+export const ip = apps.postgresqlHa.ip;
+export const hostname = apps.postgresqlHa.hostname;
+export const port = apps.postgresqlHa.port;
 export const database = db.name;
+export const ownerGroup = keycloakOwner.name;
+export const owner = {
+  username: keycloak.name,
+  password: keycloak.password,
+};

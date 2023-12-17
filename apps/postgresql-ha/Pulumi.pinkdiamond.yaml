@@ -3,9 +3,9 @@ config:
   thecluster-postgresql-ha:hosts:
     aliases:
       external:
-      - pgh.thecluster.io
+        - pgh.thecluster.io
       internal:
-      - pgh.lan.thecluster.io
+        - pgh.lan.thecluster.io
     external: postgres-ha.thecluster.io
     internal: postgres-ha.lan.thecluster.io
   thecluster-postgresql-ha:ip: 192.168.1.82
@@ -20,10 +20,10 @@ config:
   thecluster-postgresql-ha:port: "5432"
   thecluster-postgresql-ha:sharedIpKey: postgresql-ha
   thecluster-postgresql-ha:users:
-  - unmango
-  - pulumi
-  - pgadmin
-  - dex
-  - drone
-  - keycloak
-  - kong
+    - unmango
+    - pulumi
+    - pgadmin
+    - dex
+    - drone
+    - keycloak
+    - kong

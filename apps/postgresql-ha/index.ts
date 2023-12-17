@@ -246,6 +246,11 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
   },
 }, { provider });
 
+export const clusterIp = chart.getResourceProperty(
+  'v1/Service',
+  'postgresql/postgresql-postgresql-ha-pgpool',
+  'spec').clusterIP;
+
 export const hostname = hosts.internal;
 export { ip, database, port, passwords };
 export const users = {

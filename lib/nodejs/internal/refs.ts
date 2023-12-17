@@ -8,6 +8,7 @@ export class Refs {
   private _cloudflareIngress?: StackReference;
   private _identity?: StackReference;
   private _keycloak?: StackReference;
+  private _keycloakDb?: StackReference;
   private _metallb?: StackReference;
   private _nginxIngress?: StackReference;
   private _pihole?: StackReference;
@@ -16,10 +17,6 @@ export class Refs {
   private _trustManager?: StackReference;
 
   constructor(private cluster: string) { }
-
-  private ref(project: string): StackReference {
-    return app.ref(project, this.cluster);
-  }
 
   public get actionsRunnerController(): StackReference {
     if (!this._actionsRunnerController) {
@@ -69,6 +66,14 @@ export class Refs {
     return this._keycloak;
   }
 
+  public get keycloakDb(): StackReference {
+    if (!this._keycloakDb) {
+      this._keycloakDb = this.ref('keycloak-db');
+    }
+
+    return this._keycloakDb;
+  }
+
   public get metallb(): StackReference {
     if (!this._metallb) {
       this._metallb = this.ref('metallb');
@@ -115,5 +120,9 @@ export class Refs {
     }
 
     return this._trustManager;
+  }
+
+  public ref(project: string): StackReference {
+    return app.ref(project, this.cluster);
   }
 }

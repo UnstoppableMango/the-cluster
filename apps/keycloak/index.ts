@@ -20,10 +20,10 @@ const secret = new k8s.core.v1.Secret('keycloak', {
   },
   stringData: {
     adminPassword: adminPassword.result,
-    dbHost: pulumi.interpolate`${apps.postgresql.hostname}`,
-    dbPort: pulumi.interpolate`${apps.postgresql.port}`,
-    dbUser: databases.keycloak.username,
-    dbPassword: databases.keycloak.password,
+    dbHost: pulumi.interpolate`${databases.keycloak.clusterIp}`,
+    dbPort: pulumi.interpolate`${databases.keycloak.port}`,
+    dbUser: databases.keycloak.owner.username,
+    dbPassword: databases.keycloak.owner.password,
     database: databases.keycloak.name,
   },
 }, { provider });
@@ -89,7 +89,8 @@ const chart = new k8s.helm.v3.Chart('keycloak', {
     },
   },
 }, { provider });
-
+apps.postgresqlHa.port
+export { hosts };
 export const hostname = hosts.external;
 export const username = auth.adminUser;
 export const password = adminPassword.result;
