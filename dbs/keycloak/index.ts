@@ -2,7 +2,7 @@ import * as pg from '@pulumi/postgresql';
 import { apps, databases } from '@unmango/thecluster/cluster/from-stack';
 import { allDbPermissions } from '@unmango/thecluster/dbs/postgres';
 
-const provider = apps.postgresql.provider;
+const provider = apps.postgresqlHa.provider;
 
 const keycloakOwner = new pg.Role('keycloak_owner', {
   name: 'keycloak_owner',

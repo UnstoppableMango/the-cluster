@@ -246,7 +246,7 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
   },
 }, { provider });
 
-export const hostname = hosts.external;
+export const hostname = hosts.internal;
 export { ip, database, port, passwords };
 export const users = {
   repmgr: {

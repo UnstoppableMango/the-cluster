@@ -13,7 +13,7 @@ export interface Users {
   pgpool: Output<User>;
 }
 
-export class PostgreHaSql {
+export class PostgresqlHa {
   private _provider: Provider | undefined;
   private _ref = this._refs.postgresqlHa;
   constructor(private _refs: Refs) { }

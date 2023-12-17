@@ -42,5 +42,25 @@ export function jsonStringify(obj: Inputs): Output<string> {
 
 export function yamlStringify(obj: Inputs): Output<string> {
   return output(obj).apply(x => YAML.stringify(x));
+}
 
+export class LazyMap<T, V = any> {
+  private _items = new Map<string, T>();
+  private _factories: Map<string, (key: string) => T>;
+
+  constructor(factories: [string, (key: string) => T][], private _bindee?: V) {
+    this._factories = new Map(factories);
+  }
+
+  public get(key: string): T {
+    let res = this._items.get(key);
+    if (!res) {
+      let fac = this._factories.get(key);
+      if (!fac) throw new Error(`No factory registered for ${key}`);
+      if (this._bindee) fac = fac.bind(this._bindee);
+      res = fac(key);
+      this._items.set(key, res);
+    }
+    return res;
+  }
 }
