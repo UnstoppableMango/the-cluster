@@ -6,22 +6,22 @@ config:
   thecluster-identity:google:
     clientId: 186152974979-mbmlhacv2u1l1sv3enid4aagcl63df3u.apps.googleusercontent.com
     clientSecret:
-      secure: AAABAPMUEk8ctre0tYOO8LyyjeCf7YH0mDM9i2LWnw1TCR55/mKdlg370mU2v3ASaya0fNtfEF0TfMSUxVtlSSr+sg==
+      secure: AAABAEIEf2Yt+jqk3JFYJZfhgrD3JAIwLkWhPi+brUmH315M/UMTn9kh7ia0qYjtau2JDlQ4nu5sjS2pOb9QKpCnUQ==
   thecluster-identity:me:
     email:
-      secure: AAABAGHrrEZPel5oVcGECWxhEVJkpxA0lXfu/Al8jmDsfyiSg0ySeMpmLtD1hKX6LfhwxTDh6w==
+      secure: AAABAF9lLalKpmRROSQJUXWwRcNRw5OuBArdox+/7ylHxFnu6RuqbJnK7AqHD4VR7Xc7b1FrwQ==
     firstName:
-      secure: AAABALzQNgeN8pIMoQ+4Lkmot52fBkrFb6YFiwwOg5u++zv3
+      secure: AAABABUcDUUj9Jp1z1s11ZAnhWftwmHsnUz6udBcttonEdwP
     lastName:
-      secure: AAABAAK0FXJfNktXQsZd5q64l9XpHfO598t4n+Qk1yJK2ImBLmaaRBk=
-  thecluster-identity:stackExchange:
-    clientId: 27925
-    clientSecret:
-      secure: AAABACpJX7ZljddV7ar/sLHsO9Wu+f/xP+3ZGm0ApKitZnioXZv5qQBbgdQ+qOZwJVnwakm/y7U=
-    key:
-      secure: AAABANtoowabyKyCX7r0cR16C2/xYRfKVqvYpR23SiJUMIsh2+22B+DoY2agIPsWjjdOis8TJQM=
+      secure: AAABAHc72NsjR0lU4DYD6/ba8mu9XFIb+TGcOrrGG0yTOh5qqp853uA=
+  # thecluster-identity:stackExchange:
+  #   clientId: 27925
+  #   clientSecret:
+  #     secure: AAABACpJX7ZljddV7ar/sLHsO9Wu+f/xP+3ZGm0ApKitZnioXZv5qQBbgdQ+qOZwJVnwakm/y7U=
+  #   key:
+  #     secure: AAABANtoowabyKyCX7r0cR16C2/xYRfKVqvYpR23SiJUMIsh2+22B+DoY2agIPsWjjdOis8TJQM=
   thecluster-identity:twitter:
     clientId:
-      secure: AAABAHY3+0KchrrSuUchYdQ9CTcaafAV4OyPgchoJRO5LpY1zAxWTxG3XeoVrDVmtwBw6zE4KWWy6dYKjwIJXHlI
+      secure: AAABACwiow8ms8kKWwW1EdkbqkHeTnpRY20MZ+LngGGF7zDCdb1Gm3hTutGN7nuoxmbcpFqSmP9EbVQKmJBuVWUf
     clientSecret:
-      secure: AAABABzRy2k8E8vC8DvUdVCWRTnEU6gztuGOdIlIN1+ZoyL1iPiJHZ5NePv7sFv8wmQRXeqgWj/zNf53qo3i9u7vJtblkJB2kfZxqQcScIYL0g==
+      secure: AAABABtN2vjXMyf9pkVoh7k5ZYAeZwFasUfok5MM7tV3h+CBjwMAXy0+jX5QEKZi5gXuiMD/fyL8xaDUJjX0lkbe2uwUqmT+O0kk53xtc6sEOw==

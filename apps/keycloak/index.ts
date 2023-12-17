@@ -55,7 +55,6 @@ const chart = new k8s.helm.v3.Chart('keycloak', {
       containerSecurityContext: { enabled: true },
       service: {
         type: 'ClusterIP',
-        // clusterIP: '',
         http: {
           enabled: true,
         },
@@ -89,7 +88,7 @@ const chart = new k8s.helm.v3.Chart('keycloak', {
     },
   },
 }, { provider });
-apps.postgresqlHa.port
+
 export { hosts };
 export const hostname = hosts.external;
 export const username = auth.adminUser;
