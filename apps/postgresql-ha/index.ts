@@ -161,7 +161,10 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         existingSecretName: pgpoolSecret.metadata.name,
         srCheckDatabase: database,
         serviceAnnotations: {
-          'external-dns.alpha.kubernetes.io/hostname': hosts.internal,
+          'external-dns.alpha.kubernetes.io/hostname': [
+            hosts.internal,
+            ...hosts.aliases.internal,
+          ].join(','),
           'metallb.universe.tf/allow-shared-ip': sharedIpKey,
           'metallb.universe.tf/address-pool': apps.metallb.pool,
           'metallb.universe.tf/loadBalancerIPs': ip,
