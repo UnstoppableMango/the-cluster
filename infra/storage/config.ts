@@ -10,6 +10,8 @@ export interface Volume {
   mode: string;
   accessModes: string[];
   storageClass: string;
+  role?: string;
+  fsType?: string;
 }
 
 const config = new Config();
