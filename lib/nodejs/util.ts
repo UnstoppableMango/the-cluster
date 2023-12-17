@@ -5,8 +5,14 @@ export function appendIf(x: string, o?: string | undefined | null): string {
   return o ? x + o : x;
 }
 
+export function range(size: number, start: number = 0): ReadonlyArray<number> {
+  return [...Array(size).keys()].map(i => i + start);
+}
+
 export function required(x: string | undefined): string {
-  return x ?? '';
+  if (x === null || x === undefined)
+    throw new Error(`value was requried but was '${x}'`);
+  return x;
 }
 
 // export function requireProp<
