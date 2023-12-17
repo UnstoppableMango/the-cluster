@@ -7,5 +7,5 @@ export * from './metallb';
 export * from './nginx-ingress';
 export * from './pihole';
 export * from './pki';
-export * from './postgresqlHa';
+export * from './postgresql-ha';
 export * from './trust-manager';
