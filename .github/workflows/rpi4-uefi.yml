@@ -10,7 +10,7 @@ on:
 
 jobs:
   firmware:
-    runs-on: ubuntu-latest
+    runs-on: thecluster
     defaults:
       run:
         working-directory: infra/pkgs

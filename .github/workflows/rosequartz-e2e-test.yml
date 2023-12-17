@@ -17,7 +17,7 @@ on:
 
 jobs:
   e2e-test:
-    runs-on: ubuntu-latest
+    runs-on: thecluster
     if: false # Still some kinks to work out
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
@@ -76,7 +76,7 @@ jobs:
         run: pulumi stack rm -yf "${{ env.STACK }}"
 
   upgrade-e2e-test:
-    runs-on: ubuntu-latest
+    runs-on: thecluster
     if: false # We need the pulumi code to exist on main in order to test an upgrade
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
