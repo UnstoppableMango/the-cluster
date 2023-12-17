@@ -1,7 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as random from '@pulumi/random';
-import { apps, databases, ingresses, provider } from '@unmango/thecluster/cluster/from-stack';
+import { clusterIssuers, databases, ingresses, provider } from '@unmango/thecluster/cluster/from-stack';
 import { auth, production, hosts, versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('keycloak', {
@@ -20,10 +20,10 @@ const secret = new k8s.core.v1.Secret('keycloak', {
   },
   stringData: {
     adminPassword: adminPassword.result,
-    dbHost: pulumi.interpolate`${apps.postgresql.hostname}`,
-    dbPort: pulumi.interpolate`${apps.postgresql.port}`,
-    dbUser: databases.keycloak.username,
-    dbPassword: databases.keycloak.password,
+    dbHost: pulumi.interpolate`${databases.keycloak.clusterIp}`,
+    dbPort: pulumi.interpolate`${databases.keycloak.port}`,
+    dbUser: databases.keycloak.owner.username,
+    dbPassword: databases.keycloak.owner.password,
     database: databases.keycloak.name,
   },
 }, { provider });
@@ -55,7 +55,6 @@ const chart = new k8s.helm.v3.Chart('keycloak', {
       containerSecurityContext: { enabled: true },
       service: {
         type: 'ClusterIP',
-        // clusterIP: '',
         http: {
           enabled: true,
         },
@@ -90,6 +89,53 @@ const chart = new k8s.helm.v3.Chart('keycloak', {
   },
 }, { provider });
 
+const service = chart.getResource(
+  'v1/Service',
+  'keycloak/keycloak',
+);
+
+export const clusterIp = service.spec.clusterIP;
+
+const internalHosts = [hosts.internal, ...hosts.aliases.internal];
+const internalIngress = new k8s.networking.v1.Ingress('internal', {
+  metadata: {
+    name: 'internal',
+    namespace: ns.metadata.name,
+    annotations: {
+      'cert-manager.io/cluster-issuer': clusterIssuers.prod,
+      'external-dns.alpha.kubernetes.io/hostname': [
+        hosts.internal,
+        ...hosts.aliases.internal,
+      ].join(','),
+    },
+  },
+  spec: {
+    ingressClassName: ingresses.internal,
+    rules: internalHosts.map(host => ({
+      host,
+      http: {
+        paths: [{
+          path: '/',
+          pathType: 'ImplementationSpecific',
+          backend: {
+            service: {
+              name: service.metadata.name,
+              port: {
+                name: service.spec.ports[0].name,
+              },
+            },
+          },
+        }],
+      },
+    })),
+    tls: [{
+      secretName: 'keycloak-internal-tls',
+      hosts: internalHosts,
+    }],
+  },
+}, { provider });
+
+export { hosts };
 export const hostname = hosts.external;
 export const username = auth.adminUser;
 export const password = adminPassword.result;

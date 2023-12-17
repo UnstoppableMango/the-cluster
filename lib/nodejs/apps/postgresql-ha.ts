@@ -13,7 +13,7 @@ export interface Users {
   pgpool: Output<User>;
 }
 
-export class PostgreHaSql {
+export class PostgresqlHa {
   private _provider: Provider | undefined;
   private _ref = this._refs.postgresqlHa;
   constructor(private _refs: Refs) { }
@@ -40,6 +40,10 @@ export class PostgreHaSql {
 
   public get passwords(): Output<Output<User>[]> {
     return this._ref.requireOutput('passwords') as Output<Output<User>[]>;
+  }
+
+  public get clusterIp(): Output<string> {
+    return this._ref.requireOutput('clusterIp') as Output<string>;
   }
 
   public get provider(): Provider {

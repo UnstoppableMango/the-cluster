@@ -7,6 +7,10 @@ export interface Auth {
 export interface Hosts {
   external: string;
   internal: string;
+  aliases: {
+    external: string[];
+    internal: string[];
+  };
 }
 
 export interface Postgres {

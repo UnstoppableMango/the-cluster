@@ -4,6 +4,12 @@ config:
   thecluster-keycloak:hosts:
     external: keycloak.thecluster.io
     internal: keycloak.lan.thecluster.io
+    aliases:
+      external: []
+      internal:
+        - kc.lan.thecluster.io
+        - idp.lan.thecluster.io
+        - identity.lan.thecluster.io
   thecluster-keycloak:myEmail:
     secure: AAABALtjqGhAIl8JH+Hg33JQ+uqx5//ay/TCqlRTwiMJemqCsx0cQwLkDYWmsoyWeae0Iw05wA==
   thecluster-keycloak:myGoogleId:
