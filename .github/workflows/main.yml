@@ -9,4 +9,28 @@ jobs:
     runs-on: thecluster
     container: pulumi/pulumi-nodejs:latest
     steps:
-      - run: echo "yeet"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # - name: Get changed files
+      #   id: changed-files
+      #   uses: tj-actions/changed-files@v40
+      #   with:
+      #     json: true
+      #     files_yaml: |
+      #       apps:
+      #         - apps/**
+      #       clusters:
+      #         - clusters/**
+      #       dbs:
+      #         - dbs/**
+      #       infra:
+      #         - infra/**
+
+      # - run: echo "${{ steps.chanaged-files.outputs.only_modified }}"
+      - run: cd apps/pulumi-operator && npm ci && pulumi stack select pinkdiamond && pulumi preview
+        env:
+          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+    outputs:
+      files: ${{ steps.chanaged-files.outputs.only_modified }}

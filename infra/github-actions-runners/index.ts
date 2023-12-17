@@ -1,7 +1,31 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
+import * as crds from '@unmango/thecluster-crds';
 import { apps, provider, storageClasses } from '@unmango/thecluster/cluster/from-stack';
 import { github, privateKey, scaleSets } from './config';
+
+// const test = new crds.actions.v1alpha1.AutoscalingRunnerSet('', {
+//   spec: {
+//     template: {
+//       spec: {
+//         volumes: [{
+//           name: '',
+//           ephemeral: {
+//             volumeClaimTemplate: {
+//               spec: {
+//                 selector: {
+//                   matchLabels: {
+//                     '': '',
+//                   }
+//                 }
+//               }
+//             }
+//           }
+//         }]
+//       }
+//     }
+//   }
+// })
 
 export const namespaces: pulumi.Output<string>[] = [];
 
@@ -48,7 +72,9 @@ for (const set of scaleSets) {
             accessModes: ['ReadWriteOnce'],
             storageClassName: storageClasses.rbd,
             resources: {
-              requests: { storage: set.volumeSize },
+              requests: {
+                storage: '1Gi',
+              },
             },
           },
         },

@@ -13,6 +13,10 @@ config:
     # https://github.com/actions/actions-runner-controller/blob/3e4201ac5f6c6d172a19b580154eaf5abf24a2ca/charts/gha-runner-scale-set/values.yaml#L162-L189
     podTemplate:
       spec:
+        securityContext:
+          runAsUser: 1001
+          runAsGroup: 1001
+          fsGroup: 1001
         topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
@@ -23,7 +27,25 @@ config:
         containers:
           - name: runner
             image: ghcr.io/actions/actions-runner:latest
-            command: ["/home/runner/run.sh"]
+            command: ['/home/runner/run.sh']
+        #     env:
+        #       - name: GITHUB_RUNNER_CACHE
+        #         value: /home/runner/_cache
+        #     volumeMounts:
+        #       - name: cache
+        #         mountPath: /home/runner/_cache
+        # volumes:
+        #   - name: cache
+        #     ephemeral:
+        #       volumeClaimTemplate:
+        #         spec:
+        #           accessModes: ['ReadWriteOnce']
+        #           selector:
+        #             matchLabels:
+        #               thecluster.io/role: actions-runner
+        #           resources:
+        #             requests:
+        #               storage: 10Gi
   # - name: wishlists
   #   githubUrl: https://github.com/unmango/wishlists
   #   minRunners: 0
