@@ -1,7 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as random from '@pulumi/random';
-import { apps, databases, ingresses, provider } from '@unmango/thecluster/cluster/from-stack';
+import { clusterIssuers, databases, ingresses, provider } from '@unmango/thecluster/cluster/from-stack';
 import { auth, production, hosts, versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('keycloak', {
@@ -86,6 +86,52 @@ const chart = new k8s.helm.v3.Chart('keycloak', {
         existingSecretPasswordKey: 'dbPassword',
       },
     },
+  },
+}, { provider });
+
+const service = chart.getResource(
+  'v1/Service',
+  'keycloak/keycloak',
+);
+
+export const clusterIp = service.spec.clusterIP;
+
+const internalHosts = [hosts.internal, ...hosts.aliases.internal];
+const internalIngress = new k8s.networking.v1.Ingress('internal', {
+  metadata: {
+    name: 'internal',
+    namespace: ns.metadata.name,
+    annotations: {
+      'cert-manager.io/cluster-issuer': clusterIssuers.prod,
+      'external-dns.alpha.kubernetes.io/hostname': [
+        hosts.internal,
+        ...hosts.aliases.internal,
+      ].join(','),
+    },
+  },
+  spec: {
+    ingressClassName: ingresses.internal,
+    rules: internalHosts.map(host => ({
+      host,
+      http: {
+        paths: [{
+          path: '/',
+          pathType: 'ImplementationSpecific',
+          backend: {
+            service: {
+              name: service.metadata.name,
+              port: {
+                name: service.spec.ports[0].name,
+              },
+            },
+          },
+        }],
+      },
+    })),
+    tls: [{
+      secretName: 'keycloak-internal-tls',
+      hosts: internalHosts,
+    }],
   },
 }, { provider });
 
