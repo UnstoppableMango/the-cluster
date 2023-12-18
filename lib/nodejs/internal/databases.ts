@@ -24,6 +24,8 @@ export class Databases {
     ['dex', this.database],
     ['drone', this.database],
     ['keycloak', this.database],
+    ['kong', this.database],
+    ['lapislazuli', this.database],
   ], this);
 
   constructor(private _refs: Refs, private _apps: Apps) { }
@@ -42,6 +44,10 @@ export class Databases {
 
   public get kong(): PostgreSqlDatabase {
     return this._dbs.get('kong');
+  }
+
+  public get lapislazuli(): PostgreSqlDatabase {
+    return this._dbs.get('lapislazuli');
   }
 
   public get postgres(): Omit<PostgreSqlDatabase, 'ownerGroup'> {
