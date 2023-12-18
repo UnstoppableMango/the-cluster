@@ -17,7 +17,7 @@ config:
     replication: Wed Dec  6 11:42:43 CST 2023
     repmgr: Wed Dec  6 08:36:27 PM CST 2023
     user: Wed Dec  6 11:42:37 CST 2023
-  thecluster-postgresql-ha:port: "5432"
+  thecluster-postgresql-ha:port: '5432'
   thecluster-postgresql-ha:sharedIpKey: postgresql-ha
   thecluster-postgresql-ha:users:
     - unmango
@@ -27,3 +27,4 @@ config:
     - drone
     - keycloak
     - kong
+    - lapislazuli

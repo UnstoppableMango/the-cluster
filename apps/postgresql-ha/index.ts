@@ -132,9 +132,9 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
           create: true,
           minAvailable: 1,
         },
-        audit: {
-          logConnections: true,
-        },
+        // audit: {
+        //   logConnections: true,
+        // },
         // Maybe one day when I'm not an idiot...
         // tls: {
         //   enabled: true,
@@ -156,6 +156,7 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
       pgpool: {
         image: {
           tag: versions.bitnami.pgpool,
+          debug: true,
         },
         customUsersSecret: customUsersSecret.metadata.name,
         existingSecretName: pgpoolSecret.metadata.name,
@@ -175,8 +176,9 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
           create: true,
           minAvailable: 1,
         },
-        authenticationMethod: 'scram-sha-256',
-        logConnections: true,
+        // authenticationMethod: 'scram-sha-256',
+        // logConnections: true,
+        reservedConnections: 0,
         useLoadBalancing: true,
         // Maybe one day when I'm not an idiot...
         // tls: {
@@ -189,11 +191,11 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         resources: {
           limits: {
             cpu: '250m',
-            memory: '256Mi',
+            memory: '500Mi',
           },
           requests: {
             cpu: '250m',
-            memory: '256Mi',
+            memory: '500Mi',
           },
         },
       },
