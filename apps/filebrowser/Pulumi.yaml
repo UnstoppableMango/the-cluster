@@ -1,0 +1,7 @@
+name: thecluster-filebrowser
+runtime: nodejs
+description: Filebrowser install for THECLUSTER
+config:
+  versions:
+    value:
+      filebrowser: v2.26.0-s6 # renovate depName=filebrowser/filebrowser datasource=docker
