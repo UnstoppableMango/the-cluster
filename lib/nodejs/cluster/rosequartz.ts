@@ -14,5 +14,4 @@ export const ingresses = system.ingresses;
 // export const issuers = system.issuers;
 // export const loadBalancers = system.loadBalancers;
 // export const realms = system.realms;
-export const registries = system.registries;
 // export const storageClasses = system.storageClasses;

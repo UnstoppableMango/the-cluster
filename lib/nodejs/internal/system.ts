@@ -1,6 +1,6 @@
 import { Output } from '@pulumi/pulumi';
 import { Provider } from '@pulumi/kubernetes';
-import { Refs, Apps, Databases, Ingresses, LoadBalancers, StorageClasses, Dns, Identities, Issuers, ClusterIssusers, Realms, Bundles, Registries } from '../internal';
+import { Refs, Apps, Databases, Ingresses, LoadBalancers, StorageClasses, Dns, Identities, Issuers, ClusterIssusers, Realms, Bundles } from '../internal';
 import * as cluster from '../cluster';
 
 export class System {
