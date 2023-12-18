@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: filebrowser
+  serviceName: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: filebrowser
+    spec:
+      initContainers:
+        - name: setup
+          image: {{ include "init.image" . }}
+          command: ['bash', '/setup.sh']
+          env:
+            - name: DB_PATH
+              value: /db/filebrowser.db
+            - name: PUID
+              value: {{ .Values.global.uid | toString }}
+            - name: PGID
+              value: {{ .Values.global.gid | toString }}
+          volumeMounts:
+            - name: database
+              mountPath: /db
+            - name: config
+              mountPath: /setup.sh
+              subPath: setup.sh
+      containers:
+        - name: filebrowser
+          image: {{ include "image" . }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.port }}
+          env:
+            - name: PUID
+              value: {{ .Values.global.uid | toString }}
+            - name: PGID
+              value: {{ .Values.global.gid | toString }}
+          volumeMounts:
+            - name: database
+              mountPath: /database
+            - name: config
+              mountPath: /config/settings.json
+              subPath: settings.json
+          {{- if lt 0 (len .Values.extraVolumeMounts) }}
+            {{ .Values.extraVolumeMounts | toYaml | nindent 12 }}
+          {{- end }}
+          readinessProbe:
+            httpGet:
+              port: {{ .Values.port }}
+            initialDelaySeconds: 0
+            timeoutSeconds: 1
+          livenessProbe:
+            httpGet:
+              port: {{ .Values.port }}
+            initialDelaySeconds: 0
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              cpu: 10m
+              memory: 64Mi
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "configMapName" . }}
+      {{- if lt 0 (len .Values.extraVolumes) -}}
+        {{ .Values.extraVolumes | toYaml | nindent 8 }}
+      {{- end }}
+    volumeClaimTemplates:
+      - metadata:
+          name: database
+        spec:
+          storageClassName: {{ required "persistence.storageClassName is required" .Values.persistence.storageClassName }}
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: {{ .Values.persistence.size }}

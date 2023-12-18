@@ -1,0 +1,51 @@
+global:
+  registry: ''
+  uid: 911
+  gid: 911
+
+port: 8080 # TODO: Filebrowser can't bind to 80 for some reason.
+existingConfigMap: ''
+extraVolumes: []
+extraVolumeMounts: []
+
+ingress:
+  enabled: false
+  annotations: {}
+  ingressClassName: ''
+  host: ''
+  path: /
+  tls:
+    enabled: false
+
+persistence:
+  storageClassName: ''
+  size: ''
+
+image:
+  registry: docker.io
+  repository: filebrowser/filebrowser
+  tag: ''
+  digest: ''
+
+init:
+  image:
+    registry: docker.io
+    repository: filebrowser/filebrowser
+    tag: ''
+    digest: ''
+
+service:
+  type: ClusterIP
+  port: 8080
+  clusterIP: ''
+  loadBalancerIP: ''
+
+oauth2-proxy:
+  enabled: false
+  resources:
+    limits:
+      cpu: 50m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memroy: 128Mi

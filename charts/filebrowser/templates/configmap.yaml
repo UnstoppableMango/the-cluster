@@ -1,0 +1,9 @@
+{{- if not .Values.existingConfigMap }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "configMapName" . }}
+  namespace: {{ .Release.Namespace }}
+data:
+  {{- tpl (.Files.Glob "configmap/*").AsConfig . | nindent 2 }}
+{{- end }}
