@@ -3,7 +3,7 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import { clusterIssuers, ingresses, provider, shared, storageClasses } from '@unmango/thecluster/cluster/from-stack';
 import { jsonStringify } from '@unmango/thecluster';
-import { versions } from './config';
+import { hosts, versions } from './config';
 
 const ns = k8s.core.v1.Namespace.get('media', 'media', { provider });
 
@@ -128,6 +128,7 @@ const app = new k8s.apps.v1.StatefulSet('filebrowser', {
             httpGet: {
               port: containerPort,
             },
+            
           },
           livenessProbe: {
             httpGet: {
@@ -137,11 +138,11 @@ const app = new k8s.apps.v1.StatefulSet('filebrowser', {
           resources: {
             requests: {
               cpu: '10m',
-              memory: '128Mi',
+              memory: '64Mi',
             },
             limits: {
               cpu: '10m',
-              memory: '128Mi',
+              memory: '64Mi',
             },
           },
         }],
@@ -187,7 +188,7 @@ const ingress = new k8s.networking.v1.Ingress('filebrowser', {
   spec: {
     ingressClassName: ingresses.internal,
     rules: [{
-      host: 'media-files.lan.thecluster.io',
+      host: hosts.internal,
       http: {
         paths: [{
           path: '/',
@@ -202,7 +203,7 @@ const ingress = new k8s.networking.v1.Ingress('filebrowser', {
       },
     }],
     tls: [{
-      hosts: ['media-files.lan.thecluster.io'],
+      hosts: [hosts.internal],
       secretName: 'filebrowser-internal-tls',
     }],
   },
