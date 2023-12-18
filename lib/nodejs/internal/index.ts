@@ -9,5 +9,7 @@ export * from './issuers';
 export * from './loadBalancers';
 export * from './realms';
 export * from './refs';
+export * from './shared';
+export * from './storage';
 export * from './storageClasses';
 export * from './system';

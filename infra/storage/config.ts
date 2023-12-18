@@ -10,7 +10,7 @@ export interface Volume {
   mode: string;
   accessModes: string[];
   storageClass: string;
-  role?: string;
+  namespace?: string;
   fsType?: string;
 }
 
