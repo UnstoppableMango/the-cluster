@@ -48,4 +48,4 @@ oauth2-proxy:
       memory: 128Mi
     requests:
       cpu: 50m
-      memroy: 128Mi
+      memory: 128Mi

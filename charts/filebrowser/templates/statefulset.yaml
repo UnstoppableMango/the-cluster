@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Release.name }}
+  name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
 spec:
   selector:
@@ -21,9 +21,9 @@ spec:
             - name: DB_PATH
               value: /db/filebrowser.db
             - name: PUID
-              value: {{ .Values.global.uid | toString }}
+              value: {{ .Values.global.uid | quote }}
             - name: PGID
-              value: {{ .Values.global.gid | toString }}
+              value: {{ .Values.global.gid | quote }}
           volumeMounts:
             - name: database
               mountPath: /db
@@ -38,9 +38,9 @@ spec:
               containerPort: {{ .Values.port }}
           env:
             - name: PUID
-              value: {{ .Values.global.uid | toString }}
+              value: {{ .Values.global.uid | quote }}
             - name: PGID
-              value: {{ .Values.global.gid | toString }}
+              value: {{ .Values.global.gid | quote }}
           volumeMounts:
             - name: database
               mountPath: /database
