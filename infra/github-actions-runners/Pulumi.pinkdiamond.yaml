@@ -28,9 +28,11 @@ config:
           - name: runner
             image: ghcr.io/actions/actions-runner:latest
             command: ['/home/runner/run.sh']
-        #     env:
-        #       - name: GITHUB_RUNNER_CACHE
-        #         value: /home/runner/_cache
+            env:
+              - name: GITHUB_RUNNER_CACHE_TEMP
+                value: /home/runner/_cache
+              - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
+                value: 'false'
         #     volumeMounts:
         #       - name: cache
         #         mountPath: /home/runner/_cache
