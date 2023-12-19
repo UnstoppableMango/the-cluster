@@ -10,7 +10,9 @@ jobs:
   rosequartz:
     name: Rosequartz
     runs-on: thecluster
-    container: pulumi/pulumi-nodejs:3.97.0
+    container:
+      image: pulumi/pulumi-nodejs:3.97.0
+      options: --user 1001
     if: false
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
