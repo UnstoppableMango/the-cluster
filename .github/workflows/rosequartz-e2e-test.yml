@@ -25,6 +25,7 @@ jobs:
       STACK: e2e-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
+      - run: git config --global --add safe.directory "$PWD" # actions/runner#2033
 
       - uses: pulumi/actions@v4
         with:
@@ -85,6 +86,7 @@ jobs:
       STACK: upgrade-e2e-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
+      - run: git config --global --add safe.directory "$PWD" # actions/runner#2033
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
