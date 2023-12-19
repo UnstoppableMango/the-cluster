@@ -13,9 +13,7 @@ jobs:
   setup:
     name: Setup
     runs-on: thecluster
-    container:
-      image: pulumi/pulumi-nodejs:3.97.0
-      options: --user 1001
+    container: pulumi/pulumi-nodejs:3.97.0
     steps:
     - uses: actions/checkout@v4
       with:
@@ -65,9 +63,7 @@ jobs:
   pinkdiamond:
     name: Pink Diamond
     runs-on: thecluster
-    container:
-      image: pulumi/pulumi-nodejs:3.97.0
-      options: --user 1001
+    container: pulumi/pulumi-nodejs:3.97.0
     needs: [setup]
     if: fromJson(needs.setup.outputs.pinkdiamond) && !failure() && !cancelled()
     defaults:
