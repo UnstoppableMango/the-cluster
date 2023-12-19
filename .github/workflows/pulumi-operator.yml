@@ -13,7 +13,6 @@ on:
 jobs:
   docker:
     runs-on: thecluster
-    container: pulumi/pulumi-nodejs:3.97.0
     defaults:
       run:
         working-directory: apps/pulumi-operator
