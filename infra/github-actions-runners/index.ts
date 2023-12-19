@@ -48,7 +48,7 @@ for (const set of scaleSets) {
             storageClassName: storageClasses.rbd,
             resources: {
               requests: {
-                storage: '1Gi',
+                storage: '10Gi',
               },
             },
           },
