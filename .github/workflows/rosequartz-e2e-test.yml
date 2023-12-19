@@ -18,6 +18,7 @@ on:
 jobs:
   e2e-test:
     runs-on: thecluster
+    container: pulumi/pulumi-nodejs:3.97.0
     if: false # Still some kinks to work out
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
@@ -77,6 +78,7 @@ jobs:
 
   upgrade-e2e-test:
     runs-on: thecluster
+    container: pulumi/pulumi-nodejs:3.97.0
     if: false # We need the pulumi code to exist on main in order to test an upgrade
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
