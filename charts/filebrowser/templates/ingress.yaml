@@ -4,7 +4,8 @@ kind: Ingress
 metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
-  annotations: {{ .Values.ingress.annotations | toYaml }}
+  annotations:
+    {{ .Values.ingress.annotations | toYaml }}
 spec:
   ingressClassName: {{ .Values.ingress.ingressClassName }}
   rules:
@@ -12,7 +13,7 @@ spec:
       http:
         paths:
           - path: {{ .Values.ingress.path }}
-            pathType: {{ .Values.ingress.ingressClassName }}
+            pathType: {{ .Values.ingress.pathType }}
             backend:
               service:
                 name: {{ .Release.Name }}

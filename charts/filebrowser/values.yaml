@@ -1,5 +1,5 @@
 global:
-  registry: ''
+  registry: 'docker.io'
   uid: 911
   gid: 911
 
@@ -14,12 +14,13 @@ ingress:
   ingressClassName: ''
   host: ''
   path: /
+  pathType: ImplementationSpecific
   tls:
     enabled: false
 
 persistence:
   storageClassName: ''
-  size: ''
+  size: 1Gi
 
 image:
   registry: docker.io
