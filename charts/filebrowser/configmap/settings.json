@@ -1,0 +1,8 @@
+{
+  "port": "{{ .Values.port }}",
+  "baseUrl": "",
+  "address": "",
+  "log": "stdout",
+  "database": "/database/filebrowser.db",
+  "root": "/src"
+}

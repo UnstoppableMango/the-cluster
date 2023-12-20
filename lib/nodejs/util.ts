@@ -44,6 +44,23 @@ export function yamlStringify(obj: Inputs): Output<string> {
   return output(obj).apply(x => YAML.stringify(x));
 }
 
+export class Lazy<T> {
+  private _instance?: T;
+  constructor(private _factory: () => T) { }
+
+  public get value(): T {
+    return this.get();
+  }
+
+  public get(): T {
+    if (!this._instance) {
+      this._instance = this._factory();
+    }
+
+    return this._instance;
+  }
+}
+
 export class LazyMap<T, V = any> {
   private _items = new Map<string, T>();
   private _factories: Map<string, (key: string) => T>;

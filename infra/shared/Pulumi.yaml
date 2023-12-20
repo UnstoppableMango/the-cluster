@@ -1,0 +1,3 @@
+name: thecluster-shared
+runtime: nodejs
+description: Common infrastructure shared between apps deployed to THECLUSTER

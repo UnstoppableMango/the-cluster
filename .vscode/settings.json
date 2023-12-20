@@ -1,6 +1,5 @@
 {
   "files.associations": {
-    "*.{yml,yaml}": "yaml",
     "config": "yaml",
     "talosconfig": "yaml",
     "**/versions/**": "yaml"
