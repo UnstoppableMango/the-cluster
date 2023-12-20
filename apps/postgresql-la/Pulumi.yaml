@@ -1,0 +1,3 @@
+name: thecluster-postgresql
+runtime: nodejs
+description: PostgreSQL install for THECLUSTER
