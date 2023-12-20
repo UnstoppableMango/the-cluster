@@ -4,14 +4,7 @@ import * as k8s from '@pulumi/kubernetes';
 import { apps, provider, storageClasses } from '@unmango/thecluster/cluster/from-stack';
 import { keepers, users as enabledUsers, database, versions, ip, port, hosts, sharedIpKey } from './config';
 
-const ns = new k8s.core.v1.Namespace('postgresql', {
-  metadata: {
-    name: 'postgresql',
-    labels: {
-      'thecluster.io/inject-postgres-cert': 'true',
-    },
-  },
-}, { provider });
+const ns = k8s.core.v1.Namespace.get('postgres', 'postgres', { provider });
 
 const postgresUsername = 'postgres';
 const postgresPassword = new random.RandomPassword('postgres', {
@@ -126,7 +119,7 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
         image: {
           tag: versions.bitnami.postgresqlRepmgr,
         },
-        replicaCount: 4,
+        replicaCount: 1,
         priorityClassName: 'system-cluster-critical',
         pdb: {
           create: true,
@@ -170,7 +163,7 @@ const chart = new k8s.helm.v3.Chart('postgresql', {
           'metallb.universe.tf/address-pool': apps.metallb.pool,
           'metallb.universe.tf/loadBalancerIPs': ip,
         },
-        replicaCount: 2,
+        replicaCount: 1,
         priorityClassName: 'system-cluster-critical',
         pdb: {
           create: true,

@@ -6,7 +6,12 @@ const mediaNs = new k8s.core.v1.Namespace('media', {
 }, { provider });
 
 const postgresNs = new k8s.core.v1.Namespace('postgres', {
-  metadata: { name: 'postgres' },
+  metadata: {
+    name: 'postgres',
+    labels: {
+      'thecluster.io/inject-postgres-cert': 'true',
+    },
+  },
 }, { provider });
 
 export const mediaNamespace = mediaNs.metadata.name;
