@@ -1,13 +1,13 @@
 import { output } from '@pulumi/pulumi';
 import { Secret } from '@pulumi/kubernetes/core/v1';
-import { Certificate, Issuer } from '@unmango/thecluster-crds/certmanager/v1';
+import { Certificate, ClusterIssuer } from '@unmango/thecluster-crds/certmanager/v1';
 import { Bundle } from '@unmango/thecluster-crds/trust/v1alpha1';
 import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { required } from '@unmango/thecluster';
 import { ns } from '../namespace';
 import { issuer as rootIssuer } from './root';
 
-export const hostname = 'postgres.thecluster.io'; // TODO
+export const hostname = 'lan.thecluster.io'; // TODO: Move to config
 export const secret = new Secret(hostname, {
   metadata: {
     name: hostname,
@@ -24,13 +24,6 @@ export const ca = new Certificate(hostname, {
   spec: {
     isCA: true,
     commonName: hostname,
-    dnsNames: [
-      'postgres-ha.thecluster.io',
-      'postgres-la.thecluster.io',
-      'pgha.thecluster.io',
-      'pgla.thecluster.io',
-      'pg.thecluster.io',
-    ],
     secretName: secret.metadata.name,
     privateKey: {
       algorithm: 'ECDSA',
@@ -40,6 +33,18 @@ export const ca = new Certificate(hostname, {
       group: 'cert-manager.io',
       kind: output(rootIssuer.kind).apply(required),
       name: output(rootIssuer.metadata).apply(x => x?.name ?? ''),
+    },
+  },
+}, { provider });
+
+export const issuer = new ClusterIssuer(hostname, {
+  metadata: {
+    name: hostname,
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    ca: {
+      secretName: secret.metadata.name,
     },
   },
 }, { provider });
@@ -57,10 +62,10 @@ export const bundle = new Bundle(hostname, {
       },
     ],
     target: {
-      secret: { key: 'ca-certificates.crt' },
+      secret: { key: 'ca-certifcates.crt' },
       namespaceSelector: {
         matchLabels: {
-          'thecluster.io/inject-postgres-cert': 'true',
+          'thecluster.io/inject-lan-cert': 'true',
         },
       },
     },
