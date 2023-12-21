@@ -11,4 +11,8 @@ export class Issuers {
   public get kind(): Output<string> {
     return this._apps.pki.issuers.kind;
   }
+
+  public get postgres(): Output<string> {
+    return this._apps.pki.issuers.postgres;
+  }
 }

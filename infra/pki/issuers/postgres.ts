@@ -1,37 +1,29 @@
 import { output } from '@pulumi/pulumi';
-import { Secret } from '@pulumi/kubernetes/core/v1';
+import { Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { Certificate, Issuer } from '@unmango/thecluster-crds/certmanager/v1';
 import { Bundle } from '@unmango/thecluster-crds/trust/v1alpha1';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
+import { provider, shared } from '@unmango/thecluster/cluster/from-stack';
 import { required } from '@unmango/thecluster';
-import { ns } from '../namespace';
 import { issuer as rootIssuer } from './root';
 
-export const hostname = 'postgres.thecluster.io'; // TODO
-export const secret = new Secret(hostname, {
-  metadata: {
-    name: hostname,
-    namespace: ns.metadata.name,
-  },
-  type: 'kubernetes.io/tls',
-}, { provider });
+// TODO: Common location
+const hosts = {
+  public: 'postgres.thecluster.io',
+  internal: 'postgres.lan.thecluster.io',
+};
+const secretName = 'postgres-ca';
 
-export const ca = new Certificate(hostname, {
+const ns = Namespace.get('postgres', shared.postgresNamespace, { provider });
+
+export const ca = new Certificate('postgres-ca', {
   metadata: {
-    name: hostname,
+    name: 'postgres-ca',
     namespace: ns.metadata.name,
   },
   spec: {
     isCA: true,
-    commonName: hostname,
-    dnsNames: [
-      'postgres-ha.thecluster.io',
-      'postgres-la.thecluster.io',
-      'pgha.thecluster.io',
-      'pgla.thecluster.io',
-      'pg.thecluster.io',
-    ],
-    secretName: secret.metadata.name,
+    commonName: hosts.public,
+    secretName,
     privateKey: {
       algorithm: 'ECDSA',
       size: 256,
@@ -44,26 +36,24 @@ export const ca = new Certificate(hostname, {
   },
 }, { provider });
 
-export const issuer = new Issuer(hostname, {
+export const issuer = new Issuer('postgres', {
   metadata: {
-    name: hostname,
+    name: 'postgres',
     namespace: ns.metadata.name,
   },
   spec: {
-    ca: {
-      secretName: secret.metadata.name,
-    },
+    ca: { secretName },
   },
 }, { provider });
 
-export const bundle = new Bundle(hostname, {
-  metadata: { name: hostname },
+export const bundle = new Bundle('postgres-ca', {
+  metadata: { name: 'postgres-ca' },
   spec: {
     sources: [
       { useDefaultCAs: true },
       {
         secret: {
-          name: secret.metadata.name,
+          name: secretName,
           key: 'ca.crt',
         },
       },
