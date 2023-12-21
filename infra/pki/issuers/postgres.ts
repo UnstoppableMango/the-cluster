@@ -44,6 +44,18 @@ export const ca = new Certificate(hostname, {
   },
 }, { provider });
 
+export const issuer = new Issuer(hostname, {
+  metadata: {
+    name: hostname,
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    ca: {
+      secretName: secret.metadata.name,
+    },
+  },
+}, { provider });
+
 export const bundle = new Bundle(hostname, {
   metadata: { name: hostname },
   spec: {
