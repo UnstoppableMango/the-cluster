@@ -75,4 +75,18 @@ config:
       name: kube.int.unmango.net
     - ip: 192.168.1.75
       name: longhorn.int.unmango.net
+    - ip: 192.168.1.75
+      name: media.int.unmango.net
+    - ip: 192.168.1.75
+      name: prowlarr.int.unmango.net
+    - ip: 192.168.1.75
+      name: movies.int.unmango.net
+    - ip: 192.168.1.75
+      name: tv.int.unmango.net
+    - ip: 192.168.1.75
+      name: anime.int.unmango.net
+    - ip: 192.168.1.75
+      name: movies4k.int.unmango.net
+    - ip: 192.168.1.75
+      name: tv4k.int.unmango.net
   thecluster-dns:piholeStack: pinkdiamond
