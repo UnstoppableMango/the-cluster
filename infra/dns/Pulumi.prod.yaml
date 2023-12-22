@@ -63,4 +63,16 @@ config:
       name: ps3
     - ip: 192.168.1.74
       name: ps3.int.unmango.net
+    - ip: 192.168.1.1
+      name: pfsense
+    - ip: 192.168.1.1
+      name: pfsense.int.unmango.net
+    - ip: 192.168.1.1
+      name: VR-MACHINE
+    - ip: 192.168.1.1
+      name: VR-MACHINE.int.unmango.net
+    - ip: 192.168.1.29
+      name: kube.int.unmango.net
+    - ip: 192.168.1.75
+      name: longhorn.int.unmango.net
   thecluster-dns:piholeStack: pinkdiamond
