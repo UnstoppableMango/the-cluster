@@ -146,7 +146,7 @@ const chart = new Chart('postgres', {
         certKeyFilename: 'tls.key',
         // Getting errors about:
         // `certificate authentication failed for user "unmango": client certificate contains no user name`
-        // certCAFilename: 'ca.crt',
+        certCAFilename: 'ca.crt',
       },
       primary: {
         resources,
