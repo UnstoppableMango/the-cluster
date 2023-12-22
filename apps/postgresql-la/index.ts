@@ -1,3 +1,4 @@
+import * as fs from 'node:fs/promises';
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
@@ -44,6 +45,17 @@ const secret = new k8s.core.v1.Secret('postgres', {
   },
 }, { provider });
 
+const config = new k8s.core.v1.ConfigMap('postgres', {
+  metadata: {
+    name: 'postgres',
+    namespace: ns.metadata.name,
+  },
+  data: {
+    // configuration: '',
+    pgHbaConfiguration: fs.readFile('assets/pgHbaConfiguration.conf', 'utf-8'),
+  },
+}, { provider });
+
 const cert = new Certificate('postgres', {
   metadata: {
     name: 'postgres',
@@ -56,8 +68,8 @@ const cert = new Certificate('postgres', {
       kind: issuers.kind,
       name: issuers.postgres,
     },
-    duration: '2160h', // 90d
-    renewBefore: '360h', // 15d
+    duration: '2160h0m0s', // 90d
+    renewBefore: '360h0m0s', // 15d
     subject: {
       organizations: ['unmango'],
     },
@@ -134,7 +146,6 @@ const chart = new Chart('postgres', {
         certKeyFilename: 'tls.key',
         // Getting errors about:
         // `certificate authentication failed for user "unmango": client certificate contains no user name`
-        // `certificate authentication failed for user "unmango"`
         // certCAFilename: 'ca.crt',
       },
       primary: {
