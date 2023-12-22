@@ -40,7 +40,7 @@ const secret = new k8s.core.v1.Secret('postgres', {
   },
   stringData: {
     [adminPasswordKey]: adminPassword.result,
-    [userPasswordKey]: primaryPassword.result,
+    // [userPasswordKey]: primaryPassword.result,
     [replicationPasswordKey]: replicationPassword.result,
   },
 }, { provider });
@@ -52,7 +52,7 @@ const config = new k8s.core.v1.ConfigMap('postgres', {
   },
   data: {
     // configuration: '',
-    pgHbaConfiguration: fs.readFile('assets/pgHbaConfiguration.conf', 'utf-8'),
+    'pg_hba.conf': fs.readFile('assets/pg_hba.conf', 'utf-8'),
   },
 }, { provider });
 
@@ -63,11 +63,7 @@ const cert = new Certificate('postgres', {
   },
   spec: {
     secretName: tlsSecretName,
-    issuerRef: {
-      group: issuers.group,
-      kind: issuers.kind,
-      name: issuers.postgres,
-    },
+    issuerRef: issuers.issuerRef(x => x.postgres),
     duration: '2160h0m0s', // 90d
     renewBefore: '360h0m0s', // 15d
     subject: {
@@ -96,8 +92,8 @@ const cert = new Certificate('postgres', {
       'pgla.lan.thecluster.io',
       'pg.lan.thecluster.io',
     ],
-    uris: [],
-    ipAddresses: [],
+    // uris: [],
+    // ipAddresses: [],
   },
 }, { provider });
 
@@ -125,7 +121,7 @@ const chart = new Chart('postgres', {
         tag: versions.bitnamiPostgresql,
       },
       auth: {
-        username: primaryUsername,
+        // username: primaryUsername,
         database: primaryDatabase,
         replicationUsername,
         existingSecret: secret.metadata.name,
@@ -149,6 +145,7 @@ const chart = new Chart('postgres', {
         certCAFilename: 'ca.crt',
       },
       primary: {
+        existingConfigmap: config.metadata.name,
         resources,
         podSecurityContext: {
           fsGroup: gid,
