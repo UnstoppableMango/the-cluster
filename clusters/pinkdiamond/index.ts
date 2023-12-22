@@ -151,7 +151,7 @@ const workerConfig = talos.machine.getConfigurationOutput({
   ],
 });
 
-const clientConfig = talos.client.configurationOutput({
+const clientConfig = talos.client.getConfigurationOutput({
   clusterName: clusterName,
   clientConfiguration: secrets.clientConfiguration,
   endpoints: controlPlanes.map(x => x.ip),
@@ -216,7 +216,7 @@ const bootstrap = new talos.machine.Bootstrap(`bootstrap`, {
   ]
 });
 
-const kubeconfigOutput = talos.cluster.kubeconfigOutput({
+const kubeconfigOutput = talos.cluster.getKubeconfigOutput({
   clientConfiguration: secrets.clientConfiguration,
   node: controlPlanes[0].ip,
   endpoint: endpoint,
