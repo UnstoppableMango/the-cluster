@@ -63,7 +63,7 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
   kubernetesVersion: versions.k8s,
 });
 
-const clientConfig = talos.client.configurationOutput({
+const clientConfig = talos.client.getConfigurationOutput({
   clusterName: clusterName,
   clientConfiguration: secrets.clientConfiguration,
   endpoints: [config.get('primaryDnsName') ?? config.require('endpoint')],
@@ -134,7 +134,7 @@ const bootstrap = new talos.machine.Bootstrap(`bootstrap`, {
 //     },
 // });
 
-const kubeconfigOutput = talos.cluster.kubeconfigOutput({
+const kubeconfigOutput = talos.cluster.getKubeconfigOutput({
   clientConfiguration: secrets.clientConfiguration,
   node: Object.keys(nodeData.controlplanes ?? [])[0],
   endpoint: endpoint,
