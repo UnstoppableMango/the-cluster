@@ -16,20 +16,17 @@ import {
   metricsPort,
   postgresPort,
   primaryDatabase,
-  primaryUsername,
   registry,
   replicationPasswordKey,
   replicationUsername,
   repository,
   resources,
   uid,
-  userPasswordKey,
   versions,
 } from './config';
 
 const ns = Namespace.get('postgres', shared.postgresNamespace, { provider });
 const adminPassword = password('postgres');
-const primaryPassword = password(primaryUsername);
 const replicationPassword = password(replicationUsername);
 const tlsSecretName = 'postgres-cert';
 
@@ -123,7 +120,6 @@ const chart = new Chart('postgres', {
         existingSecret: secret.metadata.name,
         secretKeys: {
           adminPasswordKey,
-          userPasswordKey,
           replicationPasswordKey,
         },
       },
@@ -136,8 +132,6 @@ const chart = new Chart('postgres', {
         certificatesSecret: tlsSecretName,
         certFilename: 'tls.crt',
         certKeyFilename: 'tls.key',
-        // Getting errors about:
-        // `certificate authentication failed for user "unmango": client certificate contains no user name`
         certCAFilename: 'ca.crt',
       },
       primary: {
@@ -204,10 +198,6 @@ const chart = new Chart('postgres', {
   },
   transformations: [],
 }, { provider });
-
-export const passwords = {
-  postgres: adminPassword.result,
-};
 
 function password(name: string): random.RandomPassword {
   return new random.RandomPassword(name, {

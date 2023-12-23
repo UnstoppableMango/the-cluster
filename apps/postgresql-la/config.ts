@@ -13,10 +13,8 @@ const config = new Config();
 export const hosts = config.requireObject<Hosts>('hosts');
 export const versions = config.requireObject<Versions>('versions');
 
-export const primaryUsername = 'unmango';
 export const replicationUsername = 'repl_user';
 export const adminPasswordKey = 'admin-password';
-export const userPasswordKey = 'user-password';
 export const replicationPasswordKey = 'replication-password';
 export const primaryDatabase = 'postgres';
 export const postgresPort = 5432;
