@@ -12,4 +12,8 @@ export class Shared {
   public get mediaNamespace(): Output<string> {
     return this.ref.requireOutput('mediaNamespace') as Output<string>;
   }
+
+  public get postgresNamespace(): Output<string> {
+    return this.ref.requireOutput('postgresNamespace') as Output<string>;
+  }
 }

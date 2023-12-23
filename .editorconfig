@@ -19,3 +19,6 @@ indent_size = 2
 
 [Dockerfile*]
 indent_style = tab
+
+[*.conf]
+indent_style = tab
