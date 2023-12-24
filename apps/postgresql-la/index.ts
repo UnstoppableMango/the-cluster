@@ -5,7 +5,7 @@ import * as k8s from '@pulumi/kubernetes';
 import { Namespace } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v3';
 import { Certificate } from '@unmango/thecluster-crds/certmanager/v1';
-import { issuers, provider, shared, storageClasses } from '@unmango/thecluster/cluster/from-stack';
+import { clusterIssuers, provider, shared, storageClasses } from '@unmango/thecluster/cluster/from-stack';
 import {
   adminPasswordKey,
   architecture,
@@ -58,7 +58,7 @@ const cert = new Certificate('postgres', {
   },
   spec: {
     secretName: tlsSecretName,
-    issuerRef: issuers.issuerRef(x => x.postgres),
+    issuerRef: clusterIssuers.ref(x => x.postgres),
     duration: '2160h0m0s', // 90d
     renewBefore: '360h0m0s', // 15d
     commonName: 'postgres',

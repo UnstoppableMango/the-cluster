@@ -13,14 +13,14 @@ export class Issuers {
     return this._apps.pki.issuers.kind;
   }
 
-  public get postgres(): Output<string> {
-    return this._apps.pki.issuers.postgres;
-  }
+  // public get postgres(): Output<string> {
+  //   return this._apps.pki.issuers.postgres;
+  // }
 
-  public issuerRef(
-    selector: (issuers: Pick<Issuers, 'postgres'>) => Output<string>
-  ): inputs.certmanager.v1.CertificateSpecIssuerRefArgs {
-    const issuer = selector(this);
-    return { group: this.group, kind: this.kind, name: issuer };
-  }
+  // public issuerRef(
+  //   selector: (issuers: Pick<Issuers, 'postgres'>) => Output<string>
+  // ): inputs.certmanager.v1.CertificateSpecIssuerRefArgs {
+  //   const issuer = selector(this);
+  //   return { group: this.group, kind: this.kind, name: issuer };
+  // }
 }

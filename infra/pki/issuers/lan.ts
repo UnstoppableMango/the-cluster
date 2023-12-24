@@ -5,6 +5,7 @@ import { Bundle } from '@unmango/thecluster-crds/trust/v1alpha1';
 import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { required } from '@unmango/thecluster';
 import { ns } from '../namespace';
+import { trustLabel } from '../config';
 import { issuer as rootIssuer } from './root';
 
 export const hostname = 'lan.thecluster.io'; // TODO: Move to config
@@ -65,7 +66,7 @@ export const bundle = new Bundle(hostname, {
       secret: { key: 'ca-certifcates.crt' },
       namespaceSelector: {
         matchLabels: {
-          'thecluster.io/inject-lan-cert': 'true',
+          [trustLabel]: 'lan',
         },
       },
     },
