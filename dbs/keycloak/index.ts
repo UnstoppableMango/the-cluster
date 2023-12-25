@@ -1,27 +1,27 @@
 import { Namespace } from '@pulumi/kubernetes/core/v1';
-import * as pg from '@pulumi/postgresql';
+import { Role, Database, Grant } from '@pulumi/postgresql';
 import { Certificate } from '@unmango/thecluster-crds/certmanager/v1';
 import { apps, clusterIssuers, system } from '@unmango/thecluster/cluster/from-stack';
 import { allDbPermissions } from '@unmango/thecluster/dbs/postgres';
 
 const provider = apps.postgresqlLa.provider;
 
-const keycloakOwner = new pg.Role('keycloak_owner', {
+const keycloakOwner = new Role('keycloak_owner', {
   name: 'keycloak_owner',
 }, { provider });
 
-const keycloak = new pg.Role('keycloak', {
+const keycloak = new Role('keycloak', {
   name: 'keycloak',
   login: true,
   roles: [keycloakOwner.name],
 }, { provider });
 
-const db = new pg.Database('keycloak', {
+const db = new Database('keycloak', {
   name: 'keycloak',
   owner: keycloakOwner.name,
 }, { provider, dependsOn: keycloak });
 
-const grant = new pg.Grant('all', {
+const grant = new Grant('all', {
   objectType: 'database',
   database: db.name,
   privileges: allDbPermissions,
@@ -51,10 +51,8 @@ const cert = new Certificate('keycloak', {
 
 export const ip = apps.postgresqlLa.ip;
 export const hostname = apps.postgresqlLa.hosts.internal;
-// export const port = apps.postgresqlLa.port;
+export const clusterHostname = apps.postgresqlLa.clusterHostname;
+export const port = apps.postgresqlLa.port;
 export const database = db.name;
 export const ownerGroup = keycloakOwner.name;
-export const owner = {
-  username: keycloak.name,
-  password: keycloak.password,
-};
+export const owner = keycloak.name;

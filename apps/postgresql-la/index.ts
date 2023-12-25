@@ -1,8 +1,8 @@
 import * as fs from 'node:fs/promises';
-import * as pulumi from '@pulumi/pulumi';
+import { interpolate } from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
-import { Namespace } from '@pulumi/kubernetes/core/v1';
+import { Namespace, Service } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v3';
 import { Certificate } from '@unmango/thecluster-crds/certmanager/v1';
 import { clusterIssuers, provider, shared, storageClasses } from '@unmango/thecluster/cluster/from-stack';
@@ -30,7 +30,7 @@ const ns = Namespace.get('postgres', shared.postgresNamespace, { provider });
 const adminPassword = password('postgres');
 const replicationPassword = password(replicationUsername);
 const tlsSecretName = 'postgres-cert';
-export { primaryDatabase, hosts, loadBalancerIP as ip };
+export { primaryDatabase, hosts, loadBalancerIP as ip, postgresPort as port };
 
 const secret = new k8s.core.v1.Secret('postgres', {
   metadata: {
@@ -94,7 +94,8 @@ const cert = new Certificate('postgres', {
   },
 }, { provider });
 
-const chart = new Chart('postgres', {
+const releaseName = 'postgres';
+const chart = new Chart(releaseName, {
   path: './',
   namespace: ns.metadata.name,
   values: {
@@ -102,9 +103,8 @@ const chart = new Chart('postgres', {
       global: {
         storageClass: storageClasses.rbd,
         postgresql: {
-          // The values.yaml mentions this overrides `service.ports.postgresql`
-          // but I don't think this chart has a top-level `service` object...
-          // They seem to be split into `primary.service` and `read.service`.
+          // An imaginary top-level service exists
+          // that configures both primary and read
           service: {
             ports: {
               postgresql: postgresPort,
@@ -232,6 +232,14 @@ const chart = new Chart('postgres', {
   },
   transformations: [],
 }, { provider });
+
+const serviceName = interpolate`${releaseName}-postgresql-primary`;
+const service = Service.get(
+  'postgres',
+  interpolate`${ns.metadata.name}/${serviceName}`,
+  { provider, dependsOn: chart.ready });
+
+export const clusterHostname = interpolate`${service.metadata.name}.${ns.metadata.name}`;
 
 function password(name: string): random.RandomPassword {
   return new random.RandomPassword(name, {

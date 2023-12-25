@@ -15,6 +15,10 @@ export class PostgresqlLa {
   private _k8sOpts = { provider: this._k8sProvider };
   constructor(private _cluster: string, private _k8sProvider: k8s.Provider) { }
 
+  public get clusterHostname(): Output<string> {
+    return this._ref.value.requireOutput('clusterHostname') as Output<string>;
+  }
+
   public get database(): Output<string> {
     return this._ref.value.requireOutput('primaryDatabase') as Output<string>;
   }
@@ -25,6 +29,10 @@ export class PostgresqlLa {
 
   public get ip(): Output<string> {
     return this._ref.value.requireOutput('ip') as Output<string>;
+  }
+
+  public get port(): Output<number> {
+    return this._ref.value.requireOutput('port');
   }
 
   public get provider(): Provider {

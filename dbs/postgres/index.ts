@@ -1,5 +1,5 @@
 import { Namespace, Secret } from '@pulumi/kubernetes/core/v1';
-import { Grant, Provider, Role } from '@pulumi/postgresql';
+import { Provider, Role } from '@pulumi/postgresql';
 import { interpolate } from '@pulumi/pulumi';
 import { RandomPassword } from '@pulumi/random';
 import { Certificate } from '@unmango/thecluster-crds/certmanager/v1';
