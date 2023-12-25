@@ -7,6 +7,7 @@ export const suffix = config.get('suffix');
 export const zone = getZoneOutput({ name: config.require('zoneName') });
 export const permissionGroups = getApiTokenPermissionGroupsOutput();
 export const cluster = getStack();
+export const trustLabel = 'thecluster.io/trust';
 
 export const apiToken = new ApiToken('cert-manager', {
   name: appendIf(`THECLUSTER-cert-manager-${cluster}`, suffix),

@@ -7,6 +7,7 @@ export interface Hosts {
 export interface Versions {
   bitnamiPostgresql: string;
   bitnamiExporter: string;
+  bitnamiOsShell: string;
 }
 
 const config = new Config();
@@ -23,6 +24,7 @@ export const repository = 'bitnami/postgresql';
 export const architecture = 'replication';
 export const uid = 1001, gid = 1001;
 export const exporterRepository = 'bitnami/postgres-exporter';
+export const osShellRepository = 'bitnami/os-shell';
 export const metricsPort = 9187;
 export const loadBalancerIP = '192.168.1.83';
 

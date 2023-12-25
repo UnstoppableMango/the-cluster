@@ -1,15 +1,17 @@
 import { output } from '@pulumi/pulumi';
-import { Namespace, Secret } from '@pulumi/kubernetes/core/v1';
-import { Certificate, Issuer } from '@unmango/thecluster-crds/certmanager/v1';
+import { Namespace } from '@pulumi/kubernetes/core/v1';
+import { Certificate, ClusterIssuer } from '@unmango/thecluster-crds/certmanager/v1';
 import { Bundle } from '@unmango/thecluster-crds/trust/v1alpha1';
 import { provider, shared } from '@unmango/thecluster/cluster/from-stack';
 import { required } from '@unmango/thecluster';
 import { issuer as rootIssuer } from './root';
+import { trustLabel } from '../config';
+import { clusterNs } from '../namespace';
 
 // TODO: Common location
 const hosts = {
-  public: 'postgres.thecluster.io',
-  internal: 'postgres.lan.thecluster.io',
+  public: 'pg.thecluster.io',
+  internal: 'pg.lan.thecluster.io',
 };
 const secretName = 'postgres-ca';
 
@@ -18,7 +20,7 @@ const ns = Namespace.get('postgres', shared.postgresNamespace, { provider });
 export const ca = new Certificate('postgres-ca', {
   metadata: {
     name: 'postgres-ca',
-    namespace: ns.metadata.name,
+    namespace: clusterNs.metadata.name,
   },
   spec: {
     isCA: true,
@@ -36,11 +38,8 @@ export const ca = new Certificate('postgres-ca', {
   },
 }, { provider });
 
-export const issuer = new Issuer('postgres', {
-  metadata: {
-    name: 'postgres',
-    namespace: ns.metadata.name,
-  },
+export const issuer = new ClusterIssuer('postgres-ca', {
+  metadata: { name: 'postgres-ca' },
   spec: {
     ca: { secretName },
   },
@@ -50,7 +49,6 @@ export const bundle = new Bundle('postgres-ca', {
   metadata: { name: 'postgres-ca' },
   spec: {
     sources: [
-      { useDefaultCAs: true },
       {
         secret: {
           name: secretName,
@@ -62,7 +60,7 @@ export const bundle = new Bundle('postgres-ca', {
       secret: { key: 'ca-certificates.crt' },
       namespaceSelector: {
         matchLabels: {
-          'thecluster.io/inject-postgres-cert': 'true',
+          [trustLabel]: 'postgres',
         },
       },
     },

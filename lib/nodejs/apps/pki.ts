@@ -24,12 +24,12 @@ export interface ClusterIssusers {
   staging: Output<string>;
   selfSigned: Output<string>;
   root: Output<string>;
+  postgres: Output<string>;
 }
 
 export interface Issuers {
   group: Output<string>;
   kind: Output<string>;
-  postgres: Output<string>;
 }
 
 export class Pki {
@@ -43,7 +43,11 @@ export class Pki {
     return this._refs.pki.requireOutput('clusterIssuers') as Output<ClusterIssusers>;
   }
 
-  public get issuers(): Output<Issuers> {
+  public get issuers(): Issuers {
     return this._refs.pki.requireOutput('issuers') as Output<Issuers>;
+  }
+
+  public get trustLabel(): Output<string> {
+    return this._refs.pki.requireOutput('trustLabel') as Output<string>;
   }
 }

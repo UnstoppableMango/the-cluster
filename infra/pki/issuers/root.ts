@@ -4,13 +4,14 @@ import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { ClusterIssuer } from '@unmango/thecluster-crds/certmanager/v1';
 import { Bundle } from '@unmango/thecluster-crds/trust/v1alpha1';
 import { Secret } from '@pulumi/kubernetes/core/v1';
+import { trustLabel } from '../config';
 
 export const privateKey = new PrivateKey('thecluster.io', {
   algorithm: 'ECDSA',
   rsaBits: 256,
 });
 
-// Can I use cloudflare instead of doing this myself?
+// Can/should I use cloudflare instead of doing this myself?
 export const ca = new SelfSignedCert('thecluster.io', {
   isCaCertificate: true,
   subject: {
@@ -40,9 +41,9 @@ export const ca = new SelfSignedCert('thecluster.io', {
   validityPeriodHours: 25 * 365 * 24, // Intent: 25 years
 });
 
-export const secret = new Secret('thecluster.io', {
+export const secret = new Secret('root-ca', {
   metadata: {
-    name: 'thecluster.io',
+    name: 'root-ca',
     namespace: ns.metadata.name,
   },
   type: 'kubernetes.io/tls',
@@ -61,11 +62,10 @@ export const issuer = new ClusterIssuer('thecluster.io', {
   },
 }, { provider });
 
-export const bundle = new Bundle('thecluster.io', {
-  metadata: { name: 'thecluster.io' },
+export const bundle = new Bundle('root-ca', {
+  metadata: { name: 'root-ca' },
   spec: {
     sources: [
-      { useDefaultCAs: true },
       {
         secret: {
           name: secret.metadata.name,
@@ -83,7 +83,7 @@ export const bundle = new Bundle('thecluster.io', {
       },
       namespaceSelector: {
         matchLabels: {
-          'thecluster.io/inject-root-cert': 'true',
+          [trustLabel]: 'root',
         },
       },
     },

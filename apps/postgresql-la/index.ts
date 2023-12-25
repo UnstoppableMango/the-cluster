@@ -5,7 +5,7 @@ import * as k8s from '@pulumi/kubernetes';
 import { Namespace } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v3';
 import { Certificate } from '@unmango/thecluster-crds/certmanager/v1';
-import { issuers, provider, shared, storageClasses } from '@unmango/thecluster/cluster/from-stack';
+import { clusterIssuers, provider, shared, storageClasses } from '@unmango/thecluster/cluster/from-stack';
 import {
   adminPasswordKey,
   architecture,
@@ -14,6 +14,7 @@ import {
   hosts,
   loadBalancerIP,
   metricsPort,
+  osShellRepository,
   postgresPort,
   primaryDatabase,
   registry,
@@ -58,7 +59,7 @@ const cert = new Certificate('postgres', {
   },
   spec: {
     secretName: tlsSecretName,
-    issuerRef: issuers.issuerRef(x => x.postgres),
+    issuerRef: clusterIssuers.ref(x => x.postgres),
     duration: '2160h0m0s', // 90d
     renewBefore: '360h0m0s', // 15d
     commonName: 'postgres',
@@ -135,13 +136,20 @@ const chart = new Chart('postgres', {
         certCAFilename: 'ca.crt',
       },
       primary: {
-        existingConfigmap: config.metadata.name,
+        // When this is supplied, whatever creates the replication user never runs and everything breaks
+        // existingConfigmap: config.metadata.name,
+        // initdb: {
+        //   scripts: {
+        //     'create_repl_user.sh': fs.readFile('assets/create_repl_user.sh', 'utf-8'),
+        //   },
+        // },
         resources,
         podSecurityContext: {
           fsGroup: gid,
         },
         containerSecurityContext: {
           runAsUser: uid,
+          // runAsGroup: gid,
         },
         priorityClassName: 'system-cluster-critical',
         service: {
@@ -168,6 +176,7 @@ const chart = new Chart('postgres', {
         },
         containerSecurityContext: {
           runAsUser: uid,
+          // runAsGroup: gid,
         },
         service: {
           type: 'ClusterIP',
@@ -176,6 +185,29 @@ const chart = new Chart('postgres', {
           size: '100Gi',
         },
       },
+      // Everything blows up with operation not permitted
+      // volumePermissions: {
+      //   enabled: true,
+      //   image: {
+      //     registry,
+      //     repository: osShellRepository,
+      //     tag: versions.bitnamiOsShell,
+      //   },
+      //   resources: {
+      //     limits: {
+      //       cpu: '10m',
+      //       memory: '64Mi',
+      //     },
+      //     requests: {
+      //       cpu: '10m',
+      //       memory: '64Mi',
+      //     },
+      //   },
+      //   containerSecurityContext: {
+      //     runAsUser: uid,
+      //     // runAsGroup: gid,
+      //   },
+      // },
       serviceAccount: { create: true },
       rbac: { create: true },
       metrics: {
