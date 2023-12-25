@@ -1,15 +1,14 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as random from '@pulumi/random';
-import { clusterIssuers, databases, ingresses, provider } from '@unmango/thecluster/cluster/from-stack';
+import { clusterIssuers, databases, ingresses, provider, shared } from '@unmango/thecluster/cluster/from-stack';
 import { auth, production, hosts, versions } from './config';
+import { Namespace } from '@pulumi/kubernetes/core/v1';
 
-const ns = new k8s.core.v1.Namespace('keycloak', {
-  metadata: { name: 'keycloak' },
-}, { provider });
+const ns = Namespace.get('keycloak', shared.namespaces.keycloak, { provider });
 
 const adminPassword = new random.RandomPassword('admin', {
-  length: 24,
+  length: 48,
   special: false,
 });
 
