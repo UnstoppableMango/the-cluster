@@ -8,7 +8,7 @@ export class System {
   public kubeconfig = this.ref.requireOutput('kubeconfig') as Output<string>;
   public provider = new Provider(this._cluster, { kubeconfig: this.kubeconfig });
   public refs = new internal.Refs(this._cluster);
-  public apps = new internal.Apps(this.refs);
+  public apps = new internal.Apps(this.refs, this.provider);
   public bundles = new internal.Bundles(this.apps);
   public clusterIssuers = new internal.ClusterIssusers(this.apps);
   public databases = new internal.Databases(this.refs, this.apps);

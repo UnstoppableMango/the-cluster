@@ -30,6 +30,7 @@ const ns = Namespace.get('postgres', shared.postgresNamespace, { provider });
 const adminPassword = password('postgres');
 const replicationPassword = password(replicationUsername);
 const tlsSecretName = 'postgres-cert';
+export { primaryDatabase, hosts };
 
 const secret = new k8s.core.v1.Secret('postgres', {
   metadata: {
@@ -75,6 +76,7 @@ const cert = new Certificate('postgres', {
       'server auth',
       'client auth',
     ],
+    // TODO: Is any of the below necessary?
     dnsNames: [
       // hosts.external, // TODO
       'postgres-ha.thecluster.io',
