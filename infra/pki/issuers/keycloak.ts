@@ -10,16 +10,16 @@ import { clusterNs } from '../namespace';
 
 // TODO: Common location
 const hosts = {
-  public: 'pg.thecluster.io',
-  internal: 'pg.lan.thecluster.io',
+  public: 'kc.thecluster.io',
+  internal: 'kc.lan.thecluster.io',
 };
-const secretName = 'postgres-ca';
+const secretName = 'keycloak-ca';
 
-const ns = Namespace.get('postgres', shared.namespaces.postgres, { provider });
+const ns = Namespace.get('keycloak', shared.namespaces.keycloak, { provider });
 
-export const ca = new Certificate('postgres-ca', {
+export const ca = new Certificate('keycloak-ca', {
   metadata: {
-    name: 'postgres-ca',
+    name: 'keycloak-ca',
     namespace: clusterNs.metadata.name,
   },
   spec: {
@@ -38,15 +38,15 @@ export const ca = new Certificate('postgres-ca', {
   },
 }, { provider });
 
-export const issuer = new ClusterIssuer('postgres-ca', {
-  metadata: { name: 'postgres-ca' },
+export const issuer = new ClusterIssuer('keycloak-ca', {
+  metadata: { name: 'keycloak-ca' },
   spec: {
     ca: { secretName },
   },
 }, { provider });
 
-export const bundle = new Bundle('postgres-ca', {
-  metadata: { name: 'postgres-ca' },
+export const bundle = new Bundle('keycloak-ca', {
+  metadata: { name: 'keycloak-ca' },
   spec: {
     sources: [
       {
@@ -60,7 +60,7 @@ export const bundle = new Bundle('postgres-ca', {
       secret: { key: 'ca-certificates.crt' },
       namespaceSelector: {
         matchLabels: {
-          [trustLabel]: 'postgres',
+          [trustLabel]: 'keycloak',
         },
       },
     },

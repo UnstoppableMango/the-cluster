@@ -1,5 +1,5 @@
 import { output, secret } from '@pulumi/pulumi';
-import { root, postgres, letsencrypt, selfSigned } from './issuers';
+import { root, postgres, letsencrypt, selfSigned, keycloak } from './issuers';
 import { ns, trustNs } from './namespace';
 import { trustLabel } from './config';
 
@@ -21,6 +21,7 @@ export const clusterIssuers = {
   selfSigned: output(selfSigned.issuer.metadata).apply(x => x?.name),
   root: output(root.issuer.metadata).apply(x => x?.name),
   postgres: postgres.issuer.metadata.apply(x => x?.name),
+  keycloak: keycloak.issuer.metadata.apply(x => x?.name),
 };
 
 export const issuers = {
