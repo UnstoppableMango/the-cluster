@@ -1,6 +1,7 @@
 import { Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { Grant, Provider, Role } from '@pulumi/postgresql';
 import { interpolate } from '@pulumi/pulumi';
+import { RandomPassword } from '@pulumi/random';
 import { Certificate } from '@unmango/thecluster-crds/certmanager/v1';
 import { apps, clusterIssuers, shared, system } from '@unmango/thecluster/cluster/from-stack';
 import { b64decode } from '@unmango/thecluster/util';
@@ -18,7 +19,7 @@ const provider = new Provider('postgres', {
   },
 });
 
-const pulumi = new Role('pulumi', {
+const pulumiRole = new Role('pulumi', {
   name: 'pulumi',
   login: true,
   // roles: [],
@@ -54,9 +55,14 @@ const pulumiCert = new Certificate('pulumi', {
   },
 }, k8sOpts);
 
-const unmango = new Role('unmango', {
+const unmangoPassword = new RandomPassword('unmango', {
+  length: 48,
+});
+
+const unmangoRole = new Role('unmango', {
   name: 'unmango',
   login: true,
+  password: unmangoPassword.result,
   // roles: [],
   superuser: false,
   createDatabase: true,
@@ -90,5 +96,11 @@ const unmangoCert = new Certificate('unmango', {
   },
 }, k8sOpts);
 
-export const pulumiCertSecret = pulumiCert.spec.apply(x => x?.secretName);
-export const unmangoCertSecret = unmangoCert.spec.apply(x => x?.secretName);
+export const pulumi = {
+  certSecret: pulumiCert.spec.apply(x => x?.secretName),
+};
+
+export const unmango = {
+  certSecret: unmangoCert.spec.apply(x => x?.secretName),
+  password: unmangoPassword.result,
+};
