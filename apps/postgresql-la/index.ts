@@ -30,7 +30,7 @@ const ns = Namespace.get('postgres', shared.postgresNamespace, { provider });
 const adminPassword = password('postgres');
 const replicationPassword = password(replicationUsername);
 const tlsSecretName = 'postgres-cert';
-export { primaryDatabase, hosts };
+export { primaryDatabase, hosts, loadBalancerIP as ip };
 
 const secret = new k8s.core.v1.Secret('postgres', {
   metadata: {

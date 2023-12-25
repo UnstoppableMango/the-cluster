@@ -91,3 +91,4 @@ const unmangoCert = new Certificate('unmango', {
 }, k8sOpts);
 
 export const pulumiCertSecret = pulumiCert.spec.apply(x => x?.secretName);
+export const unmangoCertSecret = unmangoCert.spec.apply(x => x?.secretName);

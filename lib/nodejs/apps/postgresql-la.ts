@@ -23,6 +23,10 @@ export class PostgresqlLa {
     return this._ref.value.requireOutput('hosts') as Output<Hosts>;
   }
 
+  public get ip(): Output<string> {
+    return this._ref.value.requireOutput('ip') as Output<string>;
+  }
+
   public get provider(): Provider {
     if (!this._provider) {
       // TODO: Get the `pulumi` user working...

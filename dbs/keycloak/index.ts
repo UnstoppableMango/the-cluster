@@ -1,18 +1,18 @@
+import { Namespace } from '@pulumi/kubernetes/core/v1';
 import * as pg from '@pulumi/postgresql';
-import { apps } from '@unmango/thecluster/cluster/from-stack';
+import { Certificate } from '@unmango/thecluster-crds/certmanager/v1';
+import { apps, clusterIssuers, system } from '@unmango/thecluster/cluster/from-stack';
 import { allDbPermissions } from '@unmango/thecluster/dbs/postgres';
 
-const provider = apps.postgresqlHa.provider;
+const provider = apps.postgresqlLa.provider;
 
 const keycloakOwner = new pg.Role('keycloak_owner', {
   name: 'keycloak_owner',
 }, { provider });
 
-const user = apps.postgresqlHa.user('keycloak');
 const keycloak = new pg.Role('keycloak', {
-  name: user.username,
+  name: 'keycloak',
   login: true,
-  password: user.password,
   roles: [keycloakOwner.name],
 }, { provider });
 
@@ -28,10 +28,30 @@ const grant = new pg.Grant('all', {
   role: keycloak.name,
 }, { provider });
 
-export const clusterIp = apps.postgresqlHa.clusterIp;
-export const ip = apps.postgresqlHa.ip;
-export const hostname = apps.postgresqlHa.hostname;
-export const port = apps.postgresqlHa.port;
+const ns = Namespace.get('postgres', 'postgres', { provider: system.provider });
+const cert = new Certificate('keycloak', {
+  metadata: {
+    name: 'keycloak',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    issuerRef: clusterIssuers.ref(x => x.postgres),
+    secretName: 'keycloak-cert',
+    usages: ['client auth'],
+    commonName: 'keycloak',
+    duration: '2160h0m0s', // 90d
+    renewBefore: '360h0m0s', // 15d
+    privateKey: {
+      algorithm: 'RSA',
+      encoding: 'PKCS1',
+      size: 2048,
+    },
+  },
+}, { provider: system.provider });
+
+export const ip = apps.postgresqlLa.ip;
+export const hostname = apps.postgresqlLa.hosts.internal;
+// export const port = apps.postgresqlLa.port;
 export const database = db.name;
 export const ownerGroup = keycloakOwner.name;
 export const owner = {
