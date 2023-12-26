@@ -44,6 +44,14 @@ export function yamlStringify(obj: Inputs): Output<string> {
   return output(obj).apply(x => YAML.stringify(x));
 }
 
+export function b64encode(value: string): string {
+  return Buffer.from(value).toString('base64');
+}
+
+export function b64decode(value: string): string {
+  return Buffer.from(value, 'base64').toString('utf-8');
+}
+
 export class Lazy<T> {
   private _instance?: T;
   constructor(private _factory: () => T) { }

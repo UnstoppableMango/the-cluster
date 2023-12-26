@@ -1,3 +1,4 @@
+import * as k8s from '@pulumi/kubernetes';
 import {
   ActionsRunnerController,
   CephCsi,
@@ -9,6 +10,7 @@ import {
   PiHole,
   Pki,
   PostgresqlHa,
+  PostgresqlLa,
   TrustManager
 } from '../apps';
 import { Refs } from './refs';
@@ -24,9 +26,11 @@ export class Apps {
   private _pihole?: PiHole;
   private _pki?: Pki;
   private _postgresqlHa?: PostgresqlHa;
+  private _postgresqlLa?: PostgresqlLa;
   private _trustManager?: TrustManager;
 
-  constructor(private _refs: Refs) { }
+  // Poor man's DI is killing me
+  constructor(private _refs: Refs, private _provider: k8s.Provider) { }
 
   public get actionsRunnerController(): ActionsRunnerController {
     if (!this._actionsRunnerController) {
@@ -106,6 +110,14 @@ export class Apps {
     }
 
     return this._postgresqlHa;
+  }
+
+  public get postgresqlLa(): PostgresqlLa {
+    if (!this._postgresqlLa) {
+      this._postgresqlLa = new PostgresqlLa(this._refs.cluster, this._provider);
+    }
+
+    return this._postgresqlLa;
   }
 
   public get trustManager(): TrustManager {

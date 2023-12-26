@@ -4,22 +4,22 @@ import { Certificate, ClusterIssuer } from '@unmango/thecluster-crds/certmanager
 import { Bundle } from '@unmango/thecluster-crds/trust/v1alpha1';
 import { provider, shared } from '@unmango/thecluster/cluster/from-stack';
 import { required } from '@unmango/thecluster';
-import * as root from './root';
+import { issuer as rootIssuer } from './root';
 import { bundles, trustLabel } from '../config';
 import { clusterNs } from '../namespace';
 
 // TODO: Common location
 const hosts = {
-  public: 'pg.thecluster.io',
-  internal: 'pg.lan.thecluster.io',
+  public: 'kc.thecluster.io',
+  internal: 'kc.lan.thecluster.io',
 };
-const secretName = 'postgres-ca';
+const secretName = 'keycloak-ca';
 
-const ns = Namespace.get('postgres', shared.namespaces.postgres, { provider });
+const ns = Namespace.get('keycloak', shared.namespaces.keycloak, { provider });
 
-export const ca = new Certificate('postgres-ca', {
+export const ca = new Certificate('keycloak-ca', {
   metadata: {
-    name: 'postgres-ca',
+    name: 'keycloak-ca',
     namespace: clusterNs.metadata.name,
   },
   spec: {
@@ -32,21 +32,21 @@ export const ca = new Certificate('postgres-ca', {
     },
     issuerRef: {
       group: 'cert-manager.io',
-      kind: output(root.issuer.kind).apply(required),
-      name: output(root.issuer.metadata).apply(x => x?.name ?? ''),
+      kind: output(rootIssuer.kind).apply(required),
+      name: output(rootIssuer.metadata).apply(x => x?.name ?? ''),
     },
   },
 }, { provider });
 
-export const issuer = new ClusterIssuer('postgres-ca', {
-  metadata: { name: 'postgres-ca' },
+export const issuer = new ClusterIssuer('keycloak-ca', {
+  metadata: { name: 'keycloak-ca' },
   spec: {
     ca: { secretName },
   },
 }, { provider });
 
-export const bundle = new Bundle('postgres-ca', {
-  metadata: { name: 'postgres-ca' },
+export const bundle = new Bundle('keycloak-ca', {
+  metadata: { name: 'keycloak-ca' },
   spec: {
     sources: [
       {
@@ -58,13 +58,9 @@ export const bundle = new Bundle('postgres-ca', {
     ],
     target: {
       configMap: { key: bundles.key },
-      additionalFormats: {
-        jks: { key: bundles.jksKey },
-        pkcs12: { key: bundles.p12Key },
-      },
       namespaceSelector: {
         matchLabels: {
-          [trustLabel]: 'postgres',
+          [trustLabel]: 'keycloak',
         },
       },
     },

@@ -16,7 +16,7 @@ export class Refs {
   private _postgresqlHa?: StackReference;
   private _trustManager?: StackReference;
 
-  constructor(private cluster: string) { }
+  constructor(public cluster: string) { }
 
   public get actionsRunnerController(): StackReference {
     if (!this._actionsRunnerController) {

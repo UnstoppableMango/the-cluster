@@ -1,0 +1,3 @@
+name: thecluster-pgadmin-db
+runtime: nodejs
+description: PgAdmin DB for THECLUSTER
