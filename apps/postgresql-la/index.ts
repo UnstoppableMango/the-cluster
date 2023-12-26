@@ -53,47 +53,6 @@ const config = new k8s.core.v1.ConfigMap('postgres', {
   },
 }, { provider });
 
-const cert = new Certificate('postgres', {
-  metadata: {
-    name: 'postgres',
-    namespace: ns.metadata.name,
-  },
-  spec: {
-    secretName: tlsSecretName,
-    issuerRef: clusterIssuers.ref(x => x.postgres),
-    duration: '2160h0m0s', // 90d
-    renewBefore: '360h0m0s', // 15d
-    commonName: 'postgres',
-    subject: {
-      organizations: ['unmango'],
-    },
-    privateKey: {
-      algorithm: 'RSA',
-      encoding: 'PKCS1',
-      size: 2048,
-    },
-    usages: [
-      'server auth',
-      'client auth',
-    ],
-    // TODO: Is any of the below necessary?
-    dnsNames: [
-      // hosts.external, // TODO
-      'postgres-ha.thecluster.io',
-      'postgres-la.thecluster.io',
-      'pgha.thecluster.io',
-      'pgla.thecluster.io',
-      'pg.thecluster.io',
-      hosts.internal,
-      'postgres-ha.lan.thecluster.io',
-      'postgres-la.lan.thecluster.io',
-      'pgha.lan.thecluster.io',
-      'pgla.lan.thecluster.io',
-      'pg.lan.thecluster.io',
-    ],
-  },
-}, { provider });
-
 const releaseName = 'postgres';
 const chart = new Chart(releaseName, {
   path: './',
@@ -233,7 +192,7 @@ const chart = new Chart(releaseName, {
   transformations: [],
 }, { provider });
 
-const serviceName = interpolate`${releaseName}-postgresql-primary`;
+const serviceName = interpolate`${releaseName}-postgresql-primary-hl`;
 const service = Service.get(
   'postgres',
   interpolate`${ns.metadata.name}/${serviceName}`,

@@ -83,6 +83,10 @@ export class ClusterIssusers {
     return this._apps.pki.clusterIssuers.postgres;
   }
 
+  public get keycloak(): Output<string> {
+    return this._apps.pki.clusterIssuers.keycloak;
+  }
+
   public trust(selector: Selector): Trust {
     return new Trust(this._apps.pki, selector(this));
   }

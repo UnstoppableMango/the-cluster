@@ -25,6 +25,7 @@ export interface ClusterIssusers {
   selfSigned: Output<string>;
   root: Output<string>;
   postgres: Output<string>;
+  keycloak: Output<string>;
 }
 
 export interface Issuers {
