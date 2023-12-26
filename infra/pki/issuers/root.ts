@@ -4,7 +4,7 @@ import { provider } from '@unmango/thecluster/cluster/from-stack';
 import { ClusterIssuer } from '@unmango/thecluster-crds/certmanager/v1';
 import { Bundle } from '@unmango/thecluster-crds/trust/v1alpha1';
 import { Secret } from '@pulumi/kubernetes/core/v1';
-import { trustLabel } from '../config';
+import { bundles, trustLabel } from '../config';
 
 export const privateKey = new PrivateKey('thecluster.io', {
   algorithm: 'ECDSA',
@@ -74,12 +74,10 @@ export const bundle = new Bundle('root-ca', {
       },
     ],
     target: {
-      configMap: {
-        key: 'bundle.pem',
-      },
+      configMap: { key: bundles.key },
       additionalFormats: {
-        jks: { key: 'bundle.jks' },
-        pkcs12: { key: 'bundle.p12' },
+        jks: { key: bundles.jksKey },
+        pkcs12: { key: bundles.p12Key },
       },
       namespaceSelector: {
         matchLabels: {

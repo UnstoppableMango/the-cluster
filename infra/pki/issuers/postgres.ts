@@ -4,8 +4,8 @@ import { Certificate, ClusterIssuer } from '@unmango/thecluster-crds/certmanager
 import { Bundle } from '@unmango/thecluster-crds/trust/v1alpha1';
 import { provider, shared } from '@unmango/thecluster/cluster/from-stack';
 import { required } from '@unmango/thecluster';
-import { issuer as rootIssuer } from './root';
-import { trustLabel } from '../config';
+import * as root from './root';
+import { bundles, trustLabel } from '../config';
 import { clusterNs } from '../namespace';
 
 // TODO: Common location
@@ -32,8 +32,8 @@ export const ca = new Certificate('postgres-ca', {
     },
     issuerRef: {
       group: 'cert-manager.io',
-      kind: output(rootIssuer.kind).apply(required),
-      name: output(rootIssuer.metadata).apply(x => x?.name ?? ''),
+      kind: output(root.issuer.kind).apply(required),
+      name: output(root.issuer.metadata).apply(x => x?.name ?? ''),
     },
   },
 }, { provider });
@@ -57,7 +57,11 @@ export const bundle = new Bundle('postgres-ca', {
       },
     ],
     target: {
-      secret: { key: 'ca-certificates.crt' },
+      configMap: { key: bundles.key },
+      additionalFormats: {
+        jks: { key: bundles.jksKey },
+        pkcs12: { key: bundles.p12Key },
+      },
       namespaceSelector: {
         matchLabels: {
           [trustLabel]: 'postgres',

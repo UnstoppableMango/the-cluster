@@ -9,6 +9,12 @@ export const permissionGroups = getApiTokenPermissionGroupsOutput();
 export const cluster = getStack();
 export const trustLabel = 'thecluster.io/trust';
 
+export const bundles = {
+  key: 'root-certs.pem',
+  jksKey: 'bundle.jks',
+  p12Key: 'bundle.p12',
+};
+
 export const apiToken = new ApiToken('cert-manager', {
   name: appendIf(`THECLUSTER-cert-manager-${cluster}`, suffix),
   policies: [

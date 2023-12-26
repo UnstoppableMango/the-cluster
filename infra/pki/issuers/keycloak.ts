@@ -5,7 +5,7 @@ import { Bundle } from '@unmango/thecluster-crds/trust/v1alpha1';
 import { provider, shared } from '@unmango/thecluster/cluster/from-stack';
 import { required } from '@unmango/thecluster';
 import { issuer as rootIssuer } from './root';
-import { trustLabel } from '../config';
+import { bundles, trustLabel } from '../config';
 import { clusterNs } from '../namespace';
 
 // TODO: Common location
@@ -57,7 +57,7 @@ export const bundle = new Bundle('keycloak-ca', {
       },
     ],
     target: {
-      secret: { key: 'ca-certificates.crt' },
+      configMap: { key: bundles.key },
       namespaceSelector: {
         matchLabels: {
           [trustLabel]: 'keycloak',
