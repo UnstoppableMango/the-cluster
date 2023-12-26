@@ -209,7 +209,10 @@ const chart = new k8s.helm.v3.Chart('keycloak', {
         },
       },
       pdb: { create: true },
-      autoscaling: { enabled: true },
+      autoscaling: {
+        enabled: true,
+        maxReplicas: 3,
+      },
       metrics: { enabled: true },
       postgresql: { enabled: false },
       externalDatabase: {

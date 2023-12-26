@@ -1,5 +1,4 @@
 export * from './apps';
-export * from './bundles';
 export * from './clusterIssuers';
 export * from './databases';
 export * from './dns';

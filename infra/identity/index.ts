@@ -93,12 +93,12 @@ const twitterIdp = new keycloak.oidc.IdentityProvider('twitter', {
 
 export const realm = externalRealm.realm;
 
-const clusterRealm = new keycloak.Realm('cluster', {
-  realm: 'cluster',
-  displayName: cluster,
-  displayNameHtml: cluster,
-  userManagedAccess: true,
-}, { provider });
+// const clusterRealm = new keycloak.Realm('cluster', {
+//   realm: 'cluster',
+//   displayName: cluster,
+//   displayNameHtml: cluster,
+//   userManagedAccess: true,
+// }, { provider });
 
 const webAppLogin = new keycloak.Role('webapp-login', {
   realmId: externalRealm.realm,
@@ -148,10 +148,8 @@ const myMemberships = new keycloak.GroupMemberships('UnstoppableMango', {
 }, { provider });
 
 export const externalRealmId = externalRealm.id;
-export const clusterRealmId = clusterRealm.id;
+// export const clusterRealmId = clusterRealm.id;
 export const groupNames = [webAppReaders.name];
 export const groupsScopeName = groupsScope.name;
 export const groups = pulumi.all([webAppReaders.name, webAppReaders.id])
-  .apply(([name, id]) => ({
-    [name]: id,
-  }));
+  .apply(([name, id]) => ({ [name]: id }));
