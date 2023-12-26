@@ -166,12 +166,12 @@ const chart = new k8s.helm.v3.Chart('keycloak', {
       resources: {
         // Initial startup needs a bit of heft
         limits: {
-          cpu: '4',
+          cpu: '1',
           memory: '2Gi',
         },
         requests: {
-          cpu: '100m',
-          memory: '256Mi',
+          cpu: '10m',
+          memory: '512Mi',
         },
       },
       extraVolumes: [{
