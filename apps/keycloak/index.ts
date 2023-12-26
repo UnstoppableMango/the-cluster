@@ -6,6 +6,7 @@ import { Certificate } from '@unmango/thecluster-crds/certmanager/v1';
 import { clusterIssuers, databases, ingresses, provider, shared } from '@unmango/thecluster/cluster/from-stack';
 import { auth, production, hosts, versions } from './config';
 import { ConfigMap, Namespace } from '@pulumi/kubernetes/core/v1';
+import { required } from '@unmango/thecluster/util';
 
 const ns = Namespace.get('keycloak', shared.namespaces.keycloak, { provider });
 
@@ -15,6 +16,8 @@ const dbPortKey = 'dbPort';
 const dbUserKey = 'dbUser';
 const dbPasswordKey = 'dbPassword';
 const postgresCertDir = '/opt/unmango/postgres/certs';
+const certificatePassword = 'changeit';
+const certificatePasswordKey = 'certPassword';
 
 const adminPassword = new random.RandomPassword('admin', {
   length: 48,
@@ -55,41 +58,28 @@ const cert = new Certificate('keycloak', {
   },
 }, { provider });
 
-const postgresCert = new Certificate('postgres', {
-  metadata: {
-    name: 'postgres',
-    namespace: ns.metadata.name,
-  },
-  spec: {
-    secretName: 'postgres-cert',
-    issuerRef: clusterIssuers.ref(x => x.postgres),
-    duration: '2160h0m0s', // 90d
-    renewBefore: '360h0m0s', // 15d
-    commonName: 'keycloak',
-    usages: ['client auth'],
-    privateKey: {
-      algorithm: 'ECDSA',
-      size: 256,
-      rotationPolicy: 'Always',
-    },
-    additionalOutputFormats: [{
-      type: '',
-    }],
-  },
-}, { provider });
-
 const config = new ConfigMap('keycloak', {
   metadata: {
     name: 'keycloak',
     namespace: ns.metadata.name,
   },
   data: {
+    // https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNECT-SSLCERT
+    // https://jdbc.postgresql.org/documentation/use/#connection-parameters/
+    // https://github.com/bitnami/containers/blob/9f6278e4abadcf4ff63eb42310739646e1ed1485/bitnami/keycloak/22/debian-11/rootfs/opt/bitnami/scripts/libkeycloak.sh#L146
+    // This wasn't useful but anyways: https://www.keycloak.org/server/db
+    // We're so damn close on this shit
+    // Curve not supported: secp224r1 [NIST P-224] (1.3.132.0.33)
     KEYCLOAK_JDBC_PARAMS: [
       'ssl=true',
       'sslmode=verify-full',
+      'sslcertmode=require',
       `sslrootcert=${path.join(postgresCertDir, 'ca.crt')}`,
-      `sslcert=${path.join(postgresCertDir, 'tls.crt')}`,
-      `sslkey=${path.join(postgresCertDir, 'tls.key')}`,
+      `sslcert=${path.join(postgresCertDir, 'tls.crt')}`, // Ignored when in p12 format?
+      `sslkey=${path.join(postgresCertDir, 'ca.crt')}`,
+      // Why we don't care about this being plaintext
+      // https://cert-manager.io/docs/faq/#simple-answer
+      // `sslpassword=${certificatePassword}`,
     ].join('&'),
   },
 }, { provider });
@@ -104,8 +94,40 @@ const secret = new k8s.core.v1.Secret('keycloak', {
     [dbHostKey]: pulumi.interpolate`${databases.keycloak.hostname}`,
     [dbPortKey]: pulumi.interpolate`${databases.keycloak.port}`,
     [dbUserKey]: databases.keycloak.owner,
-    [dbPasswordKey]: pulumi.output('NA because we use cert auth'),
+    // [dbPasswordKey]: pulumi.output('NA because we use cert auth'),
+    [dbPasswordKey]: databases.keycloak.password.apply(required),
     database: databases.keycloak.name,
+    [certificatePasswordKey]: certificatePassword,
+  },
+}, { provider });
+
+const postgresCert = new Certificate('postgres', {
+  metadata: {
+    name: 'postgres',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    secretName: 'postgres-cert',
+    issuerRef: clusterIssuers.ref(x => x.postgres),
+    duration: '2160h0m0s', // 90d
+    renewBefore: '360h0m0s', // 15d
+    commonName: 'keycloak',
+    usages: ['client auth'],
+    privateKey: {
+      algorithm: 'RSA',
+      encoding: 'PKCS8',
+      size: 2048,
+      rotationPolicy: 'Always',
+    },
+    keystores: {
+      pkcs12: {
+        create: true,
+        passwordSecretRef: {
+          name: secret.metadata.name,
+          key: certificatePasswordKey,
+        },
+      },
+    },
   },
 }, { provider });
 
@@ -125,14 +147,15 @@ const chart = new k8s.helm.v3.Chart('keycloak', {
         existingSecret: secret.metadata.name,
         passwordSecretKey: 'adminPassword',
       },
-      tls: {
-        enabled: true,
-        existingSecret: cert.spec.apply(x => x?.secretName),
-        usePem: true,
-      },
+      // tls: {
+      //   enabled: true,
+      //   existingSecret: cert.spec.apply(x => x?.secretName),
+      //   usePem: true,
+      // },
       production,
-      proxy: 'reencrypt',
-      extraEnvVarsCM: config.metadata.name,
+      // proxy: 'reencrypt',
+      proxy: 'edge',
+      // extraEnvVarsCM: config.metadata.name,
       containerPorts: {
         http: 8080,
         https: 8443,
@@ -214,7 +237,7 @@ const internalIngress = new k8s.networking.v1.Ingress('internal', {
     name: 'internal',
     namespace: ns.metadata.name,
     annotations: {
-      'cert-manager.io/cluster-issuer': clusterIssuers.prod,
+      'cert-manager.io/cluster-issuer': clusterIssuers.stage,
       'external-dns.alpha.kubernetes.io/hostname': [
         hosts.internal,
         ...hosts.aliases.internal,

@@ -1,5 +1,4 @@
 import { Output, output } from '@pulumi/pulumi';
-import * as pg from '@pulumi/postgresql';
 import { Apps } from './apps';
 import { Refs } from './refs';
 import { LazyMap } from '../util';
@@ -11,6 +10,7 @@ export interface PostgreSqlDatabase {
   port: Output<number>;
   ownerGroup: Output<string>;
   owner: Output<string>;
+  password: Output<string | undefined>;
 }
 
 export class Databases {
@@ -52,6 +52,7 @@ export class Databases {
       hostname: this._pg.clusterHostname,
       port: this._pg.port,
       owner: output('postgres'),
+      password: output(undefined),
     };
   }
 
@@ -64,6 +65,7 @@ export class Databases {
       port: this._pg.port,
       owner: ref.requireOutput('owner') as Output<string>,
       ownerGroup: ref.requireOutput('ownerGroup') as Output<string>,
+      password: ref.getOutput('password') as Output<string | undefined>,
     };
   }
 }

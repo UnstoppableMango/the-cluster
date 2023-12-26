@@ -1,8 +1,14 @@
+import { RandomPassword } from '@pulumi/random';
 import { Role, Database, Grant } from '@pulumi/postgresql';
 import { apps } from '@unmango/thecluster/cluster/from-stack';
 import { allDbPermissions } from '@unmango/thecluster/dbs/postgres';
 
 const provider = apps.postgresqlLa.provider;
+
+const password = new RandomPassword('keycloak', {
+  length: 48,
+  special: false,
+});
 
 const keycloakOwner = new Role('keycloak_owner', {
   name: 'keycloak_owner',
@@ -12,6 +18,7 @@ const keycloak = new Role('keycloak', {
   name: 'keycloak',
   login: true,
   roles: [keycloakOwner.name],
+  password: password.result,
 }, { provider });
 
 const db = new Database('keycloak', {
@@ -33,3 +40,6 @@ export const port = apps.postgresqlLa.port;
 export const database = db.name;
 export const ownerGroup = keycloakOwner.name;
 export const owner = keycloak.name;
+
+const passwordOutput = password.result;
+export { passwordOutput as password };

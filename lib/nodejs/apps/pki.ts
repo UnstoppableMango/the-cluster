@@ -1,19 +1,10 @@
 import { Output } from '@pulumi/pulumi';
 import { Refs } from '../internal';
 
-export interface Bundle {
-  name: Output<string>;
-  key: Output<string>;
-  additionalFormats: Output<{
-    jks: { key: Output<string> };
-    pkcs12: { key: Output<string> };
-  }>;
-  matchLabels: Output<Record<string, Output<string>>>;
-}
-
 export interface Bundles {
-  root: Output<Bundle>;
-  postgres: Output<Bundle>;
+  key: Output<string>;
+  jksKey: Output<string>;
+  p12Key: Output<string>;
 }
 
 export interface ClusterIssusers {
@@ -33,14 +24,24 @@ export interface Issuers {
   kind: Output<string>;
 }
 
+export interface ConfigMaps {
+  root: Output<string>;
+  postgres: Output<string>;
+  keycloak: Output<string>;
+}
+
 export class Pki {
   constructor(private _refs: Refs) { }
 
-  public get bundles(): Output<Bundles> {
+  public get bundles(): Bundles {
     return this._refs.pki.requireOutput('bundles') as Output<Bundles>;
   }
 
-  public get clusterIssuers(): Output<ClusterIssusers> {
+  public get configMaps(): ConfigMaps {
+    return this._refs.pki.requireOutput('configMaps') as Output<ConfigMaps>;
+  }
+
+  public get clusterIssuers(): ClusterIssusers {
     return this._refs.pki.requireOutput('clusterIssuers') as Output<ClusterIssusers>;
   }
 
