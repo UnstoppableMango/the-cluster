@@ -110,6 +110,9 @@ const chart = new Chart(releaseName, {
             Host: dbHost,
             SSLMode: 'require',
             MaintenanceDB: databases.pgadmin.name,
+            SSLCert: path.join(postgresCertDir, 'tls.crt'),
+            SSLKey: path.join(postgresCertDir, 'tls.key'),
+            SSLRootCert: path.join(postgresCertDir, 'ca.crt'),
           },
         },
       },
@@ -158,8 +161,9 @@ const chart = new Chart(releaseName, {
       VolumePermissions: { enabled: true },
       resources: {
         limits: {
-          cpu: '100m',
-          memory: '128Mi',
+          // Initial startup needs a bit of heft
+          // cpu: '300m',
+          memory: '512Mi',
         },
         requests: {
           cpu: '50m',
@@ -201,6 +205,16 @@ const chart = new Chart(releaseName, {
         annotations: {
           'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
           'pulumi.com/skipAwait': 'true',
+        },
+      },
+      resources: {
+        limits: {
+          cpu: '10m',
+          memory: '64Mi',
+        },
+        requests: {
+          cpu: '10m',
+          memory: '64Mi',
         },
       },
     },
