@@ -20,7 +20,7 @@ jobs:
         working-directory: clusters/rosequartz
     steps:
       - uses: actions/checkout@v4
-      - run: git config --global --add safe.directory "$PWD" # actions/runner#2033
+      - run: git config --global --add safe.directory "/__w/the-cluster/the-cluster" # actions/runner#2033
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc

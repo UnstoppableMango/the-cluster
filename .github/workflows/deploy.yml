@@ -62,7 +62,7 @@ jobs:
         working-directory: ${{ env.PROJECT_DIR }}
     steps:
     - uses: actions/checkout@v4
-    - run: git config --global --add safe.directory "$PWD" # actions/runner#2033
+    - run: git config --global --add safe.directory "/__w/the-cluster/the-cluster" # actions/runner#2033
 
     - name: Validate inputs
       run: |
