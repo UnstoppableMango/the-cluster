@@ -1,7 +1,5 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import * as YAML from 'yaml';
-import * as fp from 'fp-ts';
 import { interpolate } from '@pulumi/pulumi';
 import { ConfigMap, Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v3';
@@ -59,6 +57,8 @@ const env = new ConfigMap('pgadmin-env', {
   data: {
     // https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html
     PGADMIN_DISABLE_POSTFIX: 'true',
+    PGADMIN_LISTEN_ADDRESS: '0.0.0.0',
+    PGADMIN_LISTEN_PORT: '8080',
     CONFIG_DATABASE_URI: concat([
       interpolate`postgresql://${username}@${dbHost}:${dbPort}/${databases.pgadmin.name}?`,
       join([
@@ -68,8 +68,6 @@ const env = new ConfigMap('pgadmin-env', {
         `sslkey=${path.join(postgresCertDir, 'tls.key')}`,
       ], '&'),
     ]),
-    // Currently technically unused
-    // Eventually...
     // https://www.pgadmin.org/docs/pgadmin4/latest/oauth2.html
     OAUTH2_CLIENT_ID: client.clientId,
     OAUTH2_CLIENT_SECRET: client.clientSecret,
@@ -77,6 +75,7 @@ const env = new ConfigMap('pgadmin-env', {
     OAUTH2_AUTHORIZATION_URL: realms.external.authorizationUrl,
     OAUTH2_API_BASE_URL: realms.external.apiBaseUrl,
     OAUTH2_USERINFO_ENDPOINT: realms.external.userinfoEndpoint,
+    OAUTH2_SCOPE: interpolate`openid email ${realms.groupsScopeName}`,
   },
 }, { provider });
 
@@ -93,8 +92,13 @@ const chart = new Chart(releaseName, {
         repository: 'dpage/pgadmin4',
         tag: versions.pagadmin,
       },
+      containerPorts: {
+        http: 8080,
+      },
       service: {
         type: 'ClusterIP',
+        port: 80,
+        targetPort: 8080,
       },
       serviceAccount: {
         create: true,
@@ -104,7 +108,8 @@ const chart = new Chart(releaseName, {
         resourceType: 'ConfigMap',
         servers: {
           thecluster: {
-            Name: databases.postgres.name,
+            Name: databases.pgadmin.name,
+            Group: 'THECLUSTER',
             Port: dbPort,
             Username: username,
             Host: dbHost,
