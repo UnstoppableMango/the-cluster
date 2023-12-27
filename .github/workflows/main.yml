@@ -13,7 +13,7 @@ jobs:
   setup:
     name: Setup
     runs-on: thecluster
-    container: pulumi/pulumi-nodejs:3.97.0
+    container: ghcr.io/unstoppablemango/runner-image
     steps:
     - uses: actions/checkout@v4
       with:
@@ -64,7 +64,7 @@ jobs:
   pinkdiamond:
     name: Pink Diamond
     runs-on: thecluster
-    container: pulumi/pulumi-nodejs:3.97.0
+    container: ghcr.io/unstoppablemango/runner-image
     needs: [setup]
     if: fromJson(needs.setup.outputs.pinkdiamond) && !failure() && !cancelled()
     defaults:

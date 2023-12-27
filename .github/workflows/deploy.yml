@@ -51,7 +51,7 @@ jobs:
   deploy:
     name: ${{ github.event_name == 'push' && 'deploy' || 'preview' }}
     runs-on: thecluster
-    container: pulumi/pulumi-nodejs:3.97.0
+    container: ghcr.io/unstoppablemango/runner-image
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       PROJECT_DIR: ${{ inputs.kind }}/${{ inputs.project }}
