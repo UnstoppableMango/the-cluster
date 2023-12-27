@@ -8,4 +8,6 @@ COPY --from=yq /usr/bin/yq /usr/bin/yq
 RUN DEBIAN_FRONTEND=noninteractive \
 	apt-get update && \
 	apt-get install -y unzip jq gettext-base && \
-	rm -rf /var/lib/apt/lists/*
+	rm -rf /var/lib/apt/lists/* && \
+	git config --global --add safe.directory "$HOME/_work" && \
+	git config --global --add safe.directory "/__w"
