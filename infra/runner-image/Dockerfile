@@ -3,7 +3,6 @@
 FROM mikefarah/yq:4.40.5 as yq
 FROM pulumi/pulumi-nodejs:3.99.0-debian
 
-RUN git config --system --add safe.directory "/__w/the-cluster/the-cluster"
 COPY --from=yq /usr/bin/yq /usr/bin/yq
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -23,6 +22,3 @@ RUN adduser --disabled-password --gecos "" --uid 1001 runner \
 
 WORKDIR /home/runner
 USER runner
-
-RUN git config --global --add safe.directory "$HOME/_work" \
-	&& git config --global --add safe.directory "/__w/the-cluster/the-cluster"
