@@ -18,19 +18,22 @@ import {
   postgresPort,
   primaryDatabase,
   registry,
-  replicationPasswordKey,
-  replicationUsername,
+  releaseName,
   repository,
   resources,
+  serviceName,
+  tlsSecretName,
   uid,
   versions,
 } from './config';
 
 const ns = Namespace.get('postgres', shared.postgresNamespace, { provider });
-const adminPassword = password('postgres');
-const replicationPassword = password(replicationUsername);
-const tlsSecretName = 'postgres-cert';
 export { primaryDatabase, hosts, loadBalancerIP as ip, postgresPort as port };
+
+const adminPassword = new random.RandomPassword('postgres', {
+  length: 48,
+  special: false,
+});
 
 const secret = new k8s.core.v1.Secret('postgres', {
   metadata: {
@@ -39,38 +42,60 @@ const secret = new k8s.core.v1.Secret('postgres', {
   },
   stringData: {
     [adminPasswordKey]: adminPassword.result,
-    [replicationPasswordKey]: replicationPassword.result,
   },
 }, { provider });
 
-const config = new k8s.core.v1.ConfigMap('postgres', {
+const cert = new Certificate('postgres', {
   metadata: {
     name: 'postgres',
     namespace: ns.metadata.name,
   },
-  data: {
-    'pg_hba.conf': fs.readFile('assets/pg_hba.conf', 'utf-8'),
+  spec: {
+    secretName: tlsSecretName,
+    issuerRef: clusterIssuers.ref(x => x.postgres),
+    duration: '2160h0m0s', // 90d
+    renewBefore: '360h0m0s', // 15d
+    commonName: 'postgres',
+    subject: {
+      organizations: ['unmango'],
+    },
+    privateKey: {
+      algorithm: 'RSA',
+      encoding: 'PKCS1',
+      size: 2048,
+      rotationPolicy: 'Always',
+    },
+    usages: [
+      'server auth',
+      'client auth',
+    ],
+    ipAddresses: [loadBalancerIP],
+    dnsNames: [
+      hosts.external,
+      'postgres-ha.thecluster.io',
+      'postgres-la.thecluster.io',
+      'pgha.thecluster.io',
+      'pgla.thecluster.io',
+      'pg.thecluster.io',
+      hosts.internal,
+      'postgres-ha.lan.thecluster.io',
+      'postgres-la.lan.thecluster.io',
+      'pgha.lan.thecluster.io',
+      'pgla.lan.thecluster.io',
+      'pg.lan.thecluster.io',
+      serviceName,
+      `${serviceName}.cluster.local`,
+      `${serviceName}.thecluster.io`,
+      `${serviceName}.lan.thecluster.io`,
+    ],
   },
 }, { provider });
 
-const releaseName = 'postgres';
 const chart = new Chart(releaseName, {
   path: './',
   namespace: ns.metadata.name,
   values: {
     postgresql: {
-      global: {
-        storageClass: storageClasses.rbd,
-        postgresql: {
-          // An imaginary top-level service exists
-          // that configures both primary and read
-          service: {
-            ports: {
-              postgresql: postgresPort,
-            },
-          },
-        },
-      },
       image: {
         registry,
         repository,
@@ -78,17 +103,12 @@ const chart = new Chart(releaseName, {
       },
       auth: {
         database: primaryDatabase,
-        replicationUsername,
         existingSecret: secret.metadata.name,
         secretKeys: {
           adminPasswordKey,
-          replicationPasswordKey,
         },
       },
       architecture,
-      replication: {
-        applicationName: 'thecluster',
-      },
       tls: {
         enabled: true,
         certificatesSecret: tlsSecretName,
@@ -97,20 +117,13 @@ const chart = new Chart(releaseName, {
         certCAFilename: 'ca.crt',
       },
       primary: {
-        // When this is supplied, whatever creates the replication user never runs and everything breaks
-        // existingConfigmap: config.metadata.name,
-        // initdb: {
-        //   scripts: {
-        //     'create_repl_user.sh': fs.readFile('assets/create_repl_user.sh', 'utf-8'),
-        //   },
-        // },
+        pgHbaConfiguration: fs.readFile('assets/pg_hba.conf', 'utf-8'),
         resources,
         podSecurityContext: {
           fsGroup: gid,
         },
         containerSecurityContext: {
           runAsUser: uid,
-          // runAsGroup: gid,
         },
         priorityClassName: 'system-cluster-critical',
         service: {
@@ -122,6 +135,7 @@ const chart = new Chart(releaseName, {
         },
         persistence: {
           size: '100Gi',
+          storageClass: storageClasses.rbd,
         },
         persistentVolumeClaimRetentionPolicy: {
           enabled: false,
@@ -129,46 +143,31 @@ const chart = new Chart(releaseName, {
           whenDeleted: 'Retain',
         },
       },
-      readReplicas: {
-        replicaCount: 4,
-        resources,
-        podSecurityContext: {
-          fsGroup: gid,
+      volumePermissions: {
+        enabled: true,
+        image: {
+          registry,
+          repository: osShellRepository,
+          tag: versions.bitnamiOsShell,
         },
-        containerSecurityContext: {
-          runAsUser: uid,
-          // runAsGroup: gid,
-        },
-        service: {
-          type: 'ClusterIP',
-        },
-        persistence: {
-          size: '100Gi',
+        resources: {
+          limits: {
+            cpu: '10m',
+            memory: '64Mi',
+          },
+          requests: {
+            cpu: '10m',
+            memory: '64Mi',
+          },
         },
       },
-      // Everything blows up with operation not permitted
-      // volumePermissions: {
-      //   enabled: true,
-      //   image: {
-      //     registry,
-      //     repository: osShellRepository,
-      //     tag: versions.bitnamiOsShell,
-      //   },
-      //   resources: {
-      //     limits: {
-      //       cpu: '10m',
-      //       memory: '64Mi',
-      //     },
-      //     requests: {
-      //       cpu: '10m',
-      //       memory: '64Mi',
-      //     },
-      //   },
-      //   containerSecurityContext: {
-      //     runAsUser: uid,
-      //     // runAsGroup: gid,
-      //   },
-      // },
+      // An imaginary top-level service exists
+      // that configures both primary and read
+      service: {
+        ports: {
+          postgresql: postgresPort,
+        },
+      },
       serviceAccount: { create: true },
       rbac: { create: true },
       metrics: {
@@ -192,17 +191,9 @@ const chart = new Chart(releaseName, {
   transformations: [],
 }, { provider });
 
-const serviceName = interpolate`${releaseName}-postgresql-primary-hl`;
 const service = Service.get(
   'postgres',
   interpolate`${ns.metadata.name}/${serviceName}`,
   { provider, dependsOn: chart.ready });
 
 export const clusterHostname = interpolate`${service.metadata.name}.${ns.metadata.name}`;
-
-function password(name: string): random.RandomPassword {
-  return new random.RandomPassword(name, {
-    length: 48,
-    special: false,
-  });
-}
