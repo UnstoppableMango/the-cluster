@@ -6,6 +6,7 @@ export interface Namespaces {
   postgres: Output<string>;
   keycloak: Output<string>;
   pgadmin: Output<string>;
+  pulumiOperator: Output<string>;
 }
 
 export class Shared {
@@ -14,14 +15,6 @@ export class Shared {
 
   public get ref(): StackReference {
     return this._ref.value;
-  }
-
-  public get mediaNamespace(): Output<string> {
-    return this.ref.requireOutput('mediaNamespace') as Output<string>;
-  }
-
-  public get postgresNamespace(): Output<string> {
-    return this.ref.requireOutput('postgresNamespace') as Output<string>;
   }
 
   public get namespaces(): Namespaces {
