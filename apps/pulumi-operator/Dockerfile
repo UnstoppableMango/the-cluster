@@ -2,10 +2,10 @@
 
 FROM golang:1.21 as build
 
-# renovate depName=pulumi/pulumi-kubernetes-operator extractVersion=^v(?<version>.*)
-ARG VERSION=1.14.0
+# renovate depName=pulumi/pulumi-kubernetes-operator
+ARG VERSION=v1.14.0
 
-ADD https://github.com/pulumi/pulumi-kubernetes-operator.git#v${VERSION} /src
+ADD https://github.com/pulumi/pulumi-kubernetes-operator.git#${VERSION} /src
 
 ENV GO111MODULE=on
 ENV GOOS=linux
