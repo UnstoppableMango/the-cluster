@@ -1,10 +1,15 @@
-export * as output from './Output';
+export * from './misc';
+// export * as output from './Output';
+
+// export {
+//   lift
+// } from './functor';
+
+// export {
+//   Output,
+//   map,
+// } from './Output';
 
 export {
-  lift
-} from './functor';
-
-export {
-  Output,
-  map,
-} from './Output';
+  certificate,
+} from './volumes';

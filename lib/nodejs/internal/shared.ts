@@ -5,6 +5,7 @@ export interface Namespaces {
   media: Output<string>;
   postgres: Output<string>;
   keycloak: Output<string>;
+  pgadmin: Output<string>;
 }
 
 export class Shared {

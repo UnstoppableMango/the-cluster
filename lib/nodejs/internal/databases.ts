@@ -21,6 +21,7 @@ export class Databases {
     ['keycloak', this.database],
     ['kong', this.database],
     ['lapislazuli', this.database],
+    ['pgadmin', this.database],
   ], this);
 
   constructor(private _refs: Refs, private _apps: Apps) { }
@@ -43,6 +44,10 @@ export class Databases {
 
   public get lapislazuli(): PostgreSqlDatabase {
     return this._dbs.get('lapislazuli');
+  }
+
+  public get pgadmin(): PostgreSqlDatabase {
+    return this._dbs.get('pgadmin');
   }
 
   public get postgres(): Omit<PostgreSqlDatabase, 'ownerGroup'> {
