@@ -1,5 +1,5 @@
 module Pulumi where
 
-foreign import data Output :: Type
+foreign import data Output :: forall a. Type -> a
 
--- foreign import output :: 'a -> Output<'a>
+foreign import output :: forall a. a -> Output a
