@@ -29,25 +29,15 @@ config:
             image: ghcr.io/actions/actions-runner:latest
             command: ['/home/runner/run.sh']
             env:
-              - name: GITHUB_RUNNER_CACHE_TEMP
-                value: /home/runner/_cache
               - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
                 value: 'false'
-        #     volumeMounts:
-        #       - name: cache
-        #         mountPath: /home/runner/_cache
-        # volumes:
-        #   - name: cache
-        #     ephemeral:
-        #       volumeClaimTemplate:
-        #         spec:
-        #           accessModes: ['ReadWriteOnce']
-        #           selector:
-        #             matchLabels:
-        #               thecluster.io/role: actions-runner
-        #           resources:
-        #             requests:
-        #               storage: 10Gi
+            volumeMounts:
+              - name: cache
+                mountPath: /opt/hostedtoolcache
+        volumes:
+          - name: cache
+            persistentVolumeClaim:
+              claimName: thecluster-cache
   # - name: wishlists
   #   githubUrl: https://github.com/unmango/wishlists
   #   minRunners: 0
