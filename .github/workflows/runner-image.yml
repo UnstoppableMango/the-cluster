@@ -1,4 +1,4 @@
-name: Runner Imager
+name: Runner Image
 
 on:
   pull_request:
