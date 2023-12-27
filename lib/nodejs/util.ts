@@ -32,6 +32,10 @@ export function requireNested<T>(selector: (x: T) => string): (x?: T) => string 
   return x => x ? selector(x) : '';
 }
 
+export function concat(x: Input<Input<string>[]>): Output<string> {
+  return output(x).apply(y => y.reduce((p, c) => p + c));
+}
+
 export function join(x: Input<Input<string>[]>, sep: string): Output<string> {
   return output(x).apply(y => y.join(sep));
 }
