@@ -1,0 +1,18 @@
+package:
+  name: pulumi-purescript
+  dependencies:
+    - effect
+    - prelude
+    - pulumi
+  test:
+    main: Test.Main
+    dependencies: []
+workspace:
+  package_set:
+    registry: 47.9.2
+  extra_packages:
+    pulumi:
+      git: ssh://git@github.com/pulumi/pulumi.git
+      ref: v3.99.0
+      subdir: sdk/nodejs
+      dependencies: []
