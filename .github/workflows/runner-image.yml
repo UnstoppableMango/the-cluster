@@ -7,6 +7,7 @@ on:
       - infra/runner-image/Dockerfile
   push:
     branches: ['main']
+    tags: [v*.*.*]
     paths:
       - infra/runner-image/Dockerfile
 
@@ -30,7 +31,9 @@ jobs:
           tags: |
             type=ref,event=branch
             type=ref,event=pr
-            type=semver,pattern=v{{version}}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
             type=sha
 
       - name: Login to GitHub Container Registry

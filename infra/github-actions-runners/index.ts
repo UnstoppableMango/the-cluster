@@ -2,7 +2,6 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import { apps, provider, storageClasses } from '@unmango/thecluster/cluster/from-stack';
 import { github, privateKey, scaleSets } from './config';
-
 export const namespaces: pulumi.Output<string>[] = [];
 
 for (const set of scaleSets) {
@@ -48,7 +47,9 @@ for (const set of scaleSets) {
             accessModes: ['ReadWriteOnce'],
             storageClassName: storageClasses.rbd,
             resources: {
-              requests: { storage: set.volumeSize },
+              requests: {
+                storage: '10Gi',
+              },
             },
           },
         },

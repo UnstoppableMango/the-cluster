@@ -12,11 +12,13 @@ env:
 jobs:
   setup:
     name: Setup
-    runs-on: ubuntu-latest
+    runs-on: thecluster
+    container: ghcr.io/unstoppablemango/runner-image:main
     steps:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
+    - run: git config --global --add safe.directory "$PWD" # actions/runner#2033
 
     - name: Set modified stacks
       id: stacks
@@ -29,7 +31,6 @@ jobs:
       dashboard: ${{ steps.stacks.outputs.dashboard }}
       metrics-server: ${{ steps.stacks.outputs.metrics-server }}
       clusterapi: ${{ steps.stacks.outputs.clusterapi }}
-      crds: ${{ steps.stacks.outputs.crds }}
       pulumi-operator: ${{ steps.stacks.outputs.pulumi-operator }}
       metallb: ${{ steps.stacks.outputs.metallb }}
       cloudflared: ${{ steps.stacks.outputs.cloudflared }}
@@ -61,7 +62,8 @@ jobs:
 
   pinkdiamond:
     name: Pink Diamond
-    runs-on: ubuntu-latest
+    runs-on: thecluster
+    container: ghcr.io/unstoppablemango/runner-image:main
     needs: [setup]
     if: fromJson(needs.setup.outputs.pinkdiamond) && !failure() && !cancelled()
     defaults:
@@ -71,6 +73,7 @@ jobs:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
     steps:
     - uses: actions/checkout@v4
+    - run: git config --global --add safe.directory "$PWD" # actions/runner#2033
 
     - name: Setup tools
       uses: ./.github/actions/setup-tools
@@ -86,22 +89,9 @@ jobs:
       if: false # Port-forwarding isn't setup for pinkdiamond
       run: talosctl health --nodes 192.168.1.104
 
-  crds-pd:
-    name: Pink Diamond CRDs
-    needs: [setup, pinkdiamond]
-    if: fromJson(needs.setup.outputs.crds) && !failure() && !cancelled()
-    concurrency: pd-crds-${{ github.ref }}
-    uses: ./.github/workflows/deploy.yml
-    with:
-      project: crds
-      stack: pinkdiamond
-      verify: false
-      pre-deploy-script: ./gen/capi.sh
-    secrets: inherit
-
   cert-manager-pd:
     name: Pink Diamond Cert Manager
-    needs: [setup, pinkdiamond, crds-pd]
+    needs: [setup, pinkdiamond]
     if: fromJson(needs.setup.outputs.cert-manager) && !failure() && !cancelled()
     concurrency: pd-cert-manager-${{ github.ref }}
     uses: ./.github/workflows/deploy.yml
@@ -125,7 +115,7 @@ jobs:
 
   pulumi-operator-pd:
     name: Pink Diamond Pulumi Kubernetes Operator
-    needs: [setup, pinkdiamond, crds-pd]
+    needs: [setup, pinkdiamond]
     if: fromJson(needs.setup.outputs.pulumi-operator) && !failure() && !cancelled()
     concurrency: pd-pulumi-operator-${{ github.ref }}
     uses: ./.github/workflows/deploy.yml
@@ -160,7 +150,7 @@ jobs:
 
   ceph-csi:
     name: Ceph CSI
-    needs: [setup, pinkdiamond, crds-pd]
+    needs: [setup, pinkdiamond]
     if: fromJson(needs.setup.outputs.ceph-csi) && !failure() && !cancelled()
     concurrency: ceph-csi-${{ github.ref }}
     uses: ./.github/workflows/deploy.yml
@@ -181,6 +171,7 @@ jobs:
       project: keycloak
       stack: pinkdiamond
       uses-lib: true
+      uses-crds: true
     secrets: inherit
 
   qemu-guest-agent-talos:
@@ -209,7 +200,7 @@ jobs:
 
   nginx-ingress:
     name: Nginx Ingress
-    needs: [setup, pinkdiamond, crds-pd, nginx-ingress-operator]
+    needs: [setup, pinkdiamond, nginx-ingress-operator]
     if: fromJson(needs.setup.outputs.nginx-ingress) && !failure() && !cancelled()
     concurrency: nginx-ingress-${{ github.ref }}
     uses: ./.github/workflows/deploy.yml
