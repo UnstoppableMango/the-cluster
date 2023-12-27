@@ -48,7 +48,6 @@ const cert = new Certificate('keycloak', {
       'server auth',
       'client auth',
     ],
-    // TODO: Is any of the below necessary?
     dnsNames: [
       hosts.external,
       ...hosts.aliases.external,
@@ -76,7 +75,7 @@ const config = new ConfigMap('keycloak', {
       'sslcertmode=require',
       `sslrootcert=${path.join(postgresCertDir, 'ca.crt')}`,
       `sslcert=${path.join(postgresCertDir, 'tls.crt')}`, // Ignored when in p12 format?
-      `sslkey=${path.join(postgresCertDir, 'ca.crt')}`,
+      `sslkey=${path.join(postgresCertDir, 'tls.key')}`,
       // Why we don't care about this being plaintext
       // https://cert-manager.io/docs/faq/#simple-answer
       // `sslpassword=${certificatePassword}`,
@@ -164,13 +163,13 @@ const chart = new k8s.helm.v3.Chart('keycloak', {
       podSecurityContext: { enabled: true },
       containerSecurityContext: { enabled: true },
       resources: {
-        // Initial startup needs a bit of heft
         limits: {
-          cpu: '100m',
-          memory: '2Gi',
+          // Initial startup needs a bit of heft
+          cpu: '500m',
+          memory: '512Mi',
         },
         requests: {
-          cpu: '10m',
+          cpu: '20m',
           memory: '512Mi',
         },
       },
