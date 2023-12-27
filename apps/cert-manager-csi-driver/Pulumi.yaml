@@ -5,5 +5,6 @@ config:
   zoneName: thecluster.io
   versions:
     value:
-      certManagerCsi: v0.6.0 # renovate depName=cert-manager/csi-driver
-      csiNodeDriverRegistrar: v2.9.1
+      certManagerCsi: v0.6.0 # renovate depName=jetstack/cert-manager-csi-driver datasource=docker
+      csiNodeDriverRegistrar: v2.9.2 # renovate depName=sig-storage/csi-node-driver-registrar datasource=docker
+      livenessProbe: v2.11.0 # renovate depName=sig-storage/livenessprobe datasource=docker
