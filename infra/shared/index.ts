@@ -1,17 +1,26 @@
-import * as k8s from '@pulumi/kubernetes';
+import { Namespace } from '@pulumi/kubernetes/core/v1';
 import { provider } from '@unmango/thecluster/cluster/from-stack';
 
-const mediaNs = new k8s.core.v1.Namespace('media', {
+const mediaNs = new Namespace('media', {
   metadata: { name: 'media' },
 }, { provider });
 
-const postgresNs = new k8s.core.v1.Namespace('postgres', {
+const postgresNs = new Namespace('postgres', {
   metadata: { name: 'postgres' },
 }, { provider });
 
-const keycloakNs = new k8s.core.v1.Namespace('keycloak', {
+const keycloakNs = new Namespace('keycloak', {
   metadata: {
     name: 'keycloak',
+    labels: {
+      'thecluster.io/trust': 'postgres',
+    },
+  },
+}, { provider });
+
+const pgadminNs = new Namespace('pgadmin', {
+  metadata: {
+    name: 'pgadmin',
     labels: {
       'thecluster.io/trust': 'postgres',
     },
@@ -24,4 +33,5 @@ export const namespaces = {
   media: mediaNs.metadata.name,
   postgres: postgresNs.metadata.name,
   keycloak: keycloakNs.metadata.name,
+  pgadmin: pgadminNs.metadata.name,
 };
