@@ -27,11 +27,14 @@ const pgadminNs = new Namespace('pgadmin', {
   },
 }, { provider });
 
-export const mediaNamespace = mediaNs.metadata.name;
-export const postgresNamespace = postgresNs.metadata.name;
+const pulumiOperator = new Namespace('pulumi-operator', {
+  metadata: { name: 'pulumi-operator' },
+}, { provider });
+
 export const namespaces = {
   media: mediaNs.metadata.name,
   postgres: postgresNs.metadata.name,
   keycloak: keycloakNs.metadata.name,
   pgadmin: pgadminNs.metadata.name,
+  pulumiOperator: pulumiOperator.metadata.name,
 };
