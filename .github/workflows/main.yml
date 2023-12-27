@@ -171,6 +171,7 @@ jobs:
       project: keycloak
       stack: pinkdiamond
       uses-lib: true
+      uses-crds: true
     secrets: inherit
 
   qemu-guest-agent-talos:
