@@ -20,20 +20,34 @@ spec:
           env:
             - name: DB_PATH
               value: /db/filebrowser.db
+            - name: CONFIG_PATH
+              value: /config/settings.json
             - name: PUID
               value: {{ .Values.global.uid | quote }}
             - name: PGID
               value: {{ .Values.global.gid | quote }}
-          {{- if .Values.userHeader }}
-            - name: FILEBROWSER_USER_HEADER
-              value: {{ .Values.userHeader }}
-          {{- end }}
+            - name: FILEBROWSER_AUTH_HEADER
+              value: {{ .Values.auth.header | quote }}
+            - name: FILEBROWSER_AUTH_METHOD
+              value: {{ .Values.auth.method | quote }}
+            - name: FILEBROWSER_BRANDING_THEME
+              value: {{ .Values.branding.theme | quote }}
+            - name: FILEBROWSER_BRANDING_NAME
+              value: {{ coalesce .Values.branding.name .Release.Name | quote }}
+            - name: FILEBROWSER_VIEW_MODE
+              value: {{ .Values.viewMode | quote }}
+            - name: FILEBROWSER_DISABLE_USED_PERCENTAGE
+              value: {{ .Values.branding.disableUsedPercentage | quote }}
           volumeMounts:
             - name: database
               mountPath: /db
             - name: config
               mountPath: /setup.sh
               subPath: setup.sh
+          {{- with .Values.init.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end}}
       containers:
         - name: filebrowser
           image: {{ include "image" . }}
@@ -75,6 +89,12 @@ spec:
             limits:
               cpu: 10m
               memory: 64Mi
+          {{- if .Values.securityContext }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
       securityContext:
         fsGroup: {{ .Values.global.gid }}
       volumes:

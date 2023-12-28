@@ -1,6 +1,9 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "required": [
+    "address",
+    "auth",
+    "baseUrl",
     "global",
     "image",
     "ingress",
@@ -11,6 +14,39 @@
     "service"
   ],
   "properties": {
+    "address": {
+      "type": "string"
+    },
+    "auth": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": [
+            "json",
+            "proxy",
+            "noauth"
+          ]
+        },
+        "header": {
+          "type": "string"
+        }
+      }
+    },
+    "baseUrl": {
+      "type": "string"
+    },
+    "branding": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "theme": {
+          "type": "string"
+        }
+      }
+    },
     "existingConfigMap": {
       "type": "string"
     },
@@ -18,7 +54,10 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["name", "mountPath"],
+        "required": [
+          "name",
+          "mountPath"
+        ],
         "properties": {
           "mountPath": {
             "type": "string"
@@ -116,12 +155,17 @@
               "type": "string"
             }
           }
+        },
+        "securityContext": {
+          "type": "object"
         }
       }
     },
     "oauth2-proxy": {
       "type": "object",
-      "required": ["enabled"],
+      "required": [
+        "enabled"
+      ],
       "properties": {
         "enabled": {
           "type": "boolean"
@@ -130,7 +174,9 @@
     },
     "persistence": {
       "type": "object",
-      "required": ["enabled"],
+      "required": [
+        "enabled"
+      ],
       "properties": {
         "enabled": {
           "type": "boolean"
@@ -146,9 +192,15 @@
     "port": {
       "type": "number"
     },
+    "securityContext": {
+      "type": "object"
+    },
     "service": {
       "type": "object",
-      "required": ["port", "type"],
+      "required": [
+        "port",
+        "type"
+      ],
       "properties": {
         "port": {
           "type": "integer"
@@ -156,13 +208,20 @@
         "type": {
           "type": "string"
         },
+        "clusterIP": {
+          "type": "string"
+        },
         "loadBalancerIP": {
           "type": "string"
         }
       }
     },
-    "userHeader": {
-      "type": "string"
+    "viewMode": {
+      "type": "string",
+      "enum": [
+        "list",
+        "mosaic"
+      ]
     }
   }
 }

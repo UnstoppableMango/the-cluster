@@ -3,11 +3,23 @@ global:
   uid: 911
   gid: 911
 
+address: 0.0.0.0
 port: 8080
+baseUrl: /
+viewMode: list
 existingConfigMap: ''
 extraVolumes: []
 extraVolumeMounts: []
-userHeader: ''
+securityContext: {}
+
+branding:
+  name: ''
+  theme: dark
+  disableUsedPercentage: false
+
+auth:
+  method: proxy
+  header: X-Forwarded-User
 
 ingress:
   enabled: false
@@ -36,6 +48,9 @@ init:
     repository: filebrowser/filebrowser
     tag: ''
     digest: ''
+  securityContext:
+    allowPrivilegeEscalation: false
+    runAsNonRoot: false # So we can chown the right dirs
 
 service:
   type: ClusterIP
