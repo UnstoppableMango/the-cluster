@@ -1,6 +1,7 @@
 import { Config } from '@pulumi/pulumi';
 
 export interface Versions {
+  nginxIngress: string;
   nginxIngressHelmOperator: string;
 }
 
