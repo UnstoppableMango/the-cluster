@@ -1,7 +1,7 @@
 config:
   thecluster-filebrowser:hosts:
-    external: media-files.thecluster.io
-    internal: media-files.lan.thecluster.io
+    external: media.thecluster.io
+    internal: media.lan.thecluster.io
     aliases:
       external: []
       internal: []
