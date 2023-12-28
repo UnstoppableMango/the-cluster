@@ -40,6 +40,14 @@ spec:
             - name: FILEBROWSER_DISABLE_USED_PERCENTAGE
               value: {{ .Values.branding.disableUsedPercentage | quote }}
             {{ end }}
+            {{- if .Values.branding.disableExternal }}
+            - name: FILEBROWSER_DISABLE_EXTERNAL
+              value: {{ .Values.branding.disableExternal | quote }}
+            {{ end }}
+            {{- if .Values.branding.files }}
+            - name: FILEBROWSER_BRANDING_FILES
+              value: {{ .Values.branding.files | quote }}
+            {{ end }}
           volumeMounts:
             - name: database
               mountPath: /db
@@ -48,6 +56,10 @@ spec:
               subPath: setup.sh
           {{- with .Values.init.securityContext }}
           securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end}}
+          {{- with .Values.init.resources }}
+          resources:
             {{- toYaml . | nindent 12 }}
           {{- end}}
       containers:
@@ -84,13 +96,10 @@ spec:
             timeoutSeconds: 5
             periodSeconds: 10
             successThreshold: 1
+          {{- with .Values.init.resources }}
           resources:
-            requests:
-              cpu: 10m
-              memory: 64Mi
-            limits:
-              cpu: 10m
-              memory: 64Mi
+            {{- toYaml . | nindent 12 }}
+          {{- end}}
           {{- if .Values.securityContext }}
           {{- with .Values.securityContext }}
           securityContext:

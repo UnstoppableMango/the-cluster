@@ -16,6 +16,8 @@ branding:
   name: ''
   theme: dark
   disableUsedPercentage:
+  disableExternal:
+  files:
 
 auth:
   method: proxy
@@ -42,6 +44,14 @@ image:
   tag: ''
   digest: ''
 
+resources: {}
+  # limits:
+  #   cpu: 10m
+  #   memory: 64Mi
+  # requests:
+  #   cpu: 10m
+  #   memory: 64Mi
+
 init:
   image:
     registry: docker.io
@@ -51,6 +61,13 @@ init:
   securityContext:
     allowPrivilegeEscalation: false
     runAsNonRoot: false # So we can chown the right dirs
+  resources: {}
+    # limits:
+    #   cpu: 10m
+    #   memory: 64Mi
+    # requests:
+    #   cpu: 10m
+    #   memory: 64Mi
 
 service:
   type: ClusterIP
@@ -60,10 +77,10 @@ service:
 
 oauth2-proxy:
   enabled: false
-  resources:
-    limits:
-      cpu: 50m
-      memory: 128Mi
-    requests:
-      cpu: 50m
-      memory: 128Mi
+  resources: {}
+    # limits:
+    #   cpu: 10m
+    #   memory: 64Mi
+    # requests:
+    #   cpu: 10m
+    #   memory: 64Mi

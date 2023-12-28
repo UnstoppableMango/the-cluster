@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eum
+set -e
 
 [ -z "${DB_PATH+x}" ] && echo "DB_PATH not set" && exit 1;
 [ -z "${CONFIG_PATH+x}" ] && echo "CONFIG_PATH not set" && exit 1;
@@ -32,12 +32,22 @@ filebrowser config set
     --branding.color $FILEBROWSER_BRANDING_THEME
     --branding.name $FILEBROWSER_BRANDING_NAME
     --branding.disableUsedPercentage $FILEBROWSER_DISABLE_USED_PERCENTAGE
+    --branding.disableExternal $FILEBROWSER_DISABLE_EXTERNAL
+    --branding.files $FILEBROWSER_BRANDING_FILES
     --viewMode $FILEBROWSER_VIEW_MODE
 "
 
 args=()
 if [ -n "${FILEBROWSER_DISABLE_USED_PERCENTAGE+x}" ]; then
     args+=("--branding.disableUsedPercentage")
+fi
+
+if [ -n "${FILEBROWSER_DISABLE_EXTERNAL+x}" ]; then
+    args+=("--branding.disableExternal")
+fi
+
+if [ -n "${FILEBROWSER_BRANDING_FILES+x}" ]; then
+    args+=(--branding.files "$FILEBROWSER_BRANDING_FILES")
 fi
 
 # https://filebrowser.org/cli/filebrowser-config-set

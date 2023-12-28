@@ -50,6 +50,18 @@
             "string",
             "null"
           ]
+        },
+        "disableExternal": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "files": {
+          "type": [
+            "string",
+            "null"
+          ]
         }
       }
     },
@@ -164,6 +176,33 @@
         },
         "securityContext": {
           "type": "object"
+        },
+        "resources": {
+          "type": "object",
+          "properties": {
+            "limits": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              }
+            },
+            "requests": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -197,6 +236,33 @@
     },
     "port": {
       "type": "number"
+    },
+    "resources": {
+      "type": "object",
+      "properties": {
+        "limits": {
+          "type": "object",
+          "properties": {
+            "cpu": {
+              "type": "string"
+            },
+            "memory": {
+              "type": "string"
+            }
+          }
+        },
+        "requests": {
+          "type": "object",
+          "properties": {
+            "cpu": {
+              "type": "string"
+            },
+            "memory": {
+              "type": "string"
+            }
+          }
+        }
+      }
     },
     "securityContext": {
       "type": "object"
