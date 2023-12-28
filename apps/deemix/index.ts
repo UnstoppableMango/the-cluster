@@ -3,7 +3,7 @@ import { Namespace } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v3';
 import { clusterIssuers, ingresses, provider, realms, shared, storageClasses } from '@unmango/thecluster/cluster/from-stack';
 import { client, readersGroup } from './oauth';
-import { hosts, releaseName, resources, servicePort, versions } from './config';
+import { hosts, releaseName, servicePort, versions } from './config';
 import { core } from '@pulumi/kubernetes/types/input';
 
 type Volume = core.v1.Volume;
