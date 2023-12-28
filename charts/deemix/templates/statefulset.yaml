@@ -24,6 +24,14 @@ spec:
               value: {{ .Values.global.uid | quote }}
             - name: PGID
               value: {{ .Values.global.gid | quote }}
+            - name: DEEMIX_SINGLE_USER
+              value: {{ .Values.singleUser | quote }}
+            - name: DISABLE_OWNERSHIP_CHECK
+              value: {{ .Values.disableOwnershipCheck | quote }}
+            {{- if .Values.ingress.enabled }}
+            - name: DEEMIX_LOCATION_BASE
+              value: {{ .Values.ingress.path | quote }}
+            {{- end }}
           {{- if or .Values.persistence.enabled (lt 0 (len .Values.extraVolumeMounts)) }}
           volumeMounts:
           {{- if .Values.persistence.config }}

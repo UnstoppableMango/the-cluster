@@ -5,8 +5,8 @@ type: application
 version: 0.1.0
 appVersion: '2022.12.14-r222.5d447b6035'
 sources:
-- https://github.com/filebrowser/filebrowser
-- https://github.com/UnstoppableMango/the-cluster/tree/main/charts/filebrowser
+- https://gitlab.com/Bockiii/deemix-docker
+- https://github.com/UnstoppableMango/the-cluster/tree/main/charts/deemix
 kubeVersion: '>= 1.25'
 maintainers:
 - name: UnstoppableMango

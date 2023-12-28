@@ -2,6 +2,8 @@ global:
   uid: 911
   gid: 911
 
+umask: '022'
+singleUser: false
 disableOwnershipCheck: false
 port: 8080
 
