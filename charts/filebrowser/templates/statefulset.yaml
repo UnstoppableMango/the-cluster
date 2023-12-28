@@ -36,8 +36,10 @@ spec:
               value: {{ coalesce .Values.branding.name .Release.Name | quote }}
             - name: FILEBROWSER_VIEW_MODE
               value: {{ .Values.viewMode | quote }}
+            {{- if .Values.branding.disableUsedPercentage }}
             - name: FILEBROWSER_DISABLE_USED_PERCENTAGE
               value: {{ .Values.branding.disableUsedPercentage | quote }}
+            {{ end }}
           volumeMounts:
             - name: database
               mountPath: /db

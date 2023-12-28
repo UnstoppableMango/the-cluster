@@ -15,7 +15,7 @@ securityContext: {}
 branding:
   name: ''
   theme: dark
-  disableUsedPercentage: false
+  disableUsedPercentage:
 
 auth:
   method: proxy

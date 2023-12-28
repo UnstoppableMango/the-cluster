@@ -44,6 +44,12 @@
         },
         "theme": {
           "type": "string"
+        },
+        "disableUsedPercentage": {
+          "type": [
+            "string",
+            "null"
+          ]
         }
       }
     },
