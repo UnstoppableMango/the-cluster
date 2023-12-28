@@ -31,10 +31,15 @@ const pulumiOperator = new Namespace('pulumi-operator', {
   metadata: { name: 'pulumi-operator' },
 }, { provider });
 
+const nginxSystem = new Namespace('nginx-system', {
+  metadata: { name: 'nginx-system' },
+}, { provider });
+
 export const namespaces = {
   media: mediaNs.metadata.name,
   postgres: postgresNs.metadata.name,
   keycloak: keycloakNs.metadata.name,
   pgadmin: pgadminNs.metadata.name,
   pulumiOperator: pulumiOperator.metadata.name,
+  nginxSystem: nginxSystem.metadata.name,
 };
