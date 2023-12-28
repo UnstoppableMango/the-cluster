@@ -24,6 +24,10 @@ spec:
               value: {{ .Values.global.uid | quote }}
             - name: PGID
               value: {{ .Values.global.gid | quote }}
+          {{- if .Values.userHeader }}
+            - name: FILEBROWSER_USER_HEADER
+              value: {{ .Values.userHeader }}
+          {{- end }}
           volumeMounts:
             - name: database
               mountPath: /db
@@ -42,8 +46,10 @@ spec:
             - name: PGID
               value: {{ .Values.global.gid | quote }}
           volumeMounts:
+          {{- if .Values.persistence.enabled }}
             - name: database
               mountPath: /database
+          {{- end }}
             - name: config
               mountPath: /config/settings.json
               subPath: settings.json
@@ -69,6 +75,8 @@ spec:
             limits:
               cpu: 10m
               memory: 64Mi
+      securityContext:
+        fsGroup: {{ .Values.global.gid }}
       volumes:
         - name: config
           configMap:
@@ -76,13 +84,17 @@ spec:
       {{- if lt 0 (len .Values.extraVolumes) -}}
         {{ .Values.extraVolumes | toYaml | nindent 8 }}
       {{- end }}
-    volumeClaimTemplates:
-      - metadata:
-          name: database
-        spec:
-          storageClassName: {{ required "persistence.storageClassName is required" .Values.persistence.storageClassName }}
-          accessModes:
-            - ReadWriteOnce
-          resources:
-            requests:
-              storage: {{ .Values.persistence.size }}
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: database
+      spec:
+        storageClassName: {{ required "persistence.storageClassName is required" .Values.persistence.storageClassName }}
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size }}
+  {{- end }}

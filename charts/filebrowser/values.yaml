@@ -3,10 +3,11 @@ global:
   uid: 911
   gid: 911
 
-port: 8080 # TODO: Filebrowser can't bind to 80 for some reason.
+port: 8080
 existingConfigMap: ''
 extraVolumes: []
 extraVolumeMounts: []
+userHeader: ''
 
 ingress:
   enabled: false
@@ -19,6 +20,7 @@ ingress:
     enabled: false
 
 persistence:
+  enabled: true
   storageClassName: ''
   size: 1Gi
 
