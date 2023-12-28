@@ -70,9 +70,9 @@ spec:
         {{- end }}
       securityContext:
         fsGroup: {{ .Values.global.gid }}
-      {{- if lt 0 (len .Values.extraVolumes) -}}
+      {{- if lt 0 (len .Values.extraVolumes) }}
       volumes:
-        {{ .Values.extraVolumes | toYaml | nindent 8 }}
+        {{- .Values.extraVolumes | toYaml | nindent 8 }}
       {{- end }}
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
