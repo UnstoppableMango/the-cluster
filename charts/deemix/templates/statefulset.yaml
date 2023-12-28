@@ -18,7 +18,7 @@ spec:
           image: {{ include "image" . }}
           ports:
             - name: http
-              containerPort: {{ .Values.port }}
+              containerPort: 6595
           env:
             - name: PUID
               value: {{ .Values.global.uid | quote }}
@@ -28,11 +28,13 @@ spec:
               value: {{ .Values.singleUser | quote }}
             - name: DISABLE_OWNERSHIP_CHECK
               value: {{ .Values.disableOwnershipCheck | quote }}
-            {{- if .Values.ingress.enabled }}
+            - name: UMASK_SET
+              value: {{ .Values.umask | quote }}
+          {{- if .Values.ingress.enabled }}
             - name: DEEMIX_LOCATION_BASE
               value: {{ .Values.ingress.path | quote }}
-            {{- end }}
-          {{- if or .Values.persistence.enabled (lt 0 (len .Values.extraVolumeMounts)) }}
+          {{- end }}
+        {{- if or .Values.persistence.enabled (lt 0 (len .Values.extraVolumeMounts)) }}
           volumeMounts:
           {{- if .Values.persistence.config }}
             - name: config
@@ -45,29 +47,27 @@ spec:
           {{- if lt 0 (len .Values.extraVolumeMounts) }}
             {{ .Values.extraVolumeMounts | toYaml | nindent 12 }}
           {{- end }}
-          {{- end }}
+        {{- end }}
           readinessProbe:
             httpGet:
-              port: {{ .Values.port }}
+              port: http
             initialDelaySeconds: 0
             timeoutSeconds: 1
           livenessProbe:
             httpGet:
-              port: {{ .Values.port }}
+              port: http
             initialDelaySeconds: 0
             timeoutSeconds: 5
             periodSeconds: 10
             successThreshold: 1
-          {{- with .Values.init.resources }}
+        {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
-          {{- end}}
-          {{- if .Values.securityContext }}
-          {{- with .Values.securityContext }}
+        {{- end }}
+        {{- with .Values.securityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- end }}
+        {{- end }}
       securityContext:
         fsGroup: {{ .Values.global.gid }}
       {{- if lt 0 (len .Values.extraVolumes) -}}

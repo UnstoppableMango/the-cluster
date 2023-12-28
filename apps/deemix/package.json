@@ -1,10 +1,16 @@
 {
-    "name": "thecluster-deemix",
-    "main": "index.ts",
-    "devDependencies": {
-        "@types/node": "^18"
-    },
-    "dependencies": {
-        "@pulumi/pulumi": "^3.0.0"
-    }
+  "name": "thecluster-deemix",
+  "main": "index.ts",
+  "dependencies": {
+    "@pulumi/keycloak": "^5.2.1",
+    "@pulumi/kubernetes": "^4.5.6",
+    "@pulumi/pulumi": "^3.99.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5"
+  },
+  "workspaces": [
+    "../../lib/nodejs",
+    "../../lib/crds/nodejs"
+  ]
 }

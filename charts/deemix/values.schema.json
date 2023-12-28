@@ -4,10 +4,8 @@
     "global",
     "image",
     "ingress",
-    "init",
     "oauth2-proxy",
     "persistence",
-    "port",
     "service"
   ],
   "properties": {
@@ -137,9 +135,6 @@
           }
         }
       }
-    },
-    "port": {
-      "type": "number"
     },
     "resources": {
       "type": "object",
