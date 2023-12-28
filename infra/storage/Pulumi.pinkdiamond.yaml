@@ -2,6 +2,14 @@ config:
   thecluster-storage:actions-runner-controller:
     count: 20
   thecluster-storage:volumes:
+    - name: media
+      storageClass: cephfs
+      accessModes: ["ReadWriteMany"]
+      mode: Filesystem
+      size: 10Gi
+      namespace: media
+      labels:
+        thecluster.io/role: media
     - name: music
       storageClass: cephfs
       accessModes: ["ReadWriteMany"]
