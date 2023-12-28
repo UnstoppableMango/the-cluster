@@ -196,7 +196,7 @@ const chart = new Chart(releaseName, {
         { name: 'OAUTH2_PROXY_REVERSE_PROXY', value: 'true' },
         { name: 'OAUTH2_PROXY_EMAIL_DOMAINS', value: '*' },
         { name: 'OAUTH2_PROXY_SKIP_PROVIDER_BUTTON', value: 'true' },
-        { name: 'OAUTH2_PROXY_ALLOWED_GROUPS', value: interpolate`/${readersGroup.name}` },
+        { name: 'OAUTH2_PROXY_ALLOWED_GROUPS', value: interpolate`/${readersGroup.name},/WebAppReaders` },
         { name: 'OAUTH2_PROXY_OIDC_GROUPS_CLAIM', value: realms.groupsScopeName },
       ],
       service: {
