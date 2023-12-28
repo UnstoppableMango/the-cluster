@@ -12,6 +12,7 @@ export interface Volume {
   storageClass: string;
   namespace?: string;
   fsType?: string;
+  labels?: Record<string, string>;
 }
 
 const config = new Config();

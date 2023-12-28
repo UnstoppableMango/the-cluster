@@ -8,33 +8,45 @@ config:
       mode: Filesystem
       size: 5Ti
       namespace: media
+      labels:
+        thecluster.io/role: media
     - name: movies
       storageClass: cephfs
       accessModes: ["ReadWriteMany"]
       mode: Filesystem
       size: 20Ti
       namespace: media
+      labels:
+        thecluster.io/role: media
     - name: tv
       storageClass: cephfs
       accessModes: ["ReadWriteMany"]
       mode: Filesystem
       size: 20Ti
       namespace: media
+      labels:
+        thecluster.io/role: media
     - name: anime
       storageClass: cephfs
       accessModes: ["ReadWriteMany"]
       mode: Filesystem
       size: 15Ti
       namespace: media
+      labels:
+        thecluster.io/role: media
     - name: movies4k
       storageClass: cephfs
       accessModes: ["ReadWriteMany"]
       mode: Filesystem
       size: 5Ti
       namespace: media
+      labels:
+        thecluster.io/role: media
     - name: tv4k
       storageClass: cephfs
       accessModes: ["ReadWriteMany"]
       mode: Filesystem
       size: 5Ti
       namespace: media
+      labels:
+        thecluster.io/role: media
