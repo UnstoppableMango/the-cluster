@@ -17,7 +17,7 @@ const config = new Config();
 export const hosts = config.requireObject<Hosts>('hosts');
 export const versions = config.requireObject<Versions>('versions');
 export const releaseName = 'filebrowser';
-export const mediaVolumes = ['movies', 'tv', 'anime', 'movies4k', 'tv4k'];
+export const mediaVolumes = ['movies', 'tv', 'music', 'anime', 'movies4k', 'tv4k'];
 export const servicePort = 8080;
 
 export const resources = {
