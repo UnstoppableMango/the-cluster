@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: deemix
+  serviceName: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: deemix
+    spec:
+      containers:
+        - name: deemix
+          image: {{ include "image" . }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.port }}
+          env:
+            - name: PUID
+              value: {{ .Values.global.uid | quote }}
+            - name: PGID
+              value: {{ .Values.global.gid | quote }}
+          {{- if or .Values.persistence.enabled (lt 0 (len .Values.extraVolumeMounts)) }}
+          volumeMounts:
+          {{- if .Values.persistence.config }}
+            - name: config
+              mountPath: '/config'
+          {{- end }}
+          {{- if .Values.persistence.downloads }}
+            - name: downloads
+              mountPath: '/downloads'
+          {{- end }}
+          {{- if lt 0 (len .Values.extraVolumeMounts) }}
+            {{ .Values.extraVolumeMounts | toYaml | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          readinessProbe:
+            httpGet:
+              port: {{ .Values.port }}
+            initialDelaySeconds: 0
+            timeoutSeconds: 1
+          livenessProbe:
+            httpGet:
+              port: {{ .Values.port }}
+            initialDelaySeconds: 0
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+          {{- with .Values.init.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end}}
+          {{- if .Values.securityContext }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
+      securityContext:
+        fsGroup: {{ .Values.global.gid }}
+      {{- if lt 0 (len .Values.extraVolumes) -}}
+      volumes:
+        {{ .Values.extraVolumes | toYaml | nindent 8 }}
+      {{- end }}
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+  {{- if .Values.persistence.config }}
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: config
+      spec:
+        storageClassName: {{ .Values.persistence.config.storageClassName }}
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.persistence.config.size }}
+  {{- end }}
+  {{- if .Values.persistence.downloads }}
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: downloads
+      spec:
+        storageClassName: {{  .Values.persistence.downloads.storageClassName }}
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.persistence.downloads.size }}
+  {{- end }}
+  {{- end }}

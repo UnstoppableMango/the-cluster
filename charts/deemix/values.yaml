@@ -1,0 +1,93 @@
+global:
+  uid: 911
+  gid: 911
+
+disableOwnershipCheck: false
+port: 8080
+
+persistence:
+  enabled: false
+  downloads: {}
+    # storageClassName: ''
+    # size: 100Gi
+  config: {}
+    # storageClassName: ''
+    # size: 250Mi
+
+ingress:
+  enabled: false
+  annotations: {}
+  ingressClassName: ''
+  host: ''
+  path: /
+  pathType: ImplementationSpecific
+  tls:
+    enabled: false
+
+image:
+  registry: 'registry.gitlab.com'
+  repository: bockiii/deemix-docker
+  tag: ''
+  digest: ''
+
+extraVolumes: []
+extraVolumeMounts: []
+securityContext: {}
+
+resources: {}
+  # limits:
+  #   cpu: 10m
+  #   memory: 64Mi
+  # requests:
+  #   cpu: 10m
+  #   memory: 64Mi
+
+init:
+  image:
+    registry: 'docker.io'
+    repository: busybox
+    tag: ''
+    digest: ''
+  securityContext:
+    allowPrivilegeEscalation: false
+    runAsNonRoot: false # So we can chown the right dirs
+  resources: {}
+    # limits:
+    #   cpu: 10m
+    #   memory: 64Mi
+    # requests:
+    #   cpu: 10m
+    #   memory: 64Mi
+
+service:
+  type: ClusterIP
+  port: 8080
+  clusterIP: ''
+  loadBalancerIP: ''
+
+oauth2-proxy:
+  enabled: false
+  # Why did I think this would work
+  # provider: ''
+  # upstreams: []
+  # httpAddress: http://0.0.0.0:4180
+  # redirectUrl: ''
+  # oidcIssuerUrl: ''
+  # codeChallengeMethod: S256
+  # errorsToInfoLog: false
+  # passAccessToken: false
+  # cookieSecure: true
+  # reverseProxy: false
+  # passUserHeaders: false
+  # emailDomains: '*'
+  # skipProviderButton: false
+  # setXAuthRequest: false
+  # allowedGroups: []
+  # oidcGroupsClaim: ''
+  resources: {}
+    # limits:
+    #   cpu: 10m
+    #   memory: 64Mi
+    # requests:
+    #   cpu: 10m
+    #   memory: 64Mi
