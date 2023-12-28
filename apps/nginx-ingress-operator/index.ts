@@ -1,5 +1,5 @@
 import { kustomize } from '@pulumi/kubernetes';
-import { provider, shared } from '@unmango/thecluster/cluster/from-stack';
+import { provider } from '@unmango/thecluster/cluster/from-stack';
 import versions from './config';
 
 const nginxCrds = new kustomize.Directory('nginx-ingress-crds', {
@@ -9,3 +9,5 @@ const nginxCrds = new kustomize.Directory('nginx-ingress-crds', {
 const operator = new kustomize.Directory('nginx-ingress-helm-operator', {
   directory: `https://github.com/nginxinc/nginx-ingress-helm-operator/tree/${versions.nginxIngressHelmOperator}/config/default`,
 }, { provider });
+
+export { versions };

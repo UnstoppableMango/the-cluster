@@ -7,6 +7,7 @@ import {
   Keycloak,
   Metallb,
   NginxIngress,
+  NginxIngressOperator,
   PiHole,
   Pki,
   PostgresqlHa,
@@ -23,6 +24,7 @@ export class Apps {
   private _keycloak?: Keycloak;
   private _metallb?: Metallb;
   private _nginxIngress?: NginxIngress;
+  private _nginxIngressOperator?: NginxIngressOperator;
   private _pihole?: PiHole;
   private _pki?: Pki;
   private _postgresqlHa?: PostgresqlHa;
@@ -86,6 +88,14 @@ export class Apps {
     }
 
     return this._nginxIngress;
+  }
+
+  public get nginxIngressOperator(): NginxIngressOperator {
+    if (!this._nginxIngressOperator) {
+      this._nginxIngressOperator = new NginxIngressOperator(this._refs.cluster);
+    }
+
+    return this._nginxIngressOperator;
   }
 
   public get pihole(): PiHole {

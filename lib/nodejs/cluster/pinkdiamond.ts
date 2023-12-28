@@ -16,3 +16,4 @@ export const realms = system.realms;
 export const shared = system.shared;
 export const storage = system.storage;
 export const storageClasses = system.storageClasses;
+export const versions = system.versions;
