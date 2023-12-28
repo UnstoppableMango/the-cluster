@@ -2,6 +2,7 @@
   "name": "thecluster-filebrowser",
   "main": "index.ts",
   "dependencies": {
+    "@pulumi/keycloak": "^5.2.1",
     "@pulumi/kubernetes": "^4.5.6",
     "@pulumi/pulumi": "^3.97.0",
     "fp-ts": "^2.16.1"
@@ -10,6 +11,7 @@
     "@types/node": "^20.10.5"
   },
   "workspaces": [
-    "../../lib/nodejs"
+    "../../lib/nodejs",
+    "../../lib/crds/nodejs"
   ]
 }

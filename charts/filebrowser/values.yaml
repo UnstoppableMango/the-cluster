@@ -3,10 +3,25 @@ global:
   uid: 911
   gid: 911
 
-port: 8080 # TODO: Filebrowser can't bind to 80 for some reason.
+address: 0.0.0.0
+port: 8080
+baseUrl: /
+viewMode: list
 existingConfigMap: ''
 extraVolumes: []
 extraVolumeMounts: []
+securityContext: {}
+
+branding:
+  name: ''
+  theme: dark
+  disableUsedPercentage:
+  disableExternal:
+  files:
+
+auth:
+  method: proxy
+  header: X-Forwarded-User
 
 ingress:
   enabled: false
@@ -19,6 +34,7 @@ ingress:
     enabled: false
 
 persistence:
+  enabled: true
   storageClassName: ''
   size: 1Gi
 
@@ -28,12 +44,30 @@ image:
   tag: ''
   digest: ''
 
+resources: {}
+  # limits:
+  #   cpu: 10m
+  #   memory: 64Mi
+  # requests:
+  #   cpu: 10m
+  #   memory: 64Mi
+
 init:
   image:
     registry: docker.io
     repository: filebrowser/filebrowser
     tag: ''
     digest: ''
+  securityContext:
+    allowPrivilegeEscalation: false
+    runAsNonRoot: false # So we can chown the right dirs
+  resources: {}
+    # limits:
+    #   cpu: 10m
+    #   memory: 64Mi
+    # requests:
+    #   cpu: 10m
+    #   memory: 64Mi
 
 service:
   type: ClusterIP
@@ -43,10 +77,10 @@ service:
 
 oauth2-proxy:
   enabled: false
-  resources:
-    limits:
-      cpu: 50m
-      memory: 128Mi
-    requests:
-      cpu: 50m
-      memory: 128Mi
+  resources: {}
+    # limits:
+    #   cpu: 10m
+    #   memory: 64Mi
+    # requests:
+    #   cpu: 10m
+    #   memory: 64Mi

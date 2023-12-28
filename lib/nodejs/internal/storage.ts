@@ -18,6 +18,10 @@ export class Storage {
     return this._ref.value;
   }
 
+  public get claims(): Output<Output<string>[]> {
+    return this.ref.requireOutput('claims') as Output<Output<string>[]>;
+  }
+
   public get volumes(): Output<Output<string>[]> {
     return this.ref.requireOutput('volumes') as Output<Output<string>[]>;
   }

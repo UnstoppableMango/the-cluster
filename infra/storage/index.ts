@@ -1,5 +1,5 @@
-import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
+import { PersistentVolumeClaim } from '@pulumi/kubernetes/core/v1';
 import { provider, storageClasses } from '@unmango/thecluster/cluster/from-stack';
 import { range } from '@unmango/thecluster';
 import { actionsRunnerController, volumes } from './config';
@@ -31,8 +31,12 @@ const runnerVolumes = range(actionsRunnerController.count)
   });
 
 const claims = volumes.map(config => {
-  return new k8s.core.v1.PersistentVolumeClaim(config.name, {
-    metadata: { name: config.name, namespace: config.namespace },
+  return new PersistentVolumeClaim(config.name, {
+    metadata: {
+      name: config.name,
+      namespace: config.namespace,
+      labels: config.labels,
+    },
     spec: {
       accessModes: config.accessModes,
       storageClassName: config.storageClass,

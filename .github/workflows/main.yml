@@ -48,6 +48,7 @@ jobs:
       gateway-api: ${{ steps.stacks.outputs.gateway-api }}
       kong: ${{ steps.stacks.outputs.kong }}
       shared: ${{ steps.stacks.outputs.shared }}
+      filebrowser: ${{ steps.stacks.outputs.filebrowser }}
 
   dns:
     name: DNS Infrastructure
@@ -272,4 +273,16 @@ jobs:
       stack: pinkdiamond
       uses-lib: true
       verify: false
+    secrets: inherit
+
+  filebrowser:
+    name: File Browser
+    needs: [setup, pinkdiamond]
+    if: fromJson(needs.setup.outputs.filebrowser) && !failure() && !cancelled()
+    concurrency: filebrowser-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: filebrowser
+      stack: pinkdiamond
+      uses-lib: true
     secrets: inherit
