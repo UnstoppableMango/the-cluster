@@ -20,10 +20,12 @@ import * as certmanager from "./certmanager";
 import * as charts from "./charts";
 import * as cluster from "./cluster";
 import * as controlplane from "./controlplane";
+import * as externaldns from "./externaldns";
 import * as gateway from "./gateway";
 import * as gatewayoperator from "./gatewayoperator";
 import * as infrastructure from "./infrastructure";
 import * as ipam from "./ipam";
+import * as k8s from "./k8s";
 import * as metal from "./metal";
 import * as pulumiOperator from "./pulumi";
 import * as runtime from "./runtime";
@@ -40,10 +42,12 @@ export {
     charts,
     cluster,
     controlplane,
+    externaldns,
     gateway,
     gatewayoperator,
     infrastructure,
     ipam,
+    k8s,
     metal,
     pulumiOperator,
     runtime,
