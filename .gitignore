@@ -12,6 +12,7 @@ obj
 build/
 .pulp-cache/
 output/
+.cache/
 
 # IDE Configuration
 .vscode/
