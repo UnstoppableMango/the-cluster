@@ -25,8 +25,8 @@ const chart = new Chart(releaseName, {
     },
     image: { tag: versions.deemix },
     persistence: {
-      enabled: true,
       config: {
+        enabled: true,
         storageClassName: storageClasses.rbd,
       },
     },
@@ -42,9 +42,9 @@ const chart = new Chart(releaseName, {
     }],
     ingress: {
       enabled: true,
-      ingressClassName: ingresses.internal,
+      ingressClassName: ingresses.nginx,
       annotations: {
-        'cert-manager.io/cluster-issuer': clusterIssuers.stage,
+        // 'cert-manager.io/cluster-issuer': clusterIssuers.stage,
         'external-dns.alpha.kubernetes.io/hostname': [
           hosts.internal,
           ...hosts.aliases.internal,
