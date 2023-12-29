@@ -2,6 +2,17 @@ import { interpolate } from '@pulumi/pulumi';
 import { Chart } from '@pulumi/kubernetes/helm/v3';
 import { apps, provider, shared } from '@unmango/thecluster/cluster/from-stack';
 import { ip, versions } from './config';
+import { ConfigMap } from '@pulumi/kubernetes/core/v1';
+
+const config = new ConfigMap('nginx-config', {
+  metadata: {
+    name: 'nginx-config',
+    namespace: shared.namespaces.nginxIngress,
+  },
+  data: {
+    'client-max-body-size': '0',
+  },
+}, { provider });
 
 const chart = new Chart('nginx-ingress', {
   path: './',
@@ -10,6 +21,7 @@ const chart = new Chart('nginx-ingress', {
   values: {
     'nginx-ingress': {
       controller: {
+        customConfigMap: config.metadata.name,
         image: {
           pullPolicy: 'IfNotPresent',
           repository: 'nginx/nginx-ingress',
