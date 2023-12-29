@@ -5,6 +5,8 @@ import { Certificate } from '@unmango/thecluster-crds/certmanager/v1';
 import { apps, clusterIssuers, provider, shared } from '@unmango/thecluster/cluster/from-stack';
 import { ip, versions, internalClass } from './config';
 
+const nginxClass = 'nginx';
+
 const cert = new Certificate('lan-thecluster-io', {
   metadata: {
     name: 'lan-thecluster-io',

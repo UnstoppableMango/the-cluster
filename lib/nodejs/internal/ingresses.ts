@@ -8,8 +8,8 @@ export class Ingresses {
     return this._apps.cloudflareIngress.ingressClass;
   }
 
-  public get internal(): Output<string> {
-    return this._apps.nginxIngress.ingressClasses.internal;
+  public get nginx(): Output<string> {
+    return this._apps.nginxIngress.ingressClasses.nginx;
   }
 
   // public get cluster(): Output<string> {
