@@ -33,10 +33,10 @@ config:
                 value: 'true'
             volumeMounts:
               - name: cache
-                mountPath: /home/runner/_work/.npm
+                mountPath: /home/runner/_work/the-cluster/the-cluster/.npm
                 subPath: .npm
               - name: cache
-                mountPath: /home/runner/_work/_tool
+                mountPath: /home/runner/_work/the-cluster/the-cluster/_tool
                 subPath: _tool
         volumes:
           - name: cache

@@ -7,12 +7,12 @@ COPY --from=yq /usr/bin/yq /usr/bin/yq
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -y \
-	&& apt-get install -y --no-install-recommends \
-	unzip \
-	jq \
-	gettext-base \
-	make \
-	&& rm -rf /var/lib/apt/lists/*
+    && apt-get install -y --no-install-recommends \
+    unzip \
+    jq \
+    gettext-base \
+    make \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN adduser --disabled-password --gecos "" --uid 1001 runner \
     && groupadd docker --gid 123 \
