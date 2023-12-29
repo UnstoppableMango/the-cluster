@@ -1,8 +1,40 @@
 import { interpolate } from '@pulumi/pulumi';
-import { Chart } from '@pulumi/kubernetes/helm/v3';
-import { apps, provider, shared } from '@unmango/thecluster/cluster/from-stack';
-import { ip, versions } from './config';
 import { ConfigMap } from '@pulumi/kubernetes/core/v1';
+import { Chart } from '@pulumi/kubernetes/helm/v3';
+import { Certificate } from '@unmango/thecluster-crds/certmanager/v1';
+import { apps, clusterIssuers, provider, shared } from '@unmango/thecluster/cluster/from-stack';
+import { certificate } from '@unmango/thecluster/util';
+import { ip, versions } from './config';
+
+const cert = new Certificate('lan-thecluster-io', {
+  metadata: {
+    name: 'lan-thecluster-io',
+    namespace: shared.namespaces.nginxIngress,
+  },
+  spec: {
+    secretName: 'lan-thecluster-io',
+    issuerRef: clusterIssuers.ref(x => x.root),
+    commonName: 'lan.thecluster.io',
+    usages: [
+      'digital signature',
+      'key encipherment',
+      'data encipherment',
+      'key agreement',
+      'cert sign',
+    ],
+    ipAddresses: [ip],
+    dnsNames: [
+      'lan.thecluster.io',
+      '*.lan.thecluster.io',
+      '${POD_NAME}.${POD_NAMESPACE}.svc.cluster.local',
+    ],
+    uris: [
+      'postgres://lan.thecluster.io',
+      'postgres://pg.lan.thecluster.io',
+      'postgres://postgres.lan.thecluster.io',
+    ],
+  },
+}, { provider });
 
 const config = new ConfigMap('nginx-config', {
   metadata: {
@@ -36,16 +68,28 @@ const chart = new Chart('nginx-ingress', {
         // Lol poor
         nginxplus: false,
         enableCustomResources: true,
+        enableOIDC: true,
+        enableTLSPassthrough: true,
+        tlsPassThroughPort: 443,
         enableCertManager: true,
+        enableExternalDNS: true,
         healthStatus: true,
         hostnetwork: false,
         enableSnippets: true,
+        defaultTLS: {
+          secret: interpolate`${shared.namespaces.nginxIngress}/${cert.spec.apply(x => x?.secretName)}`,
+        },
         service: {
           type: 'LoadBalancer',
           loadBalancerIP: ip,
           annotations: {
             'metallb.universe.tf/address-pool': apps.metallb.pool,
           },
+        },
+        nginxServiceMesh: {
+          // Could be useful when we start doin the thing?
+          // enable: true,
+          // enableEgress: true,
         },
       },
     },
