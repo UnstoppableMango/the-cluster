@@ -16,8 +16,8 @@ jobs:
     container:
       image: ghcr.io/unstoppablemango/runner-image:main
       volumes:
-        - /home/runner/_work/.npm:/__w/.npm
-        - /home/runner/_work/_tools:/__w/_tools
+        - /home/runner/_work/.npm:/__w/the-cluster/the-cluster/.npm
+        - /home/runner/_work/_tools:/__w/the-cluster/the-cluster/_tools
     steps:
     - uses: actions/checkout@v4
       with:
