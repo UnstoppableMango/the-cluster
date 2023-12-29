@@ -7,8 +7,3 @@ dependencies:
   - name: nginx-ingress
     repository: oci://ghcr.io/nginxinc/charts
     version: 1.1.0
-    alias: internal-ingress
-  - name: nginx-ingress
-    repository: oci://ghcr.io/nginxinc/charts
-    version: 1.1.0
-    alias: cluster-ingress
