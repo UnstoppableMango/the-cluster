@@ -30,7 +30,7 @@ config:
             command: ['/home/runner/run.sh']
             env:
               - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
-                value: 'false'
+                value: 'true'
             volumeMounts:
               - name: cache
                 mountPath: /home/runner/_work/.npm
