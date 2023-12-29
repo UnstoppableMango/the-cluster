@@ -32,6 +32,10 @@ inputs:
     description: Install helm
     required: false
     default: 'false'
+  git-crypt:
+    description: Install git-crypt
+    required: false
+    default: 'false'
   all:
     description: Install all tools
     required: false
@@ -112,3 +116,6 @@ runs:
         cache: enable
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
+
+    - uses: Flydiverny/setup-git-crypt@v1
+      if: inputs.git-crype == 'true' || inputs.all == 'true'
