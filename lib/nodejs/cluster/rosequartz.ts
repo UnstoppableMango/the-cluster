@@ -14,3 +14,4 @@ export const ingresses = system.ingresses;
 // export const loadBalancers = system.loadBalancers;
 // export const realms = system.realms;
 // export const storageClasses = system.storageClasses;
+export const versions = system.versions;

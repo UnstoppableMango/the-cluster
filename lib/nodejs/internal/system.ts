@@ -20,6 +20,7 @@ export class System {
   public shared = new internal.Shared(this._cluster);
   public storage = new internal.Storage(this._cluster);
   public storageClasses = new internal.StorageClasses(this.apps);
+  public versions = new internal.Versions(this.apps);
 
   constructor(private _cluster: string) { }
 }

@@ -4,4 +4,5 @@ description: Nginx Ingress Operator install for THECLUSTER
 config:
   versions:
     value:
-      nginxIngressHelmOperator: v2.0.2
+      nginxIngress: v3.4.0 # renovate depName=nginxinc/kubernetes-ingress
+      nginxIngressHelmOperator: v2.1.0 # renovate depName=nginxinc/nginx-ingress-helm-operator

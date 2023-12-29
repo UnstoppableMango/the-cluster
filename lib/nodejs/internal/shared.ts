@@ -7,6 +7,7 @@ export interface Namespaces {
   keycloak: Output<string>;
   pgadmin: Output<string>;
   pulumiOperator: Output<string>;
+  nginxIngress: Output<string>;
 }
 
 export class Shared {

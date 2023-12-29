@@ -1,23 +1,23 @@
-import * as k8s from '@pulumi/kubernetes';
-import * as nginx from '@unmango/thecluster-crds/charts/v1alpha1';
-import { apps, provider } from '@unmango/thecluster/cluster/from-stack';
-import { ip, versions } from './config';
+import { NginxIngress } from '@unmango/thecluster-crds/charts/v1alpha1';
+import { apps, provider, shared, versions } from '@unmango/thecluster/cluster/from-stack';
+import { ip } from './config';
+import { interpolate } from '@pulumi/pulumi/output';
 
-const internalNs = new k8s.core.v1.Namespace('internal-ingress', {
-  metadata: { name: 'internal-ingress' },
-}, { provider });
-
-const internal = new nginx.NginxIngress('internal', {
+const internal = new NginxIngress('internal', {
   metadata: {
     name: 'internal',
-    namespace: internalNs.metadata.name,
+    namespace: shared.namespaces.nginxIngress,
+    annotations: {
+      'meta.helm.sh/release-name': 'internal-ingress',
+      'meta.helm.sh/release-namespace': shared.namespaces.nginxIngress,
+    },
   },
   spec: {
     controller: {
       image: {
         pullPolicy: 'IfNotPresent',
         repository: 'nginx/nginx-ingress',
-        tag: `${versions.nginxIngress}-ubi`,
+        tag: interpolate`${versions.nginxIngressOperator.nginxIngress}-ubi`,
       },
       name: 'internal-nginx',
       kind: 'daemonset',
@@ -25,8 +25,10 @@ const internal = new nginx.NginxIngress('internal', {
         name: 'nginx',
         setAsDefaultIngress: false, // Consider in the future
       },
+      // Lol poor
       nginxplus: false,
-      enableCustomResources: true,
+      // The operator manages these
+      enableCustomResources: false,
       enableCertManager: true,
       healthStatus: true,
       hostnetwork: false,
@@ -42,34 +44,37 @@ const internal = new nginx.NginxIngress('internal', {
   },
 }, { provider });
 
-const clusterNs = new k8s.core.v1.Namespace('cluster-ingress', {
-  metadata: { name: 'cluster-ingress' },
-}, { provider });
-
-const cluster = new nginx.NginxIngress('cluster', {
+const cluster = new NginxIngress('cluster', {
   metadata: {
     name: 'cluster',
-    namespace: clusterNs.metadata.name,
+    namespace: shared.namespaces.nginxIngress,
+    annotations: {
+      'meta.helm.sh/release-name': 'cluster-ingress',
+      'meta.helm.sh/release-namespace': shared.namespaces.nginxIngress,
+    },
   },
   spec: {
     controller: {
       image: {
         pullPolicy: 'IfNotPresent',
         repository: 'nginx/nginx-ingress',
-        tag: `${versions.nginxIngress}-ubi`,
+        tag: interpolate`${versions.nginxIngressOperator.nginxIngress}-ubi`,
       },
       name: 'cluster-nginx',
       kind: 'daemonset',
       ingressClass: {
         name: 'cluster-nginx',
       },
+      // Lol poor
       nginxplus: false,
-      enableCustomResources: true,
+      // The operator manages these
+      enableCustomResources: false,
       enableCertManager: true,
       healthStatus: true,
       hostnetwork: false,
       enableSnippets: true,
       service: {
+        // TODO: Static IP since this is kinda important?
         type: 'ClusterIP',
       },
     },

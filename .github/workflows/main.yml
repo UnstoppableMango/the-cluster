@@ -178,7 +178,7 @@ jobs:
 
   keycloak:
     name: Keycloak
-    needs: [setup, pinkdiamond, shared, ceph-csi, cloudflare-ingress, nginx-ingress]
+    needs: [setup, pinkdiamond, shared, ceph-csi, cloudflare-ingress]
     if: fromJson(needs.setup.outputs.keycloak) && !failure() && !cancelled()
     concurrency: keycloak-${{ github.ref }}
     uses: ./.github/workflows/deploy.yml
@@ -201,30 +201,30 @@ jobs:
       verify: false
     secrets: inherit
 
-  nginx-ingress-operator:
-    name: Nginx Ingress Operator
-    needs: [setup, pinkdiamond, metallb-pd]
-    if: fromJson(needs.setup.outputs.nginx-ingress-operator) && !failure() && !cancelled()
-    concurrency: nginx-ingress-operator-${{ github.ref }}
-    uses: ./.github/workflows/deploy.yml
-    with:
-      project: nginx-ingress-operator
-      stack: pinkdiamond
-      verify: false
-    secrets: inherit
+  # nginx-ingress-operator:
+  #   name: Nginx Ingress Operator
+  #   needs: [setup, pinkdiamond, metallb-pd]
+  #   if: fromJson(needs.setup.outputs.nginx-ingress-operator) && !failure() && !cancelled()
+  #   concurrency: nginx-ingress-operator-${{ github.ref }}
+  #   uses: ./.github/workflows/deploy.yml
+  #   with:
+  #     project: nginx-ingress-operator
+  #     stack: pinkdiamond
+  #     verify: false
+  #   secrets: inherit
 
-  nginx-ingress:
-    name: Nginx Ingress
-    needs: [setup, pinkdiamond, nginx-ingress-operator]
-    if: fromJson(needs.setup.outputs.nginx-ingress) && !failure() && !cancelled()
-    concurrency: nginx-ingress-${{ github.ref }}
-    uses: ./.github/workflows/deploy.yml
-    with:
-      project: nginx-ingress
-      stack: pinkdiamond
-      verify: false
-      uses-crds: true
-    secrets: inherit
+  # nginx-ingress:
+  #   name: Nginx Ingress
+  #   needs: [setup, pinkdiamond, nginx-ingress-operator]
+  #   if: fromJson(needs.setup.outputs.nginx-ingress) && !failure() && !cancelled()
+  #   concurrency: nginx-ingress-${{ github.ref }}
+  #   uses: ./.github/workflows/deploy.yml
+  #   with:
+  #     project: nginx-ingress
+  #     stack: pinkdiamond
+  #     verify: false
+  #     uses-crds: true
+  #   secrets: inherit
 
   # dashboard:
   #   name: Dashboard
@@ -240,7 +240,7 @@ jobs:
 
   pihole:
     name: Pi-hole
-    needs: [setup, pinkdiamond, cloudflare-ingress, nginx-ingress]
+    needs: [setup, pinkdiamond, cloudflare-ingress]
     if: fromJson(needs.setup.outputs.pihole) && !failure() && !cancelled()
     concurrency: pihole-${{ github.ref }}
     uses: ./.github/workflows/deploy.yml

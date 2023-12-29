@@ -12,3 +12,4 @@ export * from './shared';
 export * from './storage';
 export * from './storageClasses';
 export * from './system';
+export * from './versions';
