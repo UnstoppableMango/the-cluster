@@ -70,7 +70,7 @@ for (const set of scaleSets) {
             storageClassName: storageClasses.rbd,
             resources: {
               requests: {
-                storage: '10Gi',
+                storage: set.volumeSize,
               },
             },
           },
