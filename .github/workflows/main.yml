@@ -16,8 +16,8 @@ jobs:
     container:
       image: ghcr.io/unstoppablemango/runner-image:main
       volumes:
-        - ${{ github.workspace }}/.npm:/home/runner/.npm
-        - ${{ github.workspace }}/_tools:/opt/hostedtoolcache
+        - ${{ github.workspace }}/.npm:/root/.npm
+        - ${{ github.workspace }}/_tool:/__w/_tool
     steps:
     - uses: actions/checkout@v4
       with:
@@ -72,8 +72,8 @@ jobs:
     container:
       image: ghcr.io/unstoppablemango/runner-image:main
       volumes:
-        - ${{ github.workspace }}/.npm:/home/runner/.npm
-        - ${{ github.workspace }}/_tools:/opt/hostedtoolcache
+        - ${{ github.workspace }}/.npm:/root/.npm
+        - ${{ github.workspace }}/_tool:/__w/_tool
     needs: [setup]
     if: fromJson(needs.setup.outputs.pinkdiamond) && !failure() && !cancelled()
     defaults:

@@ -36,8 +36,8 @@ config:
                 mountPath: /home/runner/_work/.npm
                 subPath: .npm
               - name: cache
-                mountPath: /home/runner/_work/_tools
-                subPath: _tools
+                mountPath: /home/runner/_work/_tool
+                subPath: _tool
         volumes:
           - name: cache
             persistentVolumeClaim:
