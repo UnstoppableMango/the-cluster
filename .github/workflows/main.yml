@@ -72,7 +72,8 @@ jobs:
     container:
       image: ghcr.io/unstoppablemango/runner-image:main
       volumes:
-        - /home/runner/_work/.npm:/home/runner/.npm
+        - ${{ github.workspace }}/.npm:/home/runner/.npm
+        - ${{ github.workspace }}/_tools:/opt/hostedtoolcache
     needs: [setup]
     if: fromJson(needs.setup.outputs.pinkdiamond) && !failure() && !cancelled()
     defaults:
