@@ -7,7 +7,7 @@ config:
   thecluster-github-actions-runners:scalesets:
   - name: thecluster
     githubUrl: https://github.com/UnstoppableMango/the-cluster
-    minRunners: 4
+    minRunners: 5
     maxRunners: 25
     volumeSize: 10Gi
     # https://github.com/actions/actions-runner-controller/blob/3e4201ac5f6c6d172a19b580154eaf5abf24a2ca/charts/gha-runner-scale-set/values.yaml#L162-L189
