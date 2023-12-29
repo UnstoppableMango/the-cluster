@@ -2,6 +2,8 @@ export * from './actions-runner-controller';
 export * from './ceph-csi';
 export * from './cert-manager';
 export * from './cloudflare-ingress';
+export { Deemix } from './deemix';
+export { FileBrowser } from './filebrowser';
 export { Keycloak } from './keycloak';
 export * from './metallb';
 export { NginxIngressOperator } from './nginx-ingress-operator';

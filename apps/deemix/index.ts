@@ -1,5 +1,6 @@
+import * as fs from 'node:fs/promises';
 import { interpolate } from '@pulumi/pulumi';
-import { Namespace } from '@pulumi/kubernetes/core/v1';
+import { ConfigMap, Namespace } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v3';
 import { clusterIssuers, ingresses, provider, realms, shared, storageClasses } from '@unmango/thecluster/cluster/from-stack';
 import { client, readersGroup } from './oauth';
@@ -15,6 +16,16 @@ const ns = Namespace.get(
   { provider },
 );
 
+const config = new ConfigMap('deemix', {
+  metadata: {
+    name: 'deemix',
+    namespace: ns.metadata.name,
+  },
+  data: {
+    'config.json': fs.readFile('assets/config.json', 'utf-8'),
+  },
+}, { provider });
+
 const chart = new Chart(releaseName, {
   path: '../../charts/deemix',
   namespace: ns.metadata.name,
@@ -23,13 +34,9 @@ const chart = new Chart(releaseName, {
       uid: 1001,
       gid: 1001,
     },
+    existingConfigMap: config.metadata.name,
+    singleUser: true,
     image: { tag: versions.deemix },
-    persistence: {
-      config: {
-        enabled: true,
-        storageClassName: storageClasses.rbd,
-      },
-    },
     extraVolumes: <Volume[]>[{
       name: 'music',
       persistentVolumeClaim: {
@@ -40,22 +47,7 @@ const chart = new Chart(releaseName, {
       name: 'music',
       mountPath: '/downloads',
     }],
-    ingress: {
-      enabled: true,
-      ingressClassName: ingresses.nginx,
-      annotations: {
-        // 'cert-manager.io/cluster-issuer': clusterIssuers.stage,
-        'external-dns.alpha.kubernetes.io/hostname': [
-          hosts.internal,
-          ...hosts.aliases.internal,
-        ].join(','),
-      },
-      host: hosts.internal,
-      path: '/deemix',
-      tls: {
-        enabled: true,
-      },
-    },
+    ingress: { enabled: false },
     resources: {
       limits: {
         cpu: '100m',
@@ -98,7 +90,7 @@ const chart = new Chart(releaseName, {
         className: ingresses.cloudflare,
         pathType: 'Prefix',
         path: '/deemix',
-        hosts: [hosts.external],
+        hosts: [hosts.external, 'deemix-new.thecluster.io'],
         annotations: {
           'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
           'pulumi.com/skipAwait': 'true',
@@ -118,4 +110,7 @@ const chart = new Chart(releaseName, {
   },
 }, { provider });
 
-export { hosts, versions }
+const service = chart.getResource('v1/Service', 'media/deemix');
+
+const serviceOutput = service.metadata.name;
+export { hosts, versions, serviceOutput as service };

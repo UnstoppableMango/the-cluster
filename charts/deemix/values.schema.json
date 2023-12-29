@@ -1,5 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
   "required": [
     "global",
     "image",
@@ -9,6 +10,12 @@
     "service"
   ],
   "properties": {
+    "basePath": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "extraVolumeMounts": {
       "type": "array",
       "items": {
@@ -186,6 +193,9 @@
           "type": "string"
         }
       }
+    },
+    "singleUser": {
+      "type": "boolean"
     }
   }
 }

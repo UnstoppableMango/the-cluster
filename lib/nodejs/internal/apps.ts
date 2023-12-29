@@ -4,6 +4,8 @@ import {
   CephCsi,
   CertManager,
   CloudflareIngress,
+  Deemix,
+  FileBrowser,
   Keycloak,
   Metallb,
   NginxIngress,
@@ -21,6 +23,8 @@ export class Apps {
   private _cephCsi?: CephCsi;
   private _certManager?: CertManager;
   private _cloudflareIngress?: CloudflareIngress;
+  private _deemix?: Deemix;
+  private _filebrowser?: FileBrowser;
   private _keycloak?: Keycloak;
   private _metallb?: Metallb;
   private _nginxIngress?: NginxIngress;
@@ -64,6 +68,22 @@ export class Apps {
     }
 
     return this._cloudflareIngress;
+  }
+
+  public get deemix(): Deemix {
+    if (!this._deemix) {
+      this._deemix = new Deemix(this._refs.cluster);
+    }
+
+    return this._deemix;
+  }
+
+  public get filebrowser(): FileBrowser {
+    if (!this._filebrowser) {
+      this._filebrowser = new FileBrowser(this._refs.cluster);
+    }
+
+    return this._filebrowser;
   }
 
   public get keycloak(): Keycloak {

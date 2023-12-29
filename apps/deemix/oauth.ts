@@ -18,6 +18,7 @@ export const client = new Client('deemix', {
   validRedirectUris: [
     interpolate`https://${hosts.external}/oauth2/callback`,
     interpolate`https://${hosts.internal}/oauth2/callback`,
+    interpolate`https://deemix-new.thecluster.io/oauth2/callback`,
   ],
 }, { provider });
 

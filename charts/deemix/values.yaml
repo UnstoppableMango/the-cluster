@@ -3,18 +3,22 @@ global:
   gid: 911
 
 umask: '022'
-singleUser: false
+singleUser: true
 disableOwnershipCheck: false
+basePath:
+existingConfigMap: ''
 
 persistence:
   downloads:
     enabled: false
     storageClassName: ''
     size: 100Gi
+    accessModes: [ReadWriteOnce]
   config:
     enabled: false
     storageClassName: ''
     size: 250Mi
+    accessModes: [ReadWriteOnce]
 
 ingress:
   enabled: false

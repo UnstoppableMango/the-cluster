@@ -2,7 +2,7 @@ import * as fs from 'node:fs/promises';
 import { interpolate } from '@pulumi/pulumi';
 import { ConfigMap, Namespace } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v3';
-import { clusterIssuers, ingresses, provider, realms, shared, storageClasses } from '@unmango/thecluster/cluster/from-stack';
+import { ingresses, provider, realms, shared, storageClasses } from '@unmango/thecluster/cluster/from-stack';
 import { client, readersGroup } from './oauth';
 import { hosts, mediaVolumes, releaseName, resources, servicePort, versions } from './config';
 import { core } from '@pulumi/kubernetes/types/input';
@@ -43,7 +43,16 @@ const chart = new Chart(releaseName, {
       name: 'THECLUSTER',
       files: '/assets',
     },
-    resources,
+    resources: {
+      limits: {
+        cpu: '20m',
+        memory: '64Mi',
+      },
+      requests: {
+        cpu: '20m',
+        memory: '64Mi',
+      },
+    },
     image: { tag: versions.filebrowser },
     init: {
       image: { tag: versions.filebrowser },
@@ -92,21 +101,7 @@ const chart = new Chart(releaseName, {
         readOnly: true,
       },
     ]),
-    ingress: {
-      enabled: true,
-      ingressClassName: ingresses.internal,
-      annotations: {
-        'cert-manager.io/cluster-issuer': clusterIssuers.stage,
-        'external-dns.alpha.kubernetes.io/hostname': [
-          hosts.internal,
-          ...hosts.aliases.internal,
-        ].join(','),
-      },
-      host: hosts.internal,
-      tls: {
-        enabled: true,
-      },
-    },
+    ingress: { enabled: false },
     'oauth2-proxy': {
       enabled: true,
       resources,
@@ -149,4 +144,7 @@ const chart = new Chart(releaseName, {
   },
 }, { provider });
 
-export { hosts, versions }
+const service = chart.getResource('v1/Service', 'media/filebrowser');
+
+const serviceOutput = service.metadata.name;
+export { hosts, versions, serviceOutput as service }

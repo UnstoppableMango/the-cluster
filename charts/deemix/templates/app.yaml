@@ -1,5 +1,9 @@
 apiVersion: apps/v1
+{{- if or .Values.persistence.config.enabled (and .Values.persistence.downloads.enabled (contains "ReadWriteOnce" .Values.persistence.downloads.accessModes)) }}
 kind: StatefulSet
+{{- else }}
+kind: Deployment
+{{- end }}
 metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
@@ -24,29 +28,32 @@ spec:
               value: {{ .Values.global.uid | quote }}
             - name: PGID
               value: {{ .Values.global.gid | quote }}
-            {{- if .Values.singleUser }}
             - name: DEEMIX_SINGLE_USER
               value: {{ .Values.singleUser | quote }}
-            {{- end }}
             {{- if .Values.disableOwnershipCheck }}
             - name: DISABLE_OWNERSHIP_CHECK
               value: {{ .Values.disableOwnershipCheck | quote }}
             {{- end }}
             - name: UMASK_SET
               value: {{ .Values.umask | quote }}
-          {{- if .Values.ingress.enabled }}
+          {{- if or .Values.ingress.enabled .Values.basePath }}
             - name: DEEMIX_LOCATION_BASE
-              value: {{ .Values.ingress.path | quote }}
+              value: {{ coalesce .Values.basePath .Values.ingress.path | quote }}
           {{- end }}
-        {{- if or .Values.persistence.downloads.enabled .Values.persistence.config.enabled (lt 0 (len .Values.extraVolumeMounts)) }}
+        {{- if or .Values.existingConfigMap .Values.persistence.downloads.enabled .Values.persistence.config.enabled (lt 0 (len .Values.extraVolumeMounts)) }}
           volumeMounts:
-          {{- if .Values.persistence.config.enabled }}
+          {{- if .Values.existingConfigMap }}
+            - name: config-json
+              mountPath: /config/config.json
+              subPath: config.json
+              readOnly: true
+          {{- else }}
             - name: config
-              mountPath: '/config'
+              mountPath: /config
           {{- end }}
           {{- if .Values.persistence.downloads.enabled }}
             - name: downloads
-              mountPath: '/downloads'
+              mountPath: /downloads
           {{- end }}
           {{- if lt 0 (len .Values.extraVolumeMounts) }}
             {{ .Values.extraVolumeMounts | toYaml | nindent 12 }}
@@ -55,13 +62,13 @@ spec:
           readinessProbe:
             httpGet:
               port: http
-              path: {{ .Values.ingress.path }}
+              path: {{ coalesce .Values.basePath .Values.ingress.path | quote }}
             initialDelaySeconds: 0
             timeoutSeconds: 1
           livenessProbe:
             httpGet:
               port: http
-              path: {{ .Values.ingress.path }}
+              path: {{ coalesce .Values.basePath .Values.ingress.path | quote }}
             initialDelaySeconds: 0
             timeoutSeconds: 5
             periodSeconds: 10
@@ -76,11 +83,24 @@ spec:
         {{- end }}
       securityContext:
         fsGroup: {{ .Values.global.gid }}
-      {{- if lt 0 (len .Values.extraVolumes) }}
+      {{- if or .Values.existingConfigMap (lt 0 (len .Values.extraVolumes)) }}
       volumes:
+      {{- if .Values.existingConfigMap }}
+        - name: config-json
+          configMap:
+            name: {{ .Values.existingConfigMap }}
+      {{- else if not .Values.persistence.config.enabled }}
+        - name: config
+          emptyDir:
+            sizeLimit: 250Mi
+      {{- end }}
         {{- .Values.extraVolumes | toYaml | nindent 8 }}
       {{- end }}
-  {{- if  or .Values.persistence.downloads.enabled .Values.persistence.config.enabled }}
+      dnsConfig:
+        options:
+          - name: ndots
+            value: '2'
+  {{- if or .Values.persistence.downloads.enabled .Values.persistence.config.enabled }}
   volumeClaimTemplates:
   {{- if .Values.persistence.config.enabled }}
     - apiVersion: v1
@@ -89,8 +109,10 @@ spec:
         name: config
       spec:
         storageClassName: {{ .Values.persistence.config.storageClassName }}
+        {{- with .Values.persistence.config.accessModes }}
         accessModes:
-          - ReadWriteOnce
+          {{ toYaml . | nindent 10 }}
+        {{- end }}
         resources:
           requests:
             storage: {{ .Values.persistence.config.size }}
@@ -102,8 +124,10 @@ spec:
         name: downloads
       spec:
         storageClassName: {{  .Values.persistence.downloads.storageClassName }}
+        {{- with .Values.persistence.downloads.accessModes }}
         accessModes:
-          - ReadWriteOnce
+          {{ toYaml . | nindent 10 }}
+        {{- end }}
         resources:
           requests:
             storage: {{ .Values.persistence.downloads.size }}
