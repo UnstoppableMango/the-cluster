@@ -33,7 +33,11 @@ config:
                 value: 'false'
             volumeMounts:
               - name: cache
-                mountPath: /opt/hostedtoolcache
+                mountPath: /home/runner/_work/.npm
+                subPath: .npm
+              - name: cache
+                mountPath: /home/runner/_work/_tools
+                subPath: _tools
         volumes:
           - name: cache
             persistentVolumeClaim:

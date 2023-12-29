@@ -21,7 +21,8 @@ jobs:
     container:
       image: ghcr.io/unstoppablemango/runner-image:main
       volumes:
-        - /opt/hostedtoolcache:/opt/hostedtoolcache
+        - /home/runner/_work/.npm:/home/runner/.npm
+        - /home/runner/_work/_tools:/opt/hostedtoolcache
     if: false # Still some kinks to work out
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
@@ -85,7 +86,8 @@ jobs:
     container:
       image: ghcr.io/unstoppablemango/runner-image:main
       volumes:
-        - /opt/hostedtoolcache:/opt/hostedtoolcache
+        - /home/runner/_work/.npm:/home/runner/.npm
+        - /home/runner/_work/_tools:/opt/hostedtoolcache
     if: false # We need the pulumi code to exist on main in order to test an upgrade
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}

@@ -54,7 +54,8 @@ jobs:
     container:
       image: ghcr.io/unstoppablemango/runner-image:main
       volumes:
-        - /opt/hostedtoolcache:/opt/hostedtoolcache
+        - /home/runner/_work/.npm:/home/runner/.npm
+        - /home/runner/_work/_tools:/opt/hostedtoolcache
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       PROJECT_DIR: ${{ inputs.kind }}/${{ inputs.project }}
