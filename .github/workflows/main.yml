@@ -16,8 +16,8 @@ jobs:
     container:
       image: ghcr.io/unstoppablemango/runner-image:main
       volumes:
-        - ${{ github.workspace }}/.npm:/__w/.npm
-        - ${{ github.workspace }}/_tools:/__w/_tool
+        - ${{ github.workspace }}/.npm:/home/runner/.npm
+        - ${{ github.workspace }}/_tools:/opt/hostedtoolcache
     steps:
     - uses: actions/checkout@v4
       with:
