@@ -1,86 +1,99 @@
-import { NginxIngress } from '@unmango/thecluster-crds/charts/v1alpha1';
-import { apps, provider, shared, versions } from '@unmango/thecluster/cluster/from-stack';
-import { ip } from './config';
-import { interpolate } from '@pulumi/pulumi/output';
+import { interpolate } from '@pulumi/pulumi';
+import { ConfigMap } from '@pulumi/kubernetes/core/v1';
+import { Chart } from '@pulumi/kubernetes/helm/v3';
+import { Certificate } from '@unmango/thecluster-crds/certmanager/v1';
+import { apps, clusterIssuers, provider, shared } from '@unmango/thecluster/cluster/from-stack';
+import { certificate } from '@unmango/thecluster/util';
+import { ip, versions } from './config';
 
-const internal = new NginxIngress('internal', {
+const cert = new Certificate('lan-thecluster-io', {
   metadata: {
-    name: 'internal',
+    name: 'lan-thecluster-io',
     namespace: shared.namespaces.nginxIngress,
-    annotations: {
-      'meta.helm.sh/release-name': 'internal-ingress',
-      'meta.helm.sh/release-namespace': shared.namespaces.nginxIngress,
-    },
   },
   spec: {
-    controller: {
-      image: {
-        pullPolicy: 'IfNotPresent',
-        repository: 'nginx/nginx-ingress',
-        tag: interpolate`${versions.nginxIngressOperator.nginxIngress}-ubi`,
-      },
-      name: 'internal-nginx',
-      kind: 'daemonset',
-      ingressClass: {
-        name: 'nginx',
-        setAsDefaultIngress: false, // Consider in the future
-      },
-      // Lol poor
-      nginxplus: false,
-      // The operator manages these
-      enableCustomResources: false,
-      enableCertManager: true,
-      healthStatus: true,
-      hostnetwork: false,
-      enableSnippets: true,
-      service: {
-        type: 'LoadBalancer',
-        loadBalancerIP: ip,
-        annotations: {
-          'metallb.universe.tf/address-pool': apps.metallb.pool,
+    secretName: 'lan-thecluster-io',
+    issuerRef: clusterIssuers.ref(x => x.root),
+    commonName: 'lan.thecluster.io',
+    usages: [
+      'digital signature',
+      'key encipherment',
+      'data encipherment',
+      'key agreement',
+      'cert sign',
+    ],
+    ipAddresses: [ip],
+    dnsNames: [
+      'lan.thecluster.io',
+      '*.lan.thecluster.io',
+      '${POD_NAME}.${POD_NAMESPACE}.svc.cluster.local',
+    ],
+    uris: [
+      'postgres://lan.thecluster.io',
+      'postgres://pg.lan.thecluster.io',
+      'postgres://postgres.lan.thecluster.io',
+    ],
+  },
+}, { provider });
+
+const config = new ConfigMap('nginx-config', {
+  metadata: {
+    name: 'nginx-config',
+    namespace: shared.namespaces.nginxIngress,
+  },
+  data: {
+    'client-max-body-size': '0',
+  },
+}, { provider });
+
+const chart = new Chart('nginx-ingress', {
+  path: './',
+  namespace: shared.namespaces.nginxIngress,
+  skipCRDRendering: false,
+  values: {
+    'nginx-ingress': {
+      controller: {
+        customConfigMap: config.metadata.name,
+        image: {
+          pullPolicy: 'IfNotPresent',
+          repository: 'nginx/nginx-ingress',
+          tag: interpolate`${versions.nginxIngress}-ubi`,
+        },
+        name: 'internal-nginx',
+        kind: 'daemonset',
+        ingressClass: {
+          name: 'nginx',
+          setAsDefaultIngress: false, // Consider in the future
+        },
+        // Lol poor
+        nginxplus: false,
+        enableCustomResources: true,
+        enableOIDC: true,
+        enableTLSPassthrough: true,
+        tlsPassThroughPort: 443,
+        enableCertManager: true,
+        enableExternalDNS: true,
+        healthStatus: true,
+        hostnetwork: false,
+        enableSnippets: true,
+        defaultTLS: {
+          secret: interpolate`${shared.namespaces.nginxIngress}/${cert.spec.apply(x => x?.secretName)}`,
+        },
+        service: {
+          type: 'LoadBalancer',
+          loadBalancerIP: ip,
+          annotations: {
+            'metallb.universe.tf/address-pool': apps.metallb.pool,
+          },
+        },
+        nginxServiceMesh: {
+          // Could be useful when we start doin the thing?
+          // enable: true,
+          // enableEgress: true,
         },
       },
     },
   },
 }, { provider });
 
-const cluster = new NginxIngress('cluster', {
-  metadata: {
-    name: 'cluster',
-    namespace: shared.namespaces.nginxIngress,
-    annotations: {
-      'meta.helm.sh/release-name': 'cluster-ingress',
-      'meta.helm.sh/release-namespace': shared.namespaces.nginxIngress,
-    },
-  },
-  spec: {
-    controller: {
-      image: {
-        pullPolicy: 'IfNotPresent',
-        repository: 'nginx/nginx-ingress',
-        tag: interpolate`${versions.nginxIngressOperator.nginxIngress}-ubi`,
-      },
-      name: 'cluster-nginx',
-      kind: 'daemonset',
-      ingressClass: {
-        name: 'cluster-nginx',
-      },
-      // Lol poor
-      nginxplus: false,
-      // The operator manages these
-      enableCustomResources: false,
-      enableCertManager: true,
-      healthStatus: true,
-      hostnetwork: false,
-      enableSnippets: true,
-      service: {
-        // TODO: Static IP since this is kinda important?
-        type: 'ClusterIP',
-      },
-    },
-  },
-}, { provider });
-
-export const internalClass = internal.spec.apply(x => x?.controller.ingressClass.name);
-export const clusterClass = cluster.spec.apply(x => x?.controller.ingressClass.name);
-export { ip };
+export { ip, versions };
