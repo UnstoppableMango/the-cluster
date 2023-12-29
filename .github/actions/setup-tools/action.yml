@@ -32,6 +32,10 @@ inputs:
     description: Install helm
     required: false
     default: 'false'
+  git-crypt:
+    description: Install git-crypt
+    required: false
+    default: 'false'
   minver:
     description: Install MinVer CLI
     required: false
@@ -121,6 +125,9 @@ runs:
         cache: enable
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
+
+    - uses: Flydiverny/setup-git-crypt@v1
+      if: inputs.git-crype == 'true' || inputs.all == 'true'
 
     - name: Setup MinVer CLI
       if: inputs.minver == 'true' || inputs.all == 'true'
