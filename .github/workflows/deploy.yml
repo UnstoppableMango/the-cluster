@@ -51,7 +51,10 @@ jobs:
   deploy:
     name: ${{ github.event_name == 'push' && 'deploy' || 'preview' }}
     runs-on: thecluster
-    container: ghcr.io/unstoppablemango/runner-image:main
+    container:
+      image: ghcr.io/unstoppablemango/runner-image:main
+      volumes:
+        - /opt/hostedtoolcache:/opt/hostedtoolcache
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
       PROJECT_DIR: ${{ inputs.kind }}/${{ inputs.project }}

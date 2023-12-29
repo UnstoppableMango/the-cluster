@@ -10,7 +10,10 @@ jobs:
   rosequartz:
     name: Rosequartz
     runs-on: thecluster
-    container: ghcr.io/unstoppablemango/runner-image:main
+    container:
+      image: ghcr.io/unstoppablemango/runner-image:main
+      volumes:
+        - /opt/hostedtoolcache:/opt/hostedtoolcache
     if: false
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
