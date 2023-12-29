@@ -11,6 +11,7 @@ RUN apt-get update -y \
 	unzip \
 	jq \
 	gettext-base \
+	make \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN adduser --disabled-password --gecos "" --uid 1001 runner \
