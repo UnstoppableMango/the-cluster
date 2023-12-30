@@ -19,21 +19,18 @@ spec:
             nullable: false
             properties:
               currentJobs:
-                format: int32
                 nullable: false
-                type: integer
+                type: string
             type: object
           spec:
             nullable: false
             properties:
               minJobs:
-                format: int32
                 nullable: false
-                type: integer
+                type: string
               maxJobs:
-                format: int32
                 nullable: false
-                type: integer
+                type: string
             type: object
         type: object
     served: true

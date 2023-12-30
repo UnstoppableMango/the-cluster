@@ -1,5 +1,9 @@
 *
 !appsettings.Development.json
 !appsettings.json
-!*.fs
-!*.fsproj
+!**/*.fs
+!**/*.cs
+!**/*.fsproj
+!**/*.csproj
+**/bin/
+**/obj/
