@@ -4,4 +4,4 @@ description: Pi-hole install for THECLUSTER
 config:
   versions:
     value:
-      docker: 2023.11.0 # renovate depName=pi-hole/docker-pi-hole
+      docker: 2023.11.0 # depName=pi-hole/docker-pi-hole

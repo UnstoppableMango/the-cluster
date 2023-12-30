@@ -30,10 +30,9 @@
         ".*/versions/.*"
       ],
       "matchStrings": [
-        ".+?: (?<currentValue>\\S+) # renovate depName=(?<depName>\\S+)(?: extractVersion=(?<extractVersion>\\S+))*",
-        ".+?: (?<currentDigest>[a-f0-9]{40}) # renovate depName=(?<depName>[^/?#]+\\/[^/?#]+) tag=(?<currentValue>\\S+)(?: extractVersion=(?<extractVersion>\\S*))*"
-      ],
-      "datasourceTemplate": "github-tags"
+        ".+?: (?<currentValue>\\S+) # depName=(?<depName>\\S+) dataSource=(?<dataSource>\\S+)*",
+        ".+?: (?<currentValue>\\S+) # depName=(?<depName>\\S+) dataSource=(?<dataSource>\\S+) extractVersion=(?<extractVersion>\\S*)*"
+      ]
     },
     {
       "customType": "regex",
@@ -47,16 +46,6 @@
         ".+?: (?<currentValue>\\S+) # renovate depName=(?<depName>\\S+) datasource=docker(?: extractVersion=(?<extractVersion>\\S*))*"
       ],
       "datasourceTemplate": "docker"
-    },
-    {
-      "customType": "regex",
-      "fileMatch": [
-        "^Dockerfile$"
-      ],
-      "matchStrings": [
-        "depName=(?<depName>\\S+)(?: extractVersion=(?<extractVersion>\\S+))?\\s(?:ARG|ENV) \\S+_?=(?<currentValue>[\\d\\.]+)"
-      ],
-      "datasourceTemplate": "github-tags"
     }
   ],
   "packageRules": [

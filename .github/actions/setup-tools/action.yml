@@ -52,7 +52,7 @@ runs:
       if: inputs.pulumi == 'true' || inputs.all == 'true'
       uses: pulumi/actions@v5
       with:
-        pulumi-version: 3.105.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
+        pulumi-version: 3.105.0 # depName=pulumi/pulumi extractVersion=^v(?<version>.*)
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
 
@@ -61,7 +61,7 @@ runs:
     #   uses: jaxxstorm/action-install-gh-release@v1
     #   with:
     #     repo: siderolabs/talos
-    #     tag: v1.3.0 # renovate depName=pulumi/crd2pulumi
+    #     tag: v1.3.0 # depName=pulumi/crd2pulumi
     #     extension-matching: disable
     #     rename-to: talosctl
     #     chmod: 0755
@@ -85,7 +85,7 @@ runs:
       if: inputs.helm == 'true' || inputs.all == 'true'
       uses: azure/setup-helm@v3
       with:
-        version: '3.13.2' # renovate depName=helm/helm extractVersion=extractVersion=^v(?<version>.*)
+        version: '3.13.2' # depName=helm/helm extractVersion=extractVersion=^v(?<version>.*)
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
 
@@ -94,7 +94,7 @@ runs:
       uses: jaxxstorm/action-install-gh-release@v1
       with:
         repo: patrickdappollonio/kubectl-slice
-        tag: v1.2.7 # renovate depName=patrickdappollonio/kubectl-slice
+        tag: v1.2.7 # depName=patrickdappollonio/kubectl-slice
         cache: enable
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
@@ -104,7 +104,7 @@ runs:
       uses: jaxxstorm/action-install-gh-release@v1
       with:
         repo: pulumi/crd2pulumi
-        tag: v1.3.0 # renovate depName=pulumi/crd2pulumi
+        tag: v1.3.0 # depName=pulumi/crd2pulumi
         cache: enable
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
@@ -114,7 +114,7 @@ runs:
       uses: jaxxstorm/action-install-gh-release@v1
       with:
         repo: kubernetes-sigs/cluster-api
-        tag: v1.6.1 # renovate depName=kubernetes-sigs/cluster-api
+        tag: v1.6.1 # depName=kubernetes-sigs/cluster-api
         extension-matching: disable
         rename-to: clusterctl
         chmod: 0755

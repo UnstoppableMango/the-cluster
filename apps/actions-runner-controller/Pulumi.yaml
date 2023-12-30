@@ -4,8 +4,8 @@ description: GitHub Actions Runner Controller install for THECLUSTER
 config:
   versions:
     value:
-      actionsRunner: v2.311.0-ubuntu-20.04-8e48463 # renovate depName=summerwind/actions-runner datasource=docker
-      actionsRunnerController: v0.27.6 # renovate depName=summerwind/actions-runner-controller datasource=docker
-      dind: 25.0.3-dind # renovate depName=docker datasource=docker
-      rbacProxy: v0.16.0 # renovate depName=brancz/kube-rbac-proxy datasource=docker
-      scaleSetController: 0.8.2 # renovate depName=ghcr.io/actions/gha-runner-scale-set-controller datasource=docker
+      actionsRunner: v2.311.0-ubuntu-20.04-8e48463 # depName=summerwind/actions-runner datasource=docker
+      actionsRunnerController: v0.27.6 # depName=summerwind/actions-runner-controller datasource=docker
+      dind: 25.0.3-dind # depName=docker datasource=docker
+      rbacProxy: v0.16.0 # depName=brancz/kube-rbac-proxy datasource=docker
+      scaleSetController: 0.8.2 # depName=ghcr.io/actions/gha-runner-scale-set-controller datasource=docker

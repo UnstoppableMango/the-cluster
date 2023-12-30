@@ -2,7 +2,7 @@
 
 FROM golang:1.22 as build
 
-# renovate depName=pulumi/pulumi-kubernetes-operator
+# depName=pulumi/pulumi-kubernetes-operator
 ARG VERSION=v1.14.0
 
 ADD https://github.com/pulumi/pulumi-kubernetes-operator.git#${VERSION} /src
