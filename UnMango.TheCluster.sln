@@ -58,6 +58,17 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UnMango.TheCluster.Types", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnMango.TheCluster.Entities", "operator\UnMango.TheCluster.Entities\UnMango.TheCluster.Entities.csproj", "{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "gen", "gen", "{B923EFD9-6D18-497E-B95B-972C12EAD234}"
+	ProjectSection(SolutionItems) = preProject
+		operator\gen\manifests.sh = operator\gen\manifests.sh
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "apps", "apps", "{5DA52B4A-4EE8-4956-B855-8B43838C4D20}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UnMango.TheCluster.Operator.Pulumi", "apps\operator\UnMango.TheCluster.Operator.Pulumi.fsproj", "{45316F56-8194-4585-B9DE-5A3171897AEA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "charts", "charts", "{D7C529BE-CF58-4594-BB5A-B15499E4A5B5}"
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -131,6 +142,18 @@ Global
 		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Release|x64.Build.0 = Release|Any CPU
 		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Release|x86.ActiveCfg = Release|Any CPU
 		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Release|x86.Build.0 = Release|Any CPU
+		{45316F56-8194-4585-B9DE-5A3171897AEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45316F56-8194-4585-B9DE-5A3171897AEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45316F56-8194-4585-B9DE-5A3171897AEA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{45316F56-8194-4585-B9DE-5A3171897AEA}.Debug|x64.Build.0 = Debug|Any CPU
+		{45316F56-8194-4585-B9DE-5A3171897AEA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{45316F56-8194-4585-B9DE-5A3171897AEA}.Debug|x86.Build.0 = Debug|Any CPU
+		{45316F56-8194-4585-B9DE-5A3171897AEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45316F56-8194-4585-B9DE-5A3171897AEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45316F56-8194-4585-B9DE-5A3171897AEA}.Release|x64.ActiveCfg = Release|Any CPU
+		{45316F56-8194-4585-B9DE-5A3171897AEA}.Release|x64.Build.0 = Release|Any CPU
+		{45316F56-8194-4585-B9DE-5A3171897AEA}.Release|x86.ActiveCfg = Release|Any CPU
+		{45316F56-8194-4585-B9DE-5A3171897AEA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8BDB3F84-74F1-4B46-8D2E-3CA795B09367} = {1B774BBB-0B4C-4783-8149-FD0611AA8694}
@@ -139,5 +162,6 @@ Global
 		{8F374ADB-485D-438C-85A1-9E0733BA6153} = {167E3447-E28D-4EEB-AD7D-6F8E3358518F}
 		{7FBBEE7C-7CAF-4469-908A-9D29858E8417} = {167E3447-E28D-4EEB-AD7D-6F8E3358518F}
 		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9} = {167E3447-E28D-4EEB-AD7D-6F8E3358518F}
+		{45316F56-8194-4585-B9DE-5A3171897AEA} = {5DA52B4A-4EE8-4956-B855-8B43838C4D20}
 	EndGlobalSection
 EndGlobal

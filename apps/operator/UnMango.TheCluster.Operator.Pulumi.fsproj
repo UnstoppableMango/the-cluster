@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="StackRef.fs" />
+    <Compile Include="ClusterProvider.fs" />
+    <Compile Include="Kubernetes.fs" />
+    <Compile Include="K8s.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Pulumi" Version="3.59.0" />
+    <PackageReference Include="Pulumi.FSharp" Version="3.59.0" />
+    <PackageReference Include="Pulumi.Kubernetes" Version="4.6.1" />
+  </ItemGroup>
+
+</Project>
