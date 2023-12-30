@@ -1,0 +1,7 @@
+name: thecluster-redis
+runtime: nodejs
+description: Redis Cluster install for THECLUSTER
+config:
+  versions:
+    value:
+      redis: 7.2.3 # renovate depName=bitnami/redis datasource=docker

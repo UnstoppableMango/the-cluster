@@ -8,6 +8,7 @@ export interface Namespaces {
   pgadmin: Output<string>;
   pulumiOperator: Output<string>;
   nginxIngress: Output<string>;
+  redis: Output<string>;
 }
 
 export class Shared {
@@ -18,7 +19,7 @@ export class Shared {
     return this._ref.value;
   }
 
-  public get namespaces(): Namespaces {
+  public get namespaces(): Output<Namespaces> {
     return this.ref.requireOutput('namespaces') as Output<Namespaces>;
   }
 }
