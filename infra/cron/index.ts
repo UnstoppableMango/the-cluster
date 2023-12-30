@@ -54,6 +54,7 @@ const cleanActionsPvs = new CronJob('clean-actions-pvs', {
             containers: [{
               name: 'work',
               image: 'ghcr.io/unstoppablemango/clean-pvs-cron-job:main',
+              imagePullPolicy: 'Always',
             }],
             restartPolicy: 'Never',
           },
