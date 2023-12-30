@@ -102,3 +102,5 @@ jobs:
         pre-deploy-script: ${{ inputs.pre-deploy-script }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - run: echo "${{ github.workspace }}" && ls /root/.npm && ls /__w/_tool
