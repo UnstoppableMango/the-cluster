@@ -13,11 +13,7 @@ jobs:
   setup:
     name: Setup
     runs-on: thecluster
-    container:
-      image: ghcr.io/unstoppablemango/runner-image:main
-      volumes:
-        - ${{ github.workspace }}/.npm:/root/.npm
-        - ${{ github.workspace }}/_tool:/__w/_tool
+    container: ghcr.io/unstoppablemango/runner-image:main
     steps:
     - uses: actions/checkout@v4
       with:
@@ -69,11 +65,7 @@ jobs:
   pinkdiamond:
     name: Pink Diamond
     runs-on: thecluster
-    container:
-      image: ghcr.io/unstoppablemango/runner-image:main
-      volumes:
-        - ${{ github.workspace }}/.npm:/root/.npm
-        - ${{ github.workspace }}/_tool:/__w/_tool
+    container: ghcr.io/unstoppablemango/runner-image:main
     needs: [setup]
     if: fromJson(needs.setup.outputs.pinkdiamond) && !failure() && !cancelled()
     defaults:
