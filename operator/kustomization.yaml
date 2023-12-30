@@ -6,6 +6,7 @@ resources:
 - operator-role.yaml
 - operator-role-binding.yaml
 - deployment.yaml
+- autoscalingtranscodesets_thecluster_io.yaml
 - namespace.yaml
 images:
 - name: operator

@@ -1,7 +1,7 @@
 namespace UnMango.TheCluster.AutoScalingTranscodeSet.V1Alpha1
 
 [<Struct>]
-type Status = { CurrentJobs: int }
+type Status = { CurrentJobs: string }
 
 [<Struct>]
-type Spec = { MinJobs: int; MaxJobs: int }
+type Spec = { MinJobs: string; MaxJobs: string }

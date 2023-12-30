@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "operator", "operator", "{16
 		operator\namespace.yaml = operator\namespace.yaml
 		operator\operator-role-binding.yaml = operator\operator-role-binding.yaml
 		operator\operator-role.yaml = operator\operator-role.yaml
+		operator\autoscalingtranscodesets_thecluster_io.yaml = operator\autoscalingtranscodesets_thecluster_io.yaml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{1B774BBB-0B4C-4783-8149-FD0611AA8694}"
