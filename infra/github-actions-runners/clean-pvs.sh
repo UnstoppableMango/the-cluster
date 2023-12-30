@@ -9,6 +9,7 @@ if ! command -v kubectl >/dev/null; then
     version="$(curl -L -s https://dl.k8s.io/release/stable.txt)"
     echo "Attempting to install kubectl verion: $version"
     sudo curl -LO "https://dl.k8s.io/release/$version/bin/linux/amd64/kubectl"
+    sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 fi
 
 if ! command -v yq >/dev/null; then
@@ -16,9 +17,8 @@ if ! command -v yq >/dev/null; then
     sudo apt-get update && sudo apt-get install -y --no-install-recommends curl wget
     version="latest"
     echo "Attempting to install yq verion: $version"
-    [ "$INSTALL_TOOLS" = "true" ] \
-        && sudo wget https://github.com/mikefarah/yq/releases/$version/download/yq_linux_amd64 -O /usr/bin/yq \
-        && sudo chmod +x /usr/bin/yq
+    sudo wget https://github.com/mikefarah/yq/releases/$version/download/yq_linux_amd64 -O /usr/bin/yq
+    sudo chmod +x /usr/bin/yq
 fi
 
 function remove_claim_ref() {
