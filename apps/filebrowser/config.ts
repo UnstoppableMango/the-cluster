@@ -17,16 +17,19 @@ const config = new Config();
 export const hosts = config.requireObject<Hosts>('hosts');
 export const versions = config.requireObject<Versions>('versions');
 export const releaseName = 'filebrowser';
-export const mediaVolumes = ['movies', 'tv', 'music', 'anime', 'movies4k', 'tv4k'];
 export const servicePort = 8080;
 
 export const resources = {
   limits: {
-    cpu: '10m',
-    memory: '64Mi',
+    cpu: '50m',
+    memory: '128Mi',
   },
   requests: {
     cpu: '10m',
     memory: '64Mi',
   },
 };
+export const mediaVolumes = [
+  'movies', 'tv', 'anime', 'movies4k', 'tv4k', 'photos',
+  'videos', 'archive', 'isos', 'downloads', 'backup', 'music',
+];

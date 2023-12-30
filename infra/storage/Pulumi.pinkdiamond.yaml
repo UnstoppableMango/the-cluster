@@ -58,3 +58,51 @@ config:
       namespace: media
       labels:
         thecluster.io/role: media
+    - name: photos
+      storageClass: cephfs
+      accessModes: ["ReadWriteMany"]
+      mode: Filesystem
+      size: 1Ti
+      namespace: media
+      labels:
+        thecluster.io/role: media
+    - name: videos
+      storageClass: cephfs
+      accessModes: ["ReadWriteMany"]
+      mode: Filesystem
+      size: 2Ti
+      namespace: media
+      labels:
+        thecluster.io/role: media
+    - name: archive
+      storageClass: cephfs
+      accessModes: ["ReadWriteMany"]
+      mode: Filesystem
+      size: 1Ti
+      namespace: media
+      labels:
+        thecluster.io/role: media
+    - name: backup
+      storageClass: cephfs
+      accessModes: ["ReadWriteMany"]
+      mode: Filesystem
+      size: 1Ti
+      namespace: media
+      labels:
+        thecluster.io/role: media
+    - name: isos
+      storageClass: cephfs
+      accessModes: ["ReadWriteMany"]
+      mode: Filesystem
+      size: 10Ti
+      namespace: media
+      labels:
+        thecluster.io/role: media
+    - name: downloads
+      storageClass: cephfs
+      accessModes: ["ReadWriteMany"]
+      mode: Filesystem
+      size: 10Ti
+      namespace: media
+      labels:
+        thecluster.io/role: media

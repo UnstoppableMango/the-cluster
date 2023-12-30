@@ -43,11 +43,14 @@ const chart = new Chart(releaseName, {
       name: 'THECLUSTER',
       files: '/assets',
     },
+    // We've got work to do dangit
+    readinessProbe: { enabled: false },
+    livenessProbe: { enabled: false },
     resources: {
-      limits: {
-        cpu: '20m',
-        memory: '64Mi',
-      },
+      // limits: {
+      //   cpu: '20m',
+      //   memory: '64Mi',
+      // },
       requests: {
         cpu: '20m',
         memory: '64Mi',
@@ -78,7 +81,15 @@ const chart = new Chart(releaseName, {
         configMap: {
           name: assets.metadata.name,
         },
-      }
+      },
+      {
+        name: 'anime-nfs',
+        nfs: {
+          server: '192.168.1.10',
+          path: '/tank1/media/anime',
+          readOnly: true,
+        },
+      },
     ]),
     extraVolumeMounts: mediaVolumes.map<VolumeMount>(v => ({
       name: v,
@@ -87,6 +98,10 @@ const chart = new Chart(releaseName, {
       {
         name: 'media',
         mountPath: '/srv',
+      },
+      {
+        name: 'anime-nfs',
+        mountPath: '/srv/anime_nfs',
       },
       {
         name: 'assets',
