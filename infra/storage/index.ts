@@ -69,15 +69,13 @@ const claims = volumes.map(config => {
   }, { provider, protect: true });
 });
 
-// const volumesOutput = [
-//   ...runnerVolumes.map(x => x.metadata.name),
-// ];
+const runnerVolumesOutput = runnerVolumes.map(x => x.metadata.name);
 
 const claimsOutput = [
   ...claims.map(x => x.metadata.name),
 ]
 
 export {
-  // volumesOutput as volumes,
+  runnerVolumesOutput as runnerVolumes,
   claimsOutput as claims,
 };

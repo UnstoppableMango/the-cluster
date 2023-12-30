@@ -87,14 +87,14 @@ spec:
           readinessProbe:
             httpGet:
               port: {{ .Values.port }}
-            initialDelaySeconds: 0
+            initialDelaySeconds: 5
             timeoutSeconds: 1
           livenessProbe:
             httpGet:
               port: {{ .Values.port }}
-            initialDelaySeconds: 0
+            initialDelaySeconds: 5
             timeoutSeconds: 5
-            periodSeconds: 10
+            periodSeconds: 120
             successThreshold: 1
           {{- with .Values.resources }}
           resources:
