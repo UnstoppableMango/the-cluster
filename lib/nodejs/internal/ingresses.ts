@@ -12,7 +12,7 @@ export class Ingresses {
     return this._apps.nginxIngress.ingressClasses.internal;
   }
 
-  public get cluster(): Output<string> {
-    return this._apps.nginxIngress.ingressClasses.cluster;
-  }
+  // public get cluster(): Output<string> {
+  //   return this._apps.nginxIngress.ingressClasses.cluster;
+  // }
 }

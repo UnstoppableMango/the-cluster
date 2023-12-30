@@ -7,54 +7,26 @@ config:
   thecluster-github-actions-runners:scalesets:
   - name: thecluster
     githubUrl: https://github.com/UnstoppableMango/the-cluster
-    minRunners: 4
+    minRunners: 5
     maxRunners: 25
-    volumeSize: 10Gi
-    # https://github.com/actions/actions-runner-controller/blob/3e4201ac5f6c6d172a19b580154eaf5abf24a2ca/charts/gha-runner-scale-set/values.yaml#L162-L189
-    podTemplate:
-      spec:
-        securityContext:
-          runAsUser: 1001
-          runAsGroup: 1001
-          fsGroup: 1001
-        topologySpreadConstraints:
-        - maxSkew: 1
-          topologyKey: kubernetes.io/hostname
-          whenUnsatisfiable: ScheduleAnyway
-          labelSelector:
-            matchLabels:
-              actions.github.com/scale-set-name: thecluster
-        containers:
-          - name: runner
-            image: ghcr.io/actions/actions-runner:latest
-            command: ['/home/runner/run.sh']
-            env:
-              - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
-                value: 'false'
-            volumeMounts:
-              - name: cache
-                mountPath: /opt/hostedtoolcache
-        volumes:
-          - name: cache
-            persistentVolumeClaim:
-              claimName: thecluster-cache
+    installationId: '22901293'
   # - name: wishlists
   #   githubUrl: https://github.com/unmango/wishlists
   #   minRunners: 0
   #   maxRunners: 5
-  #   volumeSize: 10Gi
+  #   installationId: '23024655'
   # - name: audio
   #   githubUrl: https://github.com/unmango/audio
   #   minRunners: 0
   #   maxRunners: 5
-  #   volumeSize: 10Gi
+  #   installationId: '23024655'
   # - name: safir
   #   githubUrl: https://github.com/unmango/safir
   #   minRunners: 0
   #   maxRunners: 25
-  #   volumeSize: 10Gi
+  #   installationId: '23024655'
   - name: unstoppablemango-io
     githubUrl: https://github.com/UnstoppableMango/unstoppablemango.io
     minRunners: 0
     maxRunners: 5
-    volumeSize: 10Gi
+    installationId: '22901293'

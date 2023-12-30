@@ -1,8 +1,10 @@
+import * as fs from 'node:fs/promises';
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
-import { apps, provider, storageClasses } from '@unmango/thecluster/cluster/from-stack';
+import { apps, provider } from '@unmango/thecluster/cluster/from-stack';
 import { github, privateKey, scaleSets } from './config';
-import { PersistentVolumeClaim } from '@pulumi/kubernetes/core/v1';
+import { ConfigMap } from '@pulumi/kubernetes/core/v1';
+import { core } from '@pulumi/kubernetes/types/input';
 
 export const namespaces: pulumi.Output<string>[] = [];
 
@@ -13,26 +15,6 @@ for (const set of scaleSets) {
 
   namespaces.push(ns.metadata.name);
 
-  const cachePvc = new PersistentVolumeClaim(`${set.name}-cache`, {
-    metadata: {
-      name: `${set.name}-cache`,
-      namespace: ns.metadata.name,
-      labels: {
-        app: set.name,
-        'thecluster.io/role': 'actions-runner',
-      },
-    },
-    spec: {
-      accessModes: ['ReadWriteMany'],
-      storageClassName: storageClasses.cephfs,
-      resources: {
-        requests: {
-          storage: '50Gi',
-        },
-      },
-    },
-  }, { provider });
-
   const authSecret = new k8s.core.v1.Secret(set.name, {
     metadata: {
       name: set.name,
@@ -42,6 +24,16 @@ for (const set of scaleSets) {
       github_app_id: github.appId,
       github_app_installation_id: github.installationId,
       github_app_private_key: privateKey,
+    },
+  }, { provider });
+
+  const hooks = new ConfigMap(`${set.name}-hooks`, {
+    metadata: {
+      name: 'hooks',
+      namespace: ns.metadata.name,
+    },
+    data: {
+      'clean-pvs.sh': fs.readFile('clean-pvs.sh', 'utf-8'),
     },
   }, { provider });
 
@@ -62,17 +54,77 @@ for (const set of scaleSets) {
         minRunners: set.minRunners,
         maxRunners: set.maxRunners,
         runnerScaleSetName: set.name,
-        template: set.podTemplate,
         containerMode: {
           type: 'kubernetes',
-          kubernetesModeWorkVolumeClaim: {
-            accessModes: ['ReadWriteOnce'],
-            storageClassName: storageClasses.rbd,
-            resources: {
-              requests: {
-                storage: '10Gi',
-              },
+        },
+        // https://github.com/actions/actions-runner-controller/blob/3e4201ac5f6c6d172a19b580154eaf5abf24a2ca/charts/gha-runner-scale-set/values.yaml#L162-L189
+        template: <core.v1.Pod>{
+          spec: {
+            securityContext: {
+              runAsUser: 1001,
+              runAsGroup: 1001,
+              fsGroup: 1001,
             },
+            topologySpreadConstraints: [{
+              maxSkew: 1,
+              topologyKey: 'kubernetes.io/hostname',
+              whenUnsatisfiable: 'ScheduleAnyway',
+              labelSelector: {
+                matchLabels: {
+                  'actions.github.com/scale-set-name': set.name,
+                },
+              },
+            }],
+            containers: [{
+              name: 'runner',
+              image: 'ghcr.io/actions/actions-runner:latest',
+              command: ['/home/runner/run.sh'],
+              env: [
+                { name: 'ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER', value: 'true' },
+                { name: 'ACTIONS_RUNNER_HOOK_JOB_STARTED', value: '/opt/runner/hooks/clean-pvs.sh' },
+                { name: 'ACTIONS_RUNNER_HOOK_JOB_COMPLETED', value: '/opt/runner/hooks/clean-pvs.sh' },
+                { name: 'INSTALL_TOOLS', value: 'true' },
+              ],
+              volumeMounts: [
+                ...set.volumeMounts ?? [],
+                {
+                  name: 'hooks',
+                  mountPath: '/opt/runner/hooks',
+                  readOnly: true,
+                },
+              ],
+            }],
+            volumes: [
+              ...set.volumes ?? [],
+              {
+                name: 'work',
+                ephemeral: {
+                  volumeClaimTemplate: {
+                    spec: {
+                      // Explicit opt-out of dynamic provisioning
+                      storageClassName: '',
+                      accessModes: ['ReadWriteOnce'],
+                      selector: {
+                        matchLabels: {
+                          'thecluster.io/role': 'actions-runner',
+                        },
+                      },
+                      resources: {
+                        requests: {
+                          storage: '100Gi',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              {
+                name: 'hooks',
+                configMap: {
+                  name: hooks.metadata.name,
+                },
+              },
+            ],
           },
         },
       },

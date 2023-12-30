@@ -1,3 +1,4 @@
+import { core } from '@pulumi/kubernetes/types/input';
 import { Config } from '@pulumi/pulumi';
 
 export interface GitHub {
@@ -10,8 +11,9 @@ export interface ScaleSet {
   githubUrl: string;
   minRunners: number;
   maxRunners: number;
-  volumeSize: string;
-  podTemplate?: unknown;
+  volumes?: core.v1.Volume[];
+  volumeMounts?: core.v1.VolumeMount[];
+  installationId?: string; // TODO: So we can template across orgs
 }
 
 export interface Versions {
