@@ -67,7 +67,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - run: git config --global --add safe.directory "/__w/the-cluster/the-cluster" # actions/runner#2033
-    - run: echo "${{ github.workspace }}"
+    - run: echo "${{ github.workspace }}" && ls ${{ github.workspace }}/.npm && ls /root/.npm && ls /__w/_tool
 
     - name: Validate inputs
       run: |
