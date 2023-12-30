@@ -138,7 +138,7 @@ const chart = new Chart(releaseName, {
   },
 }, { provider });
 
-const service = chart.getResource('v1/Service', 'redis/redis');
+const service = chart.getResource('v1/Service', 'redis/redis-headless');
 
 const serviceOutput = service.metadata.name;
-export { versions, serviceOutput as service };
+export { versions, servicePort as port, serviceOutput as service };

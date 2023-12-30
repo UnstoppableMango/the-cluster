@@ -49,6 +49,10 @@ jobs:
       kong: ${{ steps.stacks.outputs.kong }}
       shared: ${{ steps.stacks.outputs.shared }}
       filebrowser: ${{ steps.stacks.outputs.filebrowser }}
+      redis: ${{ steps.stacks.outputs.redis }}
+      deemix: ${{ steps.stacks.outputs.deemix }}
+      external-dns: ${{ steps.stacks.outputs.external-dns }}
+      pgadmin: ${{ steps.stacks.outputs.pgadmin }}
 
   dns:
     name: DNS Infrastructure
@@ -273,4 +277,56 @@ jobs:
       project: filebrowser
       stack: pinkdiamond
       uses-lib: true
+    secrets: inherit
+
+  redis:
+    name: Redis
+    needs: [setup, pinkdiamond, ceph-csi, nginx-ingress]
+    if: fromJson(needs.setup.outputs.redis) && !failure() && !cancelled()
+    concurrency: redis-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: redis
+      stack: pinkdiamond
+      uses-lib: true
+      uses-crds: true
+    secrets: inherit
+
+  deemix:
+    name: Deemix
+    needs: [setup, pinkdiamond, ceph-csi, nginx-ingress, cloudflare-ingress]
+    if: fromJson(needs.setup.outputs.deemix) && !failure() && !cancelled()
+    concurrency: deemix-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: deemix
+      stack: pinkdiamond
+      uses-lib: true
+      uses-crds: true
+    secrets: inherit
+
+  pgadmin:
+    name: Pgadmin4
+    needs: [setup, pinkdiamond, ceph-csi, nginx-ingress, cloudflare-ingress]
+    if: fromJson(needs.setup.outputs.pgadmin) && !failure() && !cancelled()
+    concurrency: pgadmin-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: pgadmin
+      stack: pinkdiamond
+      uses-lib: true
+      uses-crds: true
+    secrets: inherit
+
+  external-dns:
+    name: External DNS
+    needs: [setup, pinkdiamond, ceph-csi, nginx-ingress, cloudflare-ingress]
+    if: fromJson(needs.setup.outputs.external-dns) && !failure() && !cancelled()
+    concurrency: external-dns-${{ github.ref }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      project: external-dns
+      stack: pinkdiamond
+      uses-lib: true
+      uses-crds: true
     secrets: inherit
