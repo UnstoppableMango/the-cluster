@@ -18,6 +18,8 @@ const runnerVolumes = range(actionsRunnerController.count)
         },
       },
       spec: {
+        // https://github.com/ceph/ceph-csi/blob/devel/docs/static-pvc.md
+        // for i in $(seq -f "%02g" 1 30); do rbd create actions-runner-$i --size 100Gi --pool kubernetes; done
         accessModes: ['ReadWriteOnce'],
         csi: {
           driver: 'rbd.csi.ceph.com',
@@ -38,6 +40,7 @@ const runnerVolumes = range(actionsRunnerController.count)
             imageFeatures: 'layering',
           },
         },
+        persistentVolumeReclaimPolicy: 'Retain',
         volumeMode: 'Filesystem',
         capacity: {
           storage: '100Gi',
