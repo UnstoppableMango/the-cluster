@@ -2,9 +2,9 @@ import * as fs from 'node:fs/promises';
 import { interpolate } from '@pulumi/pulumi';
 import { ConfigMap, Namespace } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v3';
-import { ingresses, provider, realms, shared, storageClasses } from '@unmango/thecluster/cluster/from-stack';
+import { ingresses, provider, realms, shared } from '@unmango/thecluster/cluster/from-stack';
 import { client, readersGroup } from './oauth';
-import { hosts, mediaVolumes, releaseName, resources, servicePort, versions } from './config';
+import { hosts, releaseName, servicePort, versions } from './config';
 import { core } from '@pulumi/kubernetes/types/input';
 
 type Volume = core.v1.Volume;
@@ -16,95 +16,50 @@ const ns = Namespace.get(
   { provider },
 );
 
-const assets = new ConfigMap('assets', {
+const config = new ConfigMap('deemix', {
   metadata: {
-    name: 'assets',
+    name: 'deemix',
     namespace: ns.metadata.name,
   },
-  binaryData: {
-    'logo.svg': fs.readFile('assets/logo.svg', 'base64'),
-    'favicon.ico': fs.readFile('assets/favicon.ico', 'base64'),
+  data: {
+    'config.json': fs.readFile('assets/config.json', 'utf-8'),
   },
 }, { provider });
 
 const chart = new Chart(releaseName, {
-  path: '../../charts/filebrowser',
+  path: '../../charts/deemix',
   namespace: ns.metadata.name,
   values: {
     global: {
       uid: 1001,
       gid: 1001,
     },
-    auth: {
-      method: 'noauth',
-      header: 'x-auth-request-preferred-username', // Might not be using this/getting set right
-    },
-    branding: {
-      name: 'THECLUSTER',
-      files: '/assets',
-    },
+    existingConfigMap: config.metadata.name,
+    singleUser: true,
+    image: { tag: versions.deemix },
+    extraVolumes: <Volume[]>[{
+      name: 'music',
+      persistentVolumeClaim: {
+        claimName: 'music',
+      },
+    }],
+    extraVolumeMounts: <VolumeMount[]>[{
+      name: 'music',
+      mountPath: '/downloads',
+    }],
+    ingress: { enabled: false },
     resources: {
       limits: {
-        cpu: '20m',
-        memory: '64Mi',
+        cpu: '100m',
+        memory: '128Mi',
       },
       requests: {
-        cpu: '20m',
-        memory: '64Mi',
+        cpu: '100m',
+        memory: '128Mi',
       },
     },
-    image: { tag: versions.filebrowser },
-    init: {
-      image: { tag: versions.filebrowser },
-      resources,
-    },
-    persistence: {
-      storageClassName: storageClasses.rbd,
-    },
-    extraVolumes: mediaVolumes.map<Volume>(v => ({
-      name: v,
-      persistentVolumeClaim: {
-        claimName: v,
-      },
-    })).concat([
-      {
-        name: 'media',
-        persistentVolumeClaim: {
-          claimName: 'media',
-        },
-      },
-      {
-        name: 'assets',
-        configMap: {
-          name: assets.metadata.name,
-        },
-      }
-    ]),
-    extraVolumeMounts: mediaVolumes.map<VolumeMount>(v => ({
-      name: v,
-      mountPath: `/srv/${v}`,
-    })).concat([
-      {
-        name: 'media',
-        mountPath: '/srv',
-      },
-      {
-        name: 'assets',
-        mountPath: '/assets/branding/img/logo.svg',
-        subPath: 'logo.svg',
-        readOnly: true,
-      },
-      {
-        name: 'assets',
-        mountPath: '/assets/branding/img/icons/favicon.ico',
-        subPath: 'favicon.ico',
-        readOnly: true,
-      },
-    ]),
-    ingress: { enabled: false },
     'oauth2-proxy': {
       enabled: true,
-      resources,
       config: {
         clientID: client.clientId,
         clientSecret: client.clientSecret,
@@ -134,17 +89,28 @@ const chart = new Chart(releaseName, {
         enabled: true,
         className: ingresses.cloudflare,
         pathType: 'Prefix',
-        hosts: [hosts.external],
+        path: '/deemix',
+        hosts: [hosts.external, 'deemix-new.thecluster.io'],
         annotations: {
           'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
           'pulumi.com/skipAwait': 'true',
+        },
+      },
+      resources: {
+        limits: {
+          cpu: '10m',
+          memory: '64Mi',
+        },
+        requests: {
+          cpu: '10m',
+          memory: '64Mi',
         },
       },
     },
   },
 }, { provider });
 
-const service = chart.getResource('v1/Service', 'media/filebrowser');
+const service = chart.getResource('v1/Service', 'media/deemix');
 
 const serviceOutput = service.metadata.name;
-export { hosts, versions, serviceOutput as service }
+export { hosts, versions, serviceOutput as service };

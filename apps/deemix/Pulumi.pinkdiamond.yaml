@@ -1,0 +1,7 @@
+config:
+  thecluster-deemix:hosts:
+    external: media.thecluster.io
+    internal: media.lan.thecluster.io
+    aliases:
+      external: []
+      internal: []

@@ -1,0 +1,7 @@
+name: thecluster-deemix
+runtime: nodejs
+description: Deemix install for THECLUSTER
+config:
+  versions:
+    value:
+      deemix: 2022.12.14-r222.5d447b6035

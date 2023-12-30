@@ -1,0 +1,82 @@
+global:
+  uid: 911
+  gid: 911
+
+umask: '022'
+singleUser: true
+disableOwnershipCheck: false
+basePath:
+existingConfigMap: ''
+
+persistence:
+  downloads:
+    enabled: false
+    storageClassName: ''
+    size: 100Gi
+    accessModes: [ReadWriteOnce]
+  config:
+    enabled: false
+    storageClassName: ''
+    size: 250Mi
+    accessModes: [ReadWriteOnce]
+
+ingress:
+  enabled: false
+  annotations: {}
+  ingressClassName: ''
+  host: ''
+  path: /
+  pathType: ImplementationSpecific
+  tls:
+    enabled: false
+
+image:
+  registry: 'registry.gitlab.com'
+  repository: bockiii/deemix-docker
+  tag: ''
+  digest: ''
+
+extraVolumes: []
+extraVolumeMounts: []
+securityContext: {}
+
+resources: {}
+  # limits:
+  #   cpu: 10m
+  #   memory: 64Mi
+  # requests:
+  #   cpu: 10m
+  #   memory: 64Mi
+
+init:
+  image:
+    registry: 'docker.io'
+    repository: busybox
+    tag: ''
+    digest: ''
+  securityContext:
+    allowPrivilegeEscalation: false
+    runAsNonRoot: false # So we can chown the right dirs
+  resources: {}
+    # limits:
+    #   cpu: 10m
+    #   memory: 64Mi
+    # requests:
+    #   cpu: 10m
+    #   memory: 64Mi
+
+service:
+  type: ClusterIP
+  port: 6595
+  clusterIP: ''
+  loadBalancerIP: ''
+
+oauth2-proxy:
+  enabled: false
+  resources: {}
+    # limits:
+    #   cpu: 10m
+    #   memory: 64Mi
+    # requests:
+    #   cpu: 10m
+    #   memory: 64Mi
