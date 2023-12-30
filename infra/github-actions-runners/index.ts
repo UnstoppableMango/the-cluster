@@ -1,8 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
-import { apps, provider, storageClasses } from '@unmango/thecluster/cluster/from-stack';
+import { apps, provider } from '@unmango/thecluster/cluster/from-stack';
 import { github, privateKey, scaleSets } from './config';
-import { PersistentVolumeClaim } from '@pulumi/kubernetes/core/v1';
 
 export const namespaces: pulumi.Output<string>[] = [];
 
@@ -12,26 +11,6 @@ for (const set of scaleSets) {
   }, { provider });
 
   namespaces.push(ns.metadata.name);
-
-  const cachePvc = new PersistentVolumeClaim(`${set.name}-cache`, {
-    metadata: {
-      name: `${set.name}-cache`,
-      namespace: ns.metadata.name,
-      labels: {
-        app: set.name,
-        'thecluster.io/role': 'actions-runner',
-      },
-    },
-    spec: {
-      accessModes: ['ReadWriteMany'],
-      storageClassName: storageClasses.cephfs,
-      resources: {
-        requests: {
-          storage: '50Gi',
-        },
-      },
-    },
-  }, { provider });
 
   const authSecret = new k8s.core.v1.Secret(set.name, {
     metadata: {
@@ -65,15 +44,6 @@ for (const set of scaleSets) {
         template: set.podTemplate,
         containerMode: {
           type: 'kubernetes',
-          kubernetesModeWorkVolumeClaim: {
-            accessModes: ['ReadWriteOnce'],
-            storageClassName: storageClasses.rbd,
-            resources: {
-              requests: {
-                storage: set.volumeSize,
-              },
-            },
-          },
         },
       },
     },

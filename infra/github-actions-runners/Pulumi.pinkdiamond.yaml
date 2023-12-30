@@ -9,7 +9,6 @@ config:
     githubUrl: https://github.com/UnstoppableMango/the-cluster
     minRunners: 5
     maxRunners: 25
-    volumeSize: 10Gi
     # https://github.com/actions/actions-runner-controller/blob/3e4201ac5f6c6d172a19b580154eaf5abf24a2ca/charts/gha-runner-scale-set/values.yaml#L162-L189
     podTemplate:
       spec:
@@ -31,17 +30,19 @@ config:
             env:
               - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
                 value: 'true'
-            volumeMounts:
-              - name: cache
-                mountPath: /home/runner/_work/the-cluster/the-cluster/.npm
-                subPath: .npm
-              - name: cache
-                mountPath: /home/runner/_work/the-cluster/the-cluster/_tool
-                subPath: _tool
         volumes:
-          - name: cache
-            persistentVolumeClaim:
-              claimName: thecluster-cache
+          - name: work
+            ephemeral:
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: ''
+                  accessModes: [ReadWriteOnce]
+                  selector:
+                    matchLabels:
+                      thecluster.io/role: actions-runner
+                  resources:
+                    requests:
+                      storage: 100Gi
   # - name: wishlists
   #   githubUrl: https://github.com/unmango/wishlists
   #   minRunners: 0
@@ -61,4 +62,18 @@ config:
     githubUrl: https://github.com/UnstoppableMango/unstoppablemango.io
     minRunners: 0
     maxRunners: 5
-    volumeSize: 10Gi
+    podTemplate:
+      spec:
+        volumes:
+          - name: work
+            ephemeral:
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: ''
+                  accessModes: [ReadWriteOnce]
+                  selector:
+                    matchLabels:
+                      thecluster.io/role: actions-runner
+                  resources:
+                    requests:
+                      storage: 100Gi

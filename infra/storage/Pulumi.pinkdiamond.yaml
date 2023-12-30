@@ -1,6 +1,6 @@
 config:
   thecluster-storage:actions-runner-controller:
-    count: 20
+    count: 25
   thecluster-storage:volumes:
     - name: media
       storageClass: cephfs

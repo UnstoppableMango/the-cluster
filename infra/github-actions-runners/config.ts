@@ -10,8 +10,8 @@ export interface ScaleSet {
   githubUrl: string;
   minRunners: number;
   maxRunners: number;
-  volumeSize: string;
   podTemplate?: unknown;
+  installationId?: string; // TODO: So we can template across orgs
 }
 
 export interface Versions {
