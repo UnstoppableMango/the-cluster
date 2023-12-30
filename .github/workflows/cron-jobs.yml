@@ -6,14 +6,14 @@ on:
     paths:
       - .github/workflows/cron-jobs.yml
       - .github/workflows/dockedr-container.yml
-      - infra/cron-jobs/containers/**
+      - infra/cron/containers/**
   push:
     branches: ['main']
     tags: [v*.*.*]
     paths:
       - .github/workflows/cron-jobs.yml
       - .github/workflows/dockedr-container.yml
-      - infra/cron-jobs/containers/**
+      - infra/cron/containers/**
 
 jobs:
   clean-pvs:
@@ -21,4 +21,4 @@ jobs:
     uses: ./.github/workflows/docker-container.yml
     with:
       name: clean-pvs-cron-job
-      path: infra/cron-jobs/containers/clean-pvs
+      path: infra/cron/containers/clean-pvs
