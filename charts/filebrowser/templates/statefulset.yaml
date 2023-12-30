@@ -84,11 +84,14 @@ spec:
           {{- if lt 0 (len .Values.extraVolumeMounts) }}
             {{ .Values.extraVolumeMounts | toYaml | nindent 12 }}
           {{- end }}
+          {{- if .Values.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
               port: {{ .Values.port }}
             initialDelaySeconds: 5
             timeoutSeconds: 1
+          {{- end }}
+          {{- if .Values.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
               port: {{ .Values.port }}
@@ -96,6 +99,7 @@ spec:
             timeoutSeconds: 5
             periodSeconds: 120
             successThreshold: 1
+          {{- end }}
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
