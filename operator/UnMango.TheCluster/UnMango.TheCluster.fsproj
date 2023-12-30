@@ -6,21 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="AutoScalingTranscodeSet.fs" />
     <Compile Include="Program.fs" />
-    <None Include="deployment.yaml" />
-    <None Include="Dockerfile" />
-    <None Include=".dockerignore" />
-    <None Include="kustomization.yaml" />
-    <None Include="namespace.yaml" />
-    <None Include="operator-role-binding.yaml" />
-    <None Include="operator-role.yaml" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="KubeOps.Generator" Version="8.0.0-pre.40"
-                      OutputItemType="Analyzer"
-                      ReferenceOutputAssembly="false" />
     <PackageReference Include="KubeOps.Operator.Web" Version="8.0.0-pre.40" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UnMango.TheCluster.Entities\UnMango.TheCluster.Entities.csproj" />
   </ItemGroup>
 
 </Project>

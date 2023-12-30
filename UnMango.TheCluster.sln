@@ -4,6 +4,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "operator", "operator", "{167E3447-E28D-4EEB-AD7D-6F8E3358518F}"
+	ProjectSection(SolutionItems) = preProject
+		operator\.dockerignore = operator\.dockerignore
+		operator\deployment.yaml = operator\deployment.yaml
+		operator\Dockerfile = operator\Dockerfile
+		operator\kustomization.yaml = operator\kustomization.yaml
+		operator\namespace.yaml = operator\namespace.yaml
+		operator\operator-role-binding.yaml = operator\operator-role-binding.yaml
+		operator\operator-role.yaml = operator\operator-role.yaml
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{1B774BBB-0B4C-4783-8149-FD0611AA8694}"
 EndProject
@@ -54,7 +63,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UnMango.TheCluster", "operator\UnMango.TheCluster\UnMango.TheCluster.fsproj", "{8F374ADB-485D-438C-85A1-9E0733BA6153}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnMango.TheCluster.Operator", "operator\UnMango.TheCluster.Operator\UnMango.TheCluster.Operator.csproj", "{8ADF479D-3FE6-4902-9F74-EB102A2919BC}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UnMango.TheCluster.Types", "operator\UnMango.TheCluster.Types\UnMango.TheCluster.Types.fsproj", "{7FBBEE7C-7CAF-4469-908A-9D29858E8417}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnMango.TheCluster.Entities", "operator\UnMango.TheCluster.Entities\UnMango.TheCluster.Entities.csproj", "{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}"
 EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
@@ -105,24 +116,37 @@ Global
 		{8F374ADB-485D-438C-85A1-9E0733BA6153}.Release|x64.Build.0 = Release|Any CPU
 		{8F374ADB-485D-438C-85A1-9E0733BA6153}.Release|x86.ActiveCfg = Release|Any CPU
 		{8F374ADB-485D-438C-85A1-9E0733BA6153}.Release|x86.Build.0 = Release|Any CPU
-		{8ADF479D-3FE6-4902-9F74-EB102A2919BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8ADF479D-3FE6-4902-9F74-EB102A2919BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8ADF479D-3FE6-4902-9F74-EB102A2919BC}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{8ADF479D-3FE6-4902-9F74-EB102A2919BC}.Debug|x64.Build.0 = Debug|Any CPU
-		{8ADF479D-3FE6-4902-9F74-EB102A2919BC}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{8ADF479D-3FE6-4902-9F74-EB102A2919BC}.Debug|x86.Build.0 = Debug|Any CPU
-		{8ADF479D-3FE6-4902-9F74-EB102A2919BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8ADF479D-3FE6-4902-9F74-EB102A2919BC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8ADF479D-3FE6-4902-9F74-EB102A2919BC}.Release|x64.ActiveCfg = Release|Any CPU
-		{8ADF479D-3FE6-4902-9F74-EB102A2919BC}.Release|x64.Build.0 = Release|Any CPU
-		{8ADF479D-3FE6-4902-9F74-EB102A2919BC}.Release|x86.ActiveCfg = Release|Any CPU
-		{8ADF479D-3FE6-4902-9F74-EB102A2919BC}.Release|x86.Build.0 = Release|Any CPU
+		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Debug|x64.Build.0 = Debug|Any CPU
+		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Debug|x86.Build.0 = Debug|Any CPU
+		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Release|x64.ActiveCfg = Release|Any CPU
+		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Release|x64.Build.0 = Release|Any CPU
+		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Release|x86.ActiveCfg = Release|Any CPU
+		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Release|x86.Build.0 = Release|Any CPU
+		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Debug|x64.Build.0 = Debug|Any CPU
+		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Debug|x86.Build.0 = Debug|Any CPU
+		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Release|x64.ActiveCfg = Release|Any CPU
+		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Release|x64.Build.0 = Release|Any CPU
+		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Release|x86.ActiveCfg = Release|Any CPU
+		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8BDB3F84-74F1-4B46-8D2E-3CA795B09367} = {1B774BBB-0B4C-4783-8149-FD0611AA8694}
 		{7E48402E-B671-47CD-9A4C-E862F8627B9E} = {1B774BBB-0B4C-4783-8149-FD0611AA8694}
 		{D011923B-A8CA-4C48-B6F2-16E3E04DF944} = {31793BC8-723C-42D3-9E91-0E75F9762DAE}
 		{8F374ADB-485D-438C-85A1-9E0733BA6153} = {167E3447-E28D-4EEB-AD7D-6F8E3358518F}
-		{8ADF479D-3FE6-4902-9F74-EB102A2919BC} = {167E3447-E28D-4EEB-AD7D-6F8E3358518F}
+		{7FBBEE7C-7CAF-4469-908A-9D29858E8417} = {167E3447-E28D-4EEB-AD7D-6F8E3358518F}
+		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9} = {167E3447-E28D-4EEB-AD7D-6F8E3358518F}
 	EndGlobalSection
 EndGlobal
