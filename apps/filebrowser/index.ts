@@ -23,7 +23,7 @@ const assets = new ConfigMap('assets', {
   },
   binaryData: {
     'logo.svg': fs.readFile('assets/logo.svg', 'base64'),
-    // 'favicon.ico': fs.readFile('assets/favicon.ico', 'base64'),
+    'favicon.ico': fs.readFile('assets/favicon.ico', 'base64'),
   },
 }, { provider });
 
@@ -85,12 +85,12 @@ const chart = new Chart(releaseName, {
         subPath: 'logo.svg',
         readOnly: true,
       },
-      // {
-      //   name: 'assets',
-      //   mountPath: '/assets/branding/img/icons/favicon.ico',
-      //   subPath: 'favicon.ico',
-      //   readOnly: true,
-      // },
+      {
+        name: 'assets',
+        mountPath: '/assets/branding/img/icons/favicon.ico',
+        subPath: 'favicon.ico',
+        readOnly: true,
+      },
     ]),
     ingress: {
       enabled: true,
