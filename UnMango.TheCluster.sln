@@ -1,0 +1,113 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "operator", "operator", "{167E3447-E28D-4EEB-AD7D-6F8E3358518F}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UnMango.TheCluster", "operator\UnMango.TheCluster.fsproj", "{65F4CA8E-6B6A-4EB9-88CF-E57658C54A78}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{1B774BBB-0B4C-4783-8149-FD0611AA8694}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UnMango.TheCluster.FSharp", "lib\dotnet\UnMango.TheCluster.FSharp\UnMango.TheCluster.FSharp.fsproj", "{8BDB3F84-74F1-4B46-8D2E-3CA795B09367}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnMango.TheCluster.CSharp", "lib\dotnet\UnMango.TheCluster.CSharp\UnMango.TheCluster.CSharp.csproj", "{7E48402E-B671-47CD-9A4C-E862F8627B9E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{D9E8EC28-E08C-471B-A0D3-155A62AA23BB}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{BC340001-DA38-45E0-93E3-FF264E5809B3}"
+	ProjectSection(SolutionItems) = preProject
+		.drone-consider = .drone-consider
+		.drone.yml = .drone.yml
+		.nvmrc = .nvmrc
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BA898165-4C64-4598-8F16-128479DBAE66}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitignore = .gitignore
+		.gitmodules = .gitmodules
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{31793BC8-723C-42D3-9E91-0E75F9762DAE}"
+	ProjectSection(SolutionItems) = preProject
+		.github\renovate.json = .github\renovate.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{D011923B-A8CA-4C48-B6F2-16E3E04DF944}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\components.yml = .github\workflows\components.yml
+		.github\workflows\cron-jobs.yml = .github\workflows\cron-jobs.yml
+		.github\workflows\deploy.yml = .github\workflows\deploy.yml
+		.github\workflows\docker-container.yml = .github\workflows\docker-container.yml
+		.github\workflows\main.yml = .github\workflows\main.yml
+		.github\workflows\pulumi-operator.yml = .github\workflows\pulumi-operator.yml
+		.github\workflows\rosequartz-e2e-test.yml = .github\workflows\rosequartz-e2e-test.yml
+		.github\workflows\rosequartz.yml = .github\workflows\rosequartz.yml
+		.github\workflows\rpi4-uefi.yml = .github\workflows\rpi4-uefi.yml
+		.github\workflows\runner-image.yml = .github\workflows\runner-image.yml
+		.github\workflows\validate-modified-stacks-action.yml = .github\workflows\validate-modified-stacks-action.yml
+		.github\workflows\validate-renovate.yml = .github\workflows\validate-renovate.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{65F4CA8E-6B6A-4EB9-88CF-E57658C54A78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65F4CA8E-6B6A-4EB9-88CF-E57658C54A78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65F4CA8E-6B6A-4EB9-88CF-E57658C54A78}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{65F4CA8E-6B6A-4EB9-88CF-E57658C54A78}.Debug|x64.Build.0 = Debug|Any CPU
+		{65F4CA8E-6B6A-4EB9-88CF-E57658C54A78}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{65F4CA8E-6B6A-4EB9-88CF-E57658C54A78}.Debug|x86.Build.0 = Debug|Any CPU
+		{65F4CA8E-6B6A-4EB9-88CF-E57658C54A78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65F4CA8E-6B6A-4EB9-88CF-E57658C54A78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65F4CA8E-6B6A-4EB9-88CF-E57658C54A78}.Release|x64.ActiveCfg = Release|Any CPU
+		{65F4CA8E-6B6A-4EB9-88CF-E57658C54A78}.Release|x64.Build.0 = Release|Any CPU
+		{65F4CA8E-6B6A-4EB9-88CF-E57658C54A78}.Release|x86.ActiveCfg = Release|Any CPU
+		{65F4CA8E-6B6A-4EB9-88CF-E57658C54A78}.Release|x86.Build.0 = Release|Any CPU
+		{8BDB3F84-74F1-4B46-8D2E-3CA795B09367}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BDB3F84-74F1-4B46-8D2E-3CA795B09367}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BDB3F84-74F1-4B46-8D2E-3CA795B09367}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8BDB3F84-74F1-4B46-8D2E-3CA795B09367}.Debug|x64.Build.0 = Debug|Any CPU
+		{8BDB3F84-74F1-4B46-8D2E-3CA795B09367}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8BDB3F84-74F1-4B46-8D2E-3CA795B09367}.Debug|x86.Build.0 = Debug|Any CPU
+		{8BDB3F84-74F1-4B46-8D2E-3CA795B09367}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BDB3F84-74F1-4B46-8D2E-3CA795B09367}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BDB3F84-74F1-4B46-8D2E-3CA795B09367}.Release|x64.ActiveCfg = Release|Any CPU
+		{8BDB3F84-74F1-4B46-8D2E-3CA795B09367}.Release|x64.Build.0 = Release|Any CPU
+		{8BDB3F84-74F1-4B46-8D2E-3CA795B09367}.Release|x86.ActiveCfg = Release|Any CPU
+		{8BDB3F84-74F1-4B46-8D2E-3CA795B09367}.Release|x86.Build.0 = Release|Any CPU
+		{7E48402E-B671-47CD-9A4C-E862F8627B9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E48402E-B671-47CD-9A4C-E862F8627B9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E48402E-B671-47CD-9A4C-E862F8627B9E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7E48402E-B671-47CD-9A4C-E862F8627B9E}.Debug|x64.Build.0 = Debug|Any CPU
+		{7E48402E-B671-47CD-9A4C-E862F8627B9E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7E48402E-B671-47CD-9A4C-E862F8627B9E}.Debug|x86.Build.0 = Debug|Any CPU
+		{7E48402E-B671-47CD-9A4C-E862F8627B9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E48402E-B671-47CD-9A4C-E862F8627B9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E48402E-B671-47CD-9A4C-E862F8627B9E}.Release|x64.ActiveCfg = Release|Any CPU
+		{7E48402E-B671-47CD-9A4C-E862F8627B9E}.Release|x64.Build.0 = Release|Any CPU
+		{7E48402E-B671-47CD-9A4C-E862F8627B9E}.Release|x86.ActiveCfg = Release|Any CPU
+		{7E48402E-B671-47CD-9A4C-E862F8627B9E}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{65F4CA8E-6B6A-4EB9-88CF-E57658C54A78} = {167E3447-E28D-4EEB-AD7D-6F8E3358518F}
+		{8BDB3F84-74F1-4B46-8D2E-3CA795B09367} = {1B774BBB-0B4C-4783-8149-FD0611AA8694}
+		{7E48402E-B671-47CD-9A4C-E862F8627B9E} = {1B774BBB-0B4C-4783-8149-FD0611AA8694}
+		{D011923B-A8CA-4C48-B6F2-16E3E04DF944} = {31793BC8-723C-42D3-9E91-0E75F9762DAE}
+	EndGlobalSection
+EndGlobal

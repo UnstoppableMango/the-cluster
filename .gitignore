@@ -32,7 +32,8 @@ clusterctl.yaml
 .envrc
 .talos/
 .kube/
-.config/
+.config/*
+!.config/dotnet-tools.json
 tmp/
 .backups/
 pools
