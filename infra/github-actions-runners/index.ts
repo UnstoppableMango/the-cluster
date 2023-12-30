@@ -83,7 +83,6 @@ for (const set of scaleSets) {
                 { name: 'ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER', value: 'true' },
                 { name: 'ACTIONS_RUNNER_HOOK_JOB_STARTED', value: '/opt/runner/hooks/clean-pvs.sh' },
                 { name: 'ACTIONS_RUNNER_HOOK_JOB_COMPLETED', value: '/opt/runner/hooks/clean-pvs.sh' },
-                { name: 'INSTALL_TOOLS', value: 'true' },
               ],
               volumeMounts: [
                 ...set.volumeMounts ?? [],
@@ -131,6 +130,21 @@ for (const set of scaleSets) {
     },
     transformations: [(obj: any, opts: pulumi.CustomResourceOptions) => {
       opts.dependsOn = [authSecret];
+      // TODO: I think we need a cluster role for this...
+      // if (obj.kind === 'Role' && obj.metadata.name === 'thecluster-gha-rs-kube-mode') {
+      //   obj.rules.push([
+      //     { apiGroups: [''], resources: ['persistentvolumes'], verbs: ['list'] },
+      //   ]);
+      // }
     }],
   }, { provider });
+
+  // const role = chart.getResource(
+  //   'rbac.authorization.k8s.io/v1/Role',
+  //   'thecluster-actions-runners/thecluster-gha-rs-kube-mode',
+  // );
+
+  // const rolePath = new RolePatch('thecluster-gha-rs-kube-mode', {
+
+  // }, { provider });
 }
