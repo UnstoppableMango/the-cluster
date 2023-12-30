@@ -14,7 +14,7 @@ export interface Versions {
 }
 
 const config = new Config();
-export const hosts = config.requireObject<Hosts>('hosts');
+// export const hosts = config.requireObject<Hosts>('hosts');
 export const versions = config.requireObject<Versions>('versions');
 export const releaseName = 'redis';
 export const servicePort = 6379;

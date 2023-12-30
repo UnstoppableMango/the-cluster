@@ -1,14 +1,10 @@
-import * as fs from 'node:fs/promises';
-import { interpolate } from '@pulumi/pulumi';
-import { core } from '@pulumi/kubernetes/types/input';
-import { ConfigMap, Namespace } from '@pulumi/kubernetes/core/v1';
+import { Namespace } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v3';
-import { ingresses, provider, realms, shared, storageClasses } from '@unmango/thecluster/cluster/from-stack';
-import { client, readersGroup } from './oauth';
-import { hosts, releaseName, servicePort, versions } from './config';
+import { Certificate } from '@unmango/thecluster-crds/certmanager/v1';
+import { clusterIssuers, provider, shared, storageClasses } from '@unmango/thecluster/cluster/from-stack';
+import { releaseName, servicePort, versions } from './config';
 
-type Volume = core.v1.Volume;
-type VolumeMount = core.v1.VolumeMount;
+export const loadBalancerIP = '192.168.1.85';
 
 const ns = Namespace.get(
   'redis',
@@ -16,15 +12,31 @@ const ns = Namespace.get(
   { provider },
 );
 
-// const config = new ConfigMap('redis', {
-//   metadata: {
-//     name: 'redis',
-//     namespace: ns.metadata.name,
-//   },
-//   data: {
-//     'config.json': fs.readFile('assets/config.json', 'utf-8'),
-//   },
-// }, { provider });
+const cert = new Certificate('redis.thecluster.io', {
+  metadata: {
+    name: 'redis.thecluster.io',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    secretName: 'redis-tls',
+    commonName: 'redis.thecluster.io',
+    issuerRef: clusterIssuers.ref(x => x.root),
+    ipAddresses: [loadBalancerIP],
+    dnsNames: [
+      'redis.thecluster.io',
+      '*.redis.thecluster.io',
+      'redis.lan.thecluster.io',
+      '*.redis.lan.thecluster.io',
+    ],
+    uris: [
+      'redis://thecluster.io',
+      'redis://*.thecluster.io',
+    ],
+    subject: {
+      organizations: ['UnMango'],
+    },
+  },
+}, { provider });
 
 const chart = new Chart(releaseName, {
   path: './',
@@ -67,7 +79,8 @@ const chart = new Chart(releaseName, {
           whenDeleted: 'Delete',
         },
         service: {
-          type: 'ClusterIP',
+          type: 'LoadBalancer',
+          loadBalancerIP,
           ports: {
             redis: servicePort,
           },
@@ -111,18 +124,21 @@ const chart = new Chart(releaseName, {
       },
       tls: {
         enabled: true,
-        // existingSecret: '',
-        certFilename: '',
-        certKeyFilename: '',
-        certCAFilename: '',
+        existingSecret: cert.spec.apply(x => x?.secretName),
+        certFilename: 'tls.crt',
+        certKeyFilename: 'tls.key',
+        certCAFilename: 'ca.crt',
       },
       volumePermissions: { enabled: true },
-      useExternalDNS: { enabled: true, suffix: 'lan.thecluster.io' },
+      useExternalDNS: {
+        enabled: true,
+        suffix: 'redis.thecluster.io',
+      },
     },
   },
 }, { provider });
 
-const service = chart.getResource('v1/Service', 'media/redis');
+const service = chart.getResource('v1/Service', 'redis/redis');
 
 const serviceOutput = service.metadata.name;
-export { hosts, versions, serviceOutput as service };
+export { versions, serviceOutput as service };
