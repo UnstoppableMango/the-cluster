@@ -81,7 +81,9 @@ for (const set of scaleSets) {
               command: ['/home/runner/run.sh'],
               env: [
                 { name: 'ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER', value: 'true' },
+                { name: 'ACTIONS_RUNNER_HOOK_JOB_STARTED', value: '/opt/runner/hooks/clean-pvs.sh' },
                 { name: 'ACTIONS_RUNNER_HOOK_JOB_COMPLETED', value: '/opt/runner/hooks/clean-pvs.sh' },
+                { name: 'INSTALL_TOOLS', value: 'true' },
               ],
               volumeMounts: [
                 ...set.volumeMounts ?? [],
