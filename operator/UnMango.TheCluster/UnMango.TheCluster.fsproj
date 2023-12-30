@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>true</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Program.fs" />
+    <None Include="deployment.yaml" />
+    <None Include="Dockerfile" />
+    <None Include=".dockerignore" />
+    <None Include="kustomization.yaml" />
+    <None Include="namespace.yaml" />
+    <None Include="operator-role-binding.yaml" />
+    <None Include="operator-role.yaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="KubeOps.Generator" Version="8.0.0-pre.40"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
+    <PackageReference Include="KubeOps.Operator.Web" Version="8.0.0-pre.40" />
+  </ItemGroup>
+
+</Project>

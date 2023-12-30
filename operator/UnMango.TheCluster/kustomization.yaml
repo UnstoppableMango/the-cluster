@@ -1,0 +1,15 @@
+namespace: thecluster-system
+namePrefix: thecluster-
+commonLabels:
+  operator: thecluster
+resources:
+- operator-role.yaml
+- operator-role-binding.yaml
+- deployment.yaml
+- namespace.yaml
+images:
+- name: operator
+  newName: accessible-docker-image
+  newTag: latest
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization

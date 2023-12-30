@@ -1,0 +1,5 @@
+*
+!appsettings.Development.json
+!appsettings.json
+!*.fs
+!*.fsproj
