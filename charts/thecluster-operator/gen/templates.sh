@@ -2,9 +2,14 @@
 set -eum
 
 root="$(git rev-parse --show-toplevel)"
-srcDir="$root/operator"
 chartDir="$root/charts/thecluster-operator"
-manifests="$(kustomize build "$srcDir")"
+crdsDir="$chartDir/crds"
+templatesDir="$chartDir/templates"
+manifests="$(kustomize build "$chartDir/bases")"
+
+[ -d "$crdsDir" ] || mkdir "$crdsDir"
+[ -d "$templatesDir" ] || mkdir "$templatesDir"
+rm "$crdsDir"/*.yaml "$templatesDir"/*.yaml
 
 echo "$manifests" | kubectl slice \
     --include-kind CustomResourceDefinition \
@@ -15,5 +20,5 @@ echo "$manifests" | kubectl slice \
 echo "$manifests" | kubectl slice \
     --exclude-kind CustomResourceDefinition \
     --skip-non-k8s \
-    --template '{{.metadata.name | lower}}.yaml' \
+    --template '{{.kind | lower}}.yaml' \
     --output-dir "$chartDir/templates"
