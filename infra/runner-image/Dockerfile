@@ -1,8 +1,7 @@
 #syntax=docker/dockerfile:1
 
 FROM mikefarah/yq:4.40.5 as yq
-FROM debian:11-slim
-ARG PULUMI_VERSION
+FROM pulumi/pulumi:3.99.0
 
 COPY --from=yq /usr/bin/yq /usr/bin/yq
 
@@ -13,8 +12,6 @@ RUN apt-get update -y \
 	jq \
 	gettext-base \
 	&& rm -rf /var/lib/apt/lists/*
-
-RUN curl -fsSL https://get.pulumi.com/ | bash -s -- --version $PULUMI_VERSION
 
 RUN adduser --disabled-password --gecos "" --uid 1001 runner \
 	&& usermod -aG sudo runner \
