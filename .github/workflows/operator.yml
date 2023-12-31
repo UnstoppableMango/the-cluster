@@ -10,7 +10,7 @@ on:
       - operator/**
   push:
     branches: ['main']
-    tags: ['v*.*.*']
+    tags: ['thecluster-operator/v*.*.*']
     paths:
       - .github/workflows/helm-package.yml
       - .github/workflows/docker-container.yml
