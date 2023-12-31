@@ -1,0 +1,3 @@
+name: thecluster-minio-operator
+runtime: nodejs
+description: Minio Operator install for THECLUSTER
