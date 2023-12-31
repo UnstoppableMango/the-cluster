@@ -91,7 +91,7 @@ const chart = new Chart(releaseName, {
           externalCertSecret: [cert.spec.apply(x => x?.secretName)],
           certConfig: {
             commonName: 's3.thecluster.io',
-            organizationName: 'UnMango',
+            organizationName: ['UnMango'],
             dnsNames: [
               's3.thecluster.io',
               's3.lan.thecluster.io',
