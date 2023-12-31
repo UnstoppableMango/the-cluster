@@ -9,7 +9,7 @@
     <Compile Include="AutoScalingTranscodeSet.fs" />
     <Compile Include="Program.fs" />
     <None Include="../gen/manifests.sh" />
-    <None Include="../*.yaml" />
+    <None Include="../bases/*.yaml" />
     <None Include="../*Dockerfile*" />
     <None Include="../.dockerignore" />
   </ItemGroup>

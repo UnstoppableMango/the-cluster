@@ -1,25 +1,33 @@
 module Program
 
+open System.Collections.Generic
 open Pulumi
 open Pulumi.FSharp
-open Pulumi.Kubernetes
 open Pulumi.Kubernetes.Core.V1
-open Pulumi.Kubernetes.Types.Inputs.Core.V1
-open Pulumi.Kubernetes.Types.Inputs.Meta.V1
+open Pulumi.Kubernetes.Helm
+open Pulumi.Kubernetes.Helm.V3
 open UnMango.TheCluster.Operator.Pulumi
 
-let infra () =
+let infra () : IDictionary<string, obj> =
     let provider = ClusterProvider.FromStack()
 
-    let manifests =
-        Kustomize.Directory(
+    let chart =
+        Chart(
             "thecluster",
-            Kustomize.DirectoryArgs(Directory = "../../operator"),
+            LocalChartArgs(
+                Path = "../../charts/thecluster-operator",
+                SkipCRDRendering = false,
+                Values = Ops.inputMap [ "thecluster-operator", Ops.input [] ]
+            ),
             ComponentResourceOptions(Provider = provider)
         )
 
-    // Export outputs here.
-    dict []
+    let namespaceName =
+        chart.GetResource<Namespace>("thecluster-system")
+        |> Outputs.bind (_.Metadata)
+        |> Outputs.apply (_.Name)
+
+    dict [ "namespace", namespaceName ]
 
 [<EntryPoint>]
 let main _ = Deployment.run infra

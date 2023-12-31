@@ -18,7 +18,7 @@ echo "$manifests" | kubectl slice \
     --output-dir "$chartDir/crds"
 
 echo "$manifests" | kubectl slice \
-    --exclude-kind CustomResourceDefinition \
+    --exclude-kind CustomResourceDefinition,Deployment \
     --skip-non-k8s \
     --template '{{.kind | lower}}.yaml' \
     --output-dir "$chartDir/templates"
