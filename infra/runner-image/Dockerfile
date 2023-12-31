@@ -11,11 +11,9 @@ RUN apt-get update -y \
 	unzip \
 	jq \
 	gettext-base \
-	make \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN adduser --disabled-password --gecos "" --uid 1001 runner \
-	&& groupadd docker --gid 123 \
 	&& usermod -aG sudo runner \
 	&& usermod -aG docker runner \
 	&& echo "%sudo   ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers \
@@ -23,3 +21,4 @@ RUN adduser --disabled-password --gecos "" --uid 1001 runner \
 
 WORKDIR /home/runner
 USER runner
+ENTRYPOINT [ "/bin/bash" ]
