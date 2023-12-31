@@ -9,8 +9,8 @@ on:
       - .github/workflows/operator.yml
       - operator/**
   push:
-    tags: ['v*.*.*']
     branches: ['main']
+    tags: ['v*.*.*']
     paths:
       - .github/workflows/helm-package.yml
       - .github/workflows/docker-container.yml
@@ -23,3 +23,9 @@ jobs:
     with:
       name: thecluster-operator
       path: operator
+
+  chart:
+    uses: ./.github/workflows/helm-package.yml
+    with:
+      name: thecluster-operator
+      path: charts/thecluster-operator

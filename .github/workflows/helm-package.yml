@@ -1,16 +1,16 @@
 name: Helm Package
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       name:
         type: string
         required: true
         description: The name of the chart under /charts
-      tag:
+      path:
         type: string
         required: true
-        description: The chart version to package
+        description: Relative path to the chart
 
 jobs:
   build:
@@ -20,27 +20,31 @@ jobs:
       HELM_EXPERIMENTAL_OCI: "1"
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: tree:0
 
       - uses: ./.github/actions/setup-tools
         with:
           helm: true
+          minver: true
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: version
+        name: Get Version
+        run: echo "version=$(minver -t ${{ inputs.name }}/v)" >> "$GITHUB_OUTPUT"
 
       - name: Helm Login
         if: github.event_name == 'push'
-        shell: bash
         run: echo '${{ github.token }}' | helm registry login -u '${{ github.repository_owner }}' --password-stdin ghcr.io
 
       - name: Helm Package
-        shell: bash
-        run: helm package ${{ format('{0}/{1}', 'charts', inputs.name) }} --version ${{ inputs.tag }}
+        run: helm package ${{ format('{0}/{1}', 'charts', inputs.name) }} --version ${{ steps.version.outputs.version }}
 
       - name: Helm Push
         if: github.event_name == 'push'
-        shell: bash
-        run: helm push ${{ inputs.name }}-${{ inputs.tag }}.tgz oci://ghcr.io/${{ github.repository }}
+        run: helm push ${{ inputs.name }}-${{ steps.version.outputs.version }}.tgz oci://ghcr.io/${{ github.repository }}
 
       - name: Helm Logout
         if: github.event_name == 'push'
-        shell: bash
         run: helm registry logout ghcr.io
