@@ -18,7 +18,9 @@ on:
 jobs:
   e2e-test:
     runs-on: thecluster
-    container: ghcr.io/unstoppablemango/runner-image:main
+    container:
+      image: ghcr.io/unstoppablemango/runner-image:main
+      options: pull=always
     if: false # Still some kinks to work out
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
@@ -79,7 +81,9 @@ jobs:
 
   upgrade-e2e-test:
     runs-on: thecluster
-    container: ghcr.io/unstoppablemango/runner-image:main
+    container:
+      image: ghcr.io/unstoppablemango/runner-image:main
+      options: pull=always
     if: false # We need the pulumi code to exist on main in order to test an upgrade
     env:
       PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
