@@ -42,10 +42,10 @@ echo "Generating crds libs..."
 #     --pythonPath="$pythonDir" \
 #     --force
 crd2pulumi "${manifests[@]}" \
-    --nodejsPath="$nodejsDir" \
-    --nodejsName "thecluster-crds" \
     --dotnetPath="$dotnetDir" \
     --dotnetName="TheCluster.Crds" \
+    --nodejsPath="$nodejsDir" \
+    --nodejsName "thecluster-crds" \
     --pythonPath="$pythonDir" \
     --force
 
