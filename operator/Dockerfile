@@ -1,21 +1,28 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 as build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 as build
+ARG TARGETARCH
 WORKDIR /operator
 
 COPY ./UnMango.TheCluster.Types/UnMango.TheCluster.Types.fsproj ./UnMango.TheCluster.Types/
 COPY ./UnMango.TheCluster.Entities/UnMango.TheCluster.Entities.csproj ./UnMango.TheCluster.Entities/
 COPY ./UnMango.TheCluster/UnMango.TheCluster.fsproj ./UnMango.TheCluster/
 
-RUN dotnet restore UnMango.TheCluster/UnMango.TheCluster.fsproj
+RUN dotnet restore \
+      -a $TARGETARCH \
+      UnMango.TheCluster/UnMango.TheCluster.fsproj
 
 COPY ./UnMango.TheCluster.Types/ ./UnMango.TheCluster.Types/
 COPY ./UnMango.TheCluster.Entities/ ./UnMango.TheCluster.Entities/
 COPY ./UnMango.TheCluster/ ./UnMango.TheCluster/
 
-RUN dotnet publish --no-restore -c Release -o out \
+RUN dotnet publish \
+      --no-restore \
+      -c Release \
+      -o out \
+      -a $TARGETARCH \
       UnMango.TheCluster/UnMango.TheCluster.fsproj
 
 # The runner for the application
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 as final
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/aspnet:8.0 as final
 
 RUN addgroup k8s-operator && useradd -G k8s-operator operator-user
 

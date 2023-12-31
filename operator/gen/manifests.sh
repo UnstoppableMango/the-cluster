@@ -6,6 +6,6 @@ name="thecluster"
 
 dotnet kubeops generate operator "$name" \
   "$root/operator/UnMango.TheCluster.Entities/UnMango.TheCluster.Entities.csproj" \
-  --out "$root/operator"
+  --out "$root/operator/bases"
 
-cp "$root/operator/overwrite.Dockerfile" "$root/operator/Dockerfile"
+rm "$root/operator/bases/Dockerfile"
