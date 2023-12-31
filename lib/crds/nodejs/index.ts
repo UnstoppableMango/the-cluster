@@ -27,9 +27,11 @@ import * as infrastructure from "./infrastructure";
 import * as ipam from "./ipam";
 import * as k8s from "./k8s";
 import * as metal from "./metal";
+import * as minio from "./minio";
 import * as pulumiOperator from "./pulumi";
 import * as runtime from "./runtime";
 import * as snapshot from "./snapshot";
+import * as sts from "./sts";
 import * as trust from "./trust";
 import * as types from "./types";
 
@@ -49,9 +51,11 @@ export {
     ipam,
     k8s,
     metal,
+    minio,
     pulumiOperator,
     runtime,
     snapshot,
+    sts,
     trust,
     types,
 };
