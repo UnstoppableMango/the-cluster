@@ -1,17 +1,6 @@
 #syntax=docker/dockerfile:1
 
-FROM mikefarah/yq:4.40.5 as yq
-FROM pulumi/pulumi:3.99.0
-
-COPY --from=yq /usr/bin/yq /usr/bin/yq
-
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update -y \
-	&& apt-get install -y --no-install-recommends \
-	unzip \
-	jq \
-	gettext-base \
-	&& rm -rf /var/lib/apt/lists/*
+FROM ghcr.io/unstoppablemango/tcubi:0.1.0
 
 RUN adduser --disabled-password --gecos "" --uid 1001 runner \
 	&& usermod -aG sudo runner \

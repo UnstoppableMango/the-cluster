@@ -43,7 +43,9 @@ jobs:
 
       - name: Helm Push
         if: github.event_name == 'push'
-        run: helm push ${{ inputs.name }}-${{ steps.version.outputs.version }}.tgz oci://ghcr.io/${{ github.repository }}
+        run: helm push ${{ inputs.name }}-${{ steps.version.outputs.version }}.tgz "oci://ghcr.io/${REPOSITORY,,}"
+        env:
+          REPOSITORY: ${{ github.repository }}
 
       - name: Helm Logout
         if: github.event_name == 'push'

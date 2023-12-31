@@ -13,11 +13,15 @@ jobs:
   setup:
     name: Setup
     runs-on: thecluster
-    container: ghcr.io/unstoppablemango/runner-image:main
+    container:
+      image: ghcr.io/unstoppablemango/runner-image:main
+      options: pull=always
     steps:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
+        filter: tree:0
+
     - run: git config --global --add safe.directory "/__w/the-cluster/the-cluster" # actions/runner#2033
 
     - name: Set modified stacks
@@ -69,7 +73,9 @@ jobs:
   pinkdiamond:
     name: Pink Diamond
     runs-on: thecluster
-    container: ghcr.io/unstoppablemango/runner-image:main
+    container:
+      image: ghcr.io/unstoppablemango/runner-image:main
+      options: pull=always
     needs: [setup]
     if: fromJson(needs.setup.outputs.pinkdiamond) && !failure() && !cancelled()
     defaults:
