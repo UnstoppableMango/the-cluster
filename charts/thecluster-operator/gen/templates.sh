@@ -5,20 +5,20 @@ root="$(git rev-parse --show-toplevel)"
 chartDir="$root/charts/thecluster-operator"
 crdsDir="$chartDir/crds"
 templatesDir="$chartDir/templates"
-manifests="$(kustomize build "$chartDir/bases")"
+outDir="$templatesDir/generated"
+manifests="$(kustomize build "$root/operator/default")"
 
 [ -d "$crdsDir" ] || mkdir "$crdsDir"
-[ -d "$templatesDir" ] || mkdir "$templatesDir"
-rm "$crdsDir"/*.yaml "$templatesDir"/*.yaml
+[ -d "$outDir" ] || mkdir "$outDir"
 
 echo "$manifests" | kubectl slice \
     --include-kind CustomResourceDefinition \
     --skip-non-k8s \
     --template '{{.metadata.name | lower}}.yaml' \
-    --output-dir "$chartDir/crds"
+    --output-dir "$crdsDir"
 
 echo "$manifests" | kubectl slice \
     --exclude-kind CustomResourceDefinition,Deployment \
     --skip-non-k8s \
     --template '{{.kind | lower}}.yaml' \
-    --output-dir "$chartDir/templates"
+    --output-dir "$outDir"
