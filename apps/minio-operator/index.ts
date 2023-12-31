@@ -34,7 +34,7 @@ const chart = new Chart('minio-operator', {
         volumes: [certificate('root-tls', {
           issuer: clusterIssuers.root,
           issuerKind: 'ClusterIssuer',
-          commonName: 'minio.thecluster.io',
+          commonName: hosts.external,
           caFile: 'ca-certificates.crt',
           certificateFile: 'tls.crt',
           privateKeyFile: 'tls.key',
@@ -49,7 +49,7 @@ const chart = new Chart('minio-operator', {
           { name: 'OPERATOR_STS_ENABLED', value: 'off' },
           { name: 'MINIO_CONSOLE_TLS_ENABLE', value: 'on' },
           { name: 'WATCHED_NAMESPACE', value: shared.namespaces.minio },
-          { name: 'MINIO_OPERATOR_IMAGE', value: 'quay.io/minio/operator' },
+          { name: 'MINIO_OPERATOR_IMAGE', value: interpolate`quay.io/minio/operator:${versions.minioOperator}` },
         ],
       },
       console: {
@@ -73,7 +73,7 @@ const chart = new Chart('minio-operator', {
           },
           tls: [{
             secretName: 'minio-console-tls',
-            hosts: ['minio.lan.thecluster.io'],
+            hosts: [hosts.internal],
           }],
           host: 'minio.lan.thecluster.io',
           pathType: 'ImplementationSpecific',
@@ -81,7 +81,7 @@ const chart = new Chart('minio-operator', {
         volumes: [certificate('root-tls', {
           issuer: clusterIssuers.root,
           issuerKind: 'ClusterIssuer',
-          commonName: 'minio.lan.thecluster.io',
+          commonName: hosts.internal,
           caFile: 'ca-certificates.crt',
           certificateFile: 'tls.crt',
           privateKeyFile: 'tls.key',
