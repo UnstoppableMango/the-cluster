@@ -20,6 +20,8 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
+        filter: tree:0
+
     - run: git config --global --add safe.directory "/__w/the-cluster/the-cluster" # actions/runner#2033
 
     - name: Set modified stacks

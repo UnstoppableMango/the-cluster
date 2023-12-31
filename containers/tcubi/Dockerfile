@@ -16,12 +16,4 @@ RUN apt-get update -y \
 
 RUN curl -fsSL https://get.pulumi.com/ | bash -s -- --version $PULUMI_VERSION
 
-RUN adduser --disabled-password --gecos "" --uid 1001 runner \
-	&& usermod -aG sudo runner \
-	&& usermod -aG docker runner \
-	&& echo "%sudo   ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers \
-	&& echo "Defaults env_keep += \"DEBIAN_FRONTEND\"" >> /etc/sudoers
-
-WORKDIR /home/runner
-USER runner
-ENTRYPOINT [ "/bin/bash" ]
+USER 1001:1001
