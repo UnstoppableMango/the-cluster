@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "fantomas": {
+      "version": "6.2.3",
+      "commands": [
+        "fantomas"
+      ]
+    },
+    "kubeops.cli": {
+      "version": "8.0.0-pre.40",
+      "commands": [
+        "kubeops"
+      ]
+    },
+    "minver-cli": {
+      "version": "4.3.0",
+      "commands": [
+        "minver"
+      ]
+    }
+  }
+}

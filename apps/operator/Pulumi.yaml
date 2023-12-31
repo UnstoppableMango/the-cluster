@@ -1,0 +1,3 @@
+name: thecluster-operator
+runtime: dotnet
+description: THECLUSTER Operator
