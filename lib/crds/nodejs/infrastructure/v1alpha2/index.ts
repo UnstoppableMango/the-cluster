@@ -36,4 +36,4 @@ const _module = {
         }
     },
 };
-pulumi.runtime.registerResourceModule("crds", "infrastructure.cluster.x-k8s.io/v1alpha2", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "infrastructure.cluster.x-k8s.io/v1alpha2", _module)

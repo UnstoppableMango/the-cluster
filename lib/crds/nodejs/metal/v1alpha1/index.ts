@@ -36,4 +36,4 @@ const _module = {
         }
     },
 };
-pulumi.runtime.registerResourceModule("crds", "metal.sidero.dev/v1alpha1", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "metal.sidero.dev/v1alpha1", _module)

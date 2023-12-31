@@ -22,4 +22,4 @@ const _module = {
         }
     },
 };
-pulumi.runtime.registerResourceModule("crds", "externaldns.nginx.org/v1", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "externaldns.nginx.org/v1", _module)

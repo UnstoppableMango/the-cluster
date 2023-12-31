@@ -33,6 +33,7 @@ echo "Cleaning lib directories..."
 [ -d "$nodejsDir" ] && rm -r "$nodejsDir"
 [ -d "$pythonDir" ] && rm -r "$pythonDir"
 
+mapfile -t manifests < <(find "$crdsDir"/* ! -name '*summerwind*')
 echo "Generating crds libs..."
 # crd2pulumi "$crdsDir"/*.yaml \
 #     --dotnetPath="$dotnetDir" \
@@ -40,8 +41,11 @@ echo "Generating crds libs..."
 #     --nodejsPath="$nodejsDir" \
 #     --pythonPath="$pythonDir" \
 #     --force
-crd2pulumi "$crdsDir"/*.yaml \
+crd2pulumi "${manifests[@]}" \
     --nodejsPath="$nodejsDir" \
+    --nodejsName "thecluster-crds" \
+    --dotnetPath="$dotnetDir" \
+    --dotnetName="TheCluster.Crds" \
     --force
 
 echo "Patching nodejs lib..."
@@ -126,7 +130,8 @@ pushd "$nodejsDir"
 npm install @pulumi/pulumi@latest @pulumi/kubernetes@latest @types/node@latest typescript@latest
 popd
 
-# echo -e "Restoring dotnet packages...\n"
-# pushd "$dotnetDir"
-# dotnet restore
-# popd
+echo -e "Restoring dotnet packages...\n"
+pushd "$dotnetDir"
+dotnet add "$dotnetDir" package Pulumi
+dotnet restore
+popd

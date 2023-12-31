@@ -29,4 +29,4 @@ const _module = {
         }
     },
 };
-pulumi.runtime.registerResourceModule("crds", "ipam.cluster.x-k8s.io/v1alpha1", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "ipam.cluster.x-k8s.io/v1alpha1", _module)

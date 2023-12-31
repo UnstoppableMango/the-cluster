@@ -29,4 +29,4 @@ const _module = {
         }
     },
 };
-pulumi.runtime.registerResourceModule("crds", "pulumi.com/v1", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "pulumi.com/v1", _module)

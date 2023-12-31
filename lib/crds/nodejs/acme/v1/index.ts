@@ -29,4 +29,4 @@ const _module = {
         }
     },
 };
-pulumi.runtime.registerResourceModule("crds", "acme.cert-manager.io/v1", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "acme.cert-manager.io/v1", _module)
