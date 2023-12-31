@@ -1,0 +1,13 @@
+{
+  "name": "thecluster",
+  "workspaces": [
+    "apps/*",
+    "clusters/*",
+    "components/*",
+    "dbs/*",
+    "infra/*",
+    "lib/nodejs",
+    "lib/crds/nodejs",
+    "tools/renovate"
+  ]
+}
