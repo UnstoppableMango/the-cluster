@@ -46,6 +46,7 @@ crd2pulumi "${manifests[@]}" \
     --nodejsName "thecluster-crds" \
     --dotnetPath="$dotnetDir" \
     --dotnetName="TheCluster.Crds" \
+    --pythonPath="$pythonDir" \
     --force
 
 echo "Patching nodejs lib..."
