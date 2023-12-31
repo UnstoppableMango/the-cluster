@@ -6,11 +6,11 @@ import { hosts } from './config';
 
 const { provider } = apps.keycloak;
 
-export const client = new Client('deemix', {
+export const client = new Client('minio-console', {
   realmId: realms.external.id,
   enabled: true,
-  name: 'Deemix',
-  clientId: 'deemix',
+  name: 'Minio Console',
+  clientId: 'minio-console',
   accessType: 'CONFIDENTIAL',
   standardFlowEnabled: true,
   directAccessGrantsEnabled: false,
@@ -18,11 +18,10 @@ export const client = new Client('deemix', {
   validRedirectUris: [
     interpolate`https://${hosts.external}/oauth2/callback`,
     interpolate`https://${hosts.internal}/oauth2/callback`,
-    interpolate`https://deemix-new.thecluster.io/oauth2/callback`,
   ],
 }, { provider });
 
-const mapper = new AudienceProtocolMapper('deemix', {
+const mapper = new AudienceProtocolMapper('minio-console', {
   realmId: realms.external.id,
   name: interpolate`aud-mapper-${client.clientId}`,
   clientId: client.id,
@@ -31,27 +30,27 @@ const mapper = new AudienceProtocolMapper('deemix', {
   addToAccessToken: true,
 }, { provider });
 
-export const loginRole = new Role('deemix-login', {
+export const loginRole = new Role('minio-console-login', {
   realmId: realms.external.id,
   clientId: client.id,
-  name: 'deemix-login',
-  description: 'Deemix Login',
+  name: 'minio-console-login',
+  description: 'Minio Console Login',
 }, { provider });
 
-export const readersGroup = new Group('deemix-readers', {
+export const readersGroup = new Group('minio-console-readers', {
   realmId: realms.external.id,
-  name: 'DeemixReaders',
+  name: 'MinioConsoleReaders',
   // Something is weird here
   // parentId: pulumi.output(groups).apply(g => g['Web App Readers']),
 }, { provider });
 
-const readersGroupRoles = new GroupRoles('deemix-readers', {
+const readersGroupRoles = new GroupRoles('minio-console-readers', {
   realmId: realms.external.id,
   groupId: readersGroup.id,
   roleIds: [loginRole.id],
 }, { provider });
 
-const optionalScopes = new ClientOptionalScopes('deemix', {
+const optionalScopes = new ClientOptionalScopes('minio-console', {
   realmId: realms.external.id,
   clientId: client.id,
   optionalScopes: [realms.groupsScopeName],

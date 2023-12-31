@@ -9,6 +9,7 @@ export interface Namespaces {
   pulumiOperator: Output<string>;
   nginxIngress: Output<string>;
   redis: Output<string>;
+  minio: Output<string>;
 }
 
 export class Shared {

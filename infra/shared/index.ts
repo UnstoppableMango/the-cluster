@@ -39,6 +39,10 @@ const redisNs = new Namespace('redis', {
   metadata: { name: 'redis' },
 }, { provider });
 
+const minio = new Namespace('minio', {
+  metadata: { name: 'minio' },
+}, { provider });
+
 export const namespaces = {
   media: mediaNs.metadata.name,
   postgres: postgresNs.metadata.name,
@@ -47,4 +51,5 @@ export const namespaces = {
   pulumiOperator: pulumiOperator.metadata.name,
   nginxIngress: nginxIngress.metadata.name,
   redis: redisNs.metadata.name,
+  minio: minio.metadata.name,
 };
