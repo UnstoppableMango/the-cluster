@@ -13,6 +13,12 @@
       "commands": [
         "kubeops"
       ]
+    },
+    "minver-cli": {
+      "version": "4.3.0",
+      "commands": [
+        "minver"
+      ]
     }
   }
 }

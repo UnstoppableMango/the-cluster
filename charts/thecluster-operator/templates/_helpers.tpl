@@ -4,10 +4,6 @@
 {{ include "common.images.image" (dict "imageRoot" .Values.image "global" .Values.global "defaultVersion" .Chart.AppVersion) }}
 {{- end -}}
 
-{{- define "init.image" -}}
-{{ include "common.images.image" (dict "imageRoot" .Values.init.image "global" .Values.global "defaultVersion" .Chart.AppVersion) }}
-{{- end -}}
-
 {{/*
 Return the proper image name
 {{ include "common.images.image" ( dict "imageRoot" .Values.path.to.the.image "global" .Values.global "defaultVersion" .Chart.AppVersion ) }}

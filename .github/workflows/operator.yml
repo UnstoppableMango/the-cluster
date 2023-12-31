@@ -1,0 +1,25 @@
+name: THECLUSTER Operator
+
+on:
+  pull_request:
+    branches: ['main']
+    paths:
+      - .github/workflows/helm-package.yml
+      - .github/workflows/docker-container.yml
+      - .github/workflows/operator.yml
+      - operator/**
+  push:
+    tags: ['v*.*.*']
+    branches: ['main']
+    paths:
+      - .github/workflows/helm-package.yml
+      - .github/workflows/docker-container.yml
+      - .github/workflows/operator.yml
+      - operator/**
+
+jobs:
+  image:
+    uses: ./.github/workflows/docker-container.yml
+    with:
+      name: thecluster-operator
+      path: operator
