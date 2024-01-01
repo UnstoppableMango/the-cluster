@@ -3,17 +3,16 @@ import { Config } from '@pulumi/pulumi';
 
 export interface GitHub {
   appId: string;
-  installationId: string;
 }
 
 export interface ScaleSet {
   name: string;
   githubUrl: string;
+  installationId: string;
   minRunners: number;
   maxRunners: number;
   volumes?: core.v1.Volume[];
   volumeMounts?: core.v1.VolumeMount[];
-  installationId?: string; // TODO: So we can template across orgs
 }
 
 export interface Versions {
