@@ -1,5 +1,5 @@
 // Copyright 2016-2022, Pulumi Corporation
-namespace Pulumi.TheCluster.Crds{
+namespace Pulumi.TheClusterCrds{
     /// <summary>
     /// A base class for all Kubernetes resources.
     /// </summary>

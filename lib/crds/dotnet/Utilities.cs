@@ -5,7 +5,7 @@ using System;
 using System.Reflection;
 using Pulumi.Kubernetes;
 
-namespace Pulumi.TheCluster.Crds
+namespace Pulumi.TheClusterCrds
 {
     static class Utilities
     {
@@ -37,9 +37,9 @@ namespace Pulumi.TheCluster.Crds
         }
     }
 
-	internal sealed class TheCluster.CrdsResourceTypeAttribute : Pulumi.ResourceTypeAttribute
+	internal sealed class TheClusterCrdsResourceTypeAttribute : Pulumi.ResourceTypeAttribute
 	{
-		public TheCluster.CrdsResourceTypeAttribute(string type) : base(type, Utilities.Version)
+		public TheClusterCrdsResourceTypeAttribute(string type) : base(type, Utilities.Version)
 		{
 		}
 	}
