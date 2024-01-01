@@ -71,8 +71,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "infra", "infra", "{CB47F4E0
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UnMango.TheCluster.Stacks", "infra\stacks\UnMango.TheCluster.Stacks.fsproj", "{1743761A-E65B-412F-953A-D766351CBF0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pulumi.TheClusterCrds", "lib\crds\dotnet\Pulumi.TheClusterCrds.csproj", "{F67DCAED-63F4-40F0-ABFE-E5BF7601DAC2}"
-EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
