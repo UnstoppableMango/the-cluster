@@ -1,7 +1,5 @@
-import * as fs from 'node:fs/promises';
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
-import { ConfigMap } from '@pulumi/kubernetes/core/v1';
 import { core } from '@pulumi/kubernetes/types/input';
 import { apps, provider } from '@unmango/thecluster/cluster/from-stack';
 import { github, privateKey, scaleSets } from './config';
@@ -24,16 +22,6 @@ for (const set of scaleSets) {
       github_app_id: github.appId,
       github_app_installation_id: set.installationId,
       github_app_private_key: privateKey,
-    },
-  }, { provider });
-
-  const hooks = new ConfigMap(`${set.name}-hooks`, {
-    metadata: {
-      name: 'hooks',
-      namespace: ns.metadata.name,
-    },
-    data: {
-      'clean-pvs.sh': fs.readFile('clean-pvs.sh', 'utf-8'),
     },
   }, { provider });
 
@@ -83,7 +71,7 @@ for (const set of scaleSets) {
                 { name: 'ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER', value: 'true' },
                 // { name: 'ACTIONS_RUNNER_HOOK_JOB_STARTED', value: '/opt/runner/hooks/clean-pvs.sh' },
                 // { name: 'ACTIONS_RUNNER_HOOK_JOB_COMPLETED', value: '/opt/runner/hooks/clean-pvs.sh' },
-                { name: 'npm_config_cache', value: '__w/.npm' }
+                // { name: 'npm_config_cache', value: '__w/.npm' }
               ],
               volumeMounts: [
                 ...set.volumeMounts ?? [],
@@ -91,11 +79,6 @@ for (const set of scaleSets) {
                   name: 'work',
                   mountPath: '/home/runner/_work',
                   subPathExpr: "$(ACTIONS_RUNNER_POD_NAME)",
-                },
-                {
-                  name: 'hooks',
-                  mountPath: '/opt/runner/hooks',
-                  readOnly: true,
                 },
               ],
             }],
@@ -121,12 +104,6 @@ for (const set of scaleSets) {
                       },
                     },
                   },
-                },
-              },
-              {
-                name: 'hooks',
-                configMap: {
-                  name: hooks.metadata.name,
                 },
               },
             ],
