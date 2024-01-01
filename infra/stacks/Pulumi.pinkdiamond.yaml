@@ -1,0 +1,10 @@
+config:
+  thecluster-stacks:stacks:
+    pinkdiamond:
+      type: cluster
+      commit: 1dcad3691b0aff896deefbcafa28028870d06746 # renovate depName=UnstoppableMango/the-cluster tag=2.0.11 extractVersion=^pinkdiamond\/v(?<version>\d+\.\d+\.\d+)
+    actions-runner-controller:
+      type: app
+      commit: 32af872475d7605bc939d11c3f74f5cfcc549f7b # renovate depName=UnstoppableMango/the-cluster tag=0.1.0 extractVersion=^actions-runner-controller\/v(?<version>\d+\.\d+\.\d+)
+#      dependsOn:
+#        - ceph-csi

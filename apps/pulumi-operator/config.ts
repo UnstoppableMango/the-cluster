@@ -2,6 +2,7 @@ import * as pulumi from '@pulumi/pulumi';
 
 export interface Versions {
   customImage: string;
+  pulumiOperator: string;
 }
 
 export interface Stacks {
