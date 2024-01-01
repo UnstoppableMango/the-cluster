@@ -38,18 +38,24 @@ let preReqs depends =
     [ for x in depends do
           StackSpecPrerequisitesArgs(Name = x) |> Ops.input ]
 
-let spec name stack secret =
+let stackName n s =
+    match s.``type`` with
+    | "cluster"
+    | "clusters" -> StackRef.clusterName n
+    | _ -> StackRef.stackName n (TheCluster.Name())
+
+let spec name config secret =
     StackSpecArgs(
         AccessTokenSecret = secret,
-        Stack = $"UnstoppableMango/thecluster-{name}/{TheCluster.Name()}",
-        Commit = stack.commit,
+        Stack = stackName name config,
+        Commit = config.commit,
         Refresh = true,
-        RepoDir = repoDir name stack,
+        RepoDir = repoDir name config,
         ProjectRepo = "https://github.com/UnstoppableMango/the-cluster",
         DestroyOnFinalize = false,
         UseLocalStackOnly = true,
         Prerequisites =
-            (match stack.dependsOn with
+            (match config.dependsOn with
              | null -> [||]
              | x -> x
              |> Seq.append []
@@ -59,7 +65,7 @@ let spec name stack secret =
     )
 
 let stack opts t ns n s =
-    Stack(n, StackArgs(Metadata = K8s.meta n ns, Spec = spec n s t), opts)
+    Stack(n, StackArgs(Metadata = K8s.meta (Ops.input n) ns, Spec = spec n s t), opts)
 
 let name (meta: Output<ObjectMeta>) = meta |> Outputs.apply (_.Name)
 
