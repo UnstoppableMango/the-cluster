@@ -83,6 +83,7 @@ for (const set of scaleSets) {
                 { name: 'ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER', value: 'true' },
                 // { name: 'ACTIONS_RUNNER_HOOK_JOB_STARTED', value: '/opt/runner/hooks/clean-pvs.sh' },
                 // { name: 'ACTIONS_RUNNER_HOOK_JOB_COMPLETED', value: '/opt/runner/hooks/clean-pvs.sh' },
+                { name: 'npm_config_cache', value: '__w/.npm' }
               ],
               volumeMounts: [
                 ...set.volumeMounts ?? [],
