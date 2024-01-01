@@ -36,7 +36,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
         public readonly int MaxConns;
         public readonly int MaxFails;
         public readonly string Name;
-        public readonly string Next-upstream;
+        public readonly string NextUpstream;
         public readonly string NextUpstreamTimeout;
         public readonly int NextUpstreamTries;
         public readonly bool Ntlm;
@@ -46,7 +46,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
         /// </summary>
         public readonly Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerRouteSpecUpstreamsQueue Queue;
         public readonly string ReadTimeout;
-        public readonly string Send-timeout;
+        public readonly string SendTimeout;
         public readonly string Service;
         /// <summary>
         /// SessionCookie defines the parameters for session persistence.
@@ -91,7 +91,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
 
             string name,
 
-            string next-upstream,
+            string nextUpstream,
 
             string nextUpstreamTimeout,
 
@@ -135,14 +135,14 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
             MaxConns = maxConns;
             MaxFails = maxFails;
             Name = name;
-            Next-upstream = next-upstream;
+            NextUpstream = nextUpstream;
             NextUpstreamTimeout = nextUpstreamTimeout;
             NextUpstreamTries = nextUpstreamTries;
             Ntlm = ntlm;
             Port = port;
             Queue = queue;
             ReadTimeout = readTimeout;
-            Send-timeout = sendTimeout;
+            SendTimeout = sendTimeout;
             Service = service;
             SessionCookie = sessionCookie;
             SlowStart = slowStart;

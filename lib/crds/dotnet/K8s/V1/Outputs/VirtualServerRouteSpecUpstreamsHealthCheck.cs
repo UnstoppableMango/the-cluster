@@ -31,7 +31,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
         public readonly bool Persistent;
         public readonly int Port;
         public readonly string ReadTimeout;
-        public readonly string Send-timeout;
+        public readonly string SendTimeout;
         public readonly string StatusMatch;
         /// <summary>
         /// UpstreamTLS defines a TLS configuration for an Upstream.
@@ -91,7 +91,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
             Persistent = persistent;
             Port = port;
             ReadTimeout = readTimeout;
-            Send-timeout = sendTimeout;
+            SendTimeout = sendTimeout;
             StatusMatch = statusMatch;
             Tls = tls;
         }

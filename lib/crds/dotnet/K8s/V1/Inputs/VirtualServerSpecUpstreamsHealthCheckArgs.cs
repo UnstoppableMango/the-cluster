@@ -66,7 +66,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.K8s.V1
         public Input<string>? ReadTimeout { get; set; }
 
         [Input("send-timeout")]
-        public Input<string>? Send-timeout { get; set; }
+        public Input<string>? SendTimeout { get; set; }
 
         [Input("statusMatch")]
         public Input<string>? StatusMatch { get; set; }

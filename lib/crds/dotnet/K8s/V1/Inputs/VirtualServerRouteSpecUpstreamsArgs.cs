@@ -64,7 +64,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.K8s.V1
         public Input<string>? Name { get; set; }
 
         [Input("next-upstream")]
-        public Input<string>? Next-upstream { get; set; }
+        public Input<string>? NextUpstream { get; set; }
 
         [Input("next-upstream-timeout")]
         public Input<string>? NextUpstreamTimeout { get; set; }
@@ -88,7 +88,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.K8s.V1
         public Input<string>? ReadTimeout { get; set; }
 
         [Input("send-timeout")]
-        public Input<string>? Send-timeout { get; set; }
+        public Input<string>? SendTimeout { get; set; }
 
         [Input("service")]
         public Input<string>? Service { get; set; }
