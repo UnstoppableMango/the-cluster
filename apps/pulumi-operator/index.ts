@@ -3,10 +3,11 @@ import { getStack } from '@pulumi/pulumi';
 import { AccessToken } from '@pulumi/pulumiservice';
 import { Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v3';
-import * as crds from '@unmango/thecluster-crds/pulumi/v1';
+import { Stack } from '@unmango/thecluster-crds/pulumi/v1';
 import { required } from '@unmango/thecluster';
 import { provider, shared } from '@unmango/thecluster/cluster/from-stack';
 import { stack, versions } from './config';
+import { ConfigGroup } from '@pulumi/kubernetes/yaml';
 
 const ns = Namespace.get(
   'pulumi-operator',
@@ -14,9 +15,17 @@ const ns = Namespace.get(
   { provider },
 );
 
+const crds = new ConfigGroup('crds', {
+  files: [
+    `https://raw.githubusercontent.com/pulumi/pulumi-kubernetes-operator/${versions.pulumiOperator}/deploy/crds/pulumi.com_programs.yaml`,
+    `https://raw.githubusercontent.com/pulumi/pulumi-kubernetes-operator/${versions.pulumiOperator}/deploy/crds/pulumi.com_stacks.yaml`,
+  ],
+}, { provider });
+
 const chart = new Chart('pulumi-operator', {
   path: './',
   namespace: ns.metadata.name,
+  skipCRDRendering: true,
   values: {
     'pulumi-kubernetes-operator': {
       replicaCount: 2,
@@ -43,20 +52,20 @@ const secret = new Secret('pulumi-operator', {
   },
 }, { provider });
 
-const clusterStack = new crds.Stack(stack.name, {
-  metadata: {
-    name: stack.name,
-    namespace: ns.metadata.name,
-  },
-  spec: {
-    stack: `UnstoppableMango/thecluster-${stack.name}/prod`,
-    accessTokenSecret: secret.metadata.name,
-    projectRepo: 'https://github.com/UnstoppableMango/the-cluster',
-    repoDir: path.join('clusters', stack.name),
-    commit: stack.commit,
-    destroyOnFinalize: false,
-    useLocalStackOnly: true,
-  },
-}, { provider });
+// const clusterStack = new Stack(stack.name, {
+//   metadata: {
+//     name: stack.name,
+//     namespace: ns.metadata.name,
+//   },
+//   spec: {
+//     stack: `UnstoppableMango/thecluster-${stack.name}/prod`,
+//     accessTokenSecret: secret.metadata.name,
+//     projectRepo: 'https://github.com/UnstoppableMango/the-cluster',
+//     repoDir: path.join('clusters', stack.name),
+//     commit: stack.commit,
+//     destroyOnFinalize: false,
+//     useLocalStackOnly: true,
+//   },
+// }, { provider });
 
 export { versions, stack }

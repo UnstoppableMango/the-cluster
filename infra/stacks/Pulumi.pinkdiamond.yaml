@@ -1,4 +1,7 @@
 config:
   thecluster-stacks:stacks:
     actions-runner-controller:
-      commit: test
+      type: app
+      commit: c6dadbfe210dea482864dad0efad09d54187e833 # renovate depName=UnstoppableMango/the-cluster tag=0.1.0 extractVersion=^actions-runner-controller\/v(?<version>.+)
+#      dependsOn:
+#        - ceph-csi

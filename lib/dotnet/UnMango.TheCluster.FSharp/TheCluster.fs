@@ -1,5 +1,6 @@
 namespace UnMango.TheCluster.FSharp
 
+open System
 open Pulumi
 open Pulumi.Kubernetes
 
@@ -11,6 +12,9 @@ type TheCluster =
 
     static member OptsFromStack() =
         CustomResourceOptions(Provider = ClusterProvider.FromStack())
+
+    static member Name() =
+        Environment.GetEnvironmentVariable("PULUMI_STACK")
 
 module TheClusterBuilder =
     let bind f x = f x
