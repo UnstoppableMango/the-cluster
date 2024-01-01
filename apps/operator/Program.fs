@@ -6,7 +6,7 @@ open Pulumi.FSharp
 open Pulumi.Kubernetes.Core.V1
 open Pulumi.Kubernetes.Helm
 open Pulumi.Kubernetes.Helm.V3
-open UnMango.TheCluster.Operator.Pulumi
+open UnMango.TheCluster.Pulumi
 
 let infra () : IDictionary<string, obj> =
     let provider = ClusterProvider.FromStack()
