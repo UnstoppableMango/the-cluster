@@ -1,4 +1,4 @@
-module UnMango.TheCluster.Pulumi.Kubernetes
+module UnMango.TheCluster.FSharp.Kubernetes
 
 open Pulumi.Kubernetes.Core.V1
 

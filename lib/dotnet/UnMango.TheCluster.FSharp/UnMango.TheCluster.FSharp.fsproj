@@ -10,6 +10,7 @@
     <Compile Include="ClusterProvider.fs" />
     <Compile Include="Kubernetes.fs" />
     <Compile Include="K8s.fs" />
+    <Compile Include="TheCluster.fs" />
   </ItemGroup>
   
   <ItemGroup>

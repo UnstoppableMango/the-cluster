@@ -1,4 +1,4 @@
-namespace UnMango.TheCluster.Pulumi
+namespace UnMango.TheCluster.FSharp
 
 open System
 open Pulumi

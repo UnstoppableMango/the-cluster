@@ -9,6 +9,8 @@
   <ItemGroup>
     <None Include="gen/crds.sh" />
     <Compile Include="Program.fs" />
+    <None Include="Pulumi.pinkdiamond.yaml" />
+    <None Include="Pulumi.yaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\lib\dotnet\UnMango.TheCluster.FSharp\UnMango.TheCluster.FSharp.fsproj" />
+    <ProjectReference Include="..\..\lib\pulumi-crds\Pulumi.Crds.csproj" />
   </ItemGroup>
 
 </Project>

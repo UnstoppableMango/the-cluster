@@ -1,4 +1,4 @@
-module UnMango.TheCluster.Pulumi.StackRef
+module UnMango.TheCluster.FSharp.StackRef
 
 open Pulumi
 open Pulumi.FSharp

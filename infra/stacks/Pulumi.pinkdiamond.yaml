@@ -1,0 +1,4 @@
+config:
+  thecluster-stacks:stacks:
+    actions-runner-controller:
+      commit: test
