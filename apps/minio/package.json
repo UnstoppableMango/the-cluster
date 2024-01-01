@@ -1,5 +1,5 @@
 {
-  "name": "thecluster-minio-operator",
+  "name": "thecluster-minio",
   "main": "index.ts",
   "dependencies": {
     "@pulumi/keycloak": "^5.2.1",
