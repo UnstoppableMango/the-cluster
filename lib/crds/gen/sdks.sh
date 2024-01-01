@@ -35,12 +35,6 @@ echo "Cleaning lib directories..."
 
 mapfile -t manifests < <(find "$crdsDir"/* ! -name '*summerwind*')
 echo "Generating crds libs..."
-# crd2pulumi "$crdsDir"/*.yaml \
-#     --dotnetPath="$dotnetDir" \
-#     --goPath="$goDir" \
-#     --nodejsPath="$nodejsDir" \
-#     --pythonPath="$pythonDir" \
-#     --force
 crd2pulumi "${manifests[@]}" \
     --dotnetPath="$dotnetDir" \
     --dotnetName="TheClusterCrds" \
@@ -179,6 +173,7 @@ function patchDotnet() {
     sed -i "s/ Renew-before/ RenewBefore/" "$1"
     sed -i "s/ metadata.omitempty/ metadataOmitempty/" "$1"
     sed -i "s/ Metadata.omitempty/ MetadataOmitempty/" "$1"
+    sed -i "s/Pulumi.V1/PulumiOperator.V1/" "$1"
 }
 
 export -f patchDotnet
@@ -191,6 +186,7 @@ find "$dotnetDir" -type f \
         -o -path '*ProxmoxMachineTemplate*' \
         -o -path '*VirtualServerRouteSpec*' \
         -o -path '*VirtualServerSpec*' \
+        -o -path '*Pulumi/V1*' \
     \) \
     -not -path '*obj*' \
     -exec bash -c 'patchDotnet "$0"' {} \;
