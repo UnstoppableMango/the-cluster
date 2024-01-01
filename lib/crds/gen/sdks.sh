@@ -33,15 +33,14 @@ echo "Cleaning lib directories..."
 [ -d "$nodejsDir" ] && rm -r "$nodejsDir"
 [ -d "$pythonDir" ] && rm -r "$pythonDir"
 
+mapfile -t manifests < <(find "$crdsDir"/* ! -name '*summerwind*')
 echo "Generating crds libs..."
-# crd2pulumi "$crdsDir"/*.yaml \
-#     --dotnetPath="$dotnetDir" \
-#     --goPath="$goDir" \
-#     --nodejsPath="$nodejsDir" \
-#     --pythonPath="$pythonDir" \
-#     --force
-crd2pulumi "$crdsDir"/*.yaml \
+crd2pulumi "${manifests[@]}" \
+    --dotnetPath="$dotnetDir" \
+    --dotnetName="TheClusterCrds" \
     --nodejsPath="$nodejsDir" \
+    --nodejsName "thecluster-crds" \
+    --pythonPath="$pythonDir" \
     --force
 
 echo "Patching nodejs lib..."
@@ -67,12 +66,12 @@ sed -i "s/max-conns/'max-conns'/" "$nodejsDir/types/input.ts"
 sed -i "s/max-conns/'max-conns'/" "$nodejsDir/types/output.ts"
 sed -i "s/max-fails/'max-fails'/" "$nodejsDir/types/input.ts"
 sed -i "s/max-fails/'max-fails'/" "$nodejsDir/types/output.ts"
-sed -i "s/next-upstream?/'next-upstream'?/" "$nodejsDir/types/input.ts"
-sed -i "s/next-upstream?/'next-upstream'?/" "$nodejsDir/types/output.ts"
 sed -i "s/next-upstream-timeout/'next-upstream-timeout'/" "$nodejsDir/types/input.ts"
 sed -i "s/next-upstream-timeout/'next-upstream-timeout'/" "$nodejsDir/types/output.ts"
 sed -i "s/next-upstream-tries/'next-upstream-tries'/" "$nodejsDir/types/input.ts"
 sed -i "s/next-upstream-tries/'next-upstream-tries'/" "$nodejsDir/types/output.ts"
+sed -i "s/next-upstream?/'next-upstream'?/" "$nodejsDir/types/input.ts"
+sed -i "s/next-upstream?/'next-upstream'?/" "$nodejsDir/types/output.ts"
 sed -i "s/keepalive-time/'keepalive-time'/" "$nodejsDir/types/input.ts"
 sed -i "s/keepalive-time/'keepalive-time'/" "$nodejsDir/types/output.ts"
 sed -i "s/read-timeout/'read-timeout'/" "$nodejsDir/types/input.ts"
@@ -101,7 +100,7 @@ sed -i "s/metadata.omitempty/'metadata.omitempty'/" "$nodejsDir/types/input.ts"
 sed -i "s/metadata.omitempty/'metadata.omitempty'/" "$nodejsDir/types/output.ts"
 
 function renamePulumi() {
-    echo "Fixing $1..."
+    echo -ne "\\r\033[2KFixing $1..."
     sed -i 's/namespace pulumi/namespace pulumiOperator/' "$1"
     sed -i 's/pulumi.v1/pulumiOperator.v1/' "$1"
     sed -i 's/pulumi from ".\/pulumi"/pulumiOperator from ".\/pulumi"/' "$1"
@@ -114,19 +113,95 @@ renamePulumi "$nodejsDir/types/input.ts"
 renamePulumi "$nodejsDir/types/output.ts"
 renamePulumi "$nodejsDir/index.ts"
 
-echo "Updating nodejs lib name..."
+echo -e "\nUpdating nodejs lib name..."
 packageJson="$(cat "$nodejsDir/package.json")"
 echo "$packageJson" | jq '.name = "@unmango/thecluster-crds" | .version = "0.1.0"' >"$nodejsDir/package.json"
+
+function patchDotnet() {
+    echo -ne "\\r\033[2KFixing $1..."
+    sed -i 's/ x-kubernetes-preserve-unknown-fields/ xKubernetesPreserveUnknownFields/' "$1"
+    sed -i 's/ X-kubernetes-preserve-unknown-fields/ XKubernetesPreserveUnknownFields/' "$1"
+    sed -i "s/ location-snippets/ locationSnippets/" "$1"
+    sed -i "s/ Location-snippets/ LocationSnippets/" "$1"
+    sed -i "s/ http-snippets/ httpSnippets/" "$1"
+    sed -i "s/ Http-snippets/ HttpSnippets/" "$1"
+    sed -i "s/ server-snippets/ serverSnippets/" "$1"
+    sed -i "s/ Server-snippets/ ServerSnippets/" "$1"
+    sed -i "s/ buffer-size/ bufferSize/" "$1"
+    sed -i "s/ Buffer-size/ BufferSize/" "$1"
+    sed -i "s/ client-max-body-size/ clientMaxBodySize/" "$1"
+    sed -i "s/ Client-max-body-size/ ClientMaxBodySize/" "$1"
+    sed -i "s/ connect-timeout/ connectTimeout/" "$1"
+    sed -i "s/ Connect-timeout/ ConnectTimeout/" "$1"
+    sed -i "s/ fail-timeout/ failTimeout/" "$1"
+    sed -i "s/ Fail-timeout/ FailTimeout/" "$1"
+    sed -i "s/ lb-method/ lbMethod/" "$1"
+    sed -i "s/ Lb-method/ LbMethod/" "$1"
+    sed -i "s/ max-conns/ maxConns/" "$1"
+    sed -i "s/ Max-conns/ MaxConns/" "$1"
+    sed -i "s/ max-fails/ maxFails/" "$1"
+    sed -i "s/ Max-fails/ MaxFails/" "$1"
+    sed -i "s/ next-upstream-timeout/ nextUpstreamTimeout/" "$1"
+    sed -i "s/ Next-upstream-timeout/ NextUpstreamTimeout/" "$1"
+    sed -i "s/ next-upstream-tries/ nextUpstreamTries/" "$1"
+    sed -i "s/ Next-upstream-tries/ NextUpstreamTries/" "$1"
+    sed -i "s/ next-upstream/ nextUpstream/" "$1"
+    sed -i "s/ Next-upstream/ NextUpstream/" "$1"
+    sed -i "s/ keepalive-time/ keepaliveTime/" "$1"
+    sed -i "s/ Keepalive-time/ KeepaliveTime/" "$1"
+    sed -i "s/ read-timeout/ readTimeout/" "$1"
+    sed -i "s/ Read-timeout/ ReadTimeout/" "$1"
+    sed -i "s/ send-timeout/ sendTimeout/" "$1"
+    sed -i "s/ Send-timeout/ SendTimeout/" "$1"
+    sed -i "s/ slow-start/ slowStart/" "$1"
+    sed -i "s/ Slow-start/ SlowStart/" "$1"
+    sed -i "s/ use-cluster-ip/ useClusterIp/" "$1"
+    sed -i "s/ Use-cluster-ip/ UseClusterIp/" "$1"
+    sed -i "s/ cluster-issuer/ clusterIssuer/" "$1"
+    sed -i "s/ Cluster-issuer/ ClusterIssuer/" "$1"
+    sed -i "s/ cert-manager/ certManager/" "$1"
+    sed -i "s/ Cert-manager/ CertManager/" "$1"
+    sed -i "s/ common-name/ commonName/" "$1"
+    sed -i "s/ Common-name/ CommonName/" "$1"
+    sed -i "s/ issue-temp-cert/ issueTempCert/" "$1"
+    sed -i "s/ Issue-temp-cert/ IssueTempCert/" "$1"
+    sed -i "s/ issuer-group/ issuerGroup/" "$1"
+    sed -i "s/ Issuer-group/ IssuerGroup/" "$1"
+    sed -i "s/ issuer-kind/ issuerKind/" "$1"
+    sed -i "s/ Issuer-kind/ IssuerKind/" "$1"
+    sed -i "s/ renew-before/ renewBefore/" "$1"
+    sed -i "s/ Renew-before/ RenewBefore/" "$1"
+    sed -i "s/ metadata.omitempty/ metadataOmitempty/" "$1"
+    sed -i "s/ Metadata.omitempty/ MetadataOmitempty/" "$1"
+    sed -i "s/Pulumi.V1/PulumiOperator.V1/" "$1"
+}
+
+export -f patchDotnet
+echo "Patching .NET lib..." # TODO: This is slow af
+find "$dotnetDir" -type f \
+    -name '*.cs' \
+    \( \
+        -path '*ClusterClassSpecVariables*' \
+        -o -path '*ClusterClassStatusVariables*' \
+        -o -path '*ProxmoxMachineTemplate*' \
+        -o -path '*VirtualServerRouteSpec*' \
+        -o -path '*VirtualServerSpec*' \
+        -o -path '*Pulumi/V1*' \
+    \) \
+    -not -path '*obj*' \
+    -exec bash -c 'patchDotnet "$0"' {} \;
 
 # Make sure the last thing we do is pop back
 # trap popd EXIT
 
-echo -e "Installing nodejs packages...\n"
+echo -e "I\nnstalling nodejs packages...\n"
 pushd "$nodejsDir"
 npm install @pulumi/pulumi@latest @pulumi/kubernetes@latest @types/node@latest typescript@latest
 popd
 
-# echo -e "Restoring dotnet packages...\n"
-# pushd "$dotnetDir"
-# dotnet restore
-# popd
+echo -e "Restoring dotnet packages...\n"
+pushd "$dotnetDir"
+dotnet add "$dotnetDir" package Pulumi
+dotnet add "$dotnetDir" package Pulumi.Kubernetes
+dotnet restore
+popd

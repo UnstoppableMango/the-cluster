@@ -22,4 +22,4 @@ const _module = {
         }
     },
 };
-pulumi.runtime.registerResourceModule("crds", "gateway-operator.konghq.com/v1beta1", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "gateway-operator.konghq.com/v1beta1", _module)

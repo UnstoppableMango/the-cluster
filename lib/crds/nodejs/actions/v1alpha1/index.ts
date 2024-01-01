@@ -25,31 +25,6 @@ export type EphemeralRunnerSet = import("./ephemeralRunnerSet").EphemeralRunnerS
 export const EphemeralRunnerSet: typeof import("./ephemeralRunnerSet").EphemeralRunnerSet = null as any;
 utilities.lazyLoad(exports, ["EphemeralRunnerSet"], () => require("./ephemeralRunnerSet"));
 
-export { HorizontalRunnerAutoscalerArgs } from "./horizontalRunnerAutoscaler";
-export type HorizontalRunnerAutoscaler = import("./horizontalRunnerAutoscaler").HorizontalRunnerAutoscaler;
-export const HorizontalRunnerAutoscaler: typeof import("./horizontalRunnerAutoscaler").HorizontalRunnerAutoscaler = null as any;
-utilities.lazyLoad(exports, ["HorizontalRunnerAutoscaler"], () => require("./horizontalRunnerAutoscaler"));
-
-export { RunnerArgs } from "./runner";
-export type Runner = import("./runner").Runner;
-export const Runner: typeof import("./runner").Runner = null as any;
-utilities.lazyLoad(exports, ["Runner"], () => require("./runner"));
-
-export { RunnerDeploymentArgs } from "./runnerDeployment";
-export type RunnerDeployment = import("./runnerDeployment").RunnerDeployment;
-export const RunnerDeployment: typeof import("./runnerDeployment").RunnerDeployment = null as any;
-utilities.lazyLoad(exports, ["RunnerDeployment"], () => require("./runnerDeployment"));
-
-export { RunnerReplicaSetArgs } from "./runnerReplicaSet";
-export type RunnerReplicaSet = import("./runnerReplicaSet").RunnerReplicaSet;
-export const RunnerReplicaSet: typeof import("./runnerReplicaSet").RunnerReplicaSet = null as any;
-utilities.lazyLoad(exports, ["RunnerReplicaSet"], () => require("./runnerReplicaSet"));
-
-export { RunnerSetArgs } from "./runnerSet";
-export type RunnerSet = import("./runnerSet").RunnerSet;
-export const RunnerSet: typeof import("./runnerSet").RunnerSet = null as any;
-utilities.lazyLoad(exports, ["RunnerSet"], () => require("./runnerSet"));
-
 
 const _module = {
     version: utilities.getVersion(),
@@ -63,20 +38,9 @@ const _module = {
                 return new EphemeralRunner(name, <any>undefined, { urn })
             case "kubernetes:actions.github.com/v1alpha1:EphemeralRunnerSet":
                 return new EphemeralRunnerSet(name, <any>undefined, { urn })
-            case "kubernetes:actions.summerwind.dev/v1alpha1:HorizontalRunnerAutoscaler":
-                return new HorizontalRunnerAutoscaler(name, <any>undefined, { urn })
-            case "kubernetes:actions.summerwind.dev/v1alpha1:Runner":
-                return new Runner(name, <any>undefined, { urn })
-            case "kubernetes:actions.summerwind.dev/v1alpha1:RunnerDeployment":
-                return new RunnerDeployment(name, <any>undefined, { urn })
-            case "kubernetes:actions.summerwind.dev/v1alpha1:RunnerReplicaSet":
-                return new RunnerReplicaSet(name, <any>undefined, { urn })
-            case "kubernetes:actions.summerwind.dev/v1alpha1:RunnerSet":
-                return new RunnerSet(name, <any>undefined, { urn })
             default:
                 throw new Error(`unknown resource type ${type}`);
         }
     },
 };
-pulumi.runtime.registerResourceModule("crds", "actions.github.com/v1alpha1", _module)
-pulumi.runtime.registerResourceModule("crds", "actions.summerwind.dev/v1alpha1", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "actions.github.com/v1alpha1", _module)

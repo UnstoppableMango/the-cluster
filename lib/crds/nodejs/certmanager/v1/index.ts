@@ -43,4 +43,4 @@ const _module = {
         }
     },
 };
-pulumi.runtime.registerResourceModule("crds", "cert-manager.io/v1", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "cert-manager.io/v1", _module)

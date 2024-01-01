@@ -22,4 +22,4 @@ const _module = {
         }
     },
 };
-pulumi.runtime.registerResourceModule("crds", "minio.min.io/v2", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "minio.min.io/v2", _module)
