@@ -43,7 +43,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/setup-dotnet@v3
+    - uses: actions/setup-dotnet@v4
       if: inputs.minver == 'true' || inputs.all == 'true'
       with:
         global-json-file: global.json
