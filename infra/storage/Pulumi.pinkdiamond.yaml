@@ -1,108 +1,112 @@
 config:
   thecluster-storage:actions-runner-controller:
-    count: 50
+    count: 25
+  thecluster-storage:cephfs:
+    userId: thecluster-cephfs
+    userKey:
+      secure: AAABAAkd5Fm7uQQlcjmwD7o1WafhBcQ3Qyfupv/LuNFY5cUjmZcm/G24KvRedukNCcf9jepOlJZNELtzNELWbfzyWWG8ER5/
   thecluster-storage:volumes:
-    - name: media
-      storageClass: cephfs
-      accessModes: ["ReadWriteMany"]
+    - accessModes: ["ReadWriteMany"]
+      labels:
+        thecluster.io/role: media
       mode: Filesystem
+      name: media
+      namespace: media
       size: 10Gi
-      namespace: media
+      storageClass: cephfs
+    - accessModes: ["ReadWriteMany"]
       labels:
         thecluster.io/role: media
-    - name: music
-      storageClass: cephfs
-      accessModes: ["ReadWriteMany"]
       mode: Filesystem
+      name: music
+      namespace: media
       size: 5Ti
-      namespace: media
+      storageClass: cephfs
+    - accessModes: ["ReadWriteMany"]
       labels:
         thecluster.io/role: media
-    - name: movies
-      storageClass: cephfs
-      accessModes: ["ReadWriteMany"]
       mode: Filesystem
+      name: movies
+      namespace: media
       size: 20Ti
-      namespace: media
+      storageClass: cephfs
+    - accessModes: ["ReadWriteMany"]
       labels:
         thecluster.io/role: media
-    - name: tv
-      storageClass: cephfs
-      accessModes: ["ReadWriteMany"]
       mode: Filesystem
+      name: tv
+      namespace: media
       size: 20Ti
-      namespace: media
+      storageClass: cephfs
+    - accessModes: ["ReadWriteMany"]
       labels:
         thecluster.io/role: media
-    - name: anime
-      storageClass: cephfs
-      accessModes: ["ReadWriteMany"]
       mode: Filesystem
+      name: anime
+      namespace: media
       size: 15Ti
-      namespace: media
+      storageClass: cephfs
+    - accessModes: ["ReadWriteMany"]
       labels:
         thecluster.io/role: media
-    - name: movies4k
-      storageClass: cephfs
-      accessModes: ["ReadWriteMany"]
       mode: Filesystem
+      name: movies4k
+      namespace: media
       size: 5Ti
-      namespace: media
+      storageClass: cephfs
+    - accessModes: ["ReadWriteMany"]
       labels:
         thecluster.io/role: media
-    - name: tv4k
-      storageClass: cephfs
-      accessModes: ["ReadWriteMany"]
       mode: Filesystem
+      name: tv4k
+      namespace: media
       size: 5Ti
-      namespace: media
+      storageClass: cephfs
+    - accessModes: ["ReadWriteMany"]
       labels:
         thecluster.io/role: media
-    - name: photos
-      storageClass: cephfs
-      accessModes: ["ReadWriteMany"]
       mode: Filesystem
+      name: photos
+      namespace: media
       size: 1Ti
-      namespace: media
+      storageClass: cephfs
+    - accessModes: ["ReadWriteMany"]
       labels:
         thecluster.io/role: media
-    - name: videos
-      storageClass: cephfs
-      accessModes: ["ReadWriteMany"]
       mode: Filesystem
+      name: videos
+      namespace: media
       size: 2Ti
-      namespace: media
+      storageClass: cephfs
+    - accessModes: ["ReadWriteMany"]
       labels:
         thecluster.io/role: media
-    - name: archive
-      storageClass: cephfs
-      accessModes: ["ReadWriteMany"]
       mode: Filesystem
+      name: archive
+      namespace: media
       size: 1Ti
-      namespace: media
+      storageClass: cephfs
+    - accessModes: ["ReadWriteMany"]
       labels:
         thecluster.io/role: media
-    - name: backup
-      storageClass: cephfs
-      accessModes: ["ReadWriteMany"]
       mode: Filesystem
+      name: backup
+      namespace: media
       size: 1Ti
-      namespace: media
-      labels:
-        thecluster.io/role: media
-    - name: isos
       storageClass: cephfs
-      accessModes: ["ReadWriteMany"]
-      mode: Filesystem
-      size: 10Ti
-      namespace: media
+    - accessModes: ["ReadWriteMany"]
       labels:
         thecluster.io/role: media
-    - name: downloads
+      mode: Filesystem
+      name: isos
+      namespace: media
+      size: 10Ti
       storageClass: cephfs
-      accessModes: ["ReadWriteMany"]
-      mode: Filesystem
-      size: 10Ti
-      namespace: media
+    - accessModes: ["ReadWriteMany"]
       labels:
         thecluster.io/role: media
+      mode: Filesystem
+      name: downloads
+      namespace: media
+      size: 10Ti
+      storageClass: cephfs

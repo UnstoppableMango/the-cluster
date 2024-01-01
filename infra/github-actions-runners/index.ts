@@ -1,10 +1,10 @@
 import * as fs from 'node:fs/promises';
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
-import { apps, provider } from '@unmango/thecluster/cluster/from-stack';
-import { github, privateKey, scaleSets } from './config';
 import { ConfigMap } from '@pulumi/kubernetes/core/v1';
 import { core } from '@pulumi/kubernetes/types/input';
+import { apps, provider } from '@unmango/thecluster/cluster/from-stack';
+import { github, privateKey, scaleSets } from './config';
 
 export const namespaces: pulumi.Output<string>[] = [];
 
@@ -22,7 +22,7 @@ for (const set of scaleSets) {
     },
     stringData: {
       github_app_id: github.appId,
-      github_app_installation_id: github.installationId,
+      github_app_installation_id: set.installationId,
       github_app_private_key: privateKey,
     },
   }, { provider });
@@ -87,6 +87,11 @@ for (const set of scaleSets) {
               volumeMounts: [
                 ...set.volumeMounts ?? [],
                 {
+                  name: 'work',
+                  mountPath: '/home/runner/_work',
+                  subPathExpr: "$(ACTIONS_RUNNER_POD_NAME)",
+                },
+                {
                   name: 'hooks',
                   mountPath: '/opt/runner/hooks',
                   readOnly: true,
@@ -102,7 +107,7 @@ for (const set of scaleSets) {
                     spec: {
                       // Explicit opt-out of dynamic provisioning
                       storageClassName: '',
-                      accessModes: ['ReadWriteOnce'],
+                      accessModes: ['ReadWriteMany'],
                       selector: {
                         matchLabels: {
                           'thecluster.io/role': 'actions-runner',
@@ -138,13 +143,4 @@ for (const set of scaleSets) {
       // }
     }],
   }, { provider });
-
-  // const role = chart.getResource(
-  //   'rbac.authorization.k8s.io/v1/Role',
-  //   'thecluster-actions-runners/thecluster-gha-rs-kube-mode',
-  // );
-
-  // const rolePath = new RolePatch('thecluster-gha-rs-kube-mode', {
-
-  // }, { provider });
 }

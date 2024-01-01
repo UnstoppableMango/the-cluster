@@ -1,15 +1,39 @@
 import * as k8s from '@pulumi/kubernetes';
-import { PersistentVolumeClaim, Secret } from '@pulumi/kubernetes/core/v1';
+import { Namespace, PersistentVolumeClaim, Secret } from '@pulumi/kubernetes/core/v1';
 import { apps, provider, storageClasses } from '@unmango/thecluster/cluster/from-stack';
 import { range } from '@unmango/thecluster';
-import { actionsRunnerController, volumes } from './config';
+import { actionsRunnerController, cephfs, volumes } from './config';
+import { interpolate } from '@pulumi/pulumi';
 
-const rbdSecret = Secret.get('rbd', 'ceph-system/csi-rbd-secret', { provider });
+const cephNs = Namespace.get('ceph', 'ceph-system', { provider });
 
+const rbdSecret = Secret.get('rbd', interpolate`${cephNs.metadata.name}/csi-rbd-secret`, { provider });
+const cephfsSecret = Secret.get('cephfs', interpolate`${cephNs.metadata.name}/csi-cephfs-secret`, { provider });
+
+const cephfsPvSecret = new Secret('csi-cephfs-pv-secret', {
+  metadata: {
+    name: 'csi-cephfs-pv-secret',
+    namespace: cephNs.metadata.name,
+  },
+  data: {
+    adminID: cephfsSecret.data['adminID'],
+    adminKey: cephfsSecret.data['adminKey'],
+  },
+  stringData: {
+    userID: cephfs.userId,
+    userKey: cephfs.userKey,
+  },
+}, { provider });
+
+// For rbd:
+// `for i in $(seq -f "%02g" 1 25); do rbd create "actions-runner-$i" --size 100Gi --pool kubernetes; done`
+// For cephfs:
+// `ceph fs subvolumegroup create kubernetes actions-runners`
+// `for i in $(seq -f "%02g" 1 25); do ceph fs subvolume create kubernetes "actions-runner-$i" actions-runners --size 107374182400 --uid 1001 --gid 1001; done`
 const runnerVolumes = range(actionsRunnerController.count)
-  .map(i => i + 1) // 1 based index
+  .map(i => String(i + 1).padStart(2, '0')) // 1 based index
   .map(i => {
-    const name = `actions-runner-${String(i).padStart(2, '0')}`;
+    const name = `actions-runner-cache-${i}`;
     return new k8s.core.v1.PersistentVolume(name, {
       metadata: {
         name,
@@ -19,25 +43,20 @@ const runnerVolumes = range(actionsRunnerController.count)
       },
       spec: {
         // https://github.com/ceph/ceph-csi/blob/devel/docs/static-pvc.md
-        // for i in $(seq -f "%02g" 1 30); do rbd create actions-runner-$i --size 100Gi --pool kubernetes; done
-        accessModes: ['ReadWriteOnce'],
+        accessModes: ['ReadWriteMany'],
         csi: {
-          driver: 'rbd.csi.ceph.com',
+          driver: 'cephfs.csi.ceph.com',
           volumeHandle: name,
-          fsType: 'ext4',
-          controllerExpandSecretRef: {
-            name: rbdSecret.metadata.name,
-            namespace: rbdSecret.metadata.namespace,
-          },
           nodeStageSecretRef: {
-            name: rbdSecret.metadata.name,
-            namespace: rbdSecret.metadata.namespace,
+            name: cephfsPvSecret.metadata.name,
+            namespace: cephfsPvSecret.metadata.namespace,
           },
           volumeAttributes: {
             clusterID: apps.cephCsi.clusterId,
-            pool: 'kubernetes',
+            fsName: 'kubernetes',
             staticVolume: 'true',
-            imageFeatures: 'layering',
+            // `actions-runners` is the subvolumegroup from the create commands
+            rootPath: `/volumes/actions-runners/actions-runner-${i}`,
           },
         },
         persistentVolumeReclaimPolicy: 'Retain',
@@ -69,13 +88,13 @@ const claims = volumes.map(config => {
   }, { provider, protect: true });
 });
 
-const runnerVolumesOutput = runnerVolumes.map(x => x.metadata.name);
+// const runnerVolumesOutput = runnerVolumes.map(x => x.metadata.name);
 
 const claimsOutput = [
   ...claims.map(x => x.metadata.name),
 ]
 
 export {
-  runnerVolumesOutput as runnerVolumes,
+  // runnerVolumesOutput as runnerVolumes,
   claimsOutput as claims,
 };
