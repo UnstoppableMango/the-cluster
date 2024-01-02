@@ -10,10 +10,10 @@ module Project =
 
     let parse =
         function
-        | { New.Opts.Name = Some name
+        | { New.Opts.Name = name
             New.Opts.Lang = lang
             New.Opts.Type = t } ->
-            { PulumiProject.Name = name
+            { PulumiProject.Name = Option.defaultValue "TODO" name
               Type = t
               Runtime = runtimeName lang }
         | _ -> failwith "TODO"
