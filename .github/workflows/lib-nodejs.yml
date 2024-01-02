@@ -5,7 +5,7 @@ on:
     branches: ['main']
     paths:
       - lib/nodejs/**
-      - .github/workflows/lib/-odejs.yml
+      - .github/workflows/lib-nodejs.yml
   push:
     branches: ['main']
     tags: ['lib/nodejs/v*.*.*']
