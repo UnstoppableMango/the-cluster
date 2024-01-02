@@ -1,0 +1,66 @@
+name: Lib
+
+on:
+  pull_request:
+    branches: ['main']
+    paths: ['lib/**']
+  push:
+    branches: ['main']
+    paths: ['lib/**']
+    tags: ['lib/*/v*.*.*']
+
+jobs:
+  nodejs:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    defaults:
+      run:
+        working-directory: lib/nodejs
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: .nvmrc
+          cache-dependency-path: lib/nodejs/packages-lock.json
+          registry-url: https://npm.pkg.github.com/
+
+      - uses: ./.github/actions/setup-tools
+        with:
+          minver: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: version
+        name: Get Version
+        run: echo "version=$(minver -t lib/nodejs/v)" >> "$GITHUB_OUTPUT"
+
+      - run: npm ci
+
+      - run: npm publish
+        if: github.event_name == 'push'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  crds-nodejs:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    defaults:
+      run:
+        working-directory: lib/crds/nodejs
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: .nvmrc
+          cache-dependency-path: lib/crds/nodejs/packages-lock.json
+          registry-url: https://npm.pkg.github.com/
+
+      - run: npm ci
+
+      - run: npm publish
+        if: github.event_name == 'push'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
