@@ -110,3 +110,11 @@ config:
       namespace: media
       size: 10Ti
       storageClass: cephfs
+    - accessModes: ["ReadWriteMany"]
+      labels:
+        thecluster.io/role: media
+      mode: Filesystem
+      name: plex
+      namespace: media
+      size: 1Ti
+      storageClass: cephfs
