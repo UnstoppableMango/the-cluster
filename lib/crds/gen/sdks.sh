@@ -115,7 +115,7 @@ renamePulumi "$nodejsDir/index.ts"
 
 echo -e "\nUpdating nodejs lib name..."
 packageJson="$(cat "$nodejsDir/package.json")"
-echo "$packageJson" | jq '.name = "@unmango/thecluster-crds" | .version = "0.1.0"' >"$nodejsDir/package.json"
+echo "$packageJson" | jq '.name = "@unmango/thecluster-crds" | .version = "0.1.0" | .publishConfig.registry = "https://npm.pkg.github.com"' >"$nodejsDir/package.json"
 
 function patchDotnet() {
     echo -ne "\\r\033[2KFixing $1..."
@@ -194,7 +194,7 @@ find "$dotnetDir" -type f \
 # Make sure the last thing we do is pop back
 # trap popd EXIT
 
-echo -e "I\nnstalling nodejs packages...\n"
+echo -e "\nInstalling nodejs packages...\n"
 pushd "$nodejsDir"
 npm install @pulumi/pulumi@latest @pulumi/kubernetes@latest @types/node@latest typescript@latest
 popd

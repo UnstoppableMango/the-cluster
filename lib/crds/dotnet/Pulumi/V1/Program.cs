@@ -49,7 +49,7 @@ namespace Pulumi.TheClusterCrds.PulumiOperator.V1
         {
         }
 
-        private static Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.ProgramArgs? MakeArgs(Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.ProgramArgs? args)
+        private static Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.ProgramArgs? MakeArgs(Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.ProgramArgs? args)
         {
             args ??= new Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.ProgramArgs();
             args.ApiVersion = "pulumi.com/v1";
