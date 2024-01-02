@@ -17,6 +17,6 @@
     "name": "thecluster-crds"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "@UnstoppableMango:registry=https://npm.pkg.github.com"
   }
 }

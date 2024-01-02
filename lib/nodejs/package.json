@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/UnstoppableMango/the-cluster#readme",
   "publishConfig": {
-    "@unmango:registry": "https://npm.pkg.github.com"
+    "@UnstoppableMango:registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
     "@pulumi/keycloak": "^5.2.1",
