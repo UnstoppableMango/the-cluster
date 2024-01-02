@@ -37,8 +37,7 @@ jobs:
 
       - run: npm ci
 
-      - run: npm publish
-        if: github.event_name == 'push'
+      - run: npm publish --dry-run
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
