@@ -33,12 +33,12 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - id: version
-        name: Get Version
         run: npm version "$(minver -t lib/nodejs/v)"
 
       - run: npm ci
 
-      - run: npm publish --dry-run
+      - run: npm publish
+        if: github.event_name == 'push'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -65,7 +65,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - id: version
-        name: Get Version
         run: npm version "$(minver -t lib/crds/nodejs/v)"
 
       - run: npm ci
