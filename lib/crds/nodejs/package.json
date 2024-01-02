@@ -15,5 +15,9 @@
   "pulumi": {
     "resource": true,
     "name": "thecluster-crds"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UnstoppableMango/the-cluster.git"
   }
 }
