@@ -5,7 +5,7 @@ open Argu
 type NewArgs =
     | [<AltCommandLine("-l")>] Language of string
     | [<AltCommandLine("-n")>] Name of string
-    | [<MainCommand; ExactlyOnce; Mandatory>] Type of string
+    | [<MainCommand; ExactlyOnce>] Type of string
     
     interface IArgParserTemplate with
         member args.Usage =

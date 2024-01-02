@@ -1,23 +1,21 @@
 namespace UnMango.TheCluster.CLI
 
-type Language =
-    | Typescript
-    | FSharp
+open Pulumi.Automation
 
-module Lang =
+module Project =
+    let runtimeName =
+        function
+        | Typescript -> ProjectRuntimeName.NodeJS
+        | FSharp -> ProjectRuntimeName.Dotnet
+
     let parse =
         function
-        | "typescript"
-        | "ts" -> Typescript
-        | "f#"
-        | "F#"
-        | "FSharp"
-        | "Fsharp"
-        | "fsharp" -> FSharp
-        | lang -> failwithf $"Invalid language: {lang}"
+        | { New.Opts.Name = Some name
+            New.Opts.Lang = lang
+            New.Opts.Type = t } ->
+            { PulumiProject.Name = name
+              Type = t
+              Runtime = runtimeName lang }
+        | _ -> failwith "TODO"
 
-module New =
-    type Opts =
-        { Name: string option
-          Type: string
-          Lang: Language }
+    let create (opts: New.Opts) = parse opts |> Pulumi.createProject
