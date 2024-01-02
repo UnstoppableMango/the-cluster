@@ -7,5 +7,8 @@ module Core =
         module Namespace =
             let create name args opts = Namespace(name, args, opts)
 
+        module ConfigMap =
+            let create name args opts = ConfigMap(name, args, opts)
+
         module Secret =
             let create name args opts = Secret(name, args, opts)
