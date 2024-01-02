@@ -1,0 +1,15 @@
+{
+  "name": "thecluster-verdaccio",
+  "main": "index.ts",
+  "dependencies": {
+    "@pulumi/kubernetes": "^4.5.6",
+    "@pulumi/pulumi": "^3.99.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6"
+  },
+  "workspaces": [
+    "../../lib/nodejs",
+    "../../lib/crds/nodejs"
+  ]
+}

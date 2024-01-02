@@ -1,3 +1,3 @@
 name: thecluster-verdaccio
-runtime: dotnet
-description: Verdaccio install for THECLUSTER
+runtime: nodejs
+description: Verdaccio install vor THECLUSTER
