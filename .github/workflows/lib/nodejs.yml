@@ -3,11 +3,15 @@ name: NodeJS Lib
 on:
   pull_request:
     branches: ['main']
-    paths: ['lib/nodejs/**']
+    paths:
+      - lib/nodejs/**
+      - .github/workflows/lib/nodejs.yml
   push:
     branches: ['main']
-    paths: ['lib/nodejs/**']
     tags: ['lib/nodejs/v*.*.*']
+    paths:
+      - lib/nodejs/**
+      - .github/workflows/lib/nodejs.yml
 
 jobs:
   nodejs:
