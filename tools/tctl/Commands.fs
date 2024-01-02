@@ -5,13 +5,15 @@ open Argu
 module New =
     type Parsed =
         { Name: string option
-          Type: Result<ProjectType, string>
-          Lang: Result<Language, string> }
+          Lang: Result<Language, string>
+          Stack: string option
+          Type: Result<ProjectType, string> }
 
         static member Empty() =
             { Name = None
-              Type = Error "Type is required"
-              Lang = Ok Typescript }
+              Lang = Ok Typescript
+              Stack = None 
+              Type = Error "Type is required" }
 
     module Opts =
         let folder p c : Parsed =
@@ -24,12 +26,14 @@ module New =
             Seq.fold folder (Parsed.Empty())
             >> function
                 | { Parsed.Name = name
-                    Type = Ok t
-                    Lang = Ok lang } ->
+                    Lang = Ok lang
+                    Stack = stack
+                    Type = Ok t } ->
                     Ok
                         { New.Opts.Name = name
-                          New.Opts.Type = t
-                          New.Opts.Lang = lang }
+                          New.Opts.Lang = lang
+                          New.Opts.Stack = stack
+                          New.Opts.Type = t }
                 | { Type = Error msg } -> Error msg
                 | { Lang = Error msg } -> Error msg
 

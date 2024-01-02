@@ -34,9 +34,17 @@ module ProjectType =
         | "infra"
         | "infrastructure" -> Ok Infrastructure
         | t -> Error $"Project type \"{t}\" is invalid"
+        
+    let name =
+        function
+        | App -> "App"
+        | Cluster -> "Cluster"
+        | Database -> "Database"
+        | Infrastructure -> "Infrastructure"
 
 module New =
     type Opts =
         { Name: string option
-          Type: ProjectType
-          Lang: Language }
+          Lang: Language
+          Stack: string option
+          Type: ProjectType }
