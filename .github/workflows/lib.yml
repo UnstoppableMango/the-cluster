@@ -29,6 +29,7 @@ jobs:
       - uses: ./.github/actions/setup-tools
         with:
           minver: true
+          pulumi: false
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - id: version
@@ -37,8 +38,7 @@ jobs:
 
       - run: npm ci
 
-      - run: npm publish
-        if: github.event_name == 'push'
+      - run: npm publish --dry-run
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -61,6 +61,7 @@ jobs:
       - uses: ./.github/actions/setup-tools
         with:
           minver: true
+          pulumi: false
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - id: version
