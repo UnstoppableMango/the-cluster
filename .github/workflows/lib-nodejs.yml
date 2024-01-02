@@ -5,13 +5,13 @@ on:
     branches: ['main']
     paths:
       - lib/nodejs/**
-      - .github/workflows/lib/nodejs.yml
+      - .github/workflows/lib/-odejs.yml
   push:
     branches: ['main']
     tags: ['lib/nodejs/v*.*.*']
     paths:
       - lib/nodejs/**
-      - .github/workflows/lib/nodejs.yml
+      - .github/workflows/lib-nodejs.yml
 
 jobs:
   nodejs:

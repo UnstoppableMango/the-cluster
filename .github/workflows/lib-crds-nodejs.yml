@@ -5,13 +5,13 @@ on:
     branches: ['main']
     paths:
       - lib/crds/**
-      - .github/workflows/lib/crds-nodejs.yml
+      - .github/workflows/lib-crds-nodejs.yml
   push:
     branches: ['main']
-    paths: ['lib/crds/**']
+    tags: ['lib/crds/*/v*.*.*']
     paths:
       - lib/crds/**
-      - .github/workflows/lib/crds-nodejs.yml
+      - .github/workflows/lib-crds-nodejs.yml
 
 jobs:
   crds-nodejs:
