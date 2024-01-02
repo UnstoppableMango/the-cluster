@@ -1,5 +1,5 @@
 {
-  "name": "@unmango/thecluster-crds",
+  "name": "@unstoppablemango/thecluster-crds",
   "version": "0.1.0",
   "scripts": {
     "build": "tsc"
@@ -16,5 +16,8 @@
     "resource": true,
     "name": "thecluster-crds"
   },
-  "repository": "https://github.com/UnstoppableMango/the-cluster"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UnstoppableMango/the-cluster.git"
+  }
 }
