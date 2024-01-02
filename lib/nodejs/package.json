@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": "https://github.com/UnstoppableMango/the-cluster",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UnstoppableMango/the-cluster.git"
+  },
   "keywords": [
     "kubernetes",
     "docker",
