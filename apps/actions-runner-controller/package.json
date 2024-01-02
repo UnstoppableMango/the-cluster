@@ -9,7 +9,4 @@
   "devDependencies": {
     "@types/node": "^20.10.4"
   },
-  "workspaces": [
-    "../../lib/nodejs"
-  ]
 }

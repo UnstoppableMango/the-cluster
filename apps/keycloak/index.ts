@@ -3,10 +3,10 @@ import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
 import { ConfigMap, Namespace } from '@pulumi/kubernetes/core/v1';
-import { Certificate } from '@unmango/thecluster-crds/certmanager/v1';
-import { clusterIssuers, databases, ingresses, provider, shared } from '@unmango/thecluster/cluster/from-stack';
+import { Certificate } from '@unstoppablemango/thecluster-crds/certmanager/v1';
+import { clusterIssuers, databases, ingresses, provider, shared } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { auth, production, hosts, versions } from './config';
-import { required } from '@unmango/thecluster/util';
+import { required } from '@unstoppablemango/thecluster/util';
 
 const ns = Namespace.get('keycloak', shared.namespaces.keycloak, { provider });
 

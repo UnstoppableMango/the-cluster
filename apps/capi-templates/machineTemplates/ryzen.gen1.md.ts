@@ -1,5 +1,5 @@
 import * as pulumi from '@pulumi/pulumi';
-import * as infra from '@unmango/thecluster-crds/infrastructure/v1alpha3';
+import * as infra from '@unstoppablemango/thecluster-crds/infrastructure/v1alpha3';
 import * as serverClasses from '../serverClasses';
 import ns from '../namespace';
 

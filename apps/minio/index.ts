@@ -2,8 +2,8 @@ import { interpolate } from '@pulumi/pulumi';
 import { RandomPassword } from '@pulumi/random';
 import { Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v3';
-import { apps, clusterIssuers, ingresses, provider, realms, shared, storageClasses } from '@unmango/thecluster/cluster/from-stack';
-import { Certificate } from '@unmango/thecluster-crds/certmanager/v1';
+import { apps, clusterIssuers, ingresses, provider, realms, shared, storageClasses } from '@unstoppablemango/thecluster/cluster/from-stack';
+import { Certificate } from '@unstoppablemango/thecluster-crds/certmanager/v1';
 import { client, readersGroup } from './oauth';
 import { hosts, releaseName, servicePort, versions } from './config';
 

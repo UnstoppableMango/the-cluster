@@ -1,6 +1,6 @@
 import * as pg from '@pulumi/postgresql';
-import { apps, databases } from '@unmango/thecluster/cluster/from-stack';
-import { allDbPermissions } from '@unmango/thecluster/dbs/postgres';
+import { apps, databases } from '@unstoppablemango/thecluster/cluster/from-stack';
+import { allDbPermissions } from '@unstoppablemango/thecluster/dbs/postgres';
 
 const { provider } = apps.postgresql;
 

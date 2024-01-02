@@ -1,5 +1,5 @@
 import { Ingress } from '@pulumi/kubernetes/networking/v1';
-import { apps, clusterIssuers, ingresses, provider, shared } from '@unmango/thecluster/cluster/from-stack';
+import { apps, clusterIssuers, ingresses, provider, shared } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { hosts } from './config';
 
 const ingress = new Ingress('media', {

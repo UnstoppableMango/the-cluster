@@ -1,8 +1,8 @@
 import { interpolate } from '@pulumi/pulumi';
 import { ConfigMap } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v3';
-import { Certificate } from '@unmango/thecluster-crds/certmanager/v1';
-import { apps, clusterIssuers, provider, shared } from '@unmango/thecluster/cluster/from-stack';
+import { Certificate } from '@unstoppablemango/thecluster-crds/certmanager/v1';
+import { apps, clusterIssuers, provider, shared } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { ip, versions, internalClass } from './config';
 
 const nginxClass = 'nginx';

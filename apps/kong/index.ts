@@ -1,7 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as random from '@pulumi/random';
-import { ingresses, provider, storageClasses } from '@unmango/thecluster/cluster/from-stack';
+import { ingresses, provider, storageClasses } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { hostnames } from './config';
 
 const ns = new k8s.core.v1.Namespace('kong-system', {

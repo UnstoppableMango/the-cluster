@@ -9,9 +9,5 @@
   },
   "devDependencies": {
     "@types/node": "^20.10.5"
-  },
-  "workspaces": [
-    "../../lib/nodejs",
-    "../../lib/crds/nodejs"
-  ]
+  }
 }

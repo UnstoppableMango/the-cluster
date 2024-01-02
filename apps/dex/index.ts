@@ -1,7 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as keycloak from '@pulumi/keycloak';
-import { apps, ingresses, provider, realms } from '@unmango/thecluster/cluster/from-stack';
+import { apps, ingresses, provider, realms } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { publicHost, internalHost, versions } from './config';
 
 const client = new keycloak.openid.Client('dex', {

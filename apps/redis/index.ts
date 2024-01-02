@@ -1,7 +1,7 @@
 import { Namespace } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v3';
-import { Certificate } from '@unmango/thecluster-crds/certmanager/v1';
-import { clusterIssuers, provider, shared, storageClasses } from '@unmango/thecluster/cluster/from-stack';
+import { Certificate } from '@unstoppablemango/thecluster-crds/certmanager/v1';
+import { clusterIssuers, provider, shared, storageClasses } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { releaseName, servicePort, versions } from './config';
 
 export const loadBalancerIP = '192.168.1.85';

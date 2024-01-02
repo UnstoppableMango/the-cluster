@@ -1,7 +1,7 @@
 import { Input, Output, all, output } from '@pulumi/pulumi';
 import * as inputs from '@pulumi/kubernetes/types/input';
 import * as outputs from '@pulumi/kubernetes/types/output';
-import { certmanager } from '@unmango/thecluster-crds/types/input';
+import { certmanager } from '@unstoppablemango/thecluster-crds/types/input';
 import { Pki } from '../apps';
 import { Apps } from './apps';
 

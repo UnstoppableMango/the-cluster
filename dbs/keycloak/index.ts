@@ -1,7 +1,7 @@
 import { RandomPassword } from '@pulumi/random';
 import { Role, Database, Grant } from '@pulumi/postgresql';
-import { apps } from '@unmango/thecluster/cluster/from-stack';
-import { allDbPermissions } from '@unmango/thecluster/dbs/postgres';
+import { apps } from '@unstoppablemango/thecluster/cluster/from-stack';
+import { allDbPermissions } from '@unstoppablemango/thecluster/dbs/postgres';
 
 const provider = apps.postgresqlLa.provider;
 

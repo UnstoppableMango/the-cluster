@@ -1,5 +1,5 @@
 {
-  "name": "@unmango/thecluster-crds",
+  "name": "@unstoppablemango/thecluster-crds",
   "type": "module",
   "scripts": {
     "patch": "node patch.js"

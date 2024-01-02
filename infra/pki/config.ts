@@ -1,6 +1,6 @@
 import { Config, getStack } from '@pulumi/pulumi';
 import { ApiToken, getZoneOutput, getApiTokenPermissionGroupsOutput } from '@pulumi/cloudflare';
-import { appendIf } from '@unmango/thecluster';
+import { appendIf } from '@unstoppablemango/thecluster';
 
 const config = new Config();
 export const suffix = config.get('suffix');

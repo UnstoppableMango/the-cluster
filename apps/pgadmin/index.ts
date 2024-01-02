@@ -11,8 +11,8 @@ import {
   provider,
   realms,
   shared,
-} from '@unmango/thecluster/cluster/from-stack';
-import { concat, join, certificate } from '@unmango/thecluster/util';
+} from '@unstoppablemango/thecluster/cluster/from-stack';
+import { concat, join, certificate } from '@unstoppablemango/thecluster/util';
 import { client, readersGroup } from './oauth';
 import { email, hosts, username, versions } from './config';
 import { RandomPassword } from '@pulumi/random';

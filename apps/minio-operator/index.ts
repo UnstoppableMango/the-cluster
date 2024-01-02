@@ -1,8 +1,8 @@
 import { Namespace } from '@pulumi/kubernetes/core/v1';
-import { clusterIssuers, ingresses, provider, realms, shared } from '@unmango/thecluster/cluster/from-stack';
+import { clusterIssuers, ingresses, provider, realms, shared } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { Chart } from '@pulumi/kubernetes/helm/v3';
 import { hosts, releaseName, servicePort, versions } from './config';
-import { certificate } from '@unmango/thecluster/util';
+import { certificate } from '@unstoppablemango/thecluster/util';
 import { interpolate } from '@pulumi/pulumi';
 import { client, readersGroup } from './oauth';
 

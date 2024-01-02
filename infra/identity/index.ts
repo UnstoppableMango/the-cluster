@@ -1,6 +1,6 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as keycloak from '@pulumi/keycloak';
-import { apps } from '@unmango/thecluster/cluster/from-stack';
+import { apps } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { cluster, github, google, me, microsoft, stackExchange, twitter } from './config';
 
 const provider = apps.keycloak.provider;

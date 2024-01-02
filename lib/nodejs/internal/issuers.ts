@@ -1,5 +1,5 @@
 import { Output } from '@pulumi/pulumi';
-import * as inputs from '@unmango/thecluster-crds/types/input';
+import * as inputs from '@unstoppablemango/thecluster-crds/types/input';
 import { Apps } from './apps';
 
 export class Issuers {

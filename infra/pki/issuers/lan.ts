@@ -1,9 +1,9 @@
 import { output } from '@pulumi/pulumi';
 import { Secret } from '@pulumi/kubernetes/core/v1';
-import { Certificate, ClusterIssuer } from '@unmango/thecluster-crds/certmanager/v1';
-import { Bundle } from '@unmango/thecluster-crds/trust/v1alpha1';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
-import { required } from '@unmango/thecluster';
+import { Certificate, ClusterIssuer } from '@unstoppablemango/thecluster-crds/certmanager/v1';
+import { Bundle } from '@unstoppablemango/thecluster-crds/trust/v1alpha1';
+import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
+import { required } from '@unstoppablemango/thecluster';
 import { ns } from '../namespace';
 import { trustLabel } from '../config';
 import { issuer as rootIssuer } from './root';

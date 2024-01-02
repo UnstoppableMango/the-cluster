@@ -2,7 +2,7 @@ import * as fs from 'node:fs/promises';
 import { interpolate } from '@pulumi/pulumi';
 import { ConfigMap, Namespace } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v3';
-import { ingresses, provider, realms, shared, storageClasses } from '@unmango/thecluster/cluster/from-stack';
+import { ingresses, provider, realms, shared, storageClasses } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { client, readersGroup } from './oauth';
 import { hosts, mediaVolumes, releaseName, resources, servicePort, versions } from './config';
 import { core } from '@pulumi/kubernetes/types/input';

@@ -1,7 +1,7 @@
 import * as k8s from '@pulumi/kubernetes';
 import { Namespace, PersistentVolumeClaim, Secret } from '@pulumi/kubernetes/core/v1';
-import { apps, provider, storageClasses } from '@unmango/thecluster/cluster/from-stack';
-import { range } from '@unmango/thecluster';
+import { apps, provider, storageClasses } from '@unstoppablemango/thecluster/cluster/from-stack';
+import { range } from '@unstoppablemango/thecluster';
 import { actionsRunnerController, cephfs, volumes } from './config';
 import { interpolate } from '@pulumi/pulumi';
 

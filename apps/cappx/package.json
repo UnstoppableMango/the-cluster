@@ -7,8 +7,5 @@
   },
   "devDependencies": {
     "@types/node": "^20.10.3"
-  },
-  "workspaces": [
-    "../../lib/nodejs"
-  ]
+  }
 }

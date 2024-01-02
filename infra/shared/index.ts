@@ -1,5 +1,5 @@
 import { Namespace } from '@pulumi/kubernetes/core/v1';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
+import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 
 const mediaNs = new Namespace('media', {
   metadata: { name: 'media' },
