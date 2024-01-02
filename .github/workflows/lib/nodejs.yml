@@ -3,11 +3,11 @@ name: Lib
 on:
   pull_request:
     branches: ['main']
-    paths: ['lib/**']
+    paths: ['lib/nodejs/**']
   push:
     branches: ['main']
-    paths: ['lib/**']
-    tags: ['lib/*/v*.*.*']
+    paths: ['lib/nodejs/**']
+    tags: ['lib/nodejs/v*.*.*']
 
 jobs:
   nodejs:
