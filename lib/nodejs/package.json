@@ -27,7 +27,7 @@
     "@pulumi/postgresql": "^3.10.0",
     "@pulumi/pulumi": "^3.95.0",
     "@unmango/pulumi-pihole": "^0.1.3",
-    "@unstoppablemango/thecluster-crds": "^0.0.0-alpha.0",
+    "@unstoppablemango/thecluster-crds": "file:../crds/nodejs",
     "fp-ts": "^2.16.1",
     "yaml": "^2.3.4"
   },
