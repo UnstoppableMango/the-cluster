@@ -1,29 +1,37 @@
-name: Lib
+name: NodeJS Lib
 
 on:
   pull_request:
     branches: ['main']
-    paths: ['lib/crds/**']
+    paths:
+      - lib/nodejs/**
+      - .github/workflows/lib-nodejs.yml
   push:
     branches: ['main']
-    paths: ['lib/crds/**']
-    tags: ['lib/crds/*/v*.*.*']
+    tags: ['lib/nodejs/v*.*.*']
+    paths:
+      - lib/nodejs/**
+      - .github/workflows/lib-nodejs.yml
 
 jobs:
-  crds-nodejs:
+  nodejs:
     runs-on: ubuntu-latest
     permissions:
       packages: write
       contents: read
     defaults:
       run:
-        working-directory: lib/crds/nodejs
+        working-directory: lib/nodejs
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: tree:0
+
       - uses: actions/setup-node@v3
         with:
           node-version-file: .nvmrc
-          cache-dependency-path: lib/crds/nodejs/packages-lock.json
+          cache-dependency-path: lib/nodejs/packages-lock.json
           registry-url: https://npm.pkg.github.com/
 
       - uses: ./.github/actions/setup-tools
@@ -32,9 +40,7 @@ jobs:
           pulumi: false
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - id: version
-        run: npm version "$(minver -t lib/crds/nodejs/v)"
-
+      - run: npm version "$(minver -t lib/nodejs/v)"
       - run: npm ci
 
       - run: npm publish --dry-run
