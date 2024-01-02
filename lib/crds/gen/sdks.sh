@@ -115,7 +115,7 @@ renamePulumi "$nodejsDir/index.ts"
 
 echo -e "\nUpdating nodejs lib name..."
 packageJson="$(cat "$nodejsDir/package.json")"
-echo "$packageJson" | jq '.name = "@unmango/thecluster-crds" | .version = "0.1.0" | .publishConfig.registry = "@UnstoppableMango:registry=https://npm.pkg.github.com"' >"$nodejsDir/package.json"
+echo "$packageJson" | jq '.name = "@unmango/thecluster-crds" | .version = "0.1.0"' >"$nodejsDir/package.json"
 
 function patchDotnet() {
     echo -ne "\\r\033[2KFixing $1..."

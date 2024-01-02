@@ -21,9 +21,6 @@
     "url": "https://github.com/UnstoppableMango/the-cluster/issues"
   },
   "homepage": "https://github.com/UnstoppableMango/the-cluster#readme",
-  "publishConfig": {
-    "@UnstoppableMango:registry": "https://npm.pkg.github.com"
-  },
   "dependencies": {
     "@pulumi/keycloak": "^5.2.1",
     "@pulumi/kubernetes": "^4.5.6",

@@ -15,8 +15,5 @@
   "pulumi": {
     "resource": true,
     "name": "thecluster-crds"
-  },
-  "publishConfig": {
-    "registry": "@UnstoppableMango:registry=https://npm.pkg.github.com"
   }
 }
