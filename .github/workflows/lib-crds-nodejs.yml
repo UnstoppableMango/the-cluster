@@ -1,4 +1,4 @@
-name: Lib
+name: NodeJS CRDs Lib
 
 on:
   pull_request:

@@ -1,4 +1,4 @@
-name: Lib
+name: NodeJS Lib
 
 on:
   pull_request:
