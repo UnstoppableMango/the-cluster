@@ -1,5 +1,5 @@
 import * as k8s from '@pulumi/kubernetes';
-import { clusterIssuers, ingresses, provider } from '@unmango/thecluster/cluster/from-stack';
+import { clusterIssuers, ingresses, provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 
 const ns = new k8s.core.v1.Namespace('unifi', {
   metadata: { name: 'unifi' },

@@ -1,4 +1,4 @@
-import * as metal from '@unmango/thecluster-crds/metal/v1alpha2';
+import * as metal from '@unstoppablemango/thecluster-crds/metal/v1alpha2';
 
 export default new metal.ServerClass('ryzen.gen1.md', {
   metadata: {

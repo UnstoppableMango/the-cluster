@@ -1,6 +1,6 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
-import { loadBalancers, provider } from '@unmango/thecluster/cluster/from-stack';
+import { loadBalancers, provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { versions } from './config';
 
 const chart = new k8s.helm.v3.Chart('sidero', {

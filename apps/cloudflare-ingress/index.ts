@@ -1,8 +1,8 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as cf from '@pulumi/cloudflare';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
-import { appendIf } from '@unmango/thecluster';
+import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
+import { appendIf } from '@unstoppablemango/thecluster';
 
 const config = new pulumi.Config();
 export const ingressClass = 'cloudflare-ingress';

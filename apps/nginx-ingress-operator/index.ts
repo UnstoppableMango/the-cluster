@@ -1,5 +1,5 @@
 import { kustomize } from '@pulumi/kubernetes';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
+import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 import versions from './config';
 
 // TODO: Some version validation for the supported pairs?

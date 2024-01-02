@@ -1,7 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import { core } from '@pulumi/kubernetes/types/input';
-import { apps, provider } from '@unmango/thecluster/cluster/from-stack';
+import { apps, provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { github, privateKey, scaleSets } from './config';
 
 export const namespaces: pulumi.Output<string>[] = [];

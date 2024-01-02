@@ -3,13 +3,11 @@
   "main": "index.ts",
   "dependencies": {
     "@pulumi/kubernetes": "^4.6.1",
-    "@pulumi/pulumi": "^3.97.0"
+    "@pulumi/pulumi": "^3.97.0",
+    "@unstoppablemango/thecluster": "file:../../lib/nodejs",
+    "@unstoppablemango/thecluster-crds": "file:../../lib/crds/nodejs"
   },
   "devDependencies": {
     "@types/node": "^20.10.4"
-  },
-  "workspaces": [
-    "../../lib/nodejs",
-    "../../lib/crds/nodejs"
-  ]
+  }
 }

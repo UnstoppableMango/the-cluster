@@ -1,6 +1,6 @@
 import { Secret } from '@pulumi/kubernetes/core/v1';
-import { ClusterIssuer } from '@unmango/thecluster-crds/certmanager/v1';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
+import { ClusterIssuer } from '@unstoppablemango/thecluster-crds/certmanager/v1';
+import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { ns } from '../namespace';
 import { apiToken } from '../config'
 

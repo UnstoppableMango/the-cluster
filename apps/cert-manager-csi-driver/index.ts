@@ -1,5 +1,5 @@
 import * as k8s from '@pulumi/kubernetes';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
+import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { driverName, versions } from './config';
 
 const ns = k8s.core.v1.Namespace.get('cert-manager', 'cert-manager');

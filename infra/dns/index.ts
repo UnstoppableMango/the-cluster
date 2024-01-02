@@ -1,6 +1,6 @@
 import * as cloudflare from '@pulumi/cloudflare';
 import * as pihole from '@unmango/pulumi-pihole';
-import { apps } from '@unmango/thecluster/cluster/from-config';
+import { apps } from '@unstoppablemango/thecluster/cluster/from-config';
 import { zone, fullSslHosts, lanDomains } from './config';
 
 const ssl = new cloudflare.Ruleset('ssl', {

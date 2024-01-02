@@ -1,7 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
-import { apps, provider, storageClasses } from '@unmango/thecluster/cluster/from-stack';
+import { apps, provider, storageClasses } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { keepers, users as enabledUsers, database, versions, ip, port, hosts, sharedIpKey } from './config';
 
 const ns = k8s.core.v1.Namespace.get('postgres', 'postgres', { provider });

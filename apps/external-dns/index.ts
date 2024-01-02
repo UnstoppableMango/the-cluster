@@ -1,6 +1,6 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
-import { apps, provider } from '@unmango/thecluster/cluster/from-stack';
+import { apps, provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { piholeConfig, versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('external-dns', {

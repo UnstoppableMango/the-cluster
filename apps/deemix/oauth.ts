@@ -1,7 +1,7 @@
 import { interpolate } from '@pulumi/pulumi';
 import { Group, GroupRoles, Role } from '@pulumi/keycloak';
 import { AudienceProtocolMapper, Client, ClientOptionalScopes } from '@pulumi/keycloak/openid';
-import { apps, realms } from '@unmango/thecluster/cluster/from-stack';
+import { apps, realms } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { hosts } from './config';
 
 const { provider } = apps.keycloak;

@@ -1,5 +1,5 @@
 import * as k8s from '@pulumi/kubernetes';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
+import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { versions } from './config';
 
 const crds = new k8s.kustomize.Directory('snapshot-controller-crds', {

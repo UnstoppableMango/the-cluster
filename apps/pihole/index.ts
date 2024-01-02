@@ -1,7 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
-import { apps, ingresses, provider, storageClasses } from '@unmango/thecluster/cluster/from-stack';
+import { apps, ingresses, provider, storageClasses } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { hostname, ip, versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('pihole', {

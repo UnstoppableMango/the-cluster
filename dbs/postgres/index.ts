@@ -2,9 +2,9 @@ import { Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { Provider, Role } from '@pulumi/postgresql';
 import { interpolate } from '@pulumi/pulumi';
 import { RandomPassword } from '@pulumi/random';
-import { Certificate } from '@unmango/thecluster-crds/certmanager/v1';
-import { apps, clusterIssuers, shared, system } from '@unmango/thecluster/cluster/from-stack';
-import { b64decode } from '@unmango/thecluster/util';
+import { Certificate } from '@unstoppablemango/thecluster-crds/certmanager/v1';
+import { apps, clusterIssuers, shared, system } from '@unstoppablemango/thecluster/cluster/from-stack';
+import { b64decode } from '@unstoppablemango/thecluster/util';
 
 const k8sOpts = { provider: system.provider };
 const ns = Namespace.get('postgres', shared.namespaces.postgres, k8sOpts);

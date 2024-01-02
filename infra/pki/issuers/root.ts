@@ -1,8 +1,8 @@
 import { PrivateKey, SelfSignedCert } from '@pulumi/tls';
 import { ns } from '../namespace';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
-import { ClusterIssuer } from '@unmango/thecluster-crds/certmanager/v1';
-import { Bundle } from '@unmango/thecluster-crds/trust/v1alpha1';
+import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
+import { ClusterIssuer } from '@unstoppablemango/thecluster-crds/certmanager/v1';
+import { Bundle } from '@unstoppablemango/thecluster-crds/trust/v1alpha1';
 import { Secret } from '@pulumi/kubernetes/core/v1';
 import { bundles, trustLabel } from '../config';
 

@@ -3,9 +3,9 @@ import { getStack } from '@pulumi/pulumi';
 import { AccessToken } from '@pulumi/pulumiservice';
 import { Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v3';
-import { Stack } from '@unmango/thecluster-crds/pulumi/v1';
-import { required } from '@unmango/thecluster';
-import { provider, shared } from '@unmango/thecluster/cluster/from-stack';
+import { Stack } from '@unstoppablemango/thecluster-crds/pulumi/v1';
+import { required } from '@unstoppablemango/thecluster';
+import { provider, shared } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { stack, versions } from './config';
 import { ConfigGroup } from '@pulumi/kubernetes/yaml';
 

@@ -2,7 +2,7 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as cloudflare from '@pulumi/cloudflare';
 import * as random from '@pulumi/random';
-import { jsonStringify, yamlStringify } from '@unmango/thecluster';
+import { jsonStringify, yamlStringify } from '@unstoppablemango/thecluster';
 
 interface Versions {
   cloudflared: string;

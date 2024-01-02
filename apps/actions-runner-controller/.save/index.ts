@@ -1,7 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
-import { ingresses, provider } from '@unmango/thecluster/cluster/from-stack';
+import { ingresses, provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { github, hosts, privateKey, versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('actions-runner-system', {

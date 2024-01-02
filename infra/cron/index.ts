@@ -1,7 +1,7 @@
 import { CronJob } from '@pulumi/kubernetes/batch/v1';
 import { Namespace, ServiceAccount } from '@pulumi/kubernetes/core/v1';
 import { ClusterRole, ClusterRoleBinding } from '@pulumi/kubernetes/rbac/v1';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
+import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 
 const actionsNs = Namespace.get('actions-runner-system', 'actions-runner-system', { provider });
 

@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as k8s from '@pulumi/kubernetes';
-import { provider } from '@unmango/thecluster/cluster/from-stack';
+import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 
 const capi = new k8s.yaml.ConfigGroup('capi', {
   files: [

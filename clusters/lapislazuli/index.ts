@@ -1,13 +1,13 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
-import * as infra from '@unmango/thecluster-crds/infrastructure/v1alpha1';
-import * as capi from '@unmango/thecluster-crds/cluster/v1beta1';
-import { ingresses, loadBalancers, provider, storageClasses } from '@unmango/thecluster/cluster/pinkdiamond';
-import { system as rosequartz } from '@unmango/thecluster/cluster/rosequartz';
-import { system as pinkdiamond } from '@unmango/thecluster/cluster/pinkdiamond';
-import { required, yamlStringify } from '@unmango/thecluster';
+import * as infra from '@unstoppablemango/thecluster-crds/infrastructure/v1alpha1';
+import * as capi from '@unstoppablemango/thecluster-crds/cluster/v1beta1';
+import { ingresses, loadBalancers, provider, storageClasses } from '@unstoppablemango/thecluster/cluster/pinkdiamond';
+import { system as rosequartz } from '@unstoppablemango/thecluster/cluster/rosequartz';
+import { system as pinkdiamond } from '@unstoppablemango/thecluster/cluster/pinkdiamond';
+import { required, yamlStringify } from '@unstoppablemango/thecluster';
 import { cluster as clusterName, hosts, ip, ports, versions } from './config';
-import { System } from '@unmango/thecluster/internal';
+import { System } from '@unstoppablemango/thecluster/internal';
 
 const ns = new k8s.core.v1.Namespace(clusterName, {
   metadata: { name: clusterName },

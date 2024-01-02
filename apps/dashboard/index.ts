@@ -1,7 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as keycloak from '@pulumi/keycloak';
-import { apps, clusterIssuers, ingresses, provider, realms } from '@unmango/thecluster/cluster/from-stack';
+import { apps, clusterIssuers, ingresses, provider, realms } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { hosts } from './config';
 
 const ns = new k8s.core.v1.Namespace('dashboard', {
