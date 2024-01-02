@@ -5,7 +5,7 @@
     "@pulumi/kubernetes": "^4.6.1",
     "@pulumi/pulumi": "^3.97.0",
     "@pulumi/random": "^4.15.0",
-    "@unstoppablemango/thecluster": "file:../../lib/nodejs",
+    "@unstoppablemango/thecluster": "^0.1.2-alpha.0.1",
     "@unstoppablemango/thecluster-crds": "file:../../lib/crds/nodejs"
   },
   "devDependencies": {
