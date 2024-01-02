@@ -14,7 +14,7 @@ on:
       - .github/workflows/lib-crds-nodejs.yml
 
 jobs:
-  crds-nodejs:
+  nodejs:
     runs-on: ubuntu-latest
     permissions:
       packages: write
@@ -24,6 +24,10 @@ jobs:
         working-directory: lib/crds/nodejs
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: tree:0
+
       - uses: actions/setup-node@v3
         with:
           node-version-file: .nvmrc

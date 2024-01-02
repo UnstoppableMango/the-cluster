@@ -24,6 +24,10 @@ jobs:
         working-directory: lib/nodejs
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: tree:0
+
       - uses: actions/setup-node@v3
         with:
           node-version-file: .nvmrc
@@ -36,9 +40,7 @@ jobs:
           pulumi: false
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - id: version
-        run: npm version "$(minver -t lib/nodejs/v)"
-
+      - run: npm version "$(minver -t lib/nodejs/v)"
       - run: npm ci
 
       - run: npm publish --dry-run
