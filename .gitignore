@@ -41,6 +41,7 @@ pools
 .purs*
 .psa*
 .spago
+NuGet.Config
 
 # Generated code
 generated.yaml
