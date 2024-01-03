@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="KubeOps.Operator" Version="8.0.0-pre.40" />
+    <PackageReference Include="KubeOps.Operator" Version="8.0.0-pre.41" />
   </ItemGroup>
 
   <ItemGroup>
