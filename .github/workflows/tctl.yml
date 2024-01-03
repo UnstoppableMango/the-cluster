@@ -1,0 +1,45 @@
+name: THCLUSTER CLI
+
+on:
+  pull_request:
+    branches: ['main']
+    paths:
+      - .github/workflows/tctl.yml
+      - tools/tctl/**
+  push:
+    branches: ['main']
+    tags: ['tctl/v*.*.*']
+    paths:
+      - .github/workflows/tctl.yml
+      - tools/tctl/**
+
+defaults:
+  run:
+    working-directory: tools/tctl
+
+env:
+  CI: true
+  ContinuousIntegrationBuild: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - run: dotnet restore
+      - run: dotnet build -c Release --no-restore
+      # - run: dotnet test -c Release --no-build
+      - run: dotnet pack -c Release --no-build -o out
+
+      - name: Publish to GitHub Packages
+        if: github.event_name == 'push' && github.ref_name != 'main'
+        run: |
+          dotnet nuget push \
+            out/UnMango.TheCluster.CLI.*.nupkg \
+            --api-key ${{ secrets.GITHUB_TOKEN }} \
+            --source github

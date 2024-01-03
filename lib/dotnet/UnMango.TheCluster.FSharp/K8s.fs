@@ -14,11 +14,14 @@ module Core =
     module V1 =
         module Namespace =
             let create name opts =
-                Kubernetes.Core.V1.Namespace.create name (NamespaceArgs(Metadata = (Ops.input >> metaName) name)) opts
+                Kubernetes.Core.V1.Namespace.create name (NamespaceArgs(Metadata = (input >> metaName) name)) opts
 
         module Secret =
             let create name ns data opts =
-                Kubernetes.Core.V1.Secret.create name (SecretArgs(Metadata = meta name ns, StringData = data)) opts
+                Kubernetes.Core.V1.Secret.create
+                    name
+                    (SecretArgs(Metadata = meta (input name) ns, StringData = data))
+                    opts
 
 let ns o n = Core.V1.Namespace.create n o
 
