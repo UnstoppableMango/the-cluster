@@ -6,6 +6,7 @@ module New =
     type Parsed =
         { Certificates: string list
           CertificateAuthority: bool
+          Chart: bool
           Force: bool
           Name: string option
           Namespace: string option
@@ -18,6 +19,7 @@ module New =
         static member Empty() =
             { Certificates = []
               CertificateAuthority = false
+              Chart = false
               Force = false
               Name = None
               Namespace = None
@@ -32,6 +34,7 @@ module New =
             match c with
             | Certificate certs -> { p with Certificates = certs }
             | CertificateAuthority -> { p with CertificateAuthority = true }
+            | Chart -> { p with Chart = true }
             | Force -> { p with Force = true }
             | Language lang -> { p with Lang = Lang.parse lang }
             | Name name -> { p with Name = Some name }
