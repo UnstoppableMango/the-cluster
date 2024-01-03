@@ -92,7 +92,7 @@ runs:
     working-directory: ${{ inputs.kind }}/${{ inputs.project }}
 
   - name: Pulumi ${{ inputs.op }}
-    uses: pulumi/actions@v4
+    uses: pulumi/actions@v5
     with:
       stack-name: UnstoppableMango/thecluster-${{ inputs.project }}/${{ inputs.stack }}
       command: ${{ inputs.op }}

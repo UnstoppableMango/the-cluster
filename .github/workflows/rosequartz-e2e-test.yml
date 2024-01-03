@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: git config --global --add safe.directory "/__w/the-cluster/the-cluster" # actions/runner#2033
 
-      - uses: pulumi/actions@v4
+      - uses: pulumi/actions@v5
         with:
           pulumi-version: 3.99.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
           comment-on-pr: false
@@ -99,7 +99,7 @@ jobs:
             apps
             clusters
 
-      - uses: pulumi/actions@v4
+      - uses: pulumi/actions@v5
         with:
           pulumi-version: 3.99.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
           comment-on-pr: false
