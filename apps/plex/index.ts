@@ -7,10 +7,9 @@ import { Certificate } from '@unstoppablemango/thecluster-crds/certmanager/v1';
 import { clusterIssuers, databases, ingresses, provider, shared, storageClasses } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { claimToken, hosts, versions } from './config';
 import { required } from '@unstoppablemango/thecluster/util';
+import {CustomResourceOptions} from '@pulumi/pulumi';
 
-const ns = new Namespace('plex', {
-  metadata: { name: 'plex' },
-}, { provider });
+const ns = Namespace.get('media', shared.namespaces.media, { provider });
 
 // const cert = new Certificate('plex', {
 //   metadata: {
@@ -75,7 +74,7 @@ const chart = new k8s.helm.v3.Chart('plex', {
       },
       kubePlex: {
         image: {
-          repository: 'ghcr.io/resu/kube-plex',
+          repository: 'ghcr.io/ressu/kube-plex',
           tag: versions.kubePlex,
         },
         // resources: {},
@@ -88,35 +87,24 @@ const chart = new k8s.helm.v3.Chart('plex', {
         // NVIDIA_VISIBLE_DEVICES: 'all',
         // NVIDIA_DRIVER_CAPABILITIES: 'video,compute,utility',
       },
-      runtimeClassName: 'nvidia',
+      // runtimeClassName: 'nvidia',
       service: { type: 'ClusterIP', port: 32400 },
       ingress: {
         enabled: true,
-        hosts: [
-          'plex.lan.thecluster.io',
-          'media.lan.thecluster.io',
-        ],
+        hosts: ['plex.thecluster.io'],
         annotations: {
-          'cert-manager.io/cluster-issuer': clusterIssuers.stage,
+          'pulumi.com/skipAwait': 'true',
         },
-        tls: [{
-          secretName: 'plex-tls',
-          hosts: [
-            'plex.lan.thecluster.io',
-            'media.lan.thecluster.io',
-          ],
-        }],
       },
       persistence: {
         transcode: {
+          enabled: true,
           storageClass: storageClasses.cephfs,
-          subPath: 'plex',
           size: '100Gi',
           accessMode: 'ReadWriteMany',
         },
         data: {
           storageClass: storageClasses.rbd,
-          subPath: 'plex',
           size: '100Gi',
           accessMode: 'ReadWriteOnce',
         },
@@ -130,9 +118,31 @@ const chart = new k8s.helm.v3.Chart('plex', {
           accessMode: 'ReadWriteMany',
         },
       },
+      // proxy: {
+      //   https: 'https://plex.thecluster.io',
+      // },
       // resources: {},
     },
-  }
+  },
+  transformations: [
+    (obj: any, opts: CustomResourceOptions) => {
+      if (obj.kind !== 'Deployment') return;
+      const container = obj.spec.template.spec.containers[0];
+      container.ports = container.ports.filter((x: any) => {
+        return x.name !== 'http';
+      });
+      // obj.spec.template.spec.dnsConfig = {
+      //   nameservers: ['1.1.1.1'],
+      //   // options: [{ name: 'ndots', value: '0' }],
+      // };
+    },
+    (obj: any, opts: CustomResourceOptions) => {
+      if (obj.kind !== 'Ingress') return;
+      obj.spec.ingressClassName = ingresses.cloudflare;
+      const paths = obj.spec.rules[0].http.paths;
+      paths[0].pathType = 'Prefix';
+    },
+  ],
 }, { provider });
 
 export { hosts };
