@@ -4,33 +4,53 @@ open Argu
 
 module New =
     type Parsed =
-        { Name: string option
+        { Certificates: string list
+          CertificateAuthority: bool
+          Force: bool
+          Name: string option
+          Namespace: string option
+          OAuth: bool
           Lang: Result<Language, string>
           Stack: string option
+          Trust: string list
           Type: Result<ProjectType, string> }
 
         static member Empty() =
-            { Name = None
+            { Certificates = []
+              CertificateAuthority = false
+              Force = false
+              Name = None
+              Namespace = None
+              OAuth = false
               Lang = Ok Typescript
-              Stack = None 
+              Stack = None
+              Trust = []
               Type = Error "Type is required" }
 
     module Opts =
         let folder p c : Parsed =
             match c with
+            | Certificate certs -> { p with Certificates = certs }
+            | CertificateAuthority -> { p with CertificateAuthority = true }
+            | Force -> { p with Force = true }
             | Language lang -> { p with Lang = Lang.parse lang }
             | Name name -> { p with Name = Some name }
+            | Namespace ns -> { p with Namespace = ns }
+            | OAuth -> { p with OAuth = true }
+            | Trust trust -> { p with Trust = trust }
             | Type t -> { p with Type = ProjectType.parse t }
 
         let parse =
             Seq.fold folder (Parsed.Empty())
             >> function
-                | { Parsed.Name = name
+                | { Parsed.Force = force
+                    Name = name
                     Lang = Ok lang
                     Stack = stack
                     Type = Ok t } ->
                     Ok
-                        { New.Opts.Name = name
+                        { New.Opts.Force = force
+                          New.Opts.Name = name
                           New.Opts.Lang = lang
                           New.Opts.Stack = stack
                           New.Opts.Type = t }
@@ -40,7 +60,7 @@ module New =
     let consume (results: ParseResults<NewArgs>) =
         function
         | Ok(opts: New.Opts) -> Project.create opts
-        | Error(msg: string) -> results.Raise(msg, ErrorCode.CommandLine, true)
+        | Error(msg: string) -> results.Raise(msg, ErrorCode.CommandLine)
 
     let run (args: ParseResults<NewArgs>) =
         args.GetAllResults() |> Opts.parse |> consume args

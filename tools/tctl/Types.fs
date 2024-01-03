@@ -44,7 +44,8 @@ module ProjectType =
 
 module New =
     type Opts =
-        { Name: string option
+        { Force: bool
+          Name: string option
           Lang: Language
           Stack: string option
           Type: ProjectType }

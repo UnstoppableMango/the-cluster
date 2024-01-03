@@ -19,9 +19,10 @@ module Project =
             New.Opts.Lang = lang
             New.Opts.Stack = stack
             New.Opts.Type = t } ->
-            { PulumiProject.Name = name |> Option.defaultValue defaultName
+            { PulumiProject.Lang = lang
+              Name = name |> Option.defaultValue defaultName
               Runtime = runtimeName lang
               Stack = stack |> Option.defaultValue defaultStack
               Type = t }
 
-    let create (opts: New.Opts) = parse opts |> Pulumi.createProject
+    let create (opts: New.Opts) = parse opts |> Pulumi.createProject opts.Force
