@@ -114,16 +114,47 @@
     },
     {
       "matchPackagePatterns": [
+        "kubeops"
+      ],
+      "groupName": "KubeOps"
+    },
+    {
+      "matchPackagePatterns": [
         "renovate",
         "^typescript$",
         "^yaml$",
         "@actions/core",
         "@actions/github",
         "@types/node",
-        "@vercel/ncc"
+        "@vercel/ncc",
+        "@pulumi/pulumi",
+        "sealed-secrets",
+        "kube-rbac-proxy",
+        "kube-vip",
+        "haproxy",
+        "@pulumi/libvirt",
+        "drone"
       ],
       "matchUpdateTypes": [
         "minor",
+        "patch"
+      ],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true
+    },
+    {
+      "matchPackagePatterns": [
+        "@pulumi/cloudflare",
+        "@pulumi/kubernetes",
+        "external-dns",
+        "filebrowser",
+        "gha-runner-scale-set",
+        "kong",
+        "pgadmin",
+        "pihole",
+        "unifi"
+      ],
+      "matchUpdateTypes": [
         "patch"
       ],
       "matchCurrentVersion": "!/^0/",
