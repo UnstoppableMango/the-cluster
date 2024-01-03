@@ -1,0 +1,3 @@
+name: thecluster-velero
+runtime: nodejs
+description: Velero install for THECLUSTER
