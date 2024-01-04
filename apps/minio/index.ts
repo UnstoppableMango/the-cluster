@@ -63,8 +63,8 @@ const chart = new Chart(releaseName, {
           storageClassName: storageClasses.rbd,
           resources: {
             limits: {
-              cpu: '100m',
-              memory: '256Mi',
+              cpu: '500m',
+              memory: '512Mi',
             },
             requests: {
               cpu: '100m',
@@ -95,10 +95,7 @@ const chart = new Chart(releaseName, {
             ],
           },
         },
-        buckets: [
-          { name: 'thecluster-s3' },
-          { name: 'velero' },
-        ],
+        buckets: [{ name: 'thecluster-s3' }],
         exposeServices: {
           minio: true,
           console: true,
