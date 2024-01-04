@@ -5,13 +5,10 @@ import { Chart } from '@pulumi/kubernetes/helm/v3';
 import { apps, clusterIssuers, ingresses, provider, realms, shared, storageClasses } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { Certificate } from '@unstoppablemango/thecluster-crds/certmanager/v1';
 import { client, readersGroup } from './oauth';
-import { hosts, releaseName, servicePort, versions } from './config';
+import { hosts, releaseName, servicePort, username, versions } from './config';
 
 const ns = Namespace.get('mini', shared.namespaces.minio, { provider });
-
-const adminPassword = new RandomPassword('admin', {
-  length: 48,
-});
+const adminPassword = new RandomPassword('admin', { length: 48 });
 
 const secret = new Secret('minio', {
   metadata: {
@@ -20,7 +17,7 @@ const secret = new Secret('minio', {
   },
   stringData: {
     'config.env': interpolate`
-export MINIO_ROOT_USER="minio-admin"
+export MINIO_ROOT_USER="${username}"
 export MINIO_ROOT_PASSWORD="${adminPassword.result}"`,
   },
 }, { provider });
@@ -124,6 +121,7 @@ const chart = new Chart(releaseName, {
           enabled: true,
           ingressClassName: ingresses.internal,
           annotations: {
+            'nginx.org/ssl-services': 'minio',
             'cert-manager.io/cluster-issuer': clusterIssuers.root,
           },
           host: 's3.lan.thecluster.io',
@@ -136,11 +134,12 @@ const chart = new Chart(releaseName, {
           enabled: true,
           ingressClassName: ingresses.internal,
           annotations: {
+            'nginx.org/ssl-services': 'thecluster-console',
             'cert-manager.io/cluster-issuer': clusterIssuers.root,
           },
           host: 'console.s3.lan.thecluster.io',
           tls: [{
-            secretName: 'minio-api-tls',
+            secretName: 'minio-console-tls',
             hosts: ['console.s3.lan.thecluster.io'],
           }],
         },
@@ -180,7 +179,7 @@ const chart = new Chart(releaseName, {
         hosts: ['s3.thecluster.io'],
         annotations: {
           'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'https',
-          'cloudflare-tunnel-ingress-controller.strrl.dev/proxy-ssl-verify': 'false',
+          'cloudflare-tunnel-ingress-controller.strrl.dev/proxy-ssl-verify': 'off',
           'pulumi.com/skipAwait': 'true',
         },
       },
@@ -197,3 +196,6 @@ const chart = new Chart(releaseName, {
     },
   },
 }, { provider });
+
+export const password = adminPassword.result;
+export { username };
