@@ -1,4 +1,5 @@
 import * as k8s from '@pulumi/kubernetes';
+import { CustomResourceOptions } from '@pulumi/pulumi';
 import { clusterIssuers, ingresses, provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 
 const loadBalancerIP = '192.168..1.87';
@@ -17,28 +18,43 @@ const chart = new k8s.helm.v3.Chart('unifi', {
       },
       service: {
         main: {
+          type: 'LoadBalancer',
           loadBalancerIP,
           sharedKey: 'unifi-svc',
         },
         comm: {
+          type: 'LoadBalancer',
           loadBalancerIP,
           sharedKey: 'unifi-svc',
         },
         stun: {
+          type: 'LoadBalancer',
           loadBalancerIP,
           sharedKey: 'unifi-svc',
         },
         speedtest: {
+          type: 'LoadBalancer',
           loadBalancerIP,
           sharedKey: 'unifi-svc',
         },
         guestportal: {
+          type: 'LoadBalancer',
           loadBalancerIP,
           sharedKey: 'unifi-svc',
         },
       },
     },
   },
+  transformations: [(obj: any, opts: CustomResourceOptions) => {
+    if (obj.kind !== 'Deployment') return;
+    const container = obj.spec.template.spec.containers[0];
+    container.startupProbe = {
+      ...container.startupProbe,
+      failureThreshold: 60,
+      initialDelaySeconds: 30,
+      periodSeconds: 10,
+    };
+  }],
 }, { provider });
 
 const service = chart.getResource('v1/Service', 'unifi/unifi');
