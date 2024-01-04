@@ -18,3 +18,4 @@ export const hosts = config.requireObject<Hosts>('hosts');
 export const versions = config.requireObject<Versions>('versions');
 export const releaseName = 'minio';
 export const servicePort = 9443;
+export const username = 'minio-admin';

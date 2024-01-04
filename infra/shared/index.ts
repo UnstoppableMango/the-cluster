@@ -43,6 +43,15 @@ const minio = new Namespace('minio', {
   metadata: { name: 'minio' },
 }, { provider });
 
+const velero = new Namespace('velero', {
+  metadata: {
+    name: 'velero',
+    labels: {
+      'thecluster.io/trust': 'root',
+    },
+  },
+}, { provider });
+
 export const namespaces = {
   media: mediaNs.metadata.name,
   postgres: postgresNs.metadata.name,
@@ -52,4 +61,5 @@ export const namespaces = {
   nginxIngress: nginxIngress.metadata.name,
   redis: redisNs.metadata.name,
   minio: minio.metadata.name,
+  velero: velero.metadata.name,
 };

@@ -5,13 +5,10 @@ import { Chart } from '@pulumi/kubernetes/helm/v3';
 import { apps, clusterIssuers, ingresses, provider, realms, shared, storageClasses } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { Certificate } from '@unstoppablemango/thecluster-crds/certmanager/v1';
 import { client, readersGroup } from './oauth';
-import { hosts, releaseName, servicePort, versions } from './config';
+import { hosts, releaseName, servicePort, username, versions } from './config';
 
 const ns = Namespace.get('mini', shared.namespaces.minio, { provider });
-
-const adminPassword = new RandomPassword('admin', {
-  length: 48,
-});
+const adminPassword = new RandomPassword('admin', { length: 48 });
 
 const secret = new Secret('minio', {
   metadata: {
@@ -20,7 +17,7 @@ const secret = new Secret('minio', {
   },
   stringData: {
     'config.env': interpolate`
-export MINIO_ROOT_USER="minio-admin"
+export MINIO_ROOT_USER="${username}"
 export MINIO_ROOT_PASSWORD="${adminPassword.result}"`,
   },
 }, { provider });
@@ -31,12 +28,16 @@ const cert = new Certificate('minio-tls', {
     namespace: ns.metadata.name,
   },
   spec: {
-    issuerRef: clusterIssuers.ref(x => x.root),
+    issuerRef: clusterIssuers.ref(x => x.stage),
     secretName: 'minio-tls',
-    commonName: 'minio.thecluster.io',
+    commonName: 's3.thecluster.io',
     dnsNames: [
       's3.thecluster.io',
+      'console.s3.thecluster.io',
       's3.lan.thecluster.io',
+      'console.s3.lan.thecluster.io',
+      'minio.thecluster.io',
+      'minio.lan.thecluster.io',
     ],
   },
 }, { provider });
@@ -66,8 +67,8 @@ const chart = new Chart(releaseName, {
           storageClassName: storageClasses.rbd,
           resources: {
             limits: {
-              cpu: '100m',
-              memory: '256Mi',
+              cpu: '500m',
+              memory: '512Mi',
             },
             requests: {
               cpu: '100m',
@@ -94,13 +95,17 @@ const chart = new Chart(releaseName, {
             organizationName: ['UnMango'],
             dnsNames: [
               's3.thecluster.io',
+              'console.s3.thecluster.io',
               's3.lan.thecluster.io',
+              'console.s3.lan.thecluster.io',
+              'minio.thecluster.io',
+              'minio.lan.thecluster.io',
             ],
           },
         },
-        buckets: [{
-          name: 'thecluster-s3',
-        }],
+        buckets: [
+          { name: 'thecluster-s3' },
+        ],
         exposeServices: {
           minio: true,
           console: true,
@@ -124,7 +129,9 @@ const chart = new Chart(releaseName, {
           enabled: true,
           ingressClassName: ingresses.internal,
           annotations: {
-            'cert-manager.io/cluster-issuer': clusterIssuers.root,
+            'nginx.org/ssl-services': 'minio',
+            'ingress.kubernetes.io/ssl-redirect': 'false',
+            'cert-manager.io/cluster-issuer': clusterIssuers.stage,
           },
           host: 's3.lan.thecluster.io',
           tls: [{
@@ -136,11 +143,12 @@ const chart = new Chart(releaseName, {
           enabled: true,
           ingressClassName: ingresses.internal,
           annotations: {
-            'cert-manager.io/cluster-issuer': clusterIssuers.root,
+            'nginx.org/ssl-services': 'thecluster-console',
+            'cert-manager.io/cluster-issuer': clusterIssuers.stage,
           },
           host: 'console.s3.lan.thecluster.io',
           tls: [{
-            secretName: 'minio-api-tls',
+            secretName: 'minio-console-tls',
             hosts: ['console.s3.lan.thecluster.io'],
           }],
         },
@@ -154,7 +162,7 @@ const chart = new Chart(releaseName, {
       },
       extraEnv: [
         { name: 'OAUTH2_PROXY_PROVIDER', value: 'keycloak-oidc' },
-        { name: 'OAUTH2_PROXY_UPSTREAMS', value: `https://thecluster-console:${servicePort}` },
+        { name: 'OAUTH2_PROXY_UPSTREAMS', value: `https://thecluster-console:443` },
         { name: 'OAUTH2_PROXY_HTTP_ADDRESS', value: 'http://0.0.0.0:4180' },
         { name: 'OAUTH2_PROXY_REDIRECT_URL', value: interpolate`https://${hosts.external}/oauth2/callback` },
         { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: realms.external.issuerUrl },
@@ -180,7 +188,7 @@ const chart = new Chart(releaseName, {
         hosts: ['s3.thecluster.io'],
         annotations: {
           'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'https',
-          'cloudflare-tunnel-ingress-controller.strrl.dev/proxy-ssl-verify': 'false',
+          'cloudflare-tunnel-ingress-controller.strrl.dev/proxy-ssl-verify': 'off',
           'pulumi.com/skipAwait': 'true',
         },
       },
@@ -197,3 +205,6 @@ const chart = new Chart(releaseName, {
     },
   },
 }, { provider });
+
+export const password = adminPassword.result;
+export { username };
