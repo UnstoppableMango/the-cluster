@@ -30,7 +30,7 @@ const cert = new Certificate('minio-tls', {
   spec: {
     issuerRef: clusterIssuers.ref(x => x.stage),
     secretName: 'minio-tls',
-    commonName: 'minio.thecluster.io',
+    commonName: 's3.thecluster.io',
     dnsNames: [
       's3.thecluster.io',
       'console.s3.thecluster.io',
@@ -95,7 +95,11 @@ const chart = new Chart(releaseName, {
             organizationName: ['UnMango'],
             dnsNames: [
               's3.thecluster.io',
+              'console.s3.thecluster.io',
               's3.lan.thecluster.io',
+              'console.s3.lan.thecluster.io',
+              'minio.thecluster.io',
+              'minio.lan.thecluster.io',
             ],
           },
         },
@@ -158,7 +162,7 @@ const chart = new Chart(releaseName, {
       },
       extraEnv: [
         { name: 'OAUTH2_PROXY_PROVIDER', value: 'keycloak-oidc' },
-        { name: 'OAUTH2_PROXY_UPSTREAMS', value: `https://thecluster-console:${servicePort}` },
+        { name: 'OAUTH2_PROXY_UPSTREAMS', value: `https://thecluster-console:443` },
         { name: 'OAUTH2_PROXY_HTTP_ADDRESS', value: 'http://0.0.0.0:4180' },
         { name: 'OAUTH2_PROXY_REDIRECT_URL', value: interpolate`https://${hosts.external}/oauth2/callback` },
         { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: realms.external.issuerUrl },
