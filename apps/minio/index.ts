@@ -28,12 +28,16 @@ const cert = new Certificate('minio-tls', {
     namespace: ns.metadata.name,
   },
   spec: {
-    issuerRef: clusterIssuers.ref(x => x.root),
+    issuerRef: clusterIssuers.ref(x => x.stage),
     secretName: 'minio-tls',
     commonName: 'minio.thecluster.io',
     dnsNames: [
       's3.thecluster.io',
+      'console.s3.thecluster.io',
       's3.lan.thecluster.io',
+      'console.s3.lan.thecluster.io',
+      'minio.thecluster.io',
+      'minio.lan.thecluster.io',
     ],
   },
 }, { provider });
@@ -95,7 +99,9 @@ const chart = new Chart(releaseName, {
             ],
           },
         },
-        buckets: [{ name: 'thecluster-s3' }],
+        buckets: [
+          { name: 'thecluster-s3' },
+        ],
         exposeServices: {
           minio: true,
           console: true,
@@ -120,7 +126,8 @@ const chart = new Chart(releaseName, {
           ingressClassName: ingresses.internal,
           annotations: {
             'nginx.org/ssl-services': 'minio',
-            'cert-manager.io/cluster-issuer': clusterIssuers.root,
+            'ingress.kubernetes.io/ssl-redirect': 'false',
+            'cert-manager.io/cluster-issuer': clusterIssuers.stage,
           },
           host: 's3.lan.thecluster.io',
           tls: [{
@@ -133,7 +140,7 @@ const chart = new Chart(releaseName, {
           ingressClassName: ingresses.internal,
           annotations: {
             'nginx.org/ssl-services': 'thecluster-console',
-            'cert-manager.io/cluster-issuer': clusterIssuers.root,
+            'cert-manager.io/cluster-issuer': clusterIssuers.stage,
           },
           host: 'console.s3.lan.thecluster.io',
           tls: [{
