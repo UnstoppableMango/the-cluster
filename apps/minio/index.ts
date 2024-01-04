@@ -95,9 +95,10 @@ const chart = new Chart(releaseName, {
             ],
           },
         },
-        buckets: [{
-          name: 'thecluster-s3',
-        }],
+        buckets: [
+          { name: 'thecluster-s3' },
+          { name: 'velero' },
+        ],
         exposeServices: {
           minio: true,
           console: true,
