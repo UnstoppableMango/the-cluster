@@ -43,20 +43,20 @@ module New =
             | Trust trust -> { p with Trust = trust }
             | Type t -> { p with Type = ProjectType.parse t }
 
-        let parse =
-            Seq.fold folder (Parsed.Empty())
-            >> function
+        let parse (args: NewArgs seq) =
+            Seq.fold folder (Parsed.Empty()) args
+            |> function
                 | { Parsed.Force = force
                     Name = name
                     Lang = Ok lang
                     Stack = stack
                     Type = Ok t } ->
-                    Ok
-                        { New.Opts.Force = force
-                          New.Opts.Name = name
-                          New.Opts.Lang = lang
-                          New.Opts.Stack = stack
-                          New.Opts.Type = t }
+                    { New.Opts.Force = force
+                      New.Opts.Name = name
+                      New.Opts.Lang = lang
+                      New.Opts.Stack = stack
+                      New.Opts.Type = t }
+                    |> Ok
                 | { Type = Error msg } -> Error msg
                 | { Lang = Error msg } -> Error msg
 
@@ -64,11 +64,3 @@ module New =
         function
         | Ok(opts: New.Opts) -> Project.create opts
         | Error(msg: string) -> results.Raise(msg, ErrorCode.CommandLine)
-
-    let run (args: ParseResults<NewArgs>) =
-        args.GetAllResults() |> Opts.parse |> consume args
-
-module Root =
-    let run =
-        function
-        | New args -> New.run args
