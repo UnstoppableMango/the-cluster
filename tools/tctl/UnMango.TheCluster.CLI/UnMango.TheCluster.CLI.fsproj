@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\lib\dotnet\UnMango.TheCluster.FSharp\UnMango.TheCluster.FSharp.fsproj" />
+    <ProjectReference Include="..\..\..\lib\dotnet\UnMango.TheCluster.FSharp\UnMango.TheCluster.FSharp.fsproj" />
   </ItemGroup>
 
 </Project>
