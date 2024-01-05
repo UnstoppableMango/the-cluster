@@ -13,9 +13,6 @@ jobs:
   setup:
     name: Setup
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/unstoppablemango/runner-image:main
-      options: pull=always
     steps:
       - uses: actions/checkout@v4
         with:
