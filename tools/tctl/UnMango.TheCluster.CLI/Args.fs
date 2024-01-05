@@ -9,8 +9,9 @@ type NewArgs =
     | [<AltCommandLine("-f")>] Force
     | [<AltCommandLine("-l")>] Language of Language
     | [<AltCommandLine("-n")>] Name of string
-    | [<AltCommandLine("--ns")>] Namespace of string option
+    | [<AltCommandLine("--ns")>] Namespace of string
     | [<AltCommandLine("-o")>] OAuth
+    | [<AltCommandLine("-s")>] Stack of string
     | [<AltCommandLine("-t")>] Trust of string list
     | [<MainCommand; ExactlyOnce>] Type of ProjectType
 
@@ -25,6 +26,7 @@ type NewArgs =
             | Name _ -> "The name of the project"
             | Namespace _ -> "Override the generated namespace"
             | OAuth -> "Scaffold oauth"
+            | Stack _ -> "Override the stack name"
             | Trust _ -> "Inject trust for the specified CAs"
             | Type _ -> "The type of the project"
 

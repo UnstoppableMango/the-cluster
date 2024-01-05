@@ -2,7 +2,7 @@
 open System.Threading.Tasks
 open Argu
 open UnMango.TheCluster.CLI
-open UnMango.TheCluster.CLI.Commands
+open UnMango.TheCluster.CLI.Domain
 
 module New =
     let run (args: ParseResults<NewArgs>) =
@@ -11,7 +11,7 @@ module New =
             Console.WriteLine("Unrecognized arguments: {0}", x.UnrecognizedCliParams)
             |> (fun _ -> Task.FromResult(1))
         | x when x.IsUsageRequested -> x.Parser.PrintUsage() |> Console.WriteLine |> (fun _ -> Task.FromResult(0))
-        | x -> x.GetAllResults() |> New.Opts.parse |> New.consume args
+        | x -> x |> Commands.New.from |> Project.create
 
 [<EntryPoint>]
 let main args =
