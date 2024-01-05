@@ -1,8 +1,20 @@
-namespace UnMango.TheCluster.CLI
+module UnMango.TheCluster.CLI.Args
 
 open Argu
 
-type NewArgs =
+// The alt names don't currently work
+type Language =
+    | [<CustomCommandLine("ts", "typescript")>] Typescript
+    | [<CustomCommandLine("fs", "f#", "fsharp")>] FSharp
+
+// The alt names don't currently work
+type ProjectType =
+    | [<CustomCommandLine("app", "apps")>] App
+    | [<CustomCommandLine("cluster", "clusters")>] Cluster
+    | [<CustomCommandLine("db")>] Database
+    | [<CustomCommandLine("infra")>] Infrastructure
+
+type New =
     | [<AltCommandLine("-c")>] Certificate of string list
     | [<AltCommandLine("--ca")>] CertificateAuthority
     | [<AltCommandLine("--helm")>] Chart
@@ -30,8 +42,8 @@ type NewArgs =
             | Trust _ -> "Inject trust for the specified CAs"
             | Type _ -> "The type of the project"
 
-type Args =
-    | [<CliPrefix(CliPrefix.None)>] New of ParseResults<NewArgs>
+type Root =
+    | [<CliPrefix(CliPrefix.None)>] New of ParseResults<New>
 
     interface IArgParserTemplate with
         member arg.Usage =

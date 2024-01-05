@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Compile Include="Types.fs" />
+    <Compile Include="Projects.fs" />
     <Compile Include="Pulumi.fs" />
     <Compile Include="Args.fs" />
     <Compile Include="Commands.fs" />

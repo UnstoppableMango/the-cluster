@@ -1,8 +1,9 @@
 module UnMango.TheCluster.CLI.Commands
 
 open Argu
+open UnMango.TheCluster.CLI.Args
 
-type New =
+type NewProject =
     { Certificates: string list
       CertificateAuthority: bool
       Chart: bool
@@ -15,16 +16,16 @@ type New =
       Trust: string list
       Type: ProjectType }
 
-module New =
-    let from (args: ParseResults<NewArgs>) =
-        { Certificates = args.GetResult NewArgs.Certificate
-          CertificateAuthority = args.Contains NewArgs.CertificateAuthority
-          Chart = args.Contains NewArgs.Chart
-          Force = args.Contains NewArgs.Force
-          Name = args.TryGetResult NewArgs.Name
-          Namespace = args.TryGetResult NewArgs.Namespace
-          OAuth = args.Contains NewArgs.OAuth
-          Lang = args.GetResult NewArgs.Language
-          Stack = args.TryGetResult NewArgs.Stack
-          Trust = args.GetResult NewArgs.Trust
-          Type = args.GetResult NewArgs.Type }
+module NewProject =
+    let from (args: ParseResults<Args.New>) : NewProject =
+        { Certificates = args.GetResult New.Certificate
+          CertificateAuthority = args.Contains New.CertificateAuthority
+          Chart = args.Contains New.Chart
+          Force = args.Contains New.Force
+          Name = args.TryGetResult New.Name
+          Namespace = args.TryGetResult New.Namespace
+          OAuth = args.Contains New.OAuth
+          Lang = args.GetResult New.Language
+          Stack = args.TryGetResult New.Stack
+          Trust = args.GetResult New.Trust
+          Type = args.GetResult New.Type }
