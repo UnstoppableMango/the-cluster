@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,7 +8,17 @@
     <Authors>UnstoppableMango</Authors>
     <RepositoryUrl>https://github.com/UnstoppableMango/the-cluster</RepositoryUrl>
     <MinVerTagPrefix>tctl/v</MinVerTagPrefix>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <Content Include="templates\fsharp\Name.fsproj" CopyToOutputDirectory="Always" />
+    <Content Include="templates\typescript\package.json" CopyToOutputDirectory="Always" />
+    <Content Include="templates\typescript\index.ts" CopyToOutputDirectory="Always" />
+    <Content Include="templates\typescript\config.ts" CopyToOutputDirectory="Always" />
+    <Content Include="templates\typescript\oauth.ts" CopyToOutputDirectory="Always" />
+    <Content Include="templates\typescript\Chart.yaml" CopyToOutputDirectory="Always" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Include="Types.fs" />
@@ -22,6 +32,7 @@
 
   <ItemGroup>
     <PackageReference Include="Argu" Version="6.1.4" />
+    <PackageReference Include="Fluid.Core" Version="2.5.0" />
     <PackageReference Include="Humanizer" Version="2.14.1" />
     <PackageReference Include="MinVer" Version="4.3.0" PrivateAssets="all" />
     <PackageReference Include="Pulumi.Automation" Version="3.59.0" />
