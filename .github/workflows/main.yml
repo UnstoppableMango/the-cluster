@@ -12,10 +12,7 @@ env:
 jobs:
   setup:
     name: Setup
-    runs-on: thecluster
-    container:
-      image: ghcr.io/unstoppablemango/runner-image:main
-      options: pull=always
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
@@ -74,10 +71,7 @@ jobs:
 
   pinkdiamond:
     name: Pink Diamond
-    runs-on: thecluster
-    container:
-      image: ghcr.io/unstoppablemango/runner-image:main
-      options: pull=always
+    runs-on: ubuntu-latest
     needs: [setup]
     if: fromJson(needs.setup.outputs.pinkdiamond) && !failure() && !cancelled()
     defaults:
