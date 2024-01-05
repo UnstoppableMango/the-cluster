@@ -273,7 +273,8 @@ jobs:
   filebrowser:
     name: File Browser
     needs: [setup, pinkdiamond, nginx-ingress, cloudflare-ingress]
-    if: fromJson(needs.setup.outputs.filebrowser) && !failure() && !cancelled()
+    # if: fromJson(needs.setup.outputs.filebrowser) && !failure() && !cancelled()
+    if: false
     concurrency: filebrowser-${{ github.ref }}
     uses: ./.github/workflows/deploy.yml
     with:
