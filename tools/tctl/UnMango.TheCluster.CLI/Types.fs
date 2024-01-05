@@ -1,40 +1,19 @@
 namespace UnMango.TheCluster.CLI
 
+open Argu.ArguAttributes
+
 type Language =
-    | Typescript
-    | FSharp
+    | [<CustomCommandLine("ts", "typescript")>] Typescript
+    | [<CustomCommandLine("fs", "f#", "fsharp")>] FSharp
 
-module Lang =
-    let parse =
-        function
-        | "typescript"
-        | "ts" -> Ok Typescript
-        | "f#"
-        | "F#"
-        | "FSharp"
-        | "Fsharp"
-        | "fsharp" -> Ok FSharp
-        | lang -> Error $"Language \"{lang}\" is invalid"
-
+// The alt names don't currently work
 type ProjectType =
-    | App
-    | Cluster
-    | Database
-    | Infrastructure
+    | [<CustomCommandLine("app", "apps")>] App
+    | [<CustomCommandLine("cluster", "clusters")>] Cluster
+    | [<CustomCommandLine("db")>] Database
+    | [<CustomCommandLine("infra")>] Infrastructure
 
 module ProjectType =
-    let parse =
-        function
-        | "app"
-        | "apps" -> Ok App
-        | "cluster"
-        | "clusters" -> Ok Cluster
-        | "db"
-        | "database" -> Ok Database
-        | "infra"
-        | "infrastructure" -> Ok Infrastructure
-        | t -> Error $"Project type \"{t}\" is invalid"
-        
     let name =
         function
         | App -> "App"

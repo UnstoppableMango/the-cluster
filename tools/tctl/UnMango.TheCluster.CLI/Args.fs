@@ -7,12 +7,12 @@ type NewArgs =
     | [<AltCommandLine("--ca")>] CertificateAuthority
     | [<AltCommandLine("--helm")>] Chart
     | [<AltCommandLine("-f")>] Force
-    | [<AltCommandLine("-l")>] Language of string
+    | [<AltCommandLine("-l")>] Language of Language
     | [<AltCommandLine("-n")>] Name of string
     | [<AltCommandLine("--ns")>] Namespace of string option
     | [<AltCommandLine("-o")>] OAuth
     | [<AltCommandLine("-t")>] Trust of string list
-    | [<MainCommand; ExactlyOnce>] Type of string
+    | [<MainCommand; ExactlyOnce>] Type of ProjectType
 
     interface IArgParserTemplate with
         member args.Usage =

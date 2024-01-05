@@ -11,10 +11,10 @@ module New =
           Name: string option
           Namespace: string option
           OAuth: bool
-          Lang: Result<Language, string>
+          Lang: Language
           Stack: string option
           Trust: string list
-          Type: Result<ProjectType, string> }
+          Type: ProjectType }
 
         static member Empty() =
             { Certificates = []
@@ -24,10 +24,10 @@ module New =
               Name = None
               Namespace = None
               OAuth = false
-              Lang = Ok Typescript
+              Lang = Typescript
               Stack = None
               Trust = []
-              Type = Error "Type is required" }
+              Type = App }
 
     module Opts =
         let folder p c : Parsed =
@@ -36,29 +36,27 @@ module New =
             | CertificateAuthority -> { p with CertificateAuthority = true }
             | Chart -> { p with Chart = true }
             | Force -> { p with Force = true }
-            | Language lang -> { p with Lang = Lang.parse lang }
+            | Language lang -> { p with Lang = lang }
             | Name name -> { p with Name = Some name }
             | Namespace ns -> { p with Namespace = ns }
             | OAuth -> { p with OAuth = true }
             | Trust trust -> { p with Trust = trust }
-            | Type t -> { p with Type = ProjectType.parse t }
+            | Type t -> { p with Type = t }
 
         let parse (args: NewArgs seq) =
             Seq.fold folder (Parsed.Empty()) args
             |> function
                 | { Parsed.Force = force
                     Name = name
-                    Lang = Ok lang
+                    Lang = lang
                     Stack = stack
-                    Type = Ok t } ->
+                    Type = t } ->
                     { New.Opts.Force = force
                       New.Opts.Name = name
                       New.Opts.Lang = lang
                       New.Opts.Stack = stack
                       New.Opts.Type = t }
                     |> Ok
-                | { Type = Error msg } -> Error msg
-                | { Lang = Error msg } -> Error msg
 
     let consume (results: ParseResults<NewArgs>) =
         function
