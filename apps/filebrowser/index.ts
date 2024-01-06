@@ -86,7 +86,7 @@ const chart = new Chart(releaseName, {
         name: 'nfs',
         nfs: {
           server: '192.168.1.10',
-          path: '/tank1/media/archive',
+          path: '/tank1/archive',
           readOnly: true,
         },
       },
