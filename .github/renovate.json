@@ -40,7 +40,7 @@
         ".*/versions/.*"
       ],
       "matchStrings": [
-        ".+?: (?<currentValue>\\S+) # renovate depName=(?<depName>\\S+) datasource=docker*"
+        ".+?: (?<currentValue>\\S+) # renovate depName=(?<depName>\\S+) datasource=docker(?: extractVersion=(?<extractVersion>\\S*))*"
       ],
       "datasourceTemplate": "docker"
     },
