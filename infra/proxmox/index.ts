@@ -22,9 +22,9 @@ const talosIso = new pve.storage.File(`talos${suffix}`, {
   },
 }, commonOpts);
 
-export const controlPlanes = controlPlaneConfig.map(newNode('c'));
-export const workers = workerConfig.map(newNode('w'));
-export const interfaces = pulumi.all([
+const controlPlanes = controlPlaneConfig.map(newNode('c'));
+const workers = workerConfig.map(newNode('w'));
+const interfaces = pulumi.all([
   ...controlPlanes.map(x => x.networkInterfaceNames),
   ...workers.map(x => x.networkInterfaceNames),
 ]);

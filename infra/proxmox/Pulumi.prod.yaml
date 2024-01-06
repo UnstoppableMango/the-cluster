@@ -21,3 +21,9 @@ config:
     - node: apollo
       cpu: 8
       mem: 8192
+    - node: zeus
+      cpu: 8
+      mem: 16384
+    - node: zeus
+      cpu: 8
+      mem: 16384
