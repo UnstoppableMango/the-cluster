@@ -4,6 +4,7 @@ bower_components/
 .terraform/
 */*/charts/
 .psc-package/
+components/**/package-lock.json
 
 # Artifacts
 bin/
