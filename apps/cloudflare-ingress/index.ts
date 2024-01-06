@@ -1,52 +1,37 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
-import * as cf from '@pulumi/cloudflare';
 import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
-import { appendIf } from '@unstoppablemango/thecluster';
+import { CloudflareTunnelIngressController } from '@unmango/pulumi-cloudflare-ingress';
 
 const config = new pulumi.Config();
-export const ingressClass = 'cloudflare-ingress';
 
-const zone = cf.getZoneOutput({ name: config.require('zoneName') });
-const all = cf.getApiTokenPermissionGroups();
-const apiToken = new cf.ApiToken('cloudflare-ingress', {
-  name: appendIf('THECLUSTER-cloudflare-ingress', config.get('suffix')),
-  policies: [
-    {
-      permissionGroups: all.then(x => [
-        x.zone['Zone Read'],
-        x.zone['DNS Write'],
-        x.account['Argo Tunnel Write'],
-      ]),
-      resources: pulumi.output(zone).apply(z => ({
-        [`com.cloudflare.api.account.${z.accountId}`]: '*',
-        [`com.cloudflare.api.account.zone.${z.zoneId}`]: '*',
-      })),
-    },
-  ],
-});
-
-const ns = new k8s.core.v1.Namespace('cloudflare-ingress', {
-  metadata: { name: 'cloudflare-ingress' },
+const theclusterNs = new k8s.core.v1.Namespace('thecluster-io-ingress', {
+  metadata: { name: 'thecluster-io-ingress' },
 }, { provider });
 
-const chart = new k8s.helm.v3.Chart('cloudflare-ingress', {
-  path: './',
-  namespace: ns.metadata.name,
-  values: {
-    'cloudflare-tunnel-ingress-controller': {
-      cloudflare: {
-        apiToken: apiToken.value,
-        accountId: zone.accountId,
-        tunnelName: appendIf('rosequartz-ingress', config.get('suffix')),
-      },
-      ingressClass: {
-        name: ingressClass,
-        isDefaultClass: true,
-      },
-      securityContext: {
-        allowPrivilegeEscalation: false,
-      },
-    },
-  },
+const unmangoNs = new k8s.core.v1.Namespace('unmango-net-ingress', {
+  metadata: { name: 'unmango-net-ingress' },
 }, { provider });
+
+const theclusterIo = new CloudflareTunnelIngressController('thecluster.io', {
+  namespace: theclusterNs.metadata.name,
+  version: '0.0.9',
+  ingressClassName: 'thecluster-io',
+  apiTokenName: 'THECLUSTER-ingress-thecluster-io',
+  defaultClass: true,
+  zone: 'thecluster.io',
+}, { provider });
+
+const unmangoNet = new CloudflareTunnelIngressController('unmango.net', {
+  namespace: unmangoNs.metadata.name,
+  version: '0.0.9',
+  ingressClassName: 'unmango-net',
+  apiTokenName: 'THECLUSTER-ingress-unmango-net',
+  defaultClass: false,
+  zone: 'unmango.net',
+}, { provider });
+
+// For legacy stuff
+export const ingressClass = 'thecluster-io';
+export const theclusterIoClassName = 'thecluster-io';
+export const unmangoNetClassName = 'unmango-net';
