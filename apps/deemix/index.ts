@@ -46,6 +46,7 @@ const chart = new Chart(releaseName, {
     extraVolumeMounts: <VolumeMount[]>[{
       name: 'music',
       mountPath: '/downloads',
+      subPath: 'shared',
     }],
     ingress: { enabled: false },
     resources: {
@@ -90,7 +91,7 @@ const chart = new Chart(releaseName, {
         className: ingresses.cloudflare,
         pathType: 'Prefix',
         path: '/deemix',
-        hosts: [hosts.external, 'deemix-new.thecluster.io'],
+        hosts: [hosts.external],
         annotations: {
           'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
           'pulumi.com/skipAwait': 'true',
