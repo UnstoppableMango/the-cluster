@@ -15,4 +15,12 @@ export class Ingresses {
   // public get cluster(): Output<string> {
   //   return this._apps.nginxIngress.ingressClasses.cluster;
   // }
+
+  public get theclusterIo(): Output<string> {
+    return this._apps.cloudflareIngress.theclusterIoClassName;
+  }
+
+  public get unmangoNet(): Output<string> {
+    return this._apps.cloudflareIngress.unmangoNetClassName;
+  }
 }
