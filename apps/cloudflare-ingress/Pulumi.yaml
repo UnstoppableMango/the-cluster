@@ -1,5 +1,3 @@
 name: thecluster-cloudflare-ingress
 runtime: nodejs
 description: Cloudflare Ingress Controller install for THECLUSTER
-config:
-  zoneName: thecluster.io
