@@ -79,6 +79,13 @@ runs:
     run: npm ci
     working-directory: lib/nodejs
 
+  - if: inputs.uses-lib == 'true'
+    shell: bash
+    working-directory: components
+    run: |
+      pushd cloudflare-ingress && npm i && popd
+      pushd oauth2-proxy && npm i && popd
+
   - shell: bash
     run: |
       if [ $(ls -1 Chart.{yml,yaml} 2>/dev/null | wc -l) -gt 0 ]; then
