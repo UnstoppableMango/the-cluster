@@ -12,7 +12,7 @@ export class CloudflareTunnelIngressController extends ComponentResource {
 
     const zone = getZoneOutput({ name: args.zone });
     const all = getApiTokenPermissionGroups();
-    const apiToken = new ApiToken('cloudflare-ingress', {
+    const apiToken = new ApiToken(name, {
       name: args.apiTokenName,
       policies: [{
         permissionGroups: all.then(x => [
@@ -27,7 +27,7 @@ export class CloudflareTunnelIngressController extends ComponentResource {
       }],
     }, { parent: this });
 
-    const chart = new Chart('cloudflare-ingress', {
+    const chart = new Chart(name, {
       chart: 'cloudflare-tunnel-ingress-controller',
       fetchOpts: {
         repo: 'https://helm.strrl.dev/',
