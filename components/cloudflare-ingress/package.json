@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "Pulumi component provider for cloudflare-tunnel-ingress-controller",
   "main": "index.ts",
+  "scripts": {
+    "build": "tsc --outDir build"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/UnstoppableMango/the-cluster.git"
