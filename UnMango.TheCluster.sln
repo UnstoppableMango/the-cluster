@@ -51,6 +51,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\runner-image.yml = .github\workflows\runner-image.yml
 		.github\workflows\validate-modified-stacks-action.yml = .github\workflows\validate-modified-stacks-action.yml
 		.github\workflows\validate-renovate.yml = .github\workflows\validate-renovate.yml
+		.github\workflows\tctl.yml = .github\workflows\tctl.yml
+		.github\workflows\containers.yml = .github\workflows\containers.yml
+		.github\workflows\helm-package.yml = .github\workflows\helm-package.yml
+		.github\workflows\lib-crds-nodejs.yml = .github\workflows\lib-crds-nodejs.yml
+		.github\workflows\lib-nodejs.yml = .github\workflows\lib-nodejs.yml
+		.github\workflows\operator.yml = .github\workflows\operator.yml
 	EndProjectSection
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UnMango.TheCluster", "operator\UnMango.TheCluster\UnMango.TheCluster.fsproj", "{8F374ADB-485D-438C-85A1-9E0733BA6153}"

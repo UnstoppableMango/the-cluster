@@ -15,7 +15,7 @@ on:
 
 defaults:
   run:
-    working-directory: tools/tctl
+    working-directory: tools/tctl/UnMango.TheCluster.CLI
 
 env:
   CI: true
