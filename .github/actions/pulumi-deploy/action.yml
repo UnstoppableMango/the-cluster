@@ -102,7 +102,8 @@ runs:
     uses: pulumi/actions@v5
     with:
       stack-name: UnstoppableMango/thecluster-${{ inputs.project }}/${{ inputs.stack }}
-      command: ${{ inputs.op }}
+#      command: ${{ inputs.op }}
+      command: preview
       work-dir: ${{ inputs.kind }}/${{ inputs.project }}
       comment-on-pr: true
       refresh: true

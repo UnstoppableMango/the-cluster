@@ -86,6 +86,11 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UnMango.TheCluster.CLI", "t
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UnMango.TheCluster.CLI.Tests", "tools\tctl\UnMango.TheCluster.CLI.Tests\UnMango.TheCluster.CLI.Tests.fsproj", "{658D5745-D863-43EA-B429-29DF6B05E906}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "actions", "actions", "{00AF5298-2EFB-4811-8BC6-0B78CEF61074}"
+	ProjectSection(SolutionItems) = preProject
+		.github\actions\pulumi-deploy\action.yml = .github\actions\pulumi-deploy\action.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -232,5 +237,6 @@ Global
 		{2C45CB95-8EAE-4904-B890-F1EC982EC997} = {1B774BBB-0B4C-4783-8149-FD0611AA8694}
 		{9D562E21-B9EB-435D-A5CE-40985F62362E} = {4494A5B6-528C-4EA4-A2CE-F665A84E74A1}
 		{658D5745-D863-43EA-B429-29DF6B05E906} = {4494A5B6-528C-4EA4-A2CE-F665A84E74A1}
+		{00AF5298-2EFB-4811-8BC6-0B78CEF61074} = {31793BC8-723C-42D3-9E91-0E75F9762DAE}
 	EndGlobalSection
 EndGlobal
