@@ -2,11 +2,12 @@ import * as path from 'node:path';
 import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
-import { ConfigMap, Namespace } from '@pulumi/kubernetes/core/v1';
+import { ConfigMap, Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { Certificate } from '@unstoppablemango/thecluster-crds/certmanager/v1';
 import { clusterIssuers, databases, ingresses, provider, shared } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { auth, production, hosts, versions } from './config';
 import { required } from '@unstoppablemango/thecluster/util';
+import { Chart } from '@pulumi/kubernetes/helm/v3';
 
 const ns = Namespace.get('keycloak', shared.namespaces.keycloak, { provider });
 
@@ -83,7 +84,7 @@ const config = new ConfigMap('keycloak', {
   },
 }, { provider });
 
-const secret = new k8s.core.v1.Secret('keycloak', {
+const secret = new Secret('keycloak', {
   metadata: {
     name: 'keycloak',
     namespace: ns.metadata.name,
@@ -130,7 +131,7 @@ const postgresCert = new Certificate('postgres', {
   },
 }, { provider });
 
-const chart = new k8s.helm.v3.Chart('keycloak', {
+const chart = new Chart('keycloak', {
   path: './',
   namespace: ns.metadata.name,
   values: {
@@ -165,8 +166,8 @@ const chart = new k8s.helm.v3.Chart('keycloak', {
       resources: {
         limits: {
           // Initial startup needs a bit of heft
-          cpu: '500m',
-          memory: '512Mi',
+          cpu: '4',
+          memory: '4Gi',
         },
         requests: {
           cpu: '20m',
@@ -197,7 +198,7 @@ const chart = new k8s.helm.v3.Chart('keycloak', {
       },
       ingress: {
         enabled: true,
-        ingressClassName: ingresses.cloudflare,
+        ingressClassName: ingresses.theclusterIo,
         pathType: 'Prefix',
         hostname: hosts.external,
         annotations: {

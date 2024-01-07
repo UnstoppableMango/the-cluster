@@ -123,7 +123,7 @@ const chart = new Chart('minio-operator', {
       },
       ingress: {
         enabled: true,
-        className: ingresses.cloudflare,
+        className: ingresses.theclusterIo,
         pathType: 'Prefix',
         hosts: [hosts.external],
         annotations: {

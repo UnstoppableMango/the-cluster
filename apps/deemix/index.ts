@@ -88,9 +88,9 @@ const chart = new Chart(releaseName, {
       },
       ingress: {
         enabled: true,
-        className: ingresses.cloudflare,
+        className: ingresses.theclusterIo,
         pathType: 'Prefix',
-        path: '/deemix',
+        path: '/',
         hosts: [hosts.external],
         annotations: {
           'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',

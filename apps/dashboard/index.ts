@@ -81,7 +81,7 @@ const chart = new k8s.helm.v3.Release('dashboard', {
       ],
       ingress: {
         enabled: true,
-        className: ingresses.cloudflare,
+        className: ingresses,
         pathType: 'Prefix',
         // paths: { web: '/', api: '/api/*' },
         hosts: [hosts.external],

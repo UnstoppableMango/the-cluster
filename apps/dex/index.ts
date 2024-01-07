@@ -100,7 +100,7 @@ const chart = new k8s.helm.v3.Chart('dex', {
       },
       ingress: {
         enabled: true,
-        className: ingresses.cloudflare,
+        className: ingresses,
         hosts: [{
           host: publicHost,
           paths: [{

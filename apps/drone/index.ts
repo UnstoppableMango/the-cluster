@@ -221,7 +221,7 @@ const chart = new k8s.helm.v3.Chart('drone', {
       },
       ingress: {
         enabled: true,
-        className: ingresses.cloudflare,
+        className: ingresses.theclusterIo,
         pathType: 'Prefix',
         hosts: [hosts.external],
         annotations: {
@@ -310,7 +310,7 @@ const chart = new k8s.helm.v3.Chart('drone', {
       },
       ingress: {
         enabled: true,
-        className: ingresses.cloudflare,
+        className: ingresses.theclusterIo,
         annotations: {
           'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
           'pulumi.com/skipAwait': 'true',
