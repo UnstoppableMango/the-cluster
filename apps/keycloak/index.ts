@@ -163,6 +163,7 @@ const chart = new Chart('keycloak', {
       },
       podSecurityContext: { enabled: true },
       containerSecurityContext: { enabled: true },
+      priorityClassName: 'system-cluster-critical',
       resources: {
         limits: {
           // Initial startup needs a bit of heft
@@ -201,6 +202,11 @@ const chart = new Chart('keycloak', {
         ingressClassName: ingresses.theclusterIo,
         pathType: 'Prefix',
         hostname: hosts.external,
+        extraHosts: hosts.aliases.external.map(h => ({
+          name: h,
+          path: '/',
+          pathType: 'Prefix',
+        })),
         annotations: {
           'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
           // Still adding support for this annotation in the controller
@@ -240,7 +246,7 @@ const internalIngress = new k8s.networking.v1.Ingress('internal', {
     name: 'internal',
     namespace: ns.metadata.name,
     annotations: {
-      'cert-manager.io/cluster-issuer': clusterIssuers.stage,
+      'cert-manager.io/cluster-issuer': clusterIssuers.prod,
       'external-dns.alpha.kubernetes.io/hostname': [
         hosts.internal,
         ...hosts.aliases.internal,
@@ -275,5 +281,10 @@ const internalIngress = new k8s.networking.v1.Ingress('internal', {
 
 export { hosts };
 export const hostname = hosts.external;
+export const allHosts = {
+  external: [hosts.external, ...hosts.aliases.external],
+  internal: [hosts.internal, ...hosts.aliases.internal],
+}
+
 export const username = auth.adminUser;
 export const password = adminPassword.result;

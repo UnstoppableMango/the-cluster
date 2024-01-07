@@ -2,14 +2,17 @@ config:
   thecluster-keycloak:auth:
     adminUser: admin
   thecluster-keycloak:hosts:
-    external: keycloak.thecluster.io
+    external: auth.thecluster.io
     internal: keycloak.lan.thecluster.io
     aliases:
-      external: []
+      external:
+        - identity.thecluster.io
+        - keycloak.thecluster.io
       internal:
-        - kc.lan.thecluster.io
+        - auth.lan.thecluster.io
         - idp.lan.thecluster.io
         - identity.lan.thecluster.io
+        - kc.lan.thecluster.io
   thecluster-keycloak:myEmail:
     secure: AAABALtjqGhAIl8JH+Hg33JQ+uqx5//ay/TCqlRTwiMJemqCsx0cQwLkDYWmsoyWeae0Iw05wA==
   thecluster-keycloak:myGoogleId:
