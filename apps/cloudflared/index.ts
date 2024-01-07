@@ -1,48 +1,43 @@
-import * as pulumi from '@pulumi/pulumi';
-import * as k8s from '@pulumi/kubernetes';
+import { RandomId } from '@pulumi/random';
+import { ConfigMap, Namespace, Secret } from '@pulumi/kubernetes/core/v1';
+import { DaemonSet } from '@pulumi/kubernetes/apps/v1';
 import * as cloudflare from '@pulumi/cloudflare';
-import * as random from '@pulumi/random';
+import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { jsonStringify, yamlStringify } from '@unstoppablemango/thecluster';
+import { stack, versions, accountId } from './config';
 
-interface Versions {
-  cloudflared: string;
-}
+const ns = new Namespace('cloudflared', {
+  metadata: { name: 'cloudflared' },
+}, { provider });
 
-const stack = pulumi.getStack();
-const config = new pulumi.Config();
-const versions = config.requireObject<Versions>('versions');
-
-const ns = k8s.core.v1.Namespace.get('kube-system', 'kube-system');
-const apiServer = k8s.core.v1.Service.get('apiserver', 'default/kubernetes');
-
-const tunnelPassword = new random.RandomId('apiserver-tunnel', {
+const tunnelPassword = new RandomId('cloudflared-tunnel', {
   byteLength: 32,
 });
 
 const zone = cloudflare.getZonesOutput({
   filter: {
-    accountId: config.require('accountId'),
-    name: 'thecluster.io',
+    accountId,
+    name: 'unmango.net',
   },
 }).apply(z => z.zones[0]);
 
-const tunnel = new cloudflare.Tunnel(`${stack}-apiserver`, {
-  name: `${stack}-apiserver`,
-  accountId: config.require('accountId'),
+const tunnel = new cloudflare.Tunnel(`${stack}-cloudflared`, {
+  name: `${stack}-cloudflared`,
+  accountId,
   secret: tunnelPassword.b64Std,
 });
 
-// const dnsRecord = new cloudflare.Record('apiserver-tunnel', {
-//   name: config.require('dnsName'),
-//   zoneId: zone.apply(x => x.id ?? ''),
-//   type: 'CNAME',
-//   value: tunnel.cname,
-//   proxied: true,
-// });
+const dnsRecord = new cloudflare.Record('cloudflared-tunnel', {
+  name: 'plex.unmango.net',
+  zoneId: zone.apply(x => x.id ?? ''),
+  type: 'CNAME',
+  value: tunnel.cname,
+  proxied: true,
+});
 
-const credentialsSecret = new k8s.core.v1.Secret('credentials.json', {
+const credentialsSecret = new Secret('credentials.json', {
   metadata: {
-    name: 'apiserver-tunnel',
+    name: 'tunnel',
     namespace: ns.metadata.name,
   },
   stringData: {
@@ -52,11 +47,11 @@ const credentialsSecret = new k8s.core.v1.Secret('credentials.json', {
       TunnelSecret: tunnel.secret,
     }),
   },
-});
+}, { provider });
 
-const configMap = new k8s.core.v1.ConfigMap('config.yaml', {
+const configMap = new ConfigMap('config.yaml', {
   metadata: {
-    name: 'apiserver-tunnel',
+    name: 'cloudflared-tunnel',
     namespace: ns.metadata.name,
   },
   data: {
@@ -67,8 +62,8 @@ const configMap = new k8s.core.v1.ConfigMap('config.yaml', {
       'no-autoupdate': true,
       ingress: [
         {
-          hostname: config.require('dnsName'),
-          service: pulumi.interpolate`tcp://kubernetes.default:443`,
+          hostname: 'plex.unmango.net',
+          service: 'http://192.168.1.70:32400',
         },
         {
           service: 'http_status:404',
@@ -76,11 +71,11 @@ const configMap = new k8s.core.v1.ConfigMap('config.yaml', {
       ],
     }),
   },
-});
+}, { provider });
 
-export const daemonset = new k8s.apps.v1.DaemonSet('apiserver-tunnel', {
+const daemonset = new DaemonSet('cloudflared-tunnel', {
   metadata: {
-    name: 'apiserver-tunnel',
+    name: 'cloudflared-tunnel',
     namespace: ns.metadata.name,
   },
   spec: {
@@ -98,7 +93,7 @@ export const daemonset = new k8s.apps.v1.DaemonSet('apiserver-tunnel', {
       spec: {
         priorityClassName: 'system-cluster-critical',
         containers: [{
-          name: 'apiserver-tunnel',
+          name: 'cloudflared-tunnel',
           image: `cloudflare/cloudflared:${versions.cloudflared}`,
           args: [
             'tunnel',
@@ -149,4 +144,4 @@ export const daemonset = new k8s.apps.v1.DaemonSet('apiserver-tunnel', {
       },
     },
   },
-});
+}, { provider });
