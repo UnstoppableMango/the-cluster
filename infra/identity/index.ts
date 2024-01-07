@@ -13,6 +13,7 @@ const externalRealm = new keycloak.Realm('external', {
   registrationEmailAsUsername: false,
   duplicateEmailsAllowed: true,
   loginWithEmailAllowed: false,
+  editUsernameAllowed: true,
   rememberMe: true,
   verifyEmail: true,
 }, { provider });
