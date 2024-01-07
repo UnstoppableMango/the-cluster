@@ -9,9 +9,9 @@ const theclusterNs = new k8s.core.v1.Namespace('thecluster-io-ingress', {
   metadata: { name: 'thecluster-io-ingress' },
 }, { provider });
 
-const unmangoNs = new k8s.core.v1.Namespace('unmango-net-ingress', {
-  metadata: { name: 'unmango-net-ingress' },
-}, { provider });
+// const unmangoNs = new k8s.core.v1.Namespace('unmango-net-ingress', {
+//   metadata: { name: 'unmango-net-ingress' },
+// }, { provider });
 
 const theclusterIo = new CloudflareTunnelIngressController('thecluster.io', {
   namespace: theclusterNs.metadata.name,
@@ -22,14 +22,14 @@ const theclusterIo = new CloudflareTunnelIngressController('thecluster.io', {
   zone: 'thecluster.io',
 }, { provider });
 
-const unmangoNet = new CloudflareTunnelIngressController('unmango.net', {
-  namespace: unmangoNs.metadata.name,
-  version: '0.0.9',
-  ingressClassName: 'unmango-net',
-  apiTokenName: 'THECLUSTER-ingress-unmango-net',
-  defaultClass: false,
-  zone: 'unmango.net',
-}, { provider });
+// const unmangoNet = new CloudflareTunnelIngressController('unmango.net', {
+//   namespace: unmangoNs.metadata.name,
+//   version: '0.0.9',
+//   ingressClassName: 'unmango-net',
+//   apiTokenName: 'THECLUSTER-ingress-unmango-net',
+//   defaultClass: false,
+//   zone: 'unmango.net',
+// }, { provider });
 
 // For legacy stuff
 export const ingressClass = 'thecluster-io';
