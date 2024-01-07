@@ -1,7 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as keycloak from '@pulumi/keycloak';
 import { apps } from '@unstoppablemango/thecluster/cluster/from-stack';
-import { cluster, github, google, me, microsoft, stackExchange, twitter } from './config';
+import { github, google, me, microsoft, stackExchange, twitter } from './config';
 
 const provider = apps.keycloak.provider;
 
@@ -11,6 +11,8 @@ const externalRealm = new keycloak.Realm('external', {
   displayNameHtml: 'THECLUSTER',
   registrationAllowed: false, // Maybe later
   registrationEmailAsUsername: false,
+  duplicateEmailsAllowed: true,
+  loginWithEmailAllowed: false,
   rememberMe: true,
   verifyEmail: true,
 }, { provider });
@@ -63,7 +65,7 @@ const twitterIdp = new keycloak.oidc.IdentityProvider('twitter', {
   guiOrder: '4',
   alias: 'twitter',
   providerId: 'twitter',
-  displayName: 'X (formerly known as Twitter)',
+  displayName: 'Twitter',
   clientId: twitter.clientId,
   clientSecret: twitter.clientSecret,
   authorizationUrl: 'https://twitter.com/i/oauth2/authorize',
