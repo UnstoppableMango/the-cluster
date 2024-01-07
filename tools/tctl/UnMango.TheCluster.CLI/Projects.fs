@@ -4,6 +4,14 @@ open System
 open System.IO
 open System.Text.Json
 open System.Threading.Tasks
+open Fluid
+
+let parser = FluidParser()
+
+// yucc
+let template t =
+    let suc, tmpl, err = parser.TryParse t
+    if suc then tmpl else failwithf $"Error: %s{err}"
 
 module Ts =
     let write dir opts =
