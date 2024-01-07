@@ -1,18 +1,31 @@
-namespace UnMango.TheCluster.CLI
+module UnMango.TheCluster.CLI.Args
 
 open Argu
 
-type NewArgs =
+// The alt names don't currently work
+type Language =
+    | [<CustomCommandLine("ts", "typescript")>] Typescript
+    | [<CustomCommandLine("fs", "f#", "fsharp")>] FSharp
+
+// The alt names don't currently work
+type ProjectType =
+    | [<CustomCommandLine("app", "apps")>] App
+    | [<CustomCommandLine("cluster", "clusters")>] Cluster
+    | [<CustomCommandLine("db")>] Database
+    | [<CustomCommandLine("infra")>] Infrastructure
+
+type New =
     | [<AltCommandLine("-c")>] Certificate of string list
     | [<AltCommandLine("--ca")>] CertificateAuthority
     | [<AltCommandLine("--helm")>] Chart
     | [<AltCommandLine("-f")>] Force
-    | [<AltCommandLine("-l")>] Language of string
+    | [<AltCommandLine("-l")>] Language of Language
     | [<AltCommandLine("-n")>] Name of string
-    | [<AltCommandLine("--ns")>] Namespace of string option
+    | [<AltCommandLine("--ns")>] Namespace of string
     | [<AltCommandLine("-o")>] OAuth
+    | [<AltCommandLine("-s")>] Stack of string
     | [<AltCommandLine("-t")>] Trust of string list
-    | [<MainCommand; ExactlyOnce>] Type of string
+    | [<MainCommand; ExactlyOnce>] Type of ProjectType
 
     interface IArgParserTemplate with
         member args.Usage =
@@ -25,11 +38,12 @@ type NewArgs =
             | Name _ -> "The name of the project"
             | Namespace _ -> "Override the generated namespace"
             | OAuth -> "Scaffold oauth"
+            | Stack _ -> "Override the stack name"
             | Trust _ -> "Inject trust for the specified CAs"
             | Type _ -> "The type of the project"
 
-type Args =
-    | [<CliPrefix(CliPrefix.None)>] New of ParseResults<NewArgs>
+type Root =
+    | [<CliPrefix(CliPrefix.None)>] New of ParseResults<New>
 
     interface IArgParserTemplate with
         member arg.Usage =
