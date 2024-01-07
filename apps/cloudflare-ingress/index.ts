@@ -31,7 +31,5 @@ const theclusterIo = new CloudflareTunnelIngressController('thecluster.io', {
 //   zone: 'unmango.net',
 // }, { provider });
 
-// For legacy stuff
-export const ingressClass = 'thecluster-io';
 export const theclusterIoClassName = 'thecluster-io';
 export const unmangoNetClassName = 'unmango-net';
