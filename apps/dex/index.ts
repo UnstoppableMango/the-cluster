@@ -2,6 +2,7 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as keycloak from '@pulumi/keycloak';
 import { apps, ingresses, provider, realms } from '@unstoppablemango/thecluster/cluster/from-stack';
+import { redirectUris } from '@unstoppablemango/thecluster/apps/keycloak';
 import { publicHost, internalHost, versions } from './config';
 
 const client = new keycloak.openid.Client('dex', {
@@ -12,12 +13,11 @@ const client = new keycloak.openid.Client('dex', {
   accessType: 'CONFIDENTIAL',
   standardFlowEnabled: true,
   directAccessGrantsEnabled: false,
-  validRedirectUris: [
-    pulumi.interpolate`https://${publicHost}/callback`,
-    pulumi.interpolate`https://${internalHost}/callback`,
+  validRedirectUris: redirectUris(
     'http://localhost:8000',
     'http://localhost:18000',
-  ],
+    publicHost, internalHost,
+  ),
 }, { provider: apps.keycloak.provider });
 
 const audMapper = new keycloak.openid.AudienceProtocolMapper('dex', {
@@ -79,7 +79,7 @@ const chart = new k8s.helm.v3.Chart('dex', {
   values: {
     dex: {
       config: {
-        issuer: pulumi.interpolate`https://${apps.keycloak.hostname}/realms/${realms.external.id}`,
+        issuer: realms.external.issuerUrl,
         storage: {
           type: 'kubernetes',
           config: {
@@ -91,10 +91,12 @@ const chart = new k8s.helm.v3.Chart('dex', {
           id: 'keycloak',
           name: 'Keycloak',
           config: {
-            issuer: pulumi.interpolate`https://${apps.keycloak.hostname}/realms/${realms.external.id}`,
+            issuer: realms.external.issuerUrl,
             clientID: client.clientId,
             clientSecret: client.clientSecret,
-            redirectURI: pulumi.interpolate`https://${publicHost}/callback`,
+            // TODO: Verify this update is correct...
+            // redirectURI: pulumi.interpolate`https://${publicHost}/callback`, // Original
+            redirectURI: redirectUris(publicHost),
           },
         }],
       },
