@@ -3,6 +3,7 @@ import * as k8s from '@pulumi/kubernetes';
 import * as keycloak from '@pulumi/keycloak';
 import { apps, clusterIssuers, ingresses, provider, realms } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { hosts } from './config';
+import { redirectUris } from '@unstoppablemango/thecluster/apps/keycloak';
 
 const ns = new k8s.core.v1.Namespace('dashboard', {
   metadata: { name: 'dashboard' },
@@ -16,10 +17,7 @@ const client = new keycloak.openid.Client('client', {
   accessType: 'CONFIDENTIAL',
   standardFlowEnabled: true,
   directAccessGrantsEnabled: false,
-  validRedirectUris: [
-    pulumi.interpolate`https://${hosts.external}/oauth2/callback`,
-    pulumi.interpolate`https://${hosts.internal}/oauth2/callback`,
-  ],
+  validRedirectUris: redirectUris(hosts.external, hosts.internal),
 }, { provider: apps.keycloak.provider });
 
 const mapper = new keycloak.openid.AudienceProtocolMapper('dashboard', {

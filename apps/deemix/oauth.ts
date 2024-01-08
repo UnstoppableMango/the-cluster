@@ -3,6 +3,7 @@ import { Group, GroupRoles, Role } from '@pulumi/keycloak';
 import { AudienceProtocolMapper, Client, ClientOptionalScopes } from '@pulumi/keycloak/openid';
 import { apps, realms } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { hosts } from './config';
+import { redirectUris } from '@unstoppablemango/thecluster/apps/keycloak';
 
 const { provider } = apps.keycloak;
 
@@ -15,10 +16,7 @@ export const client = new Client('deemix', {
   standardFlowEnabled: true,
   directAccessGrantsEnabled: false,
   baseUrl: interpolate`https://${hosts.external}`,
-  validRedirectUris: [
-    interpolate`https://${hosts.external}/oauth2/callback`,
-    interpolate`https://${hosts.internal}/oauth2/callback`,
-  ],
+  validRedirectUris: redirectUris(hosts),
 }, { provider });
 
 const mapper = new AudienceProtocolMapper('deemix', {
