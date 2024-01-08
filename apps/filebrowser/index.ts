@@ -147,7 +147,7 @@ const chart = new Chart(releaseName, {
       },
       ingress: {
         enabled: true,
-        className: ingresses.cloudflare,
+        className: ingresses.theclusterIo,
         pathType: 'Prefix',
         hosts: [hosts.external],
         annotations: {

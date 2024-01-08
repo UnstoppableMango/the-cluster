@@ -43,7 +43,7 @@ const chart = new k8s.helm.v3.Chart('pihole', {
       // Consider DNS over HTTPS
       ingress: {
         enabled: true,
-        ingressClassName: ingresses.cloudflare,
+        ingressClassName: ingresses.theclusterIo,
         hosts: [hostname],
         annotations: {
           'pulumi.com/skipAwait': 'true',

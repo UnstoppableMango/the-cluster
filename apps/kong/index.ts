@@ -46,7 +46,7 @@ const chart = new k8s.helm.v3.Chart('kong', {
         type: 'ClusterIP',
         ingress: {
           enabled: true,
-          ingressClassName: ingresses.cloudflare,
+          ingressClassName: ingresses.theclusterIo,
           hostname: hostnames.proxy,
           tls: 'kong-kong-proxy-cert',
         },
@@ -56,7 +56,7 @@ const chart = new k8s.helm.v3.Chart('kong', {
         type: 'ClusterIP',
         ingress: {
           enabled: true,
-          ingressClassName: ingresses.cloudflare,
+          ingressClassName: ingresses.theclusterIo,
           hostname: hostnames.admin,
           tls: 'kong-kong-admin-cert',
         },
@@ -66,7 +66,7 @@ const chart = new k8s.helm.v3.Chart('kong', {
         type: 'ClusterIP',
         ingress: {
           enabled: true,
-          ingressClassName: ingresses.cloudflare,
+          ingressClassName: ingresses.theclusterIo,
           hostname: hostnames.manager,
         },
       },

@@ -102,7 +102,7 @@ const chart = new k8s.helm.v3.Chart('sealed-secrets', {
       },
       ingress: {
         enabled: true,
-        className: ingresses.cloudflare,
+        className: ingresses.theclusterIo,
         pathType: 'Prefix',
         hosts: [hosts.external],
         annotations: {

@@ -183,7 +183,7 @@ const chart = new Chart(releaseName, {
       },
       ingress: {
         enabled: true,
-        className: ingresses.cloudflare,
+        className: ingresses.theclusterIo,
         pathType: 'Prefix',
         hosts: ['s3.thecluster.io'],
         annotations: {

@@ -155,7 +155,7 @@ const vcluster = new infra.VCluster(clusterName, {
         ingress: {
           enabled: true,
           pathType: 'Prefix',
-          ingressClassName: ingresses.cloudflare,
+          ingressClassName: ingresses.theclusterIo,
           host: hosts.external,
           annotations: {
             'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'https',
