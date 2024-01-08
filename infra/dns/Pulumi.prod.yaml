@@ -67,10 +67,10 @@ config:
       name: pfsense
     - ip: 192.168.1.1
       name: pfsense.int.unmango.net
-    - ip: 192.168.1.1
-      name: VR-MACHINE
-    - ip: 192.168.1.1
-      name: VR-MACHINE.int.unmango.net
+    - ip: 192.168.1.169
+      name: vr-machine
+    - ip: 192.168.1.169
+      name: vr-machine.int.unmango.net
     - ip: 192.168.1.29
       name: kube.int.unmango.net
     - ip: 192.168.1.75
