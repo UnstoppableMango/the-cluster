@@ -1,9 +1,10 @@
 module UnMango.TheCluster.CLI.Pulumi
 
+open System
 open System.IO
 open Humanizer
 open Pulumi.Automation
-open UnMango.TheCluster.CLI
+open UnMango.TheCluster.CLI.Projects
 
 type Language =
     | Typescript
@@ -35,29 +36,30 @@ module Pulumi =
         )
 
     let createProject force (opts: PulumiProject) =
-        let empty workingDirectory =
-            Directory.GetFileSystemEntries(workingDirectory) |> Array.length = 0
+        let empty: string -> bool = Directory.GetFileSystemEntries >> Array.length >> (=) 0
 
         let create workingDirectory =
             task {
-                let settings =
-                    ProjectSettings(
-                        opts.Name,
-                        ProjectRuntime(opts.Runtime),
-                        Description = $"{opts.Name |> To.TitleCase.Transform} install for THECLUSTER"
-                    )
-
-                let wsOpts = LocalWorkspaceOptions(WorkDir = workingDirectory)
-                use! ws = LocalWorkspace.CreateAsync(wsOpts)
-                let fqsn = $"UnstoppableMango/{opts.Name}/{opts.Stack}"
+                // let settings =
+                //     ProjectSettings(
+                //         opts.Name,
+                //         ProjectRuntime(opts.Runtime),
+                //         Description = $"{opts.Name |> To.TitleCase.Transform} install for THECLUSTER"
+                //     )
+                //
+                // let wsOpts = LocalWorkspaceOptions(WorkDir = workingDirectory)
+                // use! ws = LocalWorkspace.CreateAsync(wsOpts)
+                // let fqsn = $"UnstoppableMango/{opts.Name}/{opts.Stack}"
 
                 // do! ws.CreateStackAsync(fqsn)
                 // do! ws.SaveProjectSettingsAsync(settings)
 
-                let write =
+                let template =
                     match opts.Lang with
-                    | Typescript -> Projects.Ts.write
-                    | FSharp -> Projects.Fs.write
+                    | Typescript -> Ts.template
+                    | FSharp -> Fs.template
+                    
+                let test = template {| Name = "testy" |} |> (fun x -> File.WriteAllText(x))
 
                 // do! write workingDirectory opts
 
