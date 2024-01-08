@@ -1,6 +1,7 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { interpolate } from '@pulumi/pulumi';
+import { RandomPassword } from '@pulumi/random';
 import { ConfigMap, Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v3';
 import {
@@ -12,19 +13,16 @@ import {
   realms,
   shared,
 } from '@unstoppablemango/thecluster/cluster/from-stack';
+import { redirectUris } from '@unstoppablemango/thecluster/apps/keycloak';
 import { concat, join, certificate } from '@unstoppablemango/thecluster/util';
 import { client, readersGroup } from './oauth';
 import { email, hosts, username, versions } from './config';
-import { RandomPassword } from '@pulumi/random';
 
 const ns = Namespace.get('pgadmin', shared.namespaces.pgadmin, { provider });
 const { clusterHostname: dbHost, port: dbPort } = apps.postgresqlLa;
 const postgresCertDir = '/etc/ssl/certs';
 const pgadminPasswordKey = 'pgadminPassword';
-
-const password = new RandomPassword('pgadmin', {
-  length: 48,
-});
+const password = new RandomPassword('pgadmin', { length: 48 });
 
 const secret = new Secret('pgadmin', {
   metadata: {
@@ -187,7 +185,7 @@ const chart = new Chart(releaseName, {
         { name: 'OAUTH2_PROXY_PROVIDER', value: 'keycloak-oidc' },
         { name: 'OAUTH2_PROXY_UPSTREAMS', value: `http://${releaseName}-pgadmin4:80` },
         { name: 'OAUTH2_PROXY_HTTP_ADDRESS', value: 'http://0.0.0.0:4180' },
-        { name: 'OAUTH2_PROXY_REDIRECT_URL', value: interpolate`https://${hosts.external}/oauth2/callback` },
+        { name: 'OAUTH2_PROXY_REDIRECT_URL', value: redirectUris(hosts.external) },
         { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: realms.external.issuerUrl },
         { name: 'OAUTH2_PROXY_CODE_CHALLENGE_METHOD', value: 'S256' },
         { name: 'OAUTH2_PROXY_ERRORS_TO_INFO_LOG', value: 'true' },

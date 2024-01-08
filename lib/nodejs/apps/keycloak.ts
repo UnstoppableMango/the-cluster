@@ -11,7 +11,9 @@ export interface HostsShape {
   };
 }
 
-function isHostsShape(x: object): x is HostsShape {
+function isHostsShape(x: any): x is HostsShape {
+  if (typeof x !== 'object') return false;
+
   if ("external" in x) return true;
   if ("internal" in x) return true;
   if ("aliases" in x) return true; // Eh... lol
@@ -36,7 +38,19 @@ function hostsRedirectUris(hosts: HostsShape): string[] {
   return results;
 }
 
-export function redirectUris(...hosts: (Input<string | Input<string>[]> | HostsShape)[]): Output<Output<string>[]> {
+// Would be great if this worked the way I want it to...
+export function redirectUris(host: Input<string>): Output<string>
+export function redirectUris(...hosts: (Input<string | Input<string>[]> | HostsShape)[]): Output<Output<string>[]>
+export function redirectUris(...hosts: (Input<string | Input<string>[]> | HostsShape)[]): Output<Output<string>[] | string> {
+  // Typescript seems to be happy with these signatures, despite this code not fulfilling the contract...
+  if (hosts.length === 1 && !isHostsShape(hosts[0])) {
+    // Stupidity to make typescript happy
+    const result = output(hosts[0]);
+    if (Output.isInstance<string>(result)) {
+      return result;
+    }
+  }
+
   return output(hosts).apply(h => h
     .flatMap(mhosts => {
       if (typeof mhosts === 'string') {

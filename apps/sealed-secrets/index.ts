@@ -3,6 +3,7 @@ import * as k8s from '@pulumi/kubernetes';
 import * as keycloak from '@pulumi/keycloak';
 import { apps, clusterIssuers, ingresses, provider, realms } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { hosts, versions } from './config';
+import { redirectUris } from '@unstoppablemango/thecluster/apps/keycloak';
 
 const ns = new k8s.core.v1.Namespace('sealed-secrets', {
   metadata: { name: 'sealed-secrets' },
@@ -86,7 +87,7 @@ const chart = new k8s.helm.v3.Chart('sealed-secrets', {
         { name: 'OAUTH2_PROXY_PROVIDER', value: 'keycloak-oidc' },
         { name: 'OAUTH2_PROXY_UPSTREAMS', value: `http://sealed-secrets:${port}` },
         { name: 'OAUTH2_PROXY_HTTP_ADDRESS', value: 'http://0.0.0.0:4180' },
-        { name: 'OAUTH2_PROXY_REDIRECT_URL', value: pulumi.interpolate`https://${hosts.external}/oauth2/callback` },
+        { name: 'OAUTH2_PROXY_REDIRECT_URL', value: redirectUris(hosts.external) },
         { name: 'OAUTH2_PROXY_OIDC_ISSUER_URL', value: realms.external.issuerUrl },
         { name: 'OAUTH2_PROXY_CODE_CHALLENGE_METHOD', value: 'S256' },
         { name: 'OAUTH2_PROXY_ERRORS_TO_INFO_LOG', value: 'true' },
