@@ -16,7 +16,7 @@ const ingress = new Ingress('media', {
     },
   },
   spec: {
-    ingressClassName: ingresses.nginx,
+    ingressClassName: ingresses.internal,
     rules: [
       {
         host: hosts.internal,
