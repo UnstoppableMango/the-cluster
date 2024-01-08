@@ -2,8 +2,8 @@ import * as pulumi from '@pulumi/pulumi';
 import * as k8s from '@pulumi/kubernetes';
 import * as keycloak from '@pulumi/keycloak';
 import { apps, ingresses, provider, realms } from '@unstoppablemango/thecluster/cluster/from-stack';
-import { publicHost, internalHost, versions } from './config';
 import { redirectUris } from '@unstoppablemango/thecluster/apps/keycloak';
+import { publicHost, internalHost, versions } from './config';
 
 const client = new keycloak.openid.Client('dex', {
   realmId: realms.external.id,
@@ -79,7 +79,7 @@ const chart = new k8s.helm.v3.Chart('dex', {
   values: {
     dex: {
       config: {
-        issuer: pulumi.interpolate`https://${apps.keycloak.hostname}/realms/${realms.external.id}`,
+        issuer: realms.external.issuerUrl,
         storage: {
           type: 'kubernetes',
           config: {
@@ -91,10 +91,12 @@ const chart = new k8s.helm.v3.Chart('dex', {
           id: 'keycloak',
           name: 'Keycloak',
           config: {
-            issuer: pulumi.interpolate`https://${apps.keycloak.hostname}/realms/${realms.external.id}`,
+            issuer: realms.external.issuerUrl,
             clientID: client.clientId,
             clientSecret: client.clientSecret,
-            redirectURI: pulumi.interpolate`https://${publicHost}/callback`,
+            // TODO: Verify this update is correct...
+            // redirectURI: pulumi.interpolate`https://${publicHost}/callback`, // Original
+            redirectURI: redirectUris(publicHost),
           },
         }],
       },

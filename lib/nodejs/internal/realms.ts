@@ -4,6 +4,10 @@ import { Apps } from './apps';
 
 export interface Realm {
   id: Output<string>;
+
+  /**
+   * Of the form interpolate`https://${app.hostname}/realms/${id}`
+   */
   issuerUrl: Output<string>;
   tokenUrl: Output<string>;
   authorizationUrl: Output<string>;

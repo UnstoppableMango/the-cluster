@@ -64,7 +64,8 @@ const droneSecret = new k8s.core.v1.Secret('drone-secrets', {
   },
   stringData: {
     DRONE_DATABASE_SECRET: encryptionKey.hex,
-    DRONE_DATABASE_DATASOURCE: pulumi.interpolate`postgres://${databases.drone.username}:${databases.drone.password}@${apps.postgresql.ip}:${apps.postgresql.port}/${databases.drone.name}?sslmode=disable`,
+    // TODO: Need cert
+    // DRONE_DATABASE_DATASOURCE: pulumi.interpolate`postgres://${databases.drone.username}:${databases.drone.password}@${apps.postgresql.ip}:${apps.postgresql.port}/${databases.drone.name}?sslmode=disable`,
     DRONE_GITHUB_CLIENT_SECRET: github.clientSecret,
     DRONE_RPC_SECRET: rpcToken.hex,
     DRONE_UI_PASSWORD: uiClient.clientSecret,
