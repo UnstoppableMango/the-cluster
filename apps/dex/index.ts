@@ -3,6 +3,7 @@ import * as k8s from '@pulumi/kubernetes';
 import * as keycloak from '@pulumi/keycloak';
 import { apps, ingresses, provider, realms } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { publicHost, internalHost, versions } from './config';
+import { redirectUris } from '@unstoppablemango/thecluster/apps/keycloak';
 
 const client = new keycloak.openid.Client('dex', {
   realmId: realms.external.id,
@@ -12,12 +13,11 @@ const client = new keycloak.openid.Client('dex', {
   accessType: 'CONFIDENTIAL',
   standardFlowEnabled: true,
   directAccessGrantsEnabled: false,
-  validRedirectUris: [
-    pulumi.interpolate`https://${publicHost}/callback`,
-    pulumi.interpolate`https://${internalHost}/callback`,
+  validRedirectUris: redirectUris(
     'http://localhost:8000',
     'http://localhost:18000',
-  ],
+    publicHost, internalHost,
+  ),
 }, { provider: apps.keycloak.provider });
 
 const audMapper = new keycloak.openid.AudienceProtocolMapper('dex', {

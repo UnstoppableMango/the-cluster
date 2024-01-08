@@ -47,7 +47,17 @@ export function redirectUris(...hosts: (Input<string | Input<string>[]> | HostsS
 
       return mhosts;
     })
-    .map(host => interpolate`https://${host}/oauth2/callback`)
+    .map(host => {
+      if (host.startsWith('http')) {
+        if (host.endsWith('/oauth2/callback')) {
+          return output(host);
+        }
+
+        return interpolate`${host}/oauth2/callback`;
+      }
+
+      return interpolate`https://${host}/oauth2/callback`;
+    }),
   );
 }
 
