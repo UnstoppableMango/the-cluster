@@ -91,6 +91,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "actions", "actions", "{00AF
 		.github\actions\pulumi-deploy\action.yml = .github\actions\pulumi-deploy\action.yml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "charts", "charts", "{239D7BD0-CEC6-4779-B7E0-E1CF8E8536ED}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deemix", "deemix", "{12E0BA5D-F7D7-4329-AC8E-268E5B9368F6}"
+	ProjectSection(SolutionItems) = preProject
+		charts\deemix\Chart.yaml = charts\deemix\Chart.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -238,5 +245,6 @@ Global
 		{9D562E21-B9EB-435D-A5CE-40985F62362E} = {4494A5B6-528C-4EA4-A2CE-F665A84E74A1}
 		{658D5745-D863-43EA-B429-29DF6B05E906} = {4494A5B6-528C-4EA4-A2CE-F665A84E74A1}
 		{00AF5298-2EFB-4811-8BC6-0B78CEF61074} = {31793BC8-723C-42D3-9E91-0E75F9762DAE}
+		{12E0BA5D-F7D7-4329-AC8E-268E5B9368F6} = {239D7BD0-CEC6-4779-B7E0-E1CF8E8536ED}
 	EndGlobalSection
 EndGlobal

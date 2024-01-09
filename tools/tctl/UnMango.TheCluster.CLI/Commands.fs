@@ -18,14 +18,14 @@ type NewProject =
 
 module NewProject =
     let from (args: ParseResults<Args.New>) : NewProject =
-        { Certificates = args.GetResult New.Certificate
+        { Certificates = args.GetResult(New.Certificate, [])
           CertificateAuthority = args.Contains New.CertificateAuthority
           Chart = args.Contains New.Chart
           Force = args.Contains New.Force
           Name = args.TryGetResult New.Name
           Namespace = args.TryGetResult New.Namespace
           OAuth = args.Contains New.OAuth
-          Lang = args.GetResult New.Language
+          Lang = args.GetResult(New.Language, Language.Typescript)
           Stack = args.TryGetResult New.Stack
-          Trust = args.GetResult New.Trust
+          Trust = args.GetResult(New.Trust, [])
           Type = args.GetResult New.Type }

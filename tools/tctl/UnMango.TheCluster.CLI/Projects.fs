@@ -1,91 +1,51 @@
 module UnMango.TheCluster.CLI.Projects
 
-open System
 open System.IO
-open System.Text.Json
-open System.Threading.Tasks
+open System.Reflection
+open Fluid
+
+module private Templates =
+    let parser = FluidParser()
+    let executingAssembly = lazy Assembly.GetExecutingAssembly()
+
+    // yucc
+    let template m t =
+        let suc, tmpl, err = parser.TryParse t
+
+        if suc then
+            tmpl.Render(TemplateContext(m, true))
+        else
+            failwithf $"Error: %s{err}"
+
+    let templateAll m = Seq.map (template m)
+
+    let readResource: string -> string =
+        let readStream (stream: Stream) =
+            use reader = new StreamReader(stream)
+            reader.ReadToEnd()
+
+        executingAssembly.Value.GetManifestResourceStream >> readStream
+
+    let readResources: string seq -> string seq = Seq.map readResource
+    let templateResource model = readResource >> template model
+    let templateResources model = Seq.map (templateResource model)
+
+    let all = executingAssembly.Value.GetManifestResourceNames() :> string seq
+
+let template =
+    let impl dir model =
+        let toTemplate _ file =
+            $"UnMango.TheCluster.CLI.templates.%s{dir}.%s{file}.liquid"
+            |> Templates.templateResource model
+
+        Seq.pairwise >> Map >> Map.map toTemplate
+
+    fun files dir model -> impl dir model files
 
 module Ts =
-    let write dir opts =
-        [ File.WriteAllTextAsync(
-              Path.Join(dir, "config.ts"),
-              [ "import { Config } from '@pulumi/pulumi';"
-                String.Empty
-                "export interface Versions {"
-                "}"
-                String.Empty
-                "export config = new Config();"
-                "export const versions = config.getObject<Versions>('versions')"
-                String.Empty ]
-              |> String.concat Environment.NewLine
-          )
-          File.WriteAllTextAsync(
-              Path.Join(dir, "index.ts"),
-              [ "import { Namespace } from '@pulumi/kubernetes/core/v1';"
-                "import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';"
-                "import { versions } from './config';"
-                String.Empty
-                $"const ns = new Namespace('{opts.Name}'), {{"
-                $"  metadata: {{ name: '{opts.Name}' }},"
-                "}, { provider });"
-                String.Empty ]
-              |> String.concat Environment.NewLine
-          )
-          File.WriteAllTextAsync(
-              Path.Join(dir, "package.json"),
-              JsonSerializer.Serialize(
-                  { Name = opts.Name
-                    Main = "index.ts"
-                    Dependencies =
-                      [ "@pulumi/kubernetes", "^4.6.1"
-                        "@pulumi/pulumi", "^3.99.0"
-                        "@unstoppablemango/thecluster", "file:../../lib/nodejs"
-                        "@unstoppablemango/thecluster-crds", "file:../../lib/crds/nodejs" ]
-                      |> Map
-                    DevDependencies = [ "@types/node", "^20.10.0" ] |> Map },
-                  JsonSerializerOptions(WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase)
-              )
-              + Environment.NewLine
-          )
-          File.WriteAllTextAsync(
-              Path.Join(dir, "tsconfig.json"),
-              JsonSerializer.Serialize(
-                  {| CommpilerOptions =
-                      {| Strict = true
-                         OutDir = "bin"
-                         Target = "es2016"
-                         Module = "commonjs"
-                         ModuleResolution = "node"
-                         SourceMap = true
-                         ExperimentalDecorators = true
-                         Pretty = true
-                         NoFallthroughCasesInSwitch = true
-                         NoImplicitReturns = true
-                         ForceConsistentCasingInFileNames = true |}
-                     Files = [ "index.ts" ] |},
-                  JsonSerializerOptions(WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase)
-              )
-              + Environment.NewLine
-          ) ]
-        |> Task.WhenAll
+    let files = [ "Chart.yaml"; "config.ts"; "index.ts"; "oauth.ts"; "package.json" ]
+    let template model = template files "typescript" model
 
 module Fs =
-    let write dir opts =
-        [ File.WriteAllTextAsync(
-              Path.Join(dir, $"UnMango.TheCluster.{opts.Name}.fsproj"),
-              [ "<Project>" ] |> String.concat Environment.NewLine
-          )
-          File.WriteAllTextAsync(
-              Path.Join(dir, "Program.fs"),
-              [ $"namespace UnMango.TheCluster.{opts.Name}"
-                "open Pulumi"
-                "open UnMango.TheCluster"
-                String.Empty
-                "let deployment ="
-                "    dict []"
-                String.Empty
-                "[<Entrypoint>]"
-                "let main = Deployment.run deployment" ]
-              |> String.concat Environment.NewLine
-          ) ]
-        |> Task.WhenAll
+    let files = [ "Name.fsproj"; "Program.fs" ]
+    let template model = template files "fsharp" model

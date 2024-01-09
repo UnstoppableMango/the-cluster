@@ -12,12 +12,8 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <Content Include="templates\fsharp\Name.fsproj" CopyToOutputDirectory="Always" />
-    <Content Include="templates\typescript\package.json" CopyToOutputDirectory="Always" />
-    <Content Include="templates\typescript\index.ts" CopyToOutputDirectory="Always" />
-    <Content Include="templates\typescript\config.ts" CopyToOutputDirectory="Always" />
-    <Content Include="templates\typescript\oauth.ts" CopyToOutputDirectory="Always" />
-    <Content Include="templates\typescript\Chart.yaml" CopyToOutputDirectory="Always" />
+    <EmbeddedResource Include="templates\fsharp\*" />
+    <EmbeddedResource Include="templates\typescript\*" />
   </ItemGroup>
 
   <ItemGroup>

@@ -11,6 +11,7 @@
     <Compile Include="Kubernetes.fs" />
     <Compile Include="K8s.fs" />
     <Compile Include="TheCluster.fs" />
+    <Compile Include="Library.fs" />
   </ItemGroup>
   
   <ItemGroup>
