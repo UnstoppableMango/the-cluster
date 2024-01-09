@@ -4,7 +4,7 @@
   "dependencies": {
     "@pulumi/cloudflare": "^5.16.0",
     "@pulumi/pulumi": "^3.95.0",
-    "@unmango/pulumi-pihole": "^0.1.3",
+    "@unmango/pulumi-pihole": "^0.2.0",
     "@unstoppablemango/thecluster": "file:../../lib/nodejs",
     "@unstoppablemango/thecluster-crds": "file:../../lib/crds/nodejs"
   },
