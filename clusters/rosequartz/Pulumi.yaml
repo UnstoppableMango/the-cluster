@@ -24,6 +24,6 @@ config:
   createDnsRecord: false
   versions:
     value:
-      k8s: 1.28.0 # renovate depName=kubernetes/kubernetes extractVersion=^v(?<version>.*)
+      k8s: 1.29.0 # renovate depName=kubernetes/kubernetes extractVersion=^v(?<version>.*)
       ksca: 0.8.0 # renovate depName=alex1989hu/kubelet-serving-cert-approver extractVersion=^v(?<version>.*)
       talos: 1.6.1 # renovate depName=siderolabs/talos extractVersion=^v(?<version>.*)

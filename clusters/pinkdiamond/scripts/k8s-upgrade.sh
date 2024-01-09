@@ -4,8 +4,6 @@ set -e
 root="$(git rev-parse --show-toplevel)/clusters/pinkdiamond"
 cwd="$root/scripts"
 
-stack="$(pulumi -C "$root" stack --show-name)"
-
 currentVersion="$(kubectl version -o json | jq -r '.serverVersion.gitVersion | sub("^v"; "")')"
 k8sVersion="$(pulumi -C "$root" config get --path 'versions.k8s')"
 
