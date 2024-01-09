@@ -29,7 +29,7 @@ const interfaces = pulumi.all([
   ...workers.map(x => x.networkInterfaceNames),
 ]);
 
-function newNode(type: string): (data: Node, i: number) => pve.vm.VirtualMachine {
+function newNode(type: 'c' | 'w'): (data: Node, i: number) => pve.vm.VirtualMachine {
   return (data, i) => new pve.vm.VirtualMachine(`px${type}k8s${i}${suffix}`, {
     name: `px${type}k8s${i}${suffix}`,
     nodeName: data.node,
@@ -80,5 +80,6 @@ function newNode(type: string): (data: Node, i: number) => pve.vm.VirtualMachine
   }, {
     ...commonOpts,
     ignoreChanges: ['disks[0].speed'],
+    aliases: [],
   });
 }
