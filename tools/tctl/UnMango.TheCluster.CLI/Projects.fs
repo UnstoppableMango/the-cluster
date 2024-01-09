@@ -27,23 +27,25 @@ module private Templates =
         executingAssembly.Value.GetManifestResourceStream >> readStream
 
     let readResources: string seq -> string seq = Seq.map readResource
-    let templateResource m = readResource >> template m
-    let templateResources m = Seq.map (templateResource m)
+    let templateResource model = readResource >> template model
+    let templateResources model = Seq.map (templateResource model)
 
     let all = executingAssembly.Value.GetManifestResourceNames() :> string seq
 
+let template =
+    let impl dir model =
+        let toTemplate _ file =
+            $"UnMango.TheCluster.CLI.templates.%s{dir}.%s{file}.liquid"
+            |> Templates.templateResource model
+
+        Seq.pairwise >> Map >> Map.map toTemplate
+
+    fun files dir model -> impl dir model files
+
 module Ts =
     let files = [ "Chart.yaml"; "config.ts"; "index.ts"; "oauth.ts"; "package.json" ]
-
-    let template m =
-        files
-        |> Seq.map (fun x -> $"UnMango.TheCluster.CLI.templates.typescript.${x}")
-        |> Templates.templateResources m
+    let template model = template files "typescript" model
 
 module Fs =
-    let files = [ "Name.fsproj" ]
-
-    let template m =
-        files
-        |> Seq.map (fun x -> $"UnMango.TheCluster.CLI.templates.fsharp.${x}")
-        |> Templates.templateResources m
+    let files = [ "Name.fsproj"; "Program.fs" ]
+    let template model = template files "fsharp" model
