@@ -37,7 +37,7 @@ jobs:
       - run: dotnet pack -c Release --no-build -o out
 
       - name: Authenticate to GitHub Packages
-        if: github.event_name == 'push' && github.ref_name != 'main'
+        if: github.event_name == 'push'
         run: |
           dotnet nuget add source \
             --username UnstoppableMango \
@@ -46,7 +46,7 @@ jobs:
             --name github "https://nuget.pkg.github.com/UnstoppableMango/index.json"
 
       - name: Publish to GitHub Packages
-        if: github.event_name == 'push' && github.ref_name != 'main'
+        if: github.event_name == 'push'
         run: |
           dotnet nuget push \
             out/UnMango.TheCluster.CLI.*.nupkg \
