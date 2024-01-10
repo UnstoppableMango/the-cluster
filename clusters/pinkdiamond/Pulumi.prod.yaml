@@ -38,3 +38,7 @@ config:
     - installDisk: /dev/sda
       ip: 192.168.1.113
       qemu: true
+    - installDisk: /dev/mmcblk0
+      ip: 192.168.1.114
+    - installDisk: /dev/mmcblk0
+      ip: 192.168.1.115
