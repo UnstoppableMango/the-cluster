@@ -55,8 +55,8 @@ module Pulumi =
                 use! ws = LocalWorkspace.CreateAsync(wsOpts)
                 let fqsn = $"UnstoppableMango/{opts.Name}/{opts.Stack}"
 
-                do! ws.CreateStackAsync(fqsn)
                 do! ws.SaveProjectSettingsAsync(settings)
+                do! ws.CreateStackAsync(fqsn)
 
                 do!
                     match opts.Lang with
@@ -68,15 +68,7 @@ module Pulumi =
                     |> Map.values
                     |> Task.WhenAll
 
-                // do! ws.SetConfigAsync(stack, "test", ConfigValue("testing"))
-                // let! stacks = ws.ListStacksAsync()
-                //
-                // let! pYaml = Path.Join(workingDirectory, "Pulumi.yaml") |> File.ReadAllTextAsync
-                //
-                // Console.WriteLine(File.ReadAllText(Path.Join(workingDirectory, $"Pulumi.{stack}.yaml")))
-                // Console.WriteLine("Current stacks are: {0}", seq stacks |> Seq.map (_.Name))
                 do! ws.RemoveStackAsync(fqsn)
-
                 return 0
             }
 

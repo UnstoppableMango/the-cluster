@@ -5,13 +5,13 @@ open System.Threading.Tasks
 open Argu
 open UnMango.TheCluster.CLI.Args
 
-let (|AnyUnrecognized|_|) (args: ParseResults<Args.New>) =
+let (|AnyUnrecognized|_|) (args: ParseResults<'a>) =
     if args.UnrecognizedCliParams.Length > 0 then
         Some args.UnrecognizedCliParams
     else
         None
 
-let (|ShouldShowUsage|_|) (args: ParseResults<Args.New>) =
+let (|ShouldShowUsage|_|) (args: ParseResults<'a>) =
     if args.IsUsageRequested then Some ShouldShowUsage else None
 
 let handleUnrecognized (args: 'a seq) =
