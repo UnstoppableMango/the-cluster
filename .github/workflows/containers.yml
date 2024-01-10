@@ -32,3 +32,4 @@ jobs:
     with:
       name: rsync
       path: containers/rsync
+      platforms: linux/amd64
