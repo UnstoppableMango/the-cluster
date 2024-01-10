@@ -1,0 +1,7 @@
+{
+  "name": "@unmango/thecluster-components",
+  "workspaces": [
+    "cloudflare-ingress",
+    "oauth2-proxy"
+  ]
+}
