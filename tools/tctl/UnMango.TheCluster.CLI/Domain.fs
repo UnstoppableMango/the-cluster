@@ -2,6 +2,8 @@ module UnMango.TheCluster.CLI.Domain
 
 open System
 open System.IO
+open System.Threading.Tasks
+open Argu
 open UnMango.TheCluster.CLI
 open UnMango.TheCluster.CLI.Commands
 open UnMango.TheCluster.CLI.Pulumi
@@ -37,5 +39,5 @@ module Project =
           Stack = command.Stack |> Option.defaultValue defaultStack
           Type = projectType }
 
-    let create (command: NewProject) =
-        from command |> Pulumi.createProject command.Force
+    let create: ParseResults<Args.New> -> Task<int> =
+        NewProject.from >> (fun x -> from x |> (Pulumi.createProject x.Force))

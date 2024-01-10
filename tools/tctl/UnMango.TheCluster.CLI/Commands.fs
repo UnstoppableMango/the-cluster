@@ -1,7 +1,22 @@
 module UnMango.TheCluster.CLI.Commands
 
+open System
+open System.Threading.Tasks
 open Argu
 open UnMango.TheCluster.CLI.Args
+
+let (|AnyUnrecognized|_|) (args: ParseResults<Args.New>) =
+    if args.UnrecognizedCliParams.Length > 0 then
+        Some args.UnrecognizedCliParams
+    else
+        None
+        
+let (|ShouldShowUsage|_|) (args: ParseResults<Args.New>) =
+    Some args.IsUsageRequested
+
+let handleUnrecognized (args: 'a seq) =
+    Console.WriteLine("Unrecognized arguments: {0}", args)
+    |> (fun _ -> Task.FromResult(1))
 
 type NewProject =
     { Certificates: string list
