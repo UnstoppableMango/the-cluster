@@ -10,9 +10,9 @@ let (|AnyUnrecognized|_|) (args: ParseResults<Args.New>) =
         Some args.UnrecognizedCliParams
     else
         None
-        
+
 let (|ShouldShowUsage|_|) (args: ParseResults<Args.New>) =
-    Some args.IsUsageRequested
+    if args.IsUsageRequested then Some ShouldShowUsage else None
 
 let handleUnrecognized (args: 'a seq) =
     Console.WriteLine("Unrecognized arguments: {0}", args)

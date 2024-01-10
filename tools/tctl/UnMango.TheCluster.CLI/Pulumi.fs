@@ -75,6 +75,7 @@ module Pulumi =
                 //
                 // Console.WriteLine(File.ReadAllText(Path.Join(workingDirectory, $"Pulumi.{stack}.yaml")))
                 // Console.WriteLine("Current stacks are: {0}", seq stacks |> Seq.map (_.Name))
+                do! ws.RemoveStackAsync(fqsn)
 
                 return 0
             }

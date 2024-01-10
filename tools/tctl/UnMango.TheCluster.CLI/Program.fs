@@ -8,8 +8,8 @@ module New =
     let run (args: ParseResults<Args.New>) =
         match args with
         | Commands.AnyUnrecognized x -> Commands.handleUnrecognized x
-        | Commands.ShouldShowUsage _ -> args.Parser.PrintUsage() |> Console.WriteLine |> (fun _ -> Task.FromResult(0))
-        | x -> x.Catch((fun () -> Project.create x), showUsage = false)
+        | Commands.ShouldShowUsage -> args.Parser.PrintUsage() |> Console.WriteLine |> (fun _ -> Task.FromResult(0))
+        | x -> x.Catch((fun () -> Project.create x), showUsage = x.IsUsageRequested)
 
 [<EntryPoint>]
 let main args =
