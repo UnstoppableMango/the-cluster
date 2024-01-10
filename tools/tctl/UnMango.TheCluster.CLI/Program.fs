@@ -7,11 +7,9 @@ open UnMango.TheCluster.CLI.Domain
 module New =
     let run (args: ParseResults<Args.New>) =
         match args with
-        | x when x.UnrecognizedCliParams.Length > 0 ->
-            Console.WriteLine("Unrecognized arguments: {0}", x.UnrecognizedCliParams)
-            |> (fun _ -> Task.FromResult(1))
-        | x when x.IsUsageRequested -> x.Parser.PrintUsage() |> Console.WriteLine |> (fun _ -> Task.FromResult(0))
-        | x -> x |> Commands.NewProject.from |> Project.create
+        | Commands.AnyUnrecognized x -> Commands.handleUnrecognized x
+        | Commands.ShouldShowUsage -> args.Parser.PrintUsage() |> Console.WriteLine |> (fun _ -> Task.FromResult(0))
+        | x -> x.Catch((fun () -> Project.create x), showUsage = x.IsUsageRequested)
 
 [<EntryPoint>]
 let main args =

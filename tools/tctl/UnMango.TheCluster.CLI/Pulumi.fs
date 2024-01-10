@@ -2,6 +2,7 @@ module UnMango.TheCluster.CLI.Pulumi
 
 open System
 open System.IO
+open System.Threading.Tasks
 open Humanizer
 open Pulumi.Automation
 open UnMango.TheCluster.CLI.Projects
@@ -46,7 +47,10 @@ module Pulumi =
                         ProjectRuntime(opts.Runtime),
                         Description = $"{opts.Name |> To.TitleCase.Transform} install for THECLUSTER"
                     )
-                
+
+                if not <| Directory.Exists(workingDirectory) then
+                    Directory.CreateDirectory(workingDirectory) |> ignore
+
                 let wsOpts = LocalWorkspaceOptions(WorkDir = workingDirectory)
                 use! ws = LocalWorkspace.CreateAsync(wsOpts)
                 let fqsn = $"UnstoppableMango/{opts.Name}/{opts.Stack}"
@@ -54,18 +58,16 @@ module Pulumi =
                 do! ws.CreateStackAsync(fqsn)
                 do! ws.SaveProjectSettingsAsync(settings)
 
-                let template =
+                do!
                     match opts.Lang with
-                    | Typescript -> Ts.template
-                    | FSharp -> Fs.template
+                    | Typescript -> Ts.template opts
+                    | FSharp -> Fs.template opts
+                    |> Map.map (fun file contents ->
+                        let path = Path.Join(workingDirectory, file)
+                        File.WriteAllTextAsync(path, contents))
+                    |> Map.values
+                    |> Task.WhenAll
 
-                template {| Name = "testy" |}
-                |> Map.iter (fun file t ->
-                    Console.WriteLine($"File: {file}")
-                    Console.WriteLine($"Template:\n{t}"))
-
-                // do! write workingDirectory opts
-                //
                 // do! ws.SetConfigAsync(stack, "test", ConfigValue("testing"))
                 // let! stacks = ws.ListStacksAsync()
                 //
@@ -73,12 +75,12 @@ module Pulumi =
                 //
                 // Console.WriteLine(File.ReadAllText(Path.Join(workingDirectory, $"Pulumi.{stack}.yaml")))
                 // Console.WriteLine("Current stacks are: {0}", seq stacks |> Seq.map (_.Name))
+                do! ws.RemoveStackAsync(fqsn)
 
                 return 0
             }
 
-        // let workingDirectory = Environment.CurrentDirectory
-        let workingDirectory = "/tmp/tctl/test"
+        let workingDirectory = Environment.CurrentDirectory
 
         if not force && not <| empty workingDirectory then
             failwith $"Directory {workingDirectory} is not empty, pass --force to ignore"
