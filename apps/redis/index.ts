@@ -3,6 +3,7 @@ import { Chart } from '@pulumi/kubernetes/helm/v3';
 import { Certificate } from '@unstoppablemango/thecluster-crds/certmanager/v1';
 import { clusterIssuers, provider, shared, storageClasses } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { releaseName, servicePort, versions } from './config';
+import { CustomResourceOptions } from '@pulumi/pulumi';
 
 export const loadBalancerIP = '192.168.1.85';
 
@@ -42,84 +43,37 @@ const chart = new Chart(releaseName, {
   path: './',
   namespace: ns.metadata.name,
   values: {
-    redis: {
+    'redis-cluster': {
       global: {
         imageRegistry: 'docker.io',
         storageClass: storageClasses.rbd,
       },
       image: {
-        repository: 'bitnami/redis',
+        repository: 'bitnami/redis-cluster',
         tag: versions.redis,
       },
-      auth: { enabled: false },
-      master: {
-        // resources: {
-        //   limits: {
-        //     cpu: '',
-        //     memory: '',
-        //   },
-        //   requests: {
-        //     cpu: '',
-        //     memory: '',
-        //   },
-        // },
-        containerSecurityContext: {
-          runAsUser: 1001,
-          runAsNonRoot: true,
-          allowPrivilegeEscalation: false,
-        },
-        // priorityClassName: 'system-cluster-critical',
-        persistence: {
-          accessModes: ['ReadWriteOnce'],
-          size: '15Gi',
-        },
-        persistentVolumeClaimRetentionPolicy: {
-          enabled: true,
-          whenScaled: 'Retain',
-          whenDeleted: 'Delete',
-        },
-        service: {
-          type: 'LoadBalancer',
-          loadBalancerIP,
-          ports: {
-            redis: servicePort,
-          },
-        },
+      usePassword: false,
+      containerSecurityContext: {
+        runAsUser: 1001,
+        runAsNonRoot: true,
+        allowPrivilegeEscalation: false,
       },
-      replica: {
-        kind: 'DaemonSet',
-        // resources: {
-        //   limits: {
-        //     cpu: '',
-        //     memory: '',
-        //   },
-        //   requests: {
-        //     cpu: '',
-        //     memory: '',
-        //   },
-        // },
-        podSecurityContext: {
-          fsGroup: 1001,
-        },
-        containerSecurityContext: {
-          runAsUser: 1001,
-          runAsNonRoot: true,
-          allowPrivilegeEscalation: false,
-        },
-        persistence: {
-          accessModes: ['ReadWriteOnce'],
-          size: '8Gi',
-        },
-        persistentVolumeClaimRetentionPolicy: {
-          enabled: true,
-          whenScaled: 'Retain',
-          whenDeleted: 'Delete',
-        },
-        service: {
-          type: 'ClusterIP',
-          ports: {
-            redis: servicePort,
-          },
+      // priorityClassName: 'system-cluster-critical',
+      persistence: {
+        accessModes: ['ReadWriteOnce'],
+        size: '15Gi',
+      },
+      persistentVolumeClaimRetentionPolicy: {
+        enabled: true,
+        whenScaled: 'Retain',
+        whenDeleted: 'Delete',
+      },
+      service: {
+        type: 'LoadBalancer',
+        loadBalancerIP,
+        ports: { redis: servicePort },
+        annotations: {
+          'external-dns.alpha.kubernetes.io/hostname': 'redis.lan.thecluster.io',
         },
       },
       tls: {
@@ -130,15 +84,32 @@ const chart = new Chart(releaseName, {
         certCAFilename: 'ca.crt',
       },
       volumePermissions: { enabled: true },
-      useExternalDNS: {
-        enabled: true,
-        suffix: 'redis.thecluster.io',
+      redis: {
+        resources: {
+          limits: {
+            cpu: '250m',
+            memory: '2Gi',
+          },
+          requests: {
+            cpu: '100m',
+            memory: '512Mi',
+          },
+        },
       },
+      cluster: {
+        nodes: 9,
+        replicas: 2,
+      },
+      // Might want this when Talos supports it
+      sysctlImage: { enabled: false },
     },
   },
+  transformations: [(obj: any, opts: CustomResourceOptions) => {
+    opts.dependsOn = cert;
+  }],
 }, { provider });
 
-const service = chart.getResource('v1/Service', 'redis/redis-headless');
+const service = chart.getResource('v1/Service', 'redis/redis-redis-cluster-headless');
 
 const serviceOutput = service.metadata.name;
 export { versions, servicePort as port, serviceOutput as service };
