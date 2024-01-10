@@ -1,0 +1,7 @@
+config:
+  thecluster-gitea:hosts:
+    external: git.thecluster.io
+    internal: git.lan.thecluster.io
+    aliases:
+      external: [gitea.thecluster.io]
+      internal: [gitea.lan.thecluster.io]
