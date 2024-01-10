@@ -4,4 +4,4 @@ description: Cloudflared install for THECLUSTER
 config:
   versions:
     value:
-      cloudflared: 2024.1.0 # renovate depName=cloudflare/cloudflared
+      cloudflared: 2024.1.1 # renovate depName=cloudflare/cloudflared
