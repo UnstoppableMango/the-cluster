@@ -51,8 +51,8 @@ const chart = new Chart(releaseName, {
     ingress: { enabled: false },
     resources: {
       limits: {
-        cpu: '100m',
-        memory: '128Mi',
+        cpu: '1',
+        memory: '1Gi',
       },
       requests: {
         cpu: '100m',
