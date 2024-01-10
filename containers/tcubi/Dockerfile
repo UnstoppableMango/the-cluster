@@ -15,5 +15,3 @@ RUN apt-get update -y \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL https://get.pulumi.com/ | bash -s -- --version $PULUMI_VERSION
-
-USER 1001:1001

@@ -9,5 +9,4 @@ RUN adduser --disabled-password --gecos "" --uid 1001 runner \
 	&& echo "Defaults env_keep += \"DEBIAN_FRONTEND\"" >> /etc/sudoers
 
 WORKDIR /home/runner
-USER runner
 ENTRYPOINT [ "/bin/bash" ]

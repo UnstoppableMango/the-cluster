@@ -15,14 +15,21 @@ env:
   CI: true
 
 jobs:
-  # runner-image:
-  #   uses: ./.github/workflows/docker-container.yml
-  #   with:
-  #     name: runner-image
-  #     path: containers/runner
+  runner-image:
+    uses: ./.github/workflows/docker-container.yml
+    with:
+      name: runner-image
+      path: containers/runner
 
   tcubi:
     uses: ./.github/workflows/docker-container.yml
     with:
       name: tcubi
       path: containers/tcubi
+
+  rsync:
+    uses: ./.github/workflows/docker-container.yml
+    with:
+      name: rsync
+      path: containers/rsync
+      platforms: linux/amd64
