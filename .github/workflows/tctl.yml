@@ -23,9 +23,13 @@ env:
 
 jobs:
   build:
+    name: ${{ github.event_name == 'push' && 'Publish' || 'Build' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: tree:0
 
       - uses: actions/setup-dotnet@v4
         with:
