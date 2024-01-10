@@ -32,4 +32,9 @@ jobs:
     with:
       name: rsync
       path: containers/rsync
-      platforms: linux/amd64
+
+  yq:
+    uses: ./.github/workflows/docker-container.yml
+    with:
+      name: yq
+      path: containers/yq
