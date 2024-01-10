@@ -4,6 +4,7 @@ import { Apps } from './apps';
 
 export interface Realm {
   id: Output<string>;
+  discoveryUrl: Output<string>;
 
   /**
    * Of the form interpolate`https://${app.hostname}/realms/${id}`
@@ -46,6 +47,7 @@ export class Realms {
       id,
       issuerUrl,
       apiBaseUrl: baseUrl,
+      discoveryUrl: interpolate`${issuerUrl}/.well-known/openid-configuration`,
       tokenUrl: interpolate`${baseUrl}/token`,
       authorizationUrl: interpolate`${baseUrl}/auth`,
       userinfoEndpoint: interpolate`${baseUrl}/userinfo`,
