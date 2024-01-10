@@ -18,7 +18,7 @@ RUN apt-get update -y \
 	&& rm -rf /var/lib/apt/lists/*
 
 WORKDIR /src
-ADD https://github.com/WayneD/rsync.git#${VERSION} /src
+ADD https://github.com/WayneD/rsync.git#${VERSION} .
 RUN ./configure && make && make install
 
 FROM debian:12-slim
