@@ -2,6 +2,7 @@ module UnMango.TheCluster.CLI.Pulumi
 
 open System
 open System.IO
+open System.Threading
 open System.Threading.Tasks
 open Humanizer
 open Pulumi.Automation
@@ -80,4 +81,7 @@ module Pulumi =
             create workingDirectory
 
 type Pulumi() =
-    static member CreateProject() = 0
+    static member CreateProject(project: PulumiProject, ?force: bool, ?cancellationToken: CancellationToken) =
+        let force = defaultArg force false
+        let cancellationToken = defaultArg cancellationToken (CancellationToken())
+        Pulumi.createProject force project cancellationToken
