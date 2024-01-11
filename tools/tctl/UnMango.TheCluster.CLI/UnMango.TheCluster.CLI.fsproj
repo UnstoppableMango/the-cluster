@@ -19,13 +19,13 @@
 
   <ItemGroup>
     <Compile Include="Types.fs" />
+    <Compile Include="Tools.fs" />
     <Compile Include="Projects.fs" />
     <Compile Include="Pulumi.fs" />
     <Compile Include="Args.fs" />
     <Compile Include="Commands.fs" />
     <Compile Include="Domain.fs" />
     <Compile Include="Program.fs" />
-    <Compile Include="Tools.fs" />
   </ItemGroup>
 
   <ItemGroup>
