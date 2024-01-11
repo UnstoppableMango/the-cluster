@@ -114,7 +114,8 @@
     },
     {
       "matchPackagePatterns": [
-        "kubeops"
+        "kubeops",
+        "KubeOps"
       ],
       "groupName": "KubeOps"
     },
