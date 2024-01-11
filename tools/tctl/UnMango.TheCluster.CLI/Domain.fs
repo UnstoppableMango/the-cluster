@@ -40,4 +40,10 @@ module Project =
           Type = projectType }
 
     let create: ParseResults<Args.New> -> Task<int> =
-        NewProject.from >> (fun x -> from x |> (Pulumi.createProject x.Force))
+        let create args =
+            task {
+                let! result = from args |> (Pulumi.createProject args.Force)
+                return resultCode result
+            }
+
+        NewProject.from >> create

@@ -69,7 +69,7 @@ module Pulumi =
                     |> Task.WhenAll
 
                 do! ws.RemoveStackAsync(fqsn)
-                return 0
+                return Ok workingDirectory
             }
 
         let workingDirectory = Environment.CurrentDirectory

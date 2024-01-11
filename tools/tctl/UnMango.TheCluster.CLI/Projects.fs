@@ -34,12 +34,15 @@ module private Templates =
 
 let template =
     let impl dir model =
-        let toTemplate _ file =
+        let format file =
             $"UnMango.TheCluster.CLI.templates.%s{dir}.%s{file}.liquid"
-            |> Templates.templateResource model
+
+        let toTemplate _ =
+            format >> Templates.templateResource model
 
         Seq.pairwise >> Map >> Map.map toTemplate
 
+    // Just so we can swap the argument order
     fun files dir model -> impl dir model files
 
 module Ts =
