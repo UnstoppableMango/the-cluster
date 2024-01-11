@@ -68,8 +68,8 @@ module Pulumi =
                     |> Map.values
                     |> Task.WhenAll
 
-                do! ws.RemoveStackAsync(fqsn, cancellationToken)
-                return Ok workingDirectory
+                let! result = Tools.Npm.install [] workingDirectory cancellationToken
+                return Ok result.ExitCode
             }
 
         let workingDirectory = Environment.CurrentDirectory
