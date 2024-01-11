@@ -25,6 +25,7 @@
     <Compile Include="Commands.fs" />
     <Compile Include="Domain.fs" />
     <Compile Include="Program.fs" />
+    <Compile Include="Tools.fs" />
   </ItemGroup>
 
   <ItemGroup>
