@@ -4,4 +4,4 @@ description: Gitea install for THECLUSTER
 config:
   versions:
     value:
-      gitea: 1.2.3
+      gitea: 1.21.3

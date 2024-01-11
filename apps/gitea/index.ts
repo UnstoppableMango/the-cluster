@@ -9,11 +9,17 @@ import { PostgresDatabase } from '@unmango/thecluster-components/postgres-db';
 import { releaseName, servicePort, versions, username, email, hosts } from './config';
 import { certificate } from '@unstoppablemango/thecluster';
 import { RandomPassword } from '@pulumi/random';
+import { core } from '@pulumi/kubernetes/types/input';
 
 export const loadBalancerIP = '192.168.1.87';
 
 const ns = new Namespace('gitea', {
-  metadata: { name: 'gitea' },
+  metadata: {
+    name: 'gitea',
+    labels: {
+      'thecluster.io/trust': 'thebundle',
+    },
+  },
 }, { provider });
 
 const password = new RandomPassword('admin', { length: 48 });
@@ -46,16 +52,16 @@ const password = new RandomPassword('admin', { length: 48 });
 
 const oauth = new OAuthApplication('gitea', {
   name: 'Gitea',
-  baseUrl: hosts.external,
+  baseUrl: `https://${hosts.external}`,
   realmId: realms.external.id,
   hosts: allHosts(hosts),
 }, { provider: apps.keycloak.provider });
 
 const database = new PostgresDatabase('gitea', {}, { provider: apps.postgresqlLa.provider });
 
-const secret = new Secret('gitea', {
+const secret = new Secret('gitea-secrets', {
   metadata: {
-    name: 'gitea',
+    name: 'gitea-secrets',
     namespace: ns.metadata.name,
   },
   stringData: {
@@ -144,25 +150,42 @@ const chart = new Chart(releaseName, {
         size: '15Gi',
         accessModes: ['ReadWriteOnce'],
       },
-      extraVolumeMounts: [{
-        name: 'postgres-tls',
-        mountPath: '/home/git/.postgresql',
-      }],
-      extraVolumes: [certificate('postgres-tls', {
-        issuer: clusterIssuers.postgres,
-        issuerKind: 'ClusterIssuer',
-        commonName: database.owner.name,
-        dnsNames: allHosts(hosts),
-        uriSans: allHosts(hosts).flatMap(x => [
-          `postgres://${x}`,
-          `postgress://${x}`,
-        ]),
-        certificateFile: 'postgresql.crt',
-        privateKeyFile: 'postgresql.key',
-        caFile: 'root.crt',
-        reusePrivateKey: false,
-        fsGroup: 1001,
-      })],
+      extraVolumeMounts: <core.v1.VolumeMount[]>[
+        {
+          name: 'postgres-tls',
+          mountPath: '/data/gitea/git/.postgresql',
+        },
+        {
+          name: 'thebundle',
+          mountPath: '/etc/ssl/certs',
+        },
+      ],
+      extraVolumes: <core.v1.Volume[]>[
+        certificate('postgres-tls', {
+          issuer: clusterIssuers.postgres,
+          issuerKind: 'ClusterIssuer',
+          commonName: database.owner.name,
+          dnsNames: allHosts(hosts),
+          uriSans: allHosts(hosts).flatMap(x => [
+            `postgres://${x}`,
+            `postgress://${x}`,
+          ]),
+          keyUsages: ['client auth'],
+          certificateFile: 'postgresql.crt',
+          privateKeyFile: 'postgresql.key',
+          caFile: 'root.crt',
+          reusePrivateKey: false,
+          fsGroup: 1001,
+        }),
+        {
+          name: 'thebundle',
+          configMap: {
+            name: 'thecluster-ca',
+            defaultMode: 0o600,
+            optional: false,
+          },
+        },
+      ],
       gitea: {
         admin: {
           existingSecret: secret.metadata.name,
@@ -172,7 +195,6 @@ const chart = new Chart(releaseName, {
           provider: 'openidConnect',
           existingSecret: secret.metadata.name,
           autoDiscoverUrl: realms.external.discoveryUrl,
-          test: realms.external.apiBaseUrl
           // useCustomUrls: '',
           // customAuthUrl: '',
           // customTokenUrl: '',
@@ -186,11 +208,12 @@ const chart = new Chart(releaseName, {
             SSH_LISTEN_PORT: 2222,
           },
           database: {
-            DB_TYPE: 'postgresql',
-            HOST: apps.postgresqlLa.clusterHostname,
+            DB_TYPE: 'postgres',
+            HOST: apps.postgresqlLa.clusterHostname, // TODO: Cert creds
             NAME: database.database.name,
             USER: database.owner.name,
             PASSWD: database.ownerPassword.result,
+            SSL_MODE: 'disable',
           },
           cache: {
             ADAPTER: 'redis-cluster',

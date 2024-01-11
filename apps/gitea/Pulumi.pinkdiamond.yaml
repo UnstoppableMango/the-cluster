@@ -1,7 +1,9 @@
 config:
+  thecluster-gitea:email:
+    secure: AAABAPvuqV1msF+Wz/OD3B/VC0VMN+k/TZyQAlqKHtz/Ck9jvMSoHCDha3CB+YO4kb9l+BR/aw==
   thecluster-gitea:hosts:
-    external: git.thecluster.io
-    internal: git.lan.thecluster.io
     aliases:
       external: [gitea.thecluster.io]
       internal: [gitea.lan.thecluster.io]
+    external: git.thecluster.io
+    internal: git.lan.thecluster.io

@@ -19,5 +19,4 @@ export const versions = config.requireObject<Versions>('versions');
 export const releaseName = 'gitea';
 export const servicePort = 6379;
 export const username = 'gitea_admin';
-export const password = '';
-export const email = '';
+export const email = config.require('email');
