@@ -21,4 +21,5 @@ let main args =
         | Commands.AnyUnrecognized x -> Commands.handleUnrecognized x
         | x when x.Contains Args.New -> x.Catch(fun () -> x.GetResult Args.New |> New.run)
         | x -> x.Parser.PrintUsage() |> Console.WriteLine |> (fun _ -> Task.FromResult(0))
-    |> _.Result
+    |> Async.AwaitTask
+    |> Async.RunSynchronously
