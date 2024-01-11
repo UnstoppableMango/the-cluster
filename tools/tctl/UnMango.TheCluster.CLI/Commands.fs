@@ -18,6 +18,9 @@ let handleUnrecognized (args: 'a seq) =
     Console.WriteLine("Unrecognized arguments: {0}", args)
     |> (fun _ -> Task.FromResult(1))
 
+let showUsage (args: ParseResults<'a>) =
+    args.Parser.PrintUsage() |> Console.WriteLine |> (fun _ -> Task.FromResult(0))
+
 let resultCode =
     function
     | Ok _ -> 0
