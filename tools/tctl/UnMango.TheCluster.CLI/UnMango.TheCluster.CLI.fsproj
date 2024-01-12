@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <Compile Include="Types.fs" />
+    <Compile Include="Tools.fs" />
     <Compile Include="Projects.fs" />
     <Compile Include="Pulumi.fs" />
     <Compile Include="Args.fs" />

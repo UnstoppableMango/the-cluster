@@ -2,6 +2,7 @@ module UnMango.TheCluster.CLI.Pulumi
 
 open System
 open System.IO
+open System.Threading
 open System.Threading.Tasks
 open Humanizer
 open Pulumi.Automation
@@ -36,7 +37,7 @@ module Pulumi =
             Config = dict [ "test", ProjectTemplateConfigValue(Description = "testing") ]
         )
 
-    let createProject force (opts: PulumiProject) =
+    let createProject force (opts: PulumiProject) cancellationToken =
         let empty: string -> bool = Directory.GetFileSystemEntries >> Array.length >> (=) 0
 
         let create workingDirectory =
@@ -52,11 +53,11 @@ module Pulumi =
                     Directory.CreateDirectory(workingDirectory) |> ignore
 
                 let wsOpts = LocalWorkspaceOptions(WorkDir = workingDirectory)
-                use! ws = LocalWorkspace.CreateAsync(wsOpts)
+                use! ws = LocalWorkspace.CreateAsync(wsOpts, cancellationToken)
                 let fqsn = $"UnstoppableMango/{opts.Name}/{opts.Stack}"
 
-                do! ws.SaveProjectSettingsAsync(settings)
-                do! ws.CreateStackAsync(fqsn)
+                do! ws.SaveProjectSettingsAsync(settings, cancellationToken)
+                do! ws.CreateStackAsync(fqsn, cancellationToken)
 
                 do!
                     match opts.Lang with
@@ -64,12 +65,12 @@ module Pulumi =
                     | FSharp -> Fs.template opts
                     |> Map.map (fun file contents ->
                         let path = Path.Join(workingDirectory, file)
-                        File.WriteAllTextAsync(path, contents))
+                        File.WriteAllTextAsync(path, contents, cancellationToken))
                     |> Map.values
                     |> Task.WhenAll
 
-                do! ws.RemoveStackAsync(fqsn)
-                return 0
+                let! result = Tools.Npm.install [] workingDirectory cancellationToken
+                return Ok result.ExitCode
             }
 
         let workingDirectory = Environment.CurrentDirectory
@@ -78,3 +79,9 @@ module Pulumi =
             failwith $"Directory {workingDirectory} is not empty, pass --force to ignore"
         else
             create workingDirectory
+
+type Pulumi() =
+    static member CreateProject(project: PulumiProject, ?force: bool, ?cancellationToken: CancellationToken) =
+        let force = defaultArg force false
+        let cancellationToken = defaultArg cancellationToken (CancellationToken())
+        Pulumi.createProject force project cancellationToken
