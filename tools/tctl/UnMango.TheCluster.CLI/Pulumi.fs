@@ -7,6 +7,7 @@ open System.Threading.Tasks
 open Humanizer
 open Pulumi.Automation
 open UnMango.TheCluster.CLI.Projects
+open UnMango.TheCluster.CLI.Tools
 
 type Language =
     | Typescript
@@ -40,7 +41,7 @@ module Pulumi =
     let createProject force (opts: PulumiProject) cancellationToken =
         let empty: string -> bool = Directory.GetFileSystemEntries >> Array.length >> (=) 0
 
-        let create workingDirectory =
+        let create directory =
             task {
                 let settings =
                     ProjectSettings(
@@ -49,10 +50,10 @@ module Pulumi =
                         Description = $"{opts.Name |> To.TitleCase.Transform} install for THECLUSTER"
                     )
 
-                if not <| Directory.Exists(workingDirectory) then
-                    Directory.CreateDirectory(workingDirectory) |> ignore
+                if not <| Directory.Exists(directory) then
+                    Directory.CreateDirectory(directory) |> ignore
 
-                let wsOpts = LocalWorkspaceOptions(WorkDir = workingDirectory)
+                let wsOpts = LocalWorkspaceOptions(WorkDir = directory)
                 use! ws = LocalWorkspace.CreateAsync(wsOpts, cancellationToken)
                 let fqsn = $"UnstoppableMango/{opts.Name}/{opts.Stack}"
 
@@ -64,12 +65,19 @@ module Pulumi =
                     | Typescript -> Ts.template opts
                     | FSharp -> Fs.template opts
                     |> Map.map (fun file contents ->
-                        let path = Path.Join(workingDirectory, file)
+                        let path = Path.Join(directory, file)
                         File.WriteAllTextAsync(path, contents, cancellationToken))
                     |> Map.values
                     |> Task.WhenAll
 
-                let! result = Tools.Npm.install [] workingDirectory cancellationToken
+                let! result =
+                    command "npm" {
+                        args [ "install" ]
+                        stdout PipeTo.stdout
+                        stderr PipeTo.stderr
+                        workingDirectory directory
+                    }
+
                 return Ok result.ExitCode
             }
 
