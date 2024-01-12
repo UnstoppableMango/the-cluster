@@ -54,4 +54,5 @@ jobs:
         run: |
           dotnet nuget push \
             out/UnMango.TheCluster.CLI.*.nupkg \
-            --source github
+            --source github \
+            --skip-duplicate
