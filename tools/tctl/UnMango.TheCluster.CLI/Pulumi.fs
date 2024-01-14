@@ -82,10 +82,10 @@ module Pulumi =
 
         let workingDirectory = Environment.CurrentDirectory
 
-        if not force && not <| empty workingDirectory then
-            failwith $"Directory {workingDirectory} is not empty, pass --force to ignore"
-        else
+        if force || workingDirectory |> empty then
             create workingDirectory
+        else
+            failwith $"Directory {workingDirectory} is not empty, pass --force to ignore"
 
 type Pulumi() =
     static member CreateProject(project: PulumiProject, ?force: bool, ?cancellationToken: CancellationToken) =
