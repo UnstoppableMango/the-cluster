@@ -6,8 +6,8 @@ open System.Threading
 open System.Threading.Tasks
 open Humanizer
 open Pulumi.Automation
+open UnMango.CliWrap.FSharp
 open UnMango.TheCluster.CLI.Projects
-open UnMango.TheCluster.CLI.Tools
 
 type Language =
     | Typescript
@@ -41,45 +41,44 @@ module Pulumi =
     let createProject force (opts: PulumiProject) cancellationToken =
         let empty: string -> bool = Directory.GetFileSystemEntries >> Array.length >> (=) 0
 
-        let create directory =
-            task {
-                let settings =
-                    ProjectSettings(
-                        opts.Name,
-                        ProjectRuntime(opts.Runtime),
-                        Description = $"{opts.Name |> To.TitleCase.Transform} install for THECLUSTER"
-                    )
+        let create directory = task {
+            let settings =
+                ProjectSettings(
+                    opts.Name,
+                    ProjectRuntime(opts.Runtime),
+                    Description = $"{opts.Name |> To.TitleCase.Transform} install for THECLUSTER"
+                )
 
-                if not <| Directory.Exists(directory) then
-                    Directory.CreateDirectory(directory) |> ignore
+            if not <| Directory.Exists(directory) then
+                Directory.CreateDirectory(directory) |> ignore
 
-                let wsOpts = LocalWorkspaceOptions(WorkDir = directory)
-                use! ws = LocalWorkspace.CreateAsync(wsOpts, cancellationToken)
-                let fqsn = $"UnstoppableMango/{opts.Name}/{opts.Stack}"
+            let wsOpts = LocalWorkspaceOptions(WorkDir = directory)
+            use! ws = LocalWorkspace.CreateAsync(wsOpts, cancellationToken)
+            let fqsn = $"UnstoppableMango/{opts.Name}/{opts.Stack}"
 
-                do! ws.SaveProjectSettingsAsync(settings, cancellationToken)
-                do! ws.CreateStackAsync(fqsn, cancellationToken)
+            do! ws.SaveProjectSettingsAsync(settings, cancellationToken)
+            do! ws.CreateStackAsync(fqsn, cancellationToken)
 
-                do!
-                    match opts.Lang with
-                    | Typescript -> Ts.template opts
-                    | FSharp -> Fs.template opts
-                    |> Map.map (fun file contents ->
-                        let path = Path.Join(directory, file)
-                        File.WriteAllTextAsync(path, contents, cancellationToken))
-                    |> Map.values
-                    |> Task.WhenAll
+            do!
+                match opts.Lang with
+                | Typescript -> Ts.template opts
+                | FSharp -> Fs.template opts
+                |> Map.map (fun file contents ->
+                    let path = Path.Join(directory, file)
+                    File.WriteAllTextAsync(path, contents, cancellationToken))
+                |> Map.values
+                |> Task.WhenAll
 
-                let! result =
-                    command "npm" {
-                        args [ "install" ]
-                        stdout PipeTo.stdout
-                        stderr PipeTo.stderr
-                        workingDirectory directory
-                    }
-
-                return Ok result.ExitCode
+            let! result = command "npm" {
+                args [ "install" ]
+                stdout PipeTo.stdout
+                stderr PipeTo.stderr
+                workingDirectory directory
+                exec cancellationToken
             }
+
+            return Ok result.ExitCode
+        }
 
         let workingDirectory = Environment.CurrentDirectory
 
