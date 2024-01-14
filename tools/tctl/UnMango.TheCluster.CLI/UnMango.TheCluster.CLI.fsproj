@@ -25,6 +25,10 @@
     <Compile Include="Commands.fs" />
     <Compile Include="Domain.fs" />
     <Compile Include="Program.fs" />
+    <None Include="../Dockerfile" />
+    <None Include="../../../.dockerignore">
+      <DependentUpon>../Dockerfile</DependentUpon>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
