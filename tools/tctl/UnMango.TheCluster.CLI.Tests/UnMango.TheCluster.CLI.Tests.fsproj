@@ -2,15 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-
     <IsPackable>false</IsPackable>
     <GenerateProgramFile>false</GenerateProgramFile>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Tests.fs" />
-    <Compile Include="Program.fs" />
+    <Compile Include="Tests.fs"/>
+    <Compile Include="Program.fs"/>
+    <None Include="../spec/e2e.sh" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UnMango.TheCluster.CLI\UnMango.TheCluster.CLI.fsproj" />
+    <ProjectReference Include="..\UnMango.TheCluster.CLI\UnMango.TheCluster.CLI.fsproj"/>
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,5 @@
+*
+!**/*.fsproj
+!**/*.fs
+!**/templates/
+!tools/tctl/spec/e2e.sh
