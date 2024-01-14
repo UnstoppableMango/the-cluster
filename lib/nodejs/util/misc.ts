@@ -1,5 +1,6 @@
 import { Input, Inputs, Output, UnwrappedObject, output } from '@pulumi/pulumi';
 import * as YAML from 'yaml';
+import { HostsShape } from '../apps/keycloak';
 
 export function appendIf(x: string, o?: string | undefined | null): string {
   return o ? x + o : x;
@@ -92,4 +93,15 @@ export class LazyMap<T, V = any> {
     }
     return res;
   }
+}
+
+export function allHosts(hosts: HostsShape): string[] {
+  if (typeof hosts === 'string') return [hosts];
+  if (Array.isArray(hosts)) return hosts;
+  return [
+    hosts.external,
+    hosts.internal,
+    ...(hosts.aliases?.external ?? []),
+    ...(hosts.aliases?.internal ?? []),
+  ].filter(x => x).map(x => x ?? '');
 }

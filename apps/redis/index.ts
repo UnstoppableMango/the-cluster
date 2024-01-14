@@ -32,6 +32,10 @@ const cert = new Certificate('redis.thecluster.io', {
     uris: [
       'redis://thecluster.io',
       'redis://*.thecluster.io',
+      'redis+cluster://thecluster.io',
+      'redis+cluster://*.thecluster.io',
+      `redis://${loadBalancerIP}`,
+      `redis+cluster://${loadBalancerIP}`,
     ],
     subject: {
       organizations: ['UnMango'],

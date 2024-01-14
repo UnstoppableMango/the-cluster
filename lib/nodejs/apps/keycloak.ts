@@ -2,7 +2,7 @@ import { Input, Output, interpolate, output } from '@pulumi/pulumi';
 import { Provider } from '@pulumi/keycloak';
 import { Refs } from '../internal';
 
-export interface HostsShape {
+interface HostsShape {
   external?: string;
   internal?: string;
   aliases?: {
@@ -10,6 +10,9 @@ export interface HostsShape {
     internal?: string[];
   };
 }
+
+type HostsShapeUnion = HostsShape | string | string[];
+export { HostsShapeUnion as HostsShape }
 
 function isHostsShape(x: any): x is HostsShape {
   if (typeof x !== 'object') return false;

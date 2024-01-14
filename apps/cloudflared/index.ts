@@ -15,10 +15,7 @@ const tunnelPassword = new RandomId('cloudflared-tunnel', {
 });
 
 const zone = cloudflare.getZonesOutput({
-  filter: {
-    accountId,
-    name: 'unmango.net',
-  },
+  filter: { accountId, name: 'unmango.net' },
 }).apply(z => z.zones[0]);
 
 const tunnel = new cloudflare.Tunnel(`${stack}-cloudflared`, {
