@@ -1,6 +1,6 @@
 dependencies:
 - name: pihole
   repository: https://mojo2600.github.io/pihole-kubernetes/
-  version: 2.20.0
-digest: sha256:34c483c378a8eb7efde25bf1b796dce0506a85a59da97e6983b85e3b11d3a037
-generated: "2023-12-16T18:52:39.676921477Z"
+  version: 2.21.0
+digest: sha256:42b9c7e204423e2cecc38d690077d1e86522b07c91bf596608defcb21299dc16
+generated: "2024-01-12T19:49:05.622365851Z"
