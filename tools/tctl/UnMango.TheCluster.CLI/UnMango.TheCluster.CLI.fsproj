@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <Compile Include="Types.fs" />
-    <Compile Include="Tools.fs" />
     <Compile Include="Projects.fs" />
     <Compile Include="Pulumi.fs" />
     <Compile Include="Args.fs" />
@@ -34,6 +33,7 @@
     <PackageReference Include="Humanizer" Version="2.14.1" />
     <PackageReference Include="MinVer" Version="5.0.0" PrivateAssets="all" />
     <PackageReference Include="Pulumi.Automation" Version="3.67.0" />
+    <PackageReference Include="UnMango.CliWrap.FSharp" Version="0.0.4" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,9 +1,14 @@
+root = true
+
 [*]
 indent_style = space
 insert_final_newline = true
 
 [*.cs]
 indent_size = 4
+
+[*.fs]
+fsharp_newline_before_multiline_computation_expression = false
 
 [*.ts]
 indent_size = 2
