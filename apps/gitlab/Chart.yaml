@@ -6,4 +6,4 @@ version: 0.1.0
 dependencies:
   - name: gitlab
     repository: https://charts.gitlab.io
-    version: 7.7.0
+    version: 7.7.3
