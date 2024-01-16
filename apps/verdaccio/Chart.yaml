@@ -1,0 +1,9 @@
+apiVersion: v2
+name: verdaccio
+description: Verdaccio install for THECLUSTER
+type: application
+version: 0.1.0
+dependencies:
+  - name: verdaccio
+    repository: https://charts.verdaccio.org
+    version: 4.12.0
