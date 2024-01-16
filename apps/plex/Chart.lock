@@ -1,6 +1,6 @@
 dependencies:
 - name: kube-plex
   repository: https://ressu.github.io/kube-plex
-  version: 0.3.5
-digest: sha256:bbc0a2128c9d6140a615a80aec69b823afeb1d8a82174368b2c687f15207205e
-generated: "2024-01-02T01:39:53.174004418-06:00"
+  version: 0.3.6
+digest: sha256:7cd8a13b34231abb6cef6b43a4121729bdec182da66acd503c904e6079bc3093
+generated: "2024-01-16T01:45:48.674513935Z"
