@@ -1,6 +1,5 @@
 config:
   cloudflare:apiToken:
     secure: AAABAE4zWF5gOTA46+QAK38ufiZkaDVdRSUTL2KyQ34IQj5BSba1poRUpoiQSqN0xIvpYfMbh3wHAieMVM9/iWEDbmsC6jcL
-  thecluster-cloudflared:accountId: 265a046434c952eeecb9710cfd76617c
   thecluster-cloudflared:dnsName:
     secure: AAABACCm6NAiBPZkD17y/iPkY9Rz7LVcIuZS3l/w80aCTo64EafVlM3al0LqlIZAaQ==

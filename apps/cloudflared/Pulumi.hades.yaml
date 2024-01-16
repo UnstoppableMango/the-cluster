@@ -1,0 +1,4 @@
+config:
+  cloudflare:apiToken:
+    secure: AAABAPS4uJ5T5leOVLqVCWbCZhT8Z0BCts3yR7zxJv4zy/Hlq/frs/iWB+NsWC1oQLaH3ilmCYGQHV4LCNUT0xuuI7q6YSua
+  thecluster-cloudflared:dnsName: hades-test.thecluster.io

@@ -24,6 +24,34 @@ const tunnel = new cloudflare.Tunnel(`${stack}-cloudflared`, {
   secret: tunnelPassword.b64Std,
 });
 
+// Api Server ideas...
+
+// const dnsRecord = new cloudflare.Record('apiserver-tunnel', {
+//   name: config.require('dnsName'),
+//   zoneId: zone.apply(x => x.id ?? ''),
+//   type: 'CNAME',
+//   value: tunnel.cname,
+//   proxied: true,
+// });
+
+// Cloudflared service config for the Api Server
+// hostname: config.require('dnsName'),
+// service: pulumi.interpolate`tcp://kubernetes.default:6443`,
+
+// const kubeRootCa = k8s.core.v1.ConfigMap.get('kube-root-ca.crt', 'kube-root-ca.crt');
+
+// Container volume for kube CA
+// {
+//   name: 'ca',
+//   configMap: {
+//     name: kubeRootCa.metadata.name,
+//     items: [{
+//       key: 'ca.crt',
+//       path: 'ca.crt',
+//     }],
+//   }
+// }
+
 const dnsRecord = new cloudflare.Record('cloudflared-tunnel', {
   name: 'plex.unmango.net',
   zoneId: zone.apply(x => x.id ?? ''),
@@ -57,6 +85,10 @@ const configMap = new ConfigMap('config.yaml', {
       'credentials-file': '/etc/cloudflared/creds/credentials.json',
       metrics: '0.0.0.0:2000',
       'no-autoupdate': true,
+      originRequest: {
+        caPool: '/etc/cloudflared/ca/ca.crt',
+        // noTLSVerify: true,
+      },
       ingress: [
         {
           hostname: 'plex.unmango.net',
@@ -116,6 +148,11 @@ const daemonset = new DaemonSet('cloudflared-tunnel', {
             {
               name: 'creds',
               mountPath: '/etc/cloudflared/creds',
+              readOnly: true,
+            },
+            {
+              name: 'ca',
+              mountPath: '/etc/cloudflared/ca',
               readOnly: true,
             },
           ],
