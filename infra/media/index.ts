@@ -64,7 +64,23 @@ const ingress = new Ingress('media', {
             },
           }],
         },
-      }
+      },
+      {
+        host: 'plex.lan.thecluster.io',
+        http: {
+          paths: [{
+            pathType: 'ImplementationSpecific',
+            backend: {
+              service: {
+                name: apps.plex.service,
+                port: {
+                  name: 'http',
+                },
+              },
+            },
+          }],
+        },
+      },
     ],
     tls: [
       {

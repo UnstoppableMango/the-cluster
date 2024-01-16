@@ -1,0 +1,9 @@
+apiVersion: v2
+name: plex
+description: Plex install for THECLUSTER
+type: application
+version: 0.1.0
+dependencies:
+  - name: kube-plex
+    repository: https://ressu.github.io/kube-plex
+    version: 0.3.5
