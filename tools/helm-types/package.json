@@ -1,0 +1,32 @@
+{
+  "name": "@unmango/helm-types",
+  "version": "0.1.0",
+  "description": "Converts JSON schemas (primarily helm values) to Typescript types using https://github.com/ThomasAribart/json-schema-to-ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UnstoppableMango/the-cluster.git#main"
+  },
+  "keywords": [
+    "helm",
+    "json",
+    "typescript",
+    "types",
+    "json-schema"
+  ],
+  "author": "UnstoppableMango",
+  "license": "WTFPL",
+  "bugs": {
+    "url": "https://github.com/UnstoppableMango/the-cluster/issues"
+  },
+  "homepage": "https://github.com/UnstoppableMango/the-cluster/tree/main/tools/helm-types#readme",
+  "module": "esnext",
+  "main": "index.ts",
+  "scripts": {
+    "start": "ts-node index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
