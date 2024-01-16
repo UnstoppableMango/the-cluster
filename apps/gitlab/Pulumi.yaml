@@ -1,0 +1,3 @@
+name: thecluster-gitlab
+runtime: nodejs
+description: GitLab install for THECLUSTER
