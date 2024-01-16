@@ -83,10 +83,10 @@ const chart = new Chart(releaseName, {
         },
       },
       {
-        name: 'anime-nfs',
+        name: 'nfs',
         nfs: {
           server: '192.168.1.10',
-          path: '/tank1/media/anime',
+          path: '/tank1/archive',
           readOnly: true,
         },
       },
@@ -100,8 +100,8 @@ const chart = new Chart(releaseName, {
         mountPath: '/srv',
       },
       {
-        name: 'anime-nfs',
-        mountPath: '/srv/anime_nfs',
+        name: 'nfs',
+        mountPath: '/srv/nfs',
       },
       {
         name: 'assets',
