@@ -9,7 +9,7 @@
       ]
     },
     "kubeops.cli": {
-      "version": "8.0.0-pre.42",
+      "version": "8.0.0",
       "commands": [
         "kubeops"
       ]
