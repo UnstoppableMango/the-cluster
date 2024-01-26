@@ -2,22 +2,7 @@ import * as pulumi from '@pulumi/pulumi';
 import * as cloudflare from '@pulumi/cloudflare';
 import * as talos from '@pulumiverse/talos';
 import * as YAML from 'yaml';
-
-type Nodes = Record<string, {
-  hostname?: string,
-  installDisk?: string
-}>;
-
-interface Cluster {
-  controlplanes?: Nodes,
-  workers?: Nodes,
-}
-
-interface Versions {
-  k8s: string,
-  talos: string,
-  ksca: string,
-}
+import { Cluster, Nodes, Versions } from './config';
 
 const config = new pulumi.Config();
 export const certSans = config.requireObject<string[]>('certSans');
@@ -125,14 +110,14 @@ const bootstrap = new talos.machine.Bootstrap(`bootstrap`, {
   endpoint: endpoint,
 }, { dependsOn: controlplaneConfigApply });
 
-// const healthCheck = talos.cluster.healthOutput({
-//     clientConfiguration: secrets.clientConfiguration,
-//     controlPlaneNodes: Object.keys(nodeData.controlplanes ?? []),
-//     endpoints: [endpoint],
-//     timeouts: {
-//         read: config.require('healthTimeout'),
-//     },
-// });
+const healthCheck = talos.cluster.getHealthOutput({
+    clientConfiguration: secrets.clientConfiguration,
+    controlPlaneNodes: Object.keys(nodeData.controlplanes ?? []),
+    endpoints: [endpoint],
+    timeouts: {
+        read: config.require('healthTimeout'),
+    },
+});
 
 const kubeconfigOutput = talos.cluster.getKubeconfigOutput({
   clientConfiguration: secrets.clientConfiguration,
