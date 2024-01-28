@@ -4,4 +4,4 @@ description: Sealed Secrets install for THECLUSTER
 config:
   versions:
     value:
-      sealedSecrets: v0.24.5 # renovate depName=bitnami-labs/sealed-secrets
+      sealedSecrets: v0.25.0 # renovate depName=bitnami-labs/sealed-secrets
