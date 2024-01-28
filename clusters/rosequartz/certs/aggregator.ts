@@ -1,11 +1,20 @@
-import { PrivateKey, SelfSignedCert } from '@pulumi/tls';
+import { CertRequest, LocallySignedCert, PrivateKey } from '@pulumi/tls';
+import { caCert, earlyRenewalHours, validityPeriodHours } from '../config';
 
 export const key = new PrivateKey('aggregator', {
   algorithm: 'ECDSA',
+  ecdsaCurve: 'P256',
 });
 
-export const cert = new SelfSignedCert('aggregator', {
-  allowedUses: [],
+const request = new CertRequest('aggregator', {
   privateKeyPem: key.privateKeyPem,
-  validityPeriodHours: 25 * 365 * 24, // Intent: 25 years
+});
+
+const test = new LocallySignedCert('aggregator', {
+  allowedUses: ['digital_signature', 'cert_signing', 'client_auth', 'server_auth'],
+  caCertPem: caCert.certPem,
+  caPrivateKeyPem: key.privateKeyPem,
+  certRequestPem: request.certRequestPem,
+  earlyRenewalHours,
+  validityPeriodHours,
 });

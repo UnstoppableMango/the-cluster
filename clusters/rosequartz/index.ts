@@ -1,9 +1,7 @@
-import * as pulumi from '@pulumi/pulumi';
 import * as talos from '@pulumiverse/talos';
 import * as YAML from 'yaml';
-import { Node, Versions } from './config';
+import { Node, Versions, config } from './config';
 
-const config = new pulumi.Config();
 const controlPlanes = config.requireObject<Node[]>('controlplanes');
 export const certSans = config.requireObject<string[]>('certSans');
 export const clusterName = config.require('clusterName');
