@@ -18,7 +18,7 @@ RUN cd /src && go build \
     ./cmd/manager/main.go \
     && chmod +x pulumi-kubernetes-operator
 
-FROM pulumi/pulumi-nodejs:3.101.1
+FROM pulumi/pulumi-nodejs:3.103.1
 
 RUN apt-get install tini
 ENTRYPOINT ["tini", "--", "/usr/local/bin/pulumi-kubernetes-operator"]
