@@ -21,7 +21,6 @@ config:
   createTimeout: 30s
   healthTimeout: 4m
   kubeconfigTimeout: 30s
-  createDnsRecord: false
   versions:
     value:
       k8s: 1.29.1 # renovate depName=kubernetes/kubernetes extractVersion=^v(?<version>.*)
