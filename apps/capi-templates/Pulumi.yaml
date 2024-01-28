@@ -4,6 +4,6 @@ description: CAPI templates for THECLUSTER
 config:
   versions:
     value:
-      k8s: 1.29.0 # renovate depName=kubernetes/kubernetes extractVersion=^v(?<version>.*)
+      k8s: 1.29.1 # renovate depName=kubernetes/kubernetes extractVersion=^v(?<version>.*)
       talos: 1.6.1 # renovate depName=siderolabs/talos extractVersion=^v(?<version>.*)
       cloud-provider-proxmox: v0.0.4-rc1 # renovate depName=sp-yduck/cloud-provider-proxmox

@@ -29,7 +29,7 @@ config:
   kubeconfigTimeout: 30s
   versions:
     value:
-      k8s: 1.29.0 # renovate depName=kubernetes/kubernetes extractVersion=^v(?<version>.*)
+      k8s: 1.29.1 # renovate depName=kubernetes/kubernetes extractVersion=^v(?<version>.*)
       ksca: 0.8.0 # renovate depName=alex1989hu/kubelet-serving-cert-approver extractVersion=^v(?<version>.*)
       talos: 1.6.1 # renovate depName=siderolabs/talos extractVersion=^v(?<version>.*)
   zoneId: 22f1d42ba0fbe4f924905e1c6597055c
