@@ -4,7 +4,7 @@ description: Drone CI install for THECLUSTER
 config:
   versions:
     value:
-      dind: 24-dind # renovate depName=docker datasource=docker
+      dind: 25-dind # renovate depName=docker datasource=docker
       drone: v2.22.0 # renovate depName=drone/drone datasource=docker
       droneGc: 1.0.0 # renovate depName=drone/gc datasource=docker
       droneRunnerDocker: 1.8.3 # renovate depName=drone/drone-runner-docker datasource=docker
