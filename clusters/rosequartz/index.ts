@@ -1,6 +1,8 @@
 import * as talos from '@pulumiverse/talos';
 import * as YAML from 'yaml';
 import { Node, Versions, config } from './config';
+import * as certs from './certs';
+import { RandomBytes } from '@pulumi/random';
 
 const controlPlanes = config.requireObject<Node[]>('controlplanes');
 export const certSans = config.requireObject<string[]>('certSans');
@@ -20,6 +22,9 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
   clusterEndpoint: clusterEndpoint,
   machineType: 'controlplane',
   machineSecrets: {
+    cluster: secrets.machineSecrets.cluster,
+    secrets: secrets.machineSecrets.secrets,
+    trustdinfo: secrets.machineSecrets.trustdinfo,
     certs: {
       etcd: {
         cert: certs.etcd.cert.certPem,
@@ -41,9 +46,6 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
         key: certs.os.key.privateKeyPem,
       },
     },
-    cluster: secrets.machineSecrets.cluster,
-    secrets: secrets.machineSecrets.secrets,
-    trustdinfo: secrets.machineSecrets.trustdinfo,
   },
   docs: false,
   examples: false,
@@ -51,7 +53,11 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
 
 const clientConfig = talos.client.getConfigurationOutput({
   clusterName: clusterName,
-  clientConfiguration: secrets.clientConfiguration,
+  clientConfiguration: {
+    caCertificate: certs.os.cert.certPem,
+    clientCertificate: certs.admin.cert.certPem,
+    clientKey: '',
+  },
   endpoints: controlPlanes.map(x => x.ip),
   nodes: [controlPlanes[0].ip],
 });

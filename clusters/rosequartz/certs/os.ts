@@ -1,11 +1,25 @@
-import { PrivateKey, SelfSignedCert } from '@pulumi/tls';
+import { CertRequest, LocallySignedCert, PrivateKey } from '@pulumi/tls';
+import { caCert, earlyRenewalHours, validityPeriodHours } from '../config';
+
+/// https://github.com/siderolabs/talos/blob/cf0603330a5c852163642a6b3844d1dcc3892cf6/pkg/machinery/config/generate/secrets/ca.go#L82
 
 export const key = new PrivateKey('os', {
   algorithm: 'ECDSA',
+  ecdsaCurve: 'P256',
 });
 
-export const cert = new SelfSignedCert('os', {
-  allowedUses: [],
+const request = new CertRequest('os', {
   privateKeyPem: key.privateKeyPem,
-  validityPeriodHours: 25 * 365 * 24, // Intent: 25 years
+  subject: { organization: 'talos' },
+});
+
+export const cert = new LocallySignedCert('os', {
+  allowedUses: ['digital_signature', 'cert_signing', 'client_auth', 'server_auth'],
+  caCertPem: caCert.certPem,
+  caPrivateKeyPem: key.privateKeyPem,
+  certRequestPem: request.certRequestPem,
+  earlyRenewalHours,
+  validityPeriodHours,
+  isCaCertificate: true,
+  setSubjectKeyId: true,
 });
