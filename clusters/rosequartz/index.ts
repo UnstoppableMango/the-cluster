@@ -21,7 +21,32 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
   clusterName: clusterName,
   clusterEndpoint: clusterEndpoint,
   machineType: 'controlplane',
-  machineSecrets: secrets.machineSecrets,
+  machineSecrets: {
+    certs: {
+      etcd: {
+        cert: certs.etcd.cert.certPem,
+        key: certs.etcd.key.privateKeyPem,
+      },
+      k8s: {
+        cert: certs.k8s.cert.certPem,
+        key: certs.k8s.key.privateKeyPem,
+      },
+      k8s_aggregator: {
+        cert: certs.aggregator.cert.certPem,
+        key: certs.aggregator.key.privateKeyPem,
+      },
+      k8s_serviceaccount: {
+        key: certs.serviceAccount.key.privateKeyPem,
+      },
+      os: {
+        cert: certs.os.cert.certPem,
+        key: certs.os.key.privateKeyPem,
+      },
+    },
+    cluster: secrets.machineSecrets.cluster,
+    secrets: secrets.machineSecrets.secrets,
+    trustdinfo: secrets.machineSecrets.trustdinfo,
+  },
   docs: false,
   examples: false,
 });
