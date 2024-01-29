@@ -10,6 +10,10 @@
     "**/tests/**",
     "lib/**"
   ],
+  "ignoreDeps": [
+    "@unstoppablemango/thecluster",
+    "@unstoppablemango/thecluster-crds"
+  ],
   "major": {
     "dependencyDashboardApproval": true
   },
