@@ -6,5 +6,5 @@ config:
     value:
       bitnamiKubectl: 1.29.0-debian-11-r2 # renovate depName=bitnami/kubectl datasource=docker
       velero: v1.13.0 # renovate depName=velero/velero datasource=docker
-      veleroCsi: v0.6.3 # renovate depName=velero/velero-plugin-for-csi datasource=docker
+      veleroCsi: v0.7.0 # renovate depName=velero/velero-plugin-for-csi datasource=docker
       veleroAws: v1.8.2 # renovate depName=velero/velero-plugin-for-aws datasource=docker
