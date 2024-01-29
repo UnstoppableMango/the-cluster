@@ -17,7 +17,7 @@ const request = new CertRequest('admin', {
 export const cert = new LocallySignedCert('admin', {
   allowedUses: ['client_auth', 'digital_signature'],
   caCertPem: os.cert.certPem,
-  caPrivateKeyPem: key.privateKeyPem,
+  caPrivateKeyPem: os.key.privateKeyPem,
   certRequestPem: request.certRequestPem,
   earlyRenewalHours,
   validityPeriodHours: 365 * 24, // Intent: 1 year

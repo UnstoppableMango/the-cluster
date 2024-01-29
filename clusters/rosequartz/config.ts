@@ -20,7 +20,7 @@ const caRef = new StackReference('ca', {
   name: `UnstoppableMango/thecluster-ca/${config.require('caStack')}`,
 });
 
-export const caCert = SelfSignedCert.get('ca', caRef.requireOutput('caId'));
-
+export const caPem = caRef.requireOutput('caPem');
+export const keyPem = caRef.requireOutput('keyPem');
 export const validityPeriodHours = 25 * 365 * 24; // Intent: 25 years
 export const earlyRenewalHours = 7 * 24; // Intent: 1 week cuz I'll probably forget
