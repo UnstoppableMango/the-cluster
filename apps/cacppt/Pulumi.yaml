@@ -4,4 +4,4 @@ description: Cluster API Control-plane Provider Talos install for THECLUSTER
 config:
   versions:
     value:
-      cacppt: v0.5.4 # renovate depName=siderolabs/cluster-api-control-plane-provider-talos
+      cacppt: v0.5.5 # renovate depName=siderolabs/cluster-api-control-plane-provider-talos
