@@ -35,6 +35,33 @@ func TestHappy(t *testing.T) {
 					Label: pulumi.String("org.opencontainers.image.source"),
 					Value: pulumi.String("https://github.com/siderolabs/talos"),
 				},
+				&docker.ContainerLabelArgs{
+					Label: pulumi.String("talos.cluster.name"),
+					Value: pulumi.String("rosequartz"),
+				},
+				&docker.ContainerLabelArgs{
+					Label: pulumi.String("talos.owned"),
+					Value: pulumi.String("false"),
+				},
+				&docker.ContainerLabelArgs{
+					Label: pulumi.String("talos.type"),
+					Value: pulumi.String("controlplane"),
+				},
+			},
+			Tmpfs: pulumi.ToMap(map[string]interface{}{
+				"/run":    "",
+				"/system": "",
+				"/tmp":    "",
+			}),
+			Privileged: pulumi.Bool(true),
+			SecurityOpts: pulumi.ToStringArray([]string{
+				"seccomp:unconfined",
+				"label=disable",
+			}),
+			NetworksAdvanced: &docker.ContainerNetworksAdvancedArray{
+				&docker.ContainerNetworksAdvancedArgs{
+					Ipv4Address: pulumi.String("10.5.0.2"),
+				},
 			},
 		})
 		if err != nil {
