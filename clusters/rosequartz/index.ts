@@ -24,39 +24,39 @@ const clientConfiguration = {
   clientKey: certs.admin.key.privateKeyPem.apply(b64e),
 };
 
-const controlplaneConfig = talos.machine.getConfigurationOutput({
-  clusterName: clusterName,
-  clusterEndpoint: clusterEndpoint,
-  machineType: 'controlplane',
-  machineSecrets: {
-    cluster: secrets.machineSecrets.cluster,
-    secrets: secrets.machineSecrets.secrets,
-    trustdinfo: secrets.machineSecrets.trustdinfo,
-    certs: {
-      etcd: {
-        cert: certs.etcd.cert.certPem,
-        key: certs.etcd.key.privateKeyPem,
-      },
-      k8s: {
-        cert: certs.k8s.cert.certPem,
-        key: certs.k8s.key.privateKeyPem,
-      },
-      k8s_aggregator: {
-        cert: certs.aggregator.cert.certPem,
-        key: certs.aggregator.key.privateKeyPem,
-      },
-      k8s_serviceaccount: {
-        key: certs.serviceAccount.key.privateKeyPem,
-      },
-      os: {
-        cert: certs.os.cert.certPem,
-        key: certs.os.key.privateKeyPem,
-      },
-    },
-  },
-  docs: false,
-  examples: false,
-});
+// const controlplaneConfig = talos.machine.getConfigurationOutput({
+//   clusterName: clusterName,
+//   clusterEndpoint: clusterEndpoint,
+//   machineType: 'controlplane',
+//   machineSecrets: {
+//     cluster: secrets.machineSecrets.cluster,
+//     secrets: secrets.machineSecrets.secrets,
+//     trustdinfo: secrets.machineSecrets.trustdinfo,
+//     certs: {
+//       etcd: {
+//         cert: certs.etcd.cert.certPem.apply(b64e),
+//         key: certs.etcd.key.privateKeyPem.apply(b64e),
+//       },
+//       k8s: {
+//         cert: certs.k8s.cert.certPem.apply(b64e),
+//         key: certs.k8s.key.privateKeyPem.apply(b64e),
+//       },
+//       k8s_aggregator: {
+//         cert: certs.aggregator.cert.certPem.apply(b64e),
+//         key: certs.aggregator.key.privateKeyPem.apply(b64e),
+//       },
+//       k8s_serviceaccount: {
+//         key: certs.serviceAccount.key.privateKeyPem.apply(b64e),
+//       },
+//       os: {
+//         cert: certs.os.cert.certPem.apply(b64e),
+//         key: certs.os.key.privateKeyPem.apply(b64e),
+//       },
+//     },
+//   },
+//   docs: false,
+//   examples: false,
+// });
 
 const clientConfig = talos.client.getConfigurationOutput({
   clusterName: clusterName,
@@ -65,21 +65,21 @@ const clientConfig = talos.client.getConfigurationOutput({
   nodes: [controlPlanes[0].ip],
 });
 
-const configPatches: string[] = [];
+// const configPatches: string[] = [];
 
-if (vip) {
-  configPatches.push(YAML.stringify({
-    machine: {
-      network: {
-        interfaces: [{
-          deviceSelector: { hardwareAddr: 'd8:3a:dd:*' },
-          dhcp: true,
-          vip: { ip: vip },
-        }],
-      },
-    },
-  }));
-}
+// if (vip) {
+//   configPatches.push(YAML.stringify({
+//     machine: {
+//       network: {
+//         interfaces: [{
+//           deviceSelector: { hardwareAddr: 'd8:3a:dd:*' },
+//           dhcp: true,
+//           vip: { ip: vip },
+//         }],
+//       },
+//     },
+//   }));
+// }
 
 const controlplaneConfigApply: talos.machine.ConfigurationApply[] = controlPlanes
   .map(x => (new talos.machine.ConfigurationApply(x.ip, {
