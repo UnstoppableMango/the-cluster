@@ -2,6 +2,7 @@ import * as talos from '@pulumiverse/talos';
 import * as YAML from 'yaml';
 import { Node, Versions, config } from './config';
 import * as certs from './certs';
+import { b64e } from './util';
 
 const controlPlanes = config.requireObject<Node[]>('controlplanes');
 export const certSans = config.requireObject<string[]>('certSans');
@@ -15,11 +16,12 @@ if (vip) certSans.push(vip);
 export const clusterEndpoint = config.require('clusterEndpoint');
 export const versions = config.requireObject<Versions>('versions');
 const secrets = new talos.machine.Secrets('secrets');
+secrets.machineSecrets.apply(console.log)
 
 const clientConfiguration = {
-  caCertificate: certs.os.cert.certPem,
-  clientCertificate: certs.admin.cert.certPem,
-  clientKey: certs.admin.key.privateKeyPem,
+  caCertificate: certs.os.cert.certPem.apply(b64e),
+  clientCertificate: certs.admin.cert.certPem.apply(b64e),
+  clientKey: certs.admin.key.privateKeyPem.apply(b64e),
 };
 
 const controlplaneConfig = talos.machine.getConfigurationOutput({
