@@ -4,4 +4,4 @@ description: Ceph CSI install for THECLUSTER
 config:
   versions:
     value:
-      externalSnapshotter: v6.3.3 # renovate depName=kubernetes-csi/external-snapshotter
+      externalSnapshotter: v7.0.0 # renovate depName=kubernetes-csi/external-snapshotter
