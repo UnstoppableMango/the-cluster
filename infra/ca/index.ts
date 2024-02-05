@@ -16,7 +16,7 @@ const ca = new SelfSignedCert('thecluster', {
   privateKeyPem: key.privateKeyPem,
   validityPeriodHours: 25 * 365 * 24, // Intent: 25 years
   earlyRenewalHours: 7 * 24, // Intent: 1 week
-})
+});
 
-export const keyId = key.id;
-export const caId = ca.id;
+export const keyPem = key.privateKeyPem;
+export const caPem = ca.certPem;

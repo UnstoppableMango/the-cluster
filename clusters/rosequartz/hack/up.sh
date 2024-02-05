@@ -12,7 +12,7 @@ esac
 
 if [ -z "$(pulumi -C "$root" stack ls --json | jq -r ".[].name | select(. == \"$stack\")")" ]; then
     echo "Initializing stack for $stack..."
-    pulumi stack init $stack --copy-config-from "$copyStack"
+    pulumi stack init "$stack" --copy-config-from "$copyStack"
     pulumi stack tag set "$tagName" true
 else
     echo "Selecting stack $stack..."
