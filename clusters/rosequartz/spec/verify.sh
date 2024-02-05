@@ -2,7 +2,6 @@
 set -eum
 
 root="$(git rev-parse --show-toplevel)/clusters/rosequartz"
-stack="$(pulumi -C "$root" stack --show-name)"
 exitCode=0
 
 echo "TALOSCONFIG should be set..."
