@@ -29,6 +29,8 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
   clusterName: clusterName,
   clusterEndpoint: clusterEndpoint,
   machineType: 'controlplane',
+  docs: false,
+  examples: false,
   machineSecrets: {
     cluster: secrets.machineSecrets.cluster,
     secrets: secrets.machineSecrets.secrets,
@@ -66,8 +68,6 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
       },
     } as machine.CertificatesArgs,
   },
-  docs: false,
-  examples: false,
 });
 
 const clientConfig = talos.client.getConfigurationOutput({
@@ -123,6 +123,12 @@ const controlplaneConfigApply: talos.machine.ConfigurationApply[] = controlPlane
           files: [
             {
               content: caPem,
+              path: '/etc/ssl/certs/ca-certificates',
+              permissions: 644,
+              op: 'append',
+            },
+            {
+              content: certs.cloudflare.cert.certificate,
               path: '/etc/ssl/certs/ca-certificates',
               permissions: 644,
               op: 'append',

@@ -2,6 +2,7 @@
 
 export * as admin from './admin';
 export * as aggregator from './aggregator';
+export * as cloudflare from './cloudflare';
 export * as etcd from './etcd';
 export * as k8s from './k8s';
 export * as os from './os';
