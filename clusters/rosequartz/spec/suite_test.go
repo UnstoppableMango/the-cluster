@@ -3,9 +3,11 @@ package spec
 import (
 	"context"
 	"os"
+	"path"
 	"testing"
 
 	"github.com/pulumi/pulumi-docker/sdk/v4/go/docker"
+	"github.com/pulumi/pulumi/pkg/v3/testing/integration"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto/optdestroy"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto/optup"
@@ -18,6 +20,28 @@ func TestHappy(t *testing.T) {
 		image, err := docker.NewRemoteImage(ctx, "talos", &docker.RemoteImageArgs{
 			Name:        pulumi.String("ghcr.io/siderolabs/talos:v1.6.1"), // TODO: Put in a place renovate can find it
 			KeepLocally: pulumi.Bool(true),
+		})
+		if err != nil {
+			return err
+		}
+
+		network, err := docker.NewNetwork(ctx, "rq-e2e", &docker.NetworkArgs{
+			Labels: &docker.NetworkLabelArray{
+				docker.NetworkLabelArgs{
+					Label: pulumi.String("talos.cluster.name"),
+					Value: pulumi.String("rosequartz"),
+				},
+				docker.NetworkLabelArgs{
+					Label: pulumi.String("talos.owned"),
+					Value: pulumi.String("false"),
+				},
+			},
+			IpamDriver: pulumi.String("default"),
+			IpamConfigs: &docker.NetworkIpamConfigArray{
+				&docker.NetworkIpamConfigArgs{
+					Subnet: pulumi.String("10.5.0.0/24"),
+				},
+			},
 		})
 		if err != nil {
 			return err
@@ -60,6 +84,7 @@ func TestHappy(t *testing.T) {
 			}),
 			NetworksAdvanced: &docker.ContainerNetworksAdvancedArray{
 				&docker.ContainerNetworksAdvancedArgs{
+					Name:        network.Name,
 					Ipv4Address: pulumi.String("10.5.0.2"),
 				},
 			},
@@ -83,17 +108,20 @@ func TestHappy(t *testing.T) {
 	_, err = stack.Up(ctx, upStdout)
 	assert.NoError(t, err)
 
-	//cwd, _ := os.Getwd()
-	//integration.ProgramTest(
-	//	t, &integration.ProgramTestOptions{
-	//		Quick:       true,
-	//		SkipRefresh: true,
-	//		Dir:         path.Join(cwd, "../"),
-	//		Config: map[string]string{
-	//			"caStack": "dev",
-	//		},
-	//	},
-	//)
+	cwd, _ := os.Getwd()
+	integration.ProgramTest(
+		t, &integration.ProgramTestOptions{
+			Quick:       true,
+			SkipRefresh: true,
+			Dir:         path.Join(cwd, "../"),
+			Config: map[string]string{
+				"caStack":         "dev",
+				"clusterName":     "rq-e2e",
+				"clusterEndpoint": "https://10.5.0.2:6443",
+				// TODO: Structured config isn't supported yet 😬
+			},
+		},
+	)
 
 	destroyStdout := optdestroy.ProgressStreams(os.Stdout)
 	_, err = stack.Destroy(ctx, destroyStdout)
