@@ -2,6 +2,7 @@ name: thecluster-rosequartz
 runtime: nodejs
 description: The Rosequartz cluster
 config:
+  caStack: prod
   clusterName: rosequartz
   clusterEndpoint: https://10.5.0.5:6443
   endpoint: 10.5.0.2

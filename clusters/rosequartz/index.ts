@@ -1,9 +1,11 @@
-import * as pulumi from '@pulumi/pulumi';
+import { jsonStringify } from '@pulumi/pulumi';
 import * as talos from '@pulumiverse/talos';
+import { machine } from '@pulumiverse/talos/types/input';
 import * as YAML from 'yaml';
-import { Node, Versions } from './config';
+import { Node, Versions, caPem, config, stack } from './config';
+import * as certs from './certs';
+import { b64e } from './util';
 
-const config = new pulumi.Config();
 const controlPlanes = config.requireObject<Node[]>('controlplanes');
 export const certSans = config.requireObject<string[]>('certSans');
 export const clusterName = config.require('clusterName');
@@ -17,25 +19,67 @@ export const clusterEndpoint = config.require('clusterEndpoint');
 export const versions = config.requireObject<Versions>('versions');
 const secrets = new talos.machine.Secrets('secrets');
 
+const clientConfiguration = {
+  caCertificate: certs.os.cert.certPem.apply(b64e),
+  clientCertificate: certs.admin.cert.certPem.apply(b64e),
+  clientKey: certs.admin.key.privateKeyPem.apply(b64e),
+};
+
 const controlplaneConfig = talos.machine.getConfigurationOutput({
   clusterName: clusterName,
   clusterEndpoint: clusterEndpoint,
   machineType: 'controlplane',
-  machineSecrets: secrets.machineSecrets,
   docs: false,
   examples: false,
+  machineSecrets: {
+    cluster: secrets.machineSecrets.cluster,
+    secrets: secrets.machineSecrets.secrets,
+    trustdinfo: secrets.machineSecrets.trustdinfo,
+    certs: {
+      etcd: {
+        cert: certs.etcd.cert.certPem.apply(b64e),
+        key: certs.etcd.key.privateKeyPem.apply(b64e),
+      },
+      k8s: {
+        cert: certs.k8s.cert.certPem.apply(b64e),
+        key: certs.k8s.key.privateKeyPem.apply(b64e),
+      },
+      // Fake field
+      k8s_aggregator: {
+        cert: certs.aggregator.cert.certPem.apply(b64e),
+        key: certs.aggregator.key.privateKeyPem.apply(b64e),
+      },
+      // Actual field
+      k8sAggregator: {
+        cert: certs.aggregator.cert.certPem.apply(b64e),
+        key: certs.aggregator.key.privateKeyPem.apply(b64e),
+      },
+      // Fake field
+      k8s_serviceaccount: {
+        key: certs.serviceAccount.key.privateKeyPem.apply(b64e),
+      },
+      // Actual field
+      k8sServiceaccount: {
+        key: certs.serviceAccount.key.privateKeyPem.apply(b64e),
+      },
+      os: {
+        cert: certs.os.cert.certPem.apply(b64e),
+        key: certs.os.key.privateKeyPem.apply(b64e),
+      },
+    } as machine.CertificatesArgs,
+  },
 });
 
 const clientConfig = talos.client.getConfigurationOutput({
   clusterName: clusterName,
-  clientConfiguration: secrets.clientConfiguration,
+  clientConfiguration,
   endpoints: controlPlanes.map(x => x.ip),
   nodes: [controlPlanes[0].ip],
 });
 
 const configPatches: string[] = [];
 
-if (vip) {
+if (stack === 'prod') {
   configPatches.push(YAML.stringify({
     machine: {
       network: {
@@ -50,13 +94,13 @@ if (vip) {
 }
 
 const controlplaneConfigApply: talos.machine.ConfigurationApply[] = controlPlanes
-  .map(x => (new talos.machine.ConfigurationApply(x.ip, {
-    clientConfiguration: secrets.clientConfiguration,
+  .map(x => new talos.machine.ConfigurationApply(x.ip, {
+    clientConfiguration,
     machineConfigurationInput: controlplaneConfig.machineConfiguration,
     node: x.ip,
     configPatches: [
       ...configPatches,
-      YAML.stringify({
+      jsonStringify({
         cluster: {
           allowSchedulingOnControlPlanes: true,
           apiServer: {
@@ -76,13 +120,27 @@ const controlplaneConfigApply: talos.machine.ConfigurationApply[] = controlPlane
               'rotate-server-certificates': true,
             },
           },
-        }
+          files: [
+            {
+              content: caPem,
+              path: '/etc/ssl/certs/ca-certificates',
+              permissions: 644,
+              op: 'append',
+            },
+            {
+              content: certs.cloudflare.cert.certificate,
+              path: '/etc/ssl/certs/ca-certificates',
+              permissions: 644,
+              op: 'append',
+            },
+          ],
+        },
       }),
     ],
-  })));
+  }));
 
 const bootstrap = new talos.machine.Bootstrap('bootstrap', {
-  clientConfiguration: secrets.clientConfiguration,
+  clientConfiguration,
   node: endpoint,
   endpoint: endpoint,
   timeouts: {
@@ -91,18 +149,18 @@ const bootstrap = new talos.machine.Bootstrap('bootstrap', {
 }, { dependsOn: controlplaneConfigApply });
 
 const kubeconfigOutput = talos.cluster.getKubeconfigOutput({
-  clientConfiguration: secrets.clientConfiguration,
-  node: endpoint,
-  endpoint: endpoint,
+  clientConfiguration,
+  node: bootstrap.endpoint,
+  endpoint: bootstrap.endpoint,
   timeouts: {
     read: config.require('kubeconfigTimeout'),
   },
 });
 
 const healthCheck = talos.cluster.getHealthOutput({
-  clientConfiguration: secrets.clientConfiguration,
+  clientConfiguration: clientConfiguration,
   controlPlaneNodes: controlplaneConfigApply.map(x => x.node),
-  endpoints: [endpoint],
+  endpoints: [bootstrap.endpoint],
   timeouts: {
     read: config.require('healthTimeout'),
   },
