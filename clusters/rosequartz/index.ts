@@ -2,7 +2,6 @@ import * as pulumi from '@pulumi/pulumi';
 import * as talos from '@pulumiverse/talos';
 import * as YAML from 'yaml';
 import { Cluster, Nodes, Versions } from './config';
-import * as certs from './certs';
 
 const config = new pulumi.Config();
 export const certSans = config.requireObject<string[]>('certSans');
