@@ -1,12 +1,11 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as talos from '@pulumiverse/talos';
 import * as YAML from 'yaml';
-import { Cluster, Nodes, Versions } from './config';
-import * as certs from './certs';
+import { Node, Versions } from './config';
 
 const config = new pulumi.Config();
+const controlPlanes = config.requireObject<Node[]>('controlplanes');
 export const certSans = config.requireObject<string[]>('certSans');
-
 export const clusterName = config.require('clusterName');
 export const endpoint = config.require('endpoint');
 certSans.push(endpoint);
@@ -15,10 +14,7 @@ export const vip = config.get('vip');
 if (vip) certSans.push(vip);
 
 export const clusterEndpoint = config.require('clusterEndpoint');
-const nodeData = config.requireObject<Cluster>('nodeData');
 export const versions = config.requireObject<Versions>('versions');
-
-const allNodeData: Nodes = { ...nodeData.controlplanes, ...nodeData.workers };
 const secrets = new talos.machine.Secrets('secrets');
 
 const controlplaneConfig = talos.machine.getConfigurationOutput({
@@ -33,8 +29,8 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
 const clientConfig = talos.client.getConfigurationOutput({
   clusterName: clusterName,
   clientConfiguration: secrets.clientConfiguration,
-  endpoints: [config.get('primaryDnsName') ?? config.require('endpoint')],
-  nodes: [Object.keys(allNodeData)[0]],
+  endpoints: controlPlanes.map(x => x.ip),
+  nodes: [controlPlanes[0].ip],
 });
 
 const configPatches: string[] = [];
@@ -53,11 +49,11 @@ if (vip) {
   }));
 }
 
-const controlplaneConfigApply: talos.machine.ConfigurationApply[] = Object.entries(nodeData.controlplanes || [])
-  .map(([key, value]) => (new talos.machine.ConfigurationApply(`controlplane-${key}`, {
+const controlplaneConfigApply: talos.machine.ConfigurationApply[] = controlPlanes
+  .map(x => (new talos.machine.ConfigurationApply(x.ip, {
     clientConfiguration: secrets.clientConfiguration,
     machineConfigurationInput: controlplaneConfig.machineConfiguration,
-    node: key,
+    node: x.ip,
     configPatches: [
       ...configPatches,
       YAML.stringify({
@@ -72,7 +68,7 @@ const controlplaneConfigApply: talos.machine.ConfigurationApply[] = Object.entri
         },
         machine: {
           install: {
-            disk: value.installDisk,
+            disk: x.installDisk,
           },
           certSANs: certSans,
           kubelet: {
@@ -85,27 +81,30 @@ const controlplaneConfigApply: talos.machine.ConfigurationApply[] = Object.entri
     ],
   })));
 
-const bootstrap = new talos.machine.Bootstrap(`bootstrap`, {
+const bootstrap = new talos.machine.Bootstrap('bootstrap', {
   clientConfiguration: secrets.clientConfiguration,
   node: endpoint,
   endpoint: endpoint,
+  timeouts: {
+    create: config.require('createTimeout'),
+  },
 }, { dependsOn: controlplaneConfigApply });
-
-const healthCheck = talos.cluster.getHealthOutput({
-    clientConfiguration: secrets.clientConfiguration,
-    controlPlaneNodes: Object.keys(nodeData.controlplanes ?? []),
-    endpoints: [endpoint],
-    timeouts: {
-        read: config.require('healthTimeout'),
-    },
-});
 
 const kubeconfigOutput = talos.cluster.getKubeconfigOutput({
   clientConfiguration: secrets.clientConfiguration,
-  node: Object.keys(nodeData.controlplanes ?? [])[0],
+  node: endpoint,
   endpoint: endpoint,
   timeouts: {
     read: config.require('kubeconfigTimeout'),
+  },
+});
+
+const healthCheck = talos.cluster.getHealthOutput({
+  clientConfiguration: secrets.clientConfiguration,
+  controlPlaneNodes: controlplaneConfigApply.map(x => x.node),
+  endpoints: [endpoint],
+  timeouts: {
+    read: config.require('healthTimeout'),
   },
 });
 
