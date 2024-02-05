@@ -1,24 +1,24 @@
 name: thecluster-rosequartz
 runtime: nodejs
+description: The Rosequartz cluster
 config:
   clusterName: rosequartz
   clusterEndpoint: https://10.5.0.5:6443
+  bootstrapNode: 10.6.0.3
   endpoint: 10.5.0.2
   certSans:
+    value: []
+  controlplanes:
     value:
-      - 10.5.0.2
-      - 10.5.0.3
-      - 10.5.0.4
-  nodeData:
-    value:
-      controlplanes:
-        10.5.0.2:
-          installDisk: /dev/sda
-        10.5.0.3:
-          installDisk: /dev/sda
-        10.5.0.4:
-          installDisk: /dev/sda
-      workers: {}
+      - ip: 10.5.0.2
+        installDisk: /dev/sda
+      - ip: 10.5.0.3
+        installDisk: /dev/sda
+      - ip: 10.5.0.4
+        installDisk: /dev/sda
+  workers:
+    value: []
+  createTimeout: 30s
   healthTimeout: 4m
   kubeconfigTimeout: 30s
   createDnsRecord: false

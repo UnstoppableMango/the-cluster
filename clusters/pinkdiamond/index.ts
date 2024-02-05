@@ -205,7 +205,7 @@ const workerConfigApply: talos.machine.ConfigurationApply[] = workers
     });
   });
 
-const bootstrap = new talos.machine.Bootstrap(`bootstrap`, {
+const bootstrap = new talos.machine.Bootstrap('bootstrap', {
   clientConfiguration: secrets.clientConfiguration,
   node: endpoint,
   endpoint: endpoint,
