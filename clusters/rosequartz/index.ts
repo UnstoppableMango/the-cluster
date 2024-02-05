@@ -1,27 +1,11 @@
 import * as pulumi from '@pulumi/pulumi';
-import * as cloudflare from '@pulumi/cloudflare';
 import * as talos from '@pulumiverse/talos';
 import * as YAML from 'yaml';
 import { Cluster, Nodes, Versions } from './config';
+import * as certs from './certs';
 
 const config = new pulumi.Config();
 export const certSans = config.requireObject<string[]>('certSans');
-
-if (config.getBoolean('public') ?? false) {
-  const zoneId = '22f1d42ba0fbe4f924905e1c6597055c';
-  const publicIp = config.require('publicIp');
-  const dnsName = config.require('primaryDnsName');
-
-  certSans.push(publicIp, dnsName);
-
-  const primaryDns = new cloudflare.Record('primary-dns', {
-    name: dnsName,
-    zoneId: zoneId,
-    type: 'A',
-    value: publicIp,
-    proxied: false,
-  });
-}
 
 export const clusterName = config.require('clusterName');
 export const endpoint = config.require('endpoint');
@@ -35,7 +19,7 @@ const nodeData = config.requireObject<Cluster>('nodeData');
 export const versions = config.requireObject<Versions>('versions');
 
 const allNodeData: Nodes = { ...nodeData.controlplanes, ...nodeData.workers };
-const secrets = new talos.machine.Secrets('secrets', { talosVersion: `v${versions.talos}` });
+const secrets = new talos.machine.Secrets('secrets');
 
 const controlplaneConfig = talos.machine.getConfigurationOutput({
   clusterName: clusterName,
@@ -44,8 +28,6 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
   machineSecrets: secrets.machineSecrets,
   docs: false,
   examples: false,
-  talosVersion: `v${versions.talos}`,
-  kubernetesVersion: versions.k8s,
 });
 
 const clientConfig = talos.client.getConfigurationOutput({
@@ -91,7 +73,6 @@ const controlplaneConfigApply: talos.machine.ConfigurationApply[] = Object.entri
         machine: {
           install: {
             disk: value.installDisk,
-            image: `ghcr.io/siderolabs/installer:v${versions.talos}`,
           },
           certSANs: certSans,
           kubelet: {
