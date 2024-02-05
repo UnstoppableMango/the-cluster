@@ -52,3 +52,6 @@ output.yaml
 gen/**/*.yaml
 gen/**/*.yml
 generated-docs/
+
+# Absolute Garbage
+.DS_store
