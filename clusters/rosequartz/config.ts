@@ -1,5 +1,4 @@
 import { Config, StackReference, getStack } from '@pulumi/pulumi';
-import { SelfSignedCert } from '@pulumi/tls';
 
 export interface Versions {
   k8s: string,
@@ -15,6 +14,7 @@ export interface Node {
 }
 
 export const config = new Config();
+export const stack = getStack();
 
 const caRef = new StackReference('ca', {
   name: `UnstoppableMango/thecluster-ca/${config.require('caStack')}`,
