@@ -4,7 +4,6 @@ description: The Rosequartz cluster
 config:
   clusterName: rosequartz
   clusterEndpoint: https://10.5.0.5:6443
-  bootstrapNode: 10.6.0.3
   endpoint: 10.5.0.2
   certSans:
     value: []
