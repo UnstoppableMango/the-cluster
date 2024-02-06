@@ -7,7 +7,7 @@ version: '3'
 name: pinkdiamond
 
 x-controlplane: &controlplane
-  image: ghcr.io/siderolabs/talos:v1.6.3
+  image: ghcr.io/siderolabs/talos:v1.6.4
   environment:
     PLATFORM: container
     TALOSSKU: 2CPU-2048RAM
@@ -27,7 +27,7 @@ x-controlplane: &controlplane
     - label=disable
 
 x-worker: &worker
-  image: ghcr.io/siderolabs/talos:v1.6.3
+  image: ghcr.io/siderolabs/talos:v1.6.4
   environment:
     PLATFORM: container
     TALOSSKU: 2CPU-2048RAM
