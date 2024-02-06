@@ -26,5 +26,5 @@ config:
     value:
       k8s: 1.29.1 # renovate depName=kubernetes/kubernetes extractVersion=^v(?<version>.*)
       ksca: 0.8.0 # renovate depName=alex1989hu/kubelet-serving-cert-approver extractVersion=^v(?<version>.*)
-      talos: 1.6.3 # renovate depName=siderolabs/talos extractVersion=^v(?<version>.*)
+      talos: 1.6.4 # renovate depName=siderolabs/talos extractVersion=^v(?<version>.*)
   vip: 10.5.0.5
