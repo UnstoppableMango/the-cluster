@@ -1,0 +1,2 @@
+resources:
+  - https://github.com/adyanth/cloudflare-operator.git//config/default?ref=v0.10.0
