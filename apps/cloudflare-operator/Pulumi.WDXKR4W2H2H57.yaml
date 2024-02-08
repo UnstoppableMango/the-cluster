@@ -1,0 +1,6 @@
+config:
+  thecluster-cloudflare-operator:cloudflare:
+    apiToken:
+      secure: AAABAH6n8hSx4bqiIq5cD5Ny130bf91kwuS3uNvia04WlxA1Q1HZkaTbnVg77xDqGcrt4+A4S/mUHRpaMVUDhV3ZcFt0FKDh
+    globalApiKey:
+      secure: AAABAKjiP3mGbQU1YXMbK2EPb7tQVkSaAiRYnZTa3zmyBAJShLlsQa5Td9jdNx+Y2pvaOPb3jJuwdfcLYr/OVSdxm4RL
