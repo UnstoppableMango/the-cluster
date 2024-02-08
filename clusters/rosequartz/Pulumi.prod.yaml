@@ -1,24 +1,15 @@
 config:
   cloudflare:apiToken:
     secure: AAABAII/2q4AH1Vzb2cLj/e78z0/RA5Cd3yU7SuMfjYtzAH2FtCKpDNYVFhrA+Sg+iileQrhwNJW2jxhY/6vPQmAzjiWREal
-  thecluster-rosequartz:certSans:
-    - 192.168.1.101
-    - 192.168.1.102
-    - 192.168.1.103
+  thecluster-rosequartz:certSans: []
   thecluster-rosequartz:clusterEndpoint: https://192.168.1.99:6443
   thecluster-rosequartz:endpoint: 192.168.1.101
-  thecluster-rosequartz:nodeData:
-    controlplanes:
-      192.168.1.101:
-        installDisk: /dev/mmcblk0
-      192.168.1.102:
-        installDisk: /dev/mmcblk0
-      192.168.1.103:
-        installDisk: /dev/mmcblk0
-    workers: {}
-  thecluster-rosequartz:primaryDnsName:
-    secure: AAABANZfP+8BRRIgIe5jdq98xfkoi3kDdYCb7YxPi3UdV29gXt+05Tza0AyogQKAMA==
-  thecluster-rosequartz:public: "true"
-  thecluster-rosequartz:publicIp:
-    secure: AAABAAsbqFF6BCsc1S9Z1x+n+f/193NK+FF9G159XFtOUz13W1RRr3OUdQ==
+  thecluster-rosequartz:controlplanes:
+    - ip: 192.168.1.101
+      installDisk: /dev/mmcblk0
+    - ip: 192.168.1.102
+      installDisk: /dev/mmcblk0
+    - ip: 192.168.1.103
+      installDisk: /dev/mmcblk0
+  thecluster-rosequartz:workers: []
   thecluster-rosequartz:vip: 192.168.1.99
