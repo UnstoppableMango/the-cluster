@@ -1,4 +1,3 @@
-import * as pulumi from '@pulumi/pulumi';
 import { provider } from './config';
 import { kustomize } from '@pulumi/kubernetes';
 
