@@ -1,0 +1,7 @@
+name: thecluster-cloudflare-operator
+runtime: nodejs
+description: Cloudflare Operator install for THECLUSTER
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: typescript

@@ -28,6 +28,7 @@ import * as ipam from "./ipam";
 import * as k8s from "./k8s";
 import * as metal from "./metal";
 import * as minio from "./minio";
+import * as networking from "./networking";
 import * as pulumiOperator from "./pulumi";
 import * as runtime from "./runtime";
 import * as snapshot from "./snapshot";
@@ -52,6 +53,7 @@ export {
     k8s,
     metal,
     minio,
+    networking,
     pulumiOperator,
     runtime,
     snapshot,

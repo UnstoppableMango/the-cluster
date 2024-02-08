@@ -1,0 +1,7 @@
+name: thecluster-api-server-ingress
+runtime: nodejs
+description: API server ingress for THECLUSTER
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: typescript

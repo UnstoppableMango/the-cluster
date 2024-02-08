@@ -1,0 +1,11 @@
+config:
+  thecluster-cloudflare-tunnels:cloudflare:
+    accountId: 265a046434c952eeecb9710cfd76617c
+    apiToken:
+      secure: AAABADkwT8DobBwSCK1z9jaisMmiA6uK31tD4jbgI4vdaSq4LA/aUbVpyhBP5Wv04VR6mhrrnds+JNuQZ+PcDWLHmIkg7PUj
+    email:
+      secure: AAABAKBOSbr5gjixvq2H2HKpuycLxjpS3ET/nF7Y+6bxh8MXprlcDfX8zbSOhvklzSdAR6rDFw==
+    globalApiKey:
+      secure: AAABAAncqwCoFR7+tfbBfpzIs0pGO//QOeMbDOqpyGrGXaRC84zNZKtPfSGmyOyxtSndQJinD2rr1SBgWwOV0XqcTZMO
+    zoneId: 22f1d42ba0fbe4f924905e1c6597055c
+  thecluster-cloudflare-tunnels:operatorStack: WDXKR4W2H2H57

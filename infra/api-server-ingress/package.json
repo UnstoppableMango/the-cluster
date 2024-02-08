@@ -1,0 +1,14 @@
+{
+  "name": "thecluster-api-server-ingress",
+  "main": "index.ts",
+  "dependencies": {
+    "@pulumi/cloudflare": "^5.19.0",
+    "@pulumi/kubernetes": "^4.7.1",
+    "@pulumi/pulumi": "^3.104.2",
+    "@unstoppablemango/thecluster": "file:../../lib/nodejs",
+    "@unstoppablemango/thecluster-crds": "file:../../lib/crds/nodejs"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.16"
+  }
+}

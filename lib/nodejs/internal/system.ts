@@ -4,7 +4,7 @@ import * as internal from '../internal';
 import * as cluster from '../cluster';
 
 export class System {
-  public ref = cluster.ref(this._cluster);
+  public ref = cluster.ref(this._cluster, this._stack);
   public kubeconfig = this.ref.requireOutput('kubeconfig') as Output<string>;
   public provider = new Provider(this._cluster, { kubeconfig: this.kubeconfig });
   public refs = new internal.Refs(this._cluster);
@@ -22,5 +22,5 @@ export class System {
   public storageClasses = new internal.StorageClasses(this.apps);
   public versions = new internal.Versions(this.apps);
 
-  constructor(private _cluster: string) { }
+  constructor(private _cluster: string, private _stack?: string) { }
 }
