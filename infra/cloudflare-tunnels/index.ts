@@ -1,7 +1,7 @@
 import { Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { ClusterTunnel } from '@unstoppablemango/thecluster-crds/networking/v1alpha1';
 import { provider, cloudflare, caPem, versions, operatorNamespace, apiSecretsName } from './config';
-import { interpolate } from '@pulumi/pulumi';
+import { interpolate, output } from '@pulumi/pulumi';
 
 const ns = new Namespace('cloudflare-tunnels', {
   metadata: { name: 'cloudflare-tunnels' },
@@ -18,12 +18,10 @@ const secret = new Secret('origin-ca-pool', {
 }, { provider });
 
 const credentialsId = interpolate`${operatorNamespace}/${apiSecretsName}`;
-const credentials = Secret.get('credentials', credentialsId);
+const credentials = Secret.get('credentials', credentialsId, { provider });
 
 const tunnel = new ClusterTunnel('thecluster.io', {
-  metadata: {
-    name: 'thecluster.io',
-  },
+  metadata: { name: 'thecluster.io' },
   spec: {
     newTunnel: {
       name: 'thecluster.io',
@@ -39,3 +37,5 @@ const tunnel = new ClusterTunnel('thecluster.io', {
     },
   },
 }, { provider });
+
+export const theclusterIoTunnelName = output(tunnel.metadata).apply(x => x?.name);
