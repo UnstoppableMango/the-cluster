@@ -57,7 +57,7 @@ export class Databases {
       hostname: this._pg.clusterHostname,
       port: this._pg.port,
       owner: output('postgres'),
-      password: output(undefined),
+      password: output<string>(undefined),
     };
   }
 
