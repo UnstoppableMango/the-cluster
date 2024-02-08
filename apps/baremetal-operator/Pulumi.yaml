@@ -1,0 +1,7 @@
+name: thecluster-baremetal-operator
+runtime: nodejs
+description: Baremetal Operator install for THECLUSTER
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: typescript
