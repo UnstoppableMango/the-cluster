@@ -1,0 +1,3 @@
+[submodule "containers/talos"]
+	path = containers/talos
+	url = ssh://git@github.com/siderolabs/talos.git
