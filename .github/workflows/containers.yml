@@ -35,6 +35,7 @@ jobs:
       path: containers/rsync
       platforms: linux/amd64
 
+  # Promising: https://github.com/metal3-io/ironic-image/pull/357
   ironic:
     uses: ./.github/workflows/docker-container.yml
     with:
