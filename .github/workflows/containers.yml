@@ -33,3 +33,9 @@ jobs:
       name: rsync
       path: containers/rsync
       platforms: linux/amd64
+
+  ironic:
+    uses: ./.github/workflows/docker-container.yml
+    with:
+      name: ironic
+      path: containers/ironic
