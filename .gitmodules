@@ -1,0 +1,3 @@
+[submodule "containers/ironic"]
+	path = containers/ironic
+	url = git@github.com:metal3-io/ironic-image.git
