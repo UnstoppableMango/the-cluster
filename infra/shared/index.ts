@@ -52,6 +52,10 @@ const velero = new Namespace('velero', {
   },
 }, { provider });
 
+const baremetalOperatorSystem = new Namespace('baremetal-operator-system', {
+  metadata: { name: 'baremetal-operator-system' },
+}, { provider });
+
 export const namespaces = {
   media: mediaNs.metadata.name,
   postgres: postgresNs.metadata.name,
@@ -62,4 +66,5 @@ export const namespaces = {
   redis: redisNs.metadata.name,
   minio: minio.metadata.name,
   velero: velero.metadata.name,
+  baremetalOperatorSystem: baremetalOperatorSystem.metadata.name,
 };

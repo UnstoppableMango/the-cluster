@@ -105,6 +105,29 @@ const controlplaneConfigApply: talos.machine.ConfigurationApply[] = controlPlane
           allowSchedulingOnControlPlanes: true,
           apiServer: {
             certSANs: certSans,
+            disablePodSecurityPolicy: true, // So we can exempt things
+            admissionControl: [{
+              // https://www.talos.dev/v1.5/reference/configuration/#apiserverconfig
+              name: 'PodSecurity',
+              configuration: {
+                apiVersion: 'pod-security.admission.config.k8s.io/v1alpha1',
+                kind: 'PodSecurityConfiguration',
+                defaults: {
+                  audit: 'restricted',
+                  'audit-version': 'latest',
+                  enforce: 'baseline',
+                  'enforce-version': 'latest',
+                  warn: 'restricted',
+                  'warn-version': 'latest',
+                },
+                exemptions: {
+                  namespaces: [
+                    'baremetal-operator-system',
+                    'cert-manager',
+                  ],
+                },
+              },
+            }],
           },
           extraManifests: [
             `https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/v${versions.ksca}/deploy/ha-install.yaml`,
