@@ -1,6 +1,6 @@
 #syntax=docker/dockerfile:1
 
-FROM mikefarah/yq:4.40.5 as yq
+FROM mikefarah/yq:4.40.7 as yq
 FROM debian:12-slim
 ARG PULUMI_VERSION
 
