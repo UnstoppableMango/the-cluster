@@ -39,3 +39,9 @@ jobs:
     with:
       name: byoh
       path: containers/byoh
+
+  ironic:
+    uses: ./.github/workflows/docker-container.yml
+    with:
+      name: ironic
+      path: containers/ironic
