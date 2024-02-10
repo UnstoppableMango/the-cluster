@@ -1,0 +1,6 @@
+dependencies:
+- name: kubernetes-pfsense-controller
+  repository: https://travisghansen.github.io/kubernetes-pfsense-controller-chart
+  version: 0.1.2
+digest: sha256:dcda32ef747f552509e1cc48a9e652ef61fa72b0afee2329c9016dbbab0be6c4
+generated: "2024-02-09T17:41:17.448573292-06:00"

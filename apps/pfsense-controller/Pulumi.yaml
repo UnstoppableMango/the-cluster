@@ -1,0 +1,8 @@
+name: thecluster-pfsense-controller
+runtime: nodejs
+description: PfSense Controller install for THECLUSTER
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: typescript
+  username: admin
