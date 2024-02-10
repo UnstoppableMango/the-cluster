@@ -6,3 +6,6 @@ config:
     value:
       pulumi:template: typescript
   username: admin
+  versions:
+    value:
+      controller: v0.5.14 # renovate depName=travisghansen/kubernetes-pfsense-controller datasource=docker
