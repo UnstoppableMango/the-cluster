@@ -1,0 +1,10 @@
+apiVersion: v2
+name: pfsense-controller
+description: PfSense Controller install for THECLUSTER
+type: application
+version: 0.1.0
+dependencies:
+  - name: kubernetes-pfsense-controller
+    repository: https://travisghansen.github.io/kubernetes-pfsense-controller-chart
+    version: 0.1.2
+    alias: pfsense-controller

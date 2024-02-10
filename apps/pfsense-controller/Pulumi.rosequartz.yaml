@@ -1,0 +1,3 @@
+config:
+  thecluster-pfsense-controller:password:
+    secure: AAABAPHoeDmvK81ii/AfOq3gXbeLPKOW+2cghuaIxNX66wUelL9xOHPOV6h4TCyqDY8izg==
