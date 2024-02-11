@@ -1,16 +1,41 @@
 import { CustomResourceOptions, output } from '@pulumi/pulumi';
 import { Chart } from '@pulumi/kubernetes/helm/v3';
 import { Service, ServiceSpecType } from '@pulumi/kubernetes/core/v1';
-import { loadBalancers, provider } from '@unstoppablemango/thecluster/cluster/from-stack';
+import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { IPAddressPool, L2Advertisement } from '@unstoppablemango/thecluster-crds/metallb/v1beta1';
 import { versions } from './config';
 
 const chart = new Chart('sidero', {
   path: './',
-  transformations: [patchSideroManager],
+  transformations: [patchSideroManager, ignoreMetricsSvc],
 }, { provider });
 
 const ns = chart.getResource('v1/Namespace', 'sidero-system');
+
+const pool = new IPAddressPool('sidero', {
+  metadata: {
+    name: 'sidero',
+    namespace: 'metallb-system',
+  },
+  spec: {
+    addresses: ['192.168.1.98/32'],
+    autoAssign: true,
+    avoidBuggyIPs: true,
+    serviceAllocation: {
+      namespaces: [ns.metadata.name],
+    },
+  },
+}, { provider });
+
+const advertisement = new L2Advertisement('sidero', {
+  metadata: {
+    name: 'sidero',
+    namespace: 'metallb-system',
+  },
+  spec: {
+    ipAddressPools: [output(pool.metadata).apply(x => x?.name ?? '')],
+  },
+}, { provider });
 
 const sideroLb = new Service('siderolb', {
   metadata: {
@@ -19,7 +44,7 @@ const sideroLb = new Service('siderolb', {
   },
   spec: {
     type: ServiceSpecType.LoadBalancer,
-    loadBalancerClass: loadBalancers.metallb,
+    loadBalancerIP: '192.168.1.98',
     ports: [{
       name: 'dhcp',
       port: 67,
@@ -50,32 +75,13 @@ const sideroLb = new Service('siderolb', {
       'control-plane': 'sidero-controller-manager',
     },
   },
-}, { provider, dependsOn: chart.ready });
+}, { provider, dependsOn: chart.ready.apply(x => [...x, advertisement]) });
 
-const pool = new IPAddressPool('sidero', {
-  metadata: {
-    name: 'sidero',
-    namespace: ns.metadata.name,
-  },
-  spec: {
-    addresses: ['192.168.1.98/32'],
-    autoAssign: true,
-    avoidBuggyIPs: true,
-    serviceAllocation: {
-      namespaces: [ns.metadata.name],
-    },
-  },
-}, { provider });
-
-const advertisement = new L2Advertisement('sidero', {
-  metadata: {
-    name: 'sidero',
-    namespace: ns.metadata.name,
-  },
-  spec: {
-    ipAddressPools: [output(pool.metadata).apply(x => x?.name ?? '')],
-  },
-}, { provider });
+function ignoreMetricsSvc(obj: any, opts: CustomResourceOptions): void {
+  const applys = ['sidero-controller-manager-metrics-service', 'caps-controller-manager-metrics-service'];
+  if (!applys.includes(obj.metadata.name)) return;
+  obj.kind = 'List';
+}
 
 function patchSideroManager(obj: any, opts: CustomResourceOptions): void {
   if (obj.kind !== 'Deployment') return;
