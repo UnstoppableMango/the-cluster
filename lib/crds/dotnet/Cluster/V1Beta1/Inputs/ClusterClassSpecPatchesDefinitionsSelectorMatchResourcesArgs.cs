@@ -33,6 +33,12 @@ namespace Pulumi.Kubernetes.Types.Inputs.Cluster.V1Beta1
         [Input("machineDeploymentClass")]
         public Input<Pulumi.Kubernetes.Types.Inputs.Cluster.V1Beta1.ClusterClassSpecPatchesDefinitionsSelectorMatchResourcesMachineDeploymentClassArgs>? MachineDeploymentClass { get; set; }
 
+        /// <summary>
+        /// MachinePoolClass selects templates referenced in specific MachinePoolClasses in .spec.workers.machinePools.
+        /// </summary>
+        [Input("machinePoolClass")]
+        public Input<Pulumi.Kubernetes.Types.Inputs.Cluster.V1Beta1.ClusterClassSpecPatchesDefinitionsSelectorMatchResourcesMachinePoolClassArgs>? MachinePoolClass { get; set; }
+
         public ClusterClassSpecPatchesDefinitionsSelectorMatchResourcesArgs()
         {
         }

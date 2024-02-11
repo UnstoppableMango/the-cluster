@@ -27,6 +27,7 @@ import * as infrastructure from "./infrastructure";
 import * as ipam from "./ipam";
 import * as k8s from "./k8s";
 import * as metal from "./metal";
+import * as metallb from "./metallb";
 import * as minio from "./minio";
 import * as networking from "./networking";
 import * as pulumiOperator from "./pulumi";
@@ -52,6 +53,7 @@ export {
     ipam,
     k8s,
     metal,
+    metallb,
     minio,
     networking,
     pulumiOperator,

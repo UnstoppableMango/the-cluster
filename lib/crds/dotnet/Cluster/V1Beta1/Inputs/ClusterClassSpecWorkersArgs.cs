@@ -27,6 +27,18 @@ namespace Pulumi.Kubernetes.Types.Inputs.Cluster.V1Beta1
             set => _machineDeployments = value;
         }
 
+        [Input("machinePools")]
+        private InputList<Pulumi.Kubernetes.Types.Inputs.Cluster.V1Beta1.ClusterClassSpecWorkersMachinePoolsArgs>? _machinePools;
+
+        /// <summary>
+        /// MachinePools is a list of machine pool classes that can be used to create a set of worker nodes.
+        /// </summary>
+        public InputList<Pulumi.Kubernetes.Types.Inputs.Cluster.V1Beta1.ClusterClassSpecWorkersMachinePoolsArgs> MachinePools
+        {
+            get => _machinePools ?? (_machinePools = new InputList<Pulumi.Kubernetes.Types.Inputs.Cluster.V1Beta1.ClusterClassSpecWorkersMachinePoolsArgs>());
+            set => _machinePools = value;
+        }
+
         public ClusterClassSpecWorkersArgs()
         {
         }

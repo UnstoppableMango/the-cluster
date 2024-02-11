@@ -27,6 +27,18 @@ namespace Pulumi.Kubernetes.Types.Inputs.Cluster.V1Beta1
             set => _machineDeployments = value;
         }
 
+        [Input("machinePools")]
+        private InputList<Pulumi.Kubernetes.Types.Inputs.Cluster.V1Beta1.ClusterSpecTopologyWorkersMachinePoolsArgs>? _machinePools;
+
+        /// <summary>
+        /// MachinePools is a list of machine pools in the cluster.
+        /// </summary>
+        public InputList<Pulumi.Kubernetes.Types.Inputs.Cluster.V1Beta1.ClusterSpecTopologyWorkersMachinePoolsArgs> MachinePools
+        {
+            get => _machinePools ?? (_machinePools = new InputList<Pulumi.Kubernetes.Types.Inputs.Cluster.V1Beta1.ClusterSpecTopologyWorkersMachinePoolsArgs>());
+            set => _machinePools = value;
+        }
+
         public ClusterSpecTopologyWorkersArgs()
         {
         }

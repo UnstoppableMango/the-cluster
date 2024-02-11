@@ -20,11 +20,19 @@ namespace Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1
         /// MachineDeployments is a list of machine deployment classes that can be used to create a set of worker nodes.
         /// </summary>
         public readonly ImmutableArray<Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1.ClusterClassSpecWorkersMachineDeployments> MachineDeployments;
+        /// <summary>
+        /// MachinePools is a list of machine pool classes that can be used to create a set of worker nodes.
+        /// </summary>
+        public readonly ImmutableArray<Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1.ClusterClassSpecWorkersMachinePools> MachinePools;
 
         [OutputConstructor]
-        private ClusterClassSpecWorkers(ImmutableArray<Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1.ClusterClassSpecWorkersMachineDeployments> machineDeployments)
+        private ClusterClassSpecWorkers(
+            ImmutableArray<Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1.ClusterClassSpecWorkersMachineDeployments> machineDeployments,
+
+            ImmutableArray<Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1.ClusterClassSpecWorkersMachinePools> machinePools)
         {
             MachineDeployments = machineDeployments;
+            MachinePools = machinePools;
         }
     }
 }

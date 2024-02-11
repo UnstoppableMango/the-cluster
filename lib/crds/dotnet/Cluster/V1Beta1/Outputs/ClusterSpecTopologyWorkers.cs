@@ -20,11 +20,19 @@ namespace Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1
         /// MachineDeployments is a list of machine deployments in the cluster.
         /// </summary>
         public readonly ImmutableArray<Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1.ClusterSpecTopologyWorkersMachineDeployments> MachineDeployments;
+        /// <summary>
+        /// MachinePools is a list of machine pools in the cluster.
+        /// </summary>
+        public readonly ImmutableArray<Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1.ClusterSpecTopologyWorkersMachinePools> MachinePools;
 
         [OutputConstructor]
-        private ClusterSpecTopologyWorkers(ImmutableArray<Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1.ClusterSpecTopologyWorkersMachineDeployments> machineDeployments)
+        private ClusterSpecTopologyWorkers(
+            ImmutableArray<Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1.ClusterSpecTopologyWorkersMachineDeployments> machineDeployments,
+
+            ImmutableArray<Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1.ClusterSpecTopologyWorkersMachinePools> machinePools)
         {
             MachineDeployments = machineDeployments;
+            MachinePools = machinePools;
         }
     }
 }

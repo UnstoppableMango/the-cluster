@@ -21,7 +21,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1
         /// </summary>
         public readonly Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1.MachineDeploymentSpecStrategyRollingUpdate RollingUpdate;
         /// <summary>
-        /// Type of deployment. Default is RollingUpdate.
+        /// Type of deployment. Allowed values are RollingUpdate and OnDelete. The default is RollingUpdate.
         /// </summary>
         public readonly string Type;
 
