@@ -2,12 +2,12 @@
   "name": "thecluster-clusterapi",
   "main": "index.ts",
   "dependencies": {
-    "@pulumi/kubernetes": "^4.3.0",
-    "@pulumi/pulumi": "^3.0.0",
+    "@pulumi/kubernetes": "^4.7.1",
+    "@pulumi/pulumi": "^3.105.0",
     "@unstoppablemango/thecluster": "file:../../lib/nodejs",
     "@unstoppablemango/thecluster-crds": "file:../../lib/crds/nodejs"
   },
   "devDependencies": {
-    "@types/node": "^20.8.7"
+    "@types/node": "^20.11.17"
   }
 }
