@@ -3,6 +3,7 @@ import { Chart } from '@pulumi/kubernetes/helm/v3';
 import { Service, ServiceSpecType } from '@pulumi/kubernetes/core/v1';
 import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { IPAddressPool, L2Advertisement } from '@unstoppablemango/thecluster-crds/metallb/v1beta1';
+import { Environment } from '@unstoppablemango/thecluster-crds/metal/v1alpha2';
 import { versions } from './config';
 
 const chart = new Chart('sidero', {
@@ -76,6 +77,64 @@ const sideroLb = new Service('siderolb', {
     },
   },
 }, { provider, dependsOn: chart.ready.apply(x => [...x, advertisement]) });
+
+const amdZfsSchematicId = '3e27093fe74460a14f8b4b7eb7181be23aa5b02d033bf67d6e5fc412867cca27';
+const amdZfsEnv = new Environment('amd-zfs', {
+  metadata: { name: 'amd-zfs' },
+  spec: {
+    kernel: {
+      url: `https://factory.talos.dev/image/${amdZfsSchematicId}/v1.6.4/kernel-amd64`,
+      args: [
+        'console=tty0',
+        'console=ttyS0',
+        'consoleblank=0',
+        'earlyprintk=ttyS0',
+        'ima_appraise=fix',
+        'ima_hash=sha512',
+        'ima_template=ima-ng',
+        'init_on_alloc=1',
+        'initrd=initramfs.xz',
+        'nvme_core.io_timeout=4294967295',
+        'printk.devkmsg=on',
+        'pti=on',
+        'slab_nomerge=',
+        'talos.platform=metal',
+      ],
+    },
+    initrd: {
+      url: `https://factory.talos.dev/image/${amdZfsSchematicId}/v1.6.4/initramfs-amd64.xz`,
+    },
+  },
+}, { provider });
+
+const intelZfsSchematicId = '982fff9cbb83c9c92f271c5608c9ce708a900179cc83305fab8716617dcce853';
+const intelZfsEnv = new Environment('intel-zfs', {
+  metadata: { name: 'intell-zfs' },
+  spec: {
+    kernel: {
+      url: `https://factory.talos.dev/image/${intelZfsSchematicId}/v1.6.4/kernel-amd64`,
+      args: [
+        'console=tty0',
+        'console=ttyS0',
+        'consoleblank=0',
+        'earlyprintk=ttyS0',
+        'ima_appraise=fix',
+        'ima_hash=sha512',
+        'ima_template=ima-ng',
+        'init_on_alloc=1',
+        'initrd=initramfs.xz',
+        'nvme_core.io_timeout=4294967295',
+        'printk.devkmsg=on',
+        'pti=on',
+        'slab_nomerge=',
+        'talos.platform=metal',
+      ],
+    },
+    initrd: {
+      url: `https://factory.talos.dev/image/${intelZfsSchematicId}/v1.6.4/initramfs-amd64.xz`,
+    },
+  },
+}, { provider });
 
 function ignoreMetricsSvc(obj: any, opts: CustomResourceOptions): void {
   const applys = ['sidero-controller-manager-metrics-service', 'caps-controller-manager-metrics-service'];
