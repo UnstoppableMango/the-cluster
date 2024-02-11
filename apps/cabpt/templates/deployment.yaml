@@ -24,12 +24,13 @@ spec:
     spec:
       containers:
       - args:
-        - --metrics-bind-addr=127.0.0.1:8080
         - --enable-leader-election
         - --feature-gates=MachinePool=false
+        - --diagnostics-address=:8443
+        - --insecure-diagnostics=false
         command:
         - /manager
-        image: ghcr.io/siderolabs/cluster-api-talos-controller:v0.6.2
+        image: ghcr.io/siderolabs/cluster-api-talos-controller:v0.6.4
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
@@ -42,6 +43,9 @@ spec:
           protocol: TCP
         - containerPort: 9440
           name: healthz
+          protocol: TCP
+        - containerPort: 8443
+          name: metrics
           protocol: TCP
         readinessProbe:
           httpGet:
