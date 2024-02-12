@@ -1,4 +1,4 @@
-import { Namespace, Secret } from '@pulumi/kubernetes/core/v1';
+import { ConfigMap, Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { ClusterTunnel } from '@unstoppablemango/thecluster-crds/networking/v1alpha1';
 import { provider, cloudflare, caPem, versions, operatorNamespace, apiSecretsName } from './config';
 import { interpolate, output } from '@pulumi/pulumi';
@@ -7,12 +7,15 @@ const ns = new Namespace('cloudflare-tunnels', {
   metadata: { name: 'cloudflare-tunnels' },
 }, { provider });
 
+const kubeRootCa = ConfigMap.get('kube-root-ca.crt', 'kube-system/kube-root-ca.crt');
+
 const secret = new Secret('origin-ca-pool', {
   metadata: {
     name: 'origin-ca-pool',
     namespace: operatorNamespace,
   },
   stringData: {
+    'kube-root-ca.crt': kubeRootCa.data.apply(x => x['ca.crt']),
     'tls.crt': caPem,
   },
 }, { provider });
