@@ -4,7 +4,7 @@ import * as cluster from '@unstoppablemango/thecluster/cluster';
 
 const config = new Config();
 export const clusterName = 'rosequartz';
-export const ref = cluster.ref(clusterName, getStack());
+export const ref = cluster.ref(clusterName, 'prod');
 export const provider = cluster.provider(ref, clusterName);
 
 const tunnelsRef = new StackReference('tunnels', {

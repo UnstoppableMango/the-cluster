@@ -10,7 +10,7 @@ const ns = new Namespace('cloudflare-tunnels', {
 const secret = new Secret('origin-ca-pool', {
   metadata: {
     name: 'origin-ca-pool',
-    namespace: ns.metadata.name,
+    namespace: operatorNamespace,
   },
   stringData: {
     'tls.crt': caPem,
