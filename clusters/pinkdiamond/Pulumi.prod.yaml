@@ -20,25 +20,11 @@ config:
   thecluster-pinkdiamond:workers:
     - installDisk: /dev/sda
       ip: 192.168.1.107
-    - installDisk: /dev/sda
-      ip: 192.168.1.108
-      qemu: true
-    - installDisk: /dev/sda
-      ip: 192.168.1.109
-      qemu: true
-    # - installDisk: /dev/sda
-    #   ip: 192.168.1.110
-    #   qemu: true
-    # - installDisk: /dev/sda
-    #   ip: 192.168.1.111
-    #   qemu: true
-    - installDisk: /dev/sda
-      ip: 192.168.1.112
-      qemu: true
-    - installDisk: /dev/sda
-      ip: 192.168.1.113
-      qemu: true
     - installDisk: /dev/mmcblk0
       ip: 192.168.1.114
     - installDisk: /dev/mmcblk0
       ip: 192.168.1.115
+    - installDisk: /dev/sda
+      ip: 192.168.1.10
+    - installDisk: /dev/nvme0n1
+      ip: 192.168.1.12

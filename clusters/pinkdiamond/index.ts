@@ -79,11 +79,11 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
               apiVersion: 'pod-security.admission.config.k8s.io/v1alpha1',
               kind: 'PodSecurityConfiguration',
               defaults: {
-                audit: 'restricted',
+                'audit': 'restricted',
                 'audit-version': 'latest',
-                enforce: 'baseline',
+                'enforce': 'baseline',
                 'enforce-version': 'latest',
-                warn: 'restricted',
+                'warn': 'restricted',
                 'warn-version': 'latest',
               },
               exemptions: {
