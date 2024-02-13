@@ -24,17 +24,32 @@ spec:
     spec:
       containers:
       - args:
-        - --metrics-bind-addr=127.0.0.1:8080
         - --enable-leader-election
+        - --diagnostics-address=:8443
+        - --insecure-diagnostics=false
         command:
         - /manager
-        image: ghcr.io/siderolabs/cluster-api-control-plane-talos-controller:v0.5.3
+        image: ghcr.io/siderolabs/cluster-api-control-plane-talos-controller:v0.5.5
         imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: healthz
         name: manager
         ports:
         - containerPort: 9443
           name: webhook-server
           protocol: TCP
+        - containerPort: 8443
+          name: metrics
+          protocol: TCP
+        - containerPort: 9440
+          name: healthz
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: healthz
         resources:
           limits:
             cpu: "1"

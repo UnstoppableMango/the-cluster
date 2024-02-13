@@ -2,12 +2,12 @@
   "name": "thecluster-metallb",
   "main": "index.ts",
   "dependencies": {
-    "@pulumi/kubernetes": "^4.5.5",
-    "@pulumi/pulumi": "^3.96.2",
+    "@pulumi/kubernetes": "^4.7.1",
+    "@pulumi/pulumi": "^3.105.0",
     "@unstoppablemango/thecluster": "file:../../lib/nodejs",
     "@unstoppablemango/thecluster-crds": "file:../../lib/crds/nodejs"
   },
   "devDependencies": {
-    "@types/node": "^20.10.4"
+    "@types/node": "^20.11.17"
   }
 }

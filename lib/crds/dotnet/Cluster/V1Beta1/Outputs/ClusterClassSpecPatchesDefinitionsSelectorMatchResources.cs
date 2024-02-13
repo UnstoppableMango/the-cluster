@@ -28,6 +28,10 @@ namespace Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1
         /// MachineDeploymentClass selects templates referenced in specific MachineDeploymentClasses in .spec.workers.machineDeployments.
         /// </summary>
         public readonly Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1.ClusterClassSpecPatchesDefinitionsSelectorMatchResourcesMachineDeploymentClass MachineDeploymentClass;
+        /// <summary>
+        /// MachinePoolClass selects templates referenced in specific MachinePoolClasses in .spec.workers.machinePools.
+        /// </summary>
+        public readonly Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1.ClusterClassSpecPatchesDefinitionsSelectorMatchResourcesMachinePoolClass MachinePoolClass;
 
         [OutputConstructor]
         private ClusterClassSpecPatchesDefinitionsSelectorMatchResources(
@@ -35,11 +39,14 @@ namespace Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1
 
             bool infrastructureCluster,
 
-            Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1.ClusterClassSpecPatchesDefinitionsSelectorMatchResourcesMachineDeploymentClass machineDeploymentClass)
+            Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1.ClusterClassSpecPatchesDefinitionsSelectorMatchResourcesMachineDeploymentClass machineDeploymentClass,
+
+            Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1.ClusterClassSpecPatchesDefinitionsSelectorMatchResourcesMachinePoolClass machinePoolClass)
         {
             ControlPlane = controlPlane;
             InfrastructureCluster = infrastructureCluster;
             MachineDeploymentClass = machineDeploymentClass;
+            MachinePoolClass = machinePoolClass;
         }
     }
 }

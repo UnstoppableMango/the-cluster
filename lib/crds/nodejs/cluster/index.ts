@@ -4,12 +4,10 @@
 import * as utilities from "../utilities";
 
 // Export sub-modules:
-import * as v1alpha3 from "./v1alpha3";
 import * as v1alpha4 from "./v1alpha4";
 import * as v1beta1 from "./v1beta1";
 
 export {
-    v1alpha3,
     v1alpha4,
     v1beta1,
 };

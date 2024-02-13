@@ -22,7 +22,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.Cluster.V1Beta1
         public Input<Pulumi.Kubernetes.Types.Inputs.Cluster.V1Beta1.ClusterSpecTopologyWorkersMachineDeploymentsStrategyRollingUpdateArgs>? RollingUpdate { get; set; }
 
         /// <summary>
-        /// Type of deployment. Default is RollingUpdate.
+        /// Type of deployment. Allowed values are RollingUpdate and OnDelete. The default is RollingUpdate.
         /// </summary>
         [Input("type")]
         public Input<string>? Type { get; set; }

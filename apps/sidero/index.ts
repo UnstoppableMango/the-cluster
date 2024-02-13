@@ -1,21 +1,50 @@
-import * as pulumi from '@pulumi/pulumi';
-import * as k8s from '@pulumi/kubernetes';
-import { loadBalancers, provider } from '@unstoppablemango/thecluster/cluster/from-stack';
+import { CustomResourceOptions, output } from '@pulumi/pulumi';
+import { Chart } from '@pulumi/kubernetes/helm/v3';
+import { Service, ServiceSpecType } from '@pulumi/kubernetes/core/v1';
+import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
+import { IPAddressPool, L2Advertisement } from '@unstoppablemango/thecluster-crds/metallb/v1beta1';
 import { versions } from './config';
 
-const chart = new k8s.helm.v3.Chart('sidero', {
+const chart = new Chart('sidero', {
   path: './',
-  transformations: [patchSideroManager],
+  transformations: [patchSideroManager, ignoreMetricsSvc],
 }, { provider });
 
-const sideroLb = new k8s.core.v1.Service('siderolb', {
+const ns = chart.getResource('v1/Namespace', 'sidero-system');
+
+const pool = new IPAddressPool('sidero', {
   metadata: {
-    name: 'siderolb',
-    namespace: 'sidero-system'
+    name: 'sidero',
+    namespace: 'metallb-system',
   },
   spec: {
-    type: k8s.types.enums.core.v1.ServiceSpecType.LoadBalancer,
-    loadBalancerClass: loadBalancers.metallb,
+    addresses: ['192.168.1.98/32'],
+    autoAssign: true,
+    avoidBuggyIPs: true,
+    serviceAllocation: {
+      namespaces: [ns.metadata.name],
+    },
+  },
+}, { provider });
+
+const advertisement = new L2Advertisement('sidero', {
+  metadata: {
+    name: 'sidero',
+    namespace: 'metallb-system',
+  },
+  spec: {
+    ipAddressPools: [output(pool.metadata).apply(x => x?.name ?? '')],
+  },
+}, { provider });
+
+const sideroLb = new Service('siderolb', {
+  metadata: {
+    name: 'siderolb',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    type: ServiceSpecType.LoadBalancer,
+    loadBalancerIP: '192.168.1.98',
     ports: [{
       name: 'dhcp',
       port: 67,
@@ -46,9 +75,15 @@ const sideroLb = new k8s.core.v1.Service('siderolb', {
       'control-plane': 'sidero-controller-manager',
     },
   },
-}, { provider, dependsOn: chart.ready });
+}, { provider, dependsOn: chart.ready.apply(x => [...x, advertisement]) });
 
-function patchSideroManager(obj: any, opts: pulumi.CustomResourceOptions): void {
+function ignoreMetricsSvc(obj: any, opts: CustomResourceOptions): void {
+  const applys = ['sidero-controller-manager-metrics-service', 'caps-controller-manager-metrics-service'];
+  if (!applys.includes(obj.metadata.name)) return;
+  obj.kind = 'List';
+}
+
+function patchSideroManager(obj: any, opts: CustomResourceOptions): void {
   if (obj.kind !== 'Deployment') return;
   if (obj.metadata.name !== 'sidero-controller-manager') return;
 

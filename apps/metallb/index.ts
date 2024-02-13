@@ -39,53 +39,6 @@ let addresses: string | undefined = undefined;
 let pool: k8s.apiextensions.CustomResource | undefined = undefined;
 let advertisement: k8s.apiextensions.CustomResource | undefined = undefined;
 
-if (stack === 'rosequartz') {
-  // TODO: this and the advertisement should probably live in the sidero stack
-  addresses = '192.168.1.98/32';
-  pool = new k8s.apiextensions.CustomResource('sidero', {
-    apiVersion: 'metallb.io/v1beta1',
-    kind: 'IPAddressPool',
-    metadata: {
-      name: 'sidero',
-      namespace: ns.metadata.name,
-    },
-    spec: {
-      addresses: ['192.168.1.98/32'],
-      autoAssign: true,
-      avoidBuggyIPs: true,
-      serviceAllocation: {
-        namespaces: ['sidero-system'],
-      },
-    },
-  }, {
-    provider, dependsOn: chart.ready,
-    // Would be nice to find a way to ignore just the aggregated manager role rules, not all rules
-    ignoreChanges: [
-      'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
-      'rules', // Aggregated ClusterRole will get rules filled in by controlplane
-    ],
-  });
-
-  advertisement = new k8s.apiextensions.CustomResource('primary', {
-    apiVersion: 'metallb.io/v1beta1',
-    kind: 'L2Advertisement',
-    metadata: {
-      name: 'sidero',
-      namespace: ns.metadata.name,
-    },
-    spec: {
-      ipAddressPools: [pool.metadata.name],
-    },
-  }, {
-    provider, dependsOn: chart.ready,
-    // Would be nice to find a way to ignore just the aggregated manager role rules, not all rules
-    ignoreChanges: [
-      'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
-      'rules', // Aggregated ClusterRole will get rules filled in by controlplane
-    ],
-  });
-}
-
 if (stack === 'pinkdiamond') {
   addresses = '192.168.1.80-192.168.1.89';
   pool = new k8s.apiextensions.CustomResource('pool', {
