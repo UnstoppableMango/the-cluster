@@ -6,4 +6,4 @@ version: 0.1.0
 dependencies:
   - name: unifi
     repository: oci://tccr.io/truecharts
-    version: 19.1.12
+    version: 19.1.13
