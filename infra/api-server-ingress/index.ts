@@ -18,5 +18,9 @@ const tunnel = new TunnelBinding('api-server', {
   },
   subjects: [{
     name: service.metadata.name,
+    spec: {
+      target: 'https://kubernetes.default.svc',
+      caPool: 'kube-root-ca.crt',
+    },
   }],
 }, { provider });
