@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="KubeOps.Generator" Version="8.0.0"
+    <PackageReference Include="KubeOps.Generator" Version="8.0.1"
                       OutputItemType="Analyzer"
                       ReferenceOutputAssembly="false"/>
   </ItemGroup>
