@@ -1,7 +1,20 @@
 config:
   cloudflare:apiToken:
-    secure: AAABAMTpWxUKesQ46o7HhfvL8giqa3twXkm7WPNqJRtGv9gtFnvPR3RkcflKC568puubj4Z2nasCADKyvVeApE/+M1qE6N4v
+    secure: AAABADNy9nBlLDtMDrTyKJ4gaOL3zDiAUb/ZufWlYQXgf46Bd7iDSN83ARNS87RLrG8/WlV0qGe7t/IFcSlauQaObPNgJc4p
   thecluster-pinkdiamond:bootstrapNode: 192.168.1.104
+  thecluster-pinkdiamond:caStack: prod
+  thecluster-pinkdiamond:certSans:
+    - 192.168.1.100
+    - 192.168.1.104
+    - 192.168.1.105
+    - 192.168.1.106
+    - 192.168.1.107
+    - 192.168.1.114
+    - 192.168.1.115
+    - 192.168.1.10
+    - 192.168.1.12
+    - pinkdiamond.thecluster.io
+    - pd.thecluster.io
   thecluster-pinkdiamond:clusterEndpoint: https://192.168.1.100:6443
   thecluster-pinkdiamond:controlplanes:
     - installDisk: /dev/mmcblk0
@@ -11,11 +24,6 @@ config:
     - installDisk: /dev/mmcblk0
       ip: 192.168.1.106
   thecluster-pinkdiamond:endpoint: 192.168.1.104
-  thecluster-pinkdiamond:primaryDnsName:
-    secure: AAABAMlpSrz19VXTBdWz88OnsAzFscjbZyuVULZRwnUr/bjm3OQtWwnrCCRoekxN
-  thecluster-pinkdiamond:public: "true"
-  thecluster-pinkdiamond:publicIp:
-    secure: AAABADPLkIpbRLRNksFw06Tyf5Cbgja7Yd4rVmeNjzyJlkLnSLu/4/MoAA==
   thecluster-pinkdiamond:vip: 192.168.1.100
   thecluster-pinkdiamond:workers:
     - installDisk: /dev/sda
