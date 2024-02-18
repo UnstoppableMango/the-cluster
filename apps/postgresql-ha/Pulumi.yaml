@@ -8,5 +8,5 @@ config:
       bitnami:
         postgres: 16.1.0-debian-11-r15 # renovate depName=bitnami/postgresql datasource=docker
         postgresExporter: 0.15.0-debian-11-r2 # renovate depName=bitnami/postgresql-exporter datasource=docker
-        postgresqlRepmgr: 16.1.0-debian-11-r11 # renovate depName=bitnami/postgresql-repmgr datasource=docker
+        postgresqlRepmgr: 16.2.0-debian-11-r11 # renovate depName=bitnami/postgresql-repmgr datasource=docker
         pgpool: 4.5.0-debian-11-r0 # renovate depName=bitnami/pgpool datasource=docker
