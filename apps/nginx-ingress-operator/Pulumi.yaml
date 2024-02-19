@@ -5,4 +5,4 @@ config:
   versions:
     value:
       nginxIngress: v3.4.2 # renovate depName=nginxinc/kubernetes-ingress
-      nginxIngressHelmOperator: v2.1.1 # renovate depName=nginxinc/nginx-ingress-helm-operator
+      nginxIngressHelmOperator: v2.1.2 # renovate depName=nginxinc/nginx-ingress-helm-operator
