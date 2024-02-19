@@ -6,4 +6,4 @@ version: 0.1.0
 dependencies:
   - name: nginx-ingress
     repository: oci://ghcr.io/nginxinc/charts
-    version: 1.1.2
+    version: 1.1.3
