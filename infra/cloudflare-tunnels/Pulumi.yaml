@@ -13,4 +13,4 @@ config:
   operatorStack: rosequartz
   versions:
     value:
-      cloudflared: 2024.2.0 # renovate depName=cloudflare/cloudflared
+      cloudflared: 2024.2.1 # renovate depName=cloudflare/cloudflared
