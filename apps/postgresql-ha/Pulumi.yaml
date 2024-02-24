@@ -4,7 +4,7 @@ description: PostgreSQL HA install for THECLUSTER
 config:
   versions:
     value:
-      k8s: v1.29.1 # renovate depName=kubernetes/kubernetes
+      k8s: v1.29.2 # renovate depName=kubernetes/kubernetes
       bitnami:
         postgres: 16.2.0-debian-11-r15 # renovate depName=bitnami/postgresql datasource=docker
         postgresExporter: 0.15.0-debian-11-r2 # renovate depName=bitnami/postgresql-exporter datasource=docker

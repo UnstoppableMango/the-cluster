@@ -77,7 +77,7 @@ runs:
       if: inputs.kubectl == 'true' || inputs.all == 'true'
       uses: azure/setup-kubectl@v3
       with:
-        version: v1.29.1 # renovate depName=kubernetes/kubernetes
+        version: v1.29.2 # renovate depName=kubernetes/kubernetes
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
 
