@@ -114,7 +114,7 @@ runs:
       uses: jaxxstorm/action-install-gh-release@v1
       with:
         repo: kubernetes-sigs/cluster-api
-        tag: v1.6.1 # renovate depName=kubernetes-sigs/cluster-api
+        tag: v1.6.2 # renovate depName=kubernetes-sigs/cluster-api
         extension-matching: disable
         rename-to: clusterctl
         chmod: 0755
