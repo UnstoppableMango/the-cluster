@@ -1,10 +1,7 @@
 import { jsonStringify } from '@pulumi/pulumi';
 import * as talos from '@pulumiverse/talos';
-import { machine } from '@pulumiverse/talos/types/input';
 import * as YAML from 'yaml';
-import { Node, Versions, caPem, config, stack } from './config';
-import * as certs from './certs';
-import { b64e } from './util';
+import { Node, Versions, config, stack } from './config';
 
 const controlPlanes = config.requireObject<Node[]>('controlplanes');
 const workers = config.requireObject<Node[]>('workers');
@@ -16,43 +13,6 @@ export const vip = config.get('vip');
 export const clusterEndpoint = config.require('clusterEndpoint');
 
 const secrets = new talos.machine.Secrets('secrets');
-const machineSecrets = {
-  cluster: secrets.machineSecrets.cluster,
-  secrets: secrets.machineSecrets.secrets,
-  trustdinfo: secrets.machineSecrets.trustdinfo,
-  certs: {
-    etcd: {
-      cert: certs.etcd.cert.certPem.apply(b64e),
-      key: certs.etcd.key.privateKeyPem.apply(b64e),
-    },
-    k8s: {
-      cert: certs.k8s.cert.certPem.apply(b64e),
-      key: certs.k8s.key.privateKeyPem.apply(b64e),
-    },
-    // Fake field
-    k8s_aggregator: {
-      cert: certs.aggregator.cert.certPem.apply(b64e),
-      key: certs.aggregator.key.privateKeyPem.apply(b64e),
-    },
-    // Actual field
-    k8sAggregator: {
-      cert: certs.aggregator.cert.certPem.apply(b64e),
-      key: certs.aggregator.key.privateKeyPem.apply(b64e),
-    },
-    // Fake field
-    k8s_serviceaccount: {
-      key: certs.serviceAccount.key.privateKeyPem.apply(b64e),
-    },
-    // Actual field
-    k8sServiceaccount: {
-      key: certs.serviceAccount.key.privateKeyPem.apply(b64e),
-    },
-    os: {
-      cert: certs.os.cert.certPem.apply(b64e),
-      key: certs.os.key.privateKeyPem.apply(b64e),
-    },
-  } as machine.CertificatesArgs,
-};
 
 const controlplaneConfig = talos.machine.getConfigurationOutput({
   clusterName: clusterName,
@@ -60,7 +20,7 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
   machineType: 'controlplane',
   docs: false,
   examples: false,
-  machineSecrets,
+  machineSecrets: secrets.machineSecrets,
   configPatches: [jsonStringify({
     cluster: {
       apiServer: {
@@ -127,7 +87,7 @@ const workerConfig = talos.machine.getConfigurationOutput({
   docs: false,
   examples: false,
   kubernetesVersion: versions.k8s,
-  machineSecrets,
+  machineSecrets: secrets.machineSecrets,
   configPatches: [YAML.stringify({
     machine: {
       install: {
@@ -143,15 +103,9 @@ const workerConfig = talos.machine.getConfigurationOutput({
   })],
 });
 
-const clientConfiguration = {
-  caCertificate: certs.os.cert.certPem.apply(b64e),
-  clientCertificate: certs.admin.cert.certPem.apply(b64e),
-  clientKey: certs.admin.key.privateKeyPem.apply(b64e),
-};
-
 const clientConfig = talos.client.getConfigurationOutput({
   clusterName: clusterName,
-  clientConfiguration,
+  clientConfiguration: secrets.clientConfiguration,
   endpoints: controlPlanes.map(x => x.ip),
   nodes: [controlPlanes[0].ip],
 });
@@ -174,7 +128,7 @@ if (stack === 'prod') {
 
 const controlPlaneConfigApply: talos.machine.ConfigurationApply[] = controlPlanes
   .map(x => new talos.machine.ConfigurationApply(x.ip, {
-    clientConfiguration,
+    clientConfiguration: secrets.clientConfiguration,
     machineConfigurationInput: controlplaneConfig.machineConfiguration,
     node: x.ip,
     configPatches: [
@@ -196,7 +150,7 @@ const controlPlaneConfigApply: talos.machine.ConfigurationApply[] = controlPlane
 
 const workerConfigApply: talos.machine.ConfigurationApply[] = workers
   .map(x => new talos.machine.ConfigurationApply(x.ip, {
-    clientConfiguration,
+    clientConfiguration: secrets.clientConfiguration,
     machineConfigurationInput: workerConfig.machineConfiguration,
     node: x.ip,
     configPatches: [jsonStringify({
@@ -209,7 +163,7 @@ const workerConfigApply: talos.machine.ConfigurationApply[] = workers
   }));
 
 const bootstrap = new talos.machine.Bootstrap('bootstrap', {
-  clientConfiguration,
+  clientConfiguration: secrets.clientConfiguration,
   node: endpoint,
   endpoint: endpoint,
 }, {
@@ -220,7 +174,7 @@ const bootstrap = new talos.machine.Bootstrap('bootstrap', {
 });
 
 const kubeconfigOutput = talos.cluster.getKubeconfigOutput({
-  clientConfiguration,
+  clientConfiguration: secrets.clientConfiguration,
   node: controlPlanes[0].ip,
   endpoint: endpoint,
   timeouts: {
@@ -229,7 +183,7 @@ const kubeconfigOutput = talos.cluster.getKubeconfigOutput({
 });
 
 talos.cluster.getHealthOutput({
-  clientConfiguration,
+  clientConfiguration: secrets.clientConfiguration,
   controlPlaneNodes: controlPlanes.map(x => x.ip),
   workerNodes: workers.map(x => x.ip),
   endpoints: controlPlanes.map(x => x.ip),
