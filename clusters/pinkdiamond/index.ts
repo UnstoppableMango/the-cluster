@@ -58,9 +58,6 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
       },
     },
     machine: {
-      install: {
-        image: `ghcr.io/siderolabs/installer:v${versions.talos}`,
-      },
       certSANs: certSans,
       kubelet: {
         extraArgs: {
@@ -141,6 +138,7 @@ const controlPlaneConfigApply: talos.machine.ConfigurationApply[] = controlPlane
         },
         machine: {
           install: {
+            image: `factory.talos.dev/installer/${x.schematicId}:v${versions.talos}`,
             disk: x.installDisk,
           },
         },
@@ -156,6 +154,7 @@ const workerConfigApply: talos.machine.ConfigurationApply[] = workers
     configPatches: [jsonStringify({
       machine: {
         install: {
+          image: `factory.talos.dev/installer/${x.schematicId}:v${versions.talos}`,
           disk: x.installDisk,
         },
       },

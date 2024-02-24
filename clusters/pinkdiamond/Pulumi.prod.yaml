@@ -19,20 +19,28 @@ config:
   thecluster-pinkdiamond:controlplanes:
     - installDisk: /dev/mmcblk0
       ip: 192.168.1.104
+      schematicId: e3af43fa1ca4430a6273e6772ff27ea75bbac4c87425b1a0d37d640d020cb303
     - installDisk: /dev/mmcblk0
       ip: 192.168.1.105
+      schematicId: e3af43fa1ca4430a6273e6772ff27ea75bbac4c87425b1a0d37d640d020cb303
     - installDisk: /dev/mmcblk0
       ip: 192.168.1.106
+      schematicId: e3af43fa1ca4430a6273e6772ff27ea75bbac4c87425b1a0d37d640d020cb303
   thecluster-pinkdiamond:endpoint: 192.168.1.104
   thecluster-pinkdiamond:vip: 192.168.1.100
   thecluster-pinkdiamond:workers:
     - installDisk: /dev/sda
       ip: 192.168.1.107
+      schematicId: 525d53591e5e82f229ae0ad00bc7c4c0adc4b8861002f19519461e897e8c1f5f
     - installDisk: /dev/mmcblk0
       ip: 192.168.1.114
+      schematicId: e3af43fa1ca4430a6273e6772ff27ea75bbac4c87425b1a0d37d640d020cb303
     - installDisk: /dev/mmcblk0
       ip: 192.168.1.115
+      schematicId: e3af43fa1ca4430a6273e6772ff27ea75bbac4c87425b1a0d37d640d020cb303
     - installDisk: /dev/sda
       ip: 192.168.1.10
+      schematicId: c83d10460f7e84195451abef6b001307b58817843c763a23212d5e448aac9868
     - installDisk: /dev/nvme0n1
       ip: 192.168.1.12
+      schematicId: d99bc2c81701a16de3fc1fa424f1d133b22e025d1f5d5b5c2da3bc0609a369b3
