@@ -1,0 +1,10 @@
+config:
+  thecluster-cloudflare-tunnels:cloudflare:
+    accountId: 265a046434c952eeecb9710cfd76617c
+    email:
+      secure: AAABACwtCEovMN48sKfW2Ney1IIAbq6LGmMtFwehgQhJbo55LCR1Fnx6243lmY4yLcbx8LRaeQ==
+  thecluster-cloudflare-tunnels:operatorStack: pinkdiamond
+  thecluster-cloudflare-tunnels:tunnels:
+    - domain: thecluster.io
+      name: thecluster.io
+      size: 3

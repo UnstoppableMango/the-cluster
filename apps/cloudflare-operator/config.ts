@@ -7,7 +7,7 @@ export interface Cloudflare {
 }
 
 const config = new Config();
-export const clusterName = 'rosequartz';
+export const clusterName = getStack();
 export const ref = cluster.ref(clusterName, 'prod');
 export const provider = cluster.provider(ref, clusterName);
 export const cloudflare = config.requireObject<Cloudflare>('cloudflare');

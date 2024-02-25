@@ -181,15 +181,15 @@ const kubeconfigOutput = talos.cluster.getKubeconfigOutput({
   },
 });
 
-talos.cluster.getHealthOutput({
-  clientConfiguration: secrets.clientConfiguration,
-  controlPlaneNodes: controlPlanes.map(x => x.ip),
-  workerNodes: workers.map(x => x.ip),
-  endpoints: controlPlanes.map(x => x.ip),
-  timeouts: {
-    read: config.require('healthTimeout'),
-  },
-});
+// talos.cluster.getHealthOutput({
+//   clientConfiguration: secrets.clientConfiguration,
+//   controlPlaneNodes: controlPlanes.map(x => x.ip),
+//   workerNodes: workers.map(x => x.ip),
+//   endpoints: controlPlanes.map(x => x.ip),
+//   timeouts: {
+//     read: config.require('healthTimeout'),
+//   },
+// });
 
 export const talosconfig = clientConfig.talosConfig;
 export const kubeconfig = kubeconfigOutput.kubeconfigRaw;

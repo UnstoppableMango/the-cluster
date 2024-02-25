@@ -9,15 +9,22 @@ export interface Cloudflare {
   zoneId: string;
 }
 
+export interface Tunnel {
+  name: string;
+  domain: string;
+  size: number;
+}
+
 export interface Versions {
   cloudflared: string;
 }
 
 const config = new Config();
-export const clusterName = 'rosequartz';
+export const clusterName = getStack();
 export const ref = cluster.ref(clusterName, 'prod');
 export const provider = cluster.provider(ref, clusterName);
 export const cloudflare = config.requireObject<Cloudflare>('cloudflare');
+export const tunnels = config.requireObject<Tunnel[]>('tunnels');
 export const versions = config.requireObject<Versions>('versions');
 
 const caRef = new StackReference('ca', {
