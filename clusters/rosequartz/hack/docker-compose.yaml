@@ -7,7 +7,7 @@ version: '3'
 name: rosequartz
 
 x-controlplane: &controlplane
-  image: ghcr.io/siderolabs/talos:v1.6.4
+  image: ghcr.io/siderolabs/talos:v1.6.5
   environment:
     PLATFORM: container
     TALOSSKU: 2CPU-2048RAM

@@ -11,6 +11,7 @@ export interface Node {
   hostname?: string;
   installDisk: string;
   qemu?: boolean;
+  schematicId: string;
 }
 
 export const config = new Config();
