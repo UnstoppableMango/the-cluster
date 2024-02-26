@@ -1,0 +1,7 @@
+name: thecluster-zfs-localpv
+runtime: nodejs
+description: ZFS Local PV install for THECLUSTER
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: typescript
