@@ -17,6 +17,9 @@ const chart = new Chart('zfs-localpv', {
         allowedTopologyKeys: 'kubernetes.io/hostname',
         kubeletDir: '/var/lib/kubelet/',
       },
+      crd: {
+        volumeSnapshot: false,
+      },
     },
   },
 }, { provider });
