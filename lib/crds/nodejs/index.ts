@@ -36,6 +36,7 @@ import * as snapshot from "./snapshot";
 import * as sts from "./sts";
 import * as trust from "./trust";
 import * as types from "./types";
+import * as zfs from "./zfs";
 
 export {
     acme,
@@ -62,6 +63,7 @@ export {
     sts,
     trust,
     types,
+    zfs,
 };
 pulumi.runtime.registerResourcePackage("thecluster-crds", {
     version: utilities.getVersion(),

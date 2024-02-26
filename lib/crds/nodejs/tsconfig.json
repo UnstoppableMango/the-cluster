@@ -190,6 +190,16 @@
         "types/index.ts",
         "types/input.ts",
         "types/output.ts",
-        "utilities.ts"
+        "utilities.ts",
+        "zfs/index.ts",
+        "zfs/v1/index.ts",
+        "zfs/v1/zfsbackup.ts",
+        "zfs/v1/zfsnode.ts",
+        "zfs/v1/zfsrestore.ts",
+        "zfs/v1/zfssnapshot.ts",
+        "zfs/v1/zfsvolume.ts",
+        "zfs/v1alpha1/index.ts",
+        "zfs/v1alpha1/zfssnapshot.ts",
+        "zfs/v1alpha1/zfsvolume.ts"
     ]
 }
