@@ -6,4 +6,4 @@ version: 0.1.0
 dependencies:
 - name: kong
   repository: https://charts.konghq.com
-  version: 2.37.1
+  version: 2.38.0
