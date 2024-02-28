@@ -9,9 +9,9 @@ dependencies:
     version: 7.0.0-alpha1
   - name: oauth2-proxy
     repository: https://oauth2-proxy.github.io/manifests
-    version: 6.24.1
+    version: 6.24.2
     alias: external-oauth
   - name: oauth2-proxy
     repository: https://oauth2-proxy.github.io/manifests
-    version: 6.24.1
+    version: 6.24.2
     alias: internal-oauth
