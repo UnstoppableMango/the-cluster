@@ -1,0 +1,9 @@
+apiVersion: v2
+name: tinkerbell
+description: Tinkerbell install for THECLUSTER
+type: application
+version: 0.1.0
+dependencies:
+  - name: tinkerbell
+    repository: https://github.com/tinkerbell/charts/tree/main/stack
+    version: 0.0.0
