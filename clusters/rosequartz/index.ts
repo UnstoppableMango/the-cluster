@@ -107,12 +107,13 @@ const controlplaneConfigApply: talos.machine.ConfigurationApply[] = controlPlane
             certSANs: certSans,
           },
           extraManifests: [
-            `https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/v${versions.ksca}/deploy/standalone-install.yaml`,
+            `https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/v${versions.ksca}/deploy/ha-install.yaml`,
           ],
         },
         machine: {
           install: {
             disk: x.installDisk,
+            image: `factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba:v${versions.talos}`,
           },
           certSANs: certSans,
           kubelet: {
