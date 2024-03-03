@@ -1,7 +1,8 @@
 import { jsonStringify } from '@pulumi/pulumi';
 import * as talos from '@pulumiverse/talos';
 import * as YAML from 'yaml';
-import { Node, Versions, config, stack } from './config';
+import * as certs from './certs';
+import { Node, Versions, caPem, config, stack } from './config';
 
 const controlPlanes = config.requireObject<Node[]>('controlplanes');
 const workers = config.requireObject<Node[]>('workers');
@@ -20,6 +21,7 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
   machineType: 'controlplane',
   docs: false,
   examples: false,
+  kubernetesVersion: versions.k8s,
   machineSecrets: secrets.machineSecrets,
   configPatches: [jsonStringify({
     cluster: {
@@ -51,6 +53,7 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
                 'internal-ingress',
                 'drone',
                 'cert-manager',
+                'zfs-localpv',
               ],
             },
           },
@@ -73,6 +76,20 @@ const controlplaneConfig = talos.machine.getConfigurationOutput({
           ],
         },
       },
+      files: [
+        {
+          content: caPem,
+          path: '/etc/ssl/certs/ca-certificates',
+          permissions: 644,
+          op: 'append',
+        },
+        {
+          content: certs.cloudflare.cert.certificate,
+          path: '/etc/ssl/certs/ca-certificates',
+          permissions: 644,
+          op: 'append',
+        },
+      ],
     },
   })],
 });
@@ -85,7 +102,7 @@ const workerConfig = talos.machine.getConfigurationOutput({
   examples: false,
   kubernetesVersion: versions.k8s,
   machineSecrets: secrets.machineSecrets,
-  configPatches: [YAML.stringify({
+  configPatches: [jsonStringify({
     machine: {
       install: {
         image: `ghcr.io/siderolabs/installer:v${versions.talos}`,
@@ -96,6 +113,20 @@ const workerConfig = talos.machine.getConfigurationOutput({
           'rotate-server-certificates': true,
         },
       },
+      files: [
+        {
+          content: caPem,
+          path: '/etc/ssl/certs/ca-certificates',
+          permissions: 644,
+          op: 'append',
+        },
+        {
+          content: certs.cloudflare.cert.certificate,
+          path: '/etc/ssl/certs/ca-certificates',
+          permissions: 644,
+          op: 'append',
+        },
+      ],
     },
   })],
 });
@@ -141,6 +172,7 @@ const controlPlaneConfigApply: talos.machine.ConfigurationApply[] = controlPlane
             image: `factory.talos.dev/installer/${x.schematicId}:v${versions.talos}`,
             disk: x.installDisk,
           },
+          nodeTaints: x.nodeTaints,
         },
       }),
     ],
@@ -156,7 +188,11 @@ const workerConfigApply: talos.machine.ConfigurationApply[] = workers
         install: {
           image: `factory.talos.dev/installer/${x.schematicId}:v${versions.talos}`,
           disk: x.installDisk,
+          wipe: x.wipe,
+          extensions: x.extensions,
         },
+        nodeLabels: x.nodeLabels,
+        nodeTaints: x.nodeTaints,
       },
     })],
   }));
