@@ -13,9 +13,10 @@ const chart = new Chart('zfs-localpv', {
     'zfs-localpv': {
       analytics: { enabled: false },
       zfsNode: {
-        // nodeSelector: {},
-        allowedTopologyKeys: 'kubernetes.io/hostname',
         kubeletDir: '/var/lib/kubelet/',
+        nodeSelector: {
+          'thecluster.io/zfs': 'true',
+        },
       },
       crd: {
         volumeSnapshot: false,
