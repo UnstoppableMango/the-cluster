@@ -12,6 +12,12 @@ export interface Node {
   installDisk: string;
   qemu?: boolean;
   schematicId: string;
+  nodeLabels?: Record<string, string>;
+  nodeTaints?: Record<string, string>;
+  wipe?: boolean;
+  extensions?: {
+    image: string;
+  }[];
 }
 
 export const config = new Config();
