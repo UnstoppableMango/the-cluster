@@ -1,0 +1,10 @@
+name: thecluster-byoh
+runtime: nodejs
+description: Cluster API Provider Bring Your Own Host install for THECLUSTER
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: typescript
+  versions:
+    value:
+      byoh: v0.5.0
