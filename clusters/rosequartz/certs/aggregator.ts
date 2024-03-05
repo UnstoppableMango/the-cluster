@@ -20,4 +20,6 @@ export const cert = new LocallySignedCert('aggregator', {
   certRequestPem: request.certRequestPem,
   earlyRenewalHours,
   validityPeriodHours,
+  isCaCertificate: true,
+  setSubjectKeyId: true,
 });

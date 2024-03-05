@@ -1,6 +1,6 @@
 import { Namespace, Service } from '@pulumi/kubernetes/core/v1';
 import { TunnelBinding } from '@unstoppablemango/thecluster-crds/networking/v1alpha1';
-import { provider } from './config';
+import { fqdn, provider } from './config';
 
 const ns = Namespace.get('kube-system', 'kube-system', { provider });
 const service = Service.get('kubernetes', 'kubernetes', { provider });
@@ -17,7 +17,7 @@ const tunnel = new TunnelBinding('api-server', {
   subjects: [{
     name: service.metadata.name,
     spec: {
-      fqdn: 'pinkdiamond.thecluster.io',
+      fqdn,
       target: 'https://kubernetes.default.svc',
       caPool: 'kube-root-ca.crt',
     },

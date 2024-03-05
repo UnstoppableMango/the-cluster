@@ -6,6 +6,7 @@ const config = new Config();
 export const clusterName = getStack();
 export const ref = cluster.ref(clusterName, 'prod');
 export const provider = cluster.provider(ref, clusterName);
+export const fqdn = config.require('fqdn');
 
 const tunnelsRef = new StackReference('tunnels', {
   name: `UnstoppableMango/thecluster-cloudflare-tunnels/${getStack()}`,

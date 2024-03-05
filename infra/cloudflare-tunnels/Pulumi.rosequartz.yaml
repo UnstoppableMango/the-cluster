@@ -4,3 +4,7 @@ config:
     email:
       secure: AAABAKJs9IqH+NQejW3u3B4RGQYjG1Jo29jvHFCoMYkHiewlxSMxEPGzV0rO6BSuGfSA3hKvnQ==
   thecluster-cloudflare-tunnels:operatorStack: rosequartz
+  thecluster-cloudflare-tunnels:tunnels:
+    - domain: thecluster.io
+      name: thecluster.io
+      size: 3
