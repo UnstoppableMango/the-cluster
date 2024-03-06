@@ -33,3 +33,9 @@ jobs:
       name: rsync
       path: containers/rsync
       platforms: linux/amd64
+
+  byoh:
+    uses: ./.github/workflows/docker-container.yml
+    with:
+      name: byoh
+      path: containers/byoh
