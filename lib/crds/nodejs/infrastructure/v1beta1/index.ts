@@ -5,6 +5,46 @@ import * as pulumi from "@pulumi/pulumi";
 import * as utilities from "../../utilities";
 
 // Export members:
+export { BootstrapKubeconfigArgs } from "./bootstrapKubeconfig";
+export type BootstrapKubeconfig = import("./bootstrapKubeconfig").BootstrapKubeconfig;
+export const BootstrapKubeconfig: typeof import("./bootstrapKubeconfig").BootstrapKubeconfig = null as any;
+utilities.lazyLoad(exports, ["BootstrapKubeconfig"], () => require("./bootstrapKubeconfig"));
+
+export { ByoClusterArgs } from "./byoCluster";
+export type ByoCluster = import("./byoCluster").ByoCluster;
+export const ByoCluster: typeof import("./byoCluster").ByoCluster = null as any;
+utilities.lazyLoad(exports, ["ByoCluster"], () => require("./byoCluster"));
+
+export { ByoClusterTemplateArgs } from "./byoClusterTemplate";
+export type ByoClusterTemplate = import("./byoClusterTemplate").ByoClusterTemplate;
+export const ByoClusterTemplate: typeof import("./byoClusterTemplate").ByoClusterTemplate = null as any;
+utilities.lazyLoad(exports, ["ByoClusterTemplate"], () => require("./byoClusterTemplate"));
+
+export { ByoHostArgs } from "./byoHost";
+export type ByoHost = import("./byoHost").ByoHost;
+export const ByoHost: typeof import("./byoHost").ByoHost = null as any;
+utilities.lazyLoad(exports, ["ByoHost"], () => require("./byoHost"));
+
+export { ByoMachineArgs } from "./byoMachine";
+export type ByoMachine = import("./byoMachine").ByoMachine;
+export const ByoMachine: typeof import("./byoMachine").ByoMachine = null as any;
+utilities.lazyLoad(exports, ["ByoMachine"], () => require("./byoMachine"));
+
+export { ByoMachineTemplateArgs } from "./byoMachineTemplate";
+export type ByoMachineTemplate = import("./byoMachineTemplate").ByoMachineTemplate;
+export const ByoMachineTemplate: typeof import("./byoMachineTemplate").ByoMachineTemplate = null as any;
+utilities.lazyLoad(exports, ["ByoMachineTemplate"], () => require("./byoMachineTemplate"));
+
+export { K8sInstallerConfigArgs } from "./k8sInstallerConfig";
+export type K8sInstallerConfig = import("./k8sInstallerConfig").K8sInstallerConfig;
+export const K8sInstallerConfig: typeof import("./k8sInstallerConfig").K8sInstallerConfig = null as any;
+utilities.lazyLoad(exports, ["K8sInstallerConfig"], () => require("./k8sInstallerConfig"));
+
+export { K8sInstallerConfigTemplateArgs } from "./k8sInstallerConfigTemplate";
+export type K8sInstallerConfigTemplate = import("./k8sInstallerConfigTemplate").K8sInstallerConfigTemplate;
+export const K8sInstallerConfigTemplate: typeof import("./k8sInstallerConfigTemplate").K8sInstallerConfigTemplate = null as any;
+utilities.lazyLoad(exports, ["K8sInstallerConfigTemplate"], () => require("./k8sInstallerConfigTemplate"));
+
 export { ProxmoxClusterArgs } from "./proxmoxCluster";
 export type ProxmoxCluster = import("./proxmoxCluster").ProxmoxCluster;
 export const ProxmoxCluster: typeof import("./proxmoxCluster").ProxmoxCluster = null as any;
@@ -25,6 +65,22 @@ const _module = {
     version: utilities.getVersion(),
     construct: (name: string, type: string, urn: string): pulumi.Resource => {
         switch (type) {
+            case "kubernetes:infrastructure.cluster.x-k8s.io/v1beta1:BootstrapKubeconfig":
+                return new BootstrapKubeconfig(name, <any>undefined, { urn })
+            case "kubernetes:infrastructure.cluster.x-k8s.io/v1beta1:ByoCluster":
+                return new ByoCluster(name, <any>undefined, { urn })
+            case "kubernetes:infrastructure.cluster.x-k8s.io/v1beta1:ByoClusterTemplate":
+                return new ByoClusterTemplate(name, <any>undefined, { urn })
+            case "kubernetes:infrastructure.cluster.x-k8s.io/v1beta1:ByoHost":
+                return new ByoHost(name, <any>undefined, { urn })
+            case "kubernetes:infrastructure.cluster.x-k8s.io/v1beta1:ByoMachine":
+                return new ByoMachine(name, <any>undefined, { urn })
+            case "kubernetes:infrastructure.cluster.x-k8s.io/v1beta1:ByoMachineTemplate":
+                return new ByoMachineTemplate(name, <any>undefined, { urn })
+            case "kubernetes:infrastructure.cluster.x-k8s.io/v1beta1:K8sInstallerConfig":
+                return new K8sInstallerConfig(name, <any>undefined, { urn })
+            case "kubernetes:infrastructure.cluster.x-k8s.io/v1beta1:K8sInstallerConfigTemplate":
+                return new K8sInstallerConfigTemplate(name, <any>undefined, { urn })
             case "kubernetes:infrastructure.cluster.x-k8s.io/v1beta1:ProxmoxCluster":
                 return new ProxmoxCluster(name, <any>undefined, { urn })
             case "kubernetes:infrastructure.cluster.x-k8s.io/v1beta1:ProxmoxMachine":
