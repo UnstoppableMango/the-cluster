@@ -83,7 +83,7 @@ runs:
 
     - name: Setup helm
       if: inputs.helm == 'true' || inputs.all == 'true'
-      uses: azure/setup-helm@v3
+      uses: azure/setup-helm@v4
       with:
         version: '3.13.2' # renovate depName=helm/helm extractVersion=extractVersion=^v(?<version>.*)
       env:
