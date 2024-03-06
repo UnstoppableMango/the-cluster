@@ -1,6 +1,6 @@
 #syntax=docker/dockerfile:1
 
-FROM ghcr.io/unstoppablemango/tcubi:v2.0.4
+FROM ghcr.io/unstoppablemango/tcubi:v2.0.5
 
 RUN adduser --disabled-password --gecos "" --uid 1001 runner \
 	&& usermod -aG sudo runner \
