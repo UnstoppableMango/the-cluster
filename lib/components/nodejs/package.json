@@ -2,6 +2,9 @@
   "name": "@unmango/thecluster-components",
   "workspaces": [
     "cloudflare-ingress",
-    "oauth2-proxy"
+    "kubeadm",
+    "oauth",
+    "oauth2-proxy",
+    "postgres-db"
   ]
 }
