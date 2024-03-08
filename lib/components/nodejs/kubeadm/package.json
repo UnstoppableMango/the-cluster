@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@pulumi/command": "^0.9.2",
-    "@pulumi/pulumi": "^3.108.1"
+    "@pulumi/pulumi": "^3.108.1",
+    "@pulumi/tls": "^5.0.1"
   }
 }
