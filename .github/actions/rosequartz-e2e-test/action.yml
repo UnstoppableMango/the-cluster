@@ -23,7 +23,7 @@ runs:
         stack-name: UnstoppableMango/thecluster-rosequartz/${{ inputs.stack }}
         command: up
         work-dir: clusters/rosequartz
-        pulumi-version: 3.108.1 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
+        pulumi-version: 3.109.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
 
     - id: setup-config
       uses: ./.github/actions/setup-config
@@ -57,7 +57,7 @@ runs:
         stack-name: UnstoppableMango/thecluster-crds/${{ inputs.stack }}
         command: up
         work-dir: apps/crds
-        pulumi-version: 3.108.1 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
+        pulumi-version: 3.109.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
 
     - run: npm ci
       working-directory: apps/cert-manager
@@ -76,7 +76,7 @@ runs:
         stack-name: UnstoppableMango/thecluster-cert-manager/${{ inputs.stack }}
         command: up
         work-dir: apps/cert-manager
-        pulumi-version: 3.108.1 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
+        pulumi-version: 3.109.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
 
     - run: ./spec/validation.sh
       working-directory: apps/cert-manager
@@ -100,7 +100,7 @@ runs:
         stack-name: UnstoppableMango/thecluster-metrics-server/${{ inputs.stack }}
         command: up
         work-dir: apps/metrics-server
-        pulumi-version: 3.108.1 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
+        pulumi-version: 3.109.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
 
     - name: Validate Metrics Server
       run: ./spec/validation.sh
@@ -125,7 +125,7 @@ runs:
         stack-name: UnstoppableMango/thecluster-clusterapi/${{ inputs.stack }}
         command: up
         work-dir: apps/clusterapi
-        pulumi-version: 3.108.1 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
+        pulumi-version: 3.109.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
 
     - name: Validate Cluster API
       run: ./spec/validation.sh
