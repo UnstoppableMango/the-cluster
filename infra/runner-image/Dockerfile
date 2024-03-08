@@ -1,7 +1,7 @@
 #syntax=docker/dockerfile:1
 
 FROM mikefarah/yq:4.42.1 as yq
-FROM pulumi/pulumi:3.108.1
+FROM pulumi/pulumi:3.109.0
 
 COPY --from=yq /usr/bin/yq /usr/bin/yq
 
