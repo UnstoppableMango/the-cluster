@@ -3,9 +3,12 @@ import { CertRequest, LocallySignedCert } from '@pulumi/tls';
 import { KeyPair, KeyPairArgs } from './keypair';
 
 export interface CertificateArgs extends KeyPairArgs {
-  isCaCertificate?: Input<boolean>;
+  dnsNames?: Input<Input<string>[]>;
   caCertPem: Input<string>;
   caPrivateKeyPem: Input<string>;
+  ipAddresses?: Input<Input<string>[]>;
+  isCaCertificate?: Input<boolean>;
+  uris?: Input<Input<string>[]>;
 }
 
 export class Certificate extends KeyPair<LocallySignedCert> {
@@ -17,6 +20,9 @@ export class Certificate extends KeyPair<LocallySignedCert> {
 
     const csr = new CertRequest(name, {
       privateKeyPem: this.key.privateKeyPem,
+      ipAddresses: args.ipAddresses,
+      dnsNames: args.dnsNames,
+      uris: args.uris,
       subject: {
         commonName: args.commonName,
         country: args.country,
