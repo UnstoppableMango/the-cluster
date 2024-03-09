@@ -1,0 +1,7 @@
+name: thecluster-devc
+runtime: nodejs
+description: Development cluster infrastructure for THECLUSTER
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: typescript
