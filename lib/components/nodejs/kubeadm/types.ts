@@ -11,7 +11,3 @@ export type AllowedUsage =
   | 'server_auth';
 
 export type EcdsaCurve = 'P224' | 'P256' | 'P384' | 'P521';
-
-export interface KubeadmArgs {
-  ip?: Input<string>;
-}
