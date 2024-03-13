@@ -7,6 +7,9 @@
     "@pulumi/pulumi": "^3.89.0",
     "@pulumi/tls": "^5.0.1",
     "@pulumiverse/talos": "^0.2.0",
+    "@unmango/thecluster-components": "file:../../lib/components/nodejs",
+    "@unstoppablemango/thecluster": "file:../../lib/nodejs",
+    "@unstoppablemango/thecluster-crds": "file:../../lib/crds/nodejs",
     "yaml": "^2.3.4"
   },
   "devDependencies": {
