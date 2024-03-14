@@ -52,7 +52,7 @@ runs:
       if: inputs.pulumi == 'true' || inputs.all == 'true'
       uses: pulumi/actions@v5
       with:
-        pulumi-version: 3.109.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
+        pulumi-version: 3.110.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
 
