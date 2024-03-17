@@ -43,7 +43,7 @@ const sec = new Secret('admin-pub', {
   type: 'kubernetes.io/service-account-token',
 }, { provider });
 
-const role = ClusterRole.get('cluster-admin', 'cluster-admin');
+const role = ClusterRole.get('cluster-admin', 'cluster-admin', { provider });
 
 const rb = new ClusterRoleBinding('admin-pub', {
   metadata: { name: 'admin-pub' },
@@ -58,3 +58,5 @@ subjects: [{
   name: sa.metadata.name,
 }],
 }, { provider });
+
+export const token = sec.data.apply(x => x['token']);
