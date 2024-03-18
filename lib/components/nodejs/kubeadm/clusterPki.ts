@@ -1,19 +1,29 @@
-import { ComponentResource, ComponentResourceOptions, Input, interpolate, output } from '@pulumi/pulumi';
+import * as path from 'node:path';
+import { ComponentResource, ComponentResourceOptions, Input, Output, interpolate, output } from '@pulumi/pulumi';
+import { remote } from '@pulumi/command/types/input';
 import { RootCa } from './rootCa';
 import { Certificate } from './certificate';
 import { Algorithm } from './types';
+import { RemoteFile } from './remoteFile';
+
+export interface InstalledCerts {
+  ca: RemoteFile;
+  cert: RemoteFile;
+  key: RemoteFile;
+}
 
 export interface NodeArgs {
   ip: Input<string>;
 }
 
-type NodeMapInput = Record<string, Input<NodeArgs>>;
+export type NodeMapInput = Record<string, Input<NodeArgs>>;
 
 export interface ClusterPkiArgs<T extends NodeMapInput = NodeMapInput> {
   algorithm?: Input<Algorithm>;
   clusterName: Input<string>;
   expiry?: Input<number>;
   nodes: T;
+  publicIp: Input<string>;
   size?: Input<number>;
 }
 
@@ -27,20 +37,23 @@ export class ClusterPki<T extends NodeMapInput = NodeMapInput> extends Component
   public static readonly defaultSize: number = 2048;
 
   public readonly admin: Certificate;
+  public readonly clusterName: Output<string>;
   public readonly controllerManager: Certificate;
   public readonly kubelet: CertMap<T>;
   public readonly kubeProxy: Certificate;
   public readonly kubernetes: Certificate;
   public readonly kubeScheduler: Certificate;
+  public readonly publicIp: Output<string>;
   public readonly rootCa: RootCa;
   public readonly serviceAccounts: Certificate;
 
   constructor(private name: string, args: ClusterPkiArgs<T>, opts?: ComponentResourceOptions) {
     super('thecluster:index:clusterPki', name, args, opts);
 
-    const clusterName = output(args.clusterName);
     const algorithm = output(args.algorithm ?? ClusterPki.defaultAlgorithm);
+    const clusterName = output(args.clusterName);
     const expiry = output(args.expiry ?? ClusterPki.defaultExpiry);
+    const publicIp = output(args.publicIp);
     const size = output(args.size ?? ClusterPki.defaultSize);
 
     const rootCa = new RootCa(name, {
@@ -112,6 +125,7 @@ export class ClusterPki<T extends NodeMapInput = NodeMapInput> extends Component
         '10.32.0.1', '10.240.0.10', '10.240.0.11', '10.240.0.12', '127.0.0.1',
         // TODO: Input IPs
         ...Object.values(args.nodes).map(x => output(x).ip),
+        publicIp,
       ],
     }, { parent: this });
 
@@ -124,18 +138,38 @@ export class ClusterPki<T extends NodeMapInput = NodeMapInput> extends Component
 
     this.admin = admin;
     this.controllerManager = controllerManager;
+    this.clusterName = clusterName;
     this.kubelet = kubelet as CertMap<T>; // TODO: Can we refactor away from a cast?
     this.kubeProxy = kubeProxy;
     this.kubeScheduler = kubeScheduler;
     this.kubernetes = kubernetes;
+    this.publicIp = publicIp;
     this.rootCa = rootCa;
     this.serviceAccounts = serviceAccounts;
 
     this.registerOutputs({
-      admin, controllerManager, kubeProxy,
-      kubeScheduler, kubernetes, rootCa, serviceAccounts,
+      admin, controllerManager, kubeProxy, kubeScheduler,
+      kubernetes, publicIp, rootCa, serviceAccounts,
     });
   }
+
+  // TODO: Install path + ya know... actually "installing" the right things
+  public installOn(node: keyof T, connection: remote.ConnectionArgs, opts?: ComponentResourceOptions): InstalledCerts {
+    const target = path.join('home', 'kthw');
+    const cert = this.kubelet[node];
+
+    const caPath = path.join(target, 'ca.pem');
+    const certPath = path.join(target, 'cert.pem');
+    const keyPath = path.join(target, 'key.pem');
+
+    return {
+      ca: cert.installOn(this.name, { connection, path: caPath }, opts),
+      cert: cert.installOn(this.name, { connection, path: certPath }, opts),
+      key: cert.installOn(this.name, { connection, path: keyPath }, opts),
+    }
+  }
+
+  // TODO: Install controller certs
 
   private certName(type: string): string {
     return `${this.name}-${type}`;

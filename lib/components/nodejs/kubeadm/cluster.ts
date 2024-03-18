@@ -31,6 +31,7 @@ export class Cluster extends ComponentResource {
       nodes: {
         test: { ip: '10.69.0.2' },
       },
+      publicIp: '10.69.1.2',
     });
 
     this.pki = pki;
