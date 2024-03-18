@@ -66,6 +66,9 @@ export function installOn(
   }, opts);
 }
 
+// TODO: Install worker certs
+// TODO: Install controlplane certs
+
 function getKubeconfig(
   pki: ClusterPki,
   username: Input<string>,
