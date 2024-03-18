@@ -44,9 +44,7 @@ export class ClusterPki<T extends NodeMapInput = NodeMapInput> extends Component
     const size = output(args.size ?? ClusterPki.defaultSize);
 
     const rootCa = new RootCa(name, {
-      algorithm,
-      size,
-      expiry,
+      algorithm, size, expiry,
       commonName: clusterName,
       allowedUses: [
         'cert_signing',
@@ -60,14 +58,14 @@ export class ClusterPki<T extends NodeMapInput = NodeMapInput> extends Component
       algorithm, size, expiry,
       commonName: 'admin',
       organization: 'system:masters',
-      allowedUses: [], // TODO
+      allowedUses: rootCa.allowedUses, // TODO
     }, { parent: this });
 
     const controllerManager = rootCa.newCertificate(this.certName('controller-manager'), {
       algorithm, size, expiry,
       commonName: 'system:kube-controller-manager',
       organization: 'system:kube-controller-manager',
-      allowedUses: [], // TODO
+      allowedUses: rootCa.allowedUses, // TODO
     }, { parent: this });
 
     const kubelet: Partial<CertMap<T>> = {};
@@ -78,7 +76,7 @@ export class ClusterPki<T extends NodeMapInput = NodeMapInput> extends Component
         algorithm, size, expiry,
         commonName: interpolate`system:node:${node.ip}`,
         organization: 'system:nodes',
-        allowedUses: [], // TODO
+        allowedUses: rootCa.allowedUses, // TODO
         ipAddresses: [node.ip],
       }, { parent: this });
     }
@@ -87,21 +85,21 @@ export class ClusterPki<T extends NodeMapInput = NodeMapInput> extends Component
       algorithm, size, expiry,
       commonName: 'system:kube-proxy',
       organization: 'system:node-proxier',
-      allowedUses: [], // TODO
+      allowedUses: rootCa.allowedUses, // TODO
     }, { parent: this });
 
     const kubeScheduler = rootCa.newCertificate(this.certName('kube-scheduler'), {
       algorithm, size, expiry,
       commonName: 'system:kube-scheduler',
       organization: 'system:kube-scheduler',
-      allowedUses: [], // TODO
+      allowedUses: rootCa.allowedUses, // TODO
     }, { parent: this });
 
     const kubernetes = rootCa.newCertificate(this.certName('kubernetes'), {
       algorithm, size, expiry,
       commonName: 'kubernetes',
       organization: 'Kubernetes',
-      allowedUses: [], // TODO
+      allowedUses: rootCa.allowedUses, // TODO
       dnsNames: [
         'kubernetes',
         'kubernetes.default',
@@ -121,9 +119,9 @@ export class ClusterPki<T extends NodeMapInput = NodeMapInput> extends Component
       algorithm, size, expiry,
       commonName: 'service-accounts',
       organization: 'Kubernetes',
-      allowedUses: [], // TODO
+      allowedUses: rootCa.allowedUses, // TODO
     }, { parent: this });
-    
+
     this.admin = admin;
     this.controllerManager = controllerManager;
     this.kubelet = kubelet as CertMap<T>; // TODO: Can we refactor away from a cast?

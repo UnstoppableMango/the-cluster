@@ -1,4 +1,4 @@
-import { ComponentResourceOptions, Input } from '@pulumi/pulumi';
+import { ComponentResourceOptions, Input, Output } from '@pulumi/pulumi';
 import { CertRequest, LocallySignedCert } from '@pulumi/tls';
 import { KeyPair, KeyPairArgs } from './keypair';
 import { RemoteFile, RemoteFileArgs } from './remoteFile';
@@ -15,6 +15,14 @@ export interface CertificateArgs extends KeyPairArgs {
 export class Certificate extends KeyPair<LocallySignedCert> {
   public readonly cert: LocallySignedCert;
   public readonly csr: CertRequest;
+
+  public get certPem(): Output<string> {
+    return this.cert.certPem;
+  }
+
+  public get keyPem(): Output<string> {
+    return this.key.privateKeyPem;
+  }
 
   constructor(name: string, args: CertificateArgs, opts?: ComponentResourceOptions) {
     super('thecluster:index:certificate', name, args, opts);
