@@ -153,19 +153,19 @@ export class ClusterPki<T extends NodeMapInput = NodeMapInput> extends Component
     });
   }
 
-  // TODO: Install path + ya know... actually "installing" the right things
+  // TODO: Install path
   public installOn(node: keyof T, connection: remote.ConnectionArgs, opts?: ComponentResourceOptions): InstalledCerts {
     const target = path.join('home', 'kthw');
-    const cert = this.kubelet[node];
+    const cert: Certificate = this.kubelet[node];
 
     const caPath = path.join(target, 'ca.pem');
     const certPath = path.join(target, 'cert.pem');
     const keyPath = path.join(target, 'key.pem');
 
     return {
-      ca: cert.installOn(this.name, { connection, path: caPath }, opts),
-      cert: cert.installOn(this.name, { connection, path: certPath }, opts),
-      key: cert.installOn(this.name, { connection, path: keyPath }, opts),
+      ca: this.rootCa.installCert(this.name, { connection, path: caPath }, opts),
+      cert: cert.installCert(this.name, { connection, path: certPath }, opts),
+      key: cert.installKey(this.name, { connection, path: keyPath }, opts),
     }
   }
 

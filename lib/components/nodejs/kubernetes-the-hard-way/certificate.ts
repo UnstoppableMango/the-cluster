@@ -1,6 +1,6 @@
 import { ComponentResourceOptions, Input, Output } from '@pulumi/pulumi';
 import { CertRequest, LocallySignedCert } from '@pulumi/tls';
-import { KeyPair, KeyPairArgs } from './keypair';
+import { InstallArgs, KeyPair, KeyPairArgs } from './keypair';
 import { RemoteFile, RemoteFileArgs } from './remoteFile';
 
 export interface CertificateArgs extends KeyPairArgs {
@@ -54,16 +54,5 @@ export class Certificate extends KeyPair<LocallySignedCert> {
     this.csr = csr;
 
     this.registerOutputs({ cert, csr });
-  }
-
-  public installOn(
-    name: string,
-    args: Omit<RemoteFileArgs, 'content'>,
-    opts?: ComponentResourceOptions,
-  ): RemoteFile {
-    return new RemoteFile(name, {
-      ...args,
-      content: this.cert.certPem,
-    }, opts);
   }
 }
