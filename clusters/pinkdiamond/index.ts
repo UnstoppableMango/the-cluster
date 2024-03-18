@@ -1,7 +1,7 @@
 import { jsonStringify } from '@pulumi/pulumi';
 import * as talos from '@pulumiverse/talos';
 import * as YAML from 'yaml';
-import { RootCa } from '@unmango/thecluster-components/kubeadm';
+import { RootCa } from '@unmango/thecluster-components/kubernetes-the-hard-way';
 import * as certs from './certs';
 import { Node, Versions, caPem, config, stack } from './config';
 import { readFileSync } from 'fs';

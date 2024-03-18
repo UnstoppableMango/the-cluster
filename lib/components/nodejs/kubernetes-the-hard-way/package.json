@@ -1,7 +1,7 @@
 {
-  "name": "@unmango/pulumi-kubeadm",
+  "name": "@unmango/pulumi-kubernetes-the-hard-way-ts",
   "version": "0.1.0",
-  "description": "Kubeadm Pulumi component",
+  "description": "Typescript implementation of Kubernetes the Hard Way as a Pulumi component",
   "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -15,7 +15,6 @@
     "pulumi",
     "component",
     "kubernetes",
-    "kubeadm",
     "typescript"
   ],
   "author": "UnstoppableMango",
@@ -23,7 +22,7 @@
   "bugs": {
     "url": "https://github.com/UnstoppableMango/the-cluster/issues"
   },
-  "homepage": "https://github.com/UnstoppableMango/the-cluster/components/kubeadm#readme",
+  "homepage": "https://github.com/UnstoppableMango/the-cluster/components/kubernetes-the-hard-way#readme",
   "devDependencies": {
     "typescript": "^5.0.0"
   },
