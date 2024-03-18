@@ -4,19 +4,31 @@ import { remote } from '@pulumi/command/types/input';
 import { RootCa } from './rootCa';
 import { Certificate } from './certificate';
 import { Algorithm } from './types';
-import { RemoteFile } from './remoteFile';
+import { InstallArgs, RemoteFile } from './remoteFile';
 
-export interface InstalledCerts {
+export interface WorkerCerts {
   ca: RemoteFile;
   cert: RemoteFile;
   key: RemoteFile;
 }
 
-export interface NodeArgs {
-  ip: Input<string>;
+export interface ControlPlaneCerts {
+  ca: RemoteFile;
+  caKey: RemoteFile;
+  kubernetesCert: RemoteFile;
+  kubernetesKey: RemoteFile;
+  serviceAccountsCert: RemoteFile;
+  serviceAccountsKey: RemoteFile;
 }
 
+export type ClusterPkiInstallArgs = Omit<InstallArgs, 'path'>;
+export type NodeRole = 'worker' | 'controlplane';
 export type NodeMapInput = Record<string, Input<NodeArgs>>;
+
+export interface NodeArgs {
+  ip: Input<string>;
+  role: Input<NodeRole>;
+}
 
 export interface ClusterPkiArgs<T extends NodeMapInput = NodeMapInput> {
   algorithm?: Input<Algorithm>;
@@ -37,8 +49,10 @@ export class ClusterPki<T extends NodeMapInput = NodeMapInput> extends Component
   public static readonly defaultSize: number = 2048;
 
   public readonly admin: Certificate;
+  public readonly algorithm: Output<Algorithm>;
   public readonly clusterName: Output<string>;
   public readonly controllerManager: Certificate;
+  public readonly expiry: Output<number>;
   public readonly kubelet: CertMap<T>;
   public readonly kubeProxy: Certificate;
   public readonly kubernetes: Certificate;
@@ -46,6 +60,7 @@ export class ClusterPki<T extends NodeMapInput = NodeMapInput> extends Component
   public readonly publicIp: Output<string>;
   public readonly rootCa: RootCa;
   public readonly serviceAccounts: Certificate;
+  public readonly size: Output<number>;
 
   constructor(private name: string, args: ClusterPkiArgs<T>, opts?: ComponentResourceOptions) {
     super('thecluster:index:clusterPki', name, args, opts);
@@ -137,8 +152,10 @@ export class ClusterPki<T extends NodeMapInput = NodeMapInput> extends Component
     }, { parent: this });
 
     this.admin = admin;
+    this.algorithm = algorithm;
     this.controllerManager = controllerManager;
     this.clusterName = clusterName;
+    this.expiry = expiry;
     this.kubelet = kubelet as CertMap<T>; // TODO: Can we refactor away from a cast?
     this.kubeProxy = kubeProxy;
     this.kubeScheduler = kubeScheduler;
@@ -146,32 +163,77 @@ export class ClusterPki<T extends NodeMapInput = NodeMapInput> extends Component
     this.publicIp = publicIp;
     this.rootCa = rootCa;
     this.serviceAccounts = serviceAccounts;
+    this.size = size;
 
     this.registerOutputs({
-      admin, controllerManager, kubeProxy, kubeScheduler,
-      kubernetes, publicIp, rootCa, serviceAccounts,
+      admin, algorithm, controllerManager, clusterName, expiry,
+      kubeProxy, kubeScheduler, kubernetes, publicIp, rootCa,
+      serviceAccounts, size,
     });
   }
 
-  // TODO: Install path
-  public installOn(node: keyof T, connection: remote.ConnectionArgs, opts?: ComponentResourceOptions): InstalledCerts {
-    const target = path.join('home', 'kthw');
-    const cert: Certificate = this.kubelet[node];
-
-    const caPath = path.join(target, 'ca.pem');
-    const certPath = path.join(target, 'cert.pem');
-    const keyPath = path.join(target, 'key.pem');
-
-    return {
-      ca: this.rootCa.installCert(this.name, { connection, path: caPath }, opts),
-      cert: cert.installCert(this.name, { connection, path: certPath }, opts),
-      key: cert.installKey(this.name, { connection, path: keyPath }, opts),
-    }
+  public installControlPlane(connection: remote.ConnectionArgs, opts?: ComponentResourceOptions): ControlPlaneCerts {
+    return installControlPlane(this, { connection }, opts);
   }
 
-  // TODO: Install controller certs
+  public installWorker(node: keyof T, connection: remote.ConnectionArgs, opts?: ComponentResourceOptions): WorkerCerts {
+    return installWorker(this, node, { connection }, opts);
+  }
 
   private certName(type: string): string {
     return `${this.name}-${type}`;
   }
+}
+
+export function installControlPlane(
+  pki: ClusterPki,
+  args: ClusterPkiInstallArgs,
+  opts?: ComponentResourceOptions,
+): ControlPlaneCerts {
+
+  const connection = output(args.connection);
+  // TODO: Filenames
+  const target = path.join('home', 'kthw'); // TODO: Paths
+  const caPath = path.join(target, 'ca.pem');
+  const caKeyPath = path.join(target, 'ca.key');
+  const kubePath = path.join(target, 'kubernetes.pem');
+  const kubeKeyPath = path.join(target, 'kubernetes-key.pem');
+  const serviceAccountsPath = path.join(target, 'service-accounts.pem');
+  const serviceAccountsKeyPath = path.join(target, 'service-accounts-key.pem');
+
+  // TODO: Standardize RemoteFile names
+  return {
+    ca: pki.rootCa.installCert(`ca`, { connection, path: caPath }, opts),
+    caKey: pki.rootCa.installKey(`ca-key`, { connection, path: caKeyPath }, opts),
+    kubernetesCert: pki.kubernetes.installCert(`kubernetes.pem`, { connection, path: kubePath }, opts),
+    kubernetesKey: pki.kubernetes.installKey(`kubernetes-key.pem`, { connection, path: kubeKeyPath }, opts),
+    serviceAccountsCert: pki.serviceAccounts.installCert(`service-accounts.pem`, { connection, path: serviceAccountsPath }, opts),
+    serviceAccountsKey: pki.serviceAccounts.installKey(`service-accounts-key.pem`, { connection, path: serviceAccountsKeyPath }, opts),
+  };
+}
+
+export function installWorker<T extends NodeMapInput = NodeMapInput>(
+  pki: ClusterPki<T>,
+  node: keyof T,
+  args: ClusterPkiInstallArgs,
+  opts?: ComponentResourceOptions,
+): WorkerCerts {
+  if (typeof node !== 'string') {
+    throw new Error('Need to narrow this type better');
+  }
+
+  const connection = output(args.connection);
+  const cert: Certificate = pki.kubelet[node];
+  // TODO: Filenames
+  const target = path.join('home', 'kthw'); // TODO: Paths
+  const caPath = path.join(target, 'ca.pem');
+  const certPath = path.join(target, 'cert.pem');
+  const keyPath = path.join(target, 'key.pem');
+
+  // TODO: Standardize RemoteFile names
+  return {
+    ca: pki.rootCa.installCert(`${node}-ca`, { connection, path: caPath }, opts),
+    cert: cert.installCert(`${node}-cert`, { connection, path: certPath }, opts),
+    key: cert.installKey(`${node}-key`, { connection, path: keyPath }, opts),
+  };
 }

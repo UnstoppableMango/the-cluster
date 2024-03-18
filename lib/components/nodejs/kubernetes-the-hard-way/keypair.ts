@@ -1,10 +1,8 @@
 import { ComponentResource, ComponentResourceOptions, Input, Output, output } from '@pulumi/pulumi';
 import { LocallySignedCert, PrivateKey, SelfSignedCert } from '@pulumi/tls';
 import { remote } from '@pulumi/command/types/input';
-import { RemoteFile, RemoteFileArgs } from './remoteFile';
+import { InstallArgs, RemoteFile } from './remoteFile';
 import { Algorithm, AllowedUsage, EcdsaCurve } from './types';
-
-export type InstallArgs = Omit<RemoteFileArgs, 'content'>;
 
 export interface KeyPairArgs {
   algorithm: Input<Algorithm>;

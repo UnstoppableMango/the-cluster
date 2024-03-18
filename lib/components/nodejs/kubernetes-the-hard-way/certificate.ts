@@ -1,7 +1,6 @@
 import { ComponentResourceOptions, Input, Output } from '@pulumi/pulumi';
 import { CertRequest, LocallySignedCert } from '@pulumi/tls';
-import { InstallArgs, KeyPair, KeyPairArgs } from './keypair';
-import { RemoteFile, RemoteFileArgs } from './remoteFile';
+import { KeyPair, KeyPairArgs } from './keypair';
 
 export interface CertificateArgs extends KeyPairArgs {
   dnsNames?: Input<Input<string>[]>;
