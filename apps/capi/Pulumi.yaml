@@ -4,4 +4,4 @@ description: Cluster API install for THECLUSTER
 config:
   versions:
     value:
-      capi: v1.6.2 # renovate depName=kubernetes-sigs/cluster-api
+      capi: v1.6.3 # renovate depName=kubernetes-sigs/cluster-api
