@@ -75,7 +75,7 @@ runs:
 
     - name: Setup kubectl
       if: inputs.kubectl == 'true' || inputs.all == 'true'
-      uses: azure/setup-kubectl@v3
+      uses: azure/setup-kubectl@v4
       with:
         version: v1.29.2 # renovate depName=kubernetes/kubernetes
       env:
