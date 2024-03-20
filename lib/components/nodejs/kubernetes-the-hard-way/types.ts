@@ -10,4 +10,13 @@ export type AllowedUsage =
   | 'key_encipherment'
   | 'server_auth';
 
+export type CertType =
+  | 'admin'
+  | 'kubelet'
+  | 'controller-manager'
+  | 'kube-proxy'
+  | 'kube-scheduler'
+  | 'kubernetes'
+  | 'service-accounts';
+
 export type EcdsaCurve = 'P224' | 'P256' | 'P384' | 'P521';

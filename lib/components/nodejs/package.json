@@ -2,7 +2,7 @@
   "name": "@unmango/thecluster-components",
   "workspaces": [
     "cloudflare-ingress",
-    "kubeadm",
+    "kubernetes-the-hard-way",
     "oauth",
     "oauth2-proxy",
     "postgres-db"
