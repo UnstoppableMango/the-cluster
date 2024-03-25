@@ -1,6 +1,6 @@
 dependencies:
 - name: unifi
   repository: oci://tccr.io/truecharts
-  version: 20.7.2
-digest: sha256:48c572026f5d17cc3166b3f7a98171d55e1efc2db485378e7ed7cb958fcb5583
-generated: "2024-03-23T20:07:22.983779374Z"
+  version: 20.7.3
+digest: sha256:c4b0618d9127fcaf4322fc3dfd8f69a500cea2fd6f905c229773b022633f5fe0
+generated: "2024-03-25T03:07:35.025325205Z"
