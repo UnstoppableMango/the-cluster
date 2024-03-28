@@ -4,4 +4,4 @@ description: Dex install for THECLUSTER
 config:
   versions:
     value:
-      dex: v2.38.0 # renovate depName=dexidp/dex
+      dex: v2.39.0 # renovate depName=dexidp/dex
