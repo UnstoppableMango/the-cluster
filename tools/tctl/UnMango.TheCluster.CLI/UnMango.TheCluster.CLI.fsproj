@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Argu" Version="6.2.2" />
+    <PackageReference Include="Argu" Version="6.2.3" />
     <PackageReference Include="Fluid.Core" Version="2.7.0" />
     <PackageReference Include="Humanizer" Version="2.14.1" />
     <PackageReference Include="MinVer" Version="5.0.0" PrivateAssets="all" />
