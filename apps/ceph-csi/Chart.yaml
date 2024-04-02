@@ -6,7 +6,7 @@ version: 0.1.0
 dependencies:
   - name: ceph-csi-cephfs
     repository: https://ceph.github.io/csi-charts
-    version: 3.10.2
+    version: 3.11.0
   - name: ceph-csi-rbd
     repository: https://ceph.github.io/csi-charts
-    version: 3.10.2
+    version: 3.11.0
