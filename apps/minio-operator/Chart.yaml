@@ -6,7 +6,7 @@ version: 0.1.0
 dependencies:
   - name: operator
     repository: https://operator.min.io
-    version: 5.0.14
+    version: 5.0.15
   - name: oauth2-proxy
     repository: https://oauth2-proxy.github.io/manifests
     version: 6.24.2
