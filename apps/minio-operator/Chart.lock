@@ -1,9 +1,9 @@
 dependencies:
 - name: operator
   repository: https://operator.min.io
-  version: 5.0.14
+  version: 5.0.15
 - name: oauth2-proxy
   repository: https://oauth2-proxy.github.io/manifests
   version: 6.24.2
-digest: sha256:c09061b12470a437a7cda4f7c8dfbac35e612a957a6fdc4331d2b34fce8f7dda
-generated: "2024-03-16T01:06:18.992629888Z"
+digest: sha256:7a4d2d8935b1088377e829a35d8546734f39c6e6e9a17dc05ba472bf3176c042
+generated: "2024-05-08T07:14:03.947019017Z"
