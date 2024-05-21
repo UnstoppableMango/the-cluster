@@ -4,4 +4,4 @@ description: Keycloak install for THECLUSTER
 config:
   versions:
     value:
-      keycloak: 23.0.6-debian-11-r4 # renovate depName=bitnami/keycloak datasource=docker
+      keycloak: 23.0.7-debian-12-r5 # renovate depName=bitnami/keycloak datasource=docker
