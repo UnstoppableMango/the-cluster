@@ -31,7 +31,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.K8s.V1
         public Input<string>? Host { get; set; }
 
         [Input("http-snippets")]
-        public Input<string>? HttpSnippets { get; set; }
+        public Input<string>? Http-snippets { get; set; }
 
         [Input("ingressClassName")]
         public Input<string>? IngressClassName { get; set; }
@@ -65,7 +65,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.K8s.V1
         }
 
         [Input("server-snippets")]
-        public Input<string>? ServerSnippets { get; set; }
+        public Input<string>? Server-snippets { get; set; }
 
         /// <summary>
         /// TLS defines TLS configuration for a VirtualServer.

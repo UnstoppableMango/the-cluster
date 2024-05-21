@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
+namespace Pulumi.Kubernetes.Types.Outputs.Pulumi.V1
 {
 
     /// <summary>
@@ -23,13 +23,13 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
         /// <summary>
         /// Requirement gives specific requirements for the prerequisite; the base requirement is that the referenced stack is in a successful state.
         /// </summary>
-        public readonly Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecPrerequisitesRequirement Requirement;
+        public readonly Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecPrerequisitesRequirement Requirement;
 
         [OutputConstructor]
         private StackSpecPrerequisites(
             string name,
 
-            Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecPrerequisitesRequirement requirement)
+            Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecPrerequisitesRequirement requirement)
         {
             Name = name;
             Requirement = requirement;

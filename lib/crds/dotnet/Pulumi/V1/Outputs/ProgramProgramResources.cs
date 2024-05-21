@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
+namespace Pulumi.Kubernetes.Types.Outputs.Pulumi.V1
 {
 
     [OutputType]
@@ -16,11 +16,11 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
         /// <summary>
         /// A getter function for the resource. Supplying get is mutually exclusive to properties.
         /// </summary>
-        public readonly Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.ProgramProgramResourcesGet Get;
+        public readonly Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.ProgramProgramResourcesGet Get;
         /// <summary>
         /// options contains all resource options supported by Pulumi.
         /// </summary>
-        public readonly Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.ProgramProgramResourcesOptions Options;
+        public readonly Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.ProgramProgramResourcesOptions Options;
         /// <summary>
         /// properties contains the primary resource-specific keys and values to initialize the resource state.
         /// </summary>
@@ -32,9 +32,9 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
 
         [OutputConstructor]
         private ProgramProgramResources(
-            Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.ProgramProgramResourcesGet get,
+            Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.ProgramProgramResourcesGet get,
 
-            Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.ProgramProgramResourcesOptions options,
+            Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.ProgramProgramResourcesOptions options,
 
             ImmutableDictionary<string, ImmutableDictionary<string, object>> properties,
 

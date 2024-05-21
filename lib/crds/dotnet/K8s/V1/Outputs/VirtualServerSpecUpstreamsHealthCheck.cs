@@ -16,7 +16,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
     [OutputType]
     public sealed class VirtualServerSpecUpstreamsHealthCheck
     {
-        public readonly string ConnectTimeout;
+        public readonly string Connect-timeout;
         public readonly bool Enable;
         public readonly int Fails;
         public readonly string GrpcService;
@@ -24,14 +24,14 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
         public readonly ImmutableArray<Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerSpecUpstreamsHealthCheckHeaders> Headers;
         public readonly string Interval;
         public readonly string Jitter;
-        public readonly string KeepaliveTime;
+        public readonly string Keepalive-time;
         public readonly bool Mandatory;
         public readonly int Passes;
         public readonly string Path;
         public readonly bool Persistent;
         public readonly int Port;
-        public readonly string ReadTimeout;
-        public readonly string SendTimeout;
+        public readonly string Read-timeout;
+        public readonly string Send-timeout;
         public readonly string StatusMatch;
         /// <summary>
         /// UpstreamTLS defines a TLS configuration for an Upstream.
@@ -40,7 +40,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
 
         [OutputConstructor]
         private VirtualServerSpecUpstreamsHealthCheck(
-            string connectTimeout,
+            string connect-timeout,
 
             bool enable,
 
@@ -56,7 +56,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
 
             string jitter,
 
-            string keepaliveTime,
+            string keepalive-time,
 
             bool mandatory,
 
@@ -68,15 +68,15 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
 
             int port,
 
-            string readTimeout,
+            string read-timeout,
 
-            string sendTimeout,
+            string send-timeout,
 
             string statusMatch,
 
             Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerSpecUpstreamsHealthCheckTls tls)
         {
-            ConnectTimeout = connectTimeout;
+            Connect-timeout = connect-timeout;
             Enable = enable;
             Fails = fails;
             GrpcService = grpcService;
@@ -84,14 +84,14 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
             Headers = headers;
             Interval = interval;
             Jitter = jitter;
-            KeepaliveTime = keepaliveTime;
+            Keepalive-time = keepalive-time;
             Mandatory = mandatory;
             Passes = passes;
             Path = path;
             Persistent = persistent;
             Port = port;
-            ReadTimeout = readTimeout;
-            SendTimeout = sendTimeout;
+            Read-timeout = read-timeout;
+            Send-timeout = send-timeout;
             StatusMatch = statusMatch;
             Tls = tls;
         }

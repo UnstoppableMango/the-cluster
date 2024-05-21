@@ -97,6 +97,12 @@ sed -i "s/renew-before/'renew-before'/" "$nodejsDir/types/input.ts"
 sed -i "s/renew-before/'renew-before'/" "$nodejsDir/types/output.ts"
 sed -i "s/metadata.omitempty/'metadata.omitempty'/" "$nodejsDir/types/input.ts"
 sed -i "s/metadata.omitempty/'metadata.omitempty'/" "$nodejsDir/types/output.ts"
+sed -i "s/certificate-authority-data/'certificate-authority-data'/" "$nodejsDir/types/input.ts"
+sed -i "s/certificate-authority-data/'certificate-authority-data'/" "$nodejsDir/types/output.ts"
+sed -i "s/insecure-skip-tls-verify/'insecure-skip-tls-verify'/" "$nodejsDir/types/input.ts"
+sed -i "s/insecure-skip-tls-verify/'insecure-skip-tls-verify'/" "$nodejsDir/types/output.ts"
+sed -i "s/val.insecure-skip-tls-verify/val['insecure-skip-tls-verify']/" "$nodejsDir/types/input.ts"
+sed -i "s/val.insecure-skip-tls-verify/val['insecure-skip-tls-verify']/" "$nodejsDir/types/output.ts"
 
 function renamePulumi() {
     echo -ne "\\r\033[2KFixing $1..."
@@ -178,20 +184,20 @@ function patchDotnet() {
     sed -i "s/Pulumi.V1/PulumiOperator.V1/" "$1"
 }
 
-export -f patchDotnet
-echo "Patching .NET lib..." # TODO: This is slow af
-find "$dotnetDir" -type f \
-    -name '*.cs' \
-    \( \
-        -path '*ClusterClassSpecVariables*' \
-        -o -path '*ClusterClassStatusVariables*' \
-        -o -path '*ProxmoxMachineTemplate*' \
-        -o -path '*VirtualServerRouteSpec*' \
-        -o -path '*VirtualServerSpec*' \
-        -o -path '*Pulumi/V1*' \
-    \) \
-    -not -path '*obj*' \
-    -exec bash -c 'patchDotnet "$0"' {} \;
+# export -f patchDotnet
+# echo "Patching .NET lib..." # TODO: This is slow af
+# find "$dotnetDir" -type f \
+#     -name '*.cs' \
+#     \( \
+#         -path '*ClusterClassSpecVariables*' \
+#         -o -path '*ClusterClassStatusVariables*' \
+#         -o -path '*ProxmoxMachineTemplate*' \
+#         -o -path '*VirtualServerRouteSpec*' \
+#         -o -path '*VirtualServerSpec*' \
+#         -o -path '*Pulumi/V1*' \
+#     \) \
+#     -not -path '*obj*' \
+#     -exec bash -c 'patchDotnet "$0"' {} \;
 
 # Make sure the last thing we do is pop back
 # trap popd EXIT

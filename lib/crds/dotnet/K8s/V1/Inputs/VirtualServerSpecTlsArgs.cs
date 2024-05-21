@@ -19,7 +19,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.K8s.V1
         /// CertManager defines a cert manager config for a TLS.
         /// </summary>
         [Input("cert-manager")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.K8s.V1.VirtualServerSpecTlsCertManagerArgs>? CertManager { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.K8s.V1.VirtualServerSpecTlsCertManagerArgs>? Cert-manager { get; set; }
 
         /// <summary>
         /// TLSRedirect defines a redirect for a TLS.

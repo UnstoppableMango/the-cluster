@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1
+namespace Pulumi.Kubernetes.Types.Outputs.Pulumi.V1Alpha1
 {
 
     /// <summary>
@@ -19,7 +19,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1
         /// <summary>
         /// LastUpdate contains details of the status of the last update.
         /// </summary>
-        public readonly Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1.StackStatusLastUpdate LastUpdate;
+        public readonly Pulumi.Kubernetes.Types.Outputs.Pulumi.V1Alpha1.StackStatusLastUpdate LastUpdate;
         /// <summary>
         /// Outputs contains the exported stack output variables resulting from a deployment.
         /// </summary>
@@ -27,7 +27,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1
 
         [OutputConstructor]
         private StackStatus(
-            Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1.StackStatusLastUpdate lastUpdate,
+            Pulumi.Kubernetes.Types.Outputs.Pulumi.V1Alpha1.StackStatusLastUpdate lastUpdate,
 
             ImmutableDictionary<string, ImmutableDictionary<string, object>> outputs)
         {

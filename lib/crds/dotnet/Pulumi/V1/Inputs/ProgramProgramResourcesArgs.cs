@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1
+namespace Pulumi.Kubernetes.Types.Inputs.Pulumi.V1
 {
 
     public class ProgramProgramResourcesArgs : global::Pulumi.ResourceArgs
@@ -16,13 +16,13 @@ namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1
         /// A getter function for the resource. Supplying get is mutually exclusive to properties.
         /// </summary>
         [Input("get")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.ProgramProgramResourcesGetArgs>? Get { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.ProgramProgramResourcesGetArgs>? Get { get; set; }
 
         /// <summary>
         /// options contains all resource options supported by Pulumi.
         /// </summary>
         [Input("options")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.ProgramProgramResourcesOptionsArgs>? Options { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.ProgramProgramResourcesOptionsArgs>? Options { get; set; }
 
         [Input("properties")]
         private InputMap<ImmutableDictionary<string, object>>? _properties;

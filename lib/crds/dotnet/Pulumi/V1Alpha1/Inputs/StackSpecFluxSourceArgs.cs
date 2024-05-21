@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1Alpha1
+namespace Pulumi.Kubernetes.Types.Inputs.Pulumi.V1Alpha1
 {
 
     /// <summary>
@@ -22,7 +22,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1Alpha1
         public Input<string>? Dir { get; set; }
 
         [Input("sourceRef", required: true)]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1Alpha1.StackSpecFluxSourceSourceRefArgs> SourceRef { get; set; } = null!;
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1Alpha1.StackSpecFluxSourceSourceRefArgs> SourceRef { get; set; } = null!;
 
         public StackSpecFluxSourceArgs()
         {

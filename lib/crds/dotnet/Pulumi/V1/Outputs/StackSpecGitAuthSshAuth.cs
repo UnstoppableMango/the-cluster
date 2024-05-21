@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
+namespace Pulumi.Kubernetes.Types.Outputs.Pulumi.V1
 {
 
     /// <summary>
@@ -19,17 +19,17 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
         /// <summary>
         /// ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
         /// </summary>
-        public readonly Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecGitAuthSshAuthPassword Password;
+        public readonly Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecGitAuthSshAuthPassword Password;
         /// <summary>
         /// ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
         /// </summary>
-        public readonly Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecGitAuthSshAuthSshPrivateKey SshPrivateKey;
+        public readonly Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecGitAuthSshAuthSshPrivateKey SshPrivateKey;
 
         [OutputConstructor]
         private StackSpecGitAuthSshAuth(
-            Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecGitAuthSshAuthPassword password,
+            Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecGitAuthSshAuthPassword password,
 
-            Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecGitAuthSshAuthSshPrivateKey sshPrivateKey)
+            Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecGitAuthSshAuthSshPrivateKey sshPrivateKey)
         {
             Password = password;
             SshPrivateKey = sshPrivateKey;

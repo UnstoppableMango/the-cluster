@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1
+namespace Pulumi.Kubernetes.Types.Outputs.Pulumi.V1Alpha1
 {
 
     /// <summary>
@@ -19,19 +19,19 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1
         /// <summary>
         /// Env selects an environment variable set on the operator process
         /// </summary>
-        public readonly Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1.StackSpecSecretsRefEnv Env;
+        public readonly Pulumi.Kubernetes.Types.Outputs.Pulumi.V1Alpha1.StackSpecSecretsRefEnv Env;
         /// <summary>
         /// FileSystem selects a file on the operator's file system
         /// </summary>
-        public readonly Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1.StackSpecSecretsRefFilesystem Filesystem;
+        public readonly Pulumi.Kubernetes.Types.Outputs.Pulumi.V1Alpha1.StackSpecSecretsRefFilesystem Filesystem;
         /// <summary>
         /// LiteralRef refers to a literal value
         /// </summary>
-        public readonly Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1.StackSpecSecretsRefLiteral Literal;
+        public readonly Pulumi.Kubernetes.Types.Outputs.Pulumi.V1Alpha1.StackSpecSecretsRefLiteral Literal;
         /// <summary>
         /// SecretRef refers to a Kubernetes Secret
         /// </summary>
-        public readonly Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1.StackSpecSecretsRefSecret Secret;
+        public readonly Pulumi.Kubernetes.Types.Outputs.Pulumi.V1Alpha1.StackSpecSecretsRefSecret Secret;
         /// <summary>
         /// SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
         /// </summary>
@@ -39,13 +39,13 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1
 
         [OutputConstructor]
         private StackSpecSecretsRef(
-            Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1.StackSpecSecretsRefEnv env,
+            Pulumi.Kubernetes.Types.Outputs.Pulumi.V1Alpha1.StackSpecSecretsRefEnv env,
 
-            Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1.StackSpecSecretsRefFilesystem filesystem,
+            Pulumi.Kubernetes.Types.Outputs.Pulumi.V1Alpha1.StackSpecSecretsRefFilesystem filesystem,
 
-            Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1.StackSpecSecretsRefLiteral literal,
+            Pulumi.Kubernetes.Types.Outputs.Pulumi.V1Alpha1.StackSpecSecretsRefLiteral literal,
 
-            Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1.StackSpecSecretsRefSecret secret,
+            Pulumi.Kubernetes.Types.Outputs.Pulumi.V1Alpha1.StackSpecSecretsRefSecret secret,
 
             string type)
         {

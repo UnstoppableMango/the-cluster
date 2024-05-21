@@ -16,28 +16,28 @@ namespace Pulumi.Kubernetes.Types.Inputs.K8s.V1
     public class VirtualServerSpecTlsCertManagerArgs : global::Pulumi.ResourceArgs
     {
         [Input("cluster-issuer")]
-        public Input<string>? ClusterIssuer { get; set; }
+        public Input<string>? Cluster-issuer { get; set; }
 
         [Input("common-name")]
-        public Input<string>? CommonName { get; set; }
+        public Input<string>? Common-name { get; set; }
 
         [Input("duration")]
         public Input<string>? Duration { get; set; }
 
         [Input("issue-temp-cert")]
-        public Input<bool>? IssueTempCert { get; set; }
+        public Input<bool>? Issue-temp-cert { get; set; }
 
         [Input("issuer")]
         public Input<string>? Issuer { get; set; }
 
         [Input("issuer-group")]
-        public Input<string>? IssuerGroup { get; set; }
+        public Input<string>? Issuer-group { get; set; }
 
         [Input("issuer-kind")]
-        public Input<string>? IssuerKind { get; set; }
+        public Input<string>? Issuer-kind { get; set; }
 
         [Input("renew-before")]
-        public Input<string>? RenewBefore { get; set; }
+        public Input<string>? Renew-before { get; set; }
 
         [Input("usages")]
         public Input<string>? Usages { get; set; }
