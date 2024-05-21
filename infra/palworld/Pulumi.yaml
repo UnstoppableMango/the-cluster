@@ -1,0 +1,7 @@
+name: thecluster-palworld
+runtime: nodejs
+description: Palworld infrastructure for THECLUSTER
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: typescript
