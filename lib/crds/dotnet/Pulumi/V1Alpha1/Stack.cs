@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.TheClusterCrds.PulumiOperator.V1Alpha1
+namespace Pulumi.TheClusterCrds.Pulumi.V1Alpha1
 {
     /// <summary>
     /// Stack is the Schema for the stacks API. Deprecated: Note Stacks from pulumi.com/v1alpha1 is deprecated in favor of pulumi.com/v1. It is completely backward compatible. Users are strongly encouraged to switch to pulumi.com/v1.
@@ -28,13 +28,13 @@ namespace Pulumi.TheClusterCrds.PulumiOperator.V1Alpha1
         /// StackSpec defines the desired state of Pulumi Stack being managed by this operator.
         /// </summary>
         [Output("spec")]
-        public Output<Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1.StackSpec> Spec { get; private set; } = null!;
+        public Output<Pulumi.Kubernetes.Types.Outputs.Pulumi.V1Alpha1.StackSpec> Spec { get; private set; } = null!;
 
         /// <summary>
         /// StackStatus defines the observed state of Stack
         /// </summary>
         [Output("status")]
-        public Output<Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1.StackStatus> Status { get; private set; } = null!;
+        public Output<Pulumi.Kubernetes.Types.Outputs.Pulumi.V1Alpha1.StackStatus> Status { get; private set; } = null!;
 
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Pulumi.TheClusterCrds.PulumiOperator.V1Alpha1
         /// <param name="name">The unique name of the resource</param>
         /// <param name="args">The arguments used to populate this resource's properties</param>
         /// <param name="options">A bag of options that control this resource's behavior</param>
-        public Stack(string name, Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1Alpha1.StackArgs? args = null, CustomResourceOptions? options = null)
+        public Stack(string name, Pulumi.Kubernetes.Types.Inputs.Pulumi.V1Alpha1.StackArgs? args = null, CustomResourceOptions? options = null)
             : base("kubernetes:pulumi.com/v1alpha1:Stack", name, MakeArgs(args), MakeResourceOptions(options, ""))
         {
         }
@@ -58,9 +58,9 @@ namespace Pulumi.TheClusterCrds.PulumiOperator.V1Alpha1
         {
         }
 
-        private static Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1Alpha1.StackArgs? MakeArgs(Pulumi.Kubernetes.Types.Inputs.Pulumi.V1Alpha1.StackArgs? args)
+        private static Pulumi.Kubernetes.Types.Inputs.Pulumi.V1Alpha1.StackArgs? MakeArgs(Pulumi.Kubernetes.Types.Inputs.Pulumi.V1Alpha1.StackArgs? args)
         {
-            args ??= new Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1Alpha1.StackArgs();
+            args ??= new Pulumi.Kubernetes.Types.Inputs.Pulumi.V1Alpha1.StackArgs();
             args.ApiVersion = "pulumi.com/v1alpha1";
             args.Kind = "Stack";
             return args;
@@ -91,7 +91,7 @@ namespace Pulumi.TheClusterCrds.PulumiOperator.V1Alpha1
         }
     }
 }
-namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1Alpha1
+namespace Pulumi.Kubernetes.Types.Inputs.Pulumi.V1Alpha1
 {
 
     public class StackArgs : global::Pulumi.ResourceArgs
@@ -109,13 +109,13 @@ namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1Alpha1
         /// StackSpec defines the desired state of Pulumi Stack being managed by this operator.
         /// </summary>
         [Input("spec")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1Alpha1.StackSpecArgs>? Spec { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1Alpha1.StackSpecArgs>? Spec { get; set; }
 
         /// <summary>
         /// StackStatus defines the observed state of Stack
         /// </summary>
         [Input("status")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1Alpha1.StackStatusArgs>? Status { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1Alpha1.StackStatusArgs>? Status { get; set; }
 
         public StackArgs()
         {

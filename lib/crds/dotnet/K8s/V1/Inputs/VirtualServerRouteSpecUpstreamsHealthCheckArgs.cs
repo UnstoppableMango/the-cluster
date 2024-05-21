@@ -16,7 +16,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.K8s.V1
     public class VirtualServerRouteSpecUpstreamsHealthCheckArgs : global::Pulumi.ResourceArgs
     {
         [Input("connect-timeout")]
-        public Input<string>? ConnectTimeout { get; set; }
+        public Input<string>? Connect-timeout { get; set; }
 
         [Input("enable")]
         public Input<bool>? Enable { get; set; }
@@ -45,7 +45,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.K8s.V1
         public Input<string>? Jitter { get; set; }
 
         [Input("keepalive-time")]
-        public Input<string>? KeepaliveTime { get; set; }
+        public Input<string>? Keepalive-time { get; set; }
 
         [Input("mandatory")]
         public Input<bool>? Mandatory { get; set; }
@@ -63,10 +63,10 @@ namespace Pulumi.Kubernetes.Types.Inputs.K8s.V1
         public Input<int>? Port { get; set; }
 
         [Input("read-timeout")]
-        public Input<string>? ReadTimeout { get; set; }
+        public Input<string>? Read-timeout { get; set; }
 
         [Input("send-timeout")]
-        public Input<string>? SendTimeout { get; set; }
+        public Input<string>? Send-timeout { get; set; }
 
         [Input("statusMatch")]
         public Input<string>? StatusMatch { get; set; }

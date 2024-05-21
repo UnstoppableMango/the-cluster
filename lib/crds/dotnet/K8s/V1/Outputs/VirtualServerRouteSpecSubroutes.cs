@@ -22,7 +22,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
         public readonly Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerRouteSpecSubroutesAction Action;
         public readonly string Dos;
         public readonly ImmutableArray<Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerRouteSpecSubroutesErrorPages> ErrorPages;
-        public readonly string LocationSnippets;
+        public readonly string Location-snippets;
         public readonly ImmutableArray<Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerRouteSpecSubroutesMatches> Matches;
         public readonly string Path;
         public readonly ImmutableArray<Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerRouteSpecSubroutesPolicies> Policies;
@@ -37,7 +37,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
 
             ImmutableArray<Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerRouteSpecSubroutesErrorPages> errorPages,
 
-            string locationSnippets,
+            string location-snippets,
 
             ImmutableArray<Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerRouteSpecSubroutesMatches> matches,
 
@@ -52,7 +52,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
             Action = action;
             Dos = dos;
             ErrorPages = errorPages;
-            LocationSnippets = locationSnippets;
+            Location-snippets = location-snippets;
             Matches = matches;
             Path = path;
             Policies = policies;

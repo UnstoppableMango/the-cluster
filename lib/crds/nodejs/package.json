@@ -5,12 +5,12 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@pulumi/kubernetes": "^4.9.0",
-    "@pulumi/pulumi": "^3.108.1"
+    "@pulumi/kubernetes": "^4.9.1",
+    "@pulumi/pulumi": "^3.112.0"
   },
   "devDependencies": {
-    "@types/node": "^20.11.24",
-    "typescript": "^5.3.3"
+    "@types/node": "^20.12.5",
+    "typescript": "^5.4.4"
   },
   "pulumi": {
     "resource": true,

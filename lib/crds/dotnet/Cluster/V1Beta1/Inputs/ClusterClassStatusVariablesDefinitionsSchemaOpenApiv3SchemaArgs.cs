@@ -169,7 +169,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.Cluster.V1Beta1
         /// XPreserveUnknownFields allows setting fields in a variable object which are not defined in the variable schema. This affects fields recursively, except if nested properties or additionalProperties are specified in the schema.
         /// </summary>
         [Input("x-kubernetes-preserve-unknown-fields")]
-        public Input<bool>? XKubernetesPreserveUnknownFields { get; set; }
+        public Input<bool>? X-kubernetes-preserve-unknown-fields { get; set; }
 
         public ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3SchemaArgs()
         {

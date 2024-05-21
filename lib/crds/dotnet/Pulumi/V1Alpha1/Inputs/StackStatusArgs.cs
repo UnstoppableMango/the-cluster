@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1Alpha1
+namespace Pulumi.Kubernetes.Types.Inputs.Pulumi.V1Alpha1
 {
 
     /// <summary>
@@ -19,7 +19,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1Alpha1
         /// LastUpdate contains details of the status of the last update.
         /// </summary>
         [Input("lastUpdate")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1Alpha1.StackStatusLastUpdateArgs>? LastUpdate { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1Alpha1.StackStatusLastUpdateArgs>? LastUpdate { get; set; }
 
         [Input("outputs")]
         private InputMap<ImmutableDictionary<string, object>>? _outputs;

@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1
+namespace Pulumi.Kubernetes.Types.Outputs.Pulumi.V1Alpha1
 {
 
     /// <summary>
@@ -20,13 +20,13 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1
         /// Dir gives the subdirectory containing the Pulumi project (i.e., containing Pulumi.yaml) of interest, within the fetched source.
         /// </summary>
         public readonly string Dir;
-        public readonly Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1.StackSpecFluxSourceSourceRef SourceRef;
+        public readonly Pulumi.Kubernetes.Types.Outputs.Pulumi.V1Alpha1.StackSpecFluxSourceSourceRef SourceRef;
 
         [OutputConstructor]
         private StackSpecFluxSource(
             string dir,
 
-            Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1Alpha1.StackSpecFluxSourceSourceRef sourceRef)
+            Pulumi.Kubernetes.Types.Outputs.Pulumi.V1Alpha1.StackSpecFluxSourceSourceRef sourceRef)
         {
             Dir = dir;
             SourceRef = sourceRef;
