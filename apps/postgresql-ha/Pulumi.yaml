@@ -6,7 +6,7 @@ config:
     value:
       k8s: v1.29.2 # renovate depName=kubernetes/kubernetes
       bitnami:
-        postgres: 16.2.0-debian-11-r15 # renovate depName=bitnami/postgresql datasource=docker
+        postgres: 16.3.0-debian-12-r8 # renovate depName=bitnami/postgresql datasource=docker
         postgresExporter: 0.15.0-debian-11-r2 # renovate depName=bitnami/postgresql-exporter datasource=docker
         postgresqlRepmgr: 16.2.0-debian-11-r11 # renovate depName=bitnami/postgresql-repmgr datasource=docker
         pgpool: 4.5.2-debian-12-r0 # renovate depName=bitnami/pgpool datasource=docker
