@@ -5,4 +5,4 @@ config:
   channel: experimental
   versions:
     value:
-      gatewayApi: v1.0.0 # renovate depName=kubernetes-sigs/gateway-api
+      gatewayApi: v1.1.0 # renovate depName=kubernetes-sigs/gateway-api
