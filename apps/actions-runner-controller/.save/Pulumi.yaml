@@ -7,5 +7,5 @@ config:
       actionsRunner: v2.311.0-ubuntu-20.04-8e48463 # renovate depName=summerwind/actions-runner datasource=docker
       actionsRunnerController: v0.27.6 # renovate depName=summerwind/actions-runner-controller datasource=docker
       dind: 25.0.5-dind # renovate depName=docker datasource=docker
-      rbacProxy: v0.16.0 # renovate depName=brancz/kube-rbac-proxy datasource=docker
+      rbacProxy: v0.17.1 # renovate depName=brancz/kube-rbac-proxy datasource=docker
       scaleSetController: 0.7.0 # renovate depName=actions/gha-runner-scale-set-controller datasource=docker
