@@ -4,4 +4,4 @@ description: External DNS install for THECLUSTER
 config:
   versions:
     value:
-      externalDns: v0.14.1 # renovate depName=kubernetes-sigs/external-dns
+      externalDns: v0.14.2 # renovate depName=kubernetes-sigs/external-dns
