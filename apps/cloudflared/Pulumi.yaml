@@ -5,4 +5,4 @@ config:
   accountId: 265a046434c952eeecb9710cfd76617c
   versions:
     value:
-      cloudflared: 2024.3.0 # renovate depName=cloudflare/cloudflared
+      cloudflared: 2024.5.0 # renovate depName=cloudflare/cloudflared
