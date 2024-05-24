@@ -90,7 +90,7 @@ services:
       - var3:/var
       - state3:/system/state
   lb:
-    image: haproxy:2.9.6
+    image: haproxy:2.9.7
     volumes:
       - ./haproxy:/usr/local/etc/haproxy:ro
     sysctls:
