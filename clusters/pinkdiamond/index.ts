@@ -1,29 +1,77 @@
-import { jsonStringify } from '@pulumi/pulumi';
-import * as talos from '@pulumiverse/talos';
 import * as YAML from 'yaml';
-import { RootCa } from '@unmango/thecluster-components/kubernetes-the-hard-way';
-import * as certs from './certs';
-import { Node, Versions, caPem, config, stack } from './config';
-import { readFileSync } from 'fs';
+import { ClusterPki } from '@unmango/pulumi-kubernetes-the-hard-way/tls';
+import { EtcdCluster } from '@unmango/pulumi-kubernetes-the-hard-way/remote';
+import { Node, Versions, config, stack } from './config';
 
-const ca = new RootCa('pinkdiamond', {
-  algorithm: 'RSA',
-  allowedUses: [],
-  commonName: 'test',
-  expiry: 2048,
+const key = config.requireSecret('nodeKey');
+
+const pki = new ClusterPki('pinkdiamond', {
+  clusterName: 'pinkdiamond',
+  nodes: {
+    pik8s4: {
+      ip: '192.168.1.104',
+      role: 'controlplane',
+    },
+    pik8s5: {
+      ip: '192.168.1.105',
+      role: 'controlplane',
+    },
+    pik8s6: {
+      ip: '192.168.1.106',
+      role: 'controlplane',
+    },
+  },
+  publicIp: '192.168.1.100',
 });
 
-const cert = ca.newAdminCertificate('pinkdiamond', {
-  algorithm: 'RSA',
-  allowedUses: [],
-  expiry: 2048,
+const etcd = new EtcdCluster('pinkdiamond', {
+  bundle: {
+    caPem: pki.kubernetes.caCertPem,
+    certPem: pki.kubernetes.certPem,
+    keyPem: pki.kubernetes.privateKeyPem,
+  },
+  nodes: {
+    pik8s4: {
+      connection: {
+        host: '192.168.1.104',
+        user: 'root',
+        privateKey: key,
+      },
+      internalIp: '192.168.1.104',
+      architecture: 'arm64',
+    },
+    pik8s5: {
+      connection: {
+        host: '192.168.1.105',
+        user: 'root',
+        privateKey: key,
+      },
+      internalIp: '192.168.1.105',
+      architecture: 'arm64',
+    },
+    pik8s6: {
+      connection: {
+        host: '192.168.1.106',
+        user: 'root',
+        privateKey: key,
+      },
+      internalIp: '192.168.1.106',
+      architecture: 'arm64',
+    },
+  },
+  architecture: 'arm64',
 });
 
-const file = cert.installOn('test', {
-});
+export const caPem = pki.ca.certPem;
+export const etcdCert = pki.kubernetes.certPem;
+export const etcdKey = pki.kubernetes.privateKeyPem;
 
-export const stdout = file.command.stdout;
-export const stderr = file.command.stderr;
+export const kubeconfig = pki.getKubeconfig({
+  options: {
+    publicIp: '192.168.1.100',
+    type: 'admin',
+  },
+}).apply(YAML.stringify);
 
 // const controlPlanes = config.requireObject<Node[]>('controlplanes');
 // const workers = config.requireObject<Node[]>('workers');
