@@ -5,6 +5,6 @@ config:
   versions:
     value:
       coreDns: 1.11.2 # renovate depName=coredns/coredns extractVersion=^v(?<version>.*)
-      k0s: v1.30.0+k0s.0 # renovate depName=k0sproject/k0s
+      k0s: v1.30.1+k0s.0 # renovate depName=k0sproject/k0s
       k8s: v1.29.2 # renovate depName=kubernetes/kubernetes
       vcluster: v0.19.5 # renovate depName=loft-sh/vcluster
