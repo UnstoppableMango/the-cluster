@@ -4,4 +4,4 @@ description: Nginx Ingress install for THECLUSTER
 config:
   versions:
     value:
-      nginxIngress: 3.5.0 # renovate depName=nginx/nginx-ingress datasource=docker
+      nginxIngress: 3.5.1 # renovate depName=nginx/nginx-ingress datasource=docker
