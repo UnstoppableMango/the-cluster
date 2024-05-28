@@ -6,4 +6,4 @@ version: 0.1.0
 dependencies:
   - name: pulumi-kubernetes-operator
     repository: oci://ghcr.io/pulumi/helm-charts
-    version: 0.7.2
+    version: 0.7.3
