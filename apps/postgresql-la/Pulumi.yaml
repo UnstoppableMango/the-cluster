@@ -4,6 +4,6 @@ description: PostgreSQL install for THECLUSTER
 config:
   versions:
     value:
-      bitnamiPostgresql: 16.3.0-debian-12-r9 # renovate depName=bitnami/postgresql datasource=docker
+      bitnamiPostgresql: 16.3.0-debian-12-r10 # renovate depName=bitnami/postgresql datasource=docker
       bitnamiExporter: 0.15.0-debian-12-r31 # renovate depName=bitnami/postgres-exporter datasource=docker
       bitnamiOsShell: 11-debian-11-r92 # renovate depName=bitnami/os-shell datasoruce=docker
