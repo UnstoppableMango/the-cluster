@@ -4,4 +4,4 @@ description: Minio Operator install for THECLUSTER
 config:
   versions:
     value:
-      minioOperator: v5.0.14 # renovate depName=quay.io/minio/operator datasource=docker
+      minioOperator: v5.0.15 # renovate depName=quay.io/minio/operator datasource=docker
