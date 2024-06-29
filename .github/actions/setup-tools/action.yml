@@ -77,7 +77,7 @@ runs:
       if: inputs.kubectl == 'true' || inputs.all == 'true'
       uses: azure/setup-kubectl@v4
       with:
-        version: v1.29.2 # renovate depName=kubernetes/kubernetes
+        version: v1.30.2 # renovate depName=kubernetes/kubernetes
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
 
@@ -94,7 +94,7 @@ runs:
       uses: jaxxstorm/action-install-gh-release@v1
       with:
         repo: patrickdappollonio/kubectl-slice
-        tag: v1.2.7 # renovate depName=patrickdappollonio/kubectl-slice
+        tag: v1.3.1 # renovate depName=patrickdappollonio/kubectl-slice
         cache: enable
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
