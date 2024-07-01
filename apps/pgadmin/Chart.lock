@@ -1,9 +1,9 @@
 dependencies:
 - name: pgadmin4
   repository: https://helm.runix.net
-  version: 1.25.3
+  version: 1.26.0
 - name: oauth2-proxy
   repository: https://oauth2-proxy.github.io/manifests
   version: 7.7.8
-digest: sha256:8774abe84428d938cfad22d49dce856e01cd67d563ab25a33af8e4eff1b450a8
-generated: "2024-06-27T17:06:37.34967014Z"
+digest: sha256:167a9d6162eb4b469f697cbc7273763642de0c4dfbe6d2482120c6fd4b1c6e44
+generated: "2024-07-01T02:14:41.124574857Z"
