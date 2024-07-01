@@ -33,7 +33,7 @@
     <PackageReference Include="Fluid.Core" Version="2.10.0" />
     <PackageReference Include="Humanizer" Version="2.14.1" />
     <PackageReference Include="MinVer" Version="5.0.0" PrivateAssets="all" />
-    <PackageReference Include="Pulumi.Automation" Version="3.63.1" />
+    <PackageReference Include="Pulumi.Automation" Version="3.64.0" />
   </ItemGroup>
 
   <ItemGroup>
