@@ -6,4 +6,4 @@ version: 0.1.0
 dependencies:
 - name: postgresql
   repository: oci://registry-1.docker.io/bitnamicharts
-  version: 14.3.3
+  version: 15.5.11
