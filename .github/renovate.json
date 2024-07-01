@@ -8,6 +8,7 @@
     "**/vendor/**",
     "**/test/**",
     "**/tests/**",
+    "**/.save/**",
     "lib/**"
   ],
   "ignoreDeps": [
@@ -20,45 +21,7 @@
   "git-submodules": {
     "enabled": true
   },
-  "customManagers": [
-    {
-      "customType": "regex",
-      "fileMatch": [
-        "^\\.github\\/workflows\\/.*\\.(yml|yaml)$",
-        "^\\.github\\/.*\\/action\\.(yml|yaml)$",
-        "^.*Pulumi.*\\.(yml|yaml)$",
-        ".*/versions/.*"
-      ],
-      "matchStrings": [
-        ".+?: (?<currentValue>\\S+) # renovate depName=(?<depName>\\S+)(?: extractVersion=(?<extractVersion>\\S+))*",
-        ".+?: (?<currentDigest>[a-f0-9]{40}) # renovate depName=(?<depName>[^/?#]+\\/[^/?#]+) tag=(?<currentValue>\\S+)(?: extractVersion=(?<extractVersion>\\S*))*"
-      ],
-      "datasourceTemplate": "github-tags"
-    },
-    {
-      "customType": "regex",
-      "fileMatch": [
-        "^\\.github\\/workflows\\/.*\\.(yml|yaml)$",
-        "^\\.github\\/.*\\/action\\.(yml|yaml)$",
-        "^.*Pulumi.*\\.(yml|yaml)$",
-        ".*/versions/.*"
-      ],
-      "matchStrings": [
-        ".+?: (?<currentValue>\\S+) # renovate depName=(?<depName>\\S+) datasource=docker(?: extractVersion=(?<extractVersion>\\S*))*"
-      ],
-      "datasourceTemplate": "docker"
-    },
-    {
-      "customType": "regex",
-      "fileMatch": [
-        "^Dockerfile$"
-      ],
-      "matchStrings": [
-        "depName=(?<depName>\\S+)(?: extractVersion=(?<extractVersion>\\S+))?\\s(?:ARG|ENV) \\S+_?=(?<currentValue>[\\d\\.]+)"
-      ],
-      "datasourceTemplate": "github-tags"
-    }
-  ],
+  "customManagers": [],
   "packageRules": [
     {
       "matchDepNames": [
