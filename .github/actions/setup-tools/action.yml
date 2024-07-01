@@ -61,7 +61,7 @@ runs:
     #   uses: jaxxstorm/action-install-gh-release@v1
     #   with:
     #     repo: siderolabs/talos
-    #     tag: v1.3.0 # renovate depName=pulumi/crd2pulumi
+    #     tag: v1.4.0 # renovate depName=pulumi/crd2pulumi
     #     extension-matching: disable
     #     rename-to: talosctl
     #     chmod: 0755
@@ -104,7 +104,7 @@ runs:
       uses: jaxxstorm/action-install-gh-release@v1
       with:
         repo: pulumi/crd2pulumi
-        tag: v1.3.0 # renovate depName=pulumi/crd2pulumi
+        tag: v1.4.0 # renovate depName=pulumi/crd2pulumi
         cache: enable
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
