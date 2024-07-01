@@ -19,36 +19,27 @@ config:
   thecluster-pinkdiamond:controlplanes:
     - installDisk: /dev/mmcblk0
       ip: 192.168.1.104
-      schematicId: e3af43fa1ca4430a6273e6772ff27ea75bbac4c87425b1a0d37d640d020cb303
+      clusterIp: 
     - installDisk: /dev/mmcblk0
       ip: 192.168.1.105
-      schematicId: e3af43fa1ca4430a6273e6772ff27ea75bbac4c87425b1a0d37d640d020cb303
     - installDisk: /dev/mmcblk0
       ip: 192.168.1.106
-      schematicId: e3af43fa1ca4430a6273e6772ff27ea75bbac4c87425b1a0d37d640d020cb303
   thecluster-pinkdiamond:endpoint: 192.168.1.104
   thecluster-pinkdiamond:vip: 192.168.1.100
   thecluster-pinkdiamond:workers:
     - ip: 192.168.1.107
       installDisk: /dev/sda
-      wipe: true
-      schematicId: 45c44cb261d19d974fdfa88b2c8b7f183b685661286559c05822366453bf9673
     - ip: 192.168.1.114
       installDisk: /dev/mmcblk0
-      schematicId: e3af43fa1ca4430a6273e6772ff27ea75bbac4c87425b1a0d37d640d020cb303
       nodeTaints:
         thecluster.io/portable: true:NoSchedule
     - ip: 192.168.1.115
       installDisk: /dev/mmcblk0
-      schematicId: e3af43fa1ca4430a6273e6772ff27ea75bbac4c87425b1a0d37d640d020cb303
     - ip: 192.168.1.10
       installDisk: /dev/sda
       wipe: true
-      schematicId: c83d10460f7e84195451abef6b001307b58817843c763a23212d5e448aac9868
       nodeLabels:
         thecluster.io/zfs: true
-      extensions:
-        - image: ghcr.io/siderolabs/zfs:2.1.14-v1.6.5
     # - ip: 192.168.1.12
     #   installDisk: /dev/nvme0n1
     #   wipe: true
