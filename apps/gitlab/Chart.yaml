@@ -3,7 +3,8 @@ name: gitlab
 description: GitLab install for THECLUSTER
 type: application
 version: 0.1.0
-dependencies:
-  - name: gitlab
-    repository: https://charts.gitlab.io
-    version: 7.11.5
+# This is causing an error in renovate for some reason
+# dependencies:
+#   - name: gitlab
+#     repository: https://charts.gitlab.io
+#     version: 7.11.5
