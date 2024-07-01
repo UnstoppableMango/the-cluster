@@ -4,4 +4,4 @@ description: Filebrowser install for THECLUSTER
 config:
   versions:
     value:
-      filebrowser: v2.27.0-s6 # renovate depName=filebrowser/filebrowser datasource=docker extractVersion=^(?<version>.*)-s6
+      filebrowser: v2.30.0 # renovate depName=filebrowser/filebrowser datasource=docker extractVersion=^(?<version>.*)-s6
