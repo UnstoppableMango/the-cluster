@@ -3,7 +3,7 @@
   "main": "index.ts",
   "dependencies": {
     "@muhlba91/pulumi-proxmoxve": "^6.0.0",
-    "@pulumi/command": "^0.11.0",
+    "@pulumi/command": "^1.0.0",
     "@pulumi/kubernetes": "^4.5.6",
     "@pulumi/pulumi": "^3.100.0",
     "@unstoppablemango/thecluster": "file:../../lib/nodejs",
