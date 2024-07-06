@@ -2,13 +2,16 @@
   "name": "thecluster-pinkdiamond",
   "main": "index.ts",
   "dependencies": {
-    "@pulumi/cloudflare": "^5.12.0",
-    "@pulumi/command": "^0.11.1",
-    "@pulumi/kubernetes": "^4.4.0",
-    "@pulumi/pulumi": "^3.89.0",
-    "@pulumi/tls": "^5.0.1",
+    "@pulumi/cloudflare": "^5.33.1",
+    "@pulumi/command": "^1.0.0",
+    "@pulumi/kubernetes": "^4.14.0",
+    "@pulumi/pulumi": "^3.122.0",
+    "@pulumi/tls": "^5.0.4",
     "@unmango/pulumi-commandx": "^0.1.2",
-    "yaml": "^2.3.4"
+    "@unmango/pulumi-kubernetes-the-hard-way": "^0.0.31",
+    "fp-ts": "^2.16.7",
+    "yaml": "^2.4.5",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20.9.0"

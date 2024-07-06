@@ -17,30 +17,69 @@ config:
     - pd.thecluster.io
   thecluster-pinkdiamond:clusterEndpoint: https://192.168.1.100:6443
   thecluster-pinkdiamond:controlplanes:
-    - installDisk: /dev/mmcblk0
+    - hostname: pik8s4
+      arch: arm64
+      installDisk: /dev/mmcblk0
       ip: 192.168.1.104
-      clusterIp: 
-    - installDisk: /dev/mmcblk0
+      clusterIp: 10.69.1.1
+      vlan:
+        tag: 69
+        name: eth0.69
+        interface: eth0
+    - hostname: pik8s5
+      arch: arm64
+      installDisk: /dev/mmcblk0
       ip: 192.168.1.105
-    - installDisk: /dev/mmcblk0
+      clusterIp: 10.69.1.2
+      vlan:
+        tag: 69
+        name: eth0.69
+        interface: eth0
+    - hostname: pik8s6
+      arch: arm64
+      installDisk: /dev/mmcblk0
       ip: 192.168.1.106
+      clusterIp: 10.69.1.3
+      vlan:
+        tag: 69
+        name: eth0.69
+        interface: eth0
   thecluster-pinkdiamond:endpoint: 192.168.1.104
   thecluster-pinkdiamond:vip: 192.168.1.100
   thecluster-pinkdiamond:workers:
-    - ip: 192.168.1.107
+    - hostname: vrk8s1
+      arch: amd64
+      ip: 192.168.1.107
+      clusterIp: 10.69.2.10
       installDisk: /dev/sda
-    - ip: 192.168.1.114
+    # - ip: 192.168.1.114
+    #   clusterIp: 10.69.2.11
+    #   installDisk: /dev/mmcblk0
+    #   nodeTaints:
+    #     thecluster.io/portable: true:NoSchedule
+    - hostname: pik8s8
+      arch: arm64
+      ip: 192.168.1.115
+      clusterIp: 10.69.2.12
       installDisk: /dev/mmcblk0
-      nodeTaints:
-        thecluster.io/portable: true:NoSchedule
-    - ip: 192.168.1.115
-      installDisk: /dev/mmcblk0
-    - ip: 192.168.1.10
+    - hostname: zeus
+      arch: amd64
+      ip: 192.168.1.10
+      clusterIp: 10.69.2.1
       installDisk: /dev/sda
-      wipe: true
       nodeLabels:
         thecluster.io/zfs: true
-    # - ip: 192.168.1.12
+    - hostname: gaea
+      arch: amd64
+      ip: 192.168.1.11
+      clusterIp: 10.69.2.2
+      installDisk: /dev/sda
+      nodeLabels:
+        thecluster.io/zfs: true
+    # - hostname: apollo
+    #   arch: amd64
+    #   ip: 192.168.1.12
+    #   clusterIp: 10.69.2.3
     #   installDisk: /dev/nvme0n1
     #   wipe: true
     #   schematicId: d75bb74b38c062a11a151784224b3524d335f77bfd222c04513eeee080c8ab7a
