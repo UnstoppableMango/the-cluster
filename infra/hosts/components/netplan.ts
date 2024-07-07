@@ -30,18 +30,13 @@ export class Netplan extends CommandComponent {
     const content = output(args.config).apply(YAML.stringify);
     const config = this.exec(Tee, 'netplan', {
       stdin: content,
-      create: {
-        files: [file],
-      },
-      delete: interpolate`rm ${file}`,
+      create: { files: [file] },
+      delete: interpolate`rm -f ${file}`,
     }, { dependsOn: remove });
 
     // TODO: I think this still isn't working
     const chmod = this.exec(Chmod, 'netplan', {
-      create: {
-        files: [file],
-        mode: '600',
-      },
+      create: { files: [file], mode: '600' },
     }, { dependsOn: config });
 
     const apply = this.exec(remote.Command, 'apply-netplan', {
