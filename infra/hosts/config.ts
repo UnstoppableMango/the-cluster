@@ -2,6 +2,12 @@ import { Config, getStack, Output, StackReference } from '@pulumi/pulumi';
 import { PrivateKey } from '@pulumi/tls';
 import { z } from 'zod';
 
+const AnyPrimitive = z.union([
+  z.string(),
+  z.boolean(),
+  z.number(),
+]);
+
 const HostKeys = z.object({
   zeus: z.instanceof(PrivateKey),
   // apollo: z.instanceof(PrivateKey),
@@ -13,17 +19,18 @@ const HostKeys = z.object({
   vrk8s1: z.instanceof(PrivateKey),
 });
 
+const Bond = z.object({
+  name: z.string(),
+  interfaces: z.array(z.string()),
+  addresses: z.array(z.string()),
+  mode: z.string(),
+});
+
 const Vlan = z.object({
   tag: z.number(),
   name: z.string(),
   interface: z.string(),
 });
-
-const AnyPrimitive = z.union([
-  z.string(),
-  z.boolean(),
-  z.number(),
-]);
 
 const Node = z.object({
   hostname: HostKeys.keyof(),
@@ -38,6 +45,7 @@ const Node = z.object({
   nodeLabels: z.record(AnyPrimitive).optional(),
   nodeTaints: z.record(AnyPrimitive).optional(),
   vlan: Vlan.optional(),
+  bond: Bond.optional(),
 });
 
 const Hosts = z.object({
@@ -66,6 +74,7 @@ export type Hosts = z.infer<typeof Hosts>;
 export type Node = z.infer<typeof Node>;
 export type Versions = z.infer<typeof Versions>;
 export type Vlan = z.infer<typeof Vlan>;
+export type Bond = z.infer<typeof Bond>;
 
 export const config = new Config();
 export const stack = getStack();
