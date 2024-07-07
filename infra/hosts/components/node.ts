@@ -1,4 +1,4 @@
-import { ComponentResourceOptions } from '@pulumi/pulumi';
+import { asset, ComponentResourceOptions } from '@pulumi/pulumi';
 import { remote } from '@pulumi/command';
 import { CommandComponent, CommandComponentArgs } from './command';
 import type { Node as NodeConfig } from '../config';
@@ -25,6 +25,16 @@ export abstract class Node extends CommandComponent {
     this.config = config;
 
     if (config.bond) {
+      this.exec(remote.CopyToRemote, 'systemd-module', {
+        remotePath: '/etc/modules-load.d/bonding.conf',
+        source: new asset.StringAsset('bonding'),
+      });
+
+      const modprobe = this.exec(remote.Command, 'modprobe', {
+        create: 'modprobe bonding',
+        delete: 'modprobe -r bonding',
+      });
+
       this.bond = this.exec(Netplan, 'bond', {
         config: Netplan.bond(config.bond),
         file: '/etc/netplan/60-bonding.yaml',
@@ -44,7 +54,7 @@ export abstract class Node extends CommandComponent {
   }
 
   protected allowPort(ip: string, port: number): remote.Command {
-    return this.exec(remote.Command,`ufw-${ip}-${port}`, {
+    return this.exec(remote.Command, `ufw-${ip}-${port}`, {
       create: `ufw allow ${port}`,
       delete: `ufw deny ${port}`,
     });
