@@ -3,7 +3,7 @@ import { ComponentResourceOptions, Input, Inputs, interpolate, output, Output } 
 import { remote } from '@pulumi/command';
 import { Chmod, Tee } from '@unmango/pulumi-commandx/remote';
 import { CommandComponent, CommandComponentArgs } from './command';
-import type { Bond, Node as NodeConfig, Vlan } from '../config';
+import type { Bond, Ethernets, Node as NodeConfig, Vlan } from '../config';
 
 export interface NetplanArgs extends CommandComponentArgs {
   file: Input<string>;
@@ -60,16 +60,12 @@ export class Netplan extends CommandComponent {
     });
   }
 
-  public static vlan(node: NodeConfig, vlan: Vlan): Inputs {
+  public static ethernets(ethernets: Ethernets): Inputs {
     return {
       network: {
-        vlans: {
-          [vlan.name]: {
-            id: vlan.tag,
-            link: vlan.interface,
-            addresses: [
-              `${node.clusterIp}/16`,
-            ],
+        bonds: {
+          [ethernets.name]: {
+            dhcp4: false,
           },
         },
       },
@@ -88,6 +84,22 @@ export class Netplan extends CommandComponent {
               'transmit-hash-policy': 'layer3+4',
               'mii-monitor-interval': 1,
             },
+          },
+        },
+      },
+    };
+  }
+
+  public static vlan(node: NodeConfig, vlan: Vlan): Inputs {
+    return {
+      network: {
+        vlans: {
+          [vlan.name]: {
+            id: vlan.tag,
+            link: vlan.interface,
+            addresses: [
+              `${node.clusterIp}/16`,
+            ],
           },
         },
       },

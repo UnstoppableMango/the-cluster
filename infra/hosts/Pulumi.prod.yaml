@@ -65,6 +65,8 @@ config:
       installDisk: /dev/sda
       nodeLabels:
         thecluster.io/zfs: true
+      ethernets:
+        name: enp8s0
     gaea:
       hostname: gaea
       arch: amd64

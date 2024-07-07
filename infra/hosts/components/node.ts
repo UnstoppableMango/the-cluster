@@ -12,8 +12,9 @@ export interface NodeArgs extends CommandComponentArgs {
 
 export abstract class Node extends CommandComponent {
   public readonly config!: NodeConfig;
-  public readonly vlan?: Netplan;
+  public readonly ethernets?: Netplan;
   public readonly bond?: Netplan;
+  public readonly vlan?: Netplan;
   public readonly kubectl!: Kubectl;
   public readonly kubeadm!: Kubeadm;
 
@@ -23,6 +24,13 @@ export abstract class Node extends CommandComponent {
 
     const { config } = args;
     this.config = config;
+
+    if (config.ethernets) {
+      this.ethernets = this.exec(Netplan, 'ethernets', {
+        config: Netplan.ethernets(config.ethernets),
+        file: '/etc/modules-load.d/20-ethernets.yaml',
+      });
+    }
 
     if (config.bond) {
       this.exec(remote.CopyToRemote, 'systemd-module', {
@@ -38,7 +46,7 @@ export abstract class Node extends CommandComponent {
       this.bond = this.exec(Netplan, 'bond', {
         config: Netplan.bond(config.bond),
         file: '/etc/netplan/60-bonding.yaml',
-      });
+      }, { dependsOn: this.ethernets });
     }
 
     if (config.vlan) {
