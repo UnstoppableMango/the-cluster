@@ -19,6 +19,10 @@ const HostKeys = z.object({
   vrk8s1: z.instanceof(PrivateKey),
 });
 
+const Ethernets = z.object({
+  name: z.string(),
+});
+
 const Bond = z.object({
   name: z.string(),
   interfaces: z.array(z.string()),
@@ -44,8 +48,9 @@ const Node = z.object({
   qemu: z.boolean().optional(),
   nodeLabels: z.record(AnyPrimitive).optional(),
   nodeTaints: z.record(AnyPrimitive).optional(),
-  vlan: Vlan.optional(),
+  ethernets: Ethernets.optional(),
   bond: Bond.optional(),
+  vlan: Vlan.optional(),
 });
 
 const Hosts = z.object({
@@ -73,8 +78,9 @@ export type HostKeys = z.infer<typeof HostKeys>;
 export type Hosts = z.infer<typeof Hosts>;
 export type Node = z.infer<typeof Node>;
 export type Versions = z.infer<typeof Versions>;
-export type Vlan = z.infer<typeof Vlan>;
+export type Ethernets = z.infer<typeof Ethernets>;
 export type Bond = z.infer<typeof Bond>;
+export type Vlan = z.infer<typeof Vlan>;
 
 export const config = new Config();
 export const stack = getStack();
