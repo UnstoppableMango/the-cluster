@@ -24,6 +24,7 @@
     "components/kubeadm.ts",
     "components/kubectl.ts",
     "components/kubelet.ts",
+    "components/netplan.ts",
     "components/node.ts",
     "components/runc.ts",
     "components/vlan.ts",
