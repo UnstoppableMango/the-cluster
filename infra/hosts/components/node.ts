@@ -1,12 +1,10 @@
 import { ComponentResourceOptions } from '@pulumi/pulumi';
-import { PrivateKey } from '@pulumi/tls';
 import { remote } from '@pulumi/command';
 import { CommandComponent, CommandComponentArgs } from './command';
-import { Vlan } from './vlan';
 import type { Node as NodeConfig } from '../config';
 import { Kubectl } from './kubectl';
 import { Kubeadm } from './kubeadm';
-import { Bonding } from './bonding';
+import { Netplan } from './netplan';
 
 export interface NodeArgs extends CommandComponentArgs {
   config: NodeConfig;
@@ -14,8 +12,8 @@ export interface NodeArgs extends CommandComponentArgs {
 
 export abstract class Node extends CommandComponent {
   public readonly config!: NodeConfig;
-  public readonly vlan?: Vlan;
-  public readonly bond?: Bonding;
+  public readonly vlan?: Netplan;
+  public readonly bond?: Netplan;
   public readonly kubectl!: Kubectl;
   public readonly kubeadm!: Kubeadm;
 
@@ -26,17 +24,18 @@ export abstract class Node extends CommandComponent {
     const { config } = args;
     this.config = config;
 
-    if (config.vlan) {
-      this.vlan = this.exec(Vlan, name, {
-        config: config,
-        vlan: config.vlan,
+    if (config.bond) {
+      this.bond = this.exec(Netplan, 'bond', {
+        config: Netplan.bond(config.bond),
+        file: '/etc/netplan/60-bonding.yaml',
       });
     }
 
-    if (config.bond) {
-      this.bond = this.exec(Bonding, name, {
-        bond: config.bond,
-      });
+    if (config.vlan) {
+      this.vlan = this.exec(Netplan, 'vlan', {
+        config: Netplan.vlan(config, config.vlan),
+        file: '/etc/netplan/69-thecluster-vlan.yaml',
+      }, { dependsOn: this.bond });
     }
 
     const archArgs = { arch: config.arch };
