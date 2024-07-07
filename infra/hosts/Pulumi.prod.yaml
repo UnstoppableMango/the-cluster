@@ -36,6 +36,10 @@ config:
       ip: 192.168.1.107
       clusterIp: 10.69.2.10
       installDisk: /dev/sda
+      vlan:
+        tag: 69
+        name: eth0.69
+        interface: eth0
     # idk:
     #   hostname: I actually can't remember this one
     #   ip: 192.168.1.114
@@ -69,6 +73,10 @@ config:
       installDisk: /dev/sda
       nodeLabels:
         thecluster.io/zfs: true
+      vlan:
+        tag: 69
+        name: eno2.69
+        interface: eno2
     # apollo:
     #   hostname: apollo
     #   arch: amd64
