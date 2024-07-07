@@ -6,6 +6,7 @@ import { Vlan } from './vlan';
 import type { Node as NodeConfig } from '../config';
 import { Kubectl } from './kubectl';
 import { Kubeadm } from './kubeadm';
+import { Bonding } from './bonding';
 
 export interface NodeArgs extends CommandComponentArgs {
   config: NodeConfig;
@@ -14,6 +15,7 @@ export interface NodeArgs extends CommandComponentArgs {
 export abstract class Node extends CommandComponent {
   public readonly config!: NodeConfig;
   public readonly vlan?: Vlan;
+  public readonly bond?: Bonding;
   public readonly kubectl!: Kubectl;
   public readonly kubeadm!: Kubeadm;
 
@@ -28,6 +30,12 @@ export abstract class Node extends CommandComponent {
       this.vlan = this.exec(Vlan, name, {
         config: config,
         vlan: config.vlan,
+      });
+    }
+
+    if (config.bond) {
+      this.bond = this.exec(Bonding, name, {
+        bond: config.bond,
       });
     }
 
