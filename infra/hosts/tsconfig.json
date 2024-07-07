@@ -13,7 +13,6 @@
     "forceConsistentCasingInFileNames": true
   },
   "files": [
-    "components/bonding.ts",
     "components/cniPlugins.ts",
     "components/command.ts",
     "components/containerd.ts",
@@ -27,7 +26,6 @@
     "components/netplan.ts",
     "components/node.ts",
     "components/runc.ts",
-    "components/vlan.ts",
     "components/workerNode.ts",
     "config.ts",
     "index.ts"
