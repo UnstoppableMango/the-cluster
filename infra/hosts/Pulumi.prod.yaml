@@ -40,8 +40,8 @@ config:
         tag: 69
         name: eth0.69
         interface: eth0
-    # idk:
-    #   hostname: I actually can't remember this one
+    # pik8s0a:
+    #   hostname: pik8s0a
     #   ip: 192.168.1.114
     #   clusterIp: 10.69.2.11
     #   installDisk: /dev/mmcblk0
