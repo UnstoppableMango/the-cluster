@@ -1,5 +1,5 @@
 import * as YAML from 'yaml';
-import { ComponentResourceOptions, Input, Inputs, output, Output } from '@pulumi/pulumi';
+import { ComponentResourceOptions, Input, Inputs, interpolate, output, Output } from '@pulumi/pulumi';
 import { remote } from '@pulumi/command';
 import { Chmod, Tee } from '@unmango/pulumi-commandx/remote';
 import { CommandComponent, CommandComponentArgs } from './command';
@@ -33,7 +33,7 @@ export class Netplan extends CommandComponent {
       create: {
         files: [file],
       },
-      delete: `rm ${file}`,
+      delete: interpolate`rm ${file}`,
     }, { dependsOn: remove });
 
     // TODO: I think this still isn't working
