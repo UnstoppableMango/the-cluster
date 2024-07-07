@@ -1,13 +1,17 @@
 import { ComponentResourceOptions, Output, Resource } from '@pulumi/pulumi';
 import { PrivateKey } from '@pulumi/tls';
-import { ControlPlaneNode, NodeArgs, WorkerNode } from './components';
+import { ControlPlaneNode, Node, NodeArgs, WorkerNode } from './components';
 import { hosts, hostKeys, type Node as NodeConfig } from './config';
 
-type NewNode<T> = {
+type NewNode<T extends Node> = {
   new(name: string, args: NodeArgs, opts?: ComponentResourceOptions): T;
 }
 
-function provision<T>(ctor: NewNode<T>): (config: NodeConfig, key: Output<PrivateKey>, dependsOn?: Resource[]) => T {
+type CreateNode<T extends Node> = {
+  (config: NodeConfig, key: Output<PrivateKey>, dependsOn?: Resource[]): T;
+}
+
+function provision<T extends Node>(ctor: NewNode<T>): CreateNode<T> {
   return (config, key, dependsOn = []) => new ctor(config.hostname, {
     config,
     connection: {
@@ -39,13 +43,32 @@ const workers = {
 
 const nodes = { ...controlPlanes, ...workers };
 
-export const zeus = nodes.zeus;
-export const gaea = nodes.gaea;
-export const pik8s4 = nodes.pik8s4;
-export const pik8s5 = nodes.pik8s5;
-export const pik8s6 = nodes.pik8s6;
-export const pik8s8 = nodes.pik8s8;
-export const vrk8s1 = nodes.vrk8s1;
+export const zeus = toExport(nodes.zeus);
+export const gaea = toExport(nodes.gaea);
+export const pik8s4 = toExport(nodes.pik8s4);
+export const pik8s5 = toExport(nodes.pik8s5);
+export const pik8s6 = toExport(nodes.pik8s6);
+export const pik8s8 = toExport(nodes.pik8s8);
+export const vrk8s1 = toExport(nodes.vrk8s1);
 
 export const hostnames = Object.values(nodes)
   .map(x => x.config.hostname);
+
+function toExport(node: Node): Record<string, any> {
+  const { config } = node;
+  const result: Record<string, any> = {
+    hostname: config.hostname,
+    ip: config.ip,
+    clusterIp: config.clusterIp,
+    arch: config.arch,
+  };
+
+  if (node instanceof ControlPlaneNode) {
+    // TODO
+  }
+  if (node instanceof WorkerNode) {
+    // TODO
+  }
+
+  return result;
+}
