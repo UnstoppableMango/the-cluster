@@ -67,6 +67,10 @@ config:
         thecluster.io/zfs: true
       ethernets:
         name: enp8s0
+      vlan:
+        tag: 69
+        name: enp8s0.69
+        interface: enp8s0
     gaea:
       hostname: gaea
       arch: amd64
