@@ -28,7 +28,7 @@ export abstract class Node extends CommandComponent {
     if (config.ethernets) {
       this.ethernets = this.exec(Netplan, 'ethernets', {
         config: Netplan.ethernets(config.ethernets),
-        file: '/etc/modules-load.d/20-ethernets.yaml',
+        file: '/etc/netplan/20-ethernets.yaml',
       });
     }
 
