@@ -1,6 +1,6 @@
 dependencies:
 - name: pulumi-kubernetes-operator
   repository: oci://ghcr.io/pulumi/helm-charts
-  version: 0.7.3
-digest: sha256:7ce96f0d69eb56e6ff2c5526c805ccc639097edef51fa7bd9dab60b40b01f872
-generated: "2024-05-23T23:15:03.428830512Z"
+  version: 0.7.4
+digest: sha256:64c53cbcd79ddd1872a45e3cc31796b3fd253c51875c2e44b45691d0faa2c49a
+generated: "2024-07-08T21:42:01.585542506Z"
