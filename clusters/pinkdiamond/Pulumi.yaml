@@ -2,38 +2,15 @@ name: thecluster-pinkdiamond
 runtime: nodejs
 description: The Pink Diamond cluster
 config:
-  accountId: 265a046434c952eeecb9710cfd76617c
   clusterName: pinkdiamond
   clusterEndpoint: https://10.6.0.2:6443
   bootstrapNode: 10.6.0.3
   endpoint: 10.6.0.3
   certSans:
     value: []
-  controlplanes:
-    value:
-      - ip: 10.6.0.3
-        installDisk: /dev/sda
-      - ip: 10.6.0.4
-        installDisk: /dev/sda
-      - ip: 10.6.0.5
-        installDisk: /dev/sda
-  workers:
-    value:
-      - ip: 10.6.0.6
-        installDisk: /dev/sda
-      - ip: 10.6.0.7
-        installDisk: /dev/sda
-      - ip: 10.6.0.8
-        installDisk: /dev/sda
   healthTimeout: 4m
   kubeconfigTimeout: 30s
   versions:
     value:
-      containerd: 1.7.19
       k8s: 1.30.2 # renovate depName=kubernetes/kubernetes extractVersion=^v(?<version>.*)
       ksca: 0.8.3 # renovate depName=alex1989hu/kubelet-serving-cert-approver extractVersion=^v(?<version>.*)
-      talos: 1.6.5 # renovate depName=siderolabs/talos extractVersion=^v(?<version>.*)
-      runc: 1.1.13
-      crictl: 1.30.0
-      cniPlugins: 1.5.1
-  zoneId: 22f1d42ba0fbe4f924905e1c6597055c

@@ -2,13 +2,8 @@ import { Config, StackReference, getStack } from '@pulumi/pulumi';
 import { z } from 'zod';
 
 const Versions = z.object({
-  containerd: z.string(),
   k8s: z.string(),
-  talos: z.string(),
   ksca: z.string(),
-  runc: z.string(),
-  crictl: z.string(),
-  cniPlugins: z.string(),
 });
 
 export type Versions = z.infer<typeof Versions>;
