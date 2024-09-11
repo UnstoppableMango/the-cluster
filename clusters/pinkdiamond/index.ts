@@ -1,9 +1,9 @@
 import { pipe } from 'fp-ts/lib/function';
 import * as Arr from 'fp-ts/Array';
-import { ComponentResource, ComponentResourceOptions, CustomResourceOptions, interpolate } from '@pulumi/pulumi';
+import { ComponentResource, ComponentResourceOptions } from '@pulumi/pulumi';
 import * as tls from '@pulumi/tls';
-import { remote, types } from '@pulumi/command';
-import { Node, controlplanes, versions, workers } from './config';
+import { types } from '@pulumi/command';
+import { Node, controlplanes, workers } from './config';
 
 interface Provisioned {
   node: Node;
@@ -13,12 +13,6 @@ interface Provisioned {
 type NodeType = 'controlplane' | 'worker';
 type Tagged<T> = [NodeType, T];
 
-type CreateCommand = (
-  name: string,
-  args: Omit<remote.CommandArgs, 'connection'>,
-  opts?: Omit<CustomResourceOptions, 'parent'>,
-) => remote.Command;
-
 interface ClusterNodeArgs extends Provisioned {
 }
 
@@ -26,7 +20,6 @@ class ClusterNode extends ComponentResource implements Provisioned {
   public node: Node;
   public key: tls.PrivateKey;
   public connection: types.input.remote.ConnectionArgs;
-  public run: CreateCommand;
 
   constructor(name: string, args: ClusterNodeArgs, opts?: ComponentResourceOptions) {
     super(`thecluster:index:ClusterNode/${name}`, name, args, opts);
@@ -40,11 +33,6 @@ class ClusterNode extends ComponentResource implements Provisioned {
       host: node.ip,
       privateKey: key.privateKeyOpenssh,
     };
-
-    this.run = (name, args, opts) => new remote.Command(name, {
-      connection: this.connection,
-      ...args,
-    }, { parent: this, ...opts });
 
     this.registerOutputs({
       node: this.node,
