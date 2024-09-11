@@ -1,232 +1,101 @@
-import { jsonStringify } from '@pulumi/pulumi';
-import * as talos from '@pulumiverse/talos';
-import * as YAML from 'yaml';
-import * as certs from './certs';
-import { Node, Versions, caPem, config, stack } from './config';
+import { pipe } from 'fp-ts/lib/function';
+import * as Arr from 'fp-ts/Array';
+import { ComponentResource, ComponentResourceOptions } from '@pulumi/pulumi';
+import * as tls from '@pulumi/tls';
+import { types } from '@pulumi/command';
+import { Node, controlplanes, workers } from './config';
 
-const controlPlanes = config.requireObject<Node[]>('controlplanes');
-const workers = config.requireObject<Node[]>('workers');
-export const certSans = config.requireObject<string[]>('certSans');
-export const versions = config.requireObject<Versions>('versions');
-export const clusterName = config.require('clusterName');
-export const endpoint = config.require('endpoint');
-export const vip = config.get('vip');
-export const clusterEndpoint = config.require('clusterEndpoint');
-
-const secrets = new talos.machine.Secrets('secrets');
-
-const controlplaneConfig = talos.machine.getConfigurationOutput({
-  clusterName: clusterName,
-  clusterEndpoint: clusterEndpoint,
-  machineType: 'controlplane',
-  docs: false,
-  examples: false,
-  kubernetesVersion: versions.k8s,
-  machineSecrets: secrets.machineSecrets,
-  configPatches: [jsonStringify({
-    cluster: {
-      apiServer: {
-        certSANs: certSans,
-        extraArgs: {
-          'oidc-issuer-url': 'https://keycloak.thecluster.io/realms/external',
-          'oidc-client-id': 'dex',
-        },
-        disablePodSecurityPolicy: true, // So we can exempt things
-        admissionControl: [{
-          // https://www.talos.dev/v1.5/reference/configuration/#apiserverconfig
-          name: 'PodSecurity',
-          configuration: {
-            apiVersion: 'pod-security.admission.config.k8s.io/v1alpha1',
-            kind: 'PodSecurityConfiguration',
-            defaults: {
-              'audit': 'restricted',
-              'audit-version': 'latest',
-              'enforce': 'baseline',
-              'enforce-version': 'latest',
-              'warn': 'restricted',
-              'warn-version': 'latest',
-            },
-            exemptions: {
-              namespaces: [
-                'ceph-system',
-                'kube-vip',
-                'internal-ingress',
-                'drone',
-                'cert-manager',
-                'zfs-localpv',
-              ],
-            },
-          },
-        }],
-      },
-    },
-    machine: {
-      certSANs: certSans,
-      kubelet: {
-        extraArgs: {
-          'rotate-server-certificates': true,
-        },
-      },
-      features: {
-        kubernetesTalosAPIAccess: {
-          enabled: true,
-          allowedRoles: ['os:admin'],
-          allowedKubernetesNamespaces: [
-            'kube-system',
-          ],
-        },
-      },
-      files: [
-        {
-          content: caPem,
-          path: '/etc/ssl/certs/ca-certificates',
-          permissions: 644,
-          op: 'append',
-        },
-        {
-          content: certs.cloudflare.cert.certificate,
-          path: '/etc/ssl/certs/ca-certificates',
-          permissions: 644,
-          op: 'append',
-        },
-      ],
-    },
-  })],
-});
-
-const workerConfig = talos.machine.getConfigurationOutput({
-  clusterName: clusterName,
-  clusterEndpoint: clusterEndpoint,
-  machineType: 'worker',
-  docs: false,
-  examples: false,
-  kubernetesVersion: versions.k8s,
-  machineSecrets: secrets.machineSecrets,
-  configPatches: [jsonStringify({
-    machine: {
-      install: {
-        image: `ghcr.io/siderolabs/installer:v${versions.talos}`,
-      },
-      certSANs: certSans,
-      kubelet: {
-        extraArgs: {
-          'rotate-server-certificates': true,
-        },
-      },
-      files: [
-        {
-          content: caPem,
-          path: '/etc/ssl/certs/ca-certificates',
-          permissions: 644,
-          op: 'append',
-        },
-        {
-          content: certs.cloudflare.cert.certificate,
-          path: '/etc/ssl/certs/ca-certificates',
-          permissions: 644,
-          op: 'append',
-        },
-      ],
-    },
-  })],
-});
-
-const clientConfig = talos.client.getConfigurationOutput({
-  clusterName: clusterName,
-  clientConfiguration: secrets.clientConfiguration,
-  endpoints: controlPlanes.map(x => x.ip),
-  nodes: [controlPlanes[0].ip],
-});
-
-const configPatches: string[] = [];
-
-if (stack === 'prod') {
-  configPatches.push(YAML.stringify({
-    machine: {
-      network: {
-        interfaces: [{
-          deviceSelector: { hardwareAddr: 'd8:3a:dd:*' },
-          dhcp: true,
-          vip: { ip: vip },
-        }],
-      },
-    },
-  }));
+interface Provisioned {
+  node: Node;
+  key: tls.PrivateKey;
 }
 
-const controlPlaneConfigApply: talos.machine.ConfigurationApply[] = controlPlanes
-  .map(x => new talos.machine.ConfigurationApply(x.ip, {
-    clientConfiguration: secrets.clientConfiguration,
-    machineConfigurationInput: controlplaneConfig.machineConfiguration,
-    node: x.ip,
-    configPatches: [
-      ...configPatches,
-      jsonStringify({
-        cluster: {
-          extraManifests: [
-            `https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/v${versions.ksca}/deploy/ha-install.yaml`,
-          ],
-        },
-        machine: {
-          install: {
-            image: `factory.talos.dev/installer/${x.schematicId}:v${versions.talos}`,
-            disk: x.installDisk,
-          },
-          nodeTaints: x.nodeTaints,
-        },
-      }),
-    ],
-  }));
+type NodeType = 'controlplane' | 'worker';
+type Tagged<T> = [NodeType, T];
 
-const workerConfigApply: talos.machine.ConfigurationApply[] = workers
-  .map(x => new talos.machine.ConfigurationApply(x.ip, {
-    clientConfiguration: secrets.clientConfiguration,
-    machineConfigurationInput: workerConfig.machineConfiguration,
-    node: x.ip,
-    configPatches: [jsonStringify({
-      machine: {
-        install: {
-          image: `factory.talos.dev/installer/${x.schematicId}:v${versions.talos}`,
-          disk: x.installDisk,
-          wipe: x.wipe,
-          extensions: x.extensions,
-        },
-        nodeLabels: x.nodeLabels,
-        nodeTaints: x.nodeTaints,
-      },
-    })],
-  }));
+interface ClusterNodeArgs extends Provisioned {
+}
 
-const bootstrap = new talos.machine.Bootstrap('bootstrap', {
-  clientConfiguration: secrets.clientConfiguration,
-  node: endpoint,
-  endpoint: endpoint,
-}, {
-  dependsOn: [
-    ...controlPlaneConfigApply,
-    ...workerConfigApply,
-  ],
-});
+class ClusterNode extends ComponentResource implements Provisioned {
+  public node: Node;
+  public key: tls.PrivateKey;
+  public connection: types.input.remote.ConnectionArgs;
 
-const kubeconfigOutput = talos.cluster.getKubeconfigOutput({
-  clientConfiguration: secrets.clientConfiguration,
-  node: controlPlanes[0].ip,
-  endpoint: endpoint,
-  timeouts: {
-    read: config.require('kubeconfigTimeout'),
+  constructor(name: string, args: ClusterNodeArgs, opts?: ComponentResourceOptions) {
+    super(`thecluster:index:ClusterNode/${name}`, name, args, opts);
+
+    const { node, key } = args;
+
+    this.node = node;
+    this.key = key;
+
+    this.connection = {
+      host: node.ip,
+      privateKey: key.privateKeyOpenssh,
+    };
+
+    this.registerOutputs({
+      node: this.node,
+      key: this.key,
+    });
+  }
+}
+
+type Exports = Record<string, ClusterNode>;
+
+const Tagged = {
+  tag(type: NodeType): (node: Node) => Tagged<Node> {
+    return (node) => [type, node];
   },
-});
+  map<T, V>(f: (x: T) => V): (tagged: Tagged<T>) => Tagged<V> {
+    return ([tag, x]) => [tag, f(x)];
+  },
+  tap<T>(f: (x: Tagged<T>) => void): (tagged: Tagged<T>) => Tagged<T> {
+    return (tagged) => {
+      f(tagged);
+      return tagged;
+    }
+  },
+  untag<T>(): (tagged: Tagged<T>) => T {
+    return ([_, x]) => x;
+  },
+};
 
-// talos.cluster.getHealthOutput({
-//   clientConfiguration: secrets.clientConfiguration,
-//   controlPlaneNodes: controlPlanes.map(x => x.ip),
-//   workerNodes: workers.map(x => x.ip),
-//   endpoints: controlPlanes.map(x => x.ip),
-//   timeouts: {
-//     read: config.require('healthTimeout'),
-//   },
-// });
+function toClusterNode(node: Node): ClusterNode {
+  const key = new tls.PrivateKey(node.ip, {
+    algorithm: 'ED25519',
+  }, { protect: true });
 
-export const talosconfig = clientConfig.talosConfig;
-export const kubeconfig = kubeconfigOutput.kubeconfigRaw;
-export const kubernetesClientConfig = kubeconfigOutput.kubernetesClientConfiguration;
+  return new ClusterNode(
+    node.hostname,
+    { key, node },
+  );
+}
+
+function provision([type, node]: Tagged<ClusterNode>): void {
+  switch (type) {
+    case 'controlplane':
+      // node.configureControlPlanePorts();
+      break;
+    case 'worker':
+      // node.configureWorkerPorts();
+      // node.enableIpv4PacketForwarding();
+      // node.installWorkerTools();
+      break;
+  }
+}
+
+function toExports(acc: Exports, node: ClusterNode): Exports {
+  return { ...acc, [node.node.hostname]: node };
+}
+
+export const provisioned = pipe(
+  [
+    ...pipe(controlplanes, Arr.map(Tagged.tag('controlplane'))),
+    ...pipe(workers, Arr.map(Tagged.tag('worker'))),
+  ],
+  Arr.map(Tagged.map(toClusterNode)),
+  Arr.map(Tagged.tap(provision)),
+  Arr.map(Tagged.untag<ClusterNode>()),
+  Arr.reduce({}, toExports)
+);
