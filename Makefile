@@ -30,6 +30,3 @@ bin/deploy: $(filter cmd/%,${GO_SRC})
 
 $(MODULES:%=.make/%_npm_ci): .make/%_npm_ci:
 	cd $* && npm ci
-
-temp:
-	@echo ${GO_SRC}
