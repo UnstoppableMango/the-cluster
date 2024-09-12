@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/pulumi/pulumi/sdk/v3/go/auto"
+	"github.com/pulumi/pulumi/sdk/v3/go/auto/optpreview"
 	"github.com/spf13/cobra"
 	"golang.org/x/exp/slog"
 )
@@ -36,13 +37,10 @@ var rootCmd = &cobra.Command{
 			return fmt.Errorf("selecting stack: %w", err)
 		}
 
-		res, err := s.Preview(ctx)
+		_, err = s.Preview(ctx, optpreview.ProgressStreams(os.Stdout))
 		if err != nil {
 			return fmt.Errorf("previewing stack: %w", err)
 		}
-
-		log.Error(res.StdErr)
-		log.Info(res.StdOut)
 
 		return nil
 	},

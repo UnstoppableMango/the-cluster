@@ -7,5 +7,6 @@
   "yaml.schemas": {
     "https://json.schemastore.org/github-workflow.json": "file:///**/.github/workflows/*.yml",
     "https://json.schemastore.org/github-action.json": "file:///**/.github/actions/*/action.yml"
-  }
+  },
+  "makefile.configureOnOpen": false
 }
