@@ -1,4 +1,4 @@
-module github.com/UnstoppableMango/the-cluster
+module github.com/unstoppablemango/the-cluster
 
 go 1.23.1
 
