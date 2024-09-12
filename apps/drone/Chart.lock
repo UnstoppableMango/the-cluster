@@ -7,6 +7,6 @@ dependencies:
   version: 7.7.17
 - name: drone-runner-docker
   repository: https://charts.drone.io
-  version: 0.6.2
-digest: sha256:8f6d76a97b18d532bd0c14271e339fef38809784d6c04f90628012f00fe8daf7
-generated: "2024-09-11T04:57:57.314768299Z"
+  version: 0.7.0
+digest: sha256:2b8fe9e86597075aaa5278aee626170623891207732b482fdcfd45d2cbaa8ae8
+generated: "2024-09-12T16:31:15.515082939Z"
