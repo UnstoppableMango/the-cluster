@@ -1,4 +1,0 @@
-8c8
-< ExecStart=/usr/bin/kubelet
----
-> ExecStart=/usr/local/bin/kubelet
