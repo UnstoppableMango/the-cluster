@@ -9,7 +9,7 @@
       ]
     },
     "kubeops.cli": {
-      "version": "9.1.3",
+      "version": "9.1.5",
       "commands": [
         "kubeops"
       ]
