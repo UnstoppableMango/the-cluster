@@ -3,7 +3,7 @@
   "main": "index.ts",
   "dependencies": {
     "@pulumi/kubernetes": "^4.5.6",
-    "@pulumi/minio": "^0.15.1",
+    "@pulumi/minio": "^0.16.0",
     "@pulumi/pulumi": "^3.99.0",
     "@pulumi/random": "^4.15.0",
     "@unstoppablemango/thecluster": "file:../../lib/nodejs",
