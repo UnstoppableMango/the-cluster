@@ -19,7 +19,7 @@ tc: bin/thecluster
 deploy: bin/thecluster
 	$< deploy
 
-gen: $(PROTO_SRC:proto/%.proto=gen/%.pb.go)
+gen: $(PROTO_SRC:proto/%.proto=gen/go/%.pb.go)
 
 tidy: go.mod go.sum ${GO_SRC}
 	go mod tidy
@@ -33,5 +33,5 @@ cfi cloudflare_ingress: .make/apps/cloudflare-ingress_npm_ci
 bin/thecluster: $(filter cmd/%,${GO_SRC})
 	go build -o $@ ./cmd/thecluster/main.go
 
-gen/%.pb.go: proto/%.proto
+gen/go/%.pb.go: proto/%.proto
 	buf generate $?
