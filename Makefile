@@ -13,9 +13,9 @@ GO_SRC := $(filter %.go,${SRC})
 
 PULUMI := pulumi
 
-tc: bin/tc
+tc: bin/thecluster
 
-deploy: bin/tc
+deploy: bin/thecluster
 	$< deploy
 
 tidy: go.mod go.sum ${GO_SRC}
@@ -27,8 +27,8 @@ pd pinkdiamond: .make/clusters/pinkdiamond_npm_ci
 cfi cloudflare_ingress: .make/apps/cloudflare-ingress_npm_ci
 	$(PULUMI) -s ${CLUSTER} -C apps/cloudflare-ingress up
 
-bin/tc: $(filter cmd/%,${GO_SRC})
-	go build -o $@ ./cmd/tc/main.go
+bin/thecluster: $(filter cmd/%,${GO_SRC})
+	go build -o $@ ./cmd/thecluster/main.go
 
 $(MODULES:%=.make/%_npm_ci): .make/%_npm_ci:
 	cd $* && npm ci
