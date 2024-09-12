@@ -19,7 +19,7 @@ tc: bin/thecluster
 deploy: bin/thecluster
 	$< deploy
 
-gen: gen/io/unmango/thecluster/v1alpha1/work.pb.go
+gen: $(PROTO_SRC:proto/%.proto=gen/%.pb.go)
 
 tidy: go.mod go.sum ${GO_SRC}
 	go mod tidy
@@ -34,4 +34,4 @@ bin/thecluster: $(filter cmd/%,${GO_SRC})
 	go build -o $@ ./cmd/thecluster/main.go
 
 gen/%.pb.go: proto/%.proto
-	buf generate $*
+	buf generate $?
