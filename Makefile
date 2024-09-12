@@ -7,9 +7,10 @@ CLUSTER := pinkdiamond
 ROOT_MODULES := apps clusters dbs infra
 MODULES := $(shell find ${ROOT_MODULES} -mindepth 1 -maxdepth 1 -type d)
 
-SRC    := $(shell git ls-files)
-TS_SRC := $(filter %.ts,${SRC})
-GO_SRC := $(filter %.go,${SRC})
+SRC       := $(shell git ls-files)
+TS_SRC    := $(filter %.ts,${SRC})
+GO_SRC    := $(filter %.go,${SRC})
+PROTO_SRC := $(filter %.proto,${SRC})
 
 PULUMI := pulumi
 
@@ -17,6 +18,8 @@ tc: bin/thecluster
 
 deploy: bin/thecluster
 	$< deploy
+
+gen: gen/io/unmango/thecluster/v1alpha1/work.pb.go
 
 tidy: go.mod go.sum ${GO_SRC}
 	go mod tidy
@@ -30,5 +33,5 @@ cfi cloudflare_ingress: .make/apps/cloudflare-ingress_npm_ci
 bin/thecluster: $(filter cmd/%,${GO_SRC})
 	go build -o $@ ./cmd/thecluster/main.go
 
-$(MODULES:%=.make/%_npm_ci): .make/%_npm_ci:
-	cd $* && npm ci
+gen/%.pb.go: proto/%.proto
+	buf generate $*
