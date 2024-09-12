@@ -2,7 +2,7 @@
   "name": "thecluster-postgresql-ha",
   "main": "index.ts",
   "dependencies": {
-    "@maienm/pulumi-bitwarden": "^0.6.1000",
+    "@maienm/pulumi-bitwarden": "^0.8.0",
     "@pulumi/kubernetes": "^4.5.5",
     "@pulumi/pulumi": "^3.95.0",
     "@pulumi/random": "^4.14.0",
