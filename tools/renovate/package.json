@@ -9,7 +9,7 @@
     "validate": "cd ../../ && renovate-config-validator --strict"
   },
   "dependencies": {
-    "renovate": "^37.31.1"
+    "renovate": "^38.0.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.7",
