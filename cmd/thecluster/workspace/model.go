@@ -1,6 +1,7 @@
 package workspace
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"strings"
@@ -8,6 +9,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/log"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto"
+	"github.com/pulumi/pulumi/sdk/v3/go/auto/optpreview"
 	tc "github.com/unstoppablemango/the-cluster/gen/go/io/unmango/thecluster/v1alpha1"
 )
 
@@ -16,50 +18,36 @@ type model struct {
 	loading bool
 	prev    tea.Model
 	work    *tc.Workspace
-	pw      *auto.Workspace
+	stack   *auto.Stack
 	errs    []error
+	buf     *bytes.Buffer
 }
 
-type workspaceError error
-
-type workspaceLoaded *auto.Workspace
-
-type depsInstalled struct{}
+type (
+	workspaceError  error
+	workspaceLoaded auto.Workspace
+	depsInstalled   struct{}
+	stackSelected   auto.Stack
+)
 
 func (m model) loadWorkspace() tea.Msg {
 	log := log.FromContext(m.ctx)
 	work, err := auto.NewLocalWorkspace(m.ctx,
-		auto.WorkDir("clusters/pinkdiamond"),
+		auto.WorkDir(m.work.WorkingDirectory),
 	)
 	if err != nil {
 		log.Error("failed creating new local workspace", "err", err)
 		return workspaceError(err)
 	}
 
-	// s, err := auto.SelectStack(m.ctx, "prod", work)
-	// if err != nil {
-	// 	log.Error("failed selecting stack", "err", err)
-	// 	return workspaceError(err)
-	// }
-
-	// _, err = s.Preview(m.ctx, optpreview.ProgressStreams(os.Stdout))
-	// if err != nil {
-	// 	log.Error("failed previewing stack", "err", err)
-	// 	return workspaceError(err)
-	// }
-
-	return workspaceLoaded(&work)
+	return workspaceLoaded(work)
 }
 
 func (m model) installDeps() tea.Msg {
-	if m.pw == nil {
-		return workspaceError(errors.New("workspace must be loaded"))
-	}
-
-	workspace := *m.pw
+	workspace := m.stack.Workspace()
 	err := workspace.Install(m.ctx, &auto.InstallOptions{
-		// Stdout: os.Stdout,
-		// Stderr: os.Stderr,
+		Stdout: m.buf,
+		Stderr: m.buf,
 	})
 	if err != nil {
 		log.Error("failed installing deps", "err", err)
@@ -69,20 +57,34 @@ func (m model) installDeps() tea.Msg {
 	return depsInstalled{}
 }
 
-func (m model) selectStack() tea.Msg {
-	if m.pw == nil {
-		return workspaceError(errors.New("workspace must be loaded"))
-	}
+func (m model) selectStack(work auto.Workspace) tea.Cmd {
+	return func() tea.Msg {
+		s, err := auto.SelectStack(m.ctx, "prod", work)
+		if err != nil {
+			log.Error("failed selecting stack", "err", err)
+			return workspaceError(err)
+		}
 
-	s, err := auto.SelectStack(m.ctx, "prod", work)
-	if err != nil {
-		log.Error("failed selecting stack", "err", err)
-		return workspaceError(err)
+		return stackSelected(s)
 	}
 }
 
+func (m model) preview() tea.Msg {
+	if m.stack == nil {
+		return workspaceError(errors.New("no stack selected"))
+	}
+
+	_, err := m.stack.Preview(m.ctx, optpreview.ProgressStreams(m.buf))
+	if err != nil {
+		log.Error("failed previewing stack", "err", err)
+		return workspaceError(err)
+	}
+
+	return nil
+}
+
 func New(ctx context.Context, prev tea.Model, w *tc.Workspace) tea.Model {
-	return model{ctx, true, prev, w, nil, []error{}}
+	return model{ctx, true, prev, w, nil, []error{}, &bytes.Buffer{}}
 }
 
 // Init implements tea.Model.
@@ -97,13 +99,18 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.errs = append(m.errs, msg)
 		m.loading = false
 	case workspaceLoaded:
+		return m, m.selectStack(msg)
+	case stackSelected:
 		m.loading = false
+		return m, m.installDeps
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
 			return m, tea.Quit
 		case "esc":
 			return m.prev, nil
+		case "enter":
+			return m, m.preview
 		}
 	}
 
