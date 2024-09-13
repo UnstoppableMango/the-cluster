@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 as build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0 as build
 ARG TARGETARCH
 WORKDIR /operator
 
@@ -22,7 +22,7 @@ RUN dotnet publish \
       UnMango.TheCluster/UnMango.TheCluster.fsproj
 
 # The runner for the application
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/aspnet:8.0 as final
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/aspnet:9.0 as final
 
 RUN addgroup k8s-operator && useradd -G k8s-operator operator-user
 
