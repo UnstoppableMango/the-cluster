@@ -4,9 +4,9 @@ dependencies:
   version: 0.6.5
 - name: oauth2-proxy
   repository: https://oauth2-proxy.github.io/manifests
-  version: 7.7.17
+  version: 7.7.18
 - name: drone-runner-docker
   repository: https://charts.drone.io
   version: 0.7.0
-digest: sha256:2b8fe9e86597075aaa5278aee626170623891207732b482fdcfd45d2cbaa8ae8
-generated: "2024-09-12T16:31:15.515082939Z"
+digest: sha256:bd5bc07238f9399b6c24000bc4dee544153c5447d8a66ef1680461e69ef0ecc4
+generated: "2024-09-13T12:29:54.538625334Z"
