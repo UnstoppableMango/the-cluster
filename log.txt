@@ -1,0 +1,2 @@
+INFO loading
+INFO normal view

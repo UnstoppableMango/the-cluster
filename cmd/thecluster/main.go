@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	"github.com/UnstoppableMango/the-cluster/cmd/deploy/cmd"
+	"github.com/unstoppablemango/the-cluster/cmd/thecluster/cmd"
 )
 
 func main() {

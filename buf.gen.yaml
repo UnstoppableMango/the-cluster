@@ -1,0 +1,12 @@
+version: v2
+clean: true
+managed:
+  enabled: true
+  override:
+    - file_option: go_package_prefix
+      value: github.com/unstoppablemango/the-cluster/gen
+plugins:
+  - remote: buf.build/protocolbuffers/go:v1.34.2
+    out: gen/go
+    opt:
+      - paths=source_relative
