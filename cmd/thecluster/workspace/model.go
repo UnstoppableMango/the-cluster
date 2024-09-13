@@ -6,6 +6,7 @@ import (
 )
 
 type model struct {
+	prev tea.Model
 	work *tc.Workspace
 }
 
@@ -17,8 +18,8 @@ func loadWorkspace(m model) tea.Cmd {
 	}
 }
 
-func New(w *tc.Workspace) tea.Model {
-	return model{w}
+func New(prev tea.Model, w *tc.Workspace) tea.Model {
+	return model{prev, w}
 }
 
 // Init implements tea.Model.
@@ -33,6 +34,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg.String() {
 		case "ctrl+c", "q":
 			return m, tea.Quit
+		case "esc":
+			return m.prev, nil
 		}
 	}
 
