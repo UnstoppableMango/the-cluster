@@ -3,14 +3,16 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
-	"golang.org/x/exp/slog"
+	"github.com/unstoppablemango/the-cluster/cmd/thecluster/app"
 )
 
-var log = slog.New(slog.NewTextHandler(os.Stdout, nil))
+var logger *log.Logger
 
 var rootCmd = &cobra.Command{
 	Use: "thecluster",
@@ -40,17 +42,31 @@ var rootCmd = &cobra.Command{
 		// if err != nil {
 		// 	return fmt.Errorf("previewing stack: %w", err)
 		// }
-		p := tea.NewProgram(initialModel(),
+		p := tea.NewProgram(app.New(),
 			tea.WithAltScreen(),
 			tea.WithContext(ctx),
 		)
 
 		_, err := p.Run()
-		return err
+		if err != nil {
+			return err
+		}
+
+		return nil
 	},
 }
 
 func Execute(ctx context.Context) {
+	logFile, err := os.Create("./log.txt")
+	var logTarget io.Writer
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	} else {
+		logTarget = logFile
+	}
+
+	logger = log.New(logTarget)
+
 	if err := rootCmd.ExecuteContext(ctx); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)

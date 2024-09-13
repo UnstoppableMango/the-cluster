@@ -23,6 +23,7 @@ require (
 	github.com/charmbracelet/bubbles v0.20.0 // indirect
 	github.com/charmbracelet/bubbletea v1.1.1 // indirect
 	github.com/charmbracelet/lipgloss v0.13.0 // indirect
+	github.com/charmbracelet/log v0.4.0 // indirect
 	github.com/charmbracelet/x/ansi v0.3.0 // indirect
 	github.com/charmbracelet/x/term v0.2.0 // indirect
 	github.com/cheggaaa/pb v1.0.29 // indirect
@@ -35,6 +36,7 @@ require (
 	github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 // indirect
 	github.com/go-git/go-billy/v5 v5.5.0 // indirect
 	github.com/go-git/go-git/v5 v5.12.0 // indirect
+	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/glog v1.2.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
