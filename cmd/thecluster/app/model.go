@@ -30,6 +30,7 @@ type model struct {
 type scanComplete struct {
 	root    string
 	modules []string
+	errs    []error
 }
 
 type scanError error
@@ -45,12 +46,12 @@ func scanWorktree() tea.Msg {
 	}
 
 	root := strings.TrimSpace(string(gitRevParse))
-	modules := []string{}
+	modules, errs := []string{}, []error{}
 	for _, m := range rootModules {
 		p := path.Join(root, m)
 		entries, err := os.ReadDir(p)
 		if err != nil {
-			return scanError(err)
+			errs = append(errs, err)
 		}
 
 		for _, e := range entries {
@@ -58,7 +59,7 @@ func scanWorktree() tea.Msg {
 		}
 	}
 
-	return scanComplete{root, modules}
+	return scanComplete{root, modules, errs}
 }
 
 func New() tea.Model {
