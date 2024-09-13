@@ -4,7 +4,7 @@ go 1.23.1
 
 require (
 	github.com/pulumi/pulumi/sdk/v3 v3.132.0
-	github.com/spf13/cobra v1.7.0
+	github.com/spf13/cobra v1.8.1
 	golang.org/x/exp v0.0.0-20240909161429-701f63a606c0
 )
 
