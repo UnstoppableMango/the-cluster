@@ -12,37 +12,11 @@ import (
 	"github.com/unstoppablemango/the-cluster/cmd/thecluster/app"
 )
 
-var logger *log.Logger
-
 var rootCmd = &cobra.Command{
 	Use: "thecluster",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		ctx := cmd.Context()
-		// work, err := auto.NewLocalWorkspace(ctx,
-		// 	auto.WorkDir("clusters/pinkdiamond"),
-		// )
-		// if err != nil {
-		// 	return fmt.Errorf("failed creating new local workspace: %w", err)
-		// }
-
-		// err = work.Install(ctx, &auto.InstallOptions{
-		// 	Stdout: os.Stdout,
-		// 	Stderr: os.Stderr,
-		// })
-		// if err != nil {
-		// 	return fmt.Errorf("installing deps: %w", err)
-		// }
-
-		// s, err := auto.SelectStack(ctx, "prod", work)
-		// if err != nil {
-		// 	return fmt.Errorf("selecting stack: %w", err)
-		// }
-
-		// _, err = s.Preview(ctx, optpreview.ProgressStreams(os.Stdout))
-		// if err != nil {
-		// 	return fmt.Errorf("previewing stack: %w", err)
-		// }
-		p := tea.NewProgram(app.New(),
+		ctx := log.WithContext(cmd.Context(), createLogger())
+		p := tea.NewProgram(app.New(ctx),
 			tea.WithAltScreen(),
 			tea.WithContext(ctx),
 		)
@@ -57,6 +31,13 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute(ctx context.Context) {
+	if err := rootCmd.ExecuteContext(ctx); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+}
+
+func createLogger() *log.Logger {
 	logFile, err := os.Create("./log.txt")
 	var logTarget io.Writer
 	if err != nil {
@@ -65,10 +46,5 @@ func Execute(ctx context.Context) {
 		logTarget = logFile
 	}
 
-	logger = log.New(logTarget)
-
-	if err := rootCmd.ExecuteContext(ctx); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
-	}
+	return log.New(logTarget)
 }

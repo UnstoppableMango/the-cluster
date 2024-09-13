@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"os"
 	"os/exec"
 	"path"
@@ -24,9 +25,10 @@ var rootModules = []string{
 }
 
 type model struct {
+	ctx        context.Context
 	ready      bool
 	err        error
-	workspaces []tc.Workspace
+	workspaces []*tc.Workspace
 	rootDir    string
 	cursor     int
 	view       viewport.Model
@@ -40,8 +42,8 @@ type scanComplete struct {
 
 type scanError error
 
-func initialModel() model {
-	return model{}
+func initialModel(ctx context.Context) model {
+	return model{ctx: ctx}
 }
 
 func scanWorktree() tea.Msg {
@@ -67,8 +69,8 @@ func scanWorktree() tea.Msg {
 	return scanComplete{root, modules, errs}
 }
 
-func New() tea.Model {
-	return initialModel()
+func New(ctx context.Context) tea.Model {
+	return initialModel(ctx)
 }
 
 // Init implements tea.Model.
@@ -87,7 +89,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case scanComplete:
 		m.rootDir = msg.root
 		for _, w := range msg.modules {
-			m.workspaces = append(m.workspaces, tc.Workspace{
+			m.workspaces = append(m.workspaces, &tc.Workspace{
 				WorkingDirectory: w,
 			})
 		}
@@ -106,7 +108,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "q":
 			return m, tea.Quit
 		case "enter", " ":
-			return workspace.New(m, &m.workspaces[m.cursor]), nil
+			ws := workspace.New(m.ctx, m, m.workspaces[m.cursor])
+			return ws, ws.Init()
 		case "up", "k":
 			if m.cursor > 0 {
 				m.cursor--
