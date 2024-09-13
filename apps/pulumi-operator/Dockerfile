@@ -1,6 +1,6 @@
 #syntax=docker/dockerfile:1
 
-FROM golang:1.22 as build
+FROM golang:1.23 as build
 
 # renovate depName=pulumi/pulumi-kubernetes-operator
 ARG VERSION=v1.14.0
