@@ -2,9 +2,7 @@ package app
 
 import (
 	"fmt"
-	"maps"
 	"path/filepath"
-	"slices"
 
 	tc "github.com/unstoppablemango/the-cluster/gen/go/io/unmango/thecluster/v1alpha1"
 )
@@ -17,9 +15,11 @@ func workspacePaths(w map[string]*tc.Workspace) []string {
 	return result
 }
 
-func (m model) displayPaths() ([]string, error) {
+func (m *model) displayPaths() ([]string, error) {
 	paths := make([]string, 0, len(m.workspaces))
-	for i, p := range slices.Sorted(maps.Keys(m.workspaces)) {
+	for i, w := range m.workspaces {
+		p := w.WorkingDirectory
+
 		if m.rootDir != "" {
 			rel, err := filepath.Rel(m.rootDir, p)
 			if err != nil {

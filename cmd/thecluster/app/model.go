@@ -8,6 +8,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/unstoppablemango/the-cluster/cmd/thecluster/workspace"
 	tc "github.com/unstoppablemango/the-cluster/gen/go/io/unmango/thecluster/v1alpha1"
 )
 
@@ -96,7 +97,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "q":
 			return m, tea.Quit
 		case "enter", " ":
-			// m.workspaces[m.cursor]
+			return workspace.New(&m.workspaces[m.cursor]), nil
 		case "up", "k":
 			if m.cursor > 0 {
 				m.cursor--
