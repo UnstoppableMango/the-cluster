@@ -45,6 +45,7 @@ pools
 .psa*
 .spago
 NuGet.Config
+.make/
 
 # Generated code
 generated.yaml

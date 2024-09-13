@@ -3,9 +3,22 @@
   "extends": [
     "config:recommended"
   ],
-  "includePaths": [
-    ".",
-    "cmd/**"
+  "ignorePaths": [
+    "**/node_modules/**",
+    "**/vendor/**",
+    "**/test/**",
+    "**/tests/**",
+    "**/.save/**",
+    "apps/**",
+    "charts/**",
+    "clusters/**",
+    "containers/**",
+    "dbs/**",
+    "infra/**",
+    "lib/**",
+    "operator/**",
+    "tools/helm-types/**",
+    "tools/tctl/**"
   ],
   "ignoreDeps": [
     "@unstoppablemango/thecluster",
