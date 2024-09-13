@@ -9,4 +9,4 @@ dependencies:
     version: 6.0.3
   - name: oauth2-proxy
     repository: https://oauth2-proxy.github.io/manifests
-    version: 7.7.18
+    version: 7.7.19
