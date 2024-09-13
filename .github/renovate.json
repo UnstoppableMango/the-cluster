@@ -3,13 +3,9 @@
   "extends": [
     "config:recommended"
   ],
-  "ignorePaths": [
-    "**/node_modules/**",
-    "**/vendor/**",
-    "**/test/**",
-    "**/tests/**",
-    "**/.save/**",
-    "lib/**"
+  "includePaths": [
+    ".",
+    "cmd/**"
   ],
   "ignoreDeps": [
     "@unstoppablemango/thecluster",
@@ -22,120 +18,5 @@
     "enabled": true
   },
   "customManagers": [],
-  "packageRules": [
-    {
-      "matchDepNames": [
-        "cert-manager/cert-manager",
-        "kubernetes/kubernetes",
-        "kubernetes/kubectl",
-        "kubernetes-sigs/cluster-api",
-        "siderolabs/cluster-api-bootstrap-provider-talos",
-        "siderolabs/cluster-api-control-plane-provider-talos",
-        "siderolabs/sidero",
-        "siderolabs/talos",
-        "k8s-proxmox/cluster-api-provider-proxmox"
-      ],
-      "dependencyDashboardApproval": true
-    },
-    {
-      "matchPackagePatterns": [
-        "talos"
-      ],
-      "excludePackagePatterns": [
-        "pulumi"
-      ],
-      "groupName": "talos"
-    },
-    {
-      "matchPackagePatterns": [
-        "kubernetes",
-        "kubectl"
-      ],
-      "excludePackagePatterns": [
-        "pulumi",
-        "cluster-api",
-        "gateway-api",
-        "dashboard",
-        "nginx",
-        "sigs"
-      ],
-      "groupName": "kubernetes"
-    },
-    {
-      "matchPackagePatterns": [
-        "pulumi/pulumi"
-      ],
-      "groupName": "pulumi"
-    },
-    {
-      "matchPackagePatterns": [
-        "cert-manager"
-      ],
-      "groupName": "cert-manager"
-    },
-    {
-      "matchPackagePatterns": [
-        "ceph"
-      ],
-      "groupName": "ceph"
-    },
-    {
-      "matchPackagePatterns": [
-        "kubeops",
-        "KubeOps"
-      ],
-      "groupName": "KubeOps"
-    },
-    {
-      "matchPackagePatterns": [
-        "renovate",
-        "^typescript$",
-        "^yaml$",
-        "@actions/core",
-        "@actions/github",
-        "@types/node",
-        "@vercel/ncc",
-        "@pulumi/pulumi",
-        "sealed-secrets",
-        "kube-rbac-proxy",
-        "kube-vip",
-        "haproxy",
-        "@pulumi/libvirt",
-        "drone"
-      ],
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
-      "matchCurrentVersion": "!/^0/",
-      "automerge": true
-    },
-    {
-      "matchPackagePatterns": [
-        "@pulumi/cloudflare",
-        "@pulumi/kubernetes",
-        "external-dns",
-        "filebrowser",
-        "gha-runner-scale-set",
-        "kong",
-        "pgadmin",
-        "pihole",
-        "unifi"
-      ],
-      "matchUpdateTypes": [
-        "patch"
-      ],
-      "matchCurrentVersion": "!/^0/",
-      "automerge": true
-    },
-    {
-      "matchPackagePatterns": [
-        "renovate"
-      ],
-      "matchUpdateTypes": [
-        "patch"
-      ],
-      "enabled": false
-    }
-  ]
+  "packageRules": []
 }
