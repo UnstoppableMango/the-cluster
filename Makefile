@@ -30,10 +30,12 @@ testf: .make/clean_tests $(GINKGO_REPORTS)
 
 gen: $(PROTO_SRC:proto/%.proto=gen/go/%.pb.go)
 
+format: .make/go_fmt
+
 tidy: go.mod go.sum ${GO_SRC}
 	go mod tidy
 
-bin/thecluster: $(filter cmd/%,${GO_SRC})
+bin/thecluster: go.mod go.sum $(GO_SRC)
 	go build -o $@ ./cmd/thecluster/main.go
 
 gen/go/%.pb.go: buf.gen.yaml proto/%.proto
@@ -49,3 +51,7 @@ $(GINKGO_REPORTS) &:: go.mod go.sum $(GO_SRC)
 
 .make/clean_tests:
 	rm -f $(GINKGO_REPORTS)
+
+.make/go_fmt: $(GO_SRC)
+	go fmt ./...
+	@touch $@

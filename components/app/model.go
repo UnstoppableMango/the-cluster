@@ -3,14 +3,10 @@ package app
 import (
 	"context"
 	"os"
-	"os/exec"
 	"path"
-	"strings"
 
-	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/unstoppablemango/the-cluster/components/workspace"
-	tc "github.com/unstoppablemango/the-cluster/gen/go/io/unmango/thecluster/v1alpha1"
+	"github.com/unstoppablemango/the-cluster/components/workspaces"
 )
 
 const (
@@ -28,10 +24,8 @@ type Model struct {
 	ctx        context.Context
 	ready      bool
 	err        error
-	workspaces []*tc.Workspace
 	rootDir    string
-	cursor     int
-	view       viewport.Model
+	workspaces workspaces.Model
 }
 
 type ScanComplete struct {
@@ -42,20 +36,10 @@ type ScanComplete struct {
 
 type ScanError error
 
-func initialModel(ctx context.Context) Model {
-	return Model{ctx: ctx}
-}
-
-func scanWorktree() tea.Msg {
-	gitRevParse, err := exec.Command("git", "rev-parse", "--show-toplevel").Output()
-	if err != nil {
-		return ScanError(err)
-	}
-
-	root := strings.TrimSpace(string(gitRevParse))
+func (m Model) scanWorktree() tea.Msg {
 	modules, errs := []string{}, []error{}
-	for _, m := range rootModules {
-		p := path.Join(root, m)
+	for _, mod := range rootModules {
+		p := path.Join(m.rootDir, mod)
 		entries, err := os.ReadDir(p)
 		if err != nil {
 			errs = append(errs, err)
@@ -66,89 +50,53 @@ func scanWorktree() tea.Msg {
 		}
 	}
 
-	return ScanComplete{root, modules, errs}
+	return ScanComplete{m.rootDir, modules, errs}
 }
 
-func New(ctx context.Context) Model {
-	return initialModel(ctx)
+func New(ctx context.Context, root string) Model {
+	ws := workspaces.New(root)
+
+	return Model{
+		ctx:        ctx,
+		ready:      false,
+		err:        nil,
+		rootDir:    root,
+		workspaces: ws,
+	}
 }
 
 // Init implements tea.Model.
 func (m Model) Init() tea.Cmd {
-	return scanWorktree
+	return tea.Batch(
+		m.scanWorktree,
+		m.workspaces.Init(),
+	)
 }
 
 // Update implements tea.Model.
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	var (
-		cmd            tea.Cmd
-		updateViewport bool
-	)
-
 	switch msg := msg.(type) {
 	case ScanComplete:
 		m.rootDir = msg.root
-		for _, w := range msg.modules {
-			m.workspaces = append(m.workspaces, &tc.Workspace{
-				WorkingDirectory: w,
-			})
-		}
+		m.ready = true
+		return m, m.workspaces.SetItems(msg.modules)
 	case ScanError:
 		m.err = msg
 	case tea.WindowSizeMsg:
-		if !m.ready {
-			m.view = viewport.New(msg.Width, msg.Height)
-			m.ready = true
-		} else {
-			m.view.Width = msg.Width
-			m.view.Height = msg.Height
-		}
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
 			return m, tea.Quit
 		case "enter", " ":
-			ws := workspace.New(m.ctx, m, m.workspaces[m.cursor])
-			return ws, ws.Init()
 		case "up", "k":
-			if m.cursor > 0 {
-				m.cursor--
-			}
-			if m.cursor < m.view.YOffset+viewPadding {
-				updateViewport = true
-			}
 		case "down", "j":
-			if m.cursor < len(m.workspaces)-1 {
-				m.cursor++
-			}
-			if m.cursor >= m.view.VisibleLineCount()-viewPadding {
-				updateViewport = true
-			}
 		case "pgup":
-			m.cursor = max(m.cursor-pageDelta, 0)
-			if m.cursor < m.view.YOffset+viewPadding {
-				updateViewport = true
-			}
 		case "pgdown":
-			m.cursor = min(m.cursor+pageDelta, len(m.workspaces)-1)
-			if m.cursor >= m.view.VisibleLineCount()-viewPadding {
-				updateViewport = true
-			}
 		}
 	}
 
-	if m.ready {
-		paths, err := m.displayPaths()
-		if err == nil {
-			content := strings.Join(paths, "\n")
-			m.view.SetContent(content)
-		}
-	}
-
-	if updateViewport {
-		m.view, cmd = m.view.Update(msg)
-	}
-
+	var cmd tea.Cmd
+	m.workspaces, cmd = m.workspaces.Update(msg)
 	return m, cmd
 }
 
@@ -161,7 +109,7 @@ func (m Model) View() string {
 		return "Working..."
 	}
 
-	return m.view.View()
+	return m.workspaces.View()
 }
 
 var _ tea.Model = Model{}

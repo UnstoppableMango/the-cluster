@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"os/exec"
+	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/log"
@@ -15,12 +17,21 @@ var rootCmd = &cobra.Command{
 	Use: "thecluster",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		ctx := log.WithContext(cmd.Context(), createLogger())
-		p := tea.NewProgram(app.New(ctx),
+		revParse, err := exec.CommandContext(ctx,
+			"git", "rev-parse", "--show-toplevel",
+		).Output()
+		if err != nil {
+			return err
+		}
+
+		root := strings.TrimSpace(string(revParse))
+
+		p := tea.NewProgram(app.New(ctx, root),
 			tea.WithAltScreen(),
 			tea.WithContext(ctx),
 		)
 
-		_, err := p.Run()
+		_, err = p.Run()
 		if err != nil {
 			return err
 		}
