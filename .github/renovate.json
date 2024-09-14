@@ -17,8 +17,7 @@
     "infra/**",
     "lib/**",
     "operator/**",
-    "tools/helm-types/**",
-    "tools/tctl/**"
+    "tools/**"
   ],
   "ignoreDeps": [
     "@unstoppablemango/thecluster",
