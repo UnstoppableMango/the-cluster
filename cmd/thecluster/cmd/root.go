@@ -3,13 +3,12 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"io"
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
-	"github.com/unstoppablemango/the-cluster/cmd/thecluster/app"
+	"github.com/unstoppablemango/the-cluster/components/app"
 )
 
 var rootCmd = &cobra.Command{
@@ -38,13 +37,10 @@ func Execute(ctx context.Context) {
 }
 
 func createLogger() *log.Logger {
-	logFile, err := os.Create("./log.txt")
-	var logTarget io.Writer
+	logFile, err := tea.LogToFile("./log.txt", "debug")
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-	} else {
-		logTarget = logFile
+		return log.Default()
 	}
 
-	return log.New(logTarget)
+	return log.New(logFile)
 }

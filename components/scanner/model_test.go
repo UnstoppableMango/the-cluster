@@ -7,7 +7,8 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.com/unstoppablemango/the-cluster/cmd/thecluster/components/scanner"
+
+	"github.com/unstoppablemango/the-cluster/components/scanner"
 )
 
 var _ = Describe("Model", func() {
@@ -17,7 +18,7 @@ var _ = Describe("Model", func() {
 
 		cmd := s.Init()
 
-		Expect(cmd()).To(Equal(scanner.Eof{}))
+		Expect(cmd()).To(Equal(scanner.Eof))
 	})
 
 	It("should return text", func() {

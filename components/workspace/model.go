@@ -3,7 +3,7 @@ package workspace
 import (
 	"bytes"
 	"context"
-	"errors"
+	"io"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -15,22 +15,22 @@ import (
 
 type Model struct {
 	ctx     context.Context
-	loading bool
 	prev    tea.Model
 	work    *tc.Workspace
 	stack   *auto.Stack
 	errs    []error
-	buf     *bytes.Buffer
+	content string
 }
 
 type (
-	Err           error
-	Loaded        auto.Workspace
-	DepsInstalled struct{}
-	StackSelected auto.Stack
+	Err             error
+	Loaded          auto.Workspace
+	DepsInstalled   string
+	StackSelected   *auto.Stack
+	PreviewComplete string
 )
 
-func (m Model) loadWorkspace() tea.Msg {
+func (m Model) load() tea.Msg {
 	log := log.FromContext(m.ctx)
 	work, err := auto.NewLocalWorkspace(m.ctx,
 		auto.WorkDir(m.work.WorkingDirectory),
@@ -43,18 +43,25 @@ func (m Model) loadWorkspace() tea.Msg {
 	return Loaded(work)
 }
 
-func (m Model) installDeps() tea.Msg {
-	workspace := m.stack.Workspace()
-	err := workspace.Install(m.ctx, &auto.InstallOptions{
-		Stdout: m.buf,
-		Stderr: m.buf,
-	})
-	if err != nil {
-		log.Error("failed installing deps", "err", err)
-		return Err(err)
-	}
+func (m Model) installDeps(workspace auto.Workspace) tea.Cmd {
+	return func() tea.Msg {
+		stdout, stderr := &bytes.Buffer{}, &bytes.Buffer{}
+		err := workspace.Install(m.ctx, &auto.InstallOptions{
+			Stdout: stdout,
+			Stderr: stderr,
+		})
+		if err != nil {
+			log.Error("failed installing deps", "err", err)
+			return Err(err)
+		}
 
-	return DepsInstalled{}
+		logs, err := io.ReadAll(stdout)
+		if err != nil {
+			return Err(err)
+		}
+
+		return DepsInstalled(string(logs))
+	}
 }
 
 func (m Model) selectStack(work auto.Workspace) tea.Cmd {
@@ -65,31 +72,37 @@ func (m Model) selectStack(work auto.Workspace) tea.Cmd {
 			return Err(err)
 		}
 
-		return StackSelected(s)
+		return StackSelected(&s)
 	}
 }
 
-func (m Model) preview() tea.Msg {
-	if m.stack == nil {
-		return Err(errors.New("no stack selected"))
-	}
+func (m Model) preview(s *auto.Stack) tea.Cmd {
+	return func() tea.Msg {
+		buf := &bytes.Buffer{}
+		_, err := s.Preview(m.ctx,
+			optpreview.ProgressStreams(buf),
+		)
+		if err != nil {
+			log.Error("failed previewing stack", "err", err)
+			return Err(err)
+		}
 
-	_, err := m.stack.Preview(m.ctx, optpreview.ProgressStreams(m.buf))
-	if err != nil {
-		log.Error("failed previewing stack", "err", err)
-		return Err(err)
-	}
+		logs, err := io.ReadAll(buf)
+		if err != nil {
+			return Err(err)
+		}
 
-	return nil
+		return PreviewComplete(logs)
+	}
 }
 
-func New(ctx context.Context, prev tea.Model, w *tc.Workspace) tea.Model {
-	return Model{ctx, true, prev, w, nil, []error{}, &bytes.Buffer{}}
+func New(ctx context.Context, prev tea.Model, w *tc.Workspace) Model {
+	return Model{ctx, prev, w, nil, []error{}, ""}
 }
 
 // Init implements tea.Model.
 func (m Model) Init() tea.Cmd {
-	return m.loadWorkspace
+	return m.load
 }
 
 // Update implements tea.Model.
@@ -97,12 +110,15 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case Err:
 		m.errs = append(m.errs, msg)
-		m.loading = false
 	case Loaded:
 		return m, m.selectStack(msg)
 	case StackSelected:
-		m.loading = false
-		return m, m.installDeps
+		var s *auto.Stack = msg
+		return m, m.installDeps(s.Workspace())
+	case DepsInstalled:
+		m.content = string(msg)
+	case PreviewComplete:
+		m.content = string(msg)
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
@@ -110,7 +126,11 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "esc":
 			return m.prev, nil
 		case "enter":
-			return m, m.preview
+			if m.stack == nil {
+				return m, nil
+			}
+
+			return m, m.preview(m.stack)
 		}
 	}
 
@@ -126,11 +146,12 @@ func (m Model) View() string {
 		}
 		return b.String()
 	}
-	if m.loading {
-		return "Loading..."
+
+	if m.content != "" {
+		return m.content
 	}
 
-	return m.work.WorkingDirectory
+	return "Loading..."
 }
 
 var _ tea.Model = Model{}

@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 )
 
-func (m *model) displayPaths() ([]string, error) {
+func (m *Model) displayPaths() ([]string, error) {
 	paths := make([]string, 0, len(m.workspaces))
 	for i, w := range m.workspaces {
 		p := w.WorkingDirectory
