@@ -6,49 +6,37 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-var docStyle = lipgloss.NewStyle().Margin(1, 2)
-
-type Item struct {
-	path string
-}
-
-func (i Item) Title() string       { return i.path }
-func (i Item) Description() string { return "heh" }
-
-// FilterValue implements list.Item.
-func (i Item) FilterValue() string {
-	return i.path
-}
+var containerStyle = lipgloss.NewStyle().Margin(1, 2)
 
 type Model struct {
-	l     list.Model
-	paths []string
+	l    list.Model
+	root string
 }
 
-func New(ws []string) Model {
-	items := []list.Item{}
-	for _, w := range ws {
-		items = append(items, Item{w})
+func New(root string) Model {
+	return Model{
+		list.New([]list.Item{}, NewItemDelegate(), 0, 0),
+		root,
+	}
+}
+
+func (m *Model) SetItems(paths []string) tea.Cmd {
+	items := make([]list.Item, 0, len(paths))
+	for _, p := range paths {
+		items = append(items, Item{m.root, p})
 	}
 
-	list := list.New(items, list.NewDefaultDelegate(), 0, 0)
-	return Model{list, ws}
+	return m.l.SetItems(items)
 }
 
-// Init implements tea.Model.
 func (m Model) Init() tea.Cmd {
 	return nil
 }
 
-// Update implements tea.Model.
-func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m Model) Update(msg tea.Msg) (Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case tea.KeyMsg:
-		if msg.String() == "ctrl+c" {
-			return m, tea.Quit
-		}
 	case tea.WindowSizeMsg:
-		h, v := docStyle.GetFrameSize()
+		h, v := containerStyle.GetFrameSize()
 		m.l.SetSize(msg.Width-h, msg.Height-v)
 	}
 
@@ -57,10 +45,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
-// View implements tea.Model.
 func (m Model) View() string {
-	return docStyle.Render(m.l.View())
+	return containerStyle.Render(m.l.View())
 }
-
-var _ list.Item = Item{}
-var _ tea.Model = Model{}

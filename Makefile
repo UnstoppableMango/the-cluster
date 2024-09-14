@@ -30,6 +30,8 @@ testf: .make/clean_tests $(GINKGO_REPORTS)
 
 gen: $(PROTO_SRC:proto/%.proto=gen/go/%.pb.go)
 
+format: .make/go_fmt
+
 tidy: go.mod go.sum ${GO_SRC}
 	go mod tidy
 
@@ -49,3 +51,7 @@ $(GINKGO_REPORTS) &:: go.mod go.sum $(GO_SRC)
 
 .make/clean_tests:
 	rm -f $(GINKGO_REPORTS)
+
+.make/go_fmt: $(GO_SRC)
+	go fmt ./...
+	@touch $@
