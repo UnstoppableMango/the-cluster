@@ -28,10 +28,6 @@ func (m Model) next() tea.Msg {
 	}
 }
 
-func (m Model) Render(f func(tea.Msg)) tea.Cmd {
-	return nil
-}
-
 // Init implements tea.Model.
 func (m Model) Init() tea.Cmd {
 	return m.next
