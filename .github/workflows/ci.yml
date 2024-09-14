@@ -15,5 +15,12 @@ jobs:
           go-version-file: go.mod
           cache-dependency-path: go.sum
 
+      - uses: bufbuild/buf-action@v1
+        with:
+          setup_only: true
+
+      - name: Test
+        run: make test
+
       - name: Build
         run: make bin/thecluster
