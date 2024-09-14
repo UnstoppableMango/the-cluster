@@ -50,6 +50,7 @@ log.txt
 *.profile
 report.json
 *.out
+*.test
 
 # Generated code
 generated.yaml
