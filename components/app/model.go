@@ -9,7 +9,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/unstoppablemango/the-cluster/cmd/thecluster/workspace"
+	"github.com/unstoppablemango/the-cluster/components/workspace"
 	tc "github.com/unstoppablemango/the-cluster/gen/go/io/unmango/thecluster/v1alpha1"
 )
 
@@ -24,7 +24,7 @@ var rootModules = []string{
 	"lib", "operator", "proto", "tools",
 }
 
-type model struct {
+type Model struct {
 	ctx        context.Context
 	ready      bool
 	err        error
@@ -34,22 +34,22 @@ type model struct {
 	view       viewport.Model
 }
 
-type scanComplete struct {
+type ScanComplete struct {
 	root    string
 	modules []string
 	errs    []error
 }
 
-type scanError error
+type ScanError error
 
-func initialModel(ctx context.Context) model {
-	return model{ctx: ctx}
+func initialModel(ctx context.Context) Model {
+	return Model{ctx: ctx}
 }
 
 func scanWorktree() tea.Msg {
 	gitRevParse, err := exec.Command("git", "rev-parse", "--show-toplevel").Output()
 	if err != nil {
-		return scanError(err)
+		return ScanError(err)
 	}
 
 	root := strings.TrimSpace(string(gitRevParse))
@@ -66,34 +66,34 @@ func scanWorktree() tea.Msg {
 		}
 	}
 
-	return scanComplete{root, modules, errs}
+	return ScanComplete{root, modules, errs}
 }
 
-func New(ctx context.Context) tea.Model {
+func New(ctx context.Context) Model {
 	return initialModel(ctx)
 }
 
 // Init implements tea.Model.
-func (m model) Init() tea.Cmd {
+func (m Model) Init() tea.Cmd {
 	return scanWorktree
 }
 
 // Update implements tea.Model.
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var (
 		cmd            tea.Cmd
 		updateViewport bool
 	)
 
 	switch msg := msg.(type) {
-	case scanComplete:
+	case ScanComplete:
 		m.rootDir = msg.root
 		for _, w := range msg.modules {
 			m.workspaces = append(m.workspaces, &tc.Workspace{
 				WorkingDirectory: w,
 			})
 		}
-	case scanError:
+	case ScanError:
 		m.err = msg
 	case tea.WindowSizeMsg:
 		if !m.ready {
@@ -153,7 +153,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 // View implements tea.Model.
-func (m model) View() string {
+func (m Model) View() string {
 	if m.err != nil {
 		return m.err.Error()
 	}
@@ -164,4 +164,4 @@ func (m model) View() string {
 	return m.view.View()
 }
 
-var _ tea.Model = model{}
+var _ tea.Model = Model{}
