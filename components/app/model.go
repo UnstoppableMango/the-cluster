@@ -6,6 +6,7 @@ import (
 	"path"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/unstoppablemango/the-cluster/components/workspace"
 	"github.com/unstoppablemango/the-cluster/components/workspaces"
 )
 
@@ -22,6 +23,7 @@ var rootModules = []string{
 
 type Model struct {
 	ctx        context.Context
+	h, w       int
 	ready      bool
 	err        error
 	rootDir    string
@@ -83,11 +85,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case ScanError:
 		m.err = msg
 	case tea.WindowSizeMsg:
+		m.h, m.w = msg.Height, msg.Width
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
-			return m, tea.Quit
 		case "enter", " ":
+			item := m.workspaces.SelectedItem()
+			return m.selectWorkspace(item)
 		case "up", "k":
 		case "down", "j":
 		case "pgup":
@@ -113,3 +117,8 @@ func (m Model) View() string {
 }
 
 var _ tea.Model = Model{}
+
+func (m Model) selectWorkspace(w workspaces.Item) (tea.Model, tea.Cmd) {
+	work := workspace.New(m.ctx, w.Path(), m, m.h, m.w)
+	return work, work.Init()
+}
