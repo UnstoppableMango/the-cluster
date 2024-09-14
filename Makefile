@@ -36,8 +36,12 @@ tidy: go.mod go.sum ${GO_SRC}
 bin/thecluster: $(filter cmd/%,${GO_SRC})
 	go build -o $@ ./cmd/thecluster/main.go
 
-gen/go/%.pb.go: proto/%.proto
-	buf generate $?
+gen/go/%.pb.go: buf.gen.yaml proto/%.proto
+	buf generate
+
+buf.lock: buf.yaml
+	buf dep update
+	buf dep prune
 
 $(GINKGO_REPORTS) &:: go.mod go.sum $(GO_SRC)
 	$(GINKGO) run --coverprofile=$(COV_REPORT) \
