@@ -10,6 +10,7 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/unstoppablemango/the-cluster/components/workspace"
+	"github.com/unstoppablemango/the-cluster/components/workspaces"
 	tc "github.com/unstoppablemango/the-cluster/gen/go/io/unmango/thecluster/v1alpha1"
 )
 
@@ -93,6 +94,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				WorkingDirectory: w,
 			})
 		}
+
+		ws := workspaces.New(msg.modules)
+		return ws, ws.Init()
 	case ScanError:
 		m.err = msg
 	case tea.WindowSizeMsg:

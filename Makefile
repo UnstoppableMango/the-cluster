@@ -33,7 +33,7 @@ gen: $(PROTO_SRC:proto/%.proto=gen/go/%.pb.go)
 tidy: go.mod go.sum ${GO_SRC}
 	go mod tidy
 
-bin/thecluster: $(filter cmd/%,${GO_SRC})
+bin/thecluster: go.mod go.sum $(GO_SRC)
 	go build -o $@ ./cmd/thecluster/main.go
 
 gen/go/%.pb.go: buf.gen.yaml proto/%.proto
