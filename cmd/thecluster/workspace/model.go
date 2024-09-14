@@ -13,7 +13,7 @@ import (
 	tc "github.com/unstoppablemango/the-cluster/gen/go/io/unmango/thecluster/v1alpha1"
 )
 
-type model struct {
+type Model struct {
 	ctx     context.Context
 	loading bool
 	prev    tea.Model
@@ -24,26 +24,26 @@ type model struct {
 }
 
 type (
-	workspaceError  error
-	workspaceLoaded auto.Workspace
-	depsInstalled   struct{}
-	stackSelected   auto.Stack
+	Err           error
+	Loaded        auto.Workspace
+	DepsInstalled struct{}
+	StackSelected auto.Stack
 )
 
-func (m model) loadWorkspace() tea.Msg {
+func (m Model) loadWorkspace() tea.Msg {
 	log := log.FromContext(m.ctx)
 	work, err := auto.NewLocalWorkspace(m.ctx,
 		auto.WorkDir(m.work.WorkingDirectory),
 	)
 	if err != nil {
 		log.Error("failed creating new local workspace", "err", err)
-		return workspaceError(err)
+		return Err(err)
 	}
 
-	return workspaceLoaded(work)
+	return Loaded(work)
 }
 
-func (m model) installDeps() tea.Msg {
+func (m Model) installDeps() tea.Msg {
 	workspace := m.stack.Workspace()
 	err := workspace.Install(m.ctx, &auto.InstallOptions{
 		Stdout: m.buf,
@@ -51,56 +51,56 @@ func (m model) installDeps() tea.Msg {
 	})
 	if err != nil {
 		log.Error("failed installing deps", "err", err)
-		return workspaceError(err)
+		return Err(err)
 	}
 
-	return depsInstalled{}
+	return DepsInstalled{}
 }
 
-func (m model) selectStack(work auto.Workspace) tea.Cmd {
+func (m Model) selectStack(work auto.Workspace) tea.Cmd {
 	return func() tea.Msg {
 		s, err := auto.SelectStack(m.ctx, "prod", work)
 		if err != nil {
 			log.Error("failed selecting stack", "err", err)
-			return workspaceError(err)
+			return Err(err)
 		}
 
-		return stackSelected(s)
+		return StackSelected(s)
 	}
 }
 
-func (m model) preview() tea.Msg {
+func (m Model) preview() tea.Msg {
 	if m.stack == nil {
-		return workspaceError(errors.New("no stack selected"))
+		return Err(errors.New("no stack selected"))
 	}
 
 	_, err := m.stack.Preview(m.ctx, optpreview.ProgressStreams(m.buf))
 	if err != nil {
 		log.Error("failed previewing stack", "err", err)
-		return workspaceError(err)
+		return Err(err)
 	}
 
 	return nil
 }
 
 func New(ctx context.Context, prev tea.Model, w *tc.Workspace) tea.Model {
-	return model{ctx, true, prev, w, nil, []error{}, &bytes.Buffer{}}
+	return Model{ctx, true, prev, w, nil, []error{}, &bytes.Buffer{}}
 }
 
 // Init implements tea.Model.
-func (m model) Init() tea.Cmd {
+func (m Model) Init() tea.Cmd {
 	return m.loadWorkspace
 }
 
 // Update implements tea.Model.
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
-	case workspaceError:
+	case Err:
 		m.errs = append(m.errs, msg)
 		m.loading = false
-	case workspaceLoaded:
+	case Loaded:
 		return m, m.selectStack(msg)
-	case stackSelected:
+	case StackSelected:
 		m.loading = false
 		return m, m.installDeps
 	case tea.KeyMsg:
@@ -118,7 +118,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 // View implements tea.Model.
-func (m model) View() string {
+func (m Model) View() string {
 	if len(m.errs) > 0 {
 		b := strings.Builder{}
 		for _, err := range m.errs {
@@ -133,4 +133,4 @@ func (m model) View() string {
 	return m.work.WorkingDirectory
 }
 
-var _ tea.Model = model{}
+var _ tea.Model = Model{}

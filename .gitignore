@@ -47,6 +47,9 @@ pools
 NuGet.Config
 .make/
 log.txt
+*.profile
+report.json
+*.out
 
 # Generated code
 generated.yaml
