@@ -1,4 +1,4 @@
-package workspaces
+package stacks
 
 import (
 	"github.com/charmbracelet/bubbles/list"
@@ -11,21 +11,20 @@ var containerStyle = lipgloss.NewStyle().Margin(1, 2)
 type Model struct {
 	l    list.Model
 	h, w int
-	root string
 }
 
-func New(root string) Model {
+func New() Model {
 	width, height := 0, 0
 	return Model{
 		list.New([]list.Item{}, NewItemDelegate(), width, height),
-		width, height, root,
+		width, height,
 	}
 }
 
-func (m *Model) SetItems(paths []string) tea.Cmd {
-	items := make([]list.Item, 0, len(paths))
-	for _, p := range paths {
-		items = append(items, Item{m.root, p})
+func (m *Model) SetItems(stacks []string) tea.Cmd {
+	items := make([]list.Item, 0, len(stacks))
+	for _, s := range stacks {
+		items = append(items, Item{s})
 	}
 
 	return m.l.SetItems(items)
