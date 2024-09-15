@@ -11,6 +11,7 @@ import (
 	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
 	"github.com/unstoppablemango/the-cluster/components/app"
+	"github.com/unstoppablemango/the-cluster/internal/thecluster"
 )
 
 var rootCmd = &cobra.Command{
@@ -25,15 +26,17 @@ var rootCmd = &cobra.Command{
 		}
 
 		root := strings.TrimSpace(string(revParse))
+		config := thecluster.NewConfig(root)
+		config.RootModules = []string{
+			"apps", "clusters", "infra",
+		}
 
-		p := tea.NewProgram(app.New(ctx, root),
-			tea.WithAltScreen(),
-			tea.WithContext(ctx),
-		)
+		if config.Interactive {
+			return runInteractive(ctx, config)
+		}
 
-		_, err = p.Run()
-		if err != nil {
-			return err
+		if config.CI {
+			return runCi(ctx, config, args)
 		}
 
 		return nil
@@ -45,6 +48,24 @@ func Execute(ctx context.Context) {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+}
+
+func runInteractive(ctx context.Context, config thecluster.Config) error {
+	p := tea.NewProgram(app.New(ctx, config),
+		tea.WithAltScreen(),
+		tea.WithContext(ctx),
+	)
+
+	_, err := p.Run()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func runCi(ctx context.Context, config thecluster.Config, args []string) error {
+	return nil
 }
 
 func createLogger() *log.Logger {

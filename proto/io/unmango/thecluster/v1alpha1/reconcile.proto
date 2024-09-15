@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package io.unmango.thecluster.v1alpha1;
+
+message ReconcileRequest {
+  string component = 1;
+}
+
+message ReconcileResponse {
+  string root = 1;
+}
