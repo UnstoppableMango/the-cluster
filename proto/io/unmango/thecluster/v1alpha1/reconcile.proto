@@ -4,6 +4,8 @@ package io.unmango.thecluster.v1alpha1;
 
 message ReconcileRequest {
   string component = 1;
+  string cluster = 2;
+  string stack = 3;
 }
 
 message ReconcileResponse {
