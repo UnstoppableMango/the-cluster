@@ -16,6 +16,8 @@ var _ = Describe("Config", func() {
 	})
 
 	It("should not be CI", func() {
+		os.Unsetenv("CI")
+
 		actual := thecluster.NewConfig("")
 
 		Expect(actual.CI).To(BeFalse())
