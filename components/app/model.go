@@ -8,6 +8,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/unstoppablemango/the-cluster/components/workspace"
 	"github.com/unstoppablemango/the-cluster/components/workspaces"
+	"github.com/unstoppablemango/the-cluster/internal/thecluster"
 )
 
 const (
@@ -55,15 +56,15 @@ func (m Model) scanWorktree() tea.Msg {
 	return ScanComplete{m.rootDir, modules, errs}
 }
 
-func New(ctx context.Context, root string) Model {
-	ws := workspaces.New(root)
+func New(ctx context.Context, config thecluster.Config) Model {
+	ws := workspaces.New(config.Root)
 
 	return Model{
 		ctx:        ctx,
+		workspaces: ws,
+		rootDir:    config.Root,
 		ready:      false,
 		err:        nil,
-		rootDir:    root,
-		workspaces: ws,
 	}
 }
 
