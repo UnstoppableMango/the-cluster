@@ -22,6 +22,8 @@ GINKGO_REPORTS := $(COV_REPORT) $(TEST_REPORT)
 PULUMI := pulumi
 GINKGO := go run github.com/onsi/ginkgo/v2/ginkgo
 
+all: bin/thecluster
+
 tc: bin/thecluster $(TS_SRC)
 	$<
 
@@ -46,8 +48,7 @@ buf.lock: buf.yaml
 	buf dep prune
 
 $(GINKGO_REPORTS) &:: go.mod go.sum $(GO_SRC)
-	$(GINKGO) run --coverprofile=$(COV_REPORT) \
-	--race --trace --json-report=$(TEST_REPORT) -r ./...
+	$(GINKGO) run --coverprofile=$(COV_REPORT) --race --trace --json-report=$(TEST_REPORT) -r ./...
 
 .make/clean_tests:
 	rm -f $(GINKGO_REPORTS)
