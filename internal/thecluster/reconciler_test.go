@@ -22,6 +22,8 @@ var _ = Describe("Reconciler", func() {
 	)
 
 	BeforeEach(func(ctx context.Context) {
+		Skip("Not ready yet")
+
 		var err error
 		work, err = os.MkdirTemp("", "")
 		Expect(err).NotTo(HaveOccurred())
@@ -48,8 +50,6 @@ var _ = Describe("Reconciler", func() {
 
 	DescribeTable("Reconcile",
 		func(ctx context.Context, req *tc.ReconcileRequest, res *tc.ReconcileResponse) {
-			Skip("Not ready yet")
-
 			actual, err := sut.Reconcile(ctx, req)
 
 			Expect(err).NotTo(HaveOccurred())
