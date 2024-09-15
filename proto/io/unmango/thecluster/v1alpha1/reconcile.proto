@@ -6,4 +6,6 @@ message ReconcileRequest {
   string component = 1;
 }
 
-message ReconcileResponse {}
+message ReconcileResponse {
+  string root = 1;
+}
