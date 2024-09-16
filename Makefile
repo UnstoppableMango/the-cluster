@@ -1,5 +1,7 @@
 _ := $(shell mkdir -p .make)
 WORKING_DIR := $(shell pwd)
+GOOS   := $(shell go env GOOS)
+GOARCH := $(shell go env GOARCH)
 
 STACK   := prod
 CLUSTER := pinkdiamond
@@ -43,6 +45,11 @@ tidy: go.mod go.sum ${GO_SRC}
 
 bin/thecluster: go.mod go.sum $(GO_SRC)
 	go build -o $@ ./cmd/thecluster/main.go
+
+bin/kubebuilder: .versions/kubebuilder
+	curl --fail -L -o $@ \
+		"https://github.com/kubernetes-sigs/kubebuilder/releases/download/v$(shell cat $<)/kubebuilder_$(GOOS)_$(GOARCH)"
+	chmod +x $@ 
 
 gen/go/%.pb.go: buf.gen.yaml proto/%.proto
 	buf generate
