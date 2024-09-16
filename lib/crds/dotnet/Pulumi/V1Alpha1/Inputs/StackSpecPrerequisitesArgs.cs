@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1Alpha1
+namespace Pulumi.Kubernetes.Types.Inputs.Pulumi.V1Alpha1
 {
 
     /// <summary>
@@ -25,7 +25,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1Alpha1
         /// Requirement gives specific requirements for the prerequisite; the base requirement is that the referenced stack is in a successful state.
         /// </summary>
         [Input("requirement")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1Alpha1.StackSpecPrerequisitesRequirementArgs>? Requirement { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1Alpha1.StackSpecPrerequisitesRequirementArgs>? Requirement { get; set; }
 
         public StackSpecPrerequisitesArgs()
         {

@@ -16,44 +16,44 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
     [OutputType]
     public sealed class VirtualServerSpecTlsCertManager
     {
-        public readonly string ClusterIssuer;
-        public readonly string CommonName;
+        public readonly string Cluster-issuer;
+        public readonly string Common-name;
         public readonly string Duration;
-        public readonly bool IssueTempCert;
+        public readonly bool Issue-temp-cert;
         public readonly string Issuer;
-        public readonly string IssuerGroup;
-        public readonly string IssuerKind;
-        public readonly string RenewBefore;
+        public readonly string Issuer-group;
+        public readonly string Issuer-kind;
+        public readonly string Renew-before;
         public readonly string Usages;
 
         [OutputConstructor]
         private VirtualServerSpecTlsCertManager(
-            string clusterIssuer,
+            string cluster-issuer,
 
-            string commonName,
+            string common-name,
 
             string duration,
 
-            bool issueTempCert,
+            bool issue-temp-cert,
 
             string issuer,
 
-            string issuerGroup,
+            string issuer-group,
 
-            string issuerKind,
+            string issuer-kind,
 
-            string renewBefore,
+            string renew-before,
 
             string usages)
         {
-            ClusterIssuer = clusterIssuer;
-            CommonName = commonName;
+            Cluster-issuer = cluster-issuer;
+            Common-name = common-name;
             Duration = duration;
-            IssueTempCert = issueTempCert;
+            Issue-temp-cert = issue-temp-cert;
             Issuer = issuer;
-            IssuerGroup = issuerGroup;
-            IssuerKind = issuerKind;
-            RenewBefore = renewBefore;
+            Issuer-group = issuer-group;
+            Issuer-kind = issuer-kind;
+            Renew-before = renew-before;
             Usages = usages;
         }
     }

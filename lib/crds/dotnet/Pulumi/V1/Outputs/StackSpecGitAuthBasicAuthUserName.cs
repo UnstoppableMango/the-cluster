@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
+namespace Pulumi.Kubernetes.Types.Outputs.Pulumi.V1
 {
 
     /// <summary>
@@ -19,19 +19,19 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
         /// <summary>
         /// Env selects an environment variable set on the operator process
         /// </summary>
-        public readonly Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecGitAuthBasicAuthUserNameEnv Env;
+        public readonly Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecGitAuthBasicAuthUserNameEnv Env;
         /// <summary>
         /// FileSystem selects a file on the operator's file system
         /// </summary>
-        public readonly Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecGitAuthBasicAuthUserNameFilesystem Filesystem;
+        public readonly Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecGitAuthBasicAuthUserNameFilesystem Filesystem;
         /// <summary>
         /// LiteralRef refers to a literal value
         /// </summary>
-        public readonly Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecGitAuthBasicAuthUserNameLiteral Literal;
+        public readonly Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecGitAuthBasicAuthUserNameLiteral Literal;
         /// <summary>
         /// SecretRef refers to a Kubernetes Secret
         /// </summary>
-        public readonly Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecGitAuthBasicAuthUserNameSecret Secret;
+        public readonly Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecGitAuthBasicAuthUserNameSecret Secret;
         /// <summary>
         /// SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal
         /// </summary>
@@ -39,13 +39,13 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
 
         [OutputConstructor]
         private StackSpecGitAuthBasicAuthUserName(
-            Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecGitAuthBasicAuthUserNameEnv env,
+            Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecGitAuthBasicAuthUserNameEnv env,
 
-            Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecGitAuthBasicAuthUserNameFilesystem filesystem,
+            Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecGitAuthBasicAuthUserNameFilesystem filesystem,
 
-            Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecGitAuthBasicAuthUserNameLiteral literal,
+            Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecGitAuthBasicAuthUserNameLiteral literal,
 
-            Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecGitAuthBasicAuthUserNameSecret secret,
+            Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecGitAuthBasicAuthUserNameSecret secret,
 
             string type)
         {

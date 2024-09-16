@@ -95,7 +95,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1
         /// <summary>
         /// XPreserveUnknownFields allows setting fields in a variable object which are not defined in the variable schema. This affects fields recursively, except if nested properties or additionalProperties are specified in the schema.
         /// </summary>
-        public readonly bool XKubernetesPreserveUnknownFields;
+        public readonly bool X-kubernetes-preserve-unknown-fields;
 
         [OutputConstructor]
         private ClusterClassSpecVariablesSchemaOpenApiv3Schema(
@@ -137,7 +137,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1
 
             bool uniqueItems,
 
-            bool xKubernetesPreserveUnknownFields)
+            bool x-kubernetes-preserve-unknown-fields)
         {
             AdditionalProperties = additionalProperties;
             Description = description;
@@ -158,7 +158,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.Cluster.V1Beta1
             Required = required;
             Type = type;
             UniqueItems = uniqueItems;
-            XKubernetesPreserveUnknownFields = xKubernetesPreserveUnknownFields;
+            X-kubernetes-preserve-unknown-fields = x-kubernetes-preserve-unknown-fields;
         }
     }
 }

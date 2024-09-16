@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1
+namespace Pulumi.Kubernetes.Types.Inputs.Pulumi.V1
 {
 
     /// <summary>
@@ -16,10 +16,10 @@ namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1
     public class StackStatusArgs : global::Pulumi.ResourceArgs
     {
         [Input("conditions")]
-        private InputList<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackStatusConditionsArgs>? _conditions;
-        public InputList<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackStatusConditionsArgs> Conditions
+        private InputList<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackStatusConditionsArgs>? _conditions;
+        public InputList<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackStatusConditionsArgs> Conditions
         {
-            get => _conditions ?? (_conditions = new InputList<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackStatusConditionsArgs>());
+            get => _conditions ?? (_conditions = new InputList<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackStatusConditionsArgs>());
             set => _conditions = value;
         }
 
@@ -27,7 +27,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1
         /// LastUpdate contains details of the status of the last update.
         /// </summary>
         [Input("lastUpdate")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackStatusLastUpdateArgs>? LastUpdate { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackStatusLastUpdateArgs>? LastUpdate { get; set; }
 
         /// <summary>
         /// ObservedGeneration records the value of .meta.generation at the point the controller last processed this object

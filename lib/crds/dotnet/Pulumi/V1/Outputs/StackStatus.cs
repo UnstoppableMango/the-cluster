@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
+namespace Pulumi.Kubernetes.Types.Outputs.Pulumi.V1
 {
 
     /// <summary>
@@ -16,11 +16,11 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
     [OutputType]
     public sealed class StackStatus
     {
-        public readonly ImmutableArray<Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackStatusConditions> Conditions;
+        public readonly ImmutableArray<Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackStatusConditions> Conditions;
         /// <summary>
         /// LastUpdate contains details of the status of the last update.
         /// </summary>
-        public readonly Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackStatusLastUpdate LastUpdate;
+        public readonly Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackStatusLastUpdate LastUpdate;
         /// <summary>
         /// ObservedGeneration records the value of .meta.generation at the point the controller last processed this object
         /// </summary>
@@ -36,9 +36,9 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
 
         [OutputConstructor]
         private StackStatus(
-            ImmutableArray<Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackStatusConditions> conditions,
+            ImmutableArray<Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackStatusConditions> conditions,
 
-            Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackStatusLastUpdate lastUpdate,
+            Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackStatusLastUpdate lastUpdate,
 
             int observedGeneration,
 

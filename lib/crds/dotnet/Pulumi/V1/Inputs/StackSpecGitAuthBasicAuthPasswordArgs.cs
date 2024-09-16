@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1
+namespace Pulumi.Kubernetes.Types.Inputs.Pulumi.V1
 {
 
     /// <summary>
@@ -19,25 +19,25 @@ namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1
         /// Env selects an environment variable set on the operator process
         /// </summary>
         [Input("env")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackSpecGitAuthBasicAuthPasswordEnvArgs>? Env { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackSpecGitAuthBasicAuthPasswordEnvArgs>? Env { get; set; }
 
         /// <summary>
         /// FileSystem selects a file on the operator's file system
         /// </summary>
         [Input("filesystem")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackSpecGitAuthBasicAuthPasswordFilesystemArgs>? Filesystem { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackSpecGitAuthBasicAuthPasswordFilesystemArgs>? Filesystem { get; set; }
 
         /// <summary>
         /// LiteralRef refers to a literal value
         /// </summary>
         [Input("literal")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackSpecGitAuthBasicAuthPasswordLiteralArgs>? Literal { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackSpecGitAuthBasicAuthPasswordLiteralArgs>? Literal { get; set; }
 
         /// <summary>
         /// SecretRef refers to a Kubernetes Secret
         /// </summary>
         [Input("secret")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackSpecGitAuthBasicAuthPasswordSecretArgs>? Secret { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackSpecGitAuthBasicAuthPasswordSecretArgs>? Secret { get; set; }
 
         /// <summary>
         /// SelectorType is required and signifies the type of selector. Must be one of: Env, FS, Secret, Literal

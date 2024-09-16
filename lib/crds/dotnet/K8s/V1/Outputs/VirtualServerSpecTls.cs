@@ -19,7 +19,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
         /// <summary>
         /// CertManager defines a cert manager config for a TLS.
         /// </summary>
-        public readonly Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerSpecTlsCertManager CertManager;
+        public readonly Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerSpecTlsCertManager Cert-manager;
         /// <summary>
         /// TLSRedirect defines a redirect for a TLS.
         /// </summary>
@@ -28,13 +28,13 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
 
         [OutputConstructor]
         private VirtualServerSpecTls(
-            Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerSpecTlsCertManager certManager,
+            Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerSpecTlsCertManager cert-manager,
 
             Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerSpecTlsRedirect redirect,
 
             string secret)
         {
-            CertManager = certManager;
+            Cert-manager = cert-manager;
             Redirect = redirect;
             Secret = secret;
         }

@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1
+namespace Pulumi.Kubernetes.Types.Inputs.Pulumi.V1
 {
 
     /// <summary>
@@ -19,19 +19,19 @@ namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1
         /// ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
         /// </summary>
         [Input("accessToken")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackSpecGitAuthAccessTokenArgs>? AccessToken { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackSpecGitAuthAccessTokenArgs>? AccessToken { get; set; }
 
         /// <summary>
         /// BasicAuth configures git authentication through basic auth — i.e. username and password. Both UserName and Password are required.
         /// </summary>
         [Input("basicAuth")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackSpecGitAuthBasicAuthArgs>? BasicAuth { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackSpecGitAuthBasicAuthArgs>? BasicAuth { get; set; }
 
         /// <summary>
         /// SSHAuth configures ssh-based auth for git authentication. SSHPrivateKey is required but password is optional.
         /// </summary>
         [Input("sshAuth")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackSpecGitAuthSshAuthArgs>? SshAuth { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackSpecGitAuthSshAuthArgs>? SshAuth { get; set; }
 
         public StackSpecGitAuthArgs()
         {

@@ -23,7 +23,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
         public readonly Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerSpecExternalDns ExternalDNS;
         public readonly bool Gunzip;
         public readonly string Host;
-        public readonly string HttpSnippets;
+        public readonly string Http-snippets;
         public readonly string IngressClassName;
         /// <summary>
         /// InternalRoute allows for the configuration of internal routing.
@@ -35,7 +35,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
         public readonly Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerSpecListener Listener;
         public readonly ImmutableArray<Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerSpecPolicies> Policies;
         public readonly ImmutableArray<Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerSpecRoutes> Routes;
-        public readonly string ServerSnippets;
+        public readonly string Server-snippets;
         /// <summary>
         /// TLS defines TLS configuration for a VirtualServer.
         /// </summary>
@@ -52,7 +52,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
 
             string host,
 
-            string httpSnippets,
+            string http-snippets,
 
             string ingressClassName,
 
@@ -64,7 +64,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
 
             ImmutableArray<Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerSpecRoutes> routes,
 
-            string serverSnippets,
+            string server-snippets,
 
             Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerSpecTls tls,
 
@@ -74,13 +74,13 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
             ExternalDNS = externalDNS;
             Gunzip = gunzip;
             Host = host;
-            HttpSnippets = httpSnippets;
+            Http-snippets = http-snippets;
             IngressClassName = ingressClassName;
             InternalRoute = internalRoute;
             Listener = listener;
             Policies = policies;
             Routes = routes;
-            ServerSnippets = serverSnippets;
+            Server-snippets = server-snippets;
             Tls = tls;
             Upstreams = upstreams;
         }

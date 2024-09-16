@@ -22,7 +22,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.K8s.V1
         public Input<int>? BackupPort { get; set; }
 
         [Input("buffer-size")]
-        public Input<string>? BufferSize { get; set; }
+        public Input<string>? Buffer-size { get; set; }
 
         [Input("buffering")]
         public Input<bool>? Buffering { get; set; }
@@ -34,13 +34,13 @@ namespace Pulumi.Kubernetes.Types.Inputs.K8s.V1
         public Input<Pulumi.Kubernetes.Types.Inputs.K8s.V1.VirtualServerRouteSpecUpstreamsBuffersArgs>? Buffers { get; set; }
 
         [Input("client-max-body-size")]
-        public Input<string>? ClientMaxBodySize { get; set; }
+        public Input<string>? Client-max-body-size { get; set; }
 
         [Input("connect-timeout")]
-        public Input<string>? ConnectTimeout { get; set; }
+        public Input<string>? Connect-timeout { get; set; }
 
         [Input("fail-timeout")]
-        public Input<string>? FailTimeout { get; set; }
+        public Input<string>? Fail-timeout { get; set; }
 
         /// <summary>
         /// HealthCheck defines the parameters for active Upstream HealthChecks.
@@ -52,25 +52,25 @@ namespace Pulumi.Kubernetes.Types.Inputs.K8s.V1
         public Input<int>? Keepalive { get; set; }
 
         [Input("lb-method")]
-        public Input<string>? LbMethod { get; set; }
+        public Input<string>? Lb-method { get; set; }
 
         [Input("max-conns")]
-        public Input<int>? MaxConns { get; set; }
+        public Input<int>? Max-conns { get; set; }
 
         [Input("max-fails")]
-        public Input<int>? MaxFails { get; set; }
+        public Input<int>? Max-fails { get; set; }
 
         [Input("name")]
         public Input<string>? Name { get; set; }
 
         [Input("next-upstream")]
-        public Input<string>? NextUpstream { get; set; }
+        public Input<string>? Next-upstream { get; set; }
 
         [Input("next-upstream-timeout")]
-        public Input<string>? NextUpstreamTimeout { get; set; }
+        public Input<string>? Next-upstream-timeout { get; set; }
 
         [Input("next-upstream-tries")]
-        public Input<int>? NextUpstreamTries { get; set; }
+        public Input<int>? Next-upstream-tries { get; set; }
 
         [Input("ntlm")]
         public Input<bool>? Ntlm { get; set; }
@@ -85,10 +85,10 @@ namespace Pulumi.Kubernetes.Types.Inputs.K8s.V1
         public Input<Pulumi.Kubernetes.Types.Inputs.K8s.V1.VirtualServerRouteSpecUpstreamsQueueArgs>? Queue { get; set; }
 
         [Input("read-timeout")]
-        public Input<string>? ReadTimeout { get; set; }
+        public Input<string>? Read-timeout { get; set; }
 
         [Input("send-timeout")]
-        public Input<string>? SendTimeout { get; set; }
+        public Input<string>? Send-timeout { get; set; }
 
         [Input("service")]
         public Input<string>? Service { get; set; }
@@ -100,7 +100,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.K8s.V1
         public Input<Pulumi.Kubernetes.Types.Inputs.K8s.V1.VirtualServerRouteSpecUpstreamsSessionCookieArgs>? SessionCookie { get; set; }
 
         [Input("slow-start")]
-        public Input<string>? SlowStart { get; set; }
+        public Input<string>? Slow-start { get; set; }
 
         [Input("subselector")]
         private InputMap<string>? _subselector;
@@ -120,7 +120,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.K8s.V1
         public Input<string>? Type { get; set; }
 
         [Input("use-cluster-ip")]
-        public Input<bool>? UseClusterIp { get; set; }
+        public Input<bool>? Use-cluster-ip { get; set; }
 
         public VirtualServerRouteSpecUpstreamsArgs()
         {

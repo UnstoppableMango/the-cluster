@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1Alpha1
+namespace Pulumi.Kubernetes.Types.Inputs.Pulumi.V1Alpha1
 {
 
     /// <summary>
@@ -19,13 +19,13 @@ namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1Alpha1
         /// ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
         /// </summary>
         [Input("password")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1Alpha1.StackSpecGitAuthSshAuthPasswordArgs>? Password { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1Alpha1.StackSpecGitAuthSshAuthPasswordArgs>? Password { get; set; }
 
         /// <summary>
         /// ResourceRef identifies a resource from which information can be loaded. Environment variables, files on the filesystem, Kubernetes Secrets and literal strings are currently supported.
         /// </summary>
         [Input("sshPrivateKey", required: true)]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1Alpha1.StackSpecGitAuthSshAuthSshPrivateKeyArgs> SshPrivateKey { get; set; } = null!;
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1Alpha1.StackSpecGitAuthSshAuthSshPrivateKeyArgs> SshPrivateKey { get; set; } = null!;
 
         public StackSpecGitAuthSshAuthArgs()
         {

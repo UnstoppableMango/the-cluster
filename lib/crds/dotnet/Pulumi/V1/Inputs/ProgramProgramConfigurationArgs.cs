@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1
+namespace Pulumi.Kubernetes.Types.Inputs.Pulumi.V1
 {
 
     public class ProgramProgramConfigurationArgs : global::Pulumi.ResourceArgs

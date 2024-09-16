@@ -1,0 +1,20 @@
+{
+    "version": 3,
+    "deployment": {
+        "manifest": {
+            "time": "2024-09-15T18:50:04.447736724-05:00",
+            "magic": "a4cfd9a93ae38591734ea5c772b472059b867e4ed007da611baf1b2abaf4c095",
+            "version": "v3.131.0"
+        },
+        "secrets_providers": {
+            "type": "service",
+            "state": {
+                "url": "https://api.pulumi.com",
+                "owner": "UnstoppableMango",
+                "project": "thecluster-shared",
+                "stack": "pinkdiamond"
+            }
+        },
+        "resources": []
+    }
+}
