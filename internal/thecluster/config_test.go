@@ -51,9 +51,9 @@ var _ = Describe("Config", func() {
 		Expect(actual.RootModules).To(BeEmpty())
 	})
 
-	It("should default to interactive", func() {
+	It("should default to uninteractive", func() {
 		actual := thecluster.NewConfig("")
 
-		Expect(actual.Interactive).To(BeTrue())
+		Expect(actual.Interactive).To(BeFalse())
 	})
 })
