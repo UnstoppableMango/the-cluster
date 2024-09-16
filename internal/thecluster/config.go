@@ -16,6 +16,6 @@ func NewConfig(root string) Config {
 		CI:          ci,
 		Root:        root,
 		RootModules: []string{},
-		Interactive: !ci,
+		Interactive: false,
 	}
 }
