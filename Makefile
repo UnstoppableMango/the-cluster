@@ -30,7 +30,7 @@ GINKGO := go run github.com/onsi/ginkgo/v2/ginkgo
 all: bin/thecluster
 
 tc: bin/thecluster $(TS_SRC)
-	$<
+	$< --interactive
 
 .PHONY: $(MODULES)
 $(MODULES): bin/thecluster $(TS_SRC)
