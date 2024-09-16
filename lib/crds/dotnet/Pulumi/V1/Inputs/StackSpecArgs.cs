@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1
+namespace Pulumi.Kubernetes.Types.Inputs.Pulumi.V1
 {
 
     /// <summary>
@@ -64,14 +64,14 @@ namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1
         public Input<bool>? DestroyOnFinalize { get; set; }
 
         [Input("envRefs")]
-        private InputMap<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackSpecEnvRefsArgs>? _envRefs;
+        private InputMap<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackSpecEnvRefsArgs>? _envRefs;
 
         /// <summary>
         /// (optional) EnvRefs is an optional map containing environment variables as keys and stores descriptors to where the variables' values should be loaded from (one of literal, environment variable, file on the filesystem, or Kubernetes Secret) as values.
         /// </summary>
-        public InputMap<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackSpecEnvRefsArgs> EnvRefs
+        public InputMap<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackSpecEnvRefsArgs> EnvRefs
         {
-            get => _envRefs ?? (_envRefs = new InputMap<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackSpecEnvRefsArgs>());
+            get => _envRefs ?? (_envRefs = new InputMap<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackSpecEnvRefsArgs>());
             set => _envRefs = value;
         }
 
@@ -109,13 +109,13 @@ namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1
         /// FluxSource specifies how to fetch source code from a Flux source object.
         /// </summary>
         [Input("fluxSource")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackSpecFluxSourceArgs>? FluxSource { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackSpecFluxSourceArgs>? FluxSource { get; set; }
 
         /// <summary>
         /// (optional) GitAuth allows configuring git authentication options There are 3 different authentication options: * SSH private key (and its optional password) * Personal access token * Basic auth username and password Only one authentication mode will be considered if more than one option is specified, with ssh private key/password preferred first, then personal access token, and finally basic auth credentials.
         /// </summary>
         [Input("gitAuth")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackSpecGitAuthArgs>? GitAuth { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackSpecGitAuthArgs>? GitAuth { get; set; }
 
         /// <summary>
         /// (optional) GitAuthSecret is the the name of a Secret containing an authentication option for the git repository. There are 3 different authentication options: * Personal access token * SSH private key (and it's optional password) * Basic auth username and password Only one authentication mode will be considered if more than one option is specified, with ssh private key/password preferred first, then personal access token, and finally basic auth credentials. Deprecated. Use GitAuth instead.
@@ -124,14 +124,14 @@ namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1
         public Input<string>? GitAuthSecret { get; set; }
 
         [Input("prerequisites")]
-        private InputList<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackSpecPrerequisitesArgs>? _prerequisites;
+        private InputList<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackSpecPrerequisitesArgs>? _prerequisites;
 
         /// <summary>
         /// (optional) Prerequisites is a list of references to other stacks, each with a constraint on how long ago it must have succeeded. This can be used to make sure e.g., state is re-evaluated before running a stack that depends on it.
         /// </summary>
-        public InputList<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackSpecPrerequisitesArgs> Prerequisites
+        public InputList<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackSpecPrerequisitesArgs> Prerequisites
         {
-            get => _prerequisites ?? (_prerequisites = new InputList<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackSpecPrerequisitesArgs>());
+            get => _prerequisites ?? (_prerequisites = new InputList<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackSpecPrerequisitesArgs>());
             set => _prerequisites = value;
         }
 
@@ -139,7 +139,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1
         /// ProgramRef refers to a Program object, to be used as the source for the stack.
         /// </summary>
         [Input("programRef")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackSpecProgramRefArgs>? ProgramRef { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackSpecProgramRefArgs>? ProgramRef { get; set; }
 
         /// <summary>
         /// ProjectRepo is the git source control repository from which we fetch the project code and configuration.
@@ -190,14 +190,14 @@ namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1
         public Input<string>? SecretsProvider { get; set; }
 
         [Input("secretsRef")]
-        private InputMap<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackSpecSecretsRefArgs>? _secretsRef;
+        private InputMap<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackSpecSecretsRefArgs>? _secretsRef;
 
         /// <summary>
         /// (optional) SecretRefs is the secret configuration for this stack which can be specified through ResourceRef. If this is omitted, secrets configuration is assumed to be checked in and taken from the source repository.
         /// </summary>
-        public InputMap<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackSpecSecretsRefArgs> SecretsRef
+        public InputMap<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackSpecSecretsRefArgs> SecretsRef
         {
-            get => _secretsRef ?? (_secretsRef = new InputMap<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.StackSpecSecretsRefArgs>());
+            get => _secretsRef ?? (_secretsRef = new InputMap<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.StackSpecSecretsRefArgs>());
             set => _secretsRef = value;
         }
 

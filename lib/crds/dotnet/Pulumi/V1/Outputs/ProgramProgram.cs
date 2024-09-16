@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
+namespace Pulumi.Kubernetes.Types.Outputs.Pulumi.V1
 {
 
     [OutputType]
@@ -16,7 +16,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
         /// <summary>
         /// configuration specifies the Pulumi config inputs to the deployment. Either type or default is required.
         /// </summary>
-        public readonly ImmutableDictionary<string, Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.ProgramProgramConfiguration> Configuration;
+        public readonly ImmutableDictionary<string, Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.ProgramProgramConfiguration> Configuration;
         /// <summary>
         /// outputs specifies the Pulumi stack outputs of the program and how they are computed from the resources.
         /// </summary>
@@ -24,7 +24,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
         /// <summary>
         /// resources declares the Pulumi resources that will be deployed and managed by the program.
         /// </summary>
-        public readonly ImmutableDictionary<string, Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.ProgramProgramResources> Resources;
+        public readonly ImmutableDictionary<string, Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.ProgramProgramResources> Resources;
         /// <summary>
         /// variables specifies intermediate values of the program; the values of variables are expressions that can be re-used.
         /// </summary>
@@ -32,11 +32,11 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
 
         [OutputConstructor]
         private ProgramProgram(
-            ImmutableDictionary<string, Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.ProgramProgramConfiguration> configuration,
+            ImmutableDictionary<string, Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.ProgramProgramConfiguration> configuration,
 
             ImmutableDictionary<string, ImmutableDictionary<string, object>> outputs,
 
-            ImmutableDictionary<string, Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.ProgramProgramResources> resources,
+            ImmutableDictionary<string, Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.ProgramProgramResources> resources,
 
             ImmutableDictionary<string, ImmutableDictionary<string, object>> variables)
         {

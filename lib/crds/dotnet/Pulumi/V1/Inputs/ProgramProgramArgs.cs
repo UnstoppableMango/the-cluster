@@ -7,20 +7,20 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1
+namespace Pulumi.Kubernetes.Types.Inputs.Pulumi.V1
 {
 
     public class ProgramProgramArgs : global::Pulumi.ResourceArgs
     {
         [Input("configuration")]
-        private InputMap<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.ProgramProgramConfigurationArgs>? _configuration;
+        private InputMap<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.ProgramProgramConfigurationArgs>? _configuration;
 
         /// <summary>
         /// configuration specifies the Pulumi config inputs to the deployment. Either type or default is required.
         /// </summary>
-        public InputMap<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.ProgramProgramConfigurationArgs> Configuration
+        public InputMap<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.ProgramProgramConfigurationArgs> Configuration
         {
-            get => _configuration ?? (_configuration = new InputMap<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.ProgramProgramConfigurationArgs>());
+            get => _configuration ?? (_configuration = new InputMap<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.ProgramProgramConfigurationArgs>());
             set => _configuration = value;
         }
 
@@ -37,14 +37,14 @@ namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1
         }
 
         [Input("resources")]
-        private InputMap<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.ProgramProgramResourcesArgs>? _resources;
+        private InputMap<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.ProgramProgramResourcesArgs>? _resources;
 
         /// <summary>
         /// resources declares the Pulumi resources that will be deployed and managed by the program.
         /// </summary>
-        public InputMap<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.ProgramProgramResourcesArgs> Resources
+        public InputMap<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.ProgramProgramResourcesArgs> Resources
         {
-            get => _resources ?? (_resources = new InputMap<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.ProgramProgramResourcesArgs>());
+            get => _resources ?? (_resources = new InputMap<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.ProgramProgramResourcesArgs>());
             set => _resources = value;
         }
 

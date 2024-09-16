@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
+namespace Pulumi.Kubernetes.Types.Outputs.Pulumi.V1
 {
 
     /// <summary>
@@ -27,7 +27,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
         /// <summary>
         /// customTimeouts overrides the default retry/timeout behavior for resource provisioning.
         /// </summary>
-        public readonly Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.ProgramProgramResourcesOptionsCustomTimeouts CustomTimeouts;
+        public readonly Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.ProgramProgramResourcesOptionsCustomTimeouts CustomTimeouts;
         /// <summary>
         /// deleteBeforeReplace overrides the default create-before-delete behavior when replacing.
         /// </summary>
@@ -71,7 +71,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
 
             ImmutableArray<string> aliases,
 
-            Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.ProgramProgramResourcesOptionsCustomTimeouts customTimeouts,
+            Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.ProgramProgramResourcesOptionsCustomTimeouts customTimeouts,
 
             bool deleteBeforeReplace,
 

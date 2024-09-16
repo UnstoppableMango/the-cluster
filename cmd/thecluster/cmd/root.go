@@ -11,7 +11,13 @@ import (
 	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
 	"github.com/unstoppablemango/the-cluster/components/app"
+	tc "github.com/unstoppablemango/the-cluster/gen/go/io/unmango/thecluster/v1alpha1"
 	"github.com/unstoppablemango/the-cluster/internal/thecluster"
+)
+
+var (
+	component   string
+	interactive bool
 )
 
 var rootCmd = &cobra.Command{
@@ -27,6 +33,7 @@ var rootCmd = &cobra.Command{
 
 		root := strings.TrimSpace(string(revParse))
 		config := thecluster.NewConfig(root)
+		config.Interactive = interactive
 		config.RootModules = []string{
 			"apps", "clusters", "infra",
 		}
@@ -35,15 +42,23 @@ var rootCmd = &cobra.Command{
 			return runInteractive(ctx, config)
 		}
 
-		if config.CI {
-			return runCi(ctx, config, args)
+		req := &tc.ReconcileRequest{
+			Component: component,
+			Stack:     "pinkdiamond",
 		}
 
-		return nil
+		if config.CI {
+			return runCi(ctx, config, req)
+		}
+
+		return run(ctx, config, req)
 	},
 }
 
 func Execute(ctx context.Context) {
+	rootCmd.Flags().BoolVar(&interactive, "interactive", false, "Launch the TUI")
+	rootCmd.PersistentFlags().StringVar(&component, "component", "", "The component to reconcile")
+
 	if err := rootCmd.ExecuteContext(ctx); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
@@ -64,11 +79,33 @@ func runInteractive(ctx context.Context, config thecluster.Config) error {
 	return nil
 }
 
-func runCi(ctx context.Context, config thecluster.Config, args []string) error {
+func runCi(ctx context.Context, config thecluster.Config, req *tc.ReconcileRequest) error {
+	log := log.FromContext(ctx)
+	log.Info("Nothing to do")
+	return nil
+}
+
+func run(ctx context.Context, config thecluster.Config, req *tc.ReconcileRequest) error {
+	r := thecluster.Reconciler{
+		Config: config,
+		Stdout: os.Stdout,
+		Stderr: os.Stderr,
+	}
+
+	res, err := r.Reconcile(ctx, req)
+	if err != nil {
+		return err
+	}
+
+	fmt.Fprintln(os.Stdout, res.Root)
 	return nil
 }
 
 func createLogger() *log.Logger {
+	if !interactive {
+		return log.New(os.Stdout)
+	}
+
 	logFile, err := tea.LogToFile("./log.txt", "debug")
 	if err != nil {
 		return log.Default()

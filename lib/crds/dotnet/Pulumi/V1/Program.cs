@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.TheClusterCrds.PulumiOperator.V1
+namespace Pulumi.TheClusterCrds.Pulumi.V1
 {
     /// <summary>
     /// Program is the schema for the inline YAML program API.
@@ -25,7 +25,7 @@ namespace Pulumi.TheClusterCrds.PulumiOperator.V1
         public Output<Pulumi.Kubernetes.Types.Outputs.Meta.V1.ObjectMeta> Metadata { get; private set; } = null!;
 
         [Output("program")]
-        public Output<Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.ProgramProgram> Program { get; private set; } = null!;
+        public Output<Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.ProgramProgram> Program { get; private set; } = null!;
 
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Pulumi.TheClusterCrds.PulumiOperator.V1
         /// <param name="name">The unique name of the resource</param>
         /// <param name="args">The arguments used to populate this resource's properties</param>
         /// <param name="options">A bag of options that control this resource's behavior</param>
-        public Program(string name, Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.ProgramArgs? args = null, CustomResourceOptions? options = null)
+        public Program(string name, Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.ProgramArgs? args = null, CustomResourceOptions? options = null)
             : base("kubernetes:pulumi.com/v1:Program", name, MakeArgs(args), MakeResourceOptions(options, ""))
         {
         }
@@ -49,9 +49,9 @@ namespace Pulumi.TheClusterCrds.PulumiOperator.V1
         {
         }
 
-        private static Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.ProgramArgs? MakeArgs(Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.ProgramArgs? args)
+        private static Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.ProgramArgs? MakeArgs(Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.ProgramArgs? args)
         {
-            args ??= new Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.ProgramArgs();
+            args ??= new Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.ProgramArgs();
             args.ApiVersion = "pulumi.com/v1";
             args.Kind = "Program";
             return args;
@@ -82,7 +82,7 @@ namespace Pulumi.TheClusterCrds.PulumiOperator.V1
         }
     }
 }
-namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1
+namespace Pulumi.Kubernetes.Types.Inputs.Pulumi.V1
 {
 
     public class ProgramArgs : global::Pulumi.ResourceArgs
@@ -97,7 +97,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1
         public Input<Pulumi.Kubernetes.Types.Inputs.Meta.V1.ObjectMetaArgs>? Metadata { get; set; }
 
         [Input("program")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.PulumiOperator.V1.ProgramProgramArgs>? Program { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.Pulumi.V1.ProgramProgramArgs>? Program { get; set; }
 
         public ProgramArgs()
         {

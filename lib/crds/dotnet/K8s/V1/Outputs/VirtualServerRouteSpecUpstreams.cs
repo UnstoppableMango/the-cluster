@@ -18,48 +18,48 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
     {
         public readonly string Backup;
         public readonly int BackupPort;
-        public readonly string BufferSize;
+        public readonly string Buffer-size;
         public readonly bool Buffering;
         /// <summary>
         /// UpstreamBuffers defines Buffer Configuration for an Upstream.
         /// </summary>
         public readonly Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerRouteSpecUpstreamsBuffers Buffers;
-        public readonly string ClientMaxBodySize;
-        public readonly string ConnectTimeout;
-        public readonly string FailTimeout;
+        public readonly string Client-max-body-size;
+        public readonly string Connect-timeout;
+        public readonly string Fail-timeout;
         /// <summary>
         /// HealthCheck defines the parameters for active Upstream HealthChecks.
         /// </summary>
         public readonly Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerRouteSpecUpstreamsHealthCheck HealthCheck;
         public readonly int Keepalive;
-        public readonly string LbMethod;
-        public readonly int MaxConns;
-        public readonly int MaxFails;
+        public readonly string Lb-method;
+        public readonly int Max-conns;
+        public readonly int Max-fails;
         public readonly string Name;
-        public readonly string NextUpstream;
-        public readonly string NextUpstreamTimeout;
-        public readonly int NextUpstreamTries;
+        public readonly string Next-upstream;
+        public readonly string Next-upstream-timeout;
+        public readonly int Next-upstream-tries;
         public readonly bool Ntlm;
         public readonly int Port;
         /// <summary>
         /// UpstreamQueue defines Queue Configuration for an Upstream.
         /// </summary>
         public readonly Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerRouteSpecUpstreamsQueue Queue;
-        public readonly string ReadTimeout;
-        public readonly string SendTimeout;
+        public readonly string Read-timeout;
+        public readonly string Send-timeout;
         public readonly string Service;
         /// <summary>
         /// SessionCookie defines the parameters for session persistence.
         /// </summary>
         public readonly Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerRouteSpecUpstreamsSessionCookie SessionCookie;
-        public readonly string SlowStart;
+        public readonly string Slow-start;
         public readonly ImmutableDictionary<string, string> Subselector;
         /// <summary>
         /// UpstreamTLS defines a TLS configuration for an Upstream.
         /// </summary>
         public readonly Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerRouteSpecUpstreamsTls Tls;
         public readonly string Type;
-        public readonly bool UseClusterIp;
+        public readonly bool Use-cluster-ip;
 
         [OutputConstructor]
         private VirtualServerRouteSpecUpstreams(
@@ -67,35 +67,35 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
 
             int backupPort,
 
-            string bufferSize,
+            string buffer-size,
 
             bool buffering,
 
             Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerRouteSpecUpstreamsBuffers buffers,
 
-            string clientMaxBodySize,
+            string client-max-body-size,
 
-            string connectTimeout,
+            string connect-timeout,
 
-            string failTimeout,
+            string fail-timeout,
 
             Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerRouteSpecUpstreamsHealthCheck healthCheck,
 
             int keepalive,
 
-            string lbMethod,
+            string lb-method,
 
-            int maxConns,
+            int max-conns,
 
-            int maxFails,
+            int max-fails,
 
             string name,
 
-            string nextUpstream,
+            string next-upstream,
 
-            string nextUpstreamTimeout,
+            string next-upstream-timeout,
 
-            int nextUpstreamTries,
+            int next-upstream-tries,
 
             bool ntlm,
 
@@ -103,15 +103,15 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
 
             Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerRouteSpecUpstreamsQueue queue,
 
-            string readTimeout,
+            string read-timeout,
 
-            string sendTimeout,
+            string send-timeout,
 
             string service,
 
             Pulumi.Kubernetes.Types.Outputs.K8s.V1.VirtualServerRouteSpecUpstreamsSessionCookie sessionCookie,
 
-            string slowStart,
+            string slow-start,
 
             ImmutableDictionary<string, string> subselector,
 
@@ -119,37 +119,37 @@ namespace Pulumi.Kubernetes.Types.Outputs.K8s.V1
 
             string type,
 
-            bool useClusterIp)
+            bool use-cluster-ip)
         {
             Backup = backup;
             BackupPort = backupPort;
-            BufferSize = bufferSize;
+            Buffer-size = buffer-size;
             Buffering = buffering;
             Buffers = buffers;
-            ClientMaxBodySize = clientMaxBodySize;
-            ConnectTimeout = connectTimeout;
-            FailTimeout = failTimeout;
+            Client-max-body-size = client-max-body-size;
+            Connect-timeout = connect-timeout;
+            Fail-timeout = fail-timeout;
             HealthCheck = healthCheck;
             Keepalive = keepalive;
-            LbMethod = lbMethod;
-            MaxConns = maxConns;
-            MaxFails = maxFails;
+            Lb-method = lb-method;
+            Max-conns = max-conns;
+            Max-fails = max-fails;
             Name = name;
-            NextUpstream = nextUpstream;
-            NextUpstreamTimeout = nextUpstreamTimeout;
-            NextUpstreamTries = nextUpstreamTries;
+            Next-upstream = next-upstream;
+            Next-upstream-timeout = next-upstream-timeout;
+            Next-upstream-tries = next-upstream-tries;
             Ntlm = ntlm;
             Port = port;
             Queue = queue;
-            ReadTimeout = readTimeout;
-            SendTimeout = sendTimeout;
+            Read-timeout = read-timeout;
+            Send-timeout = send-timeout;
             Service = service;
             SessionCookie = sessionCookie;
-            SlowStart = slowStart;
+            Slow-start = slow-start;
             Subselector = subselector;
             Tls = tls;
             Type = type;
-            UseClusterIp = useClusterIp;
+            Use-cluster-ip = use-cluster-ip;
         }
     }
 }

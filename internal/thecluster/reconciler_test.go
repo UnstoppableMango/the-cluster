@@ -7,8 +7,8 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.com/pulumi/pulumi/sdk/v3/go/auto"
 
+	"github.com/pulumi/pulumi/sdk/v3/go/auto"
 	tc "github.com/unstoppablemango/the-cluster/gen/go/io/unmango/thecluster/v1alpha1"
 	"github.com/unstoppablemango/the-cluster/internal/thecluster"
 )

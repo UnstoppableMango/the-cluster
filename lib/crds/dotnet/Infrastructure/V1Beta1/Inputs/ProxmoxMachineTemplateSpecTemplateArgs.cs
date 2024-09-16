@@ -20,7 +20,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.Infrastructure.V1Beta1
         ///  In future versions, controller-tools@v2 might allow overriding the type and validation for embedded types. When that happens, this hack should be revisited.
         /// </summary>
         [Input("metadata.omitempty")]
-        public Input<Pulumi.Kubernetes.Types.Inputs.Infrastructure.V1Beta1.ProxmoxMachineTemplateSpecTemplateMetadataOmitemptyArgs>? MetadataOmitempty { get; set; }
+        public Input<Pulumi.Kubernetes.Types.Inputs.Infrastructure.V1Beta1.ProxmoxMachineTemplateSpecTemplateMetadataOmitemptyArgs>? Metadata.omitempty { get; set; }
 
         /// <summary>
         /// ProxmoxMachineSpec defines the desired state of ProxmoxMachine

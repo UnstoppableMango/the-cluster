@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Threading.Tasks;
 using Pulumi.Serialization;
 
-namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
+namespace Pulumi.Kubernetes.Types.Outputs.Pulumi.V1
 {
 
     /// <summary>
@@ -47,7 +47,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
         /// <summary>
         /// (optional) EnvRefs is an optional map containing environment variables as keys and stores descriptors to where the variables' values should be loaded from (one of literal, environment variable, file on the filesystem, or Kubernetes Secret) as values.
         /// </summary>
-        public readonly ImmutableDictionary<string, Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecEnvRefs> EnvRefs;
+        public readonly ImmutableDictionary<string, Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecEnvRefs> EnvRefs;
         /// <summary>
         /// (optional) SecretEnvs is an optional array of Secret names containing environment variables to set. Deprecated: use EnvRefs instead.
         /// </summary>
@@ -63,11 +63,11 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
         /// <summary>
         /// FluxSource specifies how to fetch source code from a Flux source object.
         /// </summary>
-        public readonly Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecFluxSource FluxSource;
+        public readonly Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecFluxSource FluxSource;
         /// <summary>
         /// (optional) GitAuth allows configuring git authentication options There are 3 different authentication options: * SSH private key (and its optional password) * Personal access token * Basic auth username and password Only one authentication mode will be considered if more than one option is specified, with ssh private key/password preferred first, then personal access token, and finally basic auth credentials.
         /// </summary>
-        public readonly Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecGitAuth GitAuth;
+        public readonly Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecGitAuth GitAuth;
         /// <summary>
         /// (optional) GitAuthSecret is the the name of a Secret containing an authentication option for the git repository. There are 3 different authentication options: * Personal access token * SSH private key (and it's optional password) * Basic auth username and password Only one authentication mode will be considered if more than one option is specified, with ssh private key/password preferred first, then personal access token, and finally basic auth credentials. Deprecated. Use GitAuth instead.
         /// </summary>
@@ -75,11 +75,11 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
         /// <summary>
         /// (optional) Prerequisites is a list of references to other stacks, each with a constraint on how long ago it must have succeeded. This can be used to make sure e.g., state is re-evaluated before running a stack that depends on it.
         /// </summary>
-        public readonly ImmutableArray<Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecPrerequisites> Prerequisites;
+        public readonly ImmutableArray<Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecPrerequisites> Prerequisites;
         /// <summary>
         /// ProgramRef refers to a Program object, to be used as the source for the stack.
         /// </summary>
-        public readonly Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecProgramRef ProgramRef;
+        public readonly Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecProgramRef ProgramRef;
         /// <summary>
         /// ProjectRepo is the git source control repository from which we fetch the project code and configuration.
         /// </summary>
@@ -111,7 +111,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
         /// <summary>
         /// (optional) SecretRefs is the secret configuration for this stack which can be specified through ResourceRef. If this is omitted, secrets configuration is assumed to be checked in and taken from the source repository.
         /// </summary>
-        public readonly ImmutableDictionary<string, Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecSecretsRef> SecretsRef;
+        public readonly ImmutableDictionary<string, Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecSecretsRef> SecretsRef;
         /// <summary>
         /// Stack is the fully qualified name of the stack to deploy (&lt;org&gt;/&lt;stack&gt;).
         /// </summary>
@@ -141,7 +141,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
 
             bool destroyOnFinalize,
 
-            ImmutableDictionary<string, Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecEnvRefs> envRefs,
+            ImmutableDictionary<string, Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecEnvRefs> envRefs,
 
             ImmutableArray<string> envSecrets,
 
@@ -149,15 +149,15 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
 
             bool expectNoRefreshChanges,
 
-            Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecFluxSource fluxSource,
+            Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecFluxSource fluxSource,
 
-            Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecGitAuth gitAuth,
+            Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecGitAuth gitAuth,
 
             string gitAuthSecret,
 
-            ImmutableArray<Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecPrerequisites> prerequisites,
+            ImmutableArray<Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecPrerequisites> prerequisites,
 
-            Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecProgramRef programRef,
+            Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecProgramRef programRef,
 
             string projectRepo,
 
@@ -173,7 +173,7 @@ namespace Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1
 
             string secretsProvider,
 
-            ImmutableDictionary<string, Pulumi.Kubernetes.Types.Outputs.PulumiOperator.V1.StackSpecSecretsRef> secretsRef,
+            ImmutableDictionary<string, Pulumi.Kubernetes.Types.Outputs.Pulumi.V1.StackSpecSecretsRef> secretsRef,
 
             string stack,
 

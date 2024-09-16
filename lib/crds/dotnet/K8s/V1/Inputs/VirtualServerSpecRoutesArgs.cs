@@ -33,7 +33,7 @@ namespace Pulumi.Kubernetes.Types.Inputs.K8s.V1
         }
 
         [Input("location-snippets")]
-        public Input<string>? LocationSnippets { get; set; }
+        public Input<string>? Location-snippets { get; set; }
 
         [Input("matches")]
         private InputList<Pulumi.Kubernetes.Types.Inputs.K8s.V1.VirtualServerSpecRoutesMatchesArgs>? _matches;

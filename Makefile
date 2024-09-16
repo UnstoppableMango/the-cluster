@@ -27,6 +27,10 @@ all: bin/thecluster
 tc: bin/thecluster $(TS_SRC)
 	$<
 
+.PHONY: $(MODULES)
+$(MODULES): bin/thecluster $(filter $@/%,${TS_SRC})
+	$< --component $@
+
 test: $(GINKGO_REPORTS)
 testf: .make/clean_tests $(GINKGO_REPORTS)
 
