@@ -1,5 +1,8 @@
 _ := $(shell mkdir -p .make)
 WORKING_DIR := $(shell pwd)
+REPOSITORY  := github.com/unstoppablemango/the-cluster
+DOMAIN      := thecluster.io
+
 GOOS   := $(shell go env GOOS)
 GOARCH := $(shell go env GOARCH)
 
@@ -30,7 +33,7 @@ tc: bin/thecluster $(TS_SRC)
 	$<
 
 .PHONY: $(MODULES)
-$(MODULES): bin/thecluster $(filter $@/%,${TS_SRC})
+$(MODULES): bin/thecluster $(TS_SRC)
 	$< --component $@
 
 test: $(GINKGO_REPORTS)
@@ -57,6 +60,9 @@ gen/go/%.pb.go: buf.gen.yaml proto/%.proto
 buf.lock: buf.yaml
 	buf dep update
 	buf dep prune
+
+.envrc: hack/example.envrc
+	cp $< $@
 
 $(GINKGO_REPORTS) &:: go.mod go.sum $(GO_SRC)
 	$(GINKGO) run --coverprofile=$(COV_REPORT) --race --trace --json-report=$(TEST_REPORT) -r ./...
