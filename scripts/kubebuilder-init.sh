@@ -2,6 +2,8 @@
 
 root="$(git rev-parse --show-toplevel)"
 work="$(mktemp --directory)"
+dockerfile="$root/containers/operator/Dockerfile"
+goversion="$(go mod edit -json | jq -r '.Go')"
 
 mkdir -p {cmd,containers}/operator
 
@@ -15,7 +17,19 @@ kubebuilder init \
   --project-name the-cluster \
   --plugins go/v4
 
-mv .golangci.yml PROJECT config test "$root"
+mv .golangci.yml PROJECT "$root"
+cp -rp config test "$root"
 mv cmd/main.go "$root/cmd/operator"
 mv Dockerfile "$root/containers/operator"
 mv .dockerignore "$root/containers/operator/Dockerfile.dockerignore"
+
+replaceMain='s|cmd/main.go|cmd/operator/main.go|g'
+replaceGoVersion="s|golang:.* AS|golang:${goversion} AS|"
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  sed -i '' "$replaceMain" "$dockerfile"
+  sed -i '' "$replaceGoVersion" "$dockerfile"
+else
+  sed -i "$replaceMain" "$dockerfile"
+  sed -i "$replaceGoVersion" "$dockerfile"
+fi
