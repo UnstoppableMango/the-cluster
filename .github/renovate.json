@@ -8,6 +8,7 @@
     "**/vendor/**",
     "**/test/**",
     "**/tests/**",
+    "**/testdata/**",
     "**/.save/**",
     "apps/**",
     "charts/**",
@@ -17,7 +18,9 @@
     "infra/**",
     "lib/**",
     "operator/**",
-    "tools/**"
+    "tools/**",
+    "**/pulumi-crds/**",
+    "**/crds/**"
   ],
   "ignoreDeps": [
     "@unstoppablemango/thecluster",
