@@ -79,7 +79,7 @@ func runInteractive(ctx context.Context, config thecluster.Config) error {
 	return nil
 }
 
-func runCi(ctx context.Context, config thecluster.Config, req *tc.ReconcileRequest) error {
+func runCi(ctx context.Context, _ thecluster.Config, _ *tc.ReconcileRequest) error {
 	log := log.FromContext(ctx)
 	log.Info("Nothing to do")
 	return nil
