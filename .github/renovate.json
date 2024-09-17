@@ -19,7 +19,8 @@
     "lib/**",
     "operator/**",
     "tools/**",
-    "**/pulumi-crds/**"
+    "**/pulumi-crds/**",
+    "**/crds/**"
   ],
   "ignoreDeps": [
     "@unstoppablemango/thecluster",
