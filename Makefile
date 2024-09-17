@@ -49,10 +49,8 @@ tidy: go.mod go.sum ${GO_SRC}
 bin/thecluster: go.mod go.sum $(GO_SRC)
 	go build -o $@ ./cmd/thecluster/main.go
 
-bin/kubebuilder: .versions/kubebuilder
-	curl --fail -L -o $@ \
-		"https://github.com/kubernetes-sigs/kubebuilder/releases/download/v$(shell cat $<)/kubebuilder_$(GOOS)_$(GOARCH)"
-	chmod +x $@ 
+bin/kubebuilder: go.mod go.sum $(GO_SRC)
+	go build -o $@ ./cmd/kubebuilder/main.go
 
 gen/go/%.pb.go: buf.gen.yaml proto/%.proto
 	buf generate

@@ -57,7 +57,7 @@ var rootCmd = &cobra.Command{
 
 func Execute(ctx context.Context) {
 	rootCmd.Flags().BoolVar(&interactive, "interactive", false, "Launch the TUI")
-	rootCmd.PersistentFlags().StringVar(&component, "component", "", "The component to reconcile")
+	rootCmd.Flags().StringVar(&component, "component", "", "The component to reconcile")
 
 	if err := rootCmd.ExecuteContext(ctx); err != nil {
 		fmt.Fprintln(os.Stderr, err)

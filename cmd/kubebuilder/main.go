@@ -1,7 +1,9 @@
-package cmd
+package main
 
 import (
-	"github.com/spf13/cobra"
+	"fmt"
+	"os"
+
 	"sigs.k8s.io/kubebuilder/v4/pkg/cli"
 	"sigs.k8s.io/kubebuilder/v4/pkg/plugin"
 	kustomizecommonv2 "sigs.k8s.io/kubebuilder/v4/pkg/plugins/common/kustomize/v2"
@@ -9,19 +11,7 @@ import (
 	golangv4 "sigs.k8s.io/kubebuilder/v4/pkg/plugins/golang/v4"
 )
 
-var kubebuilderCmd = &cobra.Command{
-	Use:     "kubebuilder",
-	Aliases: []string{"kb"},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		return nil
-	},
-}
-
-func init() {
-	rootCmd.AddCommand(kubebuilderCmd)
-}
-
-func getCli() (*cli.CLI, error) {
+func main() {
 	gov4Bundle, _ := plugin.NewBundleWithOptions(
 		plugin.WithName(golang.DefaultNameQualifier),
 		plugin.WithVersion(plugin.Version{Number: 4}),
@@ -33,8 +23,11 @@ func getCli() (*cli.CLI, error) {
 		cli.WithPlugins(gov4Bundle),
 	)
 	if err != nil {
-		return nil, err
+		fmt.Fprintf(os.Stderr, "failed building CLI: %v", err)
+		os.Exit(1)
 	}
 
-	return c, nil
+	if err := c.Run(); err != nil {
+		os.Exit(1)
+	}
 }
