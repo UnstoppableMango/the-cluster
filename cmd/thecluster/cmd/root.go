@@ -57,7 +57,7 @@ var rootCmd = &cobra.Command{
 
 func Execute(ctx context.Context) {
 	rootCmd.Flags().BoolVar(&interactive, "interactive", false, "Launch the TUI")
-	rootCmd.PersistentFlags().StringVar(&component, "component", "", "The component to reconcile")
+	rootCmd.Flags().StringVar(&component, "component", "", "The component to reconcile")
 
 	if err := rootCmd.ExecuteContext(ctx); err != nil {
 		fmt.Fprintln(os.Stderr, err)
@@ -79,7 +79,7 @@ func runInteractive(ctx context.Context, config thecluster.Config) error {
 	return nil
 }
 
-func runCi(ctx context.Context, config thecluster.Config, req *tc.ReconcileRequest) error {
+func runCi(ctx context.Context, _ thecluster.Config, _ *tc.ReconcileRequest) error {
 	log := log.FromContext(ctx)
 	log.Info("Nothing to do")
 	return nil

@@ -1,5 +1,10 @@
 _ := $(shell mkdir -p .make)
 WORKING_DIR := $(shell pwd)
+REPOSITORY  := github.com/unstoppablemango/the-cluster
+DOMAIN      := thecluster.io
+
+GOOS   := $(shell go env GOOS)
+GOARCH := $(shell go env GOARCH)
 
 STACK   := prod
 CLUSTER := pinkdiamond
@@ -25,10 +30,10 @@ GINKGO := go run github.com/onsi/ginkgo/v2/ginkgo
 all: bin/thecluster
 
 tc: bin/thecluster $(TS_SRC)
-	$<
+	$< --interactive
 
 .PHONY: $(MODULES)
-$(MODULES): bin/thecluster $(filter $@/%,${TS_SRC})
+$(MODULES): bin/thecluster $(TS_SRC)
 	$< --component $@
 
 test: $(GINKGO_REPORTS)
@@ -44,12 +49,18 @@ tidy: go.mod go.sum ${GO_SRC}
 bin/thecluster: go.mod go.sum $(GO_SRC)
 	go build -o $@ ./cmd/thecluster/main.go
 
+bin/kubebuilder: go.mod go.sum $(GO_SRC)
+	go build -o $@ ./cmd/kubebuilder/main.go
+
 gen/go/%.pb.go: buf.gen.yaml proto/%.proto
 	buf generate
 
 buf.lock: buf.yaml
 	buf dep update
 	buf dep prune
+
+.envrc: hack/example.envrc
+	cp $< $@
 
 $(GINKGO_REPORTS) &:: go.mod go.sum $(GO_SRC)
 	$(GINKGO) run --coverprofile=$(COV_REPORT) --race --trace --json-report=$(TEST_REPORT) -r ./...
