@@ -1,4 +1,4 @@
-package theclusterv1
+package theclusterv1alpha1
 
 import (
 	"sigs.k8s.io/kubebuilder/v4/pkg/config"
@@ -52,4 +52,10 @@ func (p Plugin) GetInitSubcommand() plugin.InitSubcommand {
 	return &p.initSubcommand
 }
 
+// DeprecationWarning implements plugin.Deprecated.
+func (p Plugin) DeprecationWarning() string {
+	return ""
+}
+
 var _ plugin.Full = Plugin{}
+var _ plugin.Deprecated = Plugin{}

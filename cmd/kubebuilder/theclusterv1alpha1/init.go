@@ -1,8 +1,6 @@
-package theclusterv1
+package theclusterv1alpha1
 
 import (
-	"fmt"
-
 	"sigs.k8s.io/kubebuilder/v4/pkg/config"
 	"sigs.k8s.io/kubebuilder/v4/pkg/machinery"
 	"sigs.k8s.io/kubebuilder/v4/pkg/plugin"
@@ -23,7 +21,6 @@ type initSubcommand struct {
 func (i *initSubcommand) Scaffold(fs machinery.Filesystem) error {
 	c := i.golang.GetInitSubcommand()
 	err := c.Scaffold(fs)
-	fmt.Println("got here")
 
 	return err
 }
