@@ -26,11 +26,15 @@ GINKGO_REPORTS := $(COV_REPORT) $(TEST_REPORT)
 
 PULUMI := pulumi
 GINKGO := go run github.com/onsi/ginkgo/v2/ginkgo
+KUBEBUILDER := bin/kubebuilder --plugins thecluster.go.kubebuilder.io/v1-alpha
 
-all: bin/thecluster
+all: bin/thecluster bin/kubebuilder
 
 tc: bin/thecluster $(TS_SRC)
 	$< --interactive
+
+kubebuilder: bin/kubebuilder
+	$(KUBEBUILDER)
 
 .PHONY: $(MODULES)
 $(MODULES): bin/thecluster $(TS_SRC)
