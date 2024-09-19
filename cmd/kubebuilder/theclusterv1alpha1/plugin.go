@@ -18,8 +18,6 @@ var (
 
 type Plugin struct {
 	createAPISubcommand
-	createWebhookSubcommand
-	editSubcommand
 	initSubcommand
 }
 
@@ -37,16 +35,6 @@ func (p Plugin) GetCreateAPISubcommand() plugin.CreateAPISubcommand {
 	return &p.createAPISubcommand
 }
 
-// GetCreateWebhookSubcommand implements plugin.Full.
-func (p Plugin) GetCreateWebhookSubcommand() plugin.CreateWebhookSubcommand {
-	return &p.createWebhookSubcommand
-}
-
-// GetEditSubcommand implements plugin.Full.
-func (p Plugin) GetEditSubcommand() plugin.EditSubcommand {
-	return &p.editSubcommand
-}
-
 // GetInitSubcommand implements plugin.Full.
 func (p Plugin) GetInitSubcommand() plugin.InitSubcommand {
 	return &p.initSubcommand
@@ -57,5 +45,7 @@ func (p Plugin) DeprecationWarning() string {
 	return ""
 }
 
-var _ plugin.Full = Plugin{}
+var _ plugin.Plugin = Plugin{}
+var _ plugin.Init = Plugin{}
+var _ plugin.CreateAPI = Plugin{}
 var _ plugin.Deprecated = Plugin{}

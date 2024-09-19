@@ -12,7 +12,6 @@ require (
 	github.com/pulumi/pulumi/sdk/v3 v3.133.0
 	github.com/spf13/cobra v1.8.1
 	google.golang.org/protobuf v1.34.2
-	sigs.k8s.io/kubebuilder/v3 v3.15.1
 	sigs.k8s.io/kubebuilder/v4 v4.2.0
 )
 
