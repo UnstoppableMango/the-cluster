@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	theclusterv1 "github.com/unstoppablemango/the-cluster/cmd/kubebuilder/theclusterv1alpha1"
+	tcv1alpha1 "github.com/unstoppablemango/the-cluster/cmd/kubebuilder/theclusterv1alpha1"
 	"sigs.k8s.io/kubebuilder/v4/pkg/cli"
 	cfgv3 "sigs.k8s.io/kubebuilder/v4/pkg/config/v3"
 )
@@ -18,8 +18,8 @@ func main() {
 
 	c, err := cli.New(
 		cli.WithCommandName("kubebuilder"),
-		cli.WithPlugins(theclusterv1.Plugin{}),
-		cli.WithDefaultPlugins(cfgv3.Version, theclusterv1.Plugin{}),
+		cli.WithPlugins(tcv1alpha1.Plugin{}),
+		cli.WithDefaultPlugins(cfgv3.Version, tcv1alpha1.Plugin{}),
 		cli.WithCompletion(),
 	)
 	if err != nil {
