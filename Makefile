@@ -56,6 +56,10 @@ bin/thecluster: go.mod go.sum $(GO_SRC)
 bin/kubebuilder: go.mod go.sum $(GO_SRC)
 	go build -o $@ ./cmd/kubebuilder/main.go
 
+bin/kubectl: .versions/kubernetes
+	curl --fail -L -o $@ https://dl.k8s.io/release/v$(shell cat $<)/bin/${GOOS}/${GOARCH}/kubectl
+	chmod +x $@
+
 gen/go/%.pb.go: buf.gen.yaml proto/%.proto
 	buf generate
 
@@ -66,8 +70,14 @@ buf.lock: buf.yaml
 .envrc: hack/example.envrc
 	cp $< $@
 
+ifeq ($(CI),)
+TEST_FLAGS := -v
+else
+TEST_FLAGS := --github-output --race --trace --coverprofile=${COV_REPORT}
+endif
+
 $(GINKGO_REPORTS) &:: go.mod go.sum $(GO_SRC)
-	$(GINKGO) run --coverprofile=$(COV_REPORT) --race --trace --json-report=$(TEST_REPORT) -r ./...
+	$(GINKGO) run --silence-skips ${TEST_FLAGS} -r ./...
 
 .make/clean_tests:
 	rm -f $(GINKGO_REPORTS)

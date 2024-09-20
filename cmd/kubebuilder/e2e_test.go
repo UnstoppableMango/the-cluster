@@ -6,8 +6,9 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"github.com/unstoppablemango/the-cluster/internal/util"
 
-	"sigs.k8s.io/kubebuilder/v4/pkg/plugin/util"
+	kbutil "sigs.k8s.io/kubebuilder/v4/pkg/plugin/util"
 	"sigs.k8s.io/kubebuilder/v4/test/e2e/utils"
 )
 
@@ -25,15 +26,19 @@ var _ = FDescribe("E2E", func() {
 		Expect(err).NotTo(HaveOccurred())
 
 		kubeconfigPath := path.Join(work, "kubeconfig")
-		GinkgoWriter.Write(kubeconfig)
 
 		By("writing the kubeconfig to " + kubeconfigPath)
-		err = os.WriteFile(kubeconfigPath, []byte{}, os.ModePerm)
+		err = os.WriteFile(kubeconfigPath, kubeconfig, os.ModePerm)
+		Expect(err).NotTo(HaveOccurred())
+
+		gitroot, err := util.GitRoot()
+		Expect(err).NotTo(HaveOccurred())
+
+		err = os.Setenv("PATH", path.Join(gitroot, "bin"))
 		Expect(err).NotTo(HaveOccurred())
 
 		By("creating a kubebuilder test context")
-		kbc, err = utils.NewTestContext(util.KubebuilderBinName,
-			"GO111MODULE=on",
+		kbc, err = utils.NewTestContext(kbutil.KubebuilderBinName,
 			"KUBECONFIG="+kubeconfigPath,
 		)
 		Expect(err).NotTo(HaveOccurred())
@@ -43,6 +48,7 @@ var _ = FDescribe("E2E", func() {
 	})
 
 	AfterEach(func() {
+		kbc.Destroy()
 		Expect(os.RemoveAll(work)).To(Succeed())
 	})
 
