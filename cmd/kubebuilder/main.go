@@ -4,23 +4,23 @@ import (
 	"fmt"
 	"os"
 
+	tcv1alpha1 "github.com/unstoppablemango/the-cluster/cmd/kubebuilder/theclusterv1alpha1"
 	"sigs.k8s.io/kubebuilder/v4/pkg/cli"
-	"sigs.k8s.io/kubebuilder/v4/pkg/plugin"
-	kustomizecommonv2 "sigs.k8s.io/kubebuilder/v4/pkg/plugins/common/kustomize/v2"
-	"sigs.k8s.io/kubebuilder/v4/pkg/plugins/golang"
-	golangv4 "sigs.k8s.io/kubebuilder/v4/pkg/plugins/golang/v4"
+	cfgv3 "sigs.k8s.io/kubebuilder/v4/pkg/config/v3"
 )
 
 func main() {
-	gov4Bundle, _ := plugin.NewBundleWithOptions(
-		plugin.WithName(golang.DefaultNameQualifier),
-		plugin.WithVersion(plugin.Version{Number: 4}),
-		plugin.WithPlugins(kustomizecommonv2.Plugin{}, golangv4.Plugin{}),
-	)
+	// thebundlev1, _ := plugin.NewBundleWithOptions(
+	// 	plugin.WithName(golang.DefaultNameQualifier),
+	// 	plugin.WithVersion(plugin.Version{Number: 4}),
+	// 	plugin.WithPlugins(golangv4.Plugin{}, theclusterv1.Plugin{}),
+	// )
 
 	c, err := cli.New(
 		cli.WithCommandName("kubebuilder"),
-		cli.WithPlugins(gov4Bundle),
+		cli.WithPlugins(tcv1alpha1.Plugin{}),
+		cli.WithDefaultPlugins(cfgv3.Version, tcv1alpha1.Plugin{}),
+		cli.WithCompletion(),
 	)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed building CLI: %v", err)
