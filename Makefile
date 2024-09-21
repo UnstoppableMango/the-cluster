@@ -114,7 +114,8 @@ else
 TEST_FLAGS := --github-output --race --trace --coverprofile=${COV_REPORT}
 endif
 
-$(TEST_SENTINELS) &: $(GO_SRC)
+cmd/kubebuilder/${TEST_REPORT}: | bin/kubebuilder bin/kubectl
+$(TEST_SENTINELS) &: $(GO_SRC) | bin/ginkgo
 	$(GINKGO) run --silence-skips ${TEST_FLAGS} $(sort $(dir $?))
 
 .make/clean_tests:
