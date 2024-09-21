@@ -32,6 +32,8 @@ var _ = BeforeSuite(func(ctx context.Context) {
 
 	By("running k3s in docker")
 	ctr, err = k3s.Run(ctx, "docker.io/rancher/k3s:v1.31.0-k3s1")
+	// Turns out this is really spammy
+	// testcontainers.WithLogConsumers(util.AcceptAll(GinkgoWriter)),
 	Expect(err).NotTo(HaveOccurred())
 
 	By("retrieving the kubeconfig from k3s")

@@ -21,30 +21,39 @@ var _ = Describe("E2E", func() {
 	BeforeEach(func() {
 		var err error
 
-		By("creating a temporary directory")
 		work, err = os.MkdirTemp("", "")
 		Expect(err).NotTo(HaveOccurred())
 
 		kubeconfigPath := path.Join(work, "kubeconfig")
 
-		By("writing the kubeconfig to " + kubeconfigPath)
+		By("writing " + kubeconfigPath)
 		err = os.WriteFile(kubeconfigPath, kubeconfig, os.ModePerm)
+		Expect(err).NotTo(HaveOccurred())
+
+		gitRoot, err := util.GitRoot()
+		Expect(err).NotTo(HaveOccurred())
+
+		localbin := path.Join(gitRoot, "bin")
+		kubebuilder := path.Join(localbin, kbutil.KubebuilderBinName)
+
+		By("creating a kubebuilder test context")
+		kbc, err = utils.NewTestContext(kubebuilder,
+			"KUBECONFIG="+kubeconfigPath,
+		)
 		Expect(err).NotTo(HaveOccurred())
 
 		gitroot, err := util.GitRoot()
 		Expect(err).NotTo(HaveOccurred())
 
+		save := os.Getenv("PATH")
 		err = os.Setenv("PATH", path.Join(gitroot, "bin"))
-		Expect(err).NotTo(HaveOccurred())
-
-		By("creating a kubebuilder test context")
-		kbc, err = utils.NewTestContext(kbutil.KubebuilderBinName,
-			"KUBECONFIG="+kubeconfigPath,
-		)
 		Expect(err).NotTo(HaveOccurred())
 
 		By("preparing the test context")
 		Expect(kbc.Prepare()).To(Succeed())
+
+		err = os.Setenv("PATH", save)
+		Expect(err).NotTo(HaveOccurred())
 	})
 
 	AfterEach(func() {
@@ -52,7 +61,54 @@ var _ = Describe("E2E", func() {
 		Expect(os.RemoveAll(work)).To(Succeed())
 	})
 
-	It("should work", func() {
-		Expect(true).To(BeTrue())
+	Context("init", func() {
+		DescribeTableSubtree("allowed files",
+			Entry(".dockerignore", ".dockerignore"),
+			Entry(".editorconfig", ".editorconfig"),
+			Entry(".golangci.yml", ".golangci.yml"),
+			Entry("buf.gen.yaml", "buf.gen.yaml"),
+			Entry("buf.lock", "buf.lock"),
+			Entry("buf.yaml", "buf.yaml"),
+			Entry("global.json", "global.json"),
+			Entry("Makefile", "Makefile"),
+			Entry("UnMango.TheCluster.sln", "UnMango.TheCluster.sln"),
+			Entry("UnMango.TheCluster.sln.DotSettings", "UnMango.TheCluster.sln.DotSettings"),
+			func(file string) {
+				It("should succeed", func() {
+					write(kbc, file, "Not applicable for this test")
+
+					Expect(kbc.Init()).To(Succeed())
+				})
+
+				It("should not modify the file", func() {
+					content := "some text here"
+					write(kbc, file, content)
+
+					_ = kbc.Init()
+
+					result, err := read(kbc, file)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(result).To(Equal(content))
+				})
+			},
+		)
+
+		It("should create the PROJECT file", func() {
+			Expect(kbc.Init()).To(Succeed())
+
+			_, err := read(kbc, "PROJECT")
+			Expect(err).NotTo(HaveOccurred())
+		})
 	})
 })
+
+func write(ctx *utils.TestContext, file, content string) error {
+	file = path.Join(ctx.Dir, file)
+	return os.WriteFile(file, []byte(content), os.ModePerm)
+}
+
+func read(ctx *utils.TestContext, file string) (string, error) {
+	file = path.Join(ctx.Dir, file)
+	c, err := os.ReadFile(file)
+	return string(c), err
+}

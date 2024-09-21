@@ -13,3 +13,12 @@ func GitRoot() (string, error) {
 
 	return strings.TrimSpace(string(out)), err
 }
+
+func RequireGitRoot() string {
+	root, err := GitRoot()
+	if err != nil {
+		panic(err)
+	}
+
+	return root
+}

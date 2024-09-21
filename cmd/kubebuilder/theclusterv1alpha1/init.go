@@ -1,6 +1,7 @@
 package theclusterv1alpha1
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -76,6 +77,13 @@ func checkDir() error {
 			allowedFiles := []string{
 				"go.mod",
 				"go.sum",
+				"Makefile",
+				"buf.gen.yaml",
+				"buf.lock",
+				"buf.yaml",
+				"global.json",
+				"UnMango.TheCluster.sln",
+				"UnMango.TheCluster.sln.DotSettings",
 			}
 			for _, allowedFile := range allowedFiles {
 				if info.Name() == allowedFile {
@@ -83,11 +91,11 @@ func checkDir() error {
 				}
 			}
 
-			return nil
-			// return fmt.Errorf(
-			// 	"target directory is not empty (only %s, files and directories with the prefix \".\", "+
-			// 		"files with the suffix \".md\" or capitalized files name are allowed); "+
-			// 		"found existing file %q", strings.Join(allowedFiles, ", "), path)
+			// return nil
+			return fmt.Errorf(
+				"target directory is not empty (only %s, files and directories with the prefix \".\", "+
+					"files with the suffix \".md\" or capitalized files name are allowed); "+
+					"found existing file %q", strings.Join(allowedFiles, ", "), path)
 		})
 	if err != nil {
 		return err

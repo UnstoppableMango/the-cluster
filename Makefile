@@ -24,10 +24,13 @@ GO_SRC     := $(filter %.go,${SRC}) $(GO_GEN_SRC)
 
 COV_REPORT     := cover.profile
 TEST_REPORT    := report.json
-GINKGO_REPORTS := $(COV_REPORT) $(TEST_REPORT)
+TEST_SUITES    := $(filter %_suite_test.go,${GO_SRC})
+TEST_PACKAGES  := $(dir ${TEST_SUITES})
+TEST_SENTINELS := $(addsuffix ${TEST_REPORT},${TEST_PACKAGES})
+GINKGO_REPORTS := $(COV_REPORT) $(TEST_SENTINELS)
 
-PULUMI         := pulumi
-GINKGO         := go run github.com/onsi/ginkgo/v2/ginkgo
+PULUMI         := bin/pulumi
+GINKGO         := bin/ginkgo
 KUBEBUILDER    := bin/kubebuilder --plugins thecluster.go.kubebuilder.io/v1-alpha
 KUBECTL        := bin/kubectl
 KUSTOMIZE      := bin/kustomize
@@ -43,15 +46,20 @@ tc: bin/thecluster $(TS_SRC)
 $(MODULES): bin/thecluster $(TS_SRC)
 	$< --component $@
 
-test: $(GINKGO_REPORTS)
-testf: .make/clean_ginkgo_reports $(GINKGO_REPORTS)
+test: $(TEST_SENTINELS)
+testf: .make/clean_tests $(TEST_SENTINELS)
 
-gen: $(PROTO_SRC:proto/%.proto=gen/go/%.pb.go)
+gen: $(GO_GEN_SRC)
 
 format: .make/go_fmt
 
 tidy: go.mod go.sum ${GO_SRC}
 	go mod tidy
+
+ensure: $(addprefix bin/,kubebuilder kubectl kustomize controller-gen setup-envtest ginkgo pulumi)
+
+clean:
+	rm -rf bin
 
 bin/thecluster: go.mod go.sum $(GO_SRC)
 	go build -o $@ ./cmd/thecluster/main.go
@@ -77,6 +85,12 @@ setup-envtest: bin/setup-envtest
 bin/setup-envtest:
 	GOBIN=${LOCALBIN} go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest
 
+bin/ginkgo: go.mod go.sum
+	GOBIN=${LOCALBIN} go install github.com/onsi/ginkgo/v2/ginkgo
+
+bin/pulumi: .versions/pulumi
+	curl -fsSL https://get.pulumi.com | sh -s -- --install-root ${WORKING_DIR} --version $(shell cat $<) --no-edit-path
+
 gen/go/%.pb.go: buf.gen.yaml proto/%.proto
 	buf generate
 
@@ -87,18 +101,25 @@ buf.lock: buf.yaml
 .envrc: hack/example.envrc
 	cp $< $@
 
-ifeq ($(CI),)
-TEST_FLAGS := -v
-else
-TEST_FLAGS := --github-output --race --trace --coverprofile=${COV_REPORT}
-endif
-
-$(GINKGO_REPORTS) &:: go.mod go.sum $(GO_SRC) bin/kubectl bin/kubebuilder
-	$(GINKGO) run --silence-skips ${TEST_FLAGS} -r ./...
-
 .make/clean_ginkgo_reports:
 	rm -f $(GINKGO_REPORTS)
 
 .make/go_fmt: $(GO_SRC)
 	go fmt ./...
 	@touch $@
+
+ifeq ($(CI),)
+TEST_FLAGS := -v --json-report ${TEST_REPORT} --keep-separate-reports
+else
+TEST_FLAGS := --github-output --race --trace --coverprofile=${COV_REPORT}
+endif
+
+# Why do I insist on creating jank like this
+cmd/kubebuilder/${TEST_REPORT}: | bin/kubebuilder bin/kubectl
+components/scanner/${TEST_REPORT}:
+internal/thecluster/${TEST_REPORT}:
+$(TEST_SENTINELS) &: $(filter $(addsuffix %,${TEST_PACKAGES}),${GO_SRC}) | bin/ginkgo
+	$(GINKGO) run --silence-skips ${TEST_FLAGS} $(sort $(subst theclusterv1alpha1/,,$(dir $?)))
+
+.make/clean_tests:
+	rm -f ${TEST_SENTINELS}

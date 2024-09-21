@@ -11,6 +11,7 @@ require (
 	github.com/onsi/gomega v1.34.2
 	github.com/pulumi/pulumi/sdk/v3 v3.133.0
 	github.com/spf13/cobra v1.8.1
+	github.com/testcontainers/testcontainers-go v0.33.0
 	github.com/testcontainers/testcontainers-go/modules/k3s v0.33.0
 	google.golang.org/protobuf v1.34.2
 	sigs.k8s.io/kubebuilder/v4 v4.2.0
@@ -113,7 +114,6 @@ require (
 	github.com/skeema/knownhosts v1.3.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/testcontainers/testcontainers-go v0.33.0 // indirect
 	github.com/texttheater/golang-levenshtein v1.0.1 // indirect
 	github.com/tklauser/go-sysconf v0.3.12 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
