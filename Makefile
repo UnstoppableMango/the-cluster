@@ -93,7 +93,7 @@ else
 TEST_FLAGS := --github-output --race --trace --coverprofile=${COV_REPORT}
 endif
 
-$(GINKGO_REPORTS) &:: go.mod go.sum $(GO_SRC)
+$(GINKGO_REPORTS) &:: go.mod go.sum $(GO_SRC) bin/kubectl bin/kubebuilder
 	$(GINKGO) run --silence-skips ${TEST_FLAGS} -r ./...
 
 .make/clean_ginkgo_reports:
