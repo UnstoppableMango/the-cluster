@@ -66,6 +66,13 @@ var _ = Describe("E2E", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(result).To(Equal(content))
 		})
+
+		It("should create the PROJECT file", func() {
+			Expect(kbc.Init()).To(Succeed())
+
+			_, err := read(kbc, "PROJECT")
+			Expect(err).NotTo(HaveOccurred())
+		})
 	})
 })
 
