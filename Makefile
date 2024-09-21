@@ -24,10 +24,10 @@ GO_SRC     := $(filter %.go,${SRC}) $(GO_GEN_SRC)
 
 COV_REPORT     := cover.profile
 TEST_REPORT    := report.json
-GINKGO_REPORTS := $(COV_REPORT) $(TEST_REPORT)
 TEST_SUITES    := $(filter %_suite_test.go,${GO_SRC})
 TEST_PACKAGES  := $(dir ${TEST_SUITES})
-TEST_SENTINELS := $(addsuffix .test,$(TEST_PACKAGES))
+TEST_SENTINELS := $(addsuffix ${TEST_REPORT},${TEST_PACKAGES})
+GINKGO_REPORTS := $(COV_REPORT) $(TEST_SENTINELS)
 
 PULUMI         := bin/pulumi
 GINKGO         := bin/ginkgo
@@ -47,9 +47,9 @@ $(MODULES): bin/thecluster $(TS_SRC)
 	$< --component $@
 
 test: $(TEST_SENTINELS)
-testf: $(TEST_SENTINELS)
+testf: .make/clean_tests $(TEST_SENTINELS)
 
-gen: $(PROTO_SRC:proto/%.proto=gen/go/%.pb.go)
+gen: $(GO_GEN_SRC)
 
 format: .make/go_fmt
 
@@ -109,17 +109,13 @@ buf.lock: buf.yaml
 	@touch $@
 
 ifeq ($(CI),)
-TEST_FLAGS := -v
+TEST_FLAGS := -v --json-report ${TEST_REPORT} --keep-separate-reports
 else
 TEST_FLAGS := --github-output --race --trace --coverprofile=${COV_REPORT}
 endif
 
-# $(GINKGO_REPORTS) &:: go.mod go.sum $(GO_SRC) bin/kubectl bin/kubebuilder
-# 	$(GINKGO) run --silence-skips ${TEST_FLAGS} -r ./...
+$(TEST_SENTINELS) &: $(GO_SRC)
+	$(GINKGO) run --silence-skips ${TEST_FLAGS} $(sort $(dir $?))
 
-$(TEST_SENTINELS) &:
-	@echo $@
-	# $(GINKGO) run --silence-skips ${TEST_FLAGS} $(dir $@)
-
-temp: ${TEST_SENTINELS}
-	@echo $?
+.make/clean_tests:
+	rm -f ${TEST_SENTINELS}
