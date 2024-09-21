@@ -6,13 +6,13 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.com/unstoppablemango/the-cluster/internal/util"
 
+	"github.com/unstoppablemango/the-cluster/internal/util"
 	kbutil "sigs.k8s.io/kubebuilder/v4/pkg/plugin/util"
 	"sigs.k8s.io/kubebuilder/v4/test/e2e/utils"
 )
 
-var _ = FDescribe("E2E", func() {
+var _ = Describe("E2E", func() {
 	var (
 		kbc  *utils.TestContext
 		work string
