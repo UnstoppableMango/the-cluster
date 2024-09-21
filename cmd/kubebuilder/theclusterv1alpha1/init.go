@@ -78,6 +78,12 @@ func checkDir() error {
 				"go.mod",
 				"go.sum",
 				"Makefile",
+				"buf.gen.yaml",
+				"buf.lock",
+				"buf.yaml",
+				"global.json",
+				"UnMango.TheCluster.sln",
+				"UnMango.TheCluster.sln.DotSettings",
 			}
 			for _, allowedFile := range allowedFiles {
 				if info.Name() == allowedFile {

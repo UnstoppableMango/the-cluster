@@ -62,22 +62,36 @@ var _ = Describe("E2E", func() {
 	})
 
 	Context("init", func() {
-		It("should not touch my Makefile dammit", func() {
-			content := "some text here"
-			write(kbc, "Makefile", content)
+		DescribeTableSubtree("allowed files",
+			Entry(".dockerignore", ".dockerignore"),
+			Entry(".editorconfig", ".editorconfig"),
+			Entry(".golangci.yml", ".golangci.yml"),
+			Entry("buf.gen.yaml", "buf.gen.yaml"),
+			Entry("buf.lock", "buf.lock"),
+			Entry("buf.yaml", "buf.yaml"),
+			Entry("global.json", "global.json"),
+			Entry("Makefile", "Makefile"),
+			Entry("UnMango.TheCluster.sln", "UnMango.TheCluster.sln"),
+			Entry("UnMango.TheCluster.sln.DotSettings", "UnMango.TheCluster.sln.DotSettings"),
+			func(file string) {
+				It("should succeed", func() {
+					write(kbc, file, "Not applicable for this test")
 
-			_ = kbc.Init()
+					Expect(kbc.Init()).To(Succeed())
+				})
 
-			result, err := read(kbc, "Makefile")
-			Expect(err).NotTo(HaveOccurred())
-			Expect(result).To(Equal(content))
-		})
+				It("should not modify the file", func() {
+					content := "some text here"
+					write(kbc, file, content)
 
-		It("should succeed when a Makefile exists", func() {
-			write(kbc, "Makefile", "Not applicable for this test")
+					_ = kbc.Init()
 
-			Expect(kbc.Init()).To(Succeed())
-		})
+					result, err := read(kbc, file)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(result).To(Equal(content))
+				})
+			},
+		)
 
 		It("should create the PROJECT file", func() {
 			Expect(kbc.Init()).To(Succeed())
