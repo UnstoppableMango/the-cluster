@@ -115,11 +115,11 @@ TEST_FLAGS := --github-output --race --trace --coverprofile=${COV_REPORT}
 endif
 
 # Why do I insist on creating jank like this
-cmd/kubebuilder/${TEST_REPORT}: $(filter cmd/kubebuilder/%,${GO_SRC}) | bin/kubebuilder bin/kubectl
-components/scanner/${TEST_REPORT}: $(filter components/scanner/%,${GO_SRC})
-internal/thecluster/${TEST_REPORT}: $(filter internal/thecluster/%,${GO_SRC})
-$(TEST_SENTINELS) &: | bin/ginkgo
-	$(GINKGO) run --silence-skips ${TEST_FLAGS} $(sort $(dir $?))
+cmd/kubebuilder/${TEST_REPORT}: | bin/kubebuilder bin/kubectl
+components/scanner/${TEST_REPORT}:
+internal/thecluster/${TEST_REPORT}:
+$(TEST_SENTINELS) &: $(filter $(addsuffix %,${TEST_PACKAGES}),${GO_SRC}) | bin/ginkgo
+	$(GINKGO) run --silence-skips ${TEST_FLAGS} $(sort $(subst theclusterv1alpha1/,,$(dir $?)))
 
 .make/clean_tests:
 	rm -f ${TEST_SENTINELS}
