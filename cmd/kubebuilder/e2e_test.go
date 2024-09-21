@@ -30,8 +30,14 @@ var _ = Describe("E2E", func() {
 		err = os.WriteFile(kubeconfigPath, kubeconfig, os.ModePerm)
 		Expect(err).NotTo(HaveOccurred())
 
+		gitRoot, err := util.GitRoot()
+		Expect(err).NotTo(HaveOccurred())
+
+		localbin := path.Join(gitRoot, "bin")
+		kubebuilder := path.Join(localbin, kbutil.KubebuilderBinName)
+
 		By("creating a kubebuilder test context")
-		kbc, err = utils.NewTestContext(kbutil.KubebuilderBinName,
+		kbc, err = utils.NewTestContext(kubebuilder,
 			"KUBECONFIG="+kubeconfigPath,
 		)
 		Expect(err).NotTo(HaveOccurred())
@@ -65,6 +71,12 @@ var _ = Describe("E2E", func() {
 			result, err := read(kbc, "Makefile")
 			Expect(err).NotTo(HaveOccurred())
 			Expect(result).To(Equal(content))
+		})
+
+		It("should succeed when a Makefile exists", func() {
+			write(kbc, "Makefile", "Not applicable for this test")
+
+			Expect(kbc.Init()).To(Succeed())
 		})
 
 		It("should create the PROJECT file", func() {

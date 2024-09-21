@@ -77,6 +77,7 @@ func checkDir() error {
 			allowedFiles := []string{
 				"go.mod",
 				"go.sum",
+				"Makefile",
 			}
 			for _, allowedFile := range allowedFiles {
 				if info.Name() == allowedFile {
