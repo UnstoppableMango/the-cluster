@@ -1,4 +1,4 @@
-_ := $(shell mkdir -p .make)
+_ := $(shell mkdir -p .make bin)
 WORKING_DIR := $(shell pwd)
 REPOSITORY  := github.com/unstoppablemango/the-cluster
 DOMAIN      := thecluster.io
