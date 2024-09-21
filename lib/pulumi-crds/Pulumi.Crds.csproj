@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Pulumi" Version="3.59.0" />
+    <PackageReference Include="Pulumi" Version="3.67.1" />
     <PackageReference Include="Pulumi.Kubernetes" Version="4.18.1" ExcludeAssets="contentFiles" />
   </ItemGroup>
 
