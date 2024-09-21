@@ -29,8 +29,8 @@ TEST_SUITES    := $(filter %_suite_test.go,${GO_SRC})
 TEST_PACKAGES  := $(dir ${TEST_SUITES})
 TEST_SENTINELS := $(addsuffix .test,$(TEST_PACKAGES))
 
-PULUMI         := pulumi
-GINKGO         := go run github.com/onsi/ginkgo/v2/ginkgo
+PULUMI         := bin/pulumi
+GINKGO         := bin/ginkgo
 KUBEBUILDER    := bin/kubebuilder --plugins thecluster.go.kubebuilder.io/v1-alpha
 KUBECTL        := bin/kubectl
 KUSTOMIZE      := bin/kustomize
@@ -56,6 +56,11 @@ format: .make/go_fmt
 tidy: go.mod go.sum ${GO_SRC}
 	go mod tidy
 
+ensure: $(addprefix bin/,kubebuilder kubectl kustomize controller-gen setup-envtest ginkgo pulumi)
+
+clean:
+	rm -rf bin
+
 bin/thecluster: go.mod go.sum $(GO_SRC)
 	go build -o $@ ./cmd/thecluster/main.go
 
@@ -79,6 +84,12 @@ bin/controller-gen: .versions/controller-tools
 setup-envtest: bin/setup-envtest
 bin/setup-envtest:
 	GOBIN=${LOCALBIN} go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest
+
+bin/ginkgo: go.mod go.sum
+	GOBIN=${LOCALBIN} go install github.com/onsi/ginkgo/v2/ginkgo
+
+bin/pulumi: .versions/pulumi
+	curl -fsSL https://get.pulumi.com | sh -s -- --install-root ${WORKING_DIR} --version $(shell cat $<) --no-edit-path
 
 gen/go/%.pb.go: buf.gen.yaml proto/%.proto
 	buf generate
