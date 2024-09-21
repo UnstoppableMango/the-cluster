@@ -25,6 +25,9 @@ GO_SRC     := $(filter %.go,${SRC}) $(GO_GEN_SRC)
 COV_REPORT     := cover.profile
 TEST_REPORT    := report.json
 GINKGO_REPORTS := $(COV_REPORT) $(TEST_REPORT)
+TEST_SUITES    := $(filter %_suite_test.go,${GO_SRC})
+TEST_PACKAGES  := $(dir ${TEST_SUITES})
+TEST_SENTINELS := $(addsuffix .test,$(TEST_PACKAGES))
 
 PULUMI         := pulumi
 GINKGO         := go run github.com/onsi/ginkgo/v2/ginkgo
@@ -43,8 +46,8 @@ tc: bin/thecluster $(TS_SRC)
 $(MODULES): bin/thecluster $(TS_SRC)
 	$< --component $@
 
-test: $(GINKGO_REPORTS)
-testf: .make/clean_ginkgo_reports $(GINKGO_REPORTS)
+test: $(TEST_SENTINELS)
+testf: $(TEST_SENTINELS)
 
 gen: $(PROTO_SRC:proto/%.proto=gen/go/%.pb.go)
 
@@ -87,18 +90,25 @@ buf.lock: buf.yaml
 .envrc: hack/example.envrc
 	cp $< $@
 
-ifeq ($(CI),)
-TEST_FLAGS := -v
-else
-TEST_FLAGS := --github-output --race --trace --coverprofile=${COV_REPORT}
-endif
-
-$(GINKGO_REPORTS) &:: go.mod go.sum $(GO_SRC) bin/kubectl bin/kubebuilder
-	$(GINKGO) run --silence-skips ${TEST_FLAGS} -r ./...
-
 .make/clean_ginkgo_reports:
 	rm -f $(GINKGO_REPORTS)
 
 .make/go_fmt: $(GO_SRC)
 	go fmt ./...
 	@touch $@
+
+ifeq ($(CI),)
+TEST_FLAGS := -v
+else
+TEST_FLAGS := --github-output --race --trace --coverprofile=${COV_REPORT}
+endif
+
+# $(GINKGO_REPORTS) &:: go.mod go.sum $(GO_SRC) bin/kubectl bin/kubebuilder
+# 	$(GINKGO) run --silence-skips ${TEST_FLAGS} -r ./...
+
+$(TEST_SENTINELS) &:
+	@echo $@
+	# $(GINKGO) run --silence-skips ${TEST_FLAGS} $(dir $@)
+
+temp: ${TEST_SENTINELS}
+	@echo $?

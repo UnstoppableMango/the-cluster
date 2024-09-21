@@ -1,6 +1,7 @@
 package theclusterv1alpha1
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -83,11 +84,11 @@ func checkDir() error {
 				}
 			}
 
-			return nil
-			// return fmt.Errorf(
-			// 	"target directory is not empty (only %s, files and directories with the prefix \".\", "+
-			// 		"files with the suffix \".md\" or capitalized files name are allowed); "+
-			// 		"found existing file %q", strings.Join(allowedFiles, ", "), path)
+			// return nil
+			return fmt.Errorf(
+				"target directory is not empty (only %s, files and directories with the prefix \".\", "+
+					"files with the suffix \".md\" or capitalized files name are allowed); "+
+					"found existing file %q", strings.Join(allowedFiles, ", "), path)
 		})
 	if err != nil {
 		return err

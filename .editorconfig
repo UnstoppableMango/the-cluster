@@ -25,3 +25,6 @@ indent_style = tab
 
 [Makefile]
 indent_style = tab
+
+[*.go]
+indent_style = tab
