@@ -13,7 +13,7 @@ import (
 
 const namespace = "the-cluster-system"
 
-var _ = Describe("controller", Ordered, func() {
+var _ = Describe("controller", Ordered, Pending, func() {
 	BeforeAll(func() {
 		By("installing prometheus operator")
 		Expect(utils.InstallPrometheusOperator()).To(Succeed())

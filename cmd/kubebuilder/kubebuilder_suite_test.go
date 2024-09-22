@@ -18,7 +18,7 @@ var (
 
 func TestKubebuilder(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Kubebuilder Suite")
+	RunSpecs(t, "Kubebuilder Suite", Label("E2E"))
 }
 
 var _ = BeforeSuite(func(ctx context.Context) {
