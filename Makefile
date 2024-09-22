@@ -105,7 +105,7 @@ buf.lock: buf.yaml
 	cd $(dir $*) && ${WORKING_DIR}/$(GINKGO) bootstrap
 
 $(GO_SRC:%.go=%_test.go): %_test.go: | bin/ginkgo
-	# cd $(dir $@) && ${WORKING_DIR}/$(GINKGO) generate $*
+	cd $(dir $@) && ${WORKING_DIR}/$(GINKGO) generate $(notdir $*)
 
 .make/clean_ginkgo_reports:
 	rm -f $(GINKGO_REPORTS)
