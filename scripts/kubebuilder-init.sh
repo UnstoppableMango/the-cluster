@@ -7,8 +7,6 @@ goversion="$(go mod edit -json | jq -r '.Go')"
 
 kubebuilder init \
   --domain thecluster.io \
-  --repo github.com/unstoppablemango/the-cluster \
-  --license none \
   --project-name the-cluster
 
 replaceMain='s|cmd/main.go|cmd/operator/main.go|g'
