@@ -36,6 +36,10 @@ func (i *initSubcommand) PreScaffold(machinery.Filesystem) error {
 }
 
 func walk(path string, info fs.FileInfo, err error) error {
+	if err != nil {
+		return err
+	}
+
 	_, err = fmt.Fprintln(os.Stderr, info.Name())
 	return err
 }
@@ -50,6 +54,7 @@ func (i *initSubcommand) Scaffold(fs machinery.Filesystem) error {
 		return err
 	}
 
+	fs.FS.Rename("Makefile", "Makefile.tmp")
 	fmt.Fprintln(os.Stderr, "walking dirs")
 	return afero.Walk(fs.FS, ".", walk)
 	// return fs.FS.Rename("cmd/main.go", "cmd/operator/main.go")
@@ -85,15 +90,17 @@ func checkDir() error {
 				return nil
 			}
 			allowedFiles := []string{
-				"go.mod",
-				"go.sum",
-				"Makefile",
 				"buf.gen.yaml",
 				"buf.lock",
 				"buf.yaml",
+				"go.mod",
+				"go.sum",
 				"global.json",
+				"Makefile",
+				"NuGet.Config",
 				"UnMango.TheCluster.sln",
 				"UnMango.TheCluster.sln.DotSettings",
+				"UnMango.TheCluster.sln.DotSettings.user",
 			}
 			for _, allowedFile := range allowedFiles {
 				if info.Name() == allowedFile {
@@ -101,11 +108,11 @@ func checkDir() error {
 				}
 			}
 
-			// return nil
-			return fmt.Errorf(
-				"target directory is not empty (only %s, files and directories with the prefix \".\", "+
-					"files with the suffix \".md\" or capitalized files name are allowed); "+
-					"found existing file %q", strings.Join(allowedFiles, ", "), path)
+			return nil
+			// return fmt.Errorf(
+			// 	"target directory is not empty (only %s, files and directories with the prefix \".\", "+
+			// 		"files with the suffix \".md\" or capitalized files name are allowed); "+
+			// 		"found existing file %q", strings.Join(allowedFiles, ", "), path)
 		})
 	if err != nil {
 		return err

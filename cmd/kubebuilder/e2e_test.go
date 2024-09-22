@@ -71,8 +71,10 @@ var _ = Describe("E2E", func() {
 			Entry("buf.yaml", "buf.yaml"),
 			Entry("global.json", "global.json"),
 			Entry("Makefile", "Makefile"),
+			Entry("NuGet.Config", "NuGet.Config"),
 			Entry("UnMango.TheCluster.sln", "UnMango.TheCluster.sln"),
 			Entry("UnMango.TheCluster.sln.DotSettings", "UnMango.TheCluster.sln.DotSettings"),
+			Entry("UnMango.TheCluster.sln.DotSettings.user", "UnMango.TheCluster.sln.DotSettings.user"),
 			func(file string) {
 				It("should succeed", func() {
 					write(kbc, file, "Not applicable for this test")
