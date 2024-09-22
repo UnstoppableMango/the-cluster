@@ -109,7 +109,7 @@ buf.lock: buf.yaml
 	@touch $@
 
 ifeq ($(CI),)
-TEST_FLAGS := -v --json-report ${TEST_REPORT} --keep-separate-reports
+TEST_FLAGS := --json-report ${TEST_REPORT} --keep-separate-reports
 else
 TEST_FLAGS := --github-output --race --trace --coverprofile=${COV_REPORT}
 endif
