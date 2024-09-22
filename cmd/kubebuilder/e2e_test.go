@@ -95,19 +95,22 @@ var _ = Describe("E2E", func() {
 			},
 		)
 
-		It("should create the PROJECT file", func() {
-			Expect(kbc.Init()).To(Succeed())
+		DescribeTable("expect files",
+			Entry("PROJECT", "PROJECT"),
+			Entry("main.go", "cmd/operator/main.go"),
+			Entry("generated.mk", "cmd/operator/generated.mk"),
+			Entry("Dockerfile", "containers/operator/Dockerfile"),
+			Entry(".dockerignore", "containers/operator/Dockerfile.dockerignore"),
+			Entry("e2e_suite_test.go", "test/e2e/e2e_suite_test.go"),
+			Entry("e2e_test.go", "test/e2e/operator_e2e_test.go"),
+			Entry("utils.go", "test/utils/utils.go"),
+			func(file string) {
+				Expect(kbc.Init()).To(Succeed())
 
-			_, err := read(kbc, "PROJECT")
-			Expect(err).NotTo(HaveOccurred())
-		})
-
-		It("should create main.go", func() {
-			Expect(kbc.Init()).To(Succeed())
-
-			_, err := read(kbc, "cmd/operator/main.go")
-			Expect(err).NotTo(HaveOccurred())
-		})
+				_, err := read(kbc, file)
+				Expect(err).NotTo(HaveOccurred())
+			},
+		)
 	})
 })
 
