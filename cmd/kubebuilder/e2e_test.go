@@ -99,6 +99,13 @@ var _ = Describe("E2E", func() {
 			_, err := read(kbc, "PROJECT")
 			Expect(err).NotTo(HaveOccurred())
 		})
+
+		It("should create main.go", func() {
+			Expect(kbc.Init()).To(Succeed())
+
+			_, err := read(kbc, "cmd/operator/main.go")
+			Expect(err).NotTo(HaveOccurred())
+		})
 	})
 })
 

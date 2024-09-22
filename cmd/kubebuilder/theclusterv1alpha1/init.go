@@ -2,29 +2,30 @@ package theclusterv1alpha1
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
 	"unicode"
 
+	"github.com/spf13/afero"
 	"sigs.k8s.io/kubebuilder/v4/pkg/config"
 	"sigs.k8s.io/kubebuilder/v4/pkg/machinery"
 	"sigs.k8s.io/kubebuilder/v4/pkg/plugin"
-	golangv4 "sigs.k8s.io/kubebuilder/v4/pkg/plugins/golang/v4"
+	"sigs.k8s.io/kubebuilder/v4/pkg/plugins/golang/v4/scaffolds"
 )
 
 const (
-	repo = "github.com/unstoppablemango/the-cluster"
+	owner = "UnstoppableMango"
+	repo  = "github.com/unstoppablemango/the-cluster"
 )
 
 type initSubcommand struct {
-	golang golangv4.Plugin
 	config config.Config
 }
 
 // InjectConfig implements plugin.RequiresConfig.
 func (i *initSubcommand) InjectConfig(c config.Config) error {
-	i.golang = golangv4.Plugin{}
 	i.config = c
 	return i.config.SetRepository(repo)
 }
@@ -34,15 +35,24 @@ func (i *initSubcommand) PreScaffold(machinery.Filesystem) error {
 	return checkDir()
 }
 
+func walk(path string, info fs.FileInfo, err error) error {
+	_, err = fmt.Fprintln(os.Stderr, info.Name())
+	return err
+}
+
 // Scaffold implements plugin.InitSubcommand.
 func (i *initSubcommand) Scaffold(fs machinery.Filesystem) error {
-	// c := i.golang.GetInitSubcommand()
-	// err := c.Scaffold(fs)
-	// if err != nil {
-	// 	return err
-	// }
+	init := scaffolds.NewInitScaffolder(i.config, "", owner)
+	init.InjectFS(fs)
 
-	return nil
+	err := init.Scaffold()
+	if err != nil {
+		return err
+	}
+
+	fmt.Fprintln(os.Stderr, "walking dirs")
+	return afero.Walk(fs.FS, ".", walk)
+	// return fs.FS.Rename("cmd/main.go", "cmd/operator/main.go")
 }
 
 var _ plugin.InitSubcommand = &initSubcommand{}
