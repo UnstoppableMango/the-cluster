@@ -20,7 +20,7 @@ SRC        := $(filter-out $(shell git ls-files -d),$(GIT_LS_FILES))
 PROTO_SRC  := $(filter %.proto,${SRC})
 TS_SRC     := $(filter %.ts,${SRC})
 GO_GEN_SRC := $(PROTO_SRC:proto/%.proto=gen/go/%.pb.go)
-GO_SRC     := $(filter %.go,${SRC}) $(GO_GEN_SRC)
+GO_SRC     := $(sort $(filter %.go,${SRC}) $(GO_GEN_SRC))
 
 COV_REPORT     := cover.profile
 TEST_REPORT    := report.json
@@ -100,6 +100,12 @@ buf.lock: buf.yaml
 
 .envrc: hack/example.envrc
 	cp $< $@
+
+%_suite_test.go: | bin/ginkgo
+	cd $(dir $*) && ${WORKING_DIR}/$(GINKGO) bootstrap
+
+$(GO_SRC:%.go=%_test.go): %_test.go: | bin/ginkgo
+	cd $(dir $@) && ${WORKING_DIR}/$(GINKGO) generate $(notdir $*)
 
 .make/clean_ginkgo_reports:
 	rm -f $(GINKGO_REPORTS)
