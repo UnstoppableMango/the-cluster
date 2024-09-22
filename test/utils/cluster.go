@@ -42,6 +42,8 @@ func NewTestCluster(opts ...TestClusterOption) *TestCluster {
 
 func (c *TestCluster) Start(ctx context.Context) error {
 	ctr, err := k3s.Run(ctx, c.k3s.Image())
+	// Turns out this is really spammy
+	// testcontainers.WithLogConsumers(util.AcceptAll(GinkgoWriter)),
 	if err != nil {
 		return err
 	}
@@ -56,6 +58,10 @@ func (c *TestCluster) Stop(ctx context.Context) error {
 	}
 
 	return c.k3s.ctr.Stop(ctx, &defaultDeadline)
+}
+
+func (c *TestCluster) GetKubeConfig(ctx context.Context) ([]byte, error) {
+	return c.k3s.ctr.GetKubeConfig(ctx)
 }
 
 func (c TestCluster) Image() string {

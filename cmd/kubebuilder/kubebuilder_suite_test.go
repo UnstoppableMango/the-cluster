@@ -8,11 +8,11 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/testcontainers/testcontainers-go/modules/k3s"
+	"github.com/unstoppablemango/the-cluster/test/utils"
 )
 
 var (
-	ctr        *k3s.K3sContainer
+	cluster    = utils.NewTestCluster()
 	kubeconfig []byte
 )
 
@@ -31,20 +31,14 @@ var _ = BeforeSuite(func(ctx context.Context) {
 	defer cancel()
 
 	By("running k3s in docker")
-	ctr, err = k3s.Run(ctx, "docker.io/rancher/k3s:v1.31.0-k3s1")
-	// Turns out this is really spammy
-	// testcontainers.WithLogConsumers(util.AcceptAll(GinkgoWriter)),
-	Expect(err).NotTo(HaveOccurred())
+	Expect(cluster.Start(ctx)).To(Succeed())
 
 	By("retrieving the kubeconfig from k3s")
-	kubeconfig, err = ctr.GetKubeConfig(ctx)
+	kubeconfig, err = cluster.GetKubeConfig(ctx)
 	Expect(err).NotTo(HaveOccurred())
 })
 
 var _ = AfterSuite(func(ctx context.Context) {
-	if ctr != nil {
-		// TODO: Use terminate function when released https://github.com/testcontainers/testcontainers-go/pull/2738
-		// testcontainers.TerminateContainer(ctr)
-		Expect(ctr.Terminate(ctx)).To(Succeed())
-	}
+	By("stopping the cluster")
+	Expect(cluster.Stop(ctx)).To(Succeed())
 })
