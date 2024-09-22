@@ -10,12 +10,6 @@ import (
 )
 
 func main() {
-	// thebundlev1, _ := plugin.NewBundleWithOptions(
-	// 	plugin.WithName(golang.DefaultNameQualifier),
-	// 	plugin.WithVersion(plugin.Version{Number: 4}),
-	// 	plugin.WithPlugins(golangv4.Plugin{}, theclusterv1.Plugin{}),
-	// )
-
 	c, err := cli.New(
 		cli.WithCommandName("kubebuilder"),
 		cli.WithPlugins(tcv1alpha1.Plugin{}),

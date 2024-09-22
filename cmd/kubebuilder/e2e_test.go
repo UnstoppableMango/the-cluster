@@ -104,6 +104,22 @@ var _ = Describe("E2E", func() {
 			Entry("e2e_suite_test.go", "test/e2e/e2e_suite_test.go"),
 			Entry("e2e_test.go", "test/e2e/operator_e2e_test.go"),
 			Entry("utils.go", "test/utils/utils.go"),
+			Entry("rbac/kustomization.yaml", "config/rbac/kustomization.yaml"),
+			Entry("role.yaml", "config/rbac/role.yaml"),
+			Entry("metrics_auth_role.yaml", "config/rbac/metrics_auth_role.yaml"),
+			Entry("metrics_auth_role_binding.yaml", "config/rbac/metrics_auth_role_binding.yaml"),
+			Entry("metrics_reader_role.yaml", "config/rbac/metrics_reader_role.yaml"),
+			Entry("leader_election_role.yaml", "config/rbac/leader_election_role.yaml"),
+			Entry("leader_election_role_binding.yaml", "config/rbac/leader_election_role_binding.yaml"),
+			Entry("service_account.yaml", "config/rbac/service_account.yaml"),
+			Entry("default/kustomization.yaml", "config/default/kustomization.yaml"),
+			Entry("metrics_service.yaml", "config/default/metrics_service.yaml"),
+			Entry("manager_metrics_patch.yaml", "config/default/manager_metrics_patch.yaml"),
+			Entry("manager/kustomization.yaml", "config/manager/kustomization.yaml"),
+			Entry("manager.yaml", "config/manager/manager.yaml"),
+			Entry("network-policy/kustomization.yaml", "config/network-policy/kustomization.yaml"),
+			Entry("allow-metrics-traffic.yaml", "config/network-policy/allow-metrics-traffic.yaml"),
+			Entry("prometheus/kustomization.yaml", "config/prometheus/kustomization.yaml"),
 			func(file string) {
 				Expect(kbc.Init()).To(Succeed())
 
