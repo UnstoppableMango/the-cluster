@@ -9,10 +9,16 @@ import (
 )
 
 var _ = Describe("Options", func() {
-	It("should set resource plural name", func() {
-		opts := thecluster.Options{}
-		res := resource.Resource{}
+	DescribeTable("resource plural name",
+		Entry("should keep existing name", "", "existing", "existing"),
+		Entry("should overwrite existing name", "overwrite", "existing", "overwrite"),
+		func(o, r, expected string) {
+			opts := thecluster.Options{Plural: o}
+			res := &resource.Resource{Plural: r}
 
-		Expect(res.Plural).To(Equal(opts.Plural))
-	})
+			opts.UpdateResource(res, nil)
+
+			Expect(res.Plural).To(Equal(expected))
+		},
+	)
 })

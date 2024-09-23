@@ -13,7 +13,6 @@ const pluginName = "thecluster." + golang.DefaultNameQualifier
 var (
 	pluginVersion            = plugin.Version{Number: 1, Stage: stage.Alpha}
 	SupportedProjectVersions = []config.Version{cfgv3.Version}
-	pluginKey                = plugin.KeyFor(Plugin{})
 )
 
 type Plugin struct {
