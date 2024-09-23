@@ -1,4 +1,4 @@
-package theclusterv1alpha1
+package thecluster
 
 import (
 	"sigs.k8s.io/kubebuilder/v4/pkg/config"

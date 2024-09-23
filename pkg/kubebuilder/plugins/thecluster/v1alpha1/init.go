@@ -1,4 +1,4 @@
-package theclusterv1alpha1
+package v1alpha1
 
 import (
 	"github.com/spf13/pflag"

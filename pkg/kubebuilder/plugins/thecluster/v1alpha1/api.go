@@ -1,4 +1,4 @@
-package theclusterv1alpha1
+package v1alpha1
 
 import (
 	"github.com/spf13/pflag"
@@ -15,7 +15,7 @@ type createAPISubcommand struct {
 
 // BindFlags implements plugin.HasFlags.
 func (c *createAPISubcommand) BindFlags(fs *pflag.FlagSet) {
-	panic("unimplemented")
+	// TODO
 }
 
 // InjectConfig implements plugin.RequiresConfig.
@@ -36,7 +36,8 @@ func (c *createAPISubcommand) InjectResource(r *resource.Resource) error {
 
 // Scaffold implements plugin.CreateAPISubcommand.
 func (c *createAPISubcommand) Scaffold(machinery.Filesystem) error {
-	panic("unimplemented")
+	// TODO
+	return nil
 }
 
 var _ plugin.CreateAPISubcommand = &createAPISubcommand{}
