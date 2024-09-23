@@ -5,6 +5,10 @@ import (
 	"sigs.k8s.io/kubebuilder/v4/pkg/model/resource"
 )
 
+const (
+	DefaultMainPath = "cmd/operator/main.go"
+)
+
 type Options struct {
 	Plural       string
 	Namespaced   bool

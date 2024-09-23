@@ -9,5 +9,5 @@ import (
 
 func TestThecluster(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Thecluster Suite")
+	RunSpecs(t, "THECLUSTER Kubebuilder Plugin Suite")
 }

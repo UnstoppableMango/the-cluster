@@ -1,7 +1,11 @@
 package v1alpha1
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/spf13/pflag"
+	"github.com/unstoppablemango/the-cluster/pkg/kubebuilder/plugins/thecluster"
 	"sigs.k8s.io/kubebuilder/v4/pkg/config"
 	"sigs.k8s.io/kubebuilder/v4/pkg/machinery"
 	"sigs.k8s.io/kubebuilder/v4/pkg/model/resource"
@@ -34,6 +38,15 @@ func (c *createAPISubcommand) InjectResource(r *resource.Resource) error {
 	return nil
 }
 
+// PreScaffold implements plugin.HasPreScaffold.
+func (c *createAPISubcommand) PreScaffold(machinery.Filesystem) error {
+	if _, err := os.Stat(thecluster.DefaultMainPath); os.IsNotExist(err) {
+		return fmt.Errorf("%s file should present in the root directory", thecluster.DefaultMainPath)
+	}
+
+	return nil
+}
+
 // Scaffold implements plugin.CreateAPISubcommand.
 func (c *createAPISubcommand) Scaffold(machinery.Filesystem) error {
 	// TODO
@@ -43,3 +56,4 @@ func (c *createAPISubcommand) Scaffold(machinery.Filesystem) error {
 var _ plugin.CreateAPISubcommand = &createAPISubcommand{}
 var _ plugin.HasFlags = &createAPISubcommand{}
 var _ plugin.RequiresConfig = &createAPISubcommand{}
+var _ plugin.HasPreScaffold = &createAPISubcommand{}

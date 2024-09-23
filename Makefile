@@ -131,7 +131,7 @@ endif
 # Why do I insist on creating jank like this
 cmd/kubebuilder/${TEST_REPORT}: | bin/kubebuilder bin/kubectl
 $(TEST_SENTINELS) &: $(filter $(addsuffix %,${TEST_PACKAGES}),${GO_SRC}) | bin/ginkgo
-	$(GINKGO) run --silence-skips ${TEST_FLAGS} $(sort $(subst v1alpha1/,,$(dir $?)))
+	$(GINKGO) run --silence-skips ${TEST_FLAGS} $(sort $(dir $?))
 
 .make/clean_tests:
 	rm -f ${TEST_SENTINELS}
