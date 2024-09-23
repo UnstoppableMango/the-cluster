@@ -2,7 +2,7 @@ package theclusterv1alpha1
 
 import (
 	"github.com/spf13/pflag"
-	"github.com/unstoppablemango/the-cluster/cmd/kubebuilder/theclusterv1alpha1/scaffolds"
+	"github.com/unstoppablemango/the-cluster/pkg/kubebuilder/plugins/thecluster/v1alpha1/scaffolds"
 	"sigs.k8s.io/kubebuilder/v4/pkg/config"
 	"sigs.k8s.io/kubebuilder/v4/pkg/machinery"
 	"sigs.k8s.io/kubebuilder/v4/pkg/plugin"
