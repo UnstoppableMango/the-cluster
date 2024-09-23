@@ -22,6 +22,10 @@ TS_SRC     := $(filter %.ts,${SRC})
 GO_GEN_SRC := $(PROTO_SRC:proto/%.proto=gen/go/%.pb.go)
 GO_SRC     := $(sort $(filter %.go,${SRC}) $(GO_GEN_SRC))
 
+GO_PACKAGES := $(sort $(dir ${GO_SRC}))
+
+CONTAINERS := $(wildcard containers/*)
+
 COV_REPORT     := cover.profile
 TEST_REPORT    := report.json
 TEST_SUITES    := $(filter %_suite_test.go,${GO_SRC})
@@ -49,7 +53,7 @@ $(MODULES): bin/thecluster $(TS_SRC)
 test: $(TEST_SENTINELS)
 testf: .make/clean_tests $(TEST_SENTINELS)
 
-gen: $(GO_GEN_SRC)
+gen: $(GO_GEN_SRC) .make/controller_gen_manifests .make/controller_gen_object
 
 format: .make/go_fmt
 
@@ -91,6 +95,10 @@ bin/ginkgo: go.mod go.sum
 bin/pulumi: .versions/pulumi
 	curl -fsSL https://get.pulumi.com | sh -s -- --install-root ${WORKING_DIR} --version $(shell cat $<) --no-edit-path
 
+.PHONY: $(CONTAINERS)
+$(CONTAINERS): containers/%: containers/%/Dockerfile
+	docker build ${WORKING_DIR} -f $<
+
 gen/go/%.pb.go: buf.gen.yaml proto/%.proto
 	buf generate
 
@@ -129,3 +137,12 @@ $(TEST_SENTINELS) &: $(filter $(addsuffix %,${TEST_PACKAGES}),${GO_SRC}) | bin/g
 
 .make/clean_tests:
 	rm -f ${TEST_SENTINELS}
+
+comma:= ,
+CGEN_PATHS := $(subst $(eval ) ,$(comma),${GO_PACKAGES})
+
+.make/controller_gen_manifests: | bin/controller-gen
+	$(CONTROLLER_GEN) rbac:roleName=manager-role crd webhook paths="./cmd/kubebuilder/" output:crd:artifacts:config=config/crd/bases
+
+.make/controller_gen_object: | bin/controller-gen
+	$(CONTROLLER_GEN) object paths="./cmd/kubebuilder/"
