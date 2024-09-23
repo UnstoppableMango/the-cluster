@@ -128,6 +128,26 @@ var _ = Describe("E2E", func() {
 			},
 		)
 	})
+
+	Context("create api", func() {
+		var group, version, kind string
+
+		BeforeEach(func() {
+			Expect(kbc.Init()).To(Succeed())
+			group = "thecluster"
+			version = "v1alpha1"
+			kind = "TestResource"
+		})
+
+		It("should succeed", func() {
+			err := kbc.CreateAPI(
+				"--group", group,
+				"--version", version,
+				"--kind", kind,
+			)
+			Expect(err).NotTo(HaveOccurred())
+		})
+	})
 })
 
 func write(ctx *utils.TestContext, file, content string) error {
