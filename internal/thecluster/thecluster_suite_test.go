@@ -14,7 +14,7 @@ var gitRoot string
 
 func TestThecluster(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Thecluster Suite")
+	RunSpecs(t, "THECLUSTER Internal Suite")
 }
 
 var _ = BeforeSuite(func(ctx context.Context) {

@@ -1,4 +1,4 @@
-package theclusterv1alpha1
+package v1alpha1
 
 import (
 	"sigs.k8s.io/kubebuilder/v4/pkg/config"
@@ -13,7 +13,6 @@ const pluginName = "thecluster." + golang.DefaultNameQualifier
 var (
 	pluginVersion            = plugin.Version{Number: 1, Stage: stage.Alpha}
 	SupportedProjectVersions = []config.Version{cfgv3.Version}
-	pluginKey                = plugin.KeyFor(Plugin{})
 )
 
 type Plugin struct {

@@ -100,7 +100,6 @@ var _ = Describe("controller", Ordered, Pending, func() {
 				return nil
 			}
 			EventuallyWithOffset(1, verifyControllerUp, time.Minute, time.Second).Should(Succeed())
-
 		})
 	})
 })

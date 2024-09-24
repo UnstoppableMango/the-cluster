@@ -128,6 +128,34 @@ var _ = Describe("E2E", func() {
 			},
 		)
 	})
+
+	Context("create api", func() {
+		var (
+			group, version, kind string
+
+			mainPath string
+		)
+
+		BeforeEach(func() {
+			group = "thecluster"
+			version = "v1alpha1"
+			kind = "TestResource"
+			mainPath = path.Join(kbc.Dir, "cmd/operator/main.go")
+
+			Expect(kbc.Init()).To(Succeed())
+		})
+
+		It("should update main.go", func() {
+			err := kbc.CreateAPI(
+				"--group", group,
+				"--version", version,
+				"--kind", kind,
+			)
+
+			Expect(err).NotTo(HaveOccurred())
+			Expect(kbutil.HasFileContentWith(mainPath, "main")).To(BeTrue())
+		})
+	})
 })
 
 func write(ctx *utils.TestContext, file, content string) error {
