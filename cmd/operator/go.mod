@@ -1,4 +1,4 @@
-module github.com/unstoppablemango/the-cluster/cmd/operator
+module github.com/unstoppablemango/the-cluster
 
 go 1.22.0
 

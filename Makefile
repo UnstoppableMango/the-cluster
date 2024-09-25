@@ -53,6 +53,8 @@ $(MODULES): bin/thecluster $(TS_SRC)
 test: $(TEST_SENTINELS)
 testf: .make/clean_tests $(TEST_SENTINELS)
 
+e2e: .make/operator_e2e
+
 gen: $(GO_GEN_SRC) .make/controller_gen_manifests .make/controller_gen_object
 
 format: .make/go_fmt
@@ -144,3 +146,6 @@ CGEN_PATHS := $(subst $(eval ) ,$(comma),${GO_PACKAGES})
 
 .make/controller_gen_object: | bin/controller-gen
 	$(CONTROLLER_GEN) object paths="./cmd/kubebuilder/"
+
+.make/operator_e2e:
+	$(MAKE) -C cmd/operator test
