@@ -8,6 +8,8 @@ import (
 	. "github.com/onsi/gomega"
 
 	"github.com/unstoppablemango/the-cluster/internal/util"
+	tcv1alpha1 "github.com/unstoppablemango/the-cluster/pkg/kubebuilder/plugins/thecluster/v1alpha1"
+	"sigs.k8s.io/kubebuilder/v4/pkg/plugin"
 	kbutil "sigs.k8s.io/kubebuilder/v4/pkg/plugin/util"
 	"sigs.k8s.io/kubebuilder/v4/test/e2e/utils"
 )
@@ -79,7 +81,7 @@ var _ = Describe("E2E", func() {
 				It("should succeed", func() {
 					write(kbc, file, "Not applicable for this test")
 
-					Expect(kbc.Init()).To(Succeed())
+					Expect(kbc.Init("--plugins", plugin.KeyFor(tcv1alpha1.Plugin{}))).To(Succeed())
 				})
 
 				It("should not modify the file", func() {
@@ -121,7 +123,7 @@ var _ = Describe("E2E", func() {
 			Entry("allow-metrics-traffic.yaml", "config/network-policy/allow-metrics-traffic.yaml"),
 			Entry("prometheus/kustomization.yaml", "config/prometheus/kustomization.yaml"),
 			func(file string) {
-				Expect(kbc.Init()).To(Succeed())
+				Expect(kbc.Init("--plugins", plugin.KeyFor(tcv1alpha1.Plugin{}))).To(Succeed())
 
 				_, err := read(kbc, file)
 				Expect(err).NotTo(HaveOccurred())
@@ -142,7 +144,7 @@ var _ = Describe("E2E", func() {
 			kind = "TestResource"
 			mainPath = path.Join(kbc.Dir, "cmd/operator/main.go")
 
-			Expect(kbc.Init()).To(Succeed())
+			Expect(kbc.Init("--plugins", plugin.KeyFor(tcv1alpha1.Plugin{}))).To(Succeed())
 		})
 
 		It("should update main.go", func() {
@@ -150,6 +152,7 @@ var _ = Describe("E2E", func() {
 				"--group", group,
 				"--version", version,
 				"--kind", kind,
+				"--plugins", plugin.KeyFor(tcv1alpha1.Plugin{}),
 			)
 
 			Expect(err).NotTo(HaveOccurred())
