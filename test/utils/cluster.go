@@ -2,9 +2,12 @@ package utils
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"io"
 	"time"
 
+	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/modules/k3s"
 )
 
@@ -26,13 +29,14 @@ func (c k3sCluster) Image() string {
 }
 
 type TestCluster struct {
-	k3s *k3sCluster
+	k3s     *k3sCluster
+	loggers []io.Writer
 }
 
 type TestClusterOption func(*TestCluster)
 
 func NewTestCluster(opts ...TestClusterOption) *TestCluster {
-	c := &TestCluster{&k3sCluster{nil, defaultK3sVersion}}
+	c := &TestCluster{&k3sCluster{nil, defaultK3sVersion}, []io.Writer{}}
 	for _, configure := range opts {
 		configure(c)
 	}
@@ -41,9 +45,9 @@ func NewTestCluster(opts ...TestClusterOption) *TestCluster {
 }
 
 func (c *TestCluster) Start(ctx context.Context) error {
-	ctr, err := k3s.Run(ctx, c.k3s.Image())
-	// Turns out this is really spammy
-	// testcontainers.WithLogConsumers(util.AcceptAll(GinkgoWriter)),
+	ctr, err := k3s.Run(ctx, c.k3s.Image(),
+		testcontainers.WithLogConsumers(c.logAdapters()...),
+	)
 	if err != nil {
 		return err
 	}
@@ -54,6 +58,7 @@ func (c *TestCluster) Start(ctx context.Context) error {
 
 func (c *TestCluster) Stop(ctx context.Context) error {
 	if c.k3s.ctr == nil {
+		c.log("container was not initialized\n")
 		return nil
 	}
 
@@ -61,6 +66,10 @@ func (c *TestCluster) Stop(ctx context.Context) error {
 }
 
 func (c *TestCluster) GetKubeConfig(ctx context.Context) ([]byte, error) {
+	if c.k3s == nil || c.k3s.ctr == nil {
+		return nil, errors.New("")
+	}
+
 	return c.k3s.ctr.GetKubeConfig(ctx)
 }
 
@@ -72,8 +81,40 @@ func (c TestCluster) Version() string {
 	return c.k3s.version
 }
 
+func (c TestCluster) logAdapters() []testcontainers.LogConsumer {
+	adapters := make([]testcontainers.LogConsumer, len(c.loggers))
+	for i, l := range c.loggers {
+		adapters[i] = &logAdapter{l}
+	}
+
+	return adapters
+}
+
+func (c TestCluster) log(msg string) {
+	for _, l := range c.loggers {
+		_, _ = l.Write([]byte(msg))
+	}
+}
+
 func WithK3sVersion(version string) TestClusterOption {
 	return func(tc *TestCluster) {
 		tc.k3s.version = version
 	}
 }
+
+func WithLoggers(loggers ...io.Writer) TestClusterOption {
+	return func(tc *TestCluster) {
+		tc.loggers = loggers
+	}
+}
+
+type logAdapter struct {
+	w io.Writer
+}
+
+// Accept implements testcontainers.LogConsumer.
+func (l *logAdapter) Accept(msg testcontainers.Log) {
+	_, _ = l.w.Write(msg.Content)
+}
+
+var _ testcontainers.LogConsumer = &logAdapter{}
