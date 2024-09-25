@@ -1,8 +1,6 @@
-module github.com/unstoppablemango/the-cluster
+module github.com/unstoppablemango/the-cluster/cmd/operator
 
 go 1.22.0
-
-replace github.com/unstoppablemango/the-cluster => ../..
 
 require (
 	github.com/onsi/ginkgo/v2 v2.20.2
