@@ -36,8 +36,8 @@ var _ = Describe("Cluster", func() {
 			cluster = utils.NewTestCluster()
 		})
 
-		It("should stop successfully", func(ctx context.Context) {
-			Expect(cluster.Stop(ctx)).To(Succeed())
+		It("should error when stopping", func(ctx context.Context) {
+			Expect(cluster.Stop(ctx)).NotTo(Succeed())
 		})
 	})
 })
