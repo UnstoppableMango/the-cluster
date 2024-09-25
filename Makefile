@@ -46,6 +46,10 @@ all: bin/thecluster bin/kubebuilder
 tc: bin/thecluster $(TS_SRC)
 	$< --interactive
 
+.PHONY: operator
+operator:
+	$(MAKE) -C operator --no-print-directory
+
 .PHONY: $(MODULES)
 $(MODULES): bin/thecluster $(TS_SRC)
 	$< --component $@
@@ -55,9 +59,11 @@ testf: .make/clean_tests $(TEST_SENTINELS)
 
 e2e: .make/operator_e2e
 
-gen: $(GO_GEN_SRC) .make/controller_gen_manifests .make/controller_gen_object
+gen: $(GO_GEN_SRC) .make/controller_gen_manifests .make/controller_gen_object .make/operator_manifests
 
 format: .make/go_fmt
+
+lint: .make/operator_lint
 
 tidy: go.mod go.sum ${GO_SRC}
 	go mod tidy
@@ -141,11 +147,35 @@ $(TEST_SENTINELS) &: $(filter $(addsuffix %,${TEST_PACKAGES}),${GO_SRC}) | bin/g
 comma:= ,
 CGEN_PATHS := $(subst $(eval ) ,$(comma),${GO_PACKAGES})
 
-.make/controller_gen_manifests: | bin/controller-gen
+.make/controller_gen_manifests: $(filter cmd/kubebuilder/%,${SRC}) | bin/controller-gen
 	$(CONTROLLER_GEN) rbac:roleName=manager-role crd webhook paths="./cmd/kubebuilder/" output:crd:artifacts:config=config/crd/bases
-
-.make/controller_gen_object: | bin/controller-gen
+	@touch $@
+.make/controller_gen_object: $(filter cmd/kubebuilder/%,${SRC}) | bin/controller-gen
 	$(CONTROLLER_GEN) object paths="./cmd/kubebuilder/"
+	@touch $@
 
-.make/operator_e2e:
-	$(MAKE) -C cmd/operator test
+MOP := $(MAKE) -C operator --no-print-directory
+.make/operator_e2e: $(filter operator/%,${SRC})
+	$(MOP) test
+	@touch $@
+.make/operator_manifests: $(filter operator/%,${SRC})
+	$(MOP) manifests
+	@touch $@
+.make/operator_lint: $(filter operator/%,${SRC})
+	$(MOP) lint
+	@touch $@
+.make/operator_lint-fix: $(filter operator/%,${SRC})
+	$(MOP) lint-fix
+	@touch $@
+.make/operator_install:
+	$(MOP) install
+.make/operator_uninstall:
+	$(MOP) uninstall
+.make/operator_deploy:
+	$(MOP) deploy
+.make/operator_undeploy:
+	$(MOP) undeploy
+.make/operator_run:
+	$(MOP) run
+.make/operator_docker-build:
+	$(MOP) docker-build
