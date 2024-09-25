@@ -123,6 +123,13 @@ buf.lock: buf.yaml
 $(GO_SRC:%.go=%_test.go): %_test.go: | bin/ginkgo
 	cd $(dir $@) && ${WORKING_DIR}/$(GINKGO) generate $(notdir $*)
 
+.kube/config: | bin/thecluster
+ifeq (,$(wildcard $@))
+	bin/thecluster test-cluster start $@
+else
+	bin/thecluster test-cluster stop $@
+endif
+
 .make/clean_ginkgo_reports:
 	rm -f $(GINKGO_REPORTS)
 

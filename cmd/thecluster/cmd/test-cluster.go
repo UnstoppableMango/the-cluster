@@ -1,10 +1,13 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
+	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
+	"github.com/unstoppablemango/the-cluster/pkg/testing"
 	"github.com/unstoppablemango/the-cluster/test/utils"
 )
 
@@ -16,22 +19,41 @@ var testClusterCmd = &cobra.Command{
 var startTestClusterCmd = &cobra.Command{
 	Use:   "start",
 	Short: "Start the test cluster",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		c := utils.NewTestCluster(
-			utils.WithLoggers(os.Stdout),
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		kubeconfig := args[0]
+
+		c := testing.NewCluster(
+			testing.WriteTo(os.Stdout),
+			testing.WithKubeconfigPath(kubeconfig),
 		)
-		return c.Start(cmd.Context())
+
+		if err := c.CreateTestCluster(); err != nil {
+			log.Error("failed creating test cluster", "err", err)
+			os.Exit(1)
+		}
 	},
 }
 
 var stopTestClusterCmd = &cobra.Command{
 	Use:   "stop",
 	Short: "Stop the test cluster",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		c := utils.NewTestCluster(
-			utils.WithLoggers(os.Stdout),
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		kubeconfig := args[0]
+		if _, err := os.Stat(kubeconfig); errors.Is(err, os.ErrNotExist) {
+			log.Error("unable to find kubeconfig", "err", err)
+		}
+
+		c := testing.NewCluster(
+			testing.WriteTo(os.Stdout),
+			testing.WithKubeconfigPath(kubeconfig),
 		)
-		return c.Stop(cmd.Context())
+
+		if err := c.DeleteTestCluster(); err != nil {
+			log.Error("failed deleting test cluster", "err", err)
+			os.Exit(1)
+		}
 	},
 }
 
