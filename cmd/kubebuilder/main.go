@@ -41,6 +41,8 @@ func main() {
 		cli.WithVersion(fmt.Sprintf("git+%s", hash)),
 		cli.WithPlugins(
 			defaultBundle,
+			golangv4.Plugin{},
+			kustomizev2.Plugin{},
 			deployimagev1alpha1.Plugin{},
 			grafanav1alpha1.Plugin{},
 			tcv1alpha1.Plugin{},
