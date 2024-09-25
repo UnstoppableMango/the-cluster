@@ -2,20 +2,12 @@
 set -e
 
 root="$(git rev-parse --show-toplevel)"
-dockerfile="$root/containers/operator/Dockerfile"
-goversion="$(go mod edit -json | jq -r '.Go')"
 
-kubebuilder init \
+pushd "$root/operator" || exit 1
+trap popd EXIT
+
+"$root/bin/kubebuilder" init \
   --domain thecluster.io \
-  --project-name the-cluster
-
-replaceMain='s|cmd/main.go|cmd/operator/main.go|g'
-replaceGoVersion="s|golang:.* AS|golang:${goversion} AS|"
-
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  sed -i '' "$replaceMain" "$dockerfile"
-  sed -i '' "$replaceGoVersion" "$dockerfile"
-else
-  sed -i "$replaceMain" "$dockerfile"
-  sed -i "$replaceGoVersion" "$dockerfile"
-fi
+  --project-name thecluster \
+  --owner UnstoppableMango \
+  --repo github.com/unstoppablemango/the-cluster/operator
