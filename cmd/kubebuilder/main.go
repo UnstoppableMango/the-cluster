@@ -13,7 +13,9 @@ import (
 	"sigs.k8s.io/kubebuilder/v4/pkg/plugin"
 	kustomizev2 "sigs.k8s.io/kubebuilder/v4/pkg/plugins/common/kustomize/v2"
 	"sigs.k8s.io/kubebuilder/v4/pkg/plugins/golang"
+	deployimagev1alpha1 "sigs.k8s.io/kubebuilder/v4/pkg/plugins/golang/deploy-image/v1alpha1"
 	golangv4 "sigs.k8s.io/kubebuilder/v4/pkg/plugins/golang/v4"
+	grafanav1alpha1 "sigs.k8s.io/kubebuilder/v4/pkg/plugins/optional/grafana/v1alpha"
 )
 
 func main() {
@@ -37,7 +39,12 @@ func main() {
 	c, err := cli.New(
 		cli.WithCommandName("kubebuilder"),
 		cli.WithVersion(fmt.Sprintf("git+%s", hash)),
-		cli.WithPlugins(defaultBundle, tcv1alpha1.Plugin{}),
+		cli.WithPlugins(
+			defaultBundle,
+			deployimagev1alpha1.Plugin{},
+			grafanav1alpha1.Plugin{},
+			tcv1alpha1.Plugin{},
+		),
 		cli.WithDefaultPlugins(cfgv3.Version, defaultBundle),
 		cli.WithDefaultProjectVersion(cfgv3.Version),
 		cli.WithCompletion(),
