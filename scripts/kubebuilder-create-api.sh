@@ -6,7 +6,7 @@ read -r -p 'Version: ' version
 read -r -p 'Kind: ' kind
 read -r -p 'Plural: ' plural
 
-pushd "$root/cmd/operator" || exit 1
+pushd "$root/operator" || exit 1
 trap popd EXIT
 
 set -o xtrace
