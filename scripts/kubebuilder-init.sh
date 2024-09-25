@@ -8,9 +8,9 @@ goversion="$(go mod edit -json | jq -r '.Go')"
 pushd "$root/cmd/operator" || exit 1
 trap popd EXIT
 
-kubebuilder init \
+"$root/bin/kubebuilder" init \
   --domain thecluster.io \
-  --project-name the-cluster
+  --project-name thecluster
 
 replaceGoVersion="s|golang:.* AS|golang:${goversion} AS|"
 
