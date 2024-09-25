@@ -28,7 +28,7 @@ CONTAINERS := $(wildcard containers/*)
 
 COV_REPORT     := cover.profile
 TEST_REPORT    := report.json
-TEST_SUITES    := $(filter %_suite_test.go,$(filter-out cmd/operator/%,${GO_SRC}))
+TEST_SUITES    := $(filter %_suite_test.go,$(filter-out operator/%,${GO_SRC}))
 TEST_PACKAGES  := $(dir ${TEST_SUITES})
 TEST_SENTINELS := $(addsuffix ${TEST_REPORT},${TEST_PACKAGES})
 GINKGO_REPORTS := $(COV_REPORT) $(TEST_SENTINELS)
