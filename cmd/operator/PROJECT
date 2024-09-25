@@ -7,4 +7,14 @@ layout:
 - go.kubebuilder.io/v1-alpha
 projectName: thecluster
 repo: github.com/unstoppablemango/the-cluster
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: thecluster.io
+  group: thecluster
+  kind: App
+  path: github.com/unstoppablemango/the-cluster/api/v1alpha1
+  version: v1alpha1
 version: "3"
