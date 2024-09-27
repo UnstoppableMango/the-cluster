@@ -139,7 +139,7 @@ endif
 	@touch $@
 
 ifeq ($(CI),)
-TEST_FLAGS := --json-report ${TEST_REPORT} --keep-separate-reports
+TEST_FLAGS := --json-report ${TEST_REPORT} --keep-separate-reports --label-filter !E2E
 else
 TEST_FLAGS := --github-output --race --trace --coverprofile=${COV_REPORT}
 endif
@@ -151,6 +151,9 @@ $(TEST_SENTINELS) &: $(filter $(addsuffix %,${TEST_PACKAGES}),${GO_SRC}) | bin/g
 
 .make/clean_tests:
 	rm -f ${TEST_SENTINELS}
+
+.make/go_e2e_tests:
+	$(GINKGO) run --silence-skips ${TEST_FLAGS} -r ./... --label-filter E2E
 
 comma:= ,
 CGEN_PATHS := $(subst $(eval ) ,$(comma),${GO_PACKAGES})
