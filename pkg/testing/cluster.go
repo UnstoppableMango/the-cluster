@@ -56,6 +56,10 @@ func (c *Cluster) CreateTestCluster() error {
 		return err
 	}
 
+	if c.KubeconfigPath == "" {
+		c.KubeconfigPath = DefaultKubeconfigPath
+	}
+
 	path := filepath.Join(root, c.KubeconfigPath)
 
 	return c.Create(DefaultName,

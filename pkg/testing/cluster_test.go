@@ -23,6 +23,11 @@ var _ = Describe("Cluster", func() {
 		)
 	}
 
+	BeforeEach(func() {
+		By("ensuring the environment is clean")
+		Expect(setup().DeleteTestCluster()).To(Succeed())
+	})
+
 	It("should set up and tear down", Label("E2E"), func() {
 		c := setup()
 
