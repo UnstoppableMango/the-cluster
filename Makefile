@@ -167,9 +167,9 @@ CGEN_PATHS := $(subst $(eval ) ,$(comma),${GO_PACKAGES})
 
 MOP := $(MAKE) -C operator --no-print-directory
 .make/operator_e2e: $(filter operator/%,${SRC}) | bin/thecluster
-	bin/thecluster test-cluster start
+	bin/thecluster test-cluster start .kube/config
 	-$(MOP) test
-	bin/thecluster test-cluster stop
+	bin/thecluster test-cluster stop .kube/config
 	@touch $@
 .make/operator_manifests: $(filter operator/%,${SRC})
 	$(MOP) manifests
