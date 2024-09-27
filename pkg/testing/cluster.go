@@ -1,8 +1,11 @@
 package testing
 
 import (
+	"fmt"
 	"io"
+	"math/rand"
 	"path/filepath"
+	"time"
 
 	"github.com/charmbracelet/log"
 	"github.com/unstoppablemango/the-cluster/internal/log/adapters"
@@ -17,6 +20,7 @@ const (
 
 type Options struct {
 	logger         *log.Logger
+	Name           string
 	KubeconfigPath string
 }
 
@@ -27,12 +31,13 @@ func (o Option) apply(opts *Options) {
 }
 
 type Cluster struct {
-	cluster.Provider
 	Options
+
+	Kind cluster.Provider
 }
 
 func NewCluster(options ...Option) *Cluster {
-	opts := Options{log.Default(), ""}
+	opts := DefaultOptions()
 	for _, o := range options {
 		o.apply(&opts)
 	}
@@ -45,8 +50,8 @@ func NewCluster(options ...Option) *Cluster {
 	)
 
 	return &Cluster{
-		Provider: *provider,
-		Options:  opts,
+		Kind:    *provider,
+		Options: opts,
 	}
 }
 
@@ -61,13 +66,24 @@ func (c *Cluster) Start() error {
 	}
 
 	abs := filepath.Join(root, c.KubeconfigPath)
-	return c.Create(DefaultName,
+	return c.Kind.Create(DefaultName,
 		cluster.CreateWithKubeconfigPath(abs),
 	)
 }
 
 func (c *Cluster) Stop() error {
-	return c.Delete(DefaultName, c.KubeconfigPath)
+	return c.Kind.Delete(DefaultName, c.KubeconfigPath)
+}
+
+func DefaultOptions() Options {
+	suffix := rand.New(rand.NewSource(time.Now().UnixNano())).Int31()
+
+	return Options{
+		logger: log.Default(),
+		Name:   fmt.Sprintf("thetester-%d", suffix),
+
+		KubeconfigPath: "",
+	}
 }
 
 func WithLogger(logger *log.Logger) Option {
