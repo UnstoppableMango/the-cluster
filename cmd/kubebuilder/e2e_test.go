@@ -26,12 +26,17 @@ var _ = Describe("E2E", func() {
 		work, err = os.MkdirTemp("", "")
 		Expect(err).NotTo(HaveOccurred())
 
+		kubeconfigPath := path.Join(work, "kubeconfig")
+
+		By("writing " + kubeconfigPath)
+		err = os.WriteFile(kubeconfigPath, kubeconfig, os.ModePerm)
+		Expect(err).NotTo(HaveOccurred())
+
 		gitRoot, err := util.GitRoot()
 		Expect(err).NotTo(HaveOccurred())
 
 		localbin := path.Join(gitRoot, "bin")
 		kubebuilder := path.Join(localbin, kbutil.KubebuilderBinName)
-		kubeconfigPath := path.Join(work, cluster.KubeconfigPath)
 
 		By("creating a kubebuilder test context")
 		kbc, err = utils.NewTestContext(kubebuilder,
