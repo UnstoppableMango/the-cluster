@@ -50,7 +50,7 @@ runs:
 
     - name: Setup pulumi
       if: inputs.pulumi == 'true' || inputs.all == 'true'
-      uses: pulumi/actions@v5
+      uses: pulumi/actions@v6
       with:
         pulumi-version: 3.117.0 # renovate depName=pulumi/pulumi extractVersion=^v(?<version>.*)
       env:

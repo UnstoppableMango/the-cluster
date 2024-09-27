@@ -18,7 +18,7 @@ runs:
       working-directory: clusters/rosequartz
       shell: bash
 
-    - uses: pulumi/actions@v5
+    - uses: pulumi/actions@v6
       with:
         stack-name: UnstoppableMango/thecluster-rosequartz/${{ inputs.stack }}
         command: up
@@ -52,7 +52,7 @@ runs:
       working-directory: apps/crds
       shell: bash
 
-    - uses: pulumi/actions@v5
+    - uses: pulumi/actions@v6
       with:
         stack-name: UnstoppableMango/thecluster-crds/${{ inputs.stack }}
         command: up
@@ -71,7 +71,7 @@ runs:
       working-directory: apps/cert-manager
       shell: bash
 
-    - uses: pulumi/actions@v5
+    - uses: pulumi/actions@v6
       with:
         stack-name: UnstoppableMango/thecluster-cert-manager/${{ inputs.stack }}
         command: up
@@ -95,7 +95,7 @@ runs:
       shell: bash
 
     - name: Pulumi Up
-      uses: pulumi/actions@v5
+      uses: pulumi/actions@v6
       with:
         stack-name: UnstoppableMango/thecluster-metrics-server/${{ inputs.stack }}
         command: up
@@ -120,7 +120,7 @@ runs:
       shell: bash
 
     - name: Pulumi Up
-      uses: pulumi/actions@v5
+      uses: pulumi/actions@v6
       with:
         stack-name: UnstoppableMango/thecluster-clusterapi/${{ inputs.stack }}
         command: up
