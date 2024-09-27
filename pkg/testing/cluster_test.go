@@ -3,6 +3,7 @@ package testing_test
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"sigs.k8s.io/kind/pkg/cluster"
 
 	"github.com/unstoppablemango/the-cluster/pkg/testing"
 )
@@ -13,7 +14,17 @@ var _ = Describe("Cluster", func() {
 			c := testing.NewCluster()
 
 			Expect(c).NotTo(BeNil())
-			Expect(c.Provider).NotTo(BeNil())
+			Expect(c.Kind).NotTo(Equal(cluster.Provider{}))
+		})
+	})
+
+	Context("DefaultOptions", func() {
+		It("should create a random name", func() {
+			opts := testing.DefaultOptions()
+
+			Expect(opts.Name).To(ContainSubstring(testing.DefaultName))
+			longerName := len(opts.Name) > len(testing.DefaultName)
+			Expect(longerName).To(BeTrueBecause("the generated name has a random suffix at the end"))
 		})
 	})
 
