@@ -123,6 +123,14 @@ buf.lock: buf.yaml
 $(GO_SRC:%.go=%_test.go): %_test.go: | bin/ginkgo
 	cd $(dir $@) && ${WORKING_DIR}/$(GINKGO) generate $(notdir $*)
 
+.PHONY: .kube/config
+.kube/config: | bin/thecluster
+ifeq (,$(wildcard .kube/config))
+	bin/thecluster test-cluster start $@
+else
+	bin/thecluster test-cluster stop $@ && rm $@
+endif
+
 .make/clean_ginkgo_reports:
 	rm -f $(GINKGO_REPORTS)
 
@@ -144,6 +152,9 @@ $(TEST_SENTINELS) &: $(filter $(addsuffix %,${TEST_PACKAGES}),${GO_SRC}) | bin/g
 .make/clean_tests:
 	rm -f ${TEST_SENTINELS}
 
+.make/go_e2e_tests:
+	$(GINKGO) run --silence-skips ${TEST_FLAGS} -r ./... --label-filter E2E
+
 comma:= ,
 CGEN_PATHS := $(subst $(eval ) ,$(comma),${GO_PACKAGES})
 
@@ -156,9 +167,9 @@ CGEN_PATHS := $(subst $(eval ) ,$(comma),${GO_PACKAGES})
 
 MOP := $(MAKE) -C operator --no-print-directory
 .make/operator_e2e: $(filter operator/%,${SRC}) | bin/thecluster
-	bin/thecluster test-cluster start
+	bin/thecluster test-cluster start .kube/config
 	-$(MOP) test
-	bin/thecluster test-cluster stop
+	bin/thecluster test-cluster stop .kube/config
 	@touch $@
 .make/operator_manifests: $(filter operator/%,${SRC})
 	$(MOP) manifests
