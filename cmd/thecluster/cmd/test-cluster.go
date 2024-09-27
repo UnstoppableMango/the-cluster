@@ -28,7 +28,7 @@ var startTestClusterCmd = &cobra.Command{
 			testing.WithKubeconfigPath(kubeconfig),
 		)
 
-		if err := c.CreateTestCluster(); err != nil {
+		if err := c.Start(); err != nil {
 			log.Error("failed creating test cluster", "err", err)
 			os.Exit(1)
 		}
@@ -50,7 +50,7 @@ var stopTestClusterCmd = &cobra.Command{
 			testing.WithKubeconfigPath(kubeconfig),
 		)
 
-		if err := c.DeleteTestCluster(); err != nil {
+		if err := c.Stop(); err != nil {
 			log.Error("failed deleting test cluster", "err", err)
 			os.Exit(1)
 		}

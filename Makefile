@@ -139,7 +139,7 @@ endif
 	@touch $@
 
 ifeq ($(CI),)
-TEST_FLAGS := --json-report ${TEST_REPORT} --keep-separate-reports --label-filter !E2E
+TEST_FLAGS := --json-report ${TEST_REPORT} --keep-separate-reports
 else
 TEST_FLAGS := --github-output --race --trace --coverprofile=${COV_REPORT}
 endif

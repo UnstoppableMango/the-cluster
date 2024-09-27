@@ -25,13 +25,13 @@ var _ = Describe("Cluster", func() {
 
 	BeforeEach(func() {
 		By("ensuring the environment is clean")
-		Expect(setup().DeleteTestCluster()).To(Succeed())
+		Expect(setup().Stop()).To(Succeed())
 	})
 
 	It("should set up and tear down", Label("E2E"), func() {
 		c := setup()
 
-		Expect(c.CreateTestCluster()).To(Succeed())
-		Expect(c.DeleteTestCluster()).To(Succeed())
+		Expect(c.Start()).To(Succeed())
+		Expect(c.Stop()).To(Succeed())
 	})
 })

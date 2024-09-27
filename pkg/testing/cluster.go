@@ -50,7 +50,7 @@ func NewCluster(options ...Option) *Cluster {
 	}
 }
 
-func (c *Cluster) CreateTestCluster() error {
+func (c *Cluster) Start() error {
 	root, err := util.GitRoot()
 	if err != nil {
 		return err
@@ -60,14 +60,13 @@ func (c *Cluster) CreateTestCluster() error {
 		c.KubeconfigPath = DefaultKubeconfigPath
 	}
 
-	path := filepath.Join(root, c.KubeconfigPath)
-
+	abs := filepath.Join(root, c.KubeconfigPath)
 	return c.Create(DefaultName,
-		cluster.CreateWithKubeconfigPath(path),
+		cluster.CreateWithKubeconfigPath(abs),
 	)
 }
 
-func (c *Cluster) DeleteTestCluster() error {
+func (c *Cluster) Stop() error {
 	return c.Delete(DefaultName, c.KubeconfigPath)
 }
 

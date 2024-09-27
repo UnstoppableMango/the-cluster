@@ -8,12 +8,11 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/unstoppablemango/the-cluster/test/utils"
+	ttest "github.com/unstoppablemango/the-cluster/pkg/testing"
 )
 
 var (
-	cluster    = utils.NewTestCluster()
-	kubeconfig []byte
+	cluster ttest.Cluster
 )
 
 func TestKubebuilder(t *testing.T) {
@@ -22,23 +21,19 @@ func TestKubebuilder(t *testing.T) {
 }
 
 var _ = BeforeSuite(func(ctx context.Context) {
-	var (
-		cancel context.CancelFunc
-		err    error
-	)
-
+	var cancel context.CancelFunc
 	ctx, cancel = context.WithDeadline(ctx, time.Now().Add(3*time.Minute))
 	defer cancel()
 
-	By("running k3s in docker")
-	Expect(cluster.Start(ctx)).To(Succeed())
+	cluster = *ttest.NewCluster(
+		ttest.WriteTo(GinkgoWriter),
+	)
 
-	By("retrieving the kubeconfig from k3s")
-	kubeconfig, err = cluster.GetKubeConfig(ctx)
-	Expect(err).NotTo(HaveOccurred())
+	By("starting the test cluster")
+	Expect(cluster.Start()).To(Succeed())
 })
 
 var _ = AfterSuite(func(ctx context.Context) {
 	By("stopping the cluster")
-	Expect(cluster.Stop(ctx)).To(Succeed())
+	Expect(cluster.Stop()).To(Succeed())
 })
