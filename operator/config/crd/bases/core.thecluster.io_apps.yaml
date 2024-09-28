@@ -102,7 +102,10 @@ spec:
               scaffold:
                 description: |-
                   The scaffolding to perform when initializing the App.
-                  This cannot be modified after the App has been Initialized
+                  This cannot be modified after the App has been Initialized.
+                  Valid values are:
+                  - "typescript" (default): Perform scaffolding for typescript such as `pulumi new typescript`
+                  - "helm": Create an empty helm chart in the App Path
                 items:
                   description: AppScaffold describes the supported App scaffolding
                   enum:

@@ -90,7 +90,10 @@ type AppSpec struct {
 	Credentials RepositoryCredentials `json:"credentials"`
 
 	// The scaffolding to perform when initializing the App.
-	// This cannot be modified after the App has been Initialized
+	// This cannot be modified after the App has been Initialized.
+	// Valid values are:
+	// - "typescript" (default): Perform scaffolding for typescript such as `pulumi new typescript`
+	// - "helm": Create an empty helm chart in the App Path
 	Scaffold []AppScaffold `json:"scaffold"`
 
 	// Pulumi describes explicit overrides to use when running `pulumi` commands.
