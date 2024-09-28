@@ -78,6 +78,14 @@ func (r *AppReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 		return ctrl.Result{}, err
 	}
 
+	app.Status.Conditions = []metav1.Condition{{
+		Type:   v1alpha1.AppInitialized,
+		Status: metav1.ConditionFalse,
+		Reason: "Fresh",
+
+		LastTransitionTime: metav1.Now(),
+	}}
+
 	// if err := r.refreshJobs(ctx, req, &app); err != nil {
 	// 	log.Error(err, "unable to refresh jobs")
 	// 	return ctrl.Result{}, err

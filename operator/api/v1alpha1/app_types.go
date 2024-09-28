@@ -35,9 +35,11 @@ var (
 
 	// Scaffold files related to typecsript projects
 	ScaffoldTypescript AppScaffold = "typescript"
-
 	// Scaffold files related to helm charts
 	ScaffoldHelm AppScaffold = "helm"
+
+	// Describes whether the App's Pulumi stack has been created
+	AppInitialized string = "core.thecluster.io/Initialized"
 )
 
 type RepositoryCredentials struct {

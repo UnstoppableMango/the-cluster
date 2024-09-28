@@ -82,6 +82,11 @@ var _ = Describe("App Controller", func() {
 			err = k8sClient.Get(ctx, typeNamespacedName, app)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(app.Status.Managed).To(BeTrueBecause("by default the operator manages the App"))
+			Expect(app.Status.Conditions).To(HaveLen(1))
+			initialized := app.Status.Conditions[0]
+			Expect(initialized.Type).To(Equal(corev1alpha1.AppInitialized))
+			Expect(initialized.Status).To(Equal(metav1.ConditionFalse))
+			Expect(initialized.Reason).To(Equal("Fresh"))
 		})
 
 		Context("And the App is explicitly managed", func() {
