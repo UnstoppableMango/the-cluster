@@ -21,13 +21,14 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+
 	"k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
 	corev1alpha1 "github.com/unstoppablemango/the-cluster/operator/api/v1alpha1"
+	"github.com/unstoppablemango/the-cluster/operator/internal/util"
 )
 
 var _ = Describe("App Controller", func() {
@@ -58,7 +59,6 @@ var _ = Describe("App Controller", func() {
 		})
 
 		AfterEach(func() {
-			// TODO(user): Cleanup logic after each test, like removing the resource instance.
 			resource := &corev1alpha1.App{}
 			err := k8sClient.Get(ctx, typeNamespacedName, resource)
 			Expect(err).NotTo(HaveOccurred())
@@ -82,6 +82,64 @@ var _ = Describe("App Controller", func() {
 			err = k8sClient.Get(ctx, typeNamespacedName, app)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(app.Status.Managed).To(BeTrueBecause("by default the operator manages the App"))
+		})
+
+		Context("And the App is explicitly managed", func() {
+			BeforeEach(func() {
+				resource := &corev1alpha1.App{}
+				err := k8sClient.Get(ctx, typeNamespacedName, resource)
+				Expect(err).NotTo(HaveOccurred())
+
+				resource.Spec.Manage = util.BoolPtr(true)
+				err = k8sClient.Update(ctx, resource)
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("should update the App Status", func() {
+				controllerReconciler := &AppReconciler{
+					Client: k8sClient,
+					Scheme: k8sClient.Scheme(),
+				}
+
+				By("Reconciling the created resource")
+				_, err := controllerReconciler.Reconcile(ctx, reconcile.Request{
+					NamespacedName: typeNamespacedName,
+				})
+
+				Expect(err).NotTo(HaveOccurred())
+				err = k8sClient.Get(ctx, typeNamespacedName, app)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(app.Status.Managed).To(BeTrueBecause("management is enabled"))
+			})
+		})
+
+		Context("And the App is not managed", func() {
+			BeforeEach(func() {
+				resource := &corev1alpha1.App{}
+				err := k8sClient.Get(ctx, typeNamespacedName, resource)
+				Expect(err).NotTo(HaveOccurred())
+
+				resource.Spec.Manage = util.BoolPtr(false)
+				err = k8sClient.Update(ctx, resource)
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("should update the App Status", func() {
+				controllerReconciler := &AppReconciler{
+					Client: k8sClient,
+					Scheme: k8sClient.Scheme(),
+				}
+
+				By("Reconciling the created resource")
+				_, err := controllerReconciler.Reconcile(ctx, reconcile.Request{
+					NamespacedName: typeNamespacedName,
+				})
+
+				Expect(err).NotTo(HaveOccurred())
+				err = k8sClient.Get(ctx, typeNamespacedName, app)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(app.Status.Managed).To(BeFalseBecause("management is disabled"))
+			})
 		})
 	})
 })

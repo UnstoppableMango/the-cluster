@@ -73,7 +73,7 @@ type Pulumi struct {
 type AppSpec struct {
 	// Whether the operator should perform any operations related to the management of this App.
 	// If disabled, the operator will immediately short-circuit
-	Manage bool `json:"manage,omitempty"`
+	Manage *bool `json:"manage,omitempty"`
 
 	// The URL of the git Repository to operate on
 	Repository string `json:"repository,omitempty"`

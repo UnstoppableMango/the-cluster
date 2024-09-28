@@ -28,6 +28,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
+	"github.com/unstoppablemango/the-cluster/operator/api/v1alpha1"
 	corev1alpha1 "github.com/unstoppablemango/the-cluster/operator/api/v1alpha1"
 )
 
@@ -59,10 +60,32 @@ func (r *AppReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
+	if app.Spec.Manage != nil {
+		app.Status.Managed = *app.Spec.Manage
+	} else {
+		app.Status.Managed = true
+	}
+
+	if app.Status.Scaffolds == nil {
+		app.Status.Scaffolds = []v1alpha1.AppScaffold{}
+	}
+
+	if !app.Status.Managed {
+		err := r.Status().Update(ctx, &app)
+		if err != nil {
+			log.Error(err, "unable to update app status")
+		}
+		return ctrl.Result{}, err
+	}
+
 	// if err := r.refreshJobs(ctx, req, &app); err != nil {
 	// 	log.Error(err, "unable to refresh jobs")
 	// 	return ctrl.Result{}, err
 	// }
+
+	if err := r.Status().Update(ctx, &app); err != nil {
+		return ctrl.Result{}, err
+	}
 
 	return ctrl.Result{}, nil
 }
