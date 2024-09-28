@@ -118,6 +118,14 @@ buf.lock: buf.yaml
 .envrc: hack/example.envrc
 	cp $< $@
 
+go.work: go.mod operator/go.mod
+	go work init
+	go work use ./
+	go work use ./operator/
+
+go.work.sum: go.work go.mod operator/go.mod
+	go work sync
+
 %_suite_test.go: | bin/ginkgo
 	cd $(dir $*) && ${WORKING_DIR}/$(GINKGO) bootstrap
 
