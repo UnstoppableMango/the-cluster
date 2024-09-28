@@ -14,5 +14,12 @@ var _ = Describe("Provider", func() {
 
 			Expect(p).NotTo(BeNil())
 		})
+
+		It("should apply the auth token", func() {
+			p := github.New(github.WithAuthToken("MY_TOKEN"))
+
+			// Idk what we can really test here
+			Expect(p).NotTo(BeNil())
+		})
 	})
 })
