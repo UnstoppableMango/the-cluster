@@ -101,10 +101,8 @@ type AppSpec struct {
 
 // AppStatus defines the observed state of App
 type AppStatus struct {
-	// Whether the Pulumi project has been Initialized
-	Initialized bool `json:"initialized,omitempty"`
-
 	// The scaffolding performed when initializing the App
+	// +optional
 	Scaffolds []AppScaffold `json:"scaffold"`
 
 	// Whether the operator is currently managing the App
@@ -118,6 +116,13 @@ type AppStatus struct {
 	// A successful Job will clear this value.
 	// +optional
 	LastErrorMessage *string `json:"lastErrorMessage,omitempty"`
+
+	// +listType=map
+	// +listMapKey=type
+	// +patchStrategy=merge
+	// +patchMergeKey=type
+	// +optional
+	Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
 }
 
 // +kubebuilder:object:root=true
