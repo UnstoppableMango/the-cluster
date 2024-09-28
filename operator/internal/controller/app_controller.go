@@ -23,7 +23,6 @@ import (
 	batchv1 "k8s.io/api/batch/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	ref "k8s.io/client-go/tools/reference"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
@@ -134,39 +133,39 @@ func (r *AppReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 	return ctrl.Result{}, nil
 }
 
-func (r *AppReconciler) refreshJobs(ctx context.Context, req ctrl.Request, app *corev1alpha1.App) error {
-	log := log.FromContext(ctx)
+// func (r *AppReconciler) refreshJobs(ctx context.Context, req ctrl.Request, app *corev1alpha1.App) error {
+// 	log := log.FromContext(ctx)
 
-	var jobs batchv1.JobList
-	err := r.List(ctx, &jobs,
-		client.InNamespace(req.Namespace),
-		client.MatchingFields{jobOwnerKey: req.Name},
-	)
-	if err != nil {
-		log.Error(err, "unable to list child Jobs")
-		return err
-	}
+// 	var jobs batchv1.JobList
+// 	err := r.List(ctx, &jobs,
+// 		client.InNamespace(req.Namespace),
+// 		client.MatchingFields{jobOwnerKey: req.Name},
+// 	)
+// 	if err != nil {
+// 		log.Error(err, "unable to list child Jobs")
+// 		return err
+// 	}
 
-	status := app.Status.DeepCopy()
-	for _, job := range jobs.Items {
-		isFinished := slices.ContainsFunc(job.Status.Conditions, func(c batchv1.JobCondition) bool {
-			return c.Type == batchv1.JobComplete || c.Type == batchv1.JobFailed
-		})
-		if !isFinished {
-			jobRef, err := ref.GetReference(r.Scheme, &job)
-			if err != nil {
-				log.Error(err, "unable to make reference to job", "job", job)
-				continue
-			}
+// 	status := app.Status.DeepCopy()
+// 	for _, job := range jobs.Items {
+// 		isFinished := slices.ContainsFunc(job.Status.Conditions, func(c batchv1.JobCondition) bool {
+// 			return c.Type == batchv1.JobComplete || c.Type == batchv1.JobFailed
+// 		})
+// 		if !isFinished {
+// 			jobRef, err := ref.GetReference(r.Scheme, &job)
+// 			if err != nil {
+// 				log.Error(err, "unable to make reference to job", "job", job)
+// 				continue
+// 			}
 
-			status.Jobs = append(status.Jobs, *jobRef)
-		}
-	}
+// 			status.Jobs = append(status.Jobs, *jobRef)
+// 		}
+// 	}
 
-	app.Status = *status
+// 	app.Status = *status
 
-	return nil
-}
+// 	return nil
+// }
 
 var (
 	jobOwnerKey = ".metadata.controller"
