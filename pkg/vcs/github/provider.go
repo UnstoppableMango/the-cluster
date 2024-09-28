@@ -1,8 +1,13 @@
 package github
 
-import "github.com/unstoppablemango/the-cluster/pkg/vcs"
+import (
+	"github.com/google/go-github/v65/github"
+	"github.com/unstoppablemango/the-cluster/pkg/vcs"
+)
 
-type GitHubProvider struct{}
+type GitHubProvider struct {
+	*github.Client
+}
 
 var _ vcs.SourceControlProvider = &GitHubProvider{}
 
