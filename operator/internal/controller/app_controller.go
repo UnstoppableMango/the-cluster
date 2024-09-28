@@ -24,7 +24,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	theclusterv1alpha1 "github.com/unstoppablemango/the-cluster/operator/api/v1alpha1"
+	corev1alpha1 "github.com/unstoppablemango/the-cluster/operator/api/v1alpha1"
 )
 
 // AppReconciler reconciles a App object
@@ -33,9 +33,9 @@ type AppReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-// +kubebuilder:rbac:groups=thecluster.thecluster.io,resources=apps,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=thecluster.thecluster.io,resources=apps/status,verbs=get;update;patch
-// +kubebuilder:rbac:groups=thecluster.thecluster.io,resources=apps/finalizers,verbs=update
+// +kubebuilder:rbac:groups=core.thecluster.io,resources=apps,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=core.thecluster.io,resources=apps/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=core.thecluster.io,resources=apps/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -57,6 +57,6 @@ func (r *AppReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 // SetupWithManager sets up the controller with the Manager.
 func (r *AppReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&theclusterv1alpha1.App{}).
+		For(&corev1alpha1.App{}).
 		Complete(r)
 }

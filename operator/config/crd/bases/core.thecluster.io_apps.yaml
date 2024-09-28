@@ -1,0 +1,196 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.16.1
+  name: apps.core.thecluster.io
+spec:
+  group: core.thecluster.io
+  names:
+    kind: App
+    listKind: AppList
+    plural: apps
+    singular: app
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: App is the Schema for the apps API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: AppSpec defines the desired state of App
+            properties:
+              credentials:
+                description: The Credentials to authenticate with the Repository
+                properties:
+                  secret:
+                    description: A reference to the Secret containing the repository
+                      credentials
+                    properties:
+                      name:
+                        description: name is unique within a namespace to reference
+                          a secret resource.
+                        type: string
+                      namespace:
+                        description: namespace defines the space within which the
+                          secret name must be unique.
+                        type: string
+                    type: object
+                    x-kubernetes-map-type: atomic
+                  type:
+                    description: |-
+                      The type of repository credentials contained in the resource referenced by Ref
+                      Valid values are:
+                      - "github" (default):
+                    enum:
+                    - github
+                    type: string
+                required:
+                - secret
+                type: object
+              manage:
+                description: |-
+                  Whether the operator should perform any operations related to the management of this App.
+                  If disabled, the operator will immediately short-circuit
+                type: boolean
+              name:
+                description: The Name of the App
+                type: string
+              path:
+                description: |-
+                  The relative Path within the Repository to locate the App.
+                  Defaults to the result of `strings.ToLower(Name)` appended to `app/`
+                type: string
+              pulumi:
+                description: |-
+                  Pulumi describes explicit overrides to use when running `pulumi` commands.
+                  The defaults for any command are determined by the AppScaffolds specified in Scaffold
+                properties:
+                  new:
+                    description: Options to provide when calling `pulumi` New
+                    properties:
+                      template:
+                        description: The Pulumi project Template
+                        type: string
+                    type: object
+                  verions:
+                    description: The Version of `pulumi` to use when performing operations
+                    type: string
+                type: object
+              repository:
+                description: The URL of the git Repository to operate on
+                type: string
+              scaffold:
+                description: |-
+                  The scaffolding to perform when initializing the App.
+                  This cannot be modified after the App has been Initialized
+                items:
+                  description: AppScaffold describes the supported App scaffolding
+                  enum:
+                  - typescript
+                  - helm
+                  type: string
+                type: array
+            required:
+            - credentials
+            - name
+            - scaffold
+            type: object
+          status:
+            description: AppStatus defines the observed state of App
+            properties:
+              initialized:
+                description: Whether the Pulumi project has been Initialized
+                type: boolean
+              jobs:
+                description: Any Jobs managed by the operator
+                items:
+                  description: ObjectReference contains enough information to let
+                    you inspect or modify the referred object.
+                  properties:
+                    apiVersion:
+                      description: API version of the referent.
+                      type: string
+                    fieldPath:
+                      description: |-
+                        If referring to a piece of an object instead of an entire object, this string
+                        should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                        For example, if the object reference is to a container within a pod, this would take on a value like:
+                        "spec.containers{name}" (where "name" refers to the name of the container that triggered
+                        the event) or if no container name is specified "spec.containers[2]" (container with
+                        index 2 in this pod). This syntax is chosen only to have some well-defined way of
+                        referencing a part of an object.
+                      type: string
+                    kind:
+                      description: |-
+                        Kind of the referent.
+                        More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+                      type: string
+                    name:
+                      description: |-
+                        Name of the referent.
+                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+                      type: string
+                    namespace:
+                      description: |-
+                        Namespace of the referent.
+                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+                      type: string
+                    resourceVersion:
+                      description: |-
+                        Specific resourceVersion to which this reference is made, if any.
+                        More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+                      type: string
+                    uid:
+                      description: |-
+                        UID of the referent.
+                        More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+                      type: string
+                  type: object
+                  x-kubernetes-map-type: atomic
+                type: array
+              lastErrorMessage:
+                description: |-
+                  The LastErrorMessage reported by a Job.
+                  A successful Job will clear this value.
+                type: string
+              managed:
+                description: Whether the operator is currently managing the App
+                type: boolean
+              scaffold:
+                description: The scaffolding performed when initializing the App
+                items:
+                  description: AppScaffold describes the supported App scaffolding
+                  enum:
+                  - typescript
+                  - helm
+                  type: string
+                type: array
+            required:
+            - managed
+            - scaffold
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

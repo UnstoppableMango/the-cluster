@@ -27,7 +27,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	theclusterv1alpha1 "github.com/unstoppablemango/the-cluster/operator/api/v1alpha1"
+	corev1alpha1 "github.com/unstoppablemango/the-cluster/operator/api/v1alpha1"
 )
 
 var _ = Describe("App Controller", func() {
@@ -40,13 +40,13 @@ var _ = Describe("App Controller", func() {
 			Name:      resourceName,
 			Namespace: "default", // TODO(user):Modify as needed
 		}
-		app := &theclusterv1alpha1.App{}
+		app := &corev1alpha1.App{}
 
 		BeforeEach(func() {
 			By("creating the custom resource for the Kind App")
 			err := k8sClient.Get(ctx, typeNamespacedName, app)
 			if err != nil && errors.IsNotFound(err) {
-				resource := &theclusterv1alpha1.App{
+				resource := &corev1alpha1.App{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      resourceName,
 						Namespace: "default",
@@ -59,7 +59,7 @@ var _ = Describe("App Controller", func() {
 
 		AfterEach(func() {
 			// TODO(user): Cleanup logic after each test, like removing the resource instance.
-			resource := &theclusterv1alpha1.App{}
+			resource := &corev1alpha1.App{}
 			err := k8sClient.Get(ctx, typeNamespacedName, resource)
 			Expect(err).NotTo(HaveOccurred())
 
