@@ -75,14 +75,11 @@ type AppSpec struct {
 	// If disabled, the operator will immediately short-circuit
 	Manage bool `json:"manage,omitempty"`
 
-	// The Name of the App
-	Name string `json:"name"`
-
 	// The URL of the git Repository to operate on
 	Repository string `json:"repository,omitempty"`
 
 	// The relative Path within the Repository to locate the App.
-	// Defaults to the result of `strings.ToLower(Name)` appended to `app/`
+	// Defaults to the result of `strings.ToLower(meta.name)` appended to `app/`
 	// +optional
 	Path string `json:"path,omitempty"`
 
@@ -94,7 +91,7 @@ type AppSpec struct {
 	// Valid values are:
 	// - "typescript" (default): Perform scaffolding for typescript such as `pulumi new typescript`
 	// - "helm": Create an empty helm chart in the App Path
-	Scaffold []AppScaffold `json:"scaffold"`
+	Scaffold []AppScaffold `json:"scaffold,omitempty"`
 
 	// Pulumi describes explicit overrides to use when running `pulumi` commands.
 	// The defaults for any command are determined by the AppScaffolds specified in Scaffold

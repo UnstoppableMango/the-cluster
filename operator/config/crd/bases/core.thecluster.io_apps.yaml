@@ -72,13 +72,10 @@ spec:
                   Whether the operator should perform any operations related to the management of this App.
                   If disabled, the operator will immediately short-circuit
                 type: boolean
-              name:
-                description: The Name of the App
-                type: string
               path:
                 description: |-
                   The relative Path within the Repository to locate the App.
-                  Defaults to the result of `strings.ToLower(Name)` appended to `app/`
+                  Defaults to the result of `strings.ToLower(meta.name)` appended to `app/`
                 type: string
               pulumi:
                 description: |-
@@ -115,8 +112,6 @@ spec:
                 type: array
             required:
             - credentials
-            - name
-            - scaffold
             type: object
           status:
             description: AppStatus defines the observed state of App

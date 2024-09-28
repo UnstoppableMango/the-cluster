@@ -51,7 +51,7 @@ var _ = Describe("App Controller", func() {
 						Name:      resourceName,
 						Namespace: "default",
 					},
-					// TODO(user): Specify other spec details if needed.
+					Spec: corev1alpha1.AppSpec{},
 				}
 				Expect(k8sClient.Create(ctx, resource)).To(Succeed())
 			}
@@ -66,6 +66,7 @@ var _ = Describe("App Controller", func() {
 			By("Cleanup the specific resource instance App")
 			Expect(k8sClient.Delete(ctx, resource)).To(Succeed())
 		})
+
 		It("should successfully reconcile the resource", func() {
 			By("Reconciling the created resource")
 			controllerReconciler := &AppReconciler{
@@ -76,9 +77,11 @@ var _ = Describe("App Controller", func() {
 			_, err := controllerReconciler.Reconcile(ctx, reconcile.Request{
 				NamespacedName: typeNamespacedName,
 			})
+
 			Expect(err).NotTo(HaveOccurred())
-			// TODO(user): Add more specific assertions depending on your controller's reconciliation logic.
-			// Example: If you expect a certain status condition after reconciliation, verify it here.
+			err = k8sClient.Get(ctx, typeNamespacedName, app)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(app.Status.Managed).To(BeTrueBecause("by default the operator manages the App"))
 		})
 	})
 })

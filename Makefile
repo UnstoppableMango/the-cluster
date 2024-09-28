@@ -59,7 +59,7 @@ testf: .make/clean_tests $(TEST_SENTINELS)
 
 e2e: .make/operator_e2e
 
-gen: $(GO_GEN_SRC) .make/controller_gen_manifests .make/controller_gen_object .make/operator_manifests
+gen: $(GO_GEN_SRC) manifests .make/controller_gen_object
 manifests: .make/controller_gen_manifests .make/operator_manifests
 
 format: .make/go_fmt
@@ -167,10 +167,8 @@ CGEN_PATHS := $(subst $(eval ) ,$(comma),${GO_PACKAGES})
 	@touch $@
 
 MOP := $(MAKE) -C operator --no-print-directory
-.make/operator_e2e: $(filter operator/%,${SRC}) | bin/thecluster
-	bin/thecluster test-cluster start .kube/config
-	-$(MOP) test
-	bin/thecluster test-cluster stop .kube/config
+.make/operator_e2e: $(filter operator/%,${SRC})
+	$(MOP) test
 	@touch $@
 .make/operator_manifests: $(filter operator/%,${SRC})
 	$(MOP) manifests
