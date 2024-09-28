@@ -8,7 +8,7 @@ metadata:
   name: app-editor-role
 rules:
 - apiGroups:
-  - thecluster.thecluster.io
+  - core.thecluster.io
   resources:
   - apps
   verbs:
@@ -20,7 +20,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - thecluster.thecluster.io
+  - core.thecluster.io
   resources:
   - apps/status
   verbs:

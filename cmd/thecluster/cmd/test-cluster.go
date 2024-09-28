@@ -35,6 +35,29 @@ var startTestClusterCmd = &cobra.Command{
 	},
 }
 
+var ensureTestClusterCmd = &cobra.Command{
+	Use:   "ensure",
+	Short: "Ensure the test cluster is running",
+	Args:  cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		kubeconfig := args[0]
+		if _, err := os.Stat(kubeconfig); err == nil {
+			log.Info("the test cluster is running")
+			return
+		}
+
+		c := testing.NewCluster(
+			testing.WriteTo(os.Stdout),
+			testing.WithKubeconfigPath(kubeconfig),
+		)
+
+		if err := c.Start(); err != nil {
+			log.Error("failed creating test cluster", "err", err)
+			os.Exit(1)
+		}
+	},
+}
+
 var stopTestClusterCmd = &cobra.Command{
 	Use:   "stop",
 	Short: "Stop the test cluster",
@@ -78,6 +101,7 @@ var kubeconfigTestClusterCmd = &cobra.Command{
 
 func init() {
 	testClusterCmd.AddCommand(startTestClusterCmd)
+	testClusterCmd.AddCommand(ensureTestClusterCmd)
 	testClusterCmd.AddCommand(stopTestClusterCmd)
 	testClusterCmd.AddCommand(kubeconfigTestClusterCmd)
 	rootCmd.AddCommand(testClusterCmd)

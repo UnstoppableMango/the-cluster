@@ -22,9 +22,8 @@ jobs:
       - name: Test
         run: make test
 
-      # Let's just not opt into this headache right now
-      # - name: E2e Tests
-      #   run: make e2e
+      - name: E2e Tests
+        run: make e2e
 
       - name: Build thecluster
         run: make bin/thecluster

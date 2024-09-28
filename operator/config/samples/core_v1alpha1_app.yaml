@@ -1,4 +1,4 @@
-apiVersion: thecluster.thecluster.io/v1alpha1
+apiVersion: core.thecluster.io/v1alpha1
 kind: App
 metadata:
   labels:

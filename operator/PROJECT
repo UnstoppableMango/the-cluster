@@ -13,7 +13,7 @@ resources:
     namespaced: true
   controller: true
   domain: thecluster.io
-  group: thecluster
+  group: core
   kind: App
   path: github.com/unstoppablemango/the-cluster/operator/api/v1alpha1
   version: v1alpha1

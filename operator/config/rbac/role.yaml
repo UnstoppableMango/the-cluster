@@ -5,7 +5,7 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
-  - thecluster.thecluster.io
+  - core.thecluster.io
   resources:
   - apps
   verbs:
@@ -17,13 +17,13 @@ rules:
   - update
   - watch
 - apiGroups:
-  - thecluster.thecluster.io
+  - core.thecluster.io
   resources:
   - apps/finalizers
   verbs:
   - update
 - apiGroups:
-  - thecluster.thecluster.io
+  - core.thecluster.io
   resources:
   - apps/status
   verbs:

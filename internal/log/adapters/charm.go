@@ -1,13 +1,16 @@
 package adapters
 
 import (
+	"log/slog"
 	"strings"
 
 	charm "github.com/charmbracelet/log"
 	kind "sigs.k8s.io/kind/pkg/log"
 )
 
-type charmToKind struct{ log *charm.Logger }
+type charmToKind struct {
+	log *charm.Logger
+}
 
 // Enabled implements log.InfoLogger.
 func (c *charmToKind) Enabled() bool { return true }
@@ -33,7 +36,17 @@ func (c *charmToKind) Errorf(format string, args ...interface{}) {
 }
 
 // V implements log.Logger.
-func (c *charmToKind) V(level kind.Level) kind.InfoLogger { return c }
+func (c *charmToKind) V(level kind.Level) kind.InfoLogger {
+	if level > 0 && c.log.Enabled(nil, slog.Level(charm.DebugLevel)) {
+		if level == 1 {
+			return c
+		} else {
+			return &debugLogger{c.log}
+		}
+	} else {
+		return kind.NoopInfoLogger{}
+	}
+}
 
 // Warn implements log.Logger.
 func (c *charmToKind) Warn(message string) {
@@ -47,6 +60,23 @@ func (c *charmToKind) Warnf(format string, args ...interface{}) {
 
 var _ kind.Logger = &charmToKind{}
 var _ kind.InfoLogger = &charmToKind{}
+
+type debugLogger charmToKind
+
+// Enabled implements log.InfoLogger.
+func (d *debugLogger) Enabled() bool { return true }
+
+// Info implements log.InfoLogger.
+func (d *debugLogger) Info(message string) {
+	d.log.Debug(strings.TrimSpace(message))
+}
+
+// Infof implements log.InfoLogger.
+func (d *debugLogger) Infof(format string, args ...interface{}) {
+	d.log.Debugf(strings.TrimSpace(format), args...)
+}
+
+var _ kind.InfoLogger = &debugLogger{}
 
 func CharmToKind(log *charm.Logger) kind.Logger {
 	return &charmToKind{log}
