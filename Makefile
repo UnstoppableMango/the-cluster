@@ -60,12 +60,13 @@ testf: .make/clean_tests $(TEST_SENTINELS)
 e2e: .make/operator_e2e
 
 gen: $(GO_GEN_SRC) .make/controller_gen_manifests .make/controller_gen_object .make/operator_manifests
+manifests: .make/controller_gen_manifests .make/operator_manifests
 
 format: .make/go_fmt
 
 lint: .make/operator_lint
 
-tidy: go.mod go.sum ${GO_SRC}
+tidy: go.mod go.sum ${GO_SRC} .make/operator_go_mod_tidy
 	go mod tidy
 
 ensure: $(addprefix bin/,kubebuilder kubectl kustomize controller-gen setup-envtest ginkgo pulumi)
@@ -192,3 +193,6 @@ MOP := $(MAKE) -C operator --no-print-directory
 	$(MOP) run
 .make/operator_docker-build:
 	$(MOP) docker-build
+.make/operator_go_mod_tidy: $(addprefix operator/,go.mod go.sum)
+	go -C operator mod tidy
+	@touch $@
