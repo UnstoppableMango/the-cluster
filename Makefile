@@ -74,6 +74,12 @@ ensure: $(addprefix bin/,kubebuilder kubectl kustomize controller-gen setup-envt
 clean:
 	rm -rf bin
 
+.PHONY: docker
+docker: .make/operator_docker-build
+
+install: .make/operator_install
+uninstall: .make/operator_uninstall
+
 bin/thecluster: go.mod go.sum $(GO_SRC)
 	go build -o $@ ./cmd/thecluster/main.go
 

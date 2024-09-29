@@ -17,7 +17,6 @@
     "dbs/**",
     "infra/**",
     "lib/**",
-    "operator/**",
     "tools/**",
     "**/pulumi-crds/**",
     "**/crds/**"
