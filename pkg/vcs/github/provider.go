@@ -39,7 +39,7 @@ func WithAuthToken(token string) Option {
 	}
 }
 
-func WithGitHubApp(appID int64, privateKey []byte) Option {
+func WithAppsTransport(appID int64, privateKey []byte) Option {
 	transport, err := ghinstallation.NewAppsTransport(http.DefaultTransport, appID, privateKey)
 	if err != nil {
 		// TODO: Handle this better
