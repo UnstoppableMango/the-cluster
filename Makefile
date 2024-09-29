@@ -74,6 +74,12 @@ ensure: $(addprefix bin/,kubebuilder kubectl kustomize controller-gen setup-envt
 clean:
 	rm -rf bin
 
+.PHONY: docker
+docker: .make/operator_docker-build
+
+install: .make/operator_install
+uninstall: .make/operator_uninstall
+
 bin/thecluster: go.mod go.sum $(GO_SRC)
 	go build -o $@ ./cmd/thecluster/main.go
 
@@ -117,6 +123,14 @@ buf.lock: buf.yaml
 
 .envrc: hack/example.envrc
 	cp $< $@
+
+go.work: go.mod operator/go.mod
+	go work init
+	go work use ./
+	go work use ./operator/
+
+go.work.sum: go.work go.mod operator/go.mod
+	go work sync
 
 %_suite_test.go: | bin/ginkgo
 	cd $(dir $*) && ${WORKING_DIR}/$(GINKGO) bootstrap

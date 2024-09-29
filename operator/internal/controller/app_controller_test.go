@@ -82,6 +82,7 @@ var _ = Describe("App Controller", func() {
 			err = k8sClient.Get(ctx, typeNamespacedName, app)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(app.Status.Managed).To(BeTrueBecause("by default the operator manages the App"))
+			Expect(app.Status.Scaffolds).To(ContainElement(corev1alpha1.ScaffoldTypescript))
 			Expect(app.Status.Conditions).To(HaveLen(1))
 			initialized := app.Status.Conditions[0]
 			Expect(initialized.Type).To(Equal(corev1alpha1.AppInitialized))
@@ -100,7 +101,7 @@ var _ = Describe("App Controller", func() {
 				Expect(err).NotTo(HaveOccurred())
 			})
 
-			It("should update the App Status", func() {
+			It("should successfully reconcile the resource", func() {
 				controllerReconciler := &AppReconciler{
 					Client: k8sClient,
 					Scheme: k8sClient.Scheme(),
@@ -115,6 +116,12 @@ var _ = Describe("App Controller", func() {
 				err = k8sClient.Get(ctx, typeNamespacedName, app)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(app.Status.Managed).To(BeTrueBecause("management is enabled"))
+				Expect(app.Status.Scaffolds).To(ContainElement(corev1alpha1.ScaffoldTypescript))
+				Expect(app.Status.Conditions).To(HaveLen(1))
+				initialized := app.Status.Conditions[0]
+				Expect(initialized.Type).To(Equal(corev1alpha1.AppInitialized))
+				Expect(initialized.Status).To(Equal(metav1.ConditionFalse))
+				Expect(initialized.Reason).To(Equal("Fresh"))
 			})
 		})
 
@@ -129,7 +136,7 @@ var _ = Describe("App Controller", func() {
 				Expect(err).NotTo(HaveOccurred())
 			})
 
-			It("should update the App Status", func() {
+			It("should successfully reconcile the resource", func() {
 				controllerReconciler := &AppReconciler{
 					Client: k8sClient,
 					Scheme: k8sClient.Scheme(),
@@ -144,6 +151,121 @@ var _ = Describe("App Controller", func() {
 				err = k8sClient.Get(ctx, typeNamespacedName, app)
 				Expect(err).NotTo(HaveOccurred())
 				Expect(app.Status.Managed).To(BeFalseBecause("management is disabled"))
+				Expect(app.Status.Scaffolds).To(BeEmpty())
+				Expect(app.Status.Conditions).To(HaveLen(1))
+				initialized := app.Status.Conditions[0]
+				Expect(initialized.Type).To(Equal(corev1alpha1.AppInitialized))
+				Expect(initialized.Status).To(Equal(metav1.ConditionFalse))
+				Expect(initialized.Reason).To(Equal("UnManaged"))
+			})
+
+			It("should ignore changes to Scaffolds", func() {
+				resource := &corev1alpha1.App{}
+				err := k8sClient.Get(ctx, typeNamespacedName, resource)
+				Expect(err).NotTo(HaveOccurred())
+
+				resource.Spec.Scaffold = []corev1alpha1.AppScaffold{
+					corev1alpha1.ScaffoldTypescript,
+				}
+				err = k8sClient.Update(ctx, resource)
+				Expect(err).NotTo(HaveOccurred())
+
+				controllerReconciler := &AppReconciler{
+					Client: k8sClient,
+					Scheme: k8sClient.Scheme(),
+				}
+
+				By("Reconciling the created resource")
+				_, err = controllerReconciler.Reconcile(ctx, reconcile.Request{
+					NamespacedName: typeNamespacedName,
+				})
+
+				Expect(err).NotTo(HaveOccurred())
+				err = k8sClient.Get(ctx, typeNamespacedName, app)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(app.Status.Scaffolds).To(BeEmpty())
+				// Sanity check
+				Expect(app.Spec.Scaffold).To(ContainElement(corev1alpha1.ScaffoldTypescript))
+			})
+		})
+
+		Context("And a scaffold is specified", func() {
+			BeforeEach(func() {
+				resource := &corev1alpha1.App{}
+				err := k8sClient.Get(ctx, typeNamespacedName, resource)
+				Expect(err).NotTo(HaveOccurred())
+
+				By("Setting the App Scaffolds to helm")
+				resource.Spec.Scaffold = []corev1alpha1.AppScaffold{
+					corev1alpha1.ScaffoldHelm,
+				}
+				err = k8sClient.Update(ctx, resource)
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("should successfully reconcile the resource", func() {
+				By("Reconciling the created resource")
+				controllerReconciler := &AppReconciler{
+					Client: k8sClient,
+					Scheme: k8sClient.Scheme(),
+				}
+
+				_, err := controllerReconciler.Reconcile(ctx, reconcile.Request{
+					NamespacedName: typeNamespacedName,
+				})
+
+				Expect(err).NotTo(HaveOccurred())
+				err = k8sClient.Get(ctx, typeNamespacedName, app)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(app.Status.Managed).To(BeTrueBecause("by default the operator manages the App"))
+				Expect(app.Status.Scaffolds).To(ContainElement(corev1alpha1.ScaffoldHelm))
+				Expect(app.Status.Conditions).To(HaveLen(1))
+				initialized := app.Status.Conditions[0]
+				Expect(initialized.Type).To(Equal(corev1alpha1.AppInitialized))
+				Expect(initialized.Status).To(Equal(metav1.ConditionFalse))
+				Expect(initialized.Reason).To(Equal("Fresh"))
+			})
+
+			It("should ignore changes to Scaffold", func() {
+				By("Reconciling the created resource")
+				controllerReconciler := &AppReconciler{
+					Client: k8sClient,
+					Scheme: k8sClient.Scheme(),
+				}
+
+				_, err := controllerReconciler.Reconcile(ctx, reconcile.Request{
+					NamespacedName: typeNamespacedName,
+				})
+
+				Expect(err).NotTo(HaveOccurred())
+				err = k8sClient.Get(ctx, typeNamespacedName, app)
+				Expect(err).NotTo(HaveOccurred())
+				// Sanity check
+				Expect(app.Status.Scaffolds).To(ContainElement(corev1alpha1.ScaffoldHelm))
+				Expect(app.Spec.Scaffold).To(ContainElement(corev1alpha1.ScaffoldHelm))
+
+				By("Updating the App Scaffolds to typescript")
+				resource := &corev1alpha1.App{}
+				err = k8sClient.Get(ctx, typeNamespacedName, resource)
+				Expect(err).NotTo(HaveOccurred())
+
+				resource.Spec.Scaffold = []corev1alpha1.AppScaffold{
+					corev1alpha1.ScaffoldTypescript,
+				}
+				err = k8sClient.Update(ctx, resource)
+				Expect(err).NotTo(HaveOccurred())
+
+				By("Reconciling the updated resource")
+				_, err = controllerReconciler.Reconcile(ctx, reconcile.Request{
+					NamespacedName: typeNamespacedName,
+				})
+
+				Expect(err).NotTo(HaveOccurred())
+				err = k8sClient.Get(ctx, typeNamespacedName, app)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(app.Status.Scaffolds).To(ContainElement(corev1alpha1.ScaffoldHelm))
+				// Sanity check
+				Expect(app.Spec.Scaffold).To(ContainElement(corev1alpha1.ScaffoldTypescript))
 			})
 		})
 	})

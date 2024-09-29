@@ -23,13 +23,17 @@ import (
 	batchv1 "k8s.io/api/batch/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	ref "k8s.io/client-go/tools/reference"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	"github.com/unstoppablemango/the-cluster/operator/api/v1alpha1"
 	corev1alpha1 "github.com/unstoppablemango/the-cluster/operator/api/v1alpha1"
+)
+
+var (
+	DefaultScaffolds = []corev1alpha1.AppScaffold{
+		corev1alpha1.ScaffoldTypescript,
+	}
 )
 
 // AppReconciler reconciles a App object
@@ -67,10 +71,17 @@ func (r *AppReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 	}
 
 	if app.Status.Scaffolds == nil {
-		app.Status.Scaffolds = []v1alpha1.AppScaffold{}
+		app.Status.Scaffolds = []corev1alpha1.AppScaffold{}
 	}
 
 	if !app.Status.Managed {
+		app.Status.Conditions = []metav1.Condition{{
+			Type:   corev1alpha1.AppInitialized,
+			Status: metav1.ConditionFalse,
+			Reason: "UnManaged",
+
+			LastTransitionTime: metav1.Now(),
+		}}
 		err := r.Status().Update(ctx, &app)
 		if err != nil {
 			log.Error(err, "unable to update app status")
@@ -79,12 +90,35 @@ func (r *AppReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 	}
 
 	app.Status.Conditions = []metav1.Condition{{
-		Type:   v1alpha1.AppInitialized,
+		Type:   corev1alpha1.AppInitialized,
 		Status: metav1.ConditionFalse,
 		Reason: "Fresh",
 
 		LastTransitionTime: metav1.Now(),
 	}}
+	if err := r.Status().Update(ctx, &app); err != nil {
+		log.Error(err, "unable to update app status")
+		return ctrl.Result{}, err
+	}
+
+	if len(app.Status.Scaffolds) == 0 {
+		log.Info("Updating scaffolds")
+		var scaffolds []corev1alpha1.AppScaffold
+		if len(app.Spec.Scaffold) == 0 {
+			log.Info("Using default scaffolds", "scaffolds", DefaultScaffolds)
+			scaffolds = DefaultScaffolds
+		} else {
+			log.Info("Using spec scaffolds", "scaffolds", app.Spec.Scaffold)
+			scaffolds = app.Spec.Scaffold
+		}
+		app.Status.Scaffolds = make([]corev1alpha1.AppScaffold, len(scaffolds))
+		copy(app.Status.Scaffolds, scaffolds)
+	} else if len(app.Spec.Scaffold) > 0 && !slices.Equal(app.Status.Scaffolds, app.Spec.Scaffold) {
+		log.Info("Ignoring modifications to Scaffold",
+			"current", app.Status.Scaffolds,
+			"found", app.Spec.Scaffold,
+		)
+	}
 
 	// if err := r.refreshJobs(ctx, req, &app); err != nil {
 	// 	log.Error(err, "unable to refresh jobs")
@@ -92,45 +126,46 @@ func (r *AppReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 	// }
 
 	if err := r.Status().Update(ctx, &app); err != nil {
+		log.Error(err, "unable to update app status")
 		return ctrl.Result{}, err
 	}
 
 	return ctrl.Result{}, nil
 }
 
-func (r *AppReconciler) refreshJobs(ctx context.Context, req ctrl.Request, app *corev1alpha1.App) error {
-	log := log.FromContext(ctx)
+// func (r *AppReconciler) refreshJobs(ctx context.Context, req ctrl.Request, app *corev1alpha1.App) error {
+// 	log := log.FromContext(ctx)
 
-	var jobs batchv1.JobList
-	err := r.List(ctx, &jobs,
-		client.InNamespace(req.Namespace),
-		client.MatchingFields{jobOwnerKey: req.Name},
-	)
-	if err != nil {
-		log.Error(err, "unable to list child Jobs")
-		return err
-	}
+// 	var jobs batchv1.JobList
+// 	err := r.List(ctx, &jobs,
+// 		client.InNamespace(req.Namespace),
+// 		client.MatchingFields{jobOwnerKey: req.Name},
+// 	)
+// 	if err != nil {
+// 		log.Error(err, "unable to list child Jobs")
+// 		return err
+// 	}
 
-	status := app.Status.DeepCopy()
-	for _, job := range jobs.Items {
-		isFinished := slices.ContainsFunc(job.Status.Conditions, func(c batchv1.JobCondition) bool {
-			return c.Type == batchv1.JobComplete || c.Type == batchv1.JobFailed
-		})
-		if !isFinished {
-			jobRef, err := ref.GetReference(r.Scheme, &job)
-			if err != nil {
-				log.Error(err, "unable to make reference to job", "job", job)
-				continue
-			}
+// 	status := app.Status.DeepCopy()
+// 	for _, job := range jobs.Items {
+// 		isFinished := slices.ContainsFunc(job.Status.Conditions, func(c batchv1.JobCondition) bool {
+// 			return c.Type == batchv1.JobComplete || c.Type == batchv1.JobFailed
+// 		})
+// 		if !isFinished {
+// 			jobRef, err := ref.GetReference(r.Scheme, &job)
+// 			if err != nil {
+// 				log.Error(err, "unable to make reference to job", "job", job)
+// 				continue
+// 			}
 
-			status.Jobs = append(status.Jobs, *jobRef)
-		}
-	}
+// 			status.Jobs = append(status.Jobs, *jobRef)
+// 		}
+// 	}
 
-	app.Status = *status
+// 	app.Status = *status
 
-	return nil
-}
+// 	return nil
+// }
 
 var (
 	jobOwnerKey = ".metadata.controller"

@@ -52,6 +52,7 @@ log.txt
 report.json
 *.out
 *.test
+go.work*
 
 # Generated code
 generated.yaml
