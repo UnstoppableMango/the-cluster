@@ -133,8 +133,11 @@ go.work.sum: go.work go.mod operator/go.mod
 	go work sync
 
 apps/%: | bin/pulumi
-	$(PULUMI) new https://github.com/pulumi/templates/kubernetes-typescript \
+	$(PULUMI) new ${WORKING_DIR}/templates/pulumi/typescript \
 	--generate-only \
+	--name $* \
+	--description '$(shell echo '$*' | awk '{print toupper(substr($$0,0,1))tolower(substr($$0,2))}') install for THECLUSTER' \
+	--runtime-options packagemanager=yarn \
 	--dir $@
 
 %_suite_test.go: | bin/ginkgo
