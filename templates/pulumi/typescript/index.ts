@@ -1,42 +1,27 @@
-import * as pulumi from "@pulumi/pulumi";
-import * as kubernetes from "@pulumi/kubernetes";
+import * as k8s from '@pulumi/kubernetes';
+import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
+import { versions } from './config';
 
-const config = new pulumi.Config();
-const k8sNamespace = config.get("k8sNamespace") || "default";
-const appLabels = {
-    app: "nginx-ingress",
-};
+const ns = new k8s.core.v1.Namespace('${PROJECT}', {
+  metadata: { name: '${PROJECT}' },
+}, { provider });
 
-// Create a namespace (user supplies the name of the namespace)
-const ingressNs = new kubernetes.core.v1.Namespace("ingressns", {metadata: {
-    labels: appLabels,
-    name: k8sNamespace,
-}});
-
-// Use Helm to install the Nginx ingress controller
-const ingressController = new kubernetes.helm.v3.Release("ingresscontroller", {
-    chart: "nginx-ingress",
-    namespace: ingressNs.metadata.name,
-    repositoryOpts: {
-        repo: "https://helm.nginx.com/stable",
-    },
-    skipCrds: true,
-    values: {
-        controller: {
-            enableCustomResources: false,
-            appprotect: {
-                enable: false,
-            },
-            appprotectdos: {
-                enable: false,
-            },
-            service: {
-                extraLabels: appLabels,
-            },
+const chart = new k8s.helm.v3.Chart('${PROJECT}', {
+  path: './',
+  namespace: ns.metadata.name,
+  values: {
+    '${PROJECT}': {
+      env: {},
+      resources: {
+        limits: {
+          cpu: '100m',
+          memory: '128Mi',
         },
+        requests: {
+          cpu: '100m',
+          memory: '128Mi',
+        },
+      },
     },
-    version: "0.14.1",
-});
-
-// Export some values for use elsewhere
-export const name = ingressController.name;
+  },
+}, { provider });
