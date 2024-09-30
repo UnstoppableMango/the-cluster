@@ -1,4 +1,5 @@
-import { Config } from '@pulumi/pulumi';
+import { Config, getStack } from '@pulumi/pulumi';
+import * as cluster from '@unstoppablemango/thecluster/cluster';
 
 export interface Versions {
   ${PROJECT}: string;
