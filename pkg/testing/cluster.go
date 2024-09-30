@@ -3,12 +3,11 @@ package testing
 import (
 	"fmt"
 	"io"
-	"math/rand"
 	"path/filepath"
-	"time"
 
 	"github.com/charmbracelet/log"
 	"github.com/unstoppablemango/the-cluster/internal/log/adapters"
+	"github.com/unstoppablemango/the-cluster/internal/rand"
 	"github.com/unstoppablemango/the-cluster/internal/util"
 	"sigs.k8s.io/kind/pkg/cluster"
 )
@@ -76,13 +75,11 @@ func (c *Cluster) Stop() error {
 }
 
 func DefaultOptions() Options {
-	suffix := rand.New(rand.NewSource(time.Now().UnixNano())).Int31()
+	suffix := rand.Int31()
 
 	return Options{
 		logger: log.Default(),
 		Name:   fmt.Sprintf("thetester-%d", suffix),
-
-		KubeconfigPath: "",
 	}
 }
 
