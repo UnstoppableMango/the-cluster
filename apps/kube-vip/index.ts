@@ -4,7 +4,7 @@ import { versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('kube-vip', {
   metadata: { name: 'kube-vip' },
-});
+}, { provider });
 
 const chart = new k8s.helm.v3.Chart('kube-vip', {
   path: './',
