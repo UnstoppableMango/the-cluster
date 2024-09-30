@@ -1,3 +1,7 @@
 name: ${PROJECT}
 description: ${DESCRIPTION}
 runtime: nodejs
+config:
+  versions:
+    value:
+      app: 0.0.0
