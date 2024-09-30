@@ -23,8 +23,7 @@ GO_GEN_SRC := $(PROTO_SRC:proto/%.proto=gen/go/%.pb.go)
 GO_SRC     := $(sort $(filter %.go,${SRC}) $(GO_GEN_SRC))
 
 GO_PACKAGES := $(sort $(dir ${GO_SRC}))
-
-CONTAINERS := $(wildcard containers/*)
+CONTAINERS  := $(wildcard containers/*)
 
 COV_REPORT     := cover.profile
 TEST_REPORT    := report.json
@@ -54,10 +53,12 @@ operator:
 $(MODULES): bin/thecluster $(TS_SRC)
 	$< --component $@
 
+TEST_FILTER ?= !E2E
 test: $(TEST_SENTINELS)
 testf: .make/clean_tests $(TEST_SENTINELS)
 
-e2e: .make/operator_e2e
+e2e: TEST_FILTER := E2E
+e2e: $(TEST_SENTINELS) .make/operator_e2e
 
 gen: $(GO_GEN_SRC) manifests .make/controller_gen_object
 manifests: .make/controller_gen_manifests .make/operator_manifests
@@ -166,7 +167,7 @@ endif
 # Why do I insist on creating jank like this
 cmd/kubebuilder/${TEST_REPORT}: | bin/kubebuilder bin/kubectl
 $(TEST_SENTINELS) &: $(filter $(addsuffix %,${TEST_PACKAGES}),${GO_SRC}) | bin/ginkgo
-	$(GINKGO) run --silence-skips ${TEST_FLAGS} $(sort $(dir $?))
+	$(GINKGO) run --label-filter ${TEST_FILTER} --silence-skips ${TEST_FLAGS} $(sort $(dir $?))
 
 .make/clean_tests:
 	rm -f ${TEST_SENTINELS}
