@@ -1,0 +1,6 @@
+apiVersion: v2
+name: ${PROJECT}
+description: ${DESCRIPTION}
+type: application
+version: 0.1.0
+dependencies: []

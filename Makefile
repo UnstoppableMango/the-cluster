@@ -124,13 +124,21 @@ buf.lock: buf.yaml
 .envrc: hack/example.envrc
 	cp $< $@
 
-go.work: go.mod operator/go.mod
+go.work: | go.mod operator/go.mod
 	go work init
 	go work use ./
 	go work use ./operator/
 
 go.work.sum: go.work go.mod operator/go.mod
 	go work sync
+
+apps/%: | bin/pulumi
+	$(PULUMI) new ${WORKING_DIR}/templates/pulumi/typescript \
+	--generate-only \
+	--name $* \
+	--description '$(shell echo '$*' | awk '{print toupper(substr($$0,0,1))tolower(substr($$0,2))}') install for THECLUSTER' \
+	--runtime-options packagemanager=yarn \
+	--dir $@
 
 %_suite_test.go: | bin/ginkgo
 	cd $(dir $*) && ${WORKING_DIR}/$(GINKGO) bootstrap
@@ -140,11 +148,7 @@ $(GO_SRC:%.go=%_test.go): %_test.go: | bin/ginkgo
 
 .PHONY: .kube/config
 .kube/config: | bin/thecluster
-ifeq (,$(wildcard .kube/config))
-	bin/thecluster test-cluster start $@
-else
-	bin/thecluster test-cluster stop $@ && rm $@
-endif
+	bin/thecluster test-cluster ensure $@
 
 .make/clean_ginkgo_reports:
 	rm -f $(GINKGO_REPORTS)
