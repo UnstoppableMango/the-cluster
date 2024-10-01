@@ -2,51 +2,28 @@ package app
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"path/filepath"
+	"io/fs"
 
 	"github.com/charmbracelet/log"
-	"github.com/pulumi/pulumi/sdk/v3/go/common/workspace"
 	"github.com/spf13/afero"
-	"github.com/unstoppablemango/the-cluster/pkg/fs"
+	"github.com/unstoppablemango/the-cluster/internal/template"
+	tcfs "github.com/unstoppablemango/the-cluster/pkg/fs"
+	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
-func Init(ctx context.Context, repo *fs.LocalRepoFs, directory string) error {
+func Init(ctx context.Context, repo thecluster.Fs, directory string) error {
 	log := log.FromContext(ctx)
-	templatePath := filepath.Join(repo.Root, "templates", "pulumi", "typescript")
-
-	// Basically just:
-	// https://github.com/pulumi/pulumi/blob/006a7fc133674a9acce99c286f28f67850478151/pkg/cmd/pulumi/new.go#L195-L221
-	tplRepo, err := workspace.RetrieveTemplates(templatePath, true, workspace.TemplateKindPulumiProject)
+	template, err := template.Typescript()
 	if err != nil {
-		return fmt.Errorf("unable to retrieve template: %w", err)
-	}
-	defer func() {
-		if err := tplRepo.Delete(); err != nil {
-			log.Error("unable to delete template repo", "err", err)
-		}
-	}()
-
-	templates, err := tplRepo.Templates()
-	if err != nil {
-		return fmt.Errorf("unable to list repo templates: %w", err)
+		return fmt.Errorf("unable to load typescript template")
 	}
 
-	var template workspace.Template
-	if len(templates) == 0 {
-		return errors.New("no templates")
-	} else if len(templates) != 1 {
-		return fmt.Errorf("found multiple templates at %s", tplRepo.Root)
-	} else {
-		template = templates[0]
+	walk := func(path string, info fs.FileInfo, err error) error {
+		log.Debug("processing file", "path", path)
+
+		return nil
 	}
 
-	if template.Errored() {
-		return fmt.Errorf("template '%s' is currently broken: %w", template.Name, template.Error)
-	}
-
-	afero.Walk(template.Dir, )
-
-	return nil
+	return afero.Walk(tcfs.FromContext(ctx), template.Dir, walk)
 }

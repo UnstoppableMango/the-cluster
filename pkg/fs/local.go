@@ -24,3 +24,11 @@ func LocalRepo() (*LocalRepoFs, error) {
 		Root: root,
 	}, nil
 }
+
+func GitRoot(fs thecluster.Fs) (string, error) {
+	if repo, ok := fs.(*LocalRepoFs); ok {
+		return repo.Root, nil
+	}
+
+	return util.GitRoot()
+}
