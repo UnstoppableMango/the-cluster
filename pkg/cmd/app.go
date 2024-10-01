@@ -5,12 +5,11 @@ import (
 	"github.com/unstoppablemango/the-cluster/pkg/cmd/app"
 )
 
-var appCmd = &cobra.Command{
+var AppCmd = &cobra.Command{
 	Use:   "app",
 	Short: "Manage THECLUSTER Apps",
 }
 
-func init() {
-	appCmd.AddCommand(app.InitCmd)
-	rootCmd.AddCommand(appCmd)
+func AddAppSubcommands(cmd *cobra.Command) {
+	cmd.AddCommand(app.InitCmd)
 }
