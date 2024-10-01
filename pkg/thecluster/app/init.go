@@ -9,9 +9,10 @@ import (
 	"github.com/charmbracelet/log"
 	"github.com/pulumi/pulumi/sdk/v3/go/common/workspace"
 	"github.com/unstoppablemango/the-cluster/internal/util"
+	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
-func Init(ctx context.Context, directory string) error {
+func Init(ctx context.Context, repo thecluster.Fs, directory string) error {
 	log := log.FromContext(ctx)
 	root, err := util.GitRoot()
 	if err != nil {
@@ -23,17 +24,17 @@ func Init(ctx context.Context, directory string) error {
 
 	// Basically just:
 	// https://github.com/pulumi/pulumi/blob/006a7fc133674a9acce99c286f28f67850478151/pkg/cmd/pulumi/new.go#L195-L221
-	repo, err := workspace.RetrieveTemplates(templatePath, true, workspace.TemplateKindPulumiProject)
+	tplRepo, err := workspace.RetrieveTemplates(templatePath, true, workspace.TemplateKindPulumiProject)
 	if err != nil {
 		return fmt.Errorf("unable to retrieve template: %w", err)
 	}
 	defer func() {
-		if err := repo.Delete(); err != nil {
+		if err := tplRepo.Delete(); err != nil {
 			log.Error("unable to delete template repo", "err", err)
 		}
 	}()
 
-	templates, err := repo.Templates()
+	templates, err := tplRepo.Templates()
 	if err != nil {
 		return fmt.Errorf("unable to list repo templates: %w", err)
 	}
@@ -42,7 +43,7 @@ func Init(ctx context.Context, directory string) error {
 	if len(templates) == 0 {
 		return errors.New("no templates")
 	} else if len(templates) != 1 {
-		return fmt.Errorf("found multiple templates at %s", repo.Root)
+		return fmt.Errorf("found multiple templates at %s", tplRepo.Root)
 	} else {
 		template = templates[0]
 	}

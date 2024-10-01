@@ -1,4 +1,4 @@
-package fs
+package thecluster
 
 import "github.com/spf13/afero"
 
