@@ -15,9 +15,15 @@ var _ = Describe("Context", func() {
 
 	It("should round trip", func(ctx context.Context) {
 		ctx = fs.WithContext(ctx, mock)
-		actual, err := fs.FromContext(ctx)
+		actual := fs.FromContext(ctx)
 
-		Expect(err).NotTo(HaveOccurred())
 		Expect(actual).To(Equal(mock))
+	})
+
+	It("should use a readonly Fs when none is provided", func(ctx context.Context) {
+		actual := fs.FromContext(ctx)
+
+		_, err := actual.Create("test.txt")
+		Expect(err).To(HaveOccurred())
 	})
 })

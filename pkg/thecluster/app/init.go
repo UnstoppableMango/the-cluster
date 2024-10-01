@@ -8,19 +8,13 @@ import (
 
 	"github.com/charmbracelet/log"
 	"github.com/pulumi/pulumi/sdk/v3/go/common/workspace"
-	"github.com/unstoppablemango/the-cluster/internal/util"
-	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
+	"github.com/spf13/afero"
+	"github.com/unstoppablemango/the-cluster/pkg/fs"
 )
 
-func Init(ctx context.Context, repo thecluster.Fs, directory string) error {
+func Init(ctx context.Context, repo *fs.LocalRepoFs, directory string) error {
 	log := log.FromContext(ctx)
-	root, err := util.GitRoot()
-	if err != nil {
-		log.Error("unable to retrieve git root directory", "err", err)
-		return err
-	}
-
-	templatePath := filepath.Join(root, "templates", "pulumi", "typescript")
+	templatePath := filepath.Join(repo.Root, "templates", "pulumi", "typescript")
 
 	// Basically just:
 	// https://github.com/pulumi/pulumi/blob/006a7fc133674a9acce99c286f28f67850478151/pkg/cmd/pulumi/new.go#L195-L221
@@ -51,6 +45,8 @@ func Init(ctx context.Context, repo thecluster.Fs, directory string) error {
 	if template.Errored() {
 		return fmt.Errorf("template '%s' is currently broken: %w", template.Name, template.Error)
 	}
+
+	afero.Walk(template.Dir, )
 
 	return nil
 }
