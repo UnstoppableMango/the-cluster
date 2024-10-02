@@ -2,7 +2,7 @@ import { Config, getStack } from '@pulumi/pulumi';
 import * as cluster from '@unstoppablemango/thecluster/cluster';
 
 export interface Versions {
-  ${PROJECT}: string;
+  {{.Project}}: string;
 }
 
 const config = new Config();

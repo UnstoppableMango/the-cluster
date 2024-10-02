@@ -1,4 +1,4 @@
-package template
+package pulumi
 
 import (
 	"errors"
@@ -11,19 +11,19 @@ import (
 )
 
 var (
-	RelativePath = filepath.Join("templates", "pulumi", "typescript")
+	TypescriptRelativePath = filepath.Join("templates", "pulumi", "typescript")
 )
 
 // Basically just:
 // https://github.com/pulumi/pulumi/blob/006a7fc133674a9acce99c286f28f67850478151/pkg/cmd/pulumi/new.go#L195-L221
 
-func Typescript() (workspace.Template, error) {
+func TypescriptTemplate() (workspace.Template, error) {
 	root, err := util.GitRoot()
 	if err != nil {
 		return workspace.Template{}, fmt.Errorf("unable to locate git root directory: %w", err)
 	}
 
-	templatePath := filepath.Join(root, RelativePath)
+	templatePath := filepath.Join(root, TypescriptRelativePath)
 	tplRepo, err := workspace.RetrieveTemplates(templatePath, true, workspace.TemplateKindPulumiProject)
 	if err != nil {
 		return workspace.Template{}, fmt.Errorf("unable to retrieve template: %w", err)

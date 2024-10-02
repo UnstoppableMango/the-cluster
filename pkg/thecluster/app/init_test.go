@@ -2,6 +2,7 @@ package app_test
 
 import (
 	"context"
+	"io"
 	"path/filepath"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -14,11 +15,14 @@ import (
 )
 
 var _ = Describe("Init", func() {
-	const mockDirectory = "some/dir"
+	const (
+		expectedAppName = "dir"
+	)
 
 	var (
-		mockFs thecluster.Fs
-		root   string
+		mockFs        thecluster.Fs
+		root          string
+		mockDirectory = "some/dir"
 	)
 
 	BeforeEach(func() {
@@ -38,12 +42,54 @@ var _ = Describe("Init", func() {
 		Expect(d.IsDir()).To(BeTrueBecause("the directory was created"))
 	})
 
-	It("should create Pulumi.yaml", func() {
+	DescribeTable("all template files",
+		Entry("Pulumi.yaml", "Pulumi.yaml"),
+		Entry("config.ts", "config.ts"),
+		Entry("index.ts", "index.ts"),
+		Entry(".helmignore", ".helmignore"),
+		Entry("Chart.yaml", "Chart.yaml"),
+		Entry("package.json", "package.json"),
+		Entry("tsconfig.json", "tsconfig.json"),
+		func(file string) {
+			f, err := mockFs.Open(filepath.Join(root, mockDirectory, file))
+			Expect(err).NotTo(HaveOccurred())
+
+			stat, err := f.Stat()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(stat.IsDir()).To(BeFalseBecause("a file was expected"))
+		},
+	)
+
+	It("should template Pulumi.yaml", func() {
 		f, err := mockFs.Open(filepath.Join(root, mockDirectory, "Pulumi.yaml"))
 		Expect(err).NotTo(HaveOccurred())
 
-		stat, err := f.Stat()
+		contents, err := io.ReadAll(f)
 		Expect(err).NotTo(HaveOccurred())
-		Expect(stat.IsDir()).To(BeFalseBecause("Pulumi.yaml is a file"))
+		Expect(string(contents)).To(ContainSubstring(expectedAppName))
+	})
+
+	It("should template index.ts", func() {
+		f, err := mockFs.Open(filepath.Join(root, mockDirectory, "index.ts"))
+		Expect(err).NotTo(HaveOccurred())
+
+		contents, err := io.ReadAll(f)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(string(contents)).To(ContainSubstring(expectedAppName))
+	})
+
+	Context("project name", func() {
+		BeforeEach(func() {
+			mockDirectory = "expected/project-name"
+		})
+
+		It("should use the base directory as the App name", func() {
+			f, err := mockFs.Open(filepath.Join(root, mockDirectory, "Pulumi.yaml"))
+			Expect(err).NotTo(HaveOccurred())
+
+			contents, err := io.ReadAll(f)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(string(contents)).To(ContainSubstring("project-name"))
+		})
 	})
 })

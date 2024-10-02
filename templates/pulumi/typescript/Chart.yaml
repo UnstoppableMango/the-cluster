@@ -1,5 +1,5 @@
 apiVersion: v2
-name: ${PROJECT}
+name: {{.Project}}
 description: ${DESCRIPTION}
 type: application
 version: 0.1.0
