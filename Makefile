@@ -129,13 +129,8 @@ go.work: | go.mod operator/go.mod
 go.work.sum: go.work go.mod operator/go.mod
 	go work sync
 
-apps/%: | bin/pulumi
-	$(PULUMI) new ${WORKING_DIR}/templates/pulumi/typescript \
-	--generate-only \
-	--name $* \
-	--description '$(shell echo '$*' | awk '{print toupper(substr($$0,0,1))tolower(substr($$0,2))}') install for THECLUSTER' \
-	--runtime-options packagemanager=yarn \
-	--dir $@
+apps/%: | bin/thecluster
+	bin/thecluster app init $@
 
 # .PHONY: $(CONTAINERS)
 # $(CONTAINERS): containers/%: containers/%/Dockerfile
