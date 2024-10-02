@@ -13,6 +13,7 @@ import (
 	"github.com/unstoppablemango/the-cluster/components/app"
 	tc "github.com/unstoppablemango/the-cluster/gen/go/io/unmango/thecluster/v1alpha1"
 	"github.com/unstoppablemango/the-cluster/internal/thecluster"
+	"github.com/unstoppablemango/the-cluster/pkg/cmd"
 )
 
 var (
@@ -42,6 +43,11 @@ var rootCmd = &cobra.Command{
 			return runInteractive(ctx, config)
 		}
 
+		if component == "" {
+			fmt.Println("No component provided")
+			os.Exit(1)
+		}
+
 		req := &tc.ReconcileRequest{
 			Component: component,
 			Stack:     "pinkdiamond",
@@ -53,6 +59,12 @@ var rootCmd = &cobra.Command{
 
 		return run(ctx, config, req)
 	},
+}
+
+func init() {
+	appCmd := cmd.AppCmd
+	cmd.AddAppSubcommands(appCmd)
+	rootCmd.AddCommand(appCmd)
 }
 
 func Execute(ctx context.Context) {
