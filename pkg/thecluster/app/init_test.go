@@ -38,12 +38,21 @@ var _ = Describe("Init", func() {
 		Expect(d.IsDir()).To(BeTrueBecause("the directory was created"))
 	})
 
-	It("should create Pulumi.yaml", func() {
-		f, err := mockFs.Open(filepath.Join(root, mockDirectory, "Pulumi.yaml"))
-		Expect(err).NotTo(HaveOccurred())
+	DescribeTable("all template files",
+		Entry("Pulumi.yaml", "Pulumi.yaml"),
+		Entry("config.ts", "config.ts"),
+		Entry("index.ts", "index.ts"),
+		Entry(".helmignore", ".helmignore"),
+		Entry("Chart.yaml", "Chart.yaml"),
+		Entry("package.json", "package.json"),
+		Entry("tsconfig.json", "tsconfig.json"),
+		func(file string) {
+			f, err := mockFs.Open(filepath.Join(root, mockDirectory, file))
+			Expect(err).NotTo(HaveOccurred())
 
-		stat, err := f.Stat()
-		Expect(err).NotTo(HaveOccurred())
-		Expect(stat.IsDir()).To(BeFalseBecause("Pulumi.yaml is a file"))
-	})
+			stat, err := f.Stat()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(stat.IsDir()).To(BeFalseBecause("a file was expected"))
+		},
+	)
 })
