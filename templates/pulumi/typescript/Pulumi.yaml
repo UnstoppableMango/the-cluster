@@ -1,5 +1,5 @@
-name: ${PROJECT}
-description: ${DESCRIPTION}
+name: '{{.Project}}'
+description: '{{.Description}}'
 runtime: nodejs
 config:
   versions:

@@ -2,15 +2,15 @@ import * as k8s from '@pulumi/kubernetes';
 import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { versions } from './config';
 
-const ns = new k8s.core.v1.Namespace('${PROJECT}', {
-  metadata: { name: '${PROJECT}' },
+const ns = new k8s.core.v1.Namespace('{{.Project}}', {
+  metadata: { name: '{{.Project}}' },
 }, { provider });
 
-const chart = new k8s.helm.v3.Chart('${PROJECT}', {
+const chart = new k8s.helm.v3.Chart('{{.Project}}', {
   path: './',
   namespace: ns.metadata.name,
   values: {
-    '${PROJECT}': {
+    '{{.Project}}': {
       env: {},
       resources: {
         limits: {

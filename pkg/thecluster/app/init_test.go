@@ -16,13 +16,13 @@ import (
 
 var _ = Describe("Init", func() {
 	const (
-		mockDirectory   = "some/dir"
 		expectedAppName = "dir"
 	)
 
 	var (
-		mockFs thecluster.Fs
-		root   string
+		mockFs        thecluster.Fs
+		root          string
+		mockDirectory = "some/dir"
 	)
 
 	BeforeEach(func() {
@@ -67,5 +67,29 @@ var _ = Describe("Init", func() {
 		contents, err := io.ReadAll(f)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(string(contents)).To(ContainSubstring(expectedAppName))
+	})
+
+	It("should template index.ts", func() {
+		f, err := mockFs.Open(filepath.Join(root, mockDirectory, "index.ts"))
+		Expect(err).NotTo(HaveOccurred())
+
+		contents, err := io.ReadAll(f)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(string(contents)).To(ContainSubstring(expectedAppName))
+	})
+
+	Context("project name", func() {
+		BeforeEach(func() {
+			mockDirectory = "expected/project-name"
+		})
+
+		It("should use the base directory as the App name", func() {
+			f, err := mockFs.Open(filepath.Join(root, mockDirectory, "Pulumi.yaml"))
+			Expect(err).NotTo(HaveOccurred())
+
+			contents, err := io.ReadAll(f)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(string(contents)).To(ContainSubstring("project-name"))
+		})
 	})
 })
