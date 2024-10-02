@@ -2,6 +2,7 @@ package app_test
 
 import (
 	"context"
+	"io"
 	"path/filepath"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -14,7 +15,10 @@ import (
 )
 
 var _ = Describe("Init", func() {
-	const mockDirectory = "some/dir"
+	const (
+		mockDirectory   = "some/dir"
+		expectedAppName = "dir"
+	)
 
 	var (
 		mockFs thecluster.Fs
@@ -55,4 +59,13 @@ var _ = Describe("Init", func() {
 			Expect(stat.IsDir()).To(BeFalseBecause("a file was expected"))
 		},
 	)
+
+	It("should template Pulumi.yaml", func() {
+		f, err := mockFs.Open(filepath.Join(root, mockDirectory, "Pulumi.yaml"))
+		Expect(err).NotTo(HaveOccurred())
+
+		contents, err := io.ReadAll(f)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(string(contents)).To(ContainSubstring(expectedAppName))
+	})
 })
