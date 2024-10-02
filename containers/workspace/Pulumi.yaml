@@ -1,0 +1,13 @@
+name: thecluster-docker-workspace
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn
+description: Workspace container for THECLUSTER DevOps work
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: typescript
+  context:
+    value: ../../
+  imageName: thecluster-workspace
