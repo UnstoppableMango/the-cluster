@@ -111,10 +111,6 @@ bin/ginkgo: go.mod go.sum
 bin/pulumi: .versions/pulumi
 	curl -fsSL https://get.pulumi.com | sh -s -- --install-root ${WORKING_DIR} --version $(shell cat $<) --no-edit-path
 
-.PHONY: $(CONTAINERS)
-$(CONTAINERS): containers/%: containers/%/Dockerfile
-	docker build ${WORKING_DIR} -f $<
-
 gen/go/%.pb.go: buf.gen.yaml proto/%.proto
 	buf generate
 
@@ -140,6 +136,14 @@ apps/%: | bin/pulumi
 	--description '$(shell echo '$*' | awk '{print toupper(substr($$0,0,1))tolower(substr($$0,2))}') install for THECLUSTER' \
 	--runtime-options packagemanager=yarn \
 	--dir $@
+
+# .PHONY: $(CONTAINERS)
+# $(CONTAINERS): containers/%: containers/%/Dockerfile
+# 	docker build ${WORKING_DIR} -f $<
+
+.PHONY: containers/workspace
+containers/workspace:
+	yarn install --cwd $@ && $(PULUMI) -C $@ -s local preview
 
 %_suite_test.go: | bin/ginkgo
 	cd $(dir $*) && ${WORKING_DIR}/$(GINKGO) bootstrap

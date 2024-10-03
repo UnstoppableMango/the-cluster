@@ -1,0 +1,17 @@
+.idea/
+.kube/
+.make/
+.vscode/
+.yarn/
+bin/
+obj/
+.envrc
+go.work
+go.work.sum
+LICENSE
+log.txt
+*.DotSettings
+*.user
+node_modules/
+report.json
+cover.profile
