@@ -14,3 +14,4 @@ log.txt
 *.user
 node_modules/
 report.json
+cover.profile
