@@ -16,3 +16,5 @@ const image = new docker.Image('workspace', {
   exports: [{ cacheonly: {} }],
   tags: [config.require('imageName')],
 });
+
+export const ref = image.ref;

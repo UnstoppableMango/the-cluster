@@ -3,7 +3,7 @@ runtime:
   name: nodejs
   options:
     packagemanager: yarn
-description: Workspace container for THECLUSTER DevOps work
+description: Workspace container for THECLUSTER DevOps crap
 config:
   pulumi:tags:
     value:
