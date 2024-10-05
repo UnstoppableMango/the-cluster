@@ -1,16 +1,28 @@
 package workspace
 
-import "github.com/unstoppablemango/the-cluster/pkg/thecluster"
+import (
+	"fmt"
 
-type LocalGitWorkspace struct{}
+	"github.com/unstoppablemango/the-cluster/pkg/fs"
+	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
+)
+
+type LocalGitWorkspace struct {
+	fs *fs.LocalRepoFs
+}
 
 // Fs implements Workspace.
-func (l *LocalGitWorkspace) Fs() (thecluster.Fs, error) {
-	panic("unimplemented")
+func (l *LocalGitWorkspace) Fs() thecluster.Fs {
+	return l.fs
 }
 
 var _ Workspace = &LocalGitWorkspace{}
 
 func NewLocalGit() (*LocalGitWorkspace, error) {
-	return &LocalGitWorkspace{}, nil
+	fs, err := fs.LocalRepo()
+	if err != nil {
+		return nil, fmt.Errorf("unable to retrieve fs: %w", err)
+	}
+
+	return &LocalGitWorkspace{fs}, nil
 }
