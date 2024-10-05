@@ -6,5 +6,6 @@ import (
 )
 
 func ReadOnly() thecluster.Fs {
+	// TODO: Base path fs?
 	return afero.NewReadOnlyFs(afero.NewOsFs())
 }
