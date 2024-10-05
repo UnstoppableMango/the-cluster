@@ -4,6 +4,6 @@ description: Rook install for THECLUSTER
 type: application
 version: 0.1.0
 dependencies:
-  - name: rook/rook-ceph
-    repo: https://charts.rook.io/release
-    version: 1.15.2
+  - name: rook-ceph
+    repository: https://charts.rook.io/release
+    version: 1.15.3
