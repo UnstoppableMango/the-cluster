@@ -16,7 +16,7 @@ func (l *LocalGitWorkspace) Fs() thecluster.Fs {
 	return l.fs
 }
 
-var _ Workspace = &LocalGitWorkspace{}
+var _ thecluster.Workspace = &LocalGitWorkspace{}
 
 func NewLocalGit() (*LocalGitWorkspace, error) {
 	fs, err := fs.LocalRepo()
@@ -25,4 +25,8 @@ func NewLocalGit() (*LocalGitWorkspace, error) {
 	}
 
 	return &LocalGitWorkspace{fs}, nil
+}
+
+func GitRoot(workspace thecluster.Workspace) (string, error) {
+	return fs.GitRoot(workspace.Fs())
 }

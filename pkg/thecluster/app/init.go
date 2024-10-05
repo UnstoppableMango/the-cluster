@@ -13,6 +13,7 @@ import (
 	"github.com/unstoppablemango/the-cluster/internal/pulumi"
 	tcfs "github.com/unstoppablemango/the-cluster/pkg/fs"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
+	"github.com/unstoppablemango/the-cluster/pkg/thecluster/workspace"
 )
 
 type Initializer interface {
@@ -24,14 +25,14 @@ type tmplData struct {
 	Description string
 }
 
-func Init(ctx context.Context, repo thecluster.Fs, relativePath string) error {
+func Init(ctx context.Context, ws thecluster.Workspace, relativePath string) (thecluster.Workspace, error) {
 	log := log.FromContext(ctx)
-	root, err := tcfs.GitRoot(repo)
+
+	templatePath, err := workspace.PathTo(ctx, ws, pulumi.TypescriptRelativePath)
 	if err != nil {
-		return fmt.Errorf("unable to locate git root directory: %w", err)
+		return nil, fmt.Errorf("unable to create relative path to templates: %w", err)
 	}
 
-	templatePath := filepath.Join(root, pulumi.TypescriptRelativePath)
 	srcfs := tcfs.FromContext(ctx)
 	walk := func(path string, info fs.FileInfo, err error) error {
 		log.Debug("processing file", "path", path)
@@ -44,7 +45,11 @@ func Init(ctx context.Context, repo thecluster.Fs, relativePath string) error {
 			return fmt.Errorf("unable to create relative path: %w", err)
 		}
 
-		targetPath := filepath.Join(root, relativePath, target)
+		targetPath, err := workspace.PathTo(ctx, ws, relativePath, target)
+		if err != nil {
+			return fmt.Errorf("unable to create relative path to target")
+		}
+
 		if info.IsDir() {
 			log.Debug("creating directory", "path", targetPath)
 			return repo.Mkdir(targetPath, 0o700)
