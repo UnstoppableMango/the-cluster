@@ -1,0 +1,15 @@
+{
+  "name": "rook",
+  "license": "Apache-2.0",
+  "packageManager": "npm@10.8.3",
+  "main": "index.ts",
+  "dependencies": {
+    "@pulumi/kubernetes": "4.18.1",
+    "@pulumi/pulumi": "3.135.0",
+    "@unstoppablemango/thecluster": "file:../../lib/nodejs",
+    "@unstoppablemango/thecluster-crds": "file:../../lib/crds/nodejs"
+  },
+  "devDependencies": {
+    "@types/node": "20.16.10"
+  }
+}

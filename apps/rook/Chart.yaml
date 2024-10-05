@@ -1,0 +1,9 @@
+apiVersion: v2
+name: rook
+description: Rook install for THECLUSTER
+type: application
+version: 0.1.0
+dependencies:
+  - name: rook-ceph
+    repository: https://charts.rook.io/release
+    version: 1.15.3
