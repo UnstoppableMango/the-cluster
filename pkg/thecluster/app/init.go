@@ -15,6 +15,10 @@ import (
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
+type Initializer interface {
+	Init(context.Context, string) (thecluster.Fs, error)
+}
+
 type tmplData struct {
 	Project     string
 	Description string
