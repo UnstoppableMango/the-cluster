@@ -27,6 +27,8 @@ type tmplData struct {
 
 func Init(ctx context.Context, ws thecluster.Workspace, relativePath string) (thecluster.Workspace, error) {
 	log := log.FromContext(ctx)
+	ws = workspace.Writable(ws)
+	repo := ws.Fs()
 
 	templatePath, err := workspace.PathTo(ctx, ws, pulumi.TypescriptRelativePath)
 	if err != nil {
@@ -88,8 +90,8 @@ func Init(ctx context.Context, ws thecluster.Workspace, relativePath string) (th
 
 	template, err := pulumi.TypescriptTemplate()
 	if err != nil {
-		return fmt.Errorf("unable to load typescript template: %w", err)
+		return nil, fmt.Errorf("unable to load typescript template: %w", err)
 	}
 
-	return afero.Walk(srcfs, template.Dir, walk)
+	return ws, afero.Walk(srcfs, template.Dir, walk)
 }

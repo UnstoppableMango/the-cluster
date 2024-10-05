@@ -15,12 +15,9 @@ import (
 )
 
 var _ = Describe("Init", func() {
-	const (
-		expectedAppName = "dir"
-	)
-
 	var (
 		mockFs        thecluster.Fs
+		mockWs        thecluster.Workspace
 		root          string
 		mockDirectory = "some/dir"
 	)
@@ -28,12 +25,14 @@ var _ = Describe("Init", func() {
 	BeforeEach(func() {
 		var err error
 		mockFs = afero.NewMemMapFs()
+		mockWs = thecluster.NewWorkspace(mockFs)
+
 		root, err = util.GitRoot()
 		Expect(err).NotTo(HaveOccurred())
 	})
 
 	JustBeforeEach(func(ctx context.Context) {
-		Expect(app.Init(ctx, mockFs, mockDirectory)).To(Succeed())
+		Expect(app.Init(ctx, mockWs, mockDirectory)).To(Succeed())
 	})
 
 	It("should create the app directory", func() {
@@ -66,7 +65,7 @@ var _ = Describe("Init", func() {
 
 		contents, err := io.ReadAll(f)
 		Expect(err).NotTo(HaveOccurred())
-		Expect(string(contents)).To(ContainSubstring(expectedAppName))
+		Expect(string(contents)).To(ContainSubstring("dir"))
 	})
 
 	It("should template index.ts", func() {
@@ -75,7 +74,7 @@ var _ = Describe("Init", func() {
 
 		contents, err := io.ReadAll(f)
 		Expect(err).NotTo(HaveOccurred())
-		Expect(string(contents)).To(ContainSubstring(expectedAppName))
+		Expect(string(contents)).To(ContainSubstring("dir"))
 	})
 
 	Context("project name", func() {
