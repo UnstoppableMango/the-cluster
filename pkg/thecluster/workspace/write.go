@@ -20,6 +20,14 @@ func (w *writable) Fs() thecluster.Fs {
 var _ thecluster.Workspace = &writable{}
 
 func Writable(ws thecluster.Workspace) thecluster.Workspace {
+	if ws == nil {
+		return nil
+	}
+
+	if w, ok := ws.(*writable); ok {
+		return w
+	}
+
 	base, layer := ws.Fs(), afero.NewMemMapFs()
 	fs := afero.NewCopyOnWriteFs(base, layer)
 

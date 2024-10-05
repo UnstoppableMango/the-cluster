@@ -5,8 +5,8 @@ import (
 
 	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
-	"github.com/unstoppablemango/the-cluster/pkg/fs"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster/app"
+	"github.com/unstoppablemango/the-cluster/pkg/thecluster/workspace"
 )
 
 var InitCmd = &cobra.Command{
@@ -18,13 +18,13 @@ var InitCmd = &cobra.Command{
 		ctx := cmd.Context()
 		log := log.FromContext(ctx)
 
-		repo, err := fs.LocalRepo()
+		ws, err := workspace.NewLocalGit()
 		if err != nil {
-			log.Error("unable to initialize repo fs", "err", err)
+			log.Error("unable to initialize workspace", "err", err)
 			os.Exit(1)
 		}
 
-		if err := app.Init(ctx, repo, args[0]); err != nil {
+		if _, err := app.Init(ctx, ws, args[0]); err != nil {
 			log.Error("unable to initalize app", "err", err)
 			os.Exit(1)
 		}

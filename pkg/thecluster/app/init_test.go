@@ -8,35 +8,36 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/spf13/afero"
 	"github.com/unstoppablemango/the-cluster/internal/util"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster/app"
+	"github.com/unstoppablemango/the-cluster/pkg/thecluster/workspace"
 )
 
 var _ = Describe("Init", func() {
 	var (
-		mockFs        thecluster.Fs
-		mockWs        thecluster.Workspace
-		root          string
-		mockDirectory = "some/dir"
+		actual, mockWs thecluster.Workspace
+		root           string
+		mockDirectory  = "some/dir"
 	)
 
 	BeforeEach(func() {
 		var err error
-		mockFs = afero.NewMemMapFs()
-		mockWs = thecluster.NewWorkspace(mockFs)
-
 		root, err = util.GitRoot()
 		Expect(err).NotTo(HaveOccurred())
+
+		mockWs = workspace.Empty()
 	})
 
 	JustBeforeEach(func(ctx context.Context) {
-		Expect(app.Init(ctx, mockWs, mockDirectory)).To(Succeed())
+		var err error
+		actual, err = app.Init(ctx, mockWs, mockDirectory)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(actual).NotTo(BeNil())
 	})
 
 	It("should create the app directory", func() {
-		d, err := mockFs.Stat(filepath.Join(root, mockDirectory))
+		d, err := actual.Fs().Stat(filepath.Join(root, mockDirectory))
 		Expect(err).NotTo(HaveOccurred())
 		Expect(d.IsDir()).To(BeTrueBecause("the directory was created"))
 	})
@@ -50,7 +51,7 @@ var _ = Describe("Init", func() {
 		Entry("package.json", "package.json"),
 		Entry("tsconfig.json", "tsconfig.json"),
 		func(file string) {
-			f, err := mockFs.Open(filepath.Join(root, mockDirectory, file))
+			f, err := actual.Fs().Open(filepath.Join(root, mockDirectory, file))
 			Expect(err).NotTo(HaveOccurred())
 
 			stat, err := f.Stat()
@@ -60,7 +61,7 @@ var _ = Describe("Init", func() {
 	)
 
 	It("should template Pulumi.yaml", func() {
-		f, err := mockFs.Open(filepath.Join(root, mockDirectory, "Pulumi.yaml"))
+		f, err := actual.Fs().Open(filepath.Join(root, mockDirectory, "Pulumi.yaml"))
 		Expect(err).NotTo(HaveOccurred())
 
 		contents, err := io.ReadAll(f)
@@ -69,7 +70,7 @@ var _ = Describe("Init", func() {
 	})
 
 	It("should template index.ts", func() {
-		f, err := mockFs.Open(filepath.Join(root, mockDirectory, "index.ts"))
+		f, err := actual.Fs().Open(filepath.Join(root, mockDirectory, "index.ts"))
 		Expect(err).NotTo(HaveOccurred())
 
 		contents, err := io.ReadAll(f)
@@ -83,7 +84,7 @@ var _ = Describe("Init", func() {
 		})
 
 		It("should use the base directory as the App name", func() {
-			f, err := mockFs.Open(filepath.Join(root, mockDirectory, "Pulumi.yaml"))
+			f, err := actual.Fs().Open(filepath.Join(root, mockDirectory, "Pulumi.yaml"))
 			Expect(err).NotTo(HaveOccurred())
 
 			contents, err := io.ReadAll(f)

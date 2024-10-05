@@ -18,7 +18,19 @@ var _ = Describe("Write", func() {
 			Expect(actual).NotTo(BeIdenticalTo(base))
 		})
 
-		Context("when ws is already writable", func() {
+		Context("when ws is nil", func() {
+			BeforeEach(func() {
+				base = nil
+			})
+
+			It("should return nil", func() {
+				actual := workspace.Writable(base)
+
+				Expect(actual).To(BeNil())
+			})
+		})
+
+		Context("when ws is writable", func() {
 			BeforeEach(func() {
 				base = workspace.Writable(workspace.Empty())
 			})
