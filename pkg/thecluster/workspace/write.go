@@ -19,7 +19,7 @@ func (w *writable) Fs() thecluster.Fs {
 
 var _ thecluster.Workspace = &writable{}
 
-func Writable(ws thecluster.Workspace) thecluster.Workspace {
+func Writable(ws thecluster.Workspace) *writable {
 	if ws == nil {
 		return nil
 	}
