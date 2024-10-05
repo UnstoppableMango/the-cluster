@@ -1,7 +1,6 @@
 package workspace
 
 import (
-	"context"
 	"errors"
 	"path/filepath"
 
@@ -9,9 +8,7 @@ import (
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
-func Root(ctx context.Context, workspace thecluster.Workspace) (string, error) {
-	log := log.FromContext(ctx)
-
+func Root(workspace thecluster.Workspace) (string, error) {
 	root, err := GitRoot(workspace)
 	if err == nil {
 		return root, nil
@@ -19,13 +16,11 @@ func Root(ctx context.Context, workspace thecluster.Workspace) (string, error) {
 		log.Debug("repo was not a git source")
 	}
 
-	return "", errors.New("unable to local workspace root")
+	return "", errors.New("unable to locate workspace root")
 }
 
-func PathTo(ctx context.Context, workspace thecluster.Workspace, elem ...string) (string, error) {
-	log := log.FromContext(ctx)
-
-	root, err := Root(ctx, workspace)
+func PathTo(workspace thecluster.Workspace, elem ...string) (string, error) {
+	root, err := Root(workspace)
 	if err != nil {
 		log.Error("unable to locate workspace root")
 		return "", err

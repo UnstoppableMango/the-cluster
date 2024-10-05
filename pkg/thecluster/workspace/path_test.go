@@ -1,8 +1,6 @@
 package workspace_test
 
 import (
-	"context"
-
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
@@ -22,8 +20,8 @@ var _ = Describe("Fs", func() {
 				Expect(err).NotTo(HaveOccurred())
 			})
 
-			It("should retrieve the git root path", func(ctx context.Context) {
-				root, err := workspace.Root(ctx, ws)
+			It("should retrieve the git root path", func() {
+				root, err := workspace.Root(ws)
 
 				Expect(err).NotTo(HaveOccurred())
 				gitRoot, err := util.GitRoot()

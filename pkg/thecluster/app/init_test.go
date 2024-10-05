@@ -99,7 +99,7 @@ var _ = Describe("Init", func() {
 		})
 
 		It("should attempt to make the path relative", func() {
-			d, err := mockFs.Stat(mockDirectory)
+			d, err := actual.Fs().Stat(mockDirectory)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(d.IsDir()).To(BeTrueBecause("the directory was created"))
 		})
