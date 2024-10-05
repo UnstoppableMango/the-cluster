@@ -3,6 +3,7 @@ package app_test
 import (
 	"context"
 
+	"github.com/charmbracelet/log"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
@@ -11,6 +12,7 @@ import (
 
 var _ = Describe("Init", func() {
 	It("should initialize an app", func(ctx context.Context) {
+		log.SetLevel(log.DebugLevel)
 		app.InitCmd.SetArgs([]string{"apps/init-test"})
 		err := app.InitCmd.ExecuteContext(ctx)
 

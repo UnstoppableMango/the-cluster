@@ -92,4 +92,16 @@ var _ = Describe("Init", func() {
 			Expect(string(contents)).To(ContainSubstring("project-name"))
 		})
 	})
+
+	Context("rooted directory", func() {
+		BeforeEach(func() {
+			mockDirectory = filepath.Join(root, "apps", mockDirectory)
+		})
+
+		It("should attempt to make the path relative", func() {
+			d, err := mockFs.Stat(mockDirectory)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(d.IsDir()).To(BeTrueBecause("the directory was created"))
+		})
+	})
 })
