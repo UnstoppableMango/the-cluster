@@ -1,15 +1,35 @@
 package iter_test
 
 import (
+	"errors"
 	"testing/quick"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
+	"github.com/unstoppablemango/tdl/pkg/result"
 	"github.com/unstoppablemango/the-cluster/internal/iter"
 )
 
 var _ = Describe("Seq3", func() {
+	Context("FilterR", func() {
+		It("should exlude err results", func() {
+			var seq iter.Seq3[int, int, result.R[int]] = func(yield func(int, int, result.R[int]) bool) {
+				yield(0, 0, result.Err[int](errors.New("test err")))
+			}
+
+			result := iter.FilterR(seq)
+
+			sentinel := false
+			result(func(int, int, int) bool {
+				sentinel = true
+				return true
+			})
+
+			Expect(sentinel).To(BeFalseBecause("the sequence should be empty"))
+		})
+	})
+
 	Context("Map3", func() {
 		It("should map", func() {
 			f := func(a0, b0, c0 int) bool {
