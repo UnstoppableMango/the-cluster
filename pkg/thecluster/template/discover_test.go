@@ -27,4 +27,14 @@ var _ = Describe("Discover", func() {
 		Expect(err).NotTo(HaveOccurred())
 		Expect(g.Name()).To(Equal("pulumi"))
 	})
+
+	It("should discover the typescript template", func() {
+		s := seq.ToSlice(template.Discover(ws, "templates"))
+
+		Expect(s).To(HaveLen(1))
+		g, err := s[0].Unwrap()
+		Expect(err).NotTo(HaveOccurred())
+		templates := seq.ToSlice(g.Templates())
+		Expect(templates).To(HaveLen(1))
+	})
 })

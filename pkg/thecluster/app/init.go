@@ -25,9 +25,8 @@ type tmplData struct {
 	Description string
 }
 
-func Init(ctx context.Context, ws thecluster.Workspace, appPath string) (thecluster.Workspace, error) {
-	log := log.FromContext(ctx)
-	ws = workspace.Writable(ws)
+func Init(ws thecluster.Workspace, appPath string) (thecluster.Workspace, error) {
+	ws = workspace.Edit(ws)
 	repo := ws.Fs()
 
 	templatePath, err := workspace.PathTo(ws, pulumi.TypescriptRelativePath)

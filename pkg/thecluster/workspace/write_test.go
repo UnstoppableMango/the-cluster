@@ -10,9 +10,9 @@ import (
 var _ = Describe("Write", func() {
 	base := workspace.Empty()
 
-	Context("Writable", func() {
+	Context("Edit", func() {
 		It("should create a writable fs layer", func() {
-			actual := workspace.Writable(base)
+			actual := workspace.Edit(base)
 
 			Expect(actual).NotTo(BeNil())
 			Expect(actual).NotTo(BeIdenticalTo(base))
@@ -24,7 +24,7 @@ var _ = Describe("Write", func() {
 			})
 
 			It("should return nil", func() {
-				actual := workspace.Writable(base)
+				actual := workspace.Edit(base)
 
 				Expect(actual).To(BeNil())
 			})
@@ -32,11 +32,11 @@ var _ = Describe("Write", func() {
 
 		Context("when ws is writable", func() {
 			BeforeEach(func() {
-				base = workspace.Writable(workspace.Empty())
+				base = workspace.Edit(workspace.Empty())
 			})
 
 			It("should use the existing writable workspace", func() {
-				actual := workspace.Writable(base)
+				actual := workspace.Edit(base)
 
 				Expect(actual).To(BeIdenticalTo(base))
 			})
