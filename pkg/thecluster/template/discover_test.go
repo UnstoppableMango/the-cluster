@@ -14,7 +14,7 @@ var _ = Describe("Discover", func() {
 
 		Expect(err).NotTo(HaveOccurred())
 		var i int
-		for _ = range template.Discover(ws, "templates").Seq {
+		for _ = range template.Discover(ws, "templates") {
 			i = i + 1
 		}
 		Expect(i).To(Equal(1))
