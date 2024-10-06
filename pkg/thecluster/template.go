@@ -1,6 +1,6 @@
 package thecluster
 
-import "iter"
+import "github.com/unstoppablemango/the-cluster/internal/iter"
 
 type Template interface{}
 
