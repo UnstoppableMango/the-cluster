@@ -1,6 +1,8 @@
 package iter
 
-import "github.com/unstoppablemango/tdl/pkg/result"
+import (
+	"github.com/unstoppablemango/tdl/pkg/result"
+)
 
 type Seq3[T, U, V any] func(yield func(T, U, V) bool)
 
