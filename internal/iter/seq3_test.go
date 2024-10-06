@@ -18,7 +18,7 @@ var _ = Describe("Seq3", func() {
 				yield(0, 0, result.Err[int](errors.New("test err")))
 			}
 
-			result := iter.FilterR(seq)
+			result := iter.Filter3R(seq)
 
 			sentinel := false
 			result(func(int, int, int) bool {
