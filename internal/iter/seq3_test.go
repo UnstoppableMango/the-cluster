@@ -12,7 +12,7 @@ import (
 )
 
 var _ = Describe("Seq3", func() {
-	Context("FilterR", func() {
+	Context("Filter3R", func() {
 		It("should exlude err results", func() {
 			seq := iter.Singleton3(0, 0, result.Err[int](errors.New("test err")))
 
