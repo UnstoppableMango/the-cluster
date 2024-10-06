@@ -8,11 +8,11 @@ type (
 	Seq[V any] iter.Seq[V]
 )
 
-func Downcast[V any](seq Seq[V]) iter.Seq[V] {
+func D[V any](seq Seq[V]) iter.Seq[V] {
 	return iter.Seq[V](seq)
 }
 
-func Upcast[V any](seq iter.Seq[V]) Seq[V] {
+func U[V any](seq iter.Seq[V]) Seq[V] {
 	return Seq[V](seq)
 }
 

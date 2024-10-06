@@ -1,6 +1,8 @@
 package template
 
 import (
+	"path/filepath"
+
 	"github.com/unstoppablemango/tdl/pkg/result"
 	"github.com/unstoppablemango/the-cluster/internal/iter"
 	"github.com/unstoppablemango/the-cluster/internal/seq"
@@ -39,9 +41,10 @@ type walker struct {
 }
 
 func (w *walker) Iter() iter.Seq[groupResult] {
+	var currentGroup groupResult
+
 	visit := func(results iter.Seq[groupResult], c fs.Cursor, err error) iter.Seq[groupResult] {
-		var r groupResult
-		done := func() iter.Seq[groupResult] {
+		done := func(r groupResult) iter.Seq[groupResult] {
 			if r != nil {
 				return seq.Append(results, r)
 			} else {
@@ -50,21 +53,36 @@ func (w *walker) Iter() iter.Seq[groupResult] {
 		}
 
 		if err != nil {
-			r = result.Err[tg](err)
-			return done()
+			return done(result.Err[tg](err))
 		}
 
-		var g thecluster.TemplateGroup = &group{
-			name: "TODO",
-			Path: c.Path(),
-			Info: c.Info(),
+		if c.Info().IsDir() {
+			p, err := filepath.Rel(w.path, c.Path())
+			if err != nil {
+				return done(result.Err[tg](err))
+			}
+
+			if len(filepath.SplitList(p)) == 1 {
+				if p == "." {
+					return results
+				}
+
+				var g thecluster.TemplateGroup = &group{
+					name: p,
+					Path: c.Path(),
+					Info: c.Info(),
+				}
+
+				r := done(currentGroup)
+				currentGroup = result.Ok(g)
+				return r
+			}
 		}
 
-		r = result.Ok(g)
-		return done()
+		return results
 	}
 
-	return fs.Reduce(w.workspace.Fs(), w.path, visit, nil)
+	return fs.Reduce(w.workspace.Fs(), w.path, visit, seq.Empty[groupResult]())
 }
 
 func Discover(workspace thecluster.Workspace, path string) iter.Seq[groupResult] {
