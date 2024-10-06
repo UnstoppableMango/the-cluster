@@ -1,6 +1,7 @@
 package fs
 
 import (
+	"errors"
 	"io/fs"
 
 	"github.com/spf13/afero"
@@ -8,24 +9,22 @@ import (
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
-type ErrYield string
-
-func (e ErrYield) Error() string {
-	return string(e)
-}
+var ErrYield = errors.New("yield returned false")
 
 func Iter(f thecluster.Fs, root string) iter.Seq3[string, fs.FileInfo, error] {
 	return func(yield func(string, fs.FileInfo, error) bool) {
 		walker := func(path string, info fs.FileInfo, err error) error {
 			if !yield(path, info, err) {
-				return ErrYield("yield returned false")
+				return ErrYield
 			} else {
 				return nil
 			}
 		}
 
 		if err := afero.Walk(f, root, walker); err != nil {
-			_ = yield("", nil, err)
+			if !errors.Is(err, ErrYield) {
+				_ = yield("", nil, err)
+			}
 		}
 	}
 }
