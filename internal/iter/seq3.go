@@ -46,3 +46,9 @@ func Reduce3[T, U, V, X any](seq Seq3[T, U, V], f func(X, T, U, V) X, initial X)
 
 	return state
 }
+
+func Singleton3[T, U, V any](t T, u U, v V) Seq3[T, U, V] {
+	return func(yield func(T, U, V) bool) {
+		_ = yield(t, u, v)
+	}
+}

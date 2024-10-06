@@ -14,9 +14,7 @@ import (
 var _ = Describe("Seq3", func() {
 	Context("FilterR", func() {
 		It("should exlude err results", func() {
-			var seq iter.Seq3[int, int, result.R[int]] = func(yield func(int, int, result.R[int]) bool) {
-				yield(0, 0, result.Err[int](errors.New("test err")))
-			}
+			seq := iter.Singleton3(0, 0, result.Err[int](errors.New("test err")))
 
 			result := iter.Filter3R(seq)
 
@@ -28,14 +26,30 @@ var _ = Describe("Seq3", func() {
 
 			Expect(sentinel).To(BeFalseBecause("the sequence should be empty"))
 		})
+
+		It("should include success results", func() {
+			f := func(a0, b0, c0 int) bool {
+				seq := iter.Singleton3(a0, b0, result.Ok(c0))
+
+				result := iter.Filter3R(seq)
+
+				var a, b, c int
+				result(func(a1, b1, c1 int) bool {
+					a, b, c = a1, b1, c1
+					return true
+				})
+
+				return a == a0 && b == b0 && c == c0
+			}
+
+			Expect(quick.Check(f, nil)).To(Succeed())
+		})
 	})
 
 	Context("Map3", func() {
 		It("should map", func() {
 			f := func(a0, b0, c0 int) bool {
-				var seq iter.Seq3[int, int, int] = func(yield func(int, int, int) bool) {
-					yield(a0, b0, c0)
-				}
+				seq := iter.Singleton3(a0, b0, c0)
 
 				result := iter.Map3(seq, func(a, b, c int) (int, int, int) {
 					return a + 1, b + 1, c + 1
