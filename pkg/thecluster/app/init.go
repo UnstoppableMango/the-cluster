@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"os"
 	"path/filepath"
 	"text/template"
 
 	"github.com/charmbracelet/log"
 	"github.com/spf13/afero"
 	"github.com/unstoppablemango/the-cluster/internal/pulumi"
-	tcfs "github.com/unstoppablemango/the-cluster/pkg/fs"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster/workspace"
 )
@@ -25,17 +25,22 @@ type tmplData struct {
 	Description string
 }
 
-func Init(ctx context.Context, ws thecluster.Workspace, relativePath string) (thecluster.Workspace, error) {
-	log := log.FromContext(ctx)
-	ws = workspace.Writable(ws)
+func Init(ws thecluster.Workspace, appPath string) (thecluster.Workspace, error) {
+	ws = workspace.Edit(ws)
 	repo := ws.Fs()
 
-	templatePath, err := workspace.PathTo(ctx, ws, pulumi.TypescriptRelativePath)
+	templatePath, err := workspace.PathTo(ws, pulumi.TypescriptRelativePath)
 	if err != nil {
 		return nil, fmt.Errorf("unable to create relative path to templates: %w", err)
 	}
 
-	srcfs := tcfs.FromContext(ctx)
+	if filepath.IsAbs(appPath) {
+		log.Debug("creating app directory", "path", appPath)
+		if err = repo.MkdirAll(appPath, os.ModeDir); err != nil {
+			return nil, fmt.Errorf("unable to create app directory: %w", err)
+		}
+	}
+
 	walk := func(path string, info fs.FileInfo, err error) error {
 		log.Debug("processing file", "path", path)
 		if err != nil {
@@ -47,17 +52,23 @@ func Init(ctx context.Context, ws thecluster.Workspace, relativePath string) (th
 			return fmt.Errorf("unable to create relative path: %w", err)
 		}
 
-		targetPath, err := workspace.PathTo(ctx, ws, relativePath, target)
-		if err != nil {
-			return fmt.Errorf("unable to create relative path to target")
+		var targetPath string
+		if filepath.IsAbs(appPath) {
+			log.Debug("path is abs", "path", appPath)
+			targetPath = filepath.Join(appPath, target)
+		} else {
+			log.Debug("path is NOT abs", "path", appPath)
+			if targetPath, err = workspace.PathTo(ws, appPath, target); err != nil {
+				return fmt.Errorf("unable to create relative path to target: %w", err)
+			}
 		}
 
 		if info.IsDir() {
 			log.Debug("creating directory", "path", targetPath)
-			return repo.Mkdir(targetPath, 0o700)
+			return repo.Mkdir(targetPath, os.ModeDir)
 		}
 
-		src, err := srcfs.Open(path)
+		src, err := repo.Open(path)
 		if err != nil {
 			return fmt.Errorf("unable to open template source file")
 		}
@@ -77,7 +88,7 @@ func Init(ctx context.Context, ws thecluster.Workspace, relativePath string) (th
 			return fmt.Errorf("unable to create file: %w", err)
 		}
 
-		name := filepath.Base(relativePath)
+		name := filepath.Base(appPath)
 		data := tmplData{name, "install for THECLUSTER"}
 
 		log.Debug("executing and writing template", "path", path)
@@ -93,5 +104,5 @@ func Init(ctx context.Context, ws thecluster.Workspace, relativePath string) (th
 		return nil, fmt.Errorf("unable to load typescript template: %w", err)
 	}
 
-	return ws, afero.Walk(srcfs, template.Dir, walk)
+	return ws, afero.Walk(repo, template.Dir, walk)
 }

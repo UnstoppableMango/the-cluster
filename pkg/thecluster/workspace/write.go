@@ -5,31 +5,65 @@ import (
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
+type Writer func(thecluster.Workspace) error
+
+func (write Writer) write(workspace thecluster.Workspace) error {
+	return write(workspace)
+}
+
+type Writable interface {
+	thecluster.Workspace
+
+	Changes() thecluster.Fs
+	Base() thecluster.Fs
+}
+
 type writable struct {
-	Workspace  thecluster.Workspace
-	Base       thecluster.Fs
-	Layer      thecluster.Fs
-	Projection thecluster.Fs
+	base  thecluster.Fs
+	layer thecluster.Fs
+	proj  thecluster.Fs
+}
+
+// Base implements Writable.
+func (w *writable) Base() thecluster.Fs {
+	return w.base
+}
+
+// Changes implements Writable.
+func (w *writable) Changes() thecluster.Fs {
+	return w.layer
 }
 
 // Fs implements thecluster.Workspace.
 func (w *writable) Fs() thecluster.Fs {
-	return w.Projection
+	return w.proj
 }
 
-var _ thecluster.Workspace = &writable{}
+var _ Writable = &writable{}
 
-func Writable(ws thecluster.Workspace) *writable {
-	if ws == nil {
+func Edit(workspace thecluster.Workspace) Writable {
+	if workspace == nil {
 		return nil
 	}
 
-	if w, ok := ws.(*writable); ok {
+	if w, ok := workspace.(*writable); ok {
 		return w
 	}
 
-	base, layer := ws.Fs(), afero.NewMemMapFs()
+	base, layer := workspace.Fs(), afero.NewMemMapFs()
 	fs := afero.NewCopyOnWriteFs(base, layer)
 
-	return &writable{ws, base, layer, fs}
+	return &writable{base, layer, fs}
+}
+
+func Write(workspace thecluster.Workspace, writers ...Writer) (Writable, error) {
+	writable := Edit(workspace)
+
+	for _, writer := range writers {
+		if err := writer.write(writable); err != nil {
+			return nil, err
+		}
+	}
+
+	return writable, nil
 }

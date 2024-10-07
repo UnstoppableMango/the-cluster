@@ -1,6 +1,9 @@
 name: '{{.Project}}'
 description: '{{.Description}}'
-runtime: nodejs
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn
 config:
   versions:
     value:

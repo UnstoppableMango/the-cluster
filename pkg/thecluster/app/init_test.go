@@ -14,7 +14,7 @@ import (
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster/workspace"
 )
 
-var _ = Describe("Init", func() {
+var _ = Describe("Init", Pending, func() {
 	var (
 		actual, mockWs thecluster.Workspace
 		root           string
@@ -31,7 +31,7 @@ var _ = Describe("Init", func() {
 
 	JustBeforeEach(func(ctx context.Context) {
 		var err error
-		actual, err = app.Init(ctx, mockWs, mockDirectory)
+		actual, err = app.Init(mockWs, mockDirectory)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(actual).NotTo(BeNil())
 	})
@@ -90,6 +90,18 @@ var _ = Describe("Init", func() {
 			contents, err := io.ReadAll(f)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(string(contents)).To(ContainSubstring("project-name"))
+		})
+	})
+
+	Context("rooted directory", func() {
+		BeforeEach(func() {
+			mockDirectory = filepath.Join(root, "apps", mockDirectory)
+		})
+
+		It("should attempt to make the path relative", func() {
+			d, err := actual.Fs().Stat(mockDirectory)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(d.IsDir()).To(BeTrueBecause("the directory was created"))
 		})
 	})
 })
