@@ -1,4 +1,4 @@
-package seq
+package seqs
 
 import (
 	"github.com/unstoppablemango/tdl/pkg/result"
@@ -18,7 +18,7 @@ func FailFast2[K, V any, E error](s iter.Seq3[K, V, E]) (r iter.Seq2[K, V], err 
 		return Append2(acc, k, v)
 	}
 
-	r = Reduce3(s, visit, Empty2[K, V]())
+	r = Reduce3(s, visit, iter.Empty2[K, V]())
 	if err != nil {
 		return nil, err
 	}

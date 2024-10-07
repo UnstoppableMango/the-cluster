@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/afero"
 	"github.com/unstoppablemango/the-cluster/internal/iter"
-	"github.com/unstoppablemango/the-cluster/internal/seq"
+	"github.com/unstoppablemango/the-cluster/internal/seqs"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
@@ -14,7 +14,7 @@ type Seq = iter.Seq3[string, fs.FileInfo, error]
 
 var (
 	ErrYield = errors.New("yield returned false")
-	FailFast = seq.FailFast2[string, fs.FileInfo, error]
+	FailFast = seqs.FailFast2[string, fs.FileInfo, error]
 )
 
 func Iter(f thecluster.Fs, root string) Seq {

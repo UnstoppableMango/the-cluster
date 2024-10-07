@@ -5,7 +5,7 @@ import (
 
 	"github.com/unstoppablemango/tdl/pkg/result"
 	"github.com/unstoppablemango/the-cluster/internal/iter"
-	"github.com/unstoppablemango/the-cluster/internal/seq"
+	"github.com/unstoppablemango/the-cluster/internal/seqs"
 	"github.com/unstoppablemango/the-cluster/pkg/fs"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
@@ -25,7 +25,7 @@ func Discover(workspace thecluster.Workspace, path string) iter.Seq[GroupResult]
 	reducer := func(results iter.Seq[GroupResult], c fs.Cursor, err error) iter.Seq[GroupResult] {
 		done := func(r GroupResult) iter.Seq[GroupResult] {
 			if r != nil {
-				return seq.Append(results, r)
+				return seqs.Append(results, r)
 			} else {
 				return results
 			}
@@ -58,5 +58,5 @@ func Discover(workspace thecluster.Workspace, path string) iter.Seq[GroupResult]
 		return results
 	}
 
-	return fs.Reduce(workspace.Fs(), path, reducer, seq.Empty[GroupResult]())
+	return fs.Reduce(workspace.Fs(), path, reducer, iter.Empty[GroupResult]())
 }

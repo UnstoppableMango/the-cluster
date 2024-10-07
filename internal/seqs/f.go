@@ -1,4 +1,4 @@
-package seq
+package seqs
 
 import (
 	"github.com/unstoppablemango/tdl/pkg/result"

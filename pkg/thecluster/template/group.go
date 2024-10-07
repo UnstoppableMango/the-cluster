@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 
 	"github.com/unstoppablemango/the-cluster/internal/iter"
-	"github.com/unstoppablemango/the-cluster/internal/seq"
+	"github.com/unstoppablemango/the-cluster/internal/seqs"
 	"github.com/unstoppablemango/the-cluster/pkg/fs"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
@@ -32,7 +32,7 @@ func (g *group) Templates() (iter.Seq[thecluster.Template], error) {
 			return templates
 		}
 
-		return seq.Append(templates,
+		return seqs.Append(templates,
 			New(g, path, info),
 		)
 	}
@@ -42,8 +42,8 @@ func (g *group) Templates() (iter.Seq[thecluster.Template], error) {
 		return nil, err
 	}
 
-	return seq.Reduce2(s, visit,
-		seq.Empty[thecluster.Template](),
+	return seqs.Reduce2(s, visit,
+		iter.Empty[thecluster.Template](),
 	), nil
 }
 

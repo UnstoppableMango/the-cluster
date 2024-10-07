@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 
 	"github.com/unstoppablemango/the-cluster/internal/iter"
-	"github.com/unstoppablemango/the-cluster/internal/seq"
+	"github.com/unstoppablemango/the-cluster/internal/seqs"
 	"github.com/unstoppablemango/the-cluster/pkg/fs"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
@@ -32,15 +32,15 @@ func (t *tmpl) Files() iter.Seq[thecluster.TemplateFile] {
 			return files
 		}
 
-		return seq.Append(files,
+		return seqs.Append(files,
 			NewFile(path),
 		)
 	}
 
-	return seq.Reduce3(
+	return seqs.Reduce3(
 		fs.IterFiles(t.fs, ""),
 		visit,
-		seq.Empty[thecluster.TemplateFile](),
+		iter.Empty[thecluster.TemplateFile](),
 	)
 }
 
