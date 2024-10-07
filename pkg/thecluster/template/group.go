@@ -15,32 +15,40 @@ type group struct {
 	path string
 }
 
+// Fs implements thecluster.Workspace
+func (g *group) Fs() thecluster.Fs {
+	return g.fs
+}
+
 // Name implements thecluster.TemplateGroup.
 func (g *group) Name() string {
 	return filepath.Base(g.path)
 }
 
 // Templates implements thecluster.TemplateGroup.
-func (g *group) Templates() iter.Seq[thecluster.Template] {
-	visit := func(templates iter.Seq[thecluster.Template], path string, info fs.FileInfo, err error) iter.Seq[thecluster.Template] {
-		if err != nil {
-			return templates
-		}
+func (g *group) Templates() (iter.Seq[thecluster.Template], error) {
+	visit := func(templates iter.Seq[thecluster.Template], path string, info fs.FileInfo) iter.Seq[thecluster.Template] {
 		if len(filepath.SplitList(path)) != 1 {
 			return templates
 		}
 
-		return seq.Append(templates, New())
+		return seq.Append(templates,
+			New(g, path, info),
+		)
 	}
 
-	return seq.Reduce3(
-		fs.IterDirs(g.fs, ""),
-		visit,
+	s, err := fs.FailFast(fs.IterDirs(g.fs, ""))
+	if err != nil {
+		return nil, err
+	}
+
+	return seq.Reduce2(s, visit,
 		seq.Empty[thecluster.Template](),
-	)
+	), nil
 }
 
 var _ thecluster.TemplateGroup = &group{}
+var _ thecluster.Workspace = &group{}
 
 func NewGroup(ws thecluster.Workspace, path string, info fs.FileInfo) thecluster.TemplateGroup {
 	scope := fs.ScopeTo(ws.Fs(), path)

@@ -34,7 +34,29 @@ var _ = Describe("Discover", func() {
 		Expect(s).To(HaveLen(1))
 		g, err := s[0].Unwrap()
 		Expect(err).NotTo(HaveOccurred())
-		templates := seq.ToSlice(g.Templates())
+		t, err := g.Templates()
+		Expect(err).NotTo(HaveOccurred())
+		templates := seq.ToSlice(t)
 		Expect(templates).To(HaveLen(1))
+		Expect(templates[0].Name()).To(Equal("typescript"))
+	})
+
+	It("should discover the index.ts file", func() {
+		s := seq.ToSlice(template.Discover(ws, template.RelativePath))
+
+		Expect(s).To(HaveLen(1))
+		g, err := s[0].Unwrap()
+		Expect(err).NotTo(HaveOccurred())
+		t, err := g.Templates()
+		Expect(err).NotTo(HaveOccurred())
+		templates := seq.ToSlice(t)
+		Expect(templates).To(HaveLen(1))
+		files := seq.ToSlice(templates[0].Files())
+		Expect(len(files) >= 1).To(BeTrueBecause("there is at least one template"))
+		names := make([]string, len(files))
+		for i, f := range files {
+			names[i] = f.Name()
+		}
+		Expect(names).To(ContainElement("index.ts"))
 	})
 })
