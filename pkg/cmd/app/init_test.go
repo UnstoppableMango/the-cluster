@@ -10,7 +10,7 @@ import (
 	"github.com/unstoppablemango/the-cluster/pkg/cmd/app"
 )
 
-var _ = Describe("Init", func() {
+var _ = Describe("Init", Label("E2E"), func() {
 	It("should initialize an app", Pending, func(ctx context.Context) {
 		log.SetLevel(log.DebugLevel)
 		app.InitCmd.SetArgs([]string{"apps/init-test"})
