@@ -5,6 +5,7 @@ import (
 	. "github.com/onsi/gomega"
 
 	"github.com/unstoppablemango/the-cluster/internal/seq"
+	"github.com/unstoppablemango/the-cluster/internal/slices"
 )
 
 var _ = Describe("F", func() {
@@ -12,13 +13,13 @@ var _ = Describe("F", func() {
 		It("should append an item to an empty sequence", func() {
 			result := seq.Append(seq.Empty[int](), 69)
 
-			Expect(seq.ToSlice(result)).To(HaveExactElements(69))
+			Expect(slices.Collect(result)).To(HaveExactElements(69))
 		})
 
 		It("should append an item to a non-empty sequence", func() {
 			result := seq.Append(seq.Singleton(69), 420)
 
-			Expect(seq.ToSlice(result)).To(HaveExactElements(69, 420))
+			Expect(slices.Collect(result)).To(HaveExactElements(69, 420))
 		})
 	})
 })

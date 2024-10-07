@@ -4,7 +4,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/unstoppablemango/the-cluster/internal/seq"
+	"github.com/unstoppablemango/the-cluster/internal/slices"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster/template"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster/workspace"
@@ -20,7 +20,7 @@ var _ = Describe("Discover", func() {
 	})
 
 	It("should discover local pulumi templates", func() {
-		s := seq.ToSlice(template.Discover(ws, template.RelativePath))
+		s := slices.Collect(template.Discover(ws, template.RelativePath))
 
 		Expect(s).To(HaveLen(1))
 		g, err := s[0].Unwrap()
@@ -29,29 +29,29 @@ var _ = Describe("Discover", func() {
 	})
 
 	It("should discover the typescript template", func() {
-		s := seq.ToSlice(template.Discover(ws, template.RelativePath))
+		s := slices.Collect(template.Discover(ws, template.RelativePath))
 
 		Expect(s).To(HaveLen(1))
 		g, err := s[0].Unwrap()
 		Expect(err).NotTo(HaveOccurred())
 		t, err := g.Templates()
 		Expect(err).NotTo(HaveOccurred())
-		templates := seq.ToSlice(t)
+		templates := slices.Collect(t)
 		Expect(templates).To(HaveLen(1))
 		Expect(templates[0].Name()).To(Equal("typescript"))
 	})
 
 	It("should discover the index.ts file", func() {
-		s := seq.ToSlice(template.Discover(ws, template.RelativePath))
+		s := slices.Collect(template.Discover(ws, template.RelativePath))
 
 		Expect(s).To(HaveLen(1))
 		g, err := s[0].Unwrap()
 		Expect(err).NotTo(HaveOccurred())
 		t, err := g.Templates()
 		Expect(err).NotTo(HaveOccurred())
-		templates := seq.ToSlice(t)
+		templates := slices.Collect(t)
 		Expect(templates).To(HaveLen(1))
-		files := seq.ToSlice(templates[0].Files())
+		files := slices.Collect(templates[0].Files())
 		Expect(len(files) >= 1).To(BeTrueBecause("there is at least one template"))
 		names := make([]string, len(files))
 		for i, f := range files {
