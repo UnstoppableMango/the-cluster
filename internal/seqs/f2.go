@@ -1,4 +1,4 @@
-package seq
+package seqs
 
 import (
 	"github.com/unstoppablemango/the-cluster/internal/iter"
@@ -28,12 +28,6 @@ func Map2[K, V any, X, Y any](seq iter.Seq2[K, V], f func(K, V) (X, Y)) iter.Seq
 		seq(func(k K, v V) bool {
 			return yield(f(k, v))
 		})
-	}
-}
-
-func Singleton2[K, V any](k K, v V) iter.Seq2[K, V] {
-	return func(yield func(K, V) bool) {
-		_ = yield(k, v)
 	}
 }
 

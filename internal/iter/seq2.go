@@ -19,3 +19,13 @@ func U2[K, V any](seq iter.Seq2[K, V]) Seq2[K, V] {
 func Pull2[K, V any](seq Seq2[K, V]) (next func() (K, V, bool), stop func()) {
 	return iter.Pull2(iter.Seq2[K, V](seq))
 }
+
+func Empty2[K, V any]() Seq2[K, V] {
+	return func(yield func(K, V) bool) {}
+}
+
+func Singleton2[K, V any](k K, v V) Seq2[K, V] {
+	return func(yield func(K, V) bool) {
+		_ = yield(k, v)
+	}
+}

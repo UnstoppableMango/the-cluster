@@ -1,4 +1,4 @@
-package seq
+package seqs
 
 import (
 	"github.com/unstoppablemango/tdl/pkg/result"
@@ -40,11 +40,5 @@ func Map[V, X any](seq iter.Seq[V], f func(V) X) iter.Seq[X] {
 		seq(func(v V) bool {
 			return yield(f(v))
 		})
-	}
-}
-
-func Singleton[V any](v V) iter.Seq[V] {
-	return func(yield func(V) bool) {
-		yield(v)
 	}
 }
