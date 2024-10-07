@@ -6,12 +6,18 @@ import (
 
 	"github.com/spf13/afero"
 	"github.com/unstoppablemango/the-cluster/internal/iter"
+	"github.com/unstoppablemango/the-cluster/internal/seq"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
-var ErrYield = errors.New("yield returned false")
+type Seq = iter.Seq3[string, fs.FileInfo, error]
 
-func Iter(f thecluster.Fs, root string) iter.Seq3[string, fs.FileInfo, error] {
+var (
+	ErrYield = errors.New("yield returned false")
+	FailFast = seq.FailFast2[string, fs.FileInfo, error]
+)
+
+func Iter(f thecluster.Fs, root string) Seq {
 	return func(yield func(string, fs.FileInfo, error) bool) {
 		walker := func(path string, info fs.FileInfo, err error) error {
 			return yieldErr(yield(path, info, err))
@@ -25,7 +31,7 @@ func Iter(f thecluster.Fs, root string) iter.Seq3[string, fs.FileInfo, error] {
 	}
 }
 
-func IterDirs(f thecluster.Fs, root string) iter.Seq3[string, fs.FileInfo, error] {
+func IterDirs(f thecluster.Fs, root string) Seq {
 	return func(yield func(string, fs.FileInfo, error) bool) {
 		walker := func(path string, info fs.FileInfo, err error) error {
 			if !info.IsDir() {
@@ -43,7 +49,7 @@ func IterDirs(f thecluster.Fs, root string) iter.Seq3[string, fs.FileInfo, error
 	}
 }
 
-func IterFiles(f thecluster.Fs, root string) iter.Seq3[string, fs.FileInfo, error] {
+func IterFiles(f thecluster.Fs, root string) Seq {
 	return func(yield func(string, fs.FileInfo, error) bool) {
 		walker := func(path string, info fs.FileInfo, err error) error {
 			if info.IsDir() {
