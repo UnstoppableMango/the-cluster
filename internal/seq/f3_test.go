@@ -1,4 +1,4 @@
-package iter_test
+package seq_test
 
 import (
 	"errors"
@@ -9,14 +9,15 @@ import (
 
 	"github.com/unstoppablemango/tdl/pkg/result"
 	"github.com/unstoppablemango/the-cluster/internal/iter"
+	"github.com/unstoppablemango/the-cluster/internal/seq"
 )
 
 var _ = Describe("Seq3", func() {
 	Context("Filter3R", func() {
 		It("should exlude err results", func() {
-			seq := iter.Singleton3(0, 0, result.Err[int](errors.New("test err")))
+			s := iter.Singleton3(0, 0, result.Err[int](errors.New("test err")))
 
-			result := iter.Filter3R(seq)
+			result := seq.Filter3R(s)
 
 			sentinel := false
 			result(func(int, int, int) bool {
@@ -29,9 +30,9 @@ var _ = Describe("Seq3", func() {
 
 		It("should include success results", func() {
 			f := func(a0, b0, c0 int) bool {
-				seq := iter.Singleton3(a0, b0, result.Ok(c0))
+				s := iter.Singleton3(a0, b0, result.Ok(c0))
 
-				result := iter.Filter3R(seq)
+				result := seq.Filter3R(s)
 
 				var a, b, c int
 				result(func(a1, b1, c1 int) bool {
@@ -49,9 +50,9 @@ var _ = Describe("Seq3", func() {
 	Context("Map3", func() {
 		It("should map", func() {
 			f := func(a0, b0, c0 int) bool {
-				seq := iter.Singleton3(a0, b0, c0)
+				s := iter.Singleton3(a0, b0, c0)
 
-				result := iter.Map3(seq, func(a, b, c int) (int, int, int) {
+				result := seq.Map3(s, func(a, b, c int) (int, int, int) {
 					return a + 1, b + 1, c + 1
 				})
 

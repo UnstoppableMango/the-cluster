@@ -14,11 +14,7 @@ var ErrYield = errors.New("yield returned false")
 func Iter(f thecluster.Fs, root string) iter.Seq3[string, fs.FileInfo, error] {
 	return func(yield func(string, fs.FileInfo, error) bool) {
 		walker := func(path string, info fs.FileInfo, err error) error {
-			if !yield(path, info, err) {
-				return ErrYield
-			} else {
-				return nil
-			}
+			return yieldErr(yield(path, info, err))
 		}
 
 		if err := afero.Walk(f, root, walker); err != nil {
@@ -26,5 +22,49 @@ func Iter(f thecluster.Fs, root string) iter.Seq3[string, fs.FileInfo, error] {
 				_ = yield("", nil, err)
 			}
 		}
+	}
+}
+
+func IterDirs(f thecluster.Fs, root string) iter.Seq3[string, fs.FileInfo, error] {
+	return func(yield func(string, fs.FileInfo, error) bool) {
+		walker := func(path string, info fs.FileInfo, err error) error {
+			if !info.IsDir() {
+				return nil
+			}
+
+			return yieldErr(yield(path, info, err))
+		}
+
+		if err := afero.Walk(f, root, walker); err != nil {
+			if !errors.Is(err, ErrYield) {
+				_ = yield("", nil, err)
+			}
+		}
+	}
+}
+
+func IterFiles(f thecluster.Fs, root string) iter.Seq3[string, fs.FileInfo, error] {
+	return func(yield func(string, fs.FileInfo, error) bool) {
+		walker := func(path string, info fs.FileInfo, err error) error {
+			if info.IsDir() {
+				return nil
+			}
+
+			return yieldErr(yield(path, info, err))
+		}
+
+		if err := afero.Walk(f, root, walker); err != nil {
+			if !errors.Is(err, ErrYield) {
+				_ = yield("", nil, err)
+			}
+		}
+	}
+}
+
+func yieldErr(yield bool) error {
+	if yield {
+		return nil
+	} else {
+		return ErrYield
 	}
 }

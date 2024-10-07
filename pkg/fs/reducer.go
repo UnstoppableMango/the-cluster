@@ -3,7 +3,7 @@ package fs
 import (
 	"io/fs"
 
-	"github.com/unstoppablemango/the-cluster/internal/iter"
+	"github.com/unstoppablemango/the-cluster/internal/seq"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
@@ -54,5 +54,5 @@ func NewReducer[V any](f Accumulate[V]) func(V, string, fs.FileInfo, error) V {
 }
 
 func Reduce[V any](fs thecluster.Fs, root string, f Accumulate[V], initial V) V {
-	return iter.Reduce3(Iter(fs, root), NewReducer(f), initial)
+	return seq.Reduce3(Iter(fs, root), NewReducer(f), initial)
 }

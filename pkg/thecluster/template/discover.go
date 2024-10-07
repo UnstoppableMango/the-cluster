@@ -10,41 +10,20 @@ import (
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
-type tg = thecluster.TemplateGroup
-
-type (
-	groupResult = result.R[tg]
+const (
+	RelativePath = "templates"
 )
 
-type group struct {
-	name string
+type (
+	GroupResult = result.R[thecluster.TemplateGroup]
+	tg          = thecluster.TemplateGroup
+)
 
-	Path string
-	Info fs.FileInfo
-}
+func Discover(workspace thecluster.Workspace, path string) iter.Seq[GroupResult] {
+	var currentGroup GroupResult
 
-// Name implements thecluster.TemplateGroup.
-func (g *group) Name() string {
-	return g.name
-}
-
-// Templates implements thecluster.TemplateGroup.
-func (g *group) Templates() iter.Seq[thecluster.Template] {
-	panic("unimplemented")
-}
-
-var _ thecluster.TemplateGroup = &group{}
-
-type walker struct {
-	workspace thecluster.Workspace
-	path      string
-}
-
-func (w *walker) Iter() iter.Seq[groupResult] {
-	var currentGroup groupResult
-
-	visit := func(results iter.Seq[groupResult], c fs.Cursor, err error) iter.Seq[groupResult] {
-		done := func(r groupResult) iter.Seq[groupResult] {
+	reducer := func(results iter.Seq[GroupResult], c fs.Cursor, err error) iter.Seq[GroupResult] {
+		done := func(r GroupResult) iter.Seq[GroupResult] {
 			if r != nil {
 				return seq.Append(results, r)
 			} else {
@@ -57,7 +36,7 @@ func (w *walker) Iter() iter.Seq[groupResult] {
 		}
 
 		if c.Info().IsDir() {
-			p, err := filepath.Rel(w.path, c.Path())
+			p, err := filepath.Rel(path, c.Path())
 			if err != nil {
 				return done(result.Err[tg](err))
 			}
@@ -67,14 +46,11 @@ func (w *walker) Iter() iter.Seq[groupResult] {
 					return results
 				}
 
-				var g thecluster.TemplateGroup = &group{
-					name: p,
-					Path: c.Path(),
-					Info: c.Info(),
-				}
-
 				r := done(currentGroup)
-				currentGroup = result.Ok(g)
+				currentGroup = result.Ok(
+					NewGroup(workspace, c.Path(), c.Info()),
+				)
+
 				return r
 			}
 		}
@@ -82,10 +58,5 @@ func (w *walker) Iter() iter.Seq[groupResult] {
 		return results
 	}
 
-	return fs.Reduce(w.workspace.Fs(), w.path, visit, seq.Empty[groupResult]())
-}
-
-func Discover(workspace thecluster.Workspace, path string) iter.Seq[groupResult] {
-	w := &walker{workspace, path}
-	return w.Iter()
+	return fs.Reduce(workspace.Fs(), path, reducer, seq.Empty[GroupResult]())
 }
