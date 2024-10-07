@@ -31,12 +31,6 @@ func Map2[K, V any, X, Y any](seq iter.Seq2[K, V], f func(K, V) (X, Y)) iter.Seq
 	}
 }
 
-func Singleton2[K, V any](k K, v V) iter.Seq2[K, V] {
-	return func(yield func(K, V) bool) {
-		_ = yield(k, v)
-	}
-}
-
 func Reduce2[K, V, X any](seq iter.Seq2[K, V], f func(X, K, V) X, initial X) X {
 	state := initial
 	seq(func(k K, v V) bool {

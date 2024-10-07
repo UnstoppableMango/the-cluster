@@ -4,6 +4,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
+	"github.com/unstoppablemango/the-cluster/internal/iter"
 	"github.com/unstoppablemango/the-cluster/internal/seq"
 	"github.com/unstoppablemango/the-cluster/internal/slices"
 )
@@ -17,7 +18,7 @@ var _ = Describe("F", func() {
 		})
 
 		It("should append an item to a non-empty sequence", func() {
-			result := seq.Append(seq.Singleton(69), 420)
+			result := seq.Append(iter.Singleton(69), 420)
 
 			Expect(slices.Collect(result)).To(HaveExactElements(69, 420))
 		})

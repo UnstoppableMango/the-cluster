@@ -42,9 +42,3 @@ func Map[V, X any](seq iter.Seq[V], f func(V) X) iter.Seq[X] {
 		})
 	}
 }
-
-func Singleton[V any](v V) iter.Seq[V] {
-	return func(yield func(V) bool) {
-		yield(v)
-	}
-}
