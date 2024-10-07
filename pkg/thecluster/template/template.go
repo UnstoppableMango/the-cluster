@@ -1,7 +1,6 @@
 package template
 
 import (
-	"io"
 	"path/filepath"
 
 	"github.com/unstoppablemango/the-cluster/internal/iter"
@@ -33,8 +32,13 @@ func (t *tmpl) Files() iter.Seq[thecluster.TemplateFile] {
 			return files
 		}
 
+		file, err := t.fs.Open(path)
+		if err != nil {
+			return files
+		}
+
 		return seqs.Append(files,
-			NewFile(path, info, t.Opener(path)),
+			NewFile(path, file),
 		)
 	}
 
@@ -43,12 +47,6 @@ func (t *tmpl) Files() iter.Seq[thecluster.TemplateFile] {
 		visit,
 		iter.Empty[thecluster.TemplateFile](),
 	)
-}
-
-func (t *tmpl) Opener(path string) Opener {
-	return func() (io.Reader, error) {
-		return t.fs.Open(path)
-	}
 }
 
 var _ thecluster.Template = &tmpl{}
