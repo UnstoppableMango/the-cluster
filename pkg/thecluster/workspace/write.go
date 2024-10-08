@@ -13,8 +13,8 @@ func (write Writer) write(workspace thecluster.Workspace) error {
 
 type Writable interface {
 	thecluster.Workspace
+	ChangeTracker
 
-	Changes() thecluster.Fs
 	Base() thecluster.Fs
 }
 
