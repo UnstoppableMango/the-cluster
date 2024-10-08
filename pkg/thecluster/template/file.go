@@ -15,6 +15,7 @@ type (
 
 type file struct {
 	fs.File
+	tmpl *template.Template
 	path string
 }
 
@@ -30,19 +31,25 @@ func (f *file) Execute(w io.Writer, state any) error {
 		return err
 	}
 
-	tmpl, err := template.New("NAME").Parse(string(data))
+	f.tmpl, err = f.tmpl.Parse(string(data))
 	if err != nil {
 		return err
 	}
 
-	return tmpl.Execute(w, state)
+	return f.tmpl.Execute(w, state)
 }
 
 var _ File = &file{}
 
 func NewFile(path string, f fs.File) File {
-	return &file{
+	r := &file{
 		File: f,
 		path: path,
 	}
+
+	r.tmpl = template.New(
+		r.Name(),
+	)
+
+	return r
 }

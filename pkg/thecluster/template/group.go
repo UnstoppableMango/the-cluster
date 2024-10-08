@@ -10,7 +10,9 @@ import (
 )
 
 type group struct {
-	fs   thecluster.Fs
+	fs thecluster.Fs
+
+	// Directory info
 	info fs.FileInfo
 	path string
 }
@@ -22,7 +24,7 @@ func (g *group) Fs() thecluster.Fs {
 
 // Name implements thecluster.TemplateGroup.
 func (g *group) Name() string {
-	return filepath.Base(g.path)
+	return g.info.Name()
 }
 
 // Templates implements thecluster.TemplateGroup.
