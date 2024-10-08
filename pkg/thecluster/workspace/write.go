@@ -73,7 +73,3 @@ func With(workspace thecluster.Workspace, writers ...Writer) (Writable, error) {
 
 	return w, nil
 }
-
-// func WriteTo(workspace thecluster.Workspace, fs thecluster.Fs) error {
-
-// }
