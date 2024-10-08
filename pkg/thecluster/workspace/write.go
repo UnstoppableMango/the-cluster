@@ -41,29 +41,39 @@ func (w *writable) Fs() thecluster.Fs {
 
 var _ Writable = &writable{}
 
+// Edit returns a read-write layer on top of workspace.
+// If workspace is Writable, it is returned directly
 func Edit(workspace thecluster.Workspace) Writable {
 	if workspace == nil {
+		// TODO: Empty workspace?
 		return nil
 	}
 
-	if w, ok := workspace.(*writable); ok {
+	if w, ok := workspace.(Writable); ok {
 		return w
 	}
 
 	base, layer := workspace.Fs(), afero.NewMemMapFs()
-	fs := afero.NewCopyOnWriteFs(base, layer)
+	projection := afero.NewCopyOnWriteFs(base, layer)
 
-	return &writable{base, layer, fs}
+	return &writable{base, layer, projection}
 }
 
-func Write(workspace thecluster.Workspace, writers ...Writer) (Writable, error) {
-	writable := Edit(workspace)
+// With returns a read-write layer on top of workspace
+// containing all of the modifications made by writers
+// in the order provided
+func With(workspace thecluster.Workspace, writers ...Writer) (Writable, error) {
+	w := Edit(workspace)
 
 	for _, writer := range writers {
-		if err := writer.write(writable); err != nil {
+		if err := writer.write(w); err != nil {
 			return nil, err
 		}
 	}
 
-	return writable, nil
+	return w, nil
 }
+
+// func WriteTo(workspace thecluster.Workspace, fs thecluster.Fs) error {
+
+// }
