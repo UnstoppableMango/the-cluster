@@ -1,9 +1,14 @@
 package thecluster
 
-import "github.com/unstoppablemango/the-cluster/internal/iter"
+import (
+	"io"
+
+	"github.com/unstoppablemango/the-cluster/internal/iter"
+)
 
 type TemplateFile interface {
 	Name() string
+	Execute(io.Writer, any) error
 }
 
 type Template interface {
