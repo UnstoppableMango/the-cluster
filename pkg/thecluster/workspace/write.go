@@ -29,7 +29,7 @@ func (w *writable) Base() thecluster.Fs {
 	return w.base
 }
 
-// Changes implements Writable.
+// Changes implements ChangeTracker.
 func (w *writable) Changes() thecluster.Fs {
 	return w.layer
 }
