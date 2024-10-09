@@ -13,20 +13,21 @@ var DiscoverCmd = &cobra.Command{
 	Use:   "discover",
 	Short: "Discover templates",
 	Run: func(cmd *cobra.Command, args []string) {
+		log.SetLevel(log.DebugLevel)
 		ws, err := workspace.NewLocalGit()
 		if err != nil {
 			log.Error(err)
 			os.Exit(1)
 		}
 
-		for r := range template.Discover(ws, "") {
+		for r := range template.Discover(ws, template.RelativePath) {
 			g, err := r.Unwrap()
 			if err != nil {
 				log.Error(err)
 				os.Exit(1)
 			}
 
-			log.Info("found template", "name", g.Name())
+			log.Info("found group", "name", g.Name())
 		}
 	},
 }
