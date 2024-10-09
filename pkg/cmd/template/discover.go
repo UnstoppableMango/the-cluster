@@ -28,6 +28,21 @@ var DiscoverCmd = &cobra.Command{
 			}
 
 			log.Info("found group", "name", g.Name())
+			log := log.With("group", g.Name())
+
+			templates, err := g.Templates()
+			if err != nil {
+				log.Error(err)
+				os.Exit(1)
+			}
+
+			for t := range templates {
+				log.Info("found template", "name", t.Name())
+				log = log.With("template", t.Name())
+				for f := range t.Files() {
+					log.Info("found file", "name", f.Name())
+				}
+			}
 		}
 	},
 }
