@@ -58,5 +58,8 @@ func Discover(workspace thecluster.Workspace, path string) iter.Seq[GroupResult]
 		return results
 	}
 
-	return fs.Reduce(workspace.Fs(), path, reducer, iter.Empty[GroupResult]())
+	return fs.Reduce(workspace.Fs(),
+		path, reducer,
+		iter.Empty[GroupResult](),
+	)
 }
