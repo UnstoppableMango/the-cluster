@@ -25,6 +25,7 @@ var _ = Describe("Fs", func() {
 
 				Expect(err).NotTo(HaveOccurred())
 				gitRoot, err := util.GitRoot()
+				Expect(err).NotTo(HaveOccurred())
 				Expect(root).To(Equal(gitRoot))
 			})
 		})

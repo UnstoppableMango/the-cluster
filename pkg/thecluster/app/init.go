@@ -42,11 +42,11 @@ func Init(ws thecluster.Workspace, appPath string) (thecluster.Workspace, error)
 	}
 
 	walk := func(path string, info fs.FileInfo, err error) error {
-		log.Debug("processing file", "path", path)
 		if err != nil {
-			return fmt.Errorf("unsupported path error: %w", err)
+			return err
 		}
 
+		log.Debug("processing file", "path", path)
 		target, err := filepath.Rel(templatePath, path)
 		if err != nil {
 			return fmt.Errorf("unable to create relative path: %w", err)

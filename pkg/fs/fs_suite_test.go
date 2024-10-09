@@ -5,9 +5,13 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+
+	"github.com/charmbracelet/log"
 )
 
 func TestFs(t *testing.T) {
+	log.SetLevel(log.DebugLevel)
+
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Fs Suite")
 }
