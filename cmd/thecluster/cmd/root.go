@@ -62,9 +62,11 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	appCmd := cmd.AppCmd
-	cmd.AddAppSubcommands(appCmd)
-	rootCmd.AddCommand(appCmd)
+	cmd.AddAppSubcommands(cmd.AppCmd)
+	rootCmd.AddCommand(cmd.AppCmd)
+
+	cmd.AddTemplateSubcommands(cmd.TemplateCmd)
+	rootCmd.AddCommand(cmd.TemplateCmd)
 }
 
 func Execute(ctx context.Context) {
