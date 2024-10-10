@@ -346,6 +346,8 @@ github.com/uber/jaeger-lib v2.4.1+incompatible h1:td4jdvLcExb4cBISKIpHuGoVXh+dVK
 github.com/uber/jaeger-lib v2.4.1+incompatible/go.mod h1:ComeNDZlWwrWnDv8aPp0Ba6+uUTzImX/AauajbLI56U=
 github.com/unmango/go/iter v0.0.0-20241010032228-b0b1f9190ab8 h1:oW7wSVI79dinSoVG3TdJJ+PYC/Gudr2zWgKqwg+iKN0=
 github.com/unmango/go/iter v0.0.0-20241010032228-b0b1f9190ab8/go.mod h1:od5OtPx3irx36a5IevvRIBZvDYGb7lvy5ei4xZELJSE=
+github.com/unmango/go/iter v0.0.0-20241010213513-78a2a1c28a0a h1:1DEA9nHLSBbqcye8wPhqgrVCBurG7fkmR8a9LDj2FtE=
+github.com/unmango/go/iter v0.0.0-20241010213513-78a2a1c28a0a/go.mod h1:od5OtPx3irx36a5IevvRIBZvDYGb7lvy5ei4xZELJSE=
 github.com/unmango/go/result v0.0.0-20241010032228-b0b1f9190ab8 h1:BVlp2u00WtPaSAQCEBh6vnL92iqE627pLype1W3cfds=
 github.com/unmango/go/result v0.0.0-20241010032228-b0b1f9190ab8/go.mod h1:HbVe0RMpgrmnZUsWzLJLPXKEpsN0AmeZo++7L9Msvc8=
 github.com/unmango/go/seqs v0.0.0-20241010032228-b0b1f9190ab8 h1:W48J5AIEF109QynuILXy+ZYRQsHzULhycVcMMDo+msg=
