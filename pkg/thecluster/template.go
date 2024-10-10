@@ -3,7 +3,7 @@ package thecluster
 import (
 	"io"
 
-	"github.com/unstoppablemango/the-cluster/internal/iter"
+	"github.com/unmango/go/iter"
 )
 
 type TemplateFile interface {

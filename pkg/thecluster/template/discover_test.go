@@ -4,7 +4,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/unstoppablemango/the-cluster/internal/slices"
+	"github.com/unmango/go/slices"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster/template"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster/workspace"

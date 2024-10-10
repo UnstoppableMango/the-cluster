@@ -3,9 +3,9 @@ package template
 import (
 	"path/filepath"
 
-	"github.com/unstoppablemango/tdl/pkg/result"
-	"github.com/unstoppablemango/the-cluster/internal/iter"
-	"github.com/unstoppablemango/the-cluster/internal/seqs"
+	"github.com/unmango/go/iter"
+	"github.com/unmango/go/result"
+	"github.com/unmango/go/seqs"
 	"github.com/unstoppablemango/the-cluster/pkg/fs"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
@@ -15,7 +15,7 @@ const (
 )
 
 type (
-	GroupResult = result.R[thecluster.TemplateGroup]
+	GroupResult = result.Result[thecluster.TemplateGroup]
 	tg          = thecluster.TemplateGroup
 )
 

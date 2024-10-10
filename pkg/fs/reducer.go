@@ -3,7 +3,7 @@ package fs
 import (
 	"io/fs"
 
-	"github.com/unstoppablemango/the-cluster/internal/seqs"
+	"github.com/unmango/go/seqs"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
