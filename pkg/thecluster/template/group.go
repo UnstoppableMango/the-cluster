@@ -3,8 +3,8 @@ package template
 import (
 	"path/filepath"
 
-	"github.com/unstoppablemango/the-cluster/internal/iter"
-	"github.com/unstoppablemango/the-cluster/internal/seqs"
+	"github.com/unmango/go/iter"
+	"github.com/unmango/go/seqs"
 	"github.com/unstoppablemango/the-cluster/pkg/fs"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )

@@ -5,8 +5,8 @@ import (
 	"io/fs"
 
 	"github.com/spf13/afero"
-	"github.com/unstoppablemango/the-cluster/internal/iter"
-	"github.com/unstoppablemango/the-cluster/internal/seqs"
+	"github.com/unmango/go/iter"
+	"github.com/unmango/go/seqs"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
