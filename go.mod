@@ -18,7 +18,7 @@ require (
 	github.com/testcontainers/testcontainers-go v0.33.0
 	github.com/testcontainers/testcontainers-go/modules/k3s v0.33.0
 	github.com/unmango/go/iter v0.0.0-20241010032228-b0b1f9190ab8
-	github.com/unmango/go/result v0.0.0-20241010032228-b0b1f9190ab8
+	github.com/unmango/go/result v0.0.0-20241010213513-78a2a1c28a0a
 	github.com/unmango/go/seqs v0.0.0-20241010032228-b0b1f9190ab8
 	github.com/unmango/go/slices v0.0.0-20241010032228-b0b1f9190ab8
 	google.golang.org/protobuf v1.35.1
