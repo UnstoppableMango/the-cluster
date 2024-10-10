@@ -27,6 +27,11 @@ func (g *group) Name() string {
 	return g.info.Name()
 }
 
+// Scope implements thecluster.TemplateGroup.
+func (g *group) Scope() thecluster.Workspace {
+	return g
+}
+
 // Templates implements thecluster.TemplateGroup.
 func (g *group) Templates() (iter.Seq[thecluster.Template], error) {
 	visit := func(templates iter.Seq[thecluster.Template], path string, info fs.FileInfo) iter.Seq[thecluster.Template] {

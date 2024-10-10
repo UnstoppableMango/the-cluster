@@ -12,24 +12,51 @@ import (
 var _ = Describe("File", func() {
 	Context("Execute", func() {
 		var (
-			path   string
-			mockFs thecluster.Fs
+			path     string
+			file     afero.File
+			srcFs    thecluster.Fs
+			targetFs thecluster.Fs
 		)
 
 		BeforeEach(func() {
+			var err error
+
 			path = "test.txt"
-			mockFs = afero.NewMemMapFs()
-			Expect(mockFs.Create(path)).NotTo(BeNil())
+			srcFs = afero.NewMemMapFs()
+			targetFs = afero.NewMemMapFs()
+
+			file, err = srcFs.Create(path)
+			Expect(err).NotTo(HaveOccurred())
 		})
 
 		It("should work", func() {
-			file, err := mockFs.Open(path)
+			file, err := srcFs.Open(path)
 			Expect(err).NotTo(HaveOccurred())
 
 			f := template.NewFile(path, file)
-			fs := afero.NewMemMapFs()
 
-			Expect(f.Execute(fs, nil)).To(Succeed())
+			Expect(f.Execute(targetFs, nil)).To(Succeed())
+		})
+
+		FIt("should template a string value", func() {
+			tmpl := "Some {{text}}"
+			data := struct{ text string }{text: "thing"}
+			written, err := file.Write([]byte(tmpl))
+			Expect(err).NotTo(HaveOccurred())
+			Expect(written).NotTo(Equal(0))
+
+			f := template.NewFile(path, tmpl)
+			Expect(f.Execute(targetFs, data)).To(Succeed())
+
+			// Expect(afero.Exists(srcFs, path)).To(BeTrueBecause("the file exists in the target fs"))
+			// file, err = srcFs.Open(path)
+			// Expect(err).NotTo(HaveOccurred())
+			// actual, err := afero.ReadAll(file)
+			// Expect(err).NotTo(HaveOccurred())
+			// Expect(string(actual)).To(Equal("Some thing"))
+
+			Expect(afero.Exists(targetFs, path)).To(BeTrueBecause("the file exists in the target fs"))
+			Expect(afero.FileContainsBytes(targetFs, path, []byte("Some thing"))).To(BeTrueBecause("the template executed"))
 		})
 	})
 })
