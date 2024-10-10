@@ -16,9 +16,9 @@ type (
 )
 
 type file struct {
-	group thecluster.TemplateGroup
-	path  string
-	tmpl  *template.Template
+	fs   thecluster.Fs
+	path string
+	tmpl *template.Template
 }
 
 // Name implements thecluster.TemplateFile.
@@ -28,12 +28,11 @@ func (f *file) Name() string {
 
 // Execute implements thecluster.TemplateFile.
 func (f *file) Execute(fs thecluster.Fs, state any) error {
-	data, err := afero.ReadFile(f.group)
+	data, err := afero.ReadFile(f.fs, f.path)
 	if err != nil {
 		return fmt.Errorf("read src: %w", err)
 	}
 
-	log.Error(string(data))
 	tmpl, err := f.tmpl.Parse(string(data))
 	if err != nil {
 		return fmt.Errorf("parse template: %w", err)
@@ -62,10 +61,10 @@ func (f *file) Execute(fs thecluster.Fs, state any) error {
 
 var _ File = &file{}
 
-func NewFile(path string, group thecluster.TemplateGroup) File {
+func NewFile(fs thecluster.Fs, path string) File {
 	r := &file{
-		group: group,
-		path:  path,
+		fs:   fs,
+		path: path,
 	}
 
 	r.tmpl = template.New(

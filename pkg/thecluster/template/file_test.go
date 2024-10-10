@@ -30,30 +30,20 @@ var _ = Describe("File", func() {
 		})
 
 		It("should work", func() {
-			file, err := srcFs.Open(path)
-			Expect(err).NotTo(HaveOccurred())
-
-			f := template.NewFile(path, file)
+			f := template.NewFile(srcFs, path)
 
 			Expect(f.Execute(targetFs, nil)).To(Succeed())
 		})
 
-		FIt("should template a string value", func() {
-			tmpl := "Some {{text}}"
-			data := struct{ text string }{text: "thing"}
+		It("should template a string value", func() {
+			tmpl := "Some {{.Text}}"
+			data := struct{ Text string }{Text: "thing"}
 			written, err := file.Write([]byte(tmpl))
 			Expect(err).NotTo(HaveOccurred())
 			Expect(written).NotTo(Equal(0))
 
-			f := template.NewFile(path, tmpl)
+			f := template.NewFile(srcFs, path)
 			Expect(f.Execute(targetFs, data)).To(Succeed())
-
-			// Expect(afero.Exists(srcFs, path)).To(BeTrueBecause("the file exists in the target fs"))
-			// file, err = srcFs.Open(path)
-			// Expect(err).NotTo(HaveOccurred())
-			// actual, err := afero.ReadAll(file)
-			// Expect(err).NotTo(HaveOccurred())
-			// Expect(string(actual)).To(Equal("Some thing"))
 
 			Expect(afero.Exists(targetFs, path)).To(BeTrueBecause("the file exists in the target fs"))
 			Expect(afero.FileContainsBytes(targetFs, path, []byte("Some thing"))).To(BeTrueBecause("the template executed"))
