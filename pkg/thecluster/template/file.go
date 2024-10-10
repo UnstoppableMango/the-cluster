@@ -1,6 +1,7 @@
 package template
 
 import (
+	"fmt"
 	"io"
 	"io/fs"
 	"path/filepath"
@@ -25,7 +26,7 @@ func (f *file) Name() string {
 }
 
 // Execute implements thecluster.TemplateFile.
-func (f *file) Execute(w io.Writer, state any) error {
+func (f *file) Execute(fs thecluster.Fs, state any) error {
 	data, err := io.ReadAll(f)
 	if err != nil {
 		return err
@@ -36,7 +37,12 @@ func (f *file) Execute(w io.Writer, state any) error {
 		return err
 	}
 
-	return f.tmpl.Execute(w, state)
+	target, err := fs.Create(f.path)
+	if err != nil {
+		return fmt.Errorf("target: %w", err)
+	}
+
+	return f.tmpl.Execute(target, state)
 }
 
 var _ File = &file{}
