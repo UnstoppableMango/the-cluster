@@ -13,8 +13,8 @@ import (
 
 var (
 	groupStyle    = lipgloss.NewStyle()
-	templateStyle = lipgloss.NewStyle().MarginLeft(1)
-	fileStyle     = lipgloss.NewStyle().MarginLeft(2)
+	templateStyle = lipgloss.NewStyle().MarginLeft(2)
+	fileStyle     = lipgloss.NewStyle().MarginLeft(4)
 )
 
 var ListCmd = &cobra.Command{
