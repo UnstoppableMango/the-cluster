@@ -20,7 +20,7 @@ require (
 	github.com/unmango/go/iter v0.0.0-20241010032228-b0b1f9190ab8
 	github.com/unmango/go/result v0.0.0-20241010032228-b0b1f9190ab8
 	github.com/unmango/go/seqs v0.0.0-20241010032228-b0b1f9190ab8
-	github.com/unmango/go/slices v0.0.0-20241010032228-b0b1f9190ab8
+	github.com/unmango/go/slices v0.0.0-20241010213513-78a2a1c28a0a
 	google.golang.org/protobuf v1.35.1
 	sigs.k8s.io/kind v0.24.0
 	sigs.k8s.io/kubebuilder/v4 v4.2.0
