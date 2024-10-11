@@ -350,6 +350,8 @@ github.com/unmango/go/result v0.0.0-20241010032228-b0b1f9190ab8 h1:BVlp2u00WtPaS
 github.com/unmango/go/result v0.0.0-20241010032228-b0b1f9190ab8/go.mod h1:HbVe0RMpgrmnZUsWzLJLPXKEpsN0AmeZo++7L9Msvc8=
 github.com/unmango/go/seqs v0.0.0-20241010032228-b0b1f9190ab8 h1:W48J5AIEF109QynuILXy+ZYRQsHzULhycVcMMDo+msg=
 github.com/unmango/go/seqs v0.0.0-20241010032228-b0b1f9190ab8/go.mod h1:aGIhHrPkqbrxoAi1cT9QJYL0g0PPngwnT6BtWG8+418=
+github.com/unmango/go/seqs v0.0.0-20241010213513-78a2a1c28a0a h1:jFTYOlEqstMzOAJVxkQw4GHVcPKQMNbBbRQODkCfMZ8=
+github.com/unmango/go/seqs v0.0.0-20241010213513-78a2a1c28a0a/go.mod h1:aGIhHrPkqbrxoAi1cT9QJYL0g0PPngwnT6BtWG8+418=
 github.com/unmango/go/slices v0.0.0-20241010032228-b0b1f9190ab8 h1:7z1JeRxbFnBecnlX1QZI6/TMjo5+VYr3iOGhVKiDQhY=
 github.com/unmango/go/slices v0.0.0-20241010032228-b0b1f9190ab8/go.mod h1:z0mezYq58ICIvryQyPOHgOpdO4LPz/D8hkuntco0R2U=
 github.com/x448/float16 v0.8.4 h1:qLwI1I70+NjRFUR3zs1JPUCgaCXSh3SW62uAKT1mSBM=
