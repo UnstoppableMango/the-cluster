@@ -43,7 +43,6 @@ func (f *file) Execute(fs thecluster.Fs, state any) error {
 		return fmt.Errorf("target: %w", err)
 	}
 	defer func() {
-		log.Info("closing target")
 		if err := target.Close(); err != nil {
 			log.Error("unable to close target file", "err", err)
 		}
@@ -53,8 +52,6 @@ func (f *file) Execute(fs thecluster.Fs, state any) error {
 	if err = tmpl.Execute(buf, state); err != nil {
 		return err
 	}
-
-	log.Error(buf.String())
 
 	return tmpl.Execute(target, state)
 }

@@ -17,5 +17,4 @@ type Template interface {
 type TemplateGroup interface {
 	Name() string
 	Templates() (iter.Seq[Template], error)
-	Scope() Workspace
 }
