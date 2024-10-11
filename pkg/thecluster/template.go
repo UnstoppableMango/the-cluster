@@ -1,14 +1,12 @@
 package thecluster
 
 import (
-	"io"
-
 	"github.com/unmango/go/iter"
 )
 
 type TemplateFile interface {
 	Name() string
-	Execute(io.Writer, any) error
+	Execute(Fs, any) error
 }
 
 type Template interface {

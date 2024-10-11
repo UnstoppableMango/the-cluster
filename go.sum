@@ -344,14 +344,8 @@ github.com/uber/jaeger-client-go v2.30.0+incompatible h1:D6wyKGCecFaSRUpo8lCVbaO
 github.com/uber/jaeger-client-go v2.30.0+incompatible/go.mod h1:WVhlPFC8FDjOFMMWRy2pZqQJSXxYSwNYOkTr/Z6d3Kk=
 github.com/uber/jaeger-lib v2.4.1+incompatible h1:td4jdvLcExb4cBISKIpHuGoVXh+dVKhn2Um6rjCsSsg=
 github.com/uber/jaeger-lib v2.4.1+incompatible/go.mod h1:ComeNDZlWwrWnDv8aPp0Ba6+uUTzImX/AauajbLI56U=
-github.com/unmango/go/iter v0.0.0-20241010032228-b0b1f9190ab8 h1:oW7wSVI79dinSoVG3TdJJ+PYC/Gudr2zWgKqwg+iKN0=
-github.com/unmango/go/iter v0.0.0-20241010032228-b0b1f9190ab8/go.mod h1:od5OtPx3irx36a5IevvRIBZvDYGb7lvy5ei4xZELJSE=
-github.com/unmango/go/result v0.0.0-20241010032228-b0b1f9190ab8 h1:BVlp2u00WtPaSAQCEBh6vnL92iqE627pLype1W3cfds=
-github.com/unmango/go/result v0.0.0-20241010032228-b0b1f9190ab8/go.mod h1:HbVe0RMpgrmnZUsWzLJLPXKEpsN0AmeZo++7L9Msvc8=
-github.com/unmango/go/seqs v0.0.0-20241010032228-b0b1f9190ab8 h1:W48J5AIEF109QynuILXy+ZYRQsHzULhycVcMMDo+msg=
-github.com/unmango/go/seqs v0.0.0-20241010032228-b0b1f9190ab8/go.mod h1:aGIhHrPkqbrxoAi1cT9QJYL0g0PPngwnT6BtWG8+418=
-github.com/unmango/go/slices v0.0.0-20241010032228-b0b1f9190ab8 h1:7z1JeRxbFnBecnlX1QZI6/TMjo5+VYr3iOGhVKiDQhY=
-github.com/unmango/go/slices v0.0.0-20241010032228-b0b1f9190ab8/go.mod h1:z0mezYq58ICIvryQyPOHgOpdO4LPz/D8hkuntco0R2U=
+github.com/unmango/go v0.0.2-alpha h1:huJp22m42ZGwdv243W18ZGZihm1JzIcZHZjXSjQtd40=
+github.com/unmango/go v0.0.2-alpha/go.mod h1:WmP86roBMZTMv37rjJyZ3eYJn//DIcwO+3kSIio5Wfk=
 github.com/x448/float16 v0.8.4 h1:qLwI1I70+NjRFUR3zs1JPUCgaCXSh3SW62uAKT1mSBM=
 github.com/x448/float16 v0.8.4/go.mod h1:14CWIYCyZA/cWjXOioeEpHeN/83MdbZDRQHoFcYsOfg=
 github.com/xanzy/ssh-agent v0.3.3 h1:+/15pJfg/RsTxqYcX6fHqOXZwwMP+2VyYWJeWM2qQFM=

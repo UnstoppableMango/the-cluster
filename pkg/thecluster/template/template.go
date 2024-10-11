@@ -32,13 +32,8 @@ func (t *tmpl) Files() iter.Seq[thecluster.TemplateFile] {
 			return files
 		}
 
-		file, err := t.fs.Open(path)
-		if err != nil {
-			return files
-		}
-
 		return seqs.Append(files,
-			NewFile(path, file),
+			NewFile(t.fs, path),
 		)
 	}
 

@@ -1,11 +1,13 @@
 package template
 
 import (
-	"io"
-	"io/fs"
+	"bytes"
+	"fmt"
 	"path/filepath"
 	"text/template"
 
+	"github.com/charmbracelet/log"
+	"github.com/spf13/afero"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
@@ -14,9 +16,9 @@ type (
 )
 
 type file struct {
-	fs.File
-	tmpl *template.Template
+	fs   thecluster.Fs
 	path string
+	tmpl *template.Template
 }
 
 // Name implements thecluster.TemplateFile.
@@ -25,25 +27,40 @@ func (f *file) Name() string {
 }
 
 // Execute implements thecluster.TemplateFile.
-func (f *file) Execute(w io.Writer, state any) error {
-	data, err := io.ReadAll(f)
+func (f *file) Execute(fs thecluster.Fs, state any) error {
+	data, err := afero.ReadFile(f.fs, f.path)
 	if err != nil {
+		return fmt.Errorf("read src: %w", err)
+	}
+
+	tmpl, err := f.tmpl.Parse(string(data))
+	if err != nil {
+		return fmt.Errorf("parse template: %w", err)
+	}
+
+	target, err := fs.Create(f.path)
+	if err != nil {
+		return fmt.Errorf("target: %w", err)
+	}
+	defer func() {
+		if err := target.Close(); err != nil {
+			log.Error("unable to close target file", "err", err)
+		}
+	}()
+
+	buf := &bytes.Buffer{}
+	if err = tmpl.Execute(buf, state); err != nil {
 		return err
 	}
 
-	f.tmpl, err = f.tmpl.Parse(string(data))
-	if err != nil {
-		return err
-	}
-
-	return f.tmpl.Execute(w, state)
+	return tmpl.Execute(target, state)
 }
 
 var _ File = &file{}
 
-func NewFile(path string, f fs.File) File {
+func NewFile(fs thecluster.Fs, path string) File {
 	r := &file{
-		File: f,
+		fs:   fs,
 		path: path,
 	}
 

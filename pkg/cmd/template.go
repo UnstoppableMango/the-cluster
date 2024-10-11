@@ -13,4 +13,5 @@ var TemplateCmd = &cobra.Command{
 
 func AddTemplateSubcommands(cmd *cobra.Command) {
 	cmd.AddCommand(template.DiscoverCmd)
+	cmd.AddCommand(template.ListCmd)
 }
