@@ -5,9 +5,9 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+
 	"github.com/spf13/afero"
 	"github.com/unmango/go/slices"
-
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster/template"
 )
@@ -29,7 +29,7 @@ var _ = Describe("Group", func() {
 
 	It("should list files at the given path", func() {
 		Expect(srcFs.Mkdir("test-group", os.ModeDir)).To(Succeed())
-		Expect(srcFs.Create("test-group/test.txt")).NotTo(BeNil())
+		Expect(srcFs.Mkdir("test-group/test-template", os.ModeDir)).To(Succeed())
 		g := template.NewGroup(srcFs, "test-group")
 
 		templates, err := g.Templates()
