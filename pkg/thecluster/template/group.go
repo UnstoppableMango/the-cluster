@@ -3,6 +3,7 @@ package template
 import (
 	"path/filepath"
 
+	"github.com/charmbracelet/log"
 	"github.com/unmango/go/iter"
 	"github.com/unmango/go/seqs"
 	"github.com/unstoppablemango/the-cluster/pkg/fs"
@@ -34,6 +35,7 @@ func (g *group) Templates() (iter.Seq[thecluster.Template], error) {
 		path string,
 		info fs.FileInfo,
 	) iter.Seq[thecluster.Template] {
+		log.Error("visiting", "path", path)
 		if len(filepath.SplitList(path)) != 1 {
 			return templates
 		}
@@ -56,11 +58,9 @@ func (g *group) Templates() (iter.Seq[thecluster.Template], error) {
 var _ thecluster.TemplateGroup = &group{}
 var _ thecluster.Workspace = &group{}
 
-func NewGroup(ws thecluster.Workspace, path string) thecluster.TemplateGroup {
-	scope := fs.ScopeTo(ws.Fs(), path)
-
+func NewGroup(ws thecluster.Fs, path string) thecluster.TemplateGroup {
 	g := &group{
-		fs:   scope,
+		fs:   fs.ScopeTo(ws, path),
 		path: path,
 	}
 
