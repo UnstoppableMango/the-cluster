@@ -21,21 +21,27 @@ var _ = Describe("Group", func() {
 		srcFs = afero.NewMemMapFs()
 	})
 
-	It("should use the name of the provided file", func() {
+	It("should use the name of the provided directory", func() {
 		g := template.NewGroup(srcFs, "test-group")
 
 		Expect(g.Name()).To(Equal("test-group"))
 	})
 
-	It("should list files at the given path", func() {
-		Expect(srcFs.Mkdir("test-group", os.ModeDir)).To(Succeed())
-		Expect(srcFs.Mkdir("test-group/test-template", os.ModeDir)).To(Succeed())
-		g := template.NewGroup(srcFs, "test-group")
+	DescribeTable("templates",
+		Entry("should list single", []string{"test-group/test-template"}, 1),
+		Entry("should list multiple", []string{"test-group/test-template", "test-group/test-template-2"}, 2),
+		func(paths []string, expectedLen int) {
+			Expect(srcFs.Mkdir("test-group", os.ModeDir)).To(Succeed())
+			for _, p := range paths {
+				Expect(srcFs.Mkdir(p, os.ModeDir)).To(Succeed())
+			}
+			g := template.NewGroup(srcFs, "test-group")
 
-		templates, err := g.Templates()
+			templates, err := g.Templates()
 
-		Expect(err).NotTo(HaveOccurred())
-		s := slices.Collect(templates)
-		Expect(s).To(HaveLen(1))
-	})
+			Expect(err).NotTo(HaveOccurred())
+			s := slices.Collect(templates)
+			Expect(s).To(HaveLen(expectedLen))
+		},
+	)
 })
