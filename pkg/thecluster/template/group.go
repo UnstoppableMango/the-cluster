@@ -24,18 +24,22 @@ func (g *group) Fs() thecluster.Fs {
 
 // Name implements thecluster.TemplateGroup.
 func (g *group) Name() string {
-	return g.info.Name()
+	return filepath.Base(g.path)
 }
 
 // Templates implements thecluster.TemplateGroup.
 func (g *group) Templates() (iter.Seq[thecluster.Template], error) {
-	visit := func(templates iter.Seq[thecluster.Template], path string, info fs.FileInfo) iter.Seq[thecluster.Template] {
+	visit := func(
+		templates iter.Seq[thecluster.Template],
+		path string,
+		info fs.FileInfo,
+	) iter.Seq[thecluster.Template] {
 		if len(filepath.SplitList(path)) != 1 {
 			return templates
 		}
 
 		return seqs.Append(templates,
-			New(g, path, info),
+			New(g, path),
 		)
 	}
 
@@ -52,13 +56,12 @@ func (g *group) Templates() (iter.Seq[thecluster.Template], error) {
 var _ thecluster.TemplateGroup = &group{}
 var _ thecluster.Workspace = &group{}
 
-func NewGroup(ws thecluster.Workspace, path string, info fs.FileInfo) thecluster.TemplateGroup {
+func NewGroup(ws thecluster.Workspace, path string) thecluster.TemplateGroup {
 	scope := fs.ScopeTo(ws.Fs(), path)
 
 	g := &group{
 		fs:   scope,
 		path: path,
-		info: info,
 	}
 
 	return g

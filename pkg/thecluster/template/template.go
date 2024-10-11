@@ -11,7 +11,6 @@ import (
 
 type tmpl struct {
 	fs   thecluster.Fs
-	info fs.FileInfo
 	path string
 }
 
@@ -46,11 +45,10 @@ func (t *tmpl) Files() iter.Seq[thecluster.TemplateFile] {
 
 var _ thecluster.Template = &tmpl{}
 
-func New(ws thecluster.Workspace, path string, info fs.FileInfo) thecluster.Template {
+func New(ws thecluster.Workspace, path string) thecluster.Template {
 	g := &tmpl{
 		fs:   fs.ScopeTo(ws.Fs(), path),
 		path: path,
-		info: info,
 	}
 
 	return g

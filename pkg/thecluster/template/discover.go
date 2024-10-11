@@ -48,7 +48,7 @@ func Discover(workspace thecluster.Workspace, path string) iter.Seq[GroupResult]
 
 				r := done(currentGroup)
 				currentGroup = result.Ok(
-					NewGroup(workspace, c.Path(), c.Info()),
+					NewGroup(workspace, c.Path()),
 				)
 
 				return r
