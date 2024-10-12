@@ -2,6 +2,7 @@ package workspace
 
 import (
 	"github.com/spf13/afero"
+	"github.com/unstoppablemango/the-cluster/pkg/fs"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
@@ -59,17 +60,18 @@ func Edit(workspace thecluster.Workspace) Writable {
 	return &writable{base, layer, projection}
 }
 
-// With returns a read-write layer on top of workspace
-// containing all of the modifications made by writers
-// in the order provided
-func With(workspace thecluster.Workspace, writers ...Writer) (Writable, error) {
-	w := Edit(workspace)
-
+// With applys all writes to workspace in the order
+// provided, short-circuiting when an error occurs
+func With(workspace Writable, writers ...Writer) (Writable, error) {
 	for _, writer := range writers {
-		if err := writer.write(w); err != nil {
+		if err := writer.write(workspace); err != nil {
 			return nil, err
 		}
 	}
 
-	return w, nil
+	return workspace, nil
+}
+
+func Write(workspace Writable, tracker ChangeTracker) error {
+	return fs.Copy(tracker.Changes(), workspace.Fs())
 }

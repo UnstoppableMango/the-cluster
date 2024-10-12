@@ -5,7 +5,6 @@ import (
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
-func ReadOnly() thecluster.Fs {
-	// TODO: Base path fs?
-	return afero.NewReadOnlyFs(afero.NewOsFs())
+func NewMemMapped() thecluster.WritableFs {
+	return afero.NewMemMapFs()
 }

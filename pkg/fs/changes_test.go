@@ -1,21 +1,20 @@
-package workspace_test
+package fs_test
 
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/spf13/afero"
 
+	"github.com/unstoppablemango/the-cluster/pkg/fs"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
-	"github.com/unstoppablemango/the-cluster/pkg/thecluster/workspace"
 )
 
 var _ = Describe("Changes", func() {
-	var base thecluster.Workspace
-	var tracker workspace.ChangeTracker
+	var base thecluster.Fs
+	var tracker fs.ChangeTracker
 
 	BeforeEach(func() {
-		base = workspace.Edit(workspace.Empty())
-		tracker = workspace.Edit(base)
+		base = afero.NewMemMapFs()
 	})
 
 	Context("Persist", func() {
@@ -26,7 +25,7 @@ var _ = Describe("Changes", func() {
 		})
 
 		It("should succeed", func() {
-			Expect(workspace.Persist(tracker, target)).To(Succeed())
+			Expect(fs.Persist(tracker, target)).To(Succeed())
 		})
 
 		Context("when a file has been changed", func() {
@@ -34,11 +33,11 @@ var _ = Describe("Changes", func() {
 
 			BeforeEach(func() {
 				testFile = "test.txt"
-				Expect(base.Fs().Create(testFile)).NotTo(BeNil())
+				Expect(base.Create(testFile)).NotTo(BeNil())
 			})
 
 			It("should persist the file", func() {
-				Expect(workspace.Persist(tracker, target)).To(Succeed())
+				Expect(fs.Persist(tracker, target)).To(Succeed())
 
 				Expect(target.Open(testFile)).NotTo(BeNil())
 			})
