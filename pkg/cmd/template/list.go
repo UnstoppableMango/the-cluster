@@ -4,17 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster/template"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster/workspace"
-)
-
-var (
-	groupStyle    = lipgloss.NewStyle()
-	templateStyle = lipgloss.NewStyle().MarginLeft(2)
-	fileStyle     = lipgloss.NewStyle().MarginLeft(4)
 )
 
 var ListCmd = &cobra.Command{

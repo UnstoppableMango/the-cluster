@@ -25,7 +25,7 @@ type tmplData struct {
 	Description string
 }
 
-func Init(ws thecluster.Workspace, appPath string) (thecluster.Workspace, error) {
+func Init(ws thecluster.Workspace, appPath string) (thecluster.App, error) {
 	ws = workspace.Edit(ws)
 	repo := ws.Fs()
 
@@ -104,5 +104,5 @@ func Init(ws thecluster.Workspace, appPath string) (thecluster.Workspace, error)
 		return nil, fmt.Errorf("unable to load typescript template: %w", err)
 	}
 
-	return ws, afero.Walk(repo, template.Dir, walk)
+	return &app{ws}, afero.Walk(repo, template.Dir, walk)
 }
