@@ -20,7 +20,7 @@ var _ = Describe("Discover", func() {
 	})
 
 	It("should discover local pulumi templates", func() {
-		s := slices.Collect(template.Discover(ws.Fs(), template.RelativePath))
+		s := slices.Collect(template.Discover(ws.Fs()))
 
 		Expect(s).To(HaveLen(1))
 		g, err := s[0].Unwrap()
@@ -29,7 +29,7 @@ var _ = Describe("Discover", func() {
 	})
 
 	It("should discover the typescript template", func() {
-		s := slices.Collect(template.Discover(ws.Fs(), template.RelativePath))
+		s := slices.Collect(template.Discover(ws.Fs()))
 
 		Expect(s).To(HaveLen(1))
 		g, err := s[0].Unwrap()
@@ -42,7 +42,7 @@ var _ = Describe("Discover", func() {
 	})
 
 	It("should discover the index.ts file", func() {
-		s := slices.Collect(template.Discover(ws.Fs(), template.RelativePath))
+		s := slices.Collect(template.Discover(ws.Fs()))
 
 		Expect(s).To(HaveLen(1))
 		g, err := s[0].Unwrap()

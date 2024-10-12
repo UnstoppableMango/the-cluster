@@ -7,6 +7,7 @@ import (
 
 	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
+	"github.com/unstoppablemango/the-cluster/pkg/styles"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster/template"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster/workspace"
 )
@@ -25,13 +26,16 @@ var FindCmd = &cobra.Command{
 
 		name := args[0]
 
-		if t, err := template.Find(ws.Fs(), name); err != nil {
-			fmt.Println(templateStyle.Render(t.Name()))
-			for f := range t.Files() {
-				fmt.Println(fileStyle.Render(f.Name()))
-			}
-		} else if errors.Is(err, template.ErrNotFound) {
+		if t, err := template.Find(ws.Fs(), name); errors.Is(err, template.ErrNotFound) {
 			fmt.Printf("Could not find template: %s\n", name)
+		} else if err != nil {
+			fmt.Printf("wtf: %s\n", err.Error())
+			os.Exit(1)
+		} else {
+			fmt.Println(styles.Template(t))
+			for f := range t.Files() {
+				fmt.Println(styles.TemplateFile(f))
+			}
 		}
 	},
 }

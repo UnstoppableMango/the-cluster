@@ -38,7 +38,7 @@ var _ = Describe("Init", Pending, func() {
 	})
 
 	It("should create the app directory", func() {
-		d, err := app.Fs(actual).Stat(filepath.Join(root, mockDirectory))
+		d, err := actual.Fs().Stat(filepath.Join(root, mockDirectory))
 		Expect(err).NotTo(HaveOccurred())
 		Expect(d.IsDir()).To(BeTrueBecause("the directory was created"))
 	})
@@ -52,7 +52,7 @@ var _ = Describe("Init", Pending, func() {
 		Entry("package.json", "package.json"),
 		Entry("tsconfig.json", "tsconfig.json"),
 		func(file string) {
-			f, err := app.Fs(actual).Open(filepath.Join(root, mockDirectory, file))
+			f, err := actual.Fs().Open(filepath.Join(root, mockDirectory, file))
 			Expect(err).NotTo(HaveOccurred())
 
 			stat, err := f.Stat()
@@ -62,7 +62,7 @@ var _ = Describe("Init", Pending, func() {
 	)
 
 	It("should template Pulumi.yaml", func() {
-		f, err := app.Fs(actual).Open(filepath.Join(root, mockDirectory, "Pulumi.yaml"))
+		f, err := actual.Fs().Open(filepath.Join(root, mockDirectory, "Pulumi.yaml"))
 		Expect(err).NotTo(HaveOccurred())
 
 		contents, err := io.ReadAll(f)
@@ -71,7 +71,7 @@ var _ = Describe("Init", Pending, func() {
 	})
 
 	It("should template index.ts", func() {
-		f, err := app.Fs(actual).Open(filepath.Join(root, mockDirectory, "index.ts"))
+		f, err := actual.Fs().Open(filepath.Join(root, mockDirectory, "index.ts"))
 		Expect(err).NotTo(HaveOccurred())
 
 		contents, err := io.ReadAll(f)
@@ -85,7 +85,7 @@ var _ = Describe("Init", Pending, func() {
 		})
 
 		It("should use the base directory as the App name", func() {
-			f, err := app.Fs(actual).Open(filepath.Join(root, mockDirectory, "Pulumi.yaml"))
+			f, err := actual.Fs().Open(filepath.Join(root, mockDirectory, "Pulumi.yaml"))
 			Expect(err).NotTo(HaveOccurred())
 
 			contents, err := io.ReadAll(f)
@@ -100,7 +100,7 @@ var _ = Describe("Init", Pending, func() {
 		})
 
 		It("should attempt to make the path relative", func() {
-			d, err := app.Fs(actual).Stat(mockDirectory)
+			d, err := actual.Fs().Stat(mockDirectory)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(d.IsDir()).To(BeTrueBecause("the directory was created"))
 		})

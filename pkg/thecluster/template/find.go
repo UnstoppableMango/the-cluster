@@ -26,7 +26,7 @@ func Find(fs thecluster.Fs, name string, options ...FindOption) (thecluster.Temp
 		op.apply(opts)
 	}
 
-	for g := range List(fs, opts.path) {
+	for g := range List(fs, WithPath(opts.path)) {
 		templates, err := g.Templates()
 		if err != nil {
 			return nil, err

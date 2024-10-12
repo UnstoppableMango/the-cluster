@@ -5,9 +5,9 @@ import (
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
-type Writer func(thecluster.Workspace) error
+type Writer func(Writable) error
 
-func (write Writer) write(workspace thecluster.Workspace) error {
+func (write Writer) write(workspace Writable) error {
 	return write(workspace)
 }
 

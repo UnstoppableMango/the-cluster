@@ -6,6 +6,7 @@ import (
 
 	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
+	"github.com/unstoppablemango/the-cluster/pkg/styles"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster/template"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster/workspace"
 )
@@ -21,8 +22,8 @@ var ListCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		for g := range template.List(ws.Fs(), template.RelativePath) {
-			fmt.Println(groupStyle.Render(g.Name()))
+		for g := range template.List(ws.Fs()) {
+			fmt.Println(styles.TemplateGroup(g))
 
 			templates, err := g.Templates()
 			if err != nil {
@@ -31,9 +32,9 @@ var ListCmd = &cobra.Command{
 			}
 
 			for t := range templates {
-				fmt.Println(templateStyle.Render(t.Name()))
+				fmt.Println(styles.Template(t))
 				for f := range t.Files() {
-					fmt.Println(fileStyle.Render(f.Name()))
+					fmt.Println(styles.TemplateFile(f))
 				}
 			}
 		}

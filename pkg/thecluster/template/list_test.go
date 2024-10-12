@@ -21,14 +21,14 @@ var _ = Describe("List", func() {
 	})
 
 	It("should discover local pulumi templates", func() {
-		ts := slices.Collect(template.List(ws.Fs(), template.RelativePath))
+		ts := slices.Collect(template.List(ws.Fs()))
 
 		Expect(ts).To(HaveLen(1))
 		Expect(ts[0].Name()).To(Equal("pulumi"))
 	})
 
 	It("should discover the typescript template", func() {
-		ts := slices.Collect(template.List(ws.Fs(), template.RelativePath))
+		ts := slices.Collect(template.List(ws.Fs()))
 
 		Expect(ts).To(HaveLen(1))
 		t, err := ts[0].Templates()
@@ -39,7 +39,7 @@ var _ = Describe("List", func() {
 	})
 
 	It("should discover the index.ts file", func() {
-		ts := slices.Collect(template.List(ws.Fs(), template.RelativePath))
+		ts := slices.Collect(template.List(ws.Fs()))
 
 		Expect(ts).To(HaveLen(1))
 		t, err := ts[0].Templates()
@@ -59,7 +59,7 @@ var _ = Describe("List", func() {
 	It("should ignore errored templates", Pending, func() {
 		fs := afero.NewMemMapFs()
 
-		ts := template.List(fs, "")
+		ts := template.List(fs, template.WithPath(""))
 
 		Expect(slices.Collect(ts)).To(HaveLen(0))
 	})
