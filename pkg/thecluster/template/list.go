@@ -8,6 +8,6 @@ import (
 
 // List lists all valid templates that can be discovered at path
 // and ignores any templates that produce errors.
-func List(workspace thecluster.Workspace, path string) iter.Seq[thecluster.TemplateGroup] {
+func List(workspace thecluster.Fs, path string) iter.Seq[thecluster.TemplateGroup] {
 	return seqs.FilterR(Discover(workspace, path))
 }

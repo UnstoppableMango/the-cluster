@@ -39,7 +39,7 @@ func (g *group) Templates() (iter.Seq[thecluster.Template], error) {
 		}
 
 		return seqs.Append(templates,
-			New(g, path),
+			New(g.fs, path),
 		)
 	}
 

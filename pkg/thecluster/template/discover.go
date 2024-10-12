@@ -19,7 +19,7 @@ type (
 	tg          = thecluster.TemplateGroup
 )
 
-func Discover(workspace thecluster.Workspace, path string) iter.Seq[GroupResult] {
+func Discover(workspace thecluster.Fs, path string) iter.Seq[GroupResult] {
 	var currentGroup GroupResult
 
 	reducer := func(results iter.Seq[GroupResult], c fs.Cursor, err error) iter.Seq[GroupResult] {
@@ -48,7 +48,7 @@ func Discover(workspace thecluster.Workspace, path string) iter.Seq[GroupResult]
 
 				r := done(currentGroup)
 				currentGroup = result.Ok(
-					NewGroup(workspace.Fs(), c.Path()),
+					NewGroup(workspace, c.Path()),
 				)
 
 				return r
@@ -58,7 +58,7 @@ func Discover(workspace thecluster.Workspace, path string) iter.Seq[GroupResult]
 		return results
 	}
 
-	return fs.Reduce(workspace.Fs(),
+	return fs.Reduce(workspace,
 		path, reducer,
 		iter.Empty[GroupResult](),
 	)

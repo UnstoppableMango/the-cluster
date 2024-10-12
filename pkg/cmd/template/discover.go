@@ -20,7 +20,7 @@ var DiscoverCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		for r := range template.Discover(ws, template.RelativePath) {
+		for r := range template.Discover(ws.Fs(), template.RelativePath) {
 			g, err := r.Unwrap()
 			if err != nil {
 				log.Error(err)

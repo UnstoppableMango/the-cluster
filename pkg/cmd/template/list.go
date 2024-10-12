@@ -28,7 +28,7 @@ var ListCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		for g := range template.List(ws, template.RelativePath) {
+		for g := range template.List(ws.Fs(), template.RelativePath) {
 			fmt.Println(groupStyle.Render(g.Name()))
 
 			templates, err := g.Templates()

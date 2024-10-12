@@ -45,9 +45,9 @@ func (t *tmpl) Files() iter.Seq[thecluster.TemplateFile] {
 
 var _ thecluster.Template = &tmpl{}
 
-func New(ws thecluster.Workspace, path string) thecluster.Template {
+func New(workspace thecluster.Fs, path string) thecluster.Template {
 	g := &tmpl{
-		fs:   fs.ScopeTo(ws.Fs(), path),
+		fs:   fs.ScopeTo(workspace, path),
 		path: path,
 	}
 
