@@ -16,13 +16,36 @@ const (
 
 type (
 	GroupResult = result.Result[thecluster.TemplateGroup]
-	tg          = thecluster.TemplateGroup
 )
 
-func Discover(workspace thecluster.Workspace, path string) iter.Seq[GroupResult] {
-	var currentGroup GroupResult
+type discoverOptions struct {
+	path string
+}
 
-	reducer := func(results iter.Seq[GroupResult], c fs.Cursor, err error) iter.Seq[GroupResult] {
+type DiscoverOption func(*discoverOptions)
+
+func (op DiscoverOption) apply(options *discoverOptions) {
+	op(options)
+}
+
+func WithPath(path string) DiscoverOption {
+	return func(do *discoverOptions) {
+		do.path = path
+	}
+}
+
+func Discover(workspace thecluster.Fs, options ...DiscoverOption) iter.Seq[GroupResult] {
+	opts := &discoverOptions{RelativePath}
+	for _, op := range options {
+		op.apply(opts)
+	}
+
+	var currentGroup GroupResult
+	reducer := func(
+		results iter.Seq[GroupResult],
+		c fs.Cursor,
+		err error,
+	) iter.Seq[GroupResult] {
 		done := func(r GroupResult) iter.Seq[GroupResult] {
 			if r != nil {
 				return seqs.Append(results, r)
@@ -32,13 +55,13 @@ func Discover(workspace thecluster.Workspace, path string) iter.Seq[GroupResult]
 		}
 
 		if err != nil {
-			return done(result.Err[tg](err))
+			return done(result.Err[thecluster.TemplateGroup](err))
 		}
 
 		if c.Info().IsDir() {
-			p, err := filepath.Rel(path, c.Path())
+			p, err := filepath.Rel(opts.path, c.Path())
 			if err != nil {
-				return done(result.Err[tg](err))
+				return done(result.Err[thecluster.TemplateGroup](err))
 			}
 
 			if len(filepath.SplitList(p)) == 1 {
@@ -48,7 +71,7 @@ func Discover(workspace thecluster.Workspace, path string) iter.Seq[GroupResult]
 
 				r := done(currentGroup)
 				currentGroup = result.Ok(
-					NewGroup(workspace, c.Path(), c.Info()),
+					NewGroup(workspace, c.Path()),
 				)
 
 				return r
@@ -58,8 +81,8 @@ func Discover(workspace thecluster.Workspace, path string) iter.Seq[GroupResult]
 		return results
 	}
 
-	return fs.Reduce(workspace.Fs(),
-		path, reducer,
+	return fs.Reduce(workspace,
+		opts.path, reducer,
 		iter.Empty[GroupResult](),
 	)
 }
