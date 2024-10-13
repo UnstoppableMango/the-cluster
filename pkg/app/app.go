@@ -45,7 +45,7 @@ func Load(ctx context.Context, fsys thecluster.Fs, path string) (thecluster.App,
 	}
 
 	name, appPath := path, filepath.Join(StandardDir, path)
-	if parts := strings.Split(path, "/"); len(parts) != 1 {
+	if parts := strings.Split(filepath.Clean(path), "/"); len(parts) != 1 {
 		if parts[0] != "apps" || len(parts) != 2 {
 			return nil, fmt.Errorf("path segments: %d: %w", len(parts), ErrNotSuppported)
 		} else {
