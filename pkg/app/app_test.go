@@ -58,10 +58,13 @@ var _ = Describe("App", func() {
 		})
 
 		Context("when the path is a directory", func() {
-			const dir = "test"
+			const (
+				dir     = "test"
+				appPath = "apps/test"
+			)
 
 			BeforeEach(func() {
-				Expect(fsys.Mkdir(dir, os.ModeDir)).To(Succeed())
+				Expect(fsys.MkdirAll(appPath, os.ModeDir)).To(Succeed())
 			})
 
 			It("should succeed", func(ctx context.Context) {
@@ -99,6 +102,15 @@ var _ = Describe("App", func() {
 				Expect(app.Workspace().Fs()).NotTo(BeNil())
 			})
 
+			It("should prepend the apps directory", func(ctx context.Context) {
+				expectedFs := afero.NewBasePathFs(fsys, filepath.Join("apps", dir))
+
+				app, err := app.Load(ctx, fsys, dir)
+
+				Expect(err).NotTo(HaveOccurred())
+				Expect(app.Workspace().Fs()).To(Equal(expectedFs))
+			})
+
 			Context("and directory has two segments", func() {
 				It("should fail", func(ctx context.Context) {
 					path := filepath.Join(dir, "other")
@@ -113,6 +125,24 @@ var _ = Describe("App", func() {
 					_, err := app.Load(ctx, fsys, path)
 
 					Expect(err).To(MatchError(app.ErrNotSuppported))
+				})
+			})
+
+			Context("and path starts with apps/", func() {
+				It("should succeed", func(ctx context.Context) {
+					app, err := app.Load(ctx, fsys, appPath)
+
+					Expect(err).NotTo(HaveOccurred())
+					Expect(app).NotTo(BeNil())
+				})
+
+				It("should prepend the apps directory", func(ctx context.Context) {
+					expectedFs := afero.NewBasePathFs(fsys, appPath)
+
+					app, err := app.Load(ctx, fsys, dir)
+
+					Expect(err).NotTo(HaveOccurred())
+					Expect(app.Workspace().Fs()).To(Equal(expectedFs))
 				})
 			})
 
