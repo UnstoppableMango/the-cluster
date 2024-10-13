@@ -9,9 +9,9 @@ import (
 	. "github.com/onsi/gomega"
 
 	"github.com/unstoppablemango/the-cluster/internal/util"
+	"github.com/unstoppablemango/the-cluster/pkg/app"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
-	"github.com/unstoppablemango/the-cluster/pkg/thecluster/app"
-	"github.com/unstoppablemango/the-cluster/pkg/thecluster/workspace"
+	"github.com/unstoppablemango/the-cluster/pkg/workspace"
 )
 
 var _ = Describe("Init", Pending, func() {
