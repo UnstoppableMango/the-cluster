@@ -50,7 +50,10 @@ func Init(workspace thecluster.Workspace, appPath string) (thecluster.App, error
 		return nil, fmt.Errorf("writing template to workspace: %w", err)
 	}
 
-	return &app{name.Name(), writable}, nil
+	return &app{
+		name: name.Name(),
+		ws:   writable,
+	}, nil
 }
 
 func ProjectName(name string) string {

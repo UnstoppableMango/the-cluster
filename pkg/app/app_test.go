@@ -1,6 +1,7 @@
 package app_test
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 
@@ -21,8 +22,8 @@ var _ = Describe("App", func() {
 		})
 
 		Context("when the path does not exist", func() {
-			It("should fail", func() {
-				app, err := app.Load(fsys, "test")
+			It("should fail", func(ctx context.Context) {
+				app, err := app.Load(ctx, fsys, "test")
 
 				Expect(app).To(BeNil())
 				Expect(err).To(HaveOccurred())
@@ -36,19 +37,19 @@ var _ = Describe("App", func() {
 				Expect(fsys.Create(file)).NotTo(BeNil())
 			})
 
-			It("should fail", func() {
-				app, err := app.Load(fsys, file)
+			It("should fail", func(ctx context.Context) {
+				app, err := app.Load(ctx, fsys, file)
 
 				Expect(app).To(BeNil())
 				Expect(err).To(HaveOccurred())
 			})
 
 			Context("and path is absolute", func() {
-				It("should fail", func() {
+				It("should fail", func(ctx context.Context) {
 					path, err := filepath.Abs(file)
 					Expect(err).NotTo(HaveOccurred())
 
-					app, err := app.Load(fsys, path)
+					app, err := app.Load(ctx, fsys, path)
 
 					Expect(app).To(BeNil())
 					Expect(err).To(HaveOccurred())
@@ -63,40 +64,64 @@ var _ = Describe("App", func() {
 				Expect(fsys.Mkdir(dir, os.ModeDir)).To(Succeed())
 			})
 
-			It("should succeed", func() {
-				app, err := app.Load(fsys, dir)
+			It("should succeed", func(ctx context.Context) {
+				app, err := app.Load(ctx, fsys, dir)
 
 				Expect(err).NotTo(HaveOccurred())
 				Expect(app).NotTo(BeNil())
 			})
 
-			It("should have a workspace", func() {
-				app, err := app.Load(fsys, dir)
+			It("should have a workspace", func(ctx context.Context) {
+				app, err := app.Load(ctx, fsys, dir)
 
 				Expect(err).NotTo(HaveOccurred())
 				Expect(app.Workspace()).NotTo(BeNil())
 			})
 
-			It("should have a filesystem", func() {
-				app, err := app.Load(fsys, dir)
+			It("should have a filesystem", func(ctx context.Context) {
+				app, err := app.Load(ctx, fsys, dir)
 
 				Expect(err).NotTo(HaveOccurred())
 				Expect(app.Workspace().Fs()).NotTo(BeNil())
 			})
 
-			It("should not use the given filesystem", func() {
-				app, err := app.Load(fsys, dir)
+			It("should not use the given filesystem", func(ctx context.Context) {
+				app, err := app.Load(ctx, fsys, dir)
 
 				Expect(err).NotTo(HaveOccurred())
 				Expect(app.Workspace().Fs()).NotTo(BeIdenticalTo(fsys))
 			})
 
+			It("should have a pulumi workspace", func(ctx context.Context) {
+				app, err := app.Load(ctx, fsys, dir)
+
+				Expect(err).NotTo(HaveOccurred())
+				Expect(app.Workspace().Fs()).NotTo(BeNil())
+			})
+
+			Context("and directory has two segments", func() {
+				It("should fail", func(ctx context.Context) {
+					path := filepath.Join(dir, "other")
+					app, err := app.Load(ctx, fsys, path)
+
+					Expect(app).To(BeNil())
+					Expect(err).To(HaveOccurred())
+				})
+
+				It("should fail with not supported", func(ctx context.Context) {
+					path := filepath.Join(dir, "other")
+					_, err := app.Load(ctx, fsys, path)
+
+					Expect(err).To(MatchError(app.ErrNotSuppported))
+				})
+			})
+
 			Context("and directory is absolute", func() {
-				It("should fail", func() {
+				It("should fail", func(ctx context.Context) {
 					path, err := filepath.Abs(dir)
 					Expect(err).NotTo(HaveOccurred())
 
-					app, err := app.Load(fsys, path)
+					app, err := app.Load(ctx, fsys, path)
 
 					Expect(app).To(BeNil())
 					Expect(err).To(HaveOccurred())

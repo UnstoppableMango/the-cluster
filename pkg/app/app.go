@@ -1,10 +1,13 @@
 package app
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"path/filepath"
+	"strings"
 
+	"github.com/pulumi/pulumi/sdk/v3/go/auto"
 	"github.com/spf13/afero"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 	"github.com/unstoppablemango/the-cluster/pkg/workspace"
@@ -16,8 +19,9 @@ var (
 )
 
 type app struct {
-	name string
-	ws   thecluster.Workspace
+	name   string
+	ws     thecluster.Workspace
+	pulumi auto.Workspace
 }
 
 // Name implements thecluster.App.
@@ -30,10 +34,13 @@ func (a *app) Workspace() thecluster.Workspace {
 	return a.ws
 }
 
-func Load(fsys thecluster.Fs, path string) (thecluster.App, error) {
+func Load(ctx context.Context, fsys thecluster.Fs, path string) (thecluster.App, error) {
 	if filepath.IsAbs(path) {
 		// Why must I be an ugly duckling
 		return nil, fmt.Errorf("absolute path: %w", ErrNotSuppported)
+	}
+	if l := len(strings.Split(path, "/")); l != 1 {
+		return nil, fmt.Errorf("path segments: %d: %w", l, ErrNotSuppported)
 	}
 
 	exists, err := afero.DirExists(fsys, path)
@@ -44,8 +51,14 @@ func Load(fsys thecluster.Fs, path string) (thecluster.App, error) {
 		return nil, fmt.Errorf("%w: %s", ErrNotFound, path)
 	}
 
+	ws, err := auto.NewLocalWorkspace(ctx, auto.WorkDir(path))
+	if err != nil {
+		return nil, fmt.Errorf("creating local workspace: %w", err)
+	}
+
 	return &app{
-		name: path,
+		name:   path,
+		pulumi: ws,
 		ws: workspace.At(
 			afero.NewBasePathFs(fsys, path),
 		),
