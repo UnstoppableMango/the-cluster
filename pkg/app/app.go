@@ -33,6 +33,11 @@ func (a *app) Name() string {
 	return a.name
 }
 
+// Pulumi implements PulumiSupporter
+func (a *app) Pulumi() auto.Workspace {
+	return a.pulumi
+}
+
 // Workspace implements thecluster.App.
 func (a *app) Workspace() thecluster.Workspace {
 	return a.ws

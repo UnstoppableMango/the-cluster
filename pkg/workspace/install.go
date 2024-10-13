@@ -7,6 +7,7 @@ import (
 
 	"github.com/pulumi/pulumi/sdk/v3/go/auto"
 	"github.com/spf13/afero"
+	"github.com/unstoppablemango/the-cluster/internal/option"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
@@ -29,6 +30,7 @@ func InstallDeps(ctx context.Context, ws thecluster.Workspace, options ...Instal
 	}
 
 	opts := &auto.InstallOptions{}
+	option.ApplyAll(opts, options)
 
 	return pulumi.Install(ctx, opts)
 }
