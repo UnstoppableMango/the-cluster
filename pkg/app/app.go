@@ -13,6 +13,10 @@ import (
 	"github.com/unstoppablemango/the-cluster/pkg/workspace"
 )
 
+const (
+	StandardDir = "apps"
+)
+
 var (
 	ErrNotFound      = errors.New("app dir not found")
 	ErrNotSuppported = errors.New("not supported")
@@ -39,28 +43,34 @@ func Load(ctx context.Context, fsys thecluster.Fs, path string) (thecluster.App,
 		// Why must I be an ugly duckling
 		return nil, fmt.Errorf("absolute path: %w", ErrNotSuppported)
 	}
-	if l := len(strings.Split(path, "/")); l != 1 {
-		return nil, fmt.Errorf("path segments: %d: %w", l, ErrNotSuppported)
+
+	name, appPath := path, filepath.Join(StandardDir, path)
+	if parts := strings.Split(path, "/"); len(parts) != 1 {
+		if parts[0] != "apps" || len(parts) != 2 {
+			return nil, fmt.Errorf("path segments: %d: %w", len(parts), ErrNotSuppported)
+		} else {
+			name, appPath = parts[1], path
+		}
 	}
 
-	exists, err := afero.DirExists(fsys, path)
+	exists, err := afero.DirExists(fsys, appPath)
 	if err != nil {
 		return nil, fmt.Errorf("app dir exists: %w", err)
 	}
 	if !exists {
-		return nil, fmt.Errorf("%w: %s", ErrNotFound, path)
+		return nil, fmt.Errorf("%w: %s", ErrNotFound, appPath)
 	}
 
-	ws, err := auto.NewLocalWorkspace(ctx, auto.WorkDir(path))
+	ws, err := auto.NewLocalWorkspace(ctx, auto.WorkDir(appPath))
 	if err != nil {
 		return nil, fmt.Errorf("creating local workspace: %w", err)
 	}
 
 	return &app{
-		name:   path,
+		name:   name,
 		pulumi: ws,
 		ws: workspace.At(
-			afero.NewBasePathFs(fsys, path),
+			afero.NewBasePathFs(fsys, appPath),
 		),
 	}, nil
 }
