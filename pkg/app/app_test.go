@@ -84,6 +84,13 @@ var _ = Describe("App", func() {
 				Expect(app.Workspace().Fs()).NotTo(BeNil())
 			})
 
+			It("should not use the given filesystem", func() {
+				app, err := app.Load(fsys, dir)
+
+				Expect(err).NotTo(HaveOccurred())
+				Expect(app.Workspace().Fs()).NotTo(BeIdenticalTo(fsys))
+			})
+
 			Context("and directory is absolute", func() {
 				It("should fail", func() {
 					path, err := filepath.Abs(dir)
