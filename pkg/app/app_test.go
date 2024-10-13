@@ -2,6 +2,7 @@ package app_test
 
 import (
 	"os"
+	"path/filepath"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -29,28 +30,70 @@ var _ = Describe("App", func() {
 		})
 
 		Context("when the path is a file", func() {
+			const file = "test.txt"
+
 			BeforeEach(func() {
-				Expect(fsys.Create("test")).NotTo(BeNil())
+				Expect(fsys.Create(file)).NotTo(BeNil())
 			})
 
 			It("should fail", func() {
-				app, err := app.Load(fsys, "test")
+				app, err := app.Load(fsys, file)
 
 				Expect(app).To(BeNil())
 				Expect(err).To(HaveOccurred())
 			})
+
+			Context("and path is absolute", func() {
+				It("should fail", func() {
+					path, err := filepath.Abs(file)
+					Expect(err).NotTo(HaveOccurred())
+
+					app, err := app.Load(fsys, path)
+
+					Expect(app).To(BeNil())
+					Expect(err).To(HaveOccurred())
+				})
+			})
 		})
 
 		Context("when the path is a directory", func() {
+			const dir = "test"
+
 			BeforeEach(func() {
-				Expect(fsys.Mkdir("test", os.ModeDir)).To(Succeed())
+				Expect(fsys.Mkdir(dir, os.ModeDir)).To(Succeed())
 			})
 
 			It("should succeed", func() {
-				app, err := app.Load(fsys, "test")
+				app, err := app.Load(fsys, dir)
 
 				Expect(err).NotTo(HaveOccurred())
 				Expect(app).NotTo(BeNil())
+			})
+
+			It("should have a workspace", func() {
+				app, err := app.Load(fsys, dir)
+
+				Expect(err).NotTo(HaveOccurred())
+				Expect(app.Workspace()).NotTo(BeNil())
+			})
+
+			It("should have a filesystem", func() {
+				app, err := app.Load(fsys, dir)
+
+				Expect(err).NotTo(HaveOccurred())
+				Expect(app.Workspace().Fs()).NotTo(BeNil())
+			})
+
+			Context("and directory is absolute", func() {
+				It("should fail", func() {
+					path, err := filepath.Abs(dir)
+					Expect(err).NotTo(HaveOccurred())
+
+					app, err := app.Load(fsys, path)
+
+					Expect(app).To(BeNil())
+					Expect(err).To(HaveOccurred())
+				})
 			})
 		})
 	})
