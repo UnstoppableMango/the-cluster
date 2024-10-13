@@ -6,9 +6,9 @@ import (
 	"github.com/spf13/afero"
 	"github.com/unmango/go/slices"
 
+	"github.com/unstoppablemango/the-cluster/pkg/template"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
-	"github.com/unstoppablemango/the-cluster/pkg/thecluster/template"
-	"github.com/unstoppablemango/the-cluster/pkg/thecluster/workspace"
+	"github.com/unstoppablemango/the-cluster/pkg/workspace"
 )
 
 var _ = Describe("List", func() {

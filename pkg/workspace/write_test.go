@@ -5,7 +5,7 @@ import (
 	. "github.com/onsi/gomega"
 
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
-	"github.com/unstoppablemango/the-cluster/pkg/thecluster/workspace"
+	"github.com/unstoppablemango/the-cluster/pkg/workspace"
 )
 
 var _ = Describe("Write", func() {

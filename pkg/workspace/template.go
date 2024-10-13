@@ -6,8 +6,8 @@ import (
 
 	"github.com/unmango/go/iter"
 	"github.com/unstoppablemango/the-cluster/pkg/fs"
+	"github.com/unstoppablemango/the-cluster/pkg/template"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
-	"github.com/unstoppablemango/the-cluster/pkg/thecluster/template"
 )
 
 func TemplatesPath(workspace thecluster.Workspace) (string, error) {

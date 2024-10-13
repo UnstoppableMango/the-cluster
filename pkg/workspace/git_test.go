@@ -6,7 +6,7 @@ import (
 
 	"github.com/unstoppablemango/the-cluster/internal/util"
 	"github.com/unstoppablemango/the-cluster/pkg/fs"
-	"github.com/unstoppablemango/the-cluster/pkg/thecluster/workspace"
+	"github.com/unstoppablemango/the-cluster/pkg/workspace"
 )
 
 var _ = Describe("Git", func() {

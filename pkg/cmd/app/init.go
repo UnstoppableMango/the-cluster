@@ -5,8 +5,8 @@ import (
 
 	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
-	"github.com/unstoppablemango/the-cluster/pkg/thecluster/app"
-	"github.com/unstoppablemango/the-cluster/pkg/thecluster/workspace"
+	"github.com/unstoppablemango/the-cluster/pkg/app"
+	"github.com/unstoppablemango/the-cluster/pkg/workspace"
 )
 
 var InitCmd = &cobra.Command{

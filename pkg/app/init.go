@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/unstoppablemango/the-cluster/pkg/template"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
-	"github.com/unstoppablemango/the-cluster/pkg/thecluster/template"
-	ws "github.com/unstoppablemango/the-cluster/pkg/thecluster/workspace"
+	ws "github.com/unstoppablemango/the-cluster/pkg/workspace"
 )
 
 const DefaultTemplate = "typescript"
