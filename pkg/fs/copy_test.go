@@ -8,23 +8,23 @@ import (
 
 	"github.com/spf13/afero"
 	"github.com/unstoppablemango/the-cluster/pkg/fs"
-	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
+	"github.com/unstoppablemango/the-cluster/pkg/testing"
 )
 
 var _ = Describe("Copy", func() {
-	var src, dest thecluster.Fs
+	var src, dest *testing.MockFs
 
 	BeforeEach(func() {
-		src = afero.NewMemMapFs()
-		dest = afero.NewMemMapFs()
+		src = testing.NewMockFs()
+		dest = testing.NewMockFs()
 	})
 
 	JustBeforeEach(func() {
-		Expect(fs.Copy(src, dest)).To(Succeed())
+		Expect(fs.Copy(src.Fs(), dest)).To(Succeed())
 	})
 
 	It("should work", func() {
-		_, err := fs.FailFast(fs.Iter(src, ""))
+		_, err := fs.FailFast(fs.Iter(src.Fs(), ""))
 		Expect(err).NotTo(HaveOccurred())
 	})
 
@@ -39,7 +39,7 @@ var _ = Describe("Copy", func() {
 		It("should copy files", func() {
 			fileCount := 0
 
-			files, err := fs.FailFast(fs.Iter(src, ""))
+			files, err := fs.FailFast(fs.Iter(src.Fs(), ""))
 			Expect(err).NotTo(HaveOccurred())
 			for p, i := range files {
 				if p == "" {
@@ -67,7 +67,7 @@ var _ = Describe("Copy", func() {
 		It("should copy dirs", func() {
 			dirCount := 0
 
-			files, err := fs.FailFast(fs.Iter(src, ""))
+			files, err := fs.FailFast(fs.Iter(src.Fs(), ""))
 			Expect(err).NotTo(HaveOccurred())
 			for p, i := range files {
 				if p == "" {

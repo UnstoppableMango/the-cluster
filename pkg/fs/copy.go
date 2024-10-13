@@ -8,7 +8,7 @@ import (
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
-func Copy(src, dest thecluster.Fs) error {
+func Copy(src thecluster.Fs, dest thecluster.WritableFs) error {
 	files, err := FailFast(Iter(src, ""))
 	if err != nil {
 		return fmt.Errorf("iterating over src: %w", err)
@@ -23,7 +23,12 @@ func Copy(src, dest thecluster.Fs) error {
 	return nil
 }
 
-func CopyFile(src, dest thecluster.Fs, path string, info FileInfo) error {
+func CopyFile(
+	src thecluster.Fs,
+	dest thecluster.WritableFs,
+	path string,
+	info FileInfo,
+) error {
 	if path == "/" || path == "" {
 		return nil
 	}
@@ -43,7 +48,7 @@ func CopyFile(src, dest thecluster.Fs, path string, info FileInfo) error {
 			return fmt.Errorf("dest: %w", err)
 		}
 
-		if _, err := io.Copy(s, d); err != nil {
+		if _, err := io.Copy(d, s); err != nil {
 			return fmt.Errorf("src to dest: %w", err)
 		}
 

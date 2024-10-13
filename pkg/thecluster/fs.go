@@ -1,13 +1,5 @@
 package thecluster
 
-import (
-	"io/fs"
+import "github.com/spf13/afero"
 
-	"github.com/spf13/afero"
-)
-
-type Fs interface{ fs.FS }
-
-type WritableFs interface {
-	afero.Fs
-}
+type Fs interface{ afero.Fs }

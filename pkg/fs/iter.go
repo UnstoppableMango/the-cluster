@@ -4,7 +4,6 @@ import (
 	"errors"
 	"io/fs"
 
-	"github.com/spf13/afero"
 	"github.com/unmango/go/iter"
 	"github.com/unmango/go/seqs"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
@@ -23,7 +22,7 @@ func Iter(f thecluster.Fs, root string) Seq {
 			return yieldErr(yield(path, info, err))
 		}
 
-		if err := afero.Walk(f, root, walker); err != nil {
+		if err := Walk(f, root, walker); err != nil {
 			if !errors.Is(err, ErrYield) {
 				_ = yield("", nil, err)
 			}
@@ -33,37 +32,27 @@ func Iter(f thecluster.Fs, root string) Seq {
 
 func IterDirs(f thecluster.Fs, root string) Seq {
 	return func(yield func(string, fs.FileInfo, error) bool) {
-		walker := func(path string, info fs.FileInfo, err error) error {
-			if !info.IsDir() {
-				return nil
+		Iter(f, root)(func(path string, info fs.FileInfo, err error) bool {
+			isDir := info.IsDir()
+			if isDir {
+				yield(path, info, err)
 			}
 
-			return yieldErr(yield(path, info, err))
-		}
-
-		if err := afero.Walk(f, root, walker); err != nil {
-			if !errors.Is(err, ErrYield) {
-				_ = yield("", nil, err)
-			}
-		}
+			return isDir
+		})
 	}
 }
 
 func IterFiles(f thecluster.Fs, root string) Seq {
 	return func(yield func(string, fs.FileInfo, error) bool) {
-		walker := func(path string, info fs.FileInfo, err error) error {
-			if info.IsDir() {
-				return nil
+		Iter(f, root)(func(path string, info fs.FileInfo, err error) bool {
+			isFile := !info.IsDir()
+			if isFile {
+				yield(path, info, err)
 			}
 
-			return yieldErr(yield(path, info, err))
-		}
-
-		if err := afero.Walk(f, root, walker); err != nil {
-			if !errors.Is(err, ErrYield) {
-				_ = yield("", nil, err)
-			}
-		}
+			return isFile
+		})
 	}
 }
 

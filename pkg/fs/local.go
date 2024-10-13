@@ -3,14 +3,17 @@ package fs
 import (
 	"fmt"
 
-	"github.com/spf13/afero"
 	"github.com/unstoppablemango/the-cluster/internal/util"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
 type LocalRepoFs struct {
 	thecluster.Fs
-	Root string
+	root string
+}
+
+func (fsys *LocalRepoFs) Root() string {
+	return fsys.root
 }
 
 func LocalRepo() (*LocalRepoFs, error) {
@@ -20,14 +23,14 @@ func LocalRepo() (*LocalRepoFs, error) {
 	}
 
 	return &LocalRepoFs{
-		Fs:   afero.NewBasePathFs(afero.NewOsFs(), root),
-		Root: root,
+		Fs:   New(WithRoot(root)),
+		root: root,
 	}, nil
 }
 
 func GitRoot(fs thecluster.Fs) (string, error) {
 	if repo, ok := fs.(*LocalRepoFs); ok {
-		return repo.Root, nil
+		return repo.root, nil
 	}
 
 	return util.GitRoot()

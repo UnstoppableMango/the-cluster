@@ -27,12 +27,12 @@ func (s *scoped) Root() thecluster.Fs {
 	return s.root
 }
 
-func ScopeTo(fs thecluster.Fs, path string) Scoped {
-	view := afero.NewBasePathFs(fs, path)
+func ScopeTo(fsys thecluster.Fs, path string) Scoped {
+	view := afero.NewBasePathFs(afero.FromIOFS{FS: fsys}, path)
 
 	return &scoped{
 		Fs:   view,
-		root: fs,
+		root: fsys,
 		path: path,
 	}
 }

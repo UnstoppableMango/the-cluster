@@ -3,25 +3,25 @@ package fs_test
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.com/spf13/afero"
 
 	"github.com/unstoppablemango/the-cluster/pkg/fs"
+	"github.com/unstoppablemango/the-cluster/pkg/testing"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
 var _ = Describe("Changes", func() {
-	var base thecluster.Fs
+	var base *testing.MockFs
 	var tracker fs.ChangeTracker
 
 	BeforeEach(func() {
-		base = afero.NewMemMapFs()
+		base = testing.NewMockFs()
 	})
 
 	Context("Persist", func() {
-		var target thecluster.Fs
+		var target thecluster.WritableFs
 
 		BeforeEach(func() {
-			target = afero.NewMemMapFs()
+			target = testing.NewMockFs()
 		})
 
 		It("should succeed", func() {

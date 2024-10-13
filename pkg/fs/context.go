@@ -18,7 +18,7 @@ func FromContext(ctx context.Context) thecluster.Fs {
 	}
 
 	log.FromContext(ctx).Debug("no fs found in context")
-	return ReadOnly()
+	return New()
 }
 
 // WithContext returns a copy of parent containging the given fs
