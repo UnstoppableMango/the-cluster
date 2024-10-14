@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/charmbracelet/log"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto"
 	"github.com/spf13/afero"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
@@ -33,17 +34,13 @@ func (a *app) Name() string {
 	return a.name
 }
 
-// Pulumi implements PulumiSupporter
-func (a *app) Pulumi() auto.Workspace {
-	return a.pulumi
-}
-
 // Workspace implements thecluster.App.
 func (a *app) Workspace() thecluster.Workspace {
 	return a.ws
 }
 
 func Load(ctx context.Context, fsys thecluster.Fs, path string) (thecluster.App, error) {
+	log.FromContext(ctx).Info("loading app", "path", path)
 	if filepath.IsAbs(path) {
 		// Why must I be an ugly duckling
 		return nil, fmt.Errorf("absolute path: %w", ErrNotSuppported)
@@ -66,14 +63,8 @@ func Load(ctx context.Context, fsys thecluster.Fs, path string) (thecluster.App,
 		return nil, fmt.Errorf("%w: %s", ErrNotFound, appPath)
 	}
 
-	ws, err := auto.NewLocalWorkspace(ctx, auto.WorkDir(appPath))
-	if err != nil {
-		return nil, fmt.Errorf("creating local workspace: %w", err)
-	}
-
 	return &app{
-		name:   name,
-		pulumi: ws,
+		name: name,
 		ws: workspace.At(
 			afero.NewBasePathFs(fsys, appPath),
 			appPath,
