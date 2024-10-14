@@ -14,11 +14,9 @@ import (
 type InstallOption func(*auto.InstallOptions)
 
 func InstallDeps(ctx context.Context, ws thecluster.Workspace, options ...InstallOption) error {
-	var pulumi auto.Workspace
-	if p, ok := ws.(PulumiSupporter); !ok {
-		return errors.New("pulumi not supported")
-	} else {
-		pulumi = p.Pulumi()
+	pulumi, err := LoadPulumi(ctx, ws)
+	if err != nil {
+		return fmt.Errorf("loading pulumi workspace: %w", err)
 	}
 
 	isNpm, err := IsNpm(ws)

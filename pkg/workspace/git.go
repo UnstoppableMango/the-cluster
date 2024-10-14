@@ -16,6 +16,11 @@ func (l *LocalGitWorkspace) Fs() thecluster.Fs {
 	return l.fs
 }
 
+// Path implements thecluster.Workspace.
+func (l *LocalGitWorkspace) Path() string {
+	return l.fs.Root
+}
+
 var _ thecluster.Workspace = &LocalGitWorkspace{}
 
 func NewLocalGit() (*LocalGitWorkspace, error) {

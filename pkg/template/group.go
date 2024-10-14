@@ -27,6 +27,11 @@ func (g *group) Name() string {
 	return filepath.Base(g.path)
 }
 
+// Path implements thecluster.Workspace
+func (g *group) Path() string {
+	return g.path
+}
+
 // Templates implements thecluster.TemplateGroup.
 func (g *group) Templates() (iter.Seq[thecluster.Template], error) {
 	visit := func(

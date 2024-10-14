@@ -1,9 +1,20 @@
 package workspace
 
-import "github.com/pulumi/pulumi/sdk/v3/go/auto"
+import (
+	"context"
+	"fmt"
 
-// I really don't like this, but it gets the job done for now
+	"github.com/pulumi/pulumi/sdk/v3/go/auto"
+	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
+)
 
-type PulumiSupporter interface {
-	Pulumi() auto.Workspace
+func LoadPulumi(ctx context.Context, workspace thecluster.Workspace) (auto.Workspace, error) {
+	ws, err := auto.NewLocalWorkspace(ctx,
+		auto.WorkDir(workspace.Path()),
+	)
+	if err != nil {
+		return nil, fmt.Errorf("creating local workspace: %w", err)
+	}
+
+	return ws, nil
 }

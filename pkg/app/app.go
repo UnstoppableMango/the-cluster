@@ -76,6 +76,7 @@ func Load(ctx context.Context, fsys thecluster.Fs, path string) (thecluster.App,
 		pulumi: ws,
 		ws: workspace.At(
 			afero.NewBasePathFs(fsys, appPath),
+			appPath,
 		),
 	}, nil
 }

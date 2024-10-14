@@ -6,5 +6,5 @@ import (
 )
 
 func Empty() thecluster.Workspace {
-	return At(afero.NewMemMapFs())
+	return At(afero.NewMemMapFs(), "")
 }

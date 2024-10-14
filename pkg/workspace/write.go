@@ -19,9 +19,10 @@ type Writable interface {
 }
 
 type writable struct {
+	path  string
 	base  thecluster.Fs
 	layer thecluster.Fs
-	proj  thecluster.Fs
+	view  thecluster.Fs
 }
 
 // Base implements Writable.
@@ -36,7 +37,12 @@ func (w *writable) Changes() thecluster.Fs {
 
 // Fs implements thecluster.Workspace.
 func (w *writable) Fs() thecluster.Fs {
-	return w.proj
+	return w.view
+}
+
+// Path implements thecluster.Workspace.
+func (l *writable) Path() string {
+	panic("unimplemented")
 }
 
 var _ Writable = &writable{}
@@ -54,9 +60,14 @@ func Edit(workspace thecluster.Workspace) Writable {
 	}
 
 	base, layer := workspace.Fs(), afero.NewMemMapFs()
-	projection := afero.NewCopyOnWriteFs(base, layer)
+	view := afero.NewCopyOnWriteFs(base, layer)
 
-	return &writable{base, layer, projection}
+	return &writable{
+		path:  workspace.Path(),
+		base:  base,
+		layer: layer,
+		view:  view,
+	}
 }
 
 // With returns a read-write layer on top of workspace
