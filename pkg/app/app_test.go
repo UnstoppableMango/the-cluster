@@ -146,6 +146,15 @@ var _ = Describe("App", func() {
 				})
 			})
 
+			Context("and path ends with a a path separator", func() {
+				It("should succeed", func(ctx context.Context) {
+					app, err := app.Load(ctx, fsys, appPath+afero.FilePathSeparator)
+
+					Expect(err).NotTo(HaveOccurred())
+					Expect(app).NotTo(BeNil())
+				})
+			})
+
 			Context("and directory is absolute", func() {
 				It("should fail", func(ctx context.Context) {
 					path, err := filepath.Abs(dir)

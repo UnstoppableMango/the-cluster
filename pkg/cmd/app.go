@@ -11,5 +11,13 @@ var AppCmd = &cobra.Command{
 }
 
 func AddAppSubcommands(cmd *cobra.Command) {
-	cmd.AddCommand(app.InitCmd, app.LoadCmd)
+	// This feels wrong
+	deps := *app.DependenciesCmd
+	app.AddDependenciesSubcommands(&deps)
+
+	cmd.AddCommand(
+		app.InitCmd,
+		app.LoadCmd,
+		&deps,
+	)
 }
