@@ -10,6 +10,7 @@ import (
 	"github.com/charmbracelet/log"
 	"github.com/pulumi/pulumi/sdk/v3/go/auto"
 	"github.com/spf13/afero"
+	"github.com/unmango/go/iter"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 	"github.com/unstoppablemango/the-cluster/pkg/workspace"
 )
@@ -27,6 +28,11 @@ type app struct {
 	name   string
 	ws     thecluster.Workspace
 	pulumi auto.Workspace
+}
+
+// Dependencies implements thecluster.App.
+func (a *app) Dependencies() iter.Seq[thecluster.Dependency] {
+	panic("unimplemented")
 }
 
 // Name implements thecluster.App.

@@ -14,6 +14,14 @@ import (
 type InstallOption func(*auto.InstallOptions)
 
 func InstallDeps(ctx context.Context, ws thecluster.Workspace, options ...InstallOption) error {
+	if dependent, ok := ws.(thecluster.Dependent); ok {
+		for d := range dependent.Dependencies() {
+			if err := InstallDeps(ctx, d.Workspace(), options...); err != nil {
+				return fmt.Errorf("installing dependency at %s: %w", d.Workspace().Path(), err)
+			}
+		}
+	}
+
 	pulumi, err := LoadPulumi(ctx, ws)
 	if err != nil {
 		return fmt.Errorf("loading pulumi workspace: %w", err)
