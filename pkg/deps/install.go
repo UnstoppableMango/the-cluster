@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"github.com/pulumi/pulumi/sdk/v3/go/auto"
-	"github.com/unstoppablemango/the-cluster/internal/option"
+	"github.com/unmango/go/option"
 	"github.com/unstoppablemango/the-cluster/pkg/pulumi"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
