@@ -74,32 +74,36 @@ var _ = Describe("App", func() {
 				Expect(app).NotTo(BeNil())
 			})
 
-			It("should have a workspace", func(ctx context.Context) {
+			It("should be a workspace", func(ctx context.Context) {
 				app, err := app.Load(ctx, fsys, dir)
 
+				ws, ok := app.(thecluster.Workspace)
+
+				Expect(ok).To(BeTrueBecause("the app is also a workspace"))
 				Expect(err).NotTo(HaveOccurred())
-				Expect(app.Workspace()).NotTo(BeNil())
+				Expect(ws).NotTo(BeNil())
 			})
 
 			It("should have a filesystem", func(ctx context.Context) {
 				app, err := app.Load(ctx, fsys, dir)
 
 				Expect(err).NotTo(HaveOccurred())
-				Expect(app.Workspace().Fs()).NotTo(BeNil())
+				Expect(app.Fs()).NotTo(BeNil())
 			})
 
 			It("should not use the given filesystem", func(ctx context.Context) {
 				app, err := app.Load(ctx, fsys, dir)
 
 				Expect(err).NotTo(HaveOccurred())
-				Expect(app.Workspace().Fs()).NotTo(BeIdenticalTo(fsys))
+				Expect(app.Fs()).NotTo(BeIdenticalTo(fsys))
 			})
 
+			// What was I trying to test with this?
 			It("should have a pulumi workspace", func(ctx context.Context) {
 				app, err := app.Load(ctx, fsys, dir)
 
 				Expect(err).NotTo(HaveOccurred())
-				Expect(app.Workspace().Fs()).NotTo(BeNil())
+				Expect(app.Fs()).NotTo(BeNil())
 			})
 
 			It("should prepend the apps directory", func(ctx context.Context) {
@@ -108,7 +112,7 @@ var _ = Describe("App", func() {
 				app, err := app.Load(ctx, fsys, dir)
 
 				Expect(err).NotTo(HaveOccurred())
-				Expect(app.Workspace().Fs()).To(Equal(expectedFs))
+				Expect(app.Fs()).To(Equal(expectedFs))
 			})
 
 			Context("and directory has two segments", func() {
@@ -142,7 +146,7 @@ var _ = Describe("App", func() {
 					app, err := app.Load(ctx, fsys, dir)
 
 					Expect(err).NotTo(HaveOccurred())
-					Expect(app.Workspace().Fs()).To(Equal(expectedFs))
+					Expect(app.Fs()).To(Equal(expectedFs))
 				})
 			})
 

@@ -25,8 +25,8 @@ var (
 )
 
 type app struct {
+	thecluster.Workspace
 	name   string
-	ws     thecluster.Workspace
 	pulumi auto.Workspace
 }
 
@@ -38,11 +38,6 @@ func (a *app) Dependencies() iter.Seq[thecluster.Dependency] {
 // Name implements thecluster.App.
 func (a *app) Name() string {
 	return a.name
-}
-
-// Workspace implements thecluster.App.
-func (a *app) Workspace() thecluster.Workspace {
-	return a.ws
 }
 
 func Load(ctx context.Context, fsys thecluster.Fs, path string) (thecluster.App, error) {
@@ -71,7 +66,7 @@ func Load(ctx context.Context, fsys thecluster.Fs, path string) (thecluster.App,
 
 	return &app{
 		name: name,
-		ws: workspace.At(
+		Workspace: workspace.At(
 			afero.NewBasePathFs(fsys, appPath),
 			appPath,
 		),
