@@ -4,19 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 
-	"github.com/pulumi/pulumi/sdk/v3/go/auto"
-	"github.com/unmango/go/option"
-	"github.com/unstoppablemango/the-cluster/pkg/pulumi"
+	"github.com/unstoppablemango/the-cluster/internal/npm"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
 func Install(ctx context.Context, ws thecluster.Workspace, options ...thecluster.InstallOption) error {
-	pulumi, err := pulumi.LoadWorkspace(ctx, ws)
-	if err != nil {
-		return fmt.Errorf("loading pulumi workspace: %w", err)
-	}
-
 	isNpm, err := IsNpm(ws)
 	if err != nil {
 		return fmt.Errorf("checking package manager: %w", err)
@@ -25,8 +19,9 @@ func Install(ctx context.Context, ws thecluster.Workspace, options ...thecluster
 		return errors.New("not an npm workspace")
 	}
 
-	opts := &auto.InstallOptions{}
-	option.ApplyAll(opts, options)
-
-	return pulumi.Install(ctx, opts)
+	return npm.Ci(ctx,
+		npm.WithWorkingDirectory(ws.Path()),
+		npm.WithStdout(os.Stdout),
+		npm.WithStderr(os.Stderr),
+	)
 }
