@@ -12,5 +12,5 @@ func InstallDeps(
 	app thecluster.App,
 	options ...thecluster.InstallOption,
 ) error {
-	return workspace.InstallDeps(ctx, app.Workspace(), options...)
+	return workspace.InstallDeps(ctx, app, options...)
 }

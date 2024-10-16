@@ -51,8 +51,8 @@ func Init(workspace thecluster.Workspace, appPath string) (thecluster.App, error
 	}
 
 	return &app{
-		name: name.Name(),
-		ws:   writable,
+		Workspace: writable,
+		name:      name.Name(),
 	}, nil
 }
 
