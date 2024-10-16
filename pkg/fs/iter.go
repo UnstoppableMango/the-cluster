@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/afero"
 	"github.com/unmango/go/iter"
-	"github.com/unmango/go/seqs"
+	"github.com/unmango/go/iter/seqs"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 

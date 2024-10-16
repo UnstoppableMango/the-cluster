@@ -17,7 +17,7 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/testcontainers/testcontainers-go v0.33.0
 	github.com/testcontainers/testcontainers-go/modules/k3s v0.33.0
-	github.com/unmango/go v0.0.2-alpha
+	github.com/unmango/go v0.0.4-alpha
 	google.golang.org/protobuf v1.35.1
 	sigs.k8s.io/kind v0.24.0
 	sigs.k8s.io/kubebuilder/v4 v4.2.0

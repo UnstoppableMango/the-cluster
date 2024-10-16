@@ -10,7 +10,7 @@ import (
 func InstallDeps(
 	ctx context.Context,
 	app thecluster.App,
-	options ...workspace.InstallOption,
+	options ...thecluster.InstallOption,
 ) error {
 	return workspace.InstallDeps(ctx, app.Workspace(), options...)
 }
