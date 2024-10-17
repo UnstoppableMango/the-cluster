@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/charmbracelet/log"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
@@ -28,8 +27,6 @@ func Read(fsys thecluster.Fs) (*PackageJson, error) {
 	if err != nil {
 		return nil, fmt.Errorf("reading package.json: %w", err)
 	}
-
-	log.Info("data", "data", string(data))
 
 	var packageJson PackageJson
 	if err = json.Unmarshal(data, &packageJson); err != nil {

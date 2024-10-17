@@ -35,8 +35,8 @@ var ListCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		for _ = range deps {
-			fmt.Printf("found dep\n")
+		for d := range deps {
+			fmt.Printf("%s\n", d.Name())
 		}
 	},
 }

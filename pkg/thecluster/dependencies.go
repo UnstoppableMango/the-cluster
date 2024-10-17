@@ -10,6 +10,7 @@ import (
 type InstallOption func(*auto.InstallOptions)
 
 type Dependency interface {
+	Name() string
 	Install(context.Context) error
 }
 
