@@ -41,7 +41,7 @@ func (a *app) Dependencies() (iter.Seq[thecluster.Dependency], error) {
 	return func(yield func(thecluster.Dependency) bool) {
 		for k := range pkg.Depencencies {
 			if ws, err := workspace.FromNpmPackage(a.root, k); err != nil {
-				log.Error("unable to load workspace from npm package")
+				log.Warn("unable to load workspace from npm package", "package", k)
 			} else if !yield(deps.FromWorkspace(ws)) {
 				break
 			}

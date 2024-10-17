@@ -31,10 +31,10 @@ func Read(fsys thecluster.Fs) (*PackageJson, error) {
 
 	log.Info("data", "data", string(data))
 
-	var packageJson *PackageJson
-	if err = json.Unmarshal(data, packageJson); err != nil {
+	var packageJson PackageJson
+	if err = json.Unmarshal(data, &packageJson); err != nil {
 		return nil, fmt.Errorf("reading package.json: %w", err)
 	}
 
-	return packageJson, nil
+	return &packageJson, nil
 }

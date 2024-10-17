@@ -36,7 +36,7 @@ var ListCmd = &cobra.Command{
 		}
 
 		for _ = range deps {
-			fmt.Printf("found dep")
+			fmt.Printf("found dep\n")
 		}
 	},
 }
