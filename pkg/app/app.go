@@ -26,6 +26,11 @@ type app struct {
 	root thecluster.Fs
 }
 
+// Name implements thecluster.App.
+func (a *app) Name() string {
+	return a.name
+}
+
 // Dependencies implements thecluster.App.
 func (a *app) Dependencies() (iter.Seq[thecluster.Dependency], error) {
 	pkg, err := packagejson.Read(a.Fs())
@@ -43,9 +48,4 @@ func (a *app) Dependencies() (iter.Seq[thecluster.Dependency], error) {
 			}
 		}
 	}, nil
-}
-
-// Name implements thecluster.App.
-func (a *app) Name() string {
-	return a.name
 }
