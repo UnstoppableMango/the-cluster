@@ -13,4 +13,5 @@ var DependenciesCmd = &cobra.Command{
 
 func AddDependenciesSubcommands(cmd *cobra.Command) {
 	cmd.AddCommand(dependencies.InstallCmd)
+	cmd.AddCommand(dependencies.ListCmd)
 }

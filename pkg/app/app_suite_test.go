@@ -9,7 +9,7 @@ import (
 )
 
 func TestApp(t *testing.T) {
-	log.SetLevel(log.DebugLevel)
+	log.SetLevel(log.ErrorLevel)
 
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "App Suite")

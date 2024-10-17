@@ -10,9 +10,10 @@ import (
 type InstallOption func(*auto.InstallOptions)
 
 type Dependency interface {
+	Name() string
 	Install(context.Context) error
 }
 
 type Dependent interface {
-	Dependencies() iter.Seq[Dependency]
+	Dependencies() (iter.Seq[Dependency], error)
 }
