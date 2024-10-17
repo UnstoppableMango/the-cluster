@@ -3,9 +3,14 @@ package packagejson
 import (
 	"encoding/json"
 	"fmt"
-	"io"
+	"os"
 
+	"github.com/spf13/afero"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
+)
+
+const (
+	CanonicalName = "package.json"
 )
 
 type PackageJson struct {
@@ -18,12 +23,7 @@ type PackageJson struct {
 }
 
 func Read(fsys thecluster.Fs) (*PackageJson, error) {
-	file, err := fsys.Open("package.json")
-	if err != nil {
-		return nil, fmt.Errorf("reading package.json: %w", err)
-	}
-
-	data, err := io.ReadAll(file)
+	data, err := afero.ReadFile(fsys, CanonicalName)
 	if err != nil {
 		return nil, fmt.Errorf("reading package.json: %w", err)
 	}
@@ -34,4 +34,13 @@ func Read(fsys thecluster.Fs) (*PackageJson, error) {
 	}
 
 	return &packageJson, nil
+}
+
+func Write(fsys thecluster.Fs, pack PackageJson) error {
+	data, err := json.Marshal(pack)
+	if err != nil {
+		return err
+	}
+
+	return afero.WriteFile(fsys, CanonicalName, data, os.ModePerm)
 }
