@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	StandardDir = "apps"
+	CanonicalDir = "apps"
 )
 
 var (
