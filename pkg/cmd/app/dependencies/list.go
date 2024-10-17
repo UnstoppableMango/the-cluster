@@ -1,6 +1,7 @@
 package dependencies
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/charmbracelet/log"
@@ -9,10 +10,10 @@ import (
 	"github.com/unstoppablemango/the-cluster/pkg/workspace"
 )
 
-var InstallCmd = &cobra.Command{
-	Use:     "install",
-	Short:   "Install App dependencies",
-	Aliases: []string{"i"},
+var ListCmd = &cobra.Command{
+	Use:     "list",
+	Short:   "List an App's dependencies",
+	Aliases: []string{"l", "li"},
 	Args:    cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx, path := cmd.Context(), args[0]
@@ -28,9 +29,14 @@ var InstallCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if err = app.InstallDeps(ctx, a); err != nil {
-			log.Error("installing deps", "err", err)
+		deps, err := a.Dependencies()
+		if err != nil {
+			log.Error("listing app dependencies", "err", err)
 			os.Exit(1)
+		}
+
+		for _ = range deps {
+			fmt.Printf("found dep")
 		}
 	},
 }

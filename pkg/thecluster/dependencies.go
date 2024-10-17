@@ -14,5 +14,5 @@ type Dependency interface {
 }
 
 type Dependent interface {
-	Dependencies() iter.Seq[Dependency]
+	Dependencies() (iter.Seq[Dependency], error)
 }

@@ -5,13 +5,17 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/charmbracelet/log"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
 type PackageJson struct {
-	Name            string
-	Depencencies    map[string]string
-	DevDependencies map[string]string
+	Name            string            `json:"name"`
+	License         string            `json:"license"`
+	PackageManager  string            `json:"packageManager"`
+	Main            string            `json:"main"`
+	Depencencies    map[string]string `json:"dependencies"`
+	DevDependencies map[string]string `json:"devDependencies"`
 }
 
 func Read(fsys thecluster.Fs) (*PackageJson, error) {
@@ -25,9 +29,11 @@ func Read(fsys thecluster.Fs) (*PackageJson, error) {
 		return nil, fmt.Errorf("reading package.json: %w", err)
 	}
 
+	log.Info("data", "data", string(data))
+
 	var packageJson *PackageJson
 	if err = json.Unmarshal(data, packageJson); err != nil {
-		return nil, fmt.Errorf("unmarshalling package.json: %w", err)
+		return nil, fmt.Errorf("reading package.json: %w", err)
 	}
 
 	return packageJson, nil
