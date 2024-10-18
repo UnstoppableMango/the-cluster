@@ -3,6 +3,7 @@ package template
 import (
 	"errors"
 
+	"github.com/unmango/go/option"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
@@ -12,21 +13,15 @@ type findOptions struct {
 
 type FindOption func(*findOptions)
 
-func (op FindOption) apply(options *findOptions) {
-	op(options)
-}
-
 var (
 	ErrNotFound = errors.New("not found")
 )
 
-func Find(fs thecluster.Fs, name string, options ...FindOption) (thecluster.Template, error) {
+func Find(fsys thecluster.Fs, name string, options ...FindOption) (thecluster.Template, error) {
 	opts := &findOptions{RelativePath}
-	for _, op := range options {
-		op.apply(opts)
-	}
+	option.ApplyAll(opts, options)
 
-	for g := range List(fs, WithPath(opts.path)) {
+	for g := range List(fsys, WithPath(opts.path)) {
 		templates, err := g.Templates()
 		if err != nil {
 			return nil, err
