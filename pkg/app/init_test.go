@@ -7,14 +7,13 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-
 	"github.com/unstoppablemango/the-cluster/internal/util"
 	"github.com/unstoppablemango/the-cluster/pkg/app"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 	"github.com/unstoppablemango/the-cluster/pkg/workspace"
 )
 
-var _ = Describe("Init", Pending, func() {
+var _ = Describe("Init", func() {
 	var (
 		actual        thecluster.App
 		mockWs        thecluster.Workspace
@@ -27,12 +26,13 @@ var _ = Describe("Init", Pending, func() {
 		root, err = util.GitRoot()
 		Expect(err).NotTo(HaveOccurred())
 
-		mockWs = workspace.Empty()
+		mockWs, err = workspace.NewLocalGit()
+		Expect(err).NotTo(HaveOccurred())
 	})
 
 	JustBeforeEach(func(ctx context.Context) {
 		var err error
-		actual, err = app.Init(mockWs, mockDirectory)
+		actual, err = app.Init(mockWs.Fs(), mockDirectory)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(actual).NotTo(BeNil())
 	})
