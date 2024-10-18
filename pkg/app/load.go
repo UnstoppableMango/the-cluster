@@ -37,11 +37,8 @@ func Load(ctx context.Context, root thecluster.Fs, path string) (thecluster.App,
 	}
 
 	return &app{
-		name: name,
-		root: root,
-		Workspace: workspace.At(
-			afero.NewBasePathFs(root, appPath),
-			appPath,
-		),
+		name:      name,
+		root:      root,
+		Workspace: workspace.At(root, appPath),
 	}, nil
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/charmbracelet/log"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
@@ -26,6 +27,9 @@ func (w *Workspace) Install(ctx context.Context) error {
 		return errors.New("nil workspace")
 	}
 
+	log.FromContext(ctx).Info("installing workspace dep",
+		"path", w.Path(),
+	)
 	return Install(ctx, w)
 }
 
