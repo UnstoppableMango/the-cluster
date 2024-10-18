@@ -8,28 +8,26 @@ import (
 	"github.com/unstoppablemango/the-cluster/pkg/workspace"
 )
 
-var _ = FDescribe("At", func() {
-	DescribeTable("When path is not specified",
-		Entry("should re-use the OsFs", afero.NewOsFs()),
-		Entry("should re-use the BasePathFs", afero.NewBasePathFs(afero.NewOsFs(), "")),
-		Entry("should re-use the ReadOnlyFs", afero.NewReadOnlyFs(afero.NewOsFs())),
+var _ = Describe("At", func() {
+	DescribeTableSubtree("For fs type",
+		Entry("OsFs", afero.NewOsFs()),
+		Entry("BasePathFs", afero.NewBasePathFs(afero.NewOsFs(), "")),
+		Entry("ReadOnlyFs", afero.NewReadOnlyFs(afero.NewOsFs())),
 		func(root thecluster.Fs) {
-			ws := workspace.At(root, "")
+			It("should re-use the fs when path is not specified", func() {
+				ws := workspace.At(root, "")
 
-			Expect(ws).NotTo(BeNil())
-			Expect(ws.Fs()).To(BeIdenticalTo(root))
-		},
-	)
+				Expect(ws).NotTo(BeNil())
+				Expect(ws.Fs()).To(BeIdenticalTo(root))
+			})
 
-	DescribeTable("When path is specified",
-		Entry("should re-use the OsFs", afero.NewOsFs()),
-		Entry("should re-use the BasePathFs", afero.NewBasePathFs(afero.NewOsFs(), "")),
-		Entry("should re-use the ReadOnlyFs", afero.NewReadOnlyFs(afero.NewOsFs())),
-		func(root thecluster.Fs) {
-			ws := workspace.At(root, "")
+			It("should create a new fs at path", func() {
+				ws := workspace.At(root, "test-path")
 
-			Expect(ws).NotTo(BeNil())
-			Expect(ws.Fs()).To(BeIdenticalTo(root))
+				Expect(ws).NotTo(BeNil())
+				Expect(ws.Fs()).NotTo(BeIdenticalTo(root))
+				Expect(ws.Path()).To(Equal("test-path"))
+			})
 		},
 	)
 })
