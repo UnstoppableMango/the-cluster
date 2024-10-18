@@ -5,19 +5,24 @@ import (
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 )
 
-type plain struct {
+type basePath struct {
 	fs   thecluster.Fs
 	path string
 }
 
-func (p *plain) Fs() thecluster.Fs {
+func (p *basePath) Fs() thecluster.Fs {
 	return p.fs
 }
 
-func (p *plain) Path() string {
+func (p *basePath) Path() string {
 	return p.path
 }
 
 func At(root thecluster.Fs, path string) thecluster.Workspace {
-	return &plain{afero.NewBasePathFs(root, path), path}
+	fsys := root
+	if path != "" {
+		fsys = afero.NewBasePathFs(root, path)
+	}
+
+	return &basePath{fsys, path}
 }
