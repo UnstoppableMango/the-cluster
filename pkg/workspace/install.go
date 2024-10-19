@@ -10,6 +10,7 @@ import (
 
 func InstallDeps(ctx context.Context, ws thecluster.Workspace, options ...thecluster.InstallOption) error {
 	if dependent, ok := ws.(thecluster.Dependent); ok {
+		// TODO: Graphs
 		deps, err := dependent.Dependencies()
 		if err != nil {
 			return fmt.Errorf("listing dependencies: %w", err)
