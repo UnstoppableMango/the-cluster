@@ -41,8 +41,8 @@ func (w *writable) Fs() thecluster.Fs {
 }
 
 // Path implements thecluster.Workspace.
-func (l *writable) Path() string {
-	panic("unimplemented")
+func (w *writable) Path() string {
+	return w.path
 }
 
 var _ Writable = &writable{}

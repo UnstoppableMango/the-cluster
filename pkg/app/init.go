@@ -8,7 +8,6 @@ import (
 	"github.com/unstoppablemango/the-cluster/pkg/template"
 	"github.com/unstoppablemango/the-cluster/pkg/thecluster"
 	"github.com/unstoppablemango/the-cluster/pkg/workspace"
-	ws "github.com/unstoppablemango/the-cluster/pkg/workspace"
 )
 
 const DefaultTemplate = "typescript"
@@ -34,15 +33,23 @@ type tmplData struct {
 	Description string
 }
 
-func Init(root thecluster.Fs, appPath string) (thecluster.App, error) {
-	tmpl, err := template.Find(root, DefaultTemplate)
+func Init(root thecluster.Workspace, appPath string) (thecluster.App, error) {
+	if filepath.IsAbs(appPath) {
+		if rel, err := filepath.Rel(root.Path(), appPath); err != nil {
+			return nil, err
+		} else {
+			appPath = rel
+		}
+	}
+
+	tmpl, err := template.Find(root.Fs(), DefaultTemplate)
 	if err != nil {
 		return nil, fmt.Errorf("searching for template '%s': %w", DefaultTemplate, err)
 	}
 
 	name := projectName{appPath}
-	writable, err := ws.With(workspace.At(root, appPath),
-		ws.WriteTemplate(tmpl, &tmplData{
+	writable, err := workspace.With(workspace.At(root.Fs(), appPath),
+		workspace.WriteTemplate(tmpl, &tmplData{
 			Project:     name.Pulumi(),
 			Description: fmt.Sprintf("THECLUSTER install for %s", name.Name()),
 		}),

@@ -24,7 +24,7 @@ var InitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if _, err := app.Init(ws.Fs(), args[0]); err != nil {
+		if _, err := app.Init(ws, args[0]); err != nil {
 			log.Error("unable to initalize app", "err", err)
 			os.Exit(1)
 		}
