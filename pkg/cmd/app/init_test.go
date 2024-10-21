@@ -12,7 +12,7 @@ import (
 
 var _ = Describe("Init", Label("E2E"), func() {
 	It("should initialize an app", Pending, func(ctx context.Context) {
-		log.SetLevel(log.DebugLevel)
+		log.SetLevel(log.ErrorLevel)
 		app.InitCmd.SetArgs([]string{"apps/init-test"})
 		err := app.InitCmd.ExecuteContext(ctx)
 
