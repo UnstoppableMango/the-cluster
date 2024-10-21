@@ -111,6 +111,15 @@ bin/ginkgo: go.mod go.sum
 bin/pulumi: .versions/pulumi
 	curl -fsSL https://get.pulumi.com | sh -s -- --install-root ${WORKING_DIR} --version $(shell cat $<) --no-edit-path
 
+bin/crd2pulumi: .versions/crd2pulumi
+	GOBIN=${LOCALBIN} go install github.com/pulumi/crd2pulumi@v$(shell cat $<)
+
+infra/ceph/crds: infra/crds/manifests/ceph.rook.io.yaml | bin/crd2pulumi
+	bin/crd2pulumi $< --nodejsPath $@
+
+infra/crds/manifests/ceph.rook.io.yaml: .versions/rook | bin/kubectl
+	curl --fail -L -o $@ https://raw.githubusercontent.com/rook/rook/v$(shell cat $<)/deploy/examples/crds.yaml
+
 gen/go/%.pb.go: buf.gen.yaml proto/%.proto
 	buf generate
 
