@@ -1,5 +1,6 @@
 import * as crds from './crds/ceph/v1';
 import { clusterName, provider, versions } from './config';
+import { StorageClass } from '@pulumi/kubernetes/storage/v1';
 
 const cluster = new crds.CephCluster(clusterName, {
   metadata: {
@@ -20,6 +21,10 @@ const cluster = new crds.CephCluster(clusterName, {
     mgr: {
       // https://github.com/rook/rook/blob/0a1dd5e9e619481432cc66347a45072178ca0b48/deploy/examples/cluster.yaml#L58-L60
       count: 2,
+    },
+    dashboard: {
+      enabled: true,
+      ssl: false,
     },
     storage: {
       useAllDevices: false,
@@ -59,4 +64,35 @@ const cluster = new crds.CephCluster(clusterName, {
       ],
     },
   },
+}, { provider, protect: true });
+
+const unreplicatedPool = new crds.CephBlockPool('unreplicated', {
+  metadata: {
+    name: 'unreplicated',
+    namespace: 'rook',
+  },
+  spec: {
+    failureDomain: 'osd',
+    replicated: {
+      size: 1,
+    },
+  },
+}, { provider });
+
+const unreplicatedClass = new StorageClass('unreplicated', {
+  metadata: { name: 'unrepliated' },
+  provisioner: 'rook.rbd.csi.ceph.com',
+  parameters: {
+    clusterID: 'rook',
+    pool: 'unreplicated',
+    'csi.storage.k8s.io/provisioner-secret-name': 'rook-csi-rbd-provisioner',
+    'csi.storage.k8s.io/provisioner-secret-namespace': 'rook',
+    'csi.storage.k8s.io/controller-expand-secret-name': 'rook-csi-rbd-provisioner',
+    'csi.storage.k8s.io/controller-expand-secret-namespace': 'rook',
+    'csi.storage.k8s.io/node-stage-secret-name': 'rook-csi-rbd-node',
+    'csi.storage.k8s.io/node-stage-secret-namespace': 'rook',
+    'csi.storage.k8s.io/fstype': 'ext4',
+  },
+  reclaimPolicy: 'Delete',
+  allowVolumeExpansion: true,
 }, { provider });
