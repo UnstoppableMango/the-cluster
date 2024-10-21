@@ -10,7 +10,7 @@ import (
 )
 
 func TestFs(t *testing.T) {
-	log.SetLevel(log.DebugLevel)
+	log.SetLevel(log.ErrorLevel)
 
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Fs Suite")
