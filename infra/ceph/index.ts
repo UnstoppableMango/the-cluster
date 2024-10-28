@@ -31,10 +31,11 @@ const cluster = new crds.CephCluster(clusterName, {
       useAllDevices: false,
       useAllNodes: false,
       nodes: [
-        { name: 'pik8s4' },
-        { name: 'pik8s5' },
-        { name: 'pik8s6' },
+        // { name: 'pik8s4' },
+        // { name: 'pik8s5' },
+        // { name: 'pik8s6' },
         { name: 'pik8s8' },
+        { name: 'vrk8s1' },
         {
           name: 'gaea',
           devices: [
@@ -65,38 +66,38 @@ const cluster = new crds.CephCluster(clusterName, {
       ],
     },
   },
-}, { provider, protect: true });
+}, { provider });
 
-const unreplicatedPool = new crds.CephBlockPool('unreplicated', {
-  metadata: {
-    name: 'unreplicated',
-    namespace: 'rook',
-  },
-  spec: {
-    failureDomain: 'osd',
-    replicated: {
-      size: 1,
-    },
-  },
-}, { provider, dependsOn: cluster });
+// const unreplicatedPool = new crds.CephBlockPool('unreplicated', {
+//   metadata: {
+//     name: 'unreplicated',
+//     namespace: 'rook',
+//   },
+//   spec: {
+//     failureDomain: 'osd',
+//     replicated: {
+//       size: 1,
+//     },
+//   },
+// }, { provider, dependsOn: cluster });
 
-const unreplicatedClass = new StorageClass('unreplicated', {
-  metadata: { name: 'unrepliated' },
-  provisioner: 'rook.rbd.csi.ceph.com',
-  parameters: {
-    clusterID: 'rook',
-    pool: 'unreplicated',
-    'csi.storage.k8s.io/provisioner-secret-name': 'rook-csi-rbd-provisioner',
-    'csi.storage.k8s.io/provisioner-secret-namespace': 'rook',
-    'csi.storage.k8s.io/controller-expand-secret-name': 'rook-csi-rbd-provisioner',
-    'csi.storage.k8s.io/controller-expand-secret-namespace': 'rook',
-    'csi.storage.k8s.io/node-stage-secret-name': 'rook-csi-rbd-node',
-    'csi.storage.k8s.io/node-stage-secret-namespace': 'rook',
-    'csi.storage.k8s.io/fstype': 'ext4',
-  },
-  reclaimPolicy: 'Delete',
-  allowVolumeExpansion: true,
-}, { provider, dependsOn: cluster });
+// const unreplicatedClass = new StorageClass('unreplicated', {
+//   metadata: { name: 'unrepliated' },
+//   provisioner: 'rook.rbd.csi.ceph.com',
+//   parameters: {
+//     clusterID: 'rook',
+//     pool: 'unreplicated',
+//     'csi.storage.k8s.io/provisioner-secret-name': 'rook-csi-rbd-provisioner',
+//     'csi.storage.k8s.io/provisioner-secret-namespace': 'rook',
+//     'csi.storage.k8s.io/controller-expand-secret-name': 'rook-csi-rbd-provisioner',
+//     'csi.storage.k8s.io/controller-expand-secret-namespace': 'rook',
+//     'csi.storage.k8s.io/node-stage-secret-name': 'rook-csi-rbd-node',
+//     'csi.storage.k8s.io/node-stage-secret-namespace': 'rook',
+//     'csi.storage.k8s.io/fstype': 'ext4',
+//   },
+//   reclaimPolicy: 'Delete',
+//   allowVolumeExpansion: true,
+// }, { provider, dependsOn: cluster });
 
 const nfsFs = new crds.CephFilesystem('backup', {
   metadata: {
@@ -107,12 +108,15 @@ const nfsFs = new crds.CephFilesystem('backup', {
     metadataPool: {
       replicated: {
         size: 1,
+        requireSafeReplicaSize: false,
       },
     },
     dataPools: [{
       name: 'backup',
+      failureDomain: 'osd',
       replicated: {
         size: 1,
+        requireSafeReplicaSize: false,
       },
     }],
     preserveFilesystemOnDelete: true,
@@ -133,12 +137,12 @@ const nfs = new crds.CephNFS('backup', {
       active: 1,
     },
   },
-}, { provider, dependsOn: cluster });
+}, { provider, dependsOn: [cluster, nfsFs] });
 
 // https://github.com/rook/rook/blob/master/deploy/examples/toolbox.yaml
 const toolbox = new Deployment('toolbox', {
   metadata: {
-    name: 'toolbox',
+    name: 'rook-ceph-toolbox',
     namespace: 'rook',
   },
   spec: {
