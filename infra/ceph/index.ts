@@ -136,6 +136,7 @@ const nfs = new crds.CephNFS('backup', {
     server: {
       active: 1,
     },
+    security: {},
   },
 }, { provider, dependsOn: [cluster, nfsFs] });
 
