@@ -10,7 +10,7 @@ require (
 	github.com/charmbracelet/log v0.4.0
 	github.com/google/go-github/v66 v66.0.0
 	github.com/onsi/ginkgo/v2 v2.20.2
-	github.com/onsi/gomega v1.34.2
+	github.com/onsi/gomega v1.35.0
 	github.com/pulumi/pulumi/sdk/v3 v3.137.0
 	github.com/spf13/afero v1.11.0
 	github.com/spf13/cobra v1.8.1
