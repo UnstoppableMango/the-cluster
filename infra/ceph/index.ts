@@ -83,7 +83,7 @@ const unreplicatedPool = new crds.CephBlockPool('unreplicated', {
 }, { provider, dependsOn: cluster, protect: true });
 
 const unreplicatedClass = new StorageClass('unreplicated', {
-  metadata: { name: 'unrepliated' },
+  metadata: { name: 'unreplicated' },
   provisioner: 'rook.rbd.csi.ceph.com',
   parameters: {
     clusterID: 'rook',
@@ -98,7 +98,7 @@ const unreplicatedClass = new StorageClass('unreplicated', {
   },
   reclaimPolicy: 'Delete',
   allowVolumeExpansion: true,
-}, { provider, dependsOn: cluster, protect: true });
+}, { provider, dependsOn: cluster });
 
 const backupFs = new crds.CephFilesystem('backup', {
   metadata: {

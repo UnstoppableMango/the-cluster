@@ -1,6 +1,5 @@
 import * as k8s from '@pulumi/kubernetes';
-import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
-import { versions } from './config';
+import { provider, versions } from './config';
 
 const crds = new k8s.kustomize.Directory('snapshot-controller-crds', {
   directory: `https://github.com/kubernetes-csi/external-snapshotter/tree/${versions.externalSnapshotter}/client/config/crd`,
