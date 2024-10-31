@@ -1,6 +1,7 @@
 import * as crds from './crds/ceph/v1';
 import { clusterName, provider, versions } from './config';
 import { StorageClass } from '@pulumi/kubernetes/storage/v1';
+import { Deployment } from '@pulumi/kubernetes/apps/v1';
 
 const cluster = new crds.CephCluster(clusterName, {
   metadata: {
@@ -30,10 +31,11 @@ const cluster = new crds.CephCluster(clusterName, {
       useAllDevices: false,
       useAllNodes: false,
       nodes: [
-        { name: 'pik8s4' },
-        { name: 'pik8s5' },
-        { name: 'pik8s6' },
+        // { name: 'pik8s4' },
+        // { name: 'pik8s5' },
+        // { name: 'pik8s6' },
         { name: 'pik8s8' },
+        { name: 'vrk8s1' },
         {
           name: 'gaea',
           devices: [
@@ -75,9 +77,10 @@ const unreplicatedPool = new crds.CephBlockPool('unreplicated', {
     failureDomain: 'osd',
     replicated: {
       size: 1,
+      requireSafeReplicaSize: false,
     },
   },
-}, { provider });
+}, { provider, dependsOn: cluster, protect: true });
 
 const unreplicatedClass = new StorageClass('unreplicated', {
   metadata: { name: 'unrepliated' },
@@ -95,4 +98,141 @@ const unreplicatedClass = new StorageClass('unreplicated', {
   },
   reclaimPolicy: 'Delete',
   allowVolumeExpansion: true,
-}, { provider });
+}, { provider, dependsOn: cluster, protect: true });
+
+const backupFs = new crds.CephFilesystem('backup', {
+  metadata: {
+    name: 'backup',
+    namespace: 'rook',
+  },
+  spec: {
+    metadataPool: {
+      replicated: {
+        size: 1,
+        requireSafeReplicaSize: false,
+      },
+    },
+    dataPools: [{
+      name: 'backup',
+      failureDomain: 'osd',
+      replicated: {
+        size: 1,
+        requireSafeReplicaSize: false,
+      },
+    }],
+    preserveFilesystemOnDelete: true,
+    metadataServer: {
+      activeCount: 1,
+      activeStandby: true,
+    },
+  },
+}, { provider, dependsOn: cluster });
+
+// const nfs = new crds.CephNFS('backup', {
+//   metadata: {
+//     name: 'backup',
+//     namespace: 'rook',
+//   },
+//   spec: {
+//     server: {
+//       active: 1,
+//     },
+//     security: {},
+//   },
+// }, { provider, dependsOn: [cluster, backupFs] });
+
+// https://github.com/rook/rook/blob/master/deploy/examples/toolbox.yaml
+const toolbox = new Deployment('toolbox', {
+  metadata: {
+    name: 'rook-ceph-toolbox',
+    namespace: 'rook',
+  },
+  spec: {
+    replicas: 1,
+    selector: {
+      matchLabels: {
+        app: 'rook-ceph-tools',
+      },
+    },
+    template: {
+      metadata: {
+        labels: {
+          app: 'rook-ceph-tools',
+        },
+      },
+      spec: {
+        dnsPolicy: 'ClusterFirstWithHostNet',
+        serviceAccountName: 'rook-ceph-default',
+        containers: [{
+          name: 'rook-ceph-tools',
+          image: `quay.io/ceph/ceph:v${versions.ceph}`,
+          command: [
+            '/bin/bash',
+            '-c',
+            toolboxScript(versions.rook),
+          ],
+          imagePullPolicy: 'IfNotPresent',
+          tty: true,
+          securityContext: {
+            runAsNonRoot: true,
+            runAsUser: 2016,
+            runAsGroup: 2016,
+            capabilities: {
+              drop: ['ALL'],
+            },
+          },
+          env: [{
+            name: 'ROOK_CEPH_USERNAME',
+            valueFrom: {
+              secretKeyRef: {
+                name: 'rook-ceph-mon',
+                key: 'ceph-username',
+              },
+            },
+          }],
+          volumeMounts: [
+            { name: 'ceph-config', mountPath: '/etc/ceph' },
+            { name: 'mon-endpoint-volume', mountPath: '/etc/rook' },
+            { name: 'ceph-admin-secret', mountPath: '/var/lib/rook-ceph-mon', readOnly: true },
+          ],
+        }],
+        volumes: [
+          {
+            name: 'ceph-admin-secret',
+            secret: {
+              secretName: 'rook-ceph-mon',
+              optional: false,
+              items: [
+                { key: 'ceph-secret', path: 'secret.keyring' },
+              ],
+            },
+          },
+          {
+            name: 'mon-endpoint-volume',
+            configMap: {
+              name: 'rook-ceph-mon-endpoints',
+              items: [
+                { key: 'data', path: 'mon-endpoints' },
+              ],
+            },
+          },
+          { name: 'ceph-config', emptyDir: {} },
+        ],
+        tolerations: [{
+          key: 'node.kubernetes.io/unreachable',
+          operator: 'Exists',
+          effect: 'NoExecute',
+          tolerationSeconds: 5,
+        }],
+      },
+    },
+  },
+}, { provider, dependsOn: [cluster] });
+
+function toolboxScript(version: string): Promise<string> {
+  const baseUrl = 'https://raw.githubusercontent.com';
+  const script = 'images/ceph/toolbox.sh';
+  const url = `${baseUrl}/rook/rook/refs/tags/v${version}/${script}`;
+
+  return fetch(url).then(x => x.text());
+}
