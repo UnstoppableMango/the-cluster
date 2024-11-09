@@ -2,6 +2,7 @@ import * as crds from './crds/ceph/v1';
 import { clusterName, provider, versions } from './config';
 import { StorageClass } from '@pulumi/kubernetes/storage/v1';
 import { Deployment } from '@pulumi/kubernetes/apps/v1';
+import { Ingress } from '@pulumi/kubernetes/networking/v1';
 
 const cluster = new crds.CephCluster(clusterName, {
   metadata: {
@@ -67,6 +68,37 @@ const cluster = new crds.CephCluster(clusterName, {
     },
   },
 }, { provider, protect: true });
+
+const ingress = new Ingress('dashboard', {
+  metadata: {
+    name: 'rook-ceph-dashboard',
+    namespace: 'rook',
+    annotations: {
+      'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
+      'pulumi.com/skipAwait': 'true',
+    },
+  },
+  spec: {
+    ingressClassName: 'thecluster-io',
+    rules: [{
+      host: 'ceph.thecluster.io',
+      http: {
+        paths: [{
+          pathType: 'Prefix',
+          path: '/',
+          backend: {
+            service: {
+              name: 'rook-ceph-mgr-dashboard',
+              port: {
+                number: 7000,
+              },
+            },
+          },
+        }],
+      },
+    }],
+  },
+}, { provider });
 
 const unreplicatedPool = new crds.CephBlockPool('unreplicated', {
   metadata: {
