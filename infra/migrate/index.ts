@@ -29,6 +29,9 @@ const toolbox = new Deployment('ubuntu', {
   },
   spec: {
     replicas: 1,
+    strategy: {
+      type: 'Recreate',
+    },
     selector: {
       matchLabels: {
         app: 'thecluster-migrate',
@@ -41,6 +44,19 @@ const toolbox = new Deployment('ubuntu', {
         },
       },
       spec: {
+        affinity: {
+          nodeAffinity: {
+            requiredDuringSchedulingIgnoredDuringExecution: {
+              nodeSelectorTerms: [{
+                matchExpressions: [{
+                  key: 'kubernetes.io/hostname',
+                  operator: 'In',
+                  values: ['gaea'],
+                }]
+              }],
+            },
+          },
+        },
         // serviceAccountName: 'thecluster-migrate',
         containers: [{
           name: 'thecluster-migrate',

@@ -100,37 +100,19 @@ const ingress = new Ingress('dashboard', {
   },
 }, { provider });
 
-const unreplicatedPool = new crds.CephBlockPool('unreplicated', {
-  metadata: {
-    name: 'unreplicated',
-    namespace: 'rook',
-  },
-  spec: {
-    failureDomain: 'osd',
-    replicated: {
-      size: 1,
-      requireSafeReplicaSize: false,
-    },
-  },
-}, { provider, dependsOn: cluster, protect: true });
-
-const unreplicatedClass = new StorageClass('unreplicated', {
-  metadata: { name: 'unreplicated' },
-  provisioner: 'rook.rbd.csi.ceph.com',
-  parameters: {
-    clusterID: 'rook',
-    pool: 'unreplicated',
-    'csi.storage.k8s.io/provisioner-secret-name': 'rook-csi-rbd-provisioner',
-    'csi.storage.k8s.io/provisioner-secret-namespace': 'rook',
-    'csi.storage.k8s.io/controller-expand-secret-name': 'rook-csi-rbd-provisioner',
-    'csi.storage.k8s.io/controller-expand-secret-namespace': 'rook',
-    'csi.storage.k8s.io/node-stage-secret-name': 'rook-csi-rbd-node',
-    'csi.storage.k8s.io/node-stage-secret-namespace': 'rook',
-    'csi.storage.k8s.io/fstype': 'ext4',
-  },
-  reclaimPolicy: 'Delete',
-  allowVolumeExpansion: true,
-}, { provider, dependsOn: cluster });
+// const unreplicatedPool = new crds.CephBlockPool('unreplicated', {
+//   metadata: {
+//     name: 'unreplicated',
+//     namespace: 'rook',
+//   },
+//   spec: {
+//     failureDomain: 'osd',
+//     replicated: {
+//       size: 1,
+//       requireSafeReplicaSize: false,
+//     },
+//   },
+// }, { provider, dependsOn: cluster });
 
 const backupFs = new crds.CephFilesystem('backup', {
   metadata: {
