@@ -91,7 +91,7 @@ const cluster = new crds.CephCluster(clusterName, {
       ],
     },
   },
-}, { provider });
+}, { provider, protect: true });
 
 const ingress = new Ingress('dashboard', {
   metadata: {
@@ -136,7 +136,11 @@ const defaultPool = new crds.CephBlockPool('default', {
       requireSafeReplicaSize: false,
     },
   },
-}, { provider, dependsOn: cluster });
+}, {
+  provider,
+  dependsOn: cluster,
+  protect: true,
+});
 
 const defaultRbdClass = new StorageClass('default-rbd', {
   metadata: { name: 'default-rbd' },
@@ -154,7 +158,11 @@ const defaultRbdClass = new StorageClass('default-rbd', {
     'csi.storage.k8s.io/node-stage-secret-namespace': 'rook',
   },
   reclaimPolicy: 'Retain',
-}, { provider, dependsOn: [cluster, defaultPool] });
+}, {
+  provider,
+  dependsOn: [cluster, defaultPool],
+  protect: true,
+});
 
 const defaultCephfs = new crds.CephFilesystem('default', {
   metadata: {
@@ -182,7 +190,11 @@ const defaultCephfs = new crds.CephFilesystem('default', {
       activeStandby: true,
     },
   },
-}, { provider, dependsOn: cluster });
+}, {
+  provider,
+  dependsOn: cluster,
+  protect: true,
+});
 
 const defaultCephfsClass = new StorageClass('default-cephfs', {
   metadata: { name: 'default-cephfs' },
@@ -199,7 +211,11 @@ const defaultCephfsClass = new StorageClass('default-cephfs', {
     'csi.storage.k8s.io/node-stage-secret-namespace': 'rook',
   },
   reclaimPolicy: 'Retain',
-}, { provider, dependsOn: [cluster, defaultCephfs] });
+}, {
+  provider,
+  dependsOn: [cluster, defaultCephfs],
+  protect: true,
+});
 
 export const storageClasses = [
   defaultRbdClass.metadata.name,
