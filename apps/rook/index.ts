@@ -10,15 +10,17 @@ const chart = new k8s.helm.v3.Chart('rook', {
   path: './',
   namespace: ns.metadata.name,
   values: {
-    'rook': {
+    'rook-ceph': {
+      csi: {
+        nfs: { enabled: true },
+      },
       env: {},
       resources: {
         limits: {
-          cpu: '100m',
-          memory: '128Mi',
+          memory: '512Mi',
         },
         requests: {
-          cpu: '100m',
+          cpu: '200m',
           memory: '128Mi',
         },
       },
