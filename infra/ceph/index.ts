@@ -144,7 +144,7 @@ const defaultPool = new crds.CephBlockPool('default', {
 
 const defaultRbdClass = new StorageClass('default-rbd', {
   metadata: { name: 'default-rbd' },
-  provisioner: 'rook-ceph.rbd.csi.ceph.com',
+  provisioner: 'rook.rbd.csi.ceph.com',
   parameters: {
     clusterID: 'rook',
     pool: 'default',
@@ -198,7 +198,7 @@ const defaultCephfs = new crds.CephFilesystem('default', {
 
 const defaultCephfsClass = new StorageClass('default-cephfs', {
   metadata: { name: 'default-cephfs' },
-  provisioner: 'rook-ceph.cephfs.csi.ceph.com',
+  provisioner: 'rook.cephfs.csi.ceph.com',
   parameters: {
     clusterID: 'rook',
     fsName: 'default',
