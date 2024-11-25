@@ -577,6 +577,8 @@ sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd h1:EDPBXCAspyGV4jQlpZSudPeMm
 sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd/go.mod h1:B8JuhiUyNFVKdsE8h686QcCxMaH6HrOAZj4vswFpcB0=
 sigs.k8s.io/kind v0.24.0 h1:g4y4eu0qa+SCeKESLpESgMmVFBebL0BDa6f777OIWrg=
 sigs.k8s.io/kind v0.24.0/go.mod h1:t7ueEpzPYJvHA8aeLtI52rtFftNgUYUaCwvxjk7phfw=
+sigs.k8s.io/kind v0.25.0 h1:ugUvgesHKKA0yKmD6QtYTiEev+kPUpGxdTPbMGf8VTU=
+sigs.k8s.io/kind v0.25.0/go.mod h1:t7ueEpzPYJvHA8aeLtI52rtFftNgUYUaCwvxjk7phfw=
 sigs.k8s.io/kubebuilder/v4 v4.2.0 h1:vl5WgaYKR6e6YDK02Mizf7d1RxFNk1pOSnh6uRnHm6s=
 sigs.k8s.io/kubebuilder/v4 v4.2.0/go.mod h1:Jq0Qrlrtn3YKdCFSW6CBbmGuwsw6xO6a7beFiVQf/bI=
 sigs.k8s.io/kubebuilder/v4 v4.3.0 h1:h01b7sEmgwisvWylU/7PH/LD+eJMX/p+H2s5Vvt4kkI=
