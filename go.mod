@@ -3,7 +3,7 @@ module github.com/unstoppablemango/the-cluster
 go 1.23.2
 
 require (
-	github.com/bradleyfalzon/ghinstallation/v2 v2.11.0
+	github.com/bradleyfalzon/ghinstallation/v2 v2.12.0
 	github.com/charmbracelet/bubbles v0.20.0
 	github.com/charmbracelet/bubbletea v1.1.2
 	github.com/charmbracelet/lipgloss v0.13.1
@@ -67,7 +67,7 @@ require (
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/gobuffalo/flect v1.0.3 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
+	github.com/golang-jwt/jwt/v4 v4.5.1 // indirect
 	github.com/golang/glog v1.2.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
