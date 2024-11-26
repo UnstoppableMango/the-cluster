@@ -8,6 +8,6 @@
     "@unstoppablemango/thecluster-crds": "file:../../lib/crds/nodejs"
   },
   "devDependencies": {
-    "@types/node": "20.17.7"
+    "@types/node": "20.17.8"
   }
 }
