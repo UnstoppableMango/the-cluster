@@ -23,9 +23,9 @@
   "homepage": "https://github.com/UnstoppableMango/the-cluster#readme",
   "dependencies": {
     "@pulumi/keycloak": "^5.2.1",
-    "@pulumi/kubernetes": "^4.18.1",
+    "@pulumi/kubernetes": "^4.18.3",
     "@pulumi/postgresql": "^3.10.0",
-    "@pulumi/pulumi": "^3.135.0",
+    "@pulumi/pulumi": "^3.141.0",
     "@unmango/pulumi-pihole": "^0.1.3",
     "@unstoppablemango/thecluster-crds": "file:../crds/nodejs",
     "fp-ts": "^2.16.1",
@@ -34,7 +34,7 @@
     "yaml": "^2.3.4"
   },
   "devDependencies": {
-    "@types/node": "^22.5.5",
+    "@types/node": "^22.9.3",
     "typescript": "^5.3.2"
   }
 }

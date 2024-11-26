@@ -52,11 +52,11 @@ const rb = new ClusterRoleBinding('admin-pub', {
     kind: role.kind,
     name: role.metadata.name,
   },
-subjects: [{
-  kind: sa.kind,
-  namespace: ns.metadata.name,
-  name: sa.metadata.name,
-}],
+  subjects: [{
+    kind: sa.kind,
+    namespace: ns.metadata.name,
+    name: sa.metadata.name,
+  }],
 }, { provider });
 
 export const token = sec.data.apply(x => x['token']);
