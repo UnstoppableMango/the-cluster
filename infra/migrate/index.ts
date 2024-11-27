@@ -13,7 +13,7 @@ const isosClaim = new PersistentVolumeClaim('isos', {
     namespace: ns.metadata.name,
   },
   spec: {
-    storageClassName: 'default-rbd',
+    storageClassName: 'erasure-rbd',
     accessModes: ['ReadWriteOnce'],
     resources: {
       requests: {
@@ -29,7 +29,7 @@ const animeClaim = new PersistentVolumeClaim('anime', {
     namespace: ns.metadata.name,
   },
   spec: {
-    storageClassName: 'default-rbd',
+    storageClassName: 'erasure-rbd',
     accessModes: ['ReadWriteOnce'],
     resources: {
       requests: {
@@ -45,7 +45,7 @@ const moviesClaim = new PersistentVolumeClaim('movies', {
     namespace: ns.metadata.name,
   },
   spec: {
-    storageClassName: 'default-rbd',
+    storageClassName: 'erasure-rbd',
     accessModes: ['ReadWriteOnce'],
     resources: {
       requests: {
@@ -61,7 +61,7 @@ const movies4kClaim = new PersistentVolumeClaim('movies4k', {
     namespace: ns.metadata.name,
   },
   spec: {
-    storageClassName: 'default-rbd',
+    storageClassName: 'erasure-rbd',
     accessModes: ['ReadWriteOnce'],
     resources: {
       requests: {
@@ -77,7 +77,7 @@ const tvClaim = new PersistentVolumeClaim('tv', {
     namespace: ns.metadata.name,
   },
   spec: {
-    storageClassName: 'default-rbd',
+    storageClassName: 'erasure-rbd',
     accessModes: ['ReadWriteOnce'],
     resources: {
       requests: {
@@ -93,7 +93,7 @@ const tv4kClaim = new PersistentVolumeClaim('tv4k', {
     namespace: ns.metadata.name,
   },
   spec: {
-    storageClassName: 'default-rbd',
+    storageClassName: 'erasure-rbd',
     accessModes: ['ReadWriteOnce'],
     resources: {
       requests: {
@@ -109,7 +109,7 @@ const musicClaim = new PersistentVolumeClaim('music', {
     namespace: ns.metadata.name,
   },
   spec: {
-    storageClassName: 'default-rbd',
+    storageClassName: 'erasure-rbd',
     accessModes: ['ReadWriteOnce'],
     resources: {
       requests: {
@@ -125,7 +125,7 @@ const photosClaim = new PersistentVolumeClaim('photos', {
     namespace: ns.metadata.name,
   },
   spec: {
-    storageClassName: 'default-rbd',
+    storageClassName: 'erasure-rbd',
     accessModes: ['ReadWriteOnce'],
     resources: {
       requests: {
@@ -135,129 +135,129 @@ const photosClaim = new PersistentVolumeClaim('photos', {
   },
 }, { provider });
 
-const toolbox = new Deployment('ubuntu', {
-  metadata: {
-    name: 'ubuntu',
-    namespace: ns.metadata.name,
-  },
-  spec: {
-    replicas: 1,
-    strategy: {
-      type: 'Recreate',
-    },
-    selector: {
-      matchLabels: {
-        app: 'thecluster-migrate',
-      },
-    },
-    template: {
-      metadata: {
-        labels: {
-          app: 'thecluster-migrate',
-        },
-      },
-      spec: {
-        affinity: {
-          nodeAffinity: {
-            requiredDuringSchedulingIgnoredDuringExecution: {
-              nodeSelectorTerms: [{
-                matchExpressions: [{
-                  key: 'kubernetes.io/hostname',
-                  operator: 'In',
-                  values: ['gaea'],
-                }]
-              }],
-            },
-          },
-        },
-        // serviceAccountName: 'thecluster-migrate',
-        containers: [{
-          name: 'thecluster-migrate',
-          image: `ubuntu:noble-20240904.1`,
-          imagePullPolicy: 'IfNotPresent',
-          tty: true,
-          // securityContext: {
-          //   runAsNonRoot: true,
-          //   runAsUser: 1001,
-          //   runAsGroup: 1001,
-          //   capabilities: {
-          //     drop: ['ALL'],
-          //   },
-          // },
-          volumeMounts: [
-            // { name: 'isos-ceph', mountPath: '/var/thecluster/isos' },
-            // { name: 'movies-ceph', mountPath: '/var/thecluster/movies' },
-            // { name: 'movies4k-ceph', mountPath: '/var/thecluster/movies4k' },
-            // { name: 'tv-ceph', mountPath: '/var/thecluster/tv' },
-            // { name: 'tv4k-ceph', mountPath: '/var/thecluster/tv4k' },
-            // { name: 'music-ceph', mountPath: '/var/thecluster/music' },
-            // { name: 'photos-ceph', mountPath: '/var/thecluster/photos' },
-            // { name: 'isos', mountPath: '/mnt/isos' },
-            // { name: 'media', mountPath: '/mnt/media' },
-          ],
-        }],
-        volumes: [
-          // {
-          //   name: 'isos-ceph',
-          //   persistentVolumeClaim: {
-          //     claimName: isosClaim.metadata.name,
-          //   },
-          // },
-          // {
-          //   name: 'movies-ceph',
-          //   persistentVolumeClaim: {
-          //     claimName: moviesClaim.metadata.name,
-          //   },
-          // },
-          // {
-          //   name: 'movies4k-ceph',
-          //   persistentVolumeClaim: {
-          //     claimName: movies4kClaim.metadata.name,
-          //   },
-          // },
-          // {
-          //   name: 'tv-ceph',
-          //   persistentVolumeClaim: {
-          //     claimName: tvClaim.metadata.name,
-          //   },
-          // },
-          // {
-          //   name: 'tv4k-ceph',
-          //   persistentVolumeClaim: {
-          //     claimName: tv4kClaim.metadata.name,
-          //   },
-          // },
-          // {
-          //   name: 'music-ceph',
-          //   persistentVolumeClaim: {
-          //     claimName: musicClaim.metadata.name,
-          //   },
-          // },
-          // {
-          //   name: 'photos-ceph',
-          //   persistentVolumeClaim: {
-          //     claimName: photosClaim.metadata.name,
-          //   },
-          // },
-          // {
-          //   name: 'isos',
-          //   nfs: {
-          //     server: '192.168.1.10',
-          //     path: '/tank1/media/isos',
-          //   },
-          // },
-          // {
-          //   name: 'media',
-          //   nfs: {
-          //     server: '192.168.1.10',
-          //     path: '/tank1/media',
-          //   },
-          // },
-        ],
-      },
-    },
-  },
-}, { provider });
+// const toolbox = new Deployment('ubuntu', {
+//   metadata: {
+//     name: 'ubuntu',
+//     namespace: ns.metadata.name,
+//   },
+//   spec: {
+//     replicas: 1,
+//     strategy: {
+//       type: 'Recreate',
+//     },
+//     selector: {
+//       matchLabels: {
+//         app: 'thecluster-migrate',
+//       },
+//     },
+//     template: {
+//       metadata: {
+//         labels: {
+//           app: 'thecluster-migrate',
+//         },
+//       },
+//       spec: {
+//         affinity: {
+//           nodeAffinity: {
+//             requiredDuringSchedulingIgnoredDuringExecution: {
+//               nodeSelectorTerms: [{
+//                 matchExpressions: [{
+//                   key: 'kubernetes.io/hostname',
+//                   operator: 'In',
+//                   values: ['gaea'],
+//                 }]
+//               }],
+//             },
+//           },
+//         },
+//         // serviceAccountName: 'thecluster-migrate',
+//         containers: [{
+//           name: 'thecluster-migrate',
+//           image: `ubuntu:noble-20240904.1`,
+//           imagePullPolicy: 'IfNotPresent',
+//           tty: true,
+//           // securityContext: {
+//           //   runAsNonRoot: true,
+//           //   runAsUser: 1001,
+//           //   runAsGroup: 1001,
+//           //   capabilities: {
+//           //     drop: ['ALL'],
+//           //   },
+//           // },
+//           volumeMounts: [
+//             // { name: 'isos-ceph', mountPath: '/var/thecluster/isos' },
+//             // { name: 'movies-ceph', mountPath: '/var/thecluster/movies' },
+//             // { name: 'movies4k-ceph', mountPath: '/var/thecluster/movies4k' },
+//             // { name: 'tv-ceph', mountPath: '/var/thecluster/tv' },
+//             // { name: 'tv4k-ceph', mountPath: '/var/thecluster/tv4k' },
+//             // { name: 'music-ceph', mountPath: '/var/thecluster/music' },
+//             // { name: 'photos-ceph', mountPath: '/var/thecluster/photos' },
+//             // { name: 'isos', mountPath: '/mnt/isos' },
+//             // { name: 'media', mountPath: '/mnt/media' },
+//           ],
+//         }],
+//         volumes: [
+//           // {
+//           //   name: 'isos-ceph',
+//           //   persistentVolumeClaim: {
+//           //     claimName: isosClaim.metadata.name,
+//           //   },
+//           // },
+//           // {
+//           //   name: 'movies-ceph',
+//           //   persistentVolumeClaim: {
+//           //     claimName: moviesClaim.metadata.name,
+//           //   },
+//           // },
+//           // {
+//           //   name: 'movies4k-ceph',
+//           //   persistentVolumeClaim: {
+//           //     claimName: movies4kClaim.metadata.name,
+//           //   },
+//           // },
+//           // {
+//           //   name: 'tv-ceph',
+//           //   persistentVolumeClaim: {
+//           //     claimName: tvClaim.metadata.name,
+//           //   },
+//           // },
+//           // {
+//           //   name: 'tv4k-ceph',
+//           //   persistentVolumeClaim: {
+//           //     claimName: tv4kClaim.metadata.name,
+//           //   },
+//           // },
+//           // {
+//           //   name: 'music-ceph',
+//           //   persistentVolumeClaim: {
+//           //     claimName: musicClaim.metadata.name,
+//           //   },
+//           // },
+//           // {
+//           //   name: 'photos-ceph',
+//           //   persistentVolumeClaim: {
+//           //     claimName: photosClaim.metadata.name,
+//           //   },
+//           // },
+//           // {
+//           //   name: 'isos',
+//           //   nfs: {
+//           //     server: '192.168.1.10',
+//           //     path: '/tank1/media/isos',
+//           //   },
+//           // },
+//           // {
+//           //   name: 'media',
+//           //   nfs: {
+//           //     server: '192.168.1.10',
+//           //     path: '/tank1/media',
+//           //   },
+//           // },
+//         ],
+//       },
+//     },
+//   },
+// }, { provider });
 
 const rsyncScript: string = `
 #!/bin/bash
@@ -265,7 +265,7 @@ const rsyncScript: string = `
 export DEBIAN_FRONTEND=noninteractive
 apt update && apt upgrade -y
 apt install -y rsync
-rsync -avuhp /mnt/src /mnt/dst
+rsync -avuhp --info=progress2 /mnt/src /mnt/dst
 `;
 
 const isosRsync = new Job('isos', {
