@@ -13,7 +13,7 @@ const isosClaim = new PersistentVolumeClaim('isos', {
     namespace: ns.metadata.name,
   },
   spec: {
-    storageClassName: 'erasure-rbd',
+    storageClassName: 'unsafe-rbd',
     accessModes: ['ReadWriteOnce'],
     resources: {
       requests: {
@@ -29,7 +29,7 @@ const animeClaim = new PersistentVolumeClaim('anime', {
     namespace: ns.metadata.name,
   },
   spec: {
-    storageClassName: 'erasure-rbd',
+    storageClassName: 'unsafe-rbd',
     accessModes: ['ReadWriteOnce'],
     resources: {
       requests: {
@@ -45,7 +45,7 @@ const moviesClaim = new PersistentVolumeClaim('movies', {
     namespace: ns.metadata.name,
   },
   spec: {
-    storageClassName: 'erasure-rbd',
+    storageClassName: 'unsafe-rbd',
     accessModes: ['ReadWriteOnce'],
     resources: {
       requests: {
@@ -61,7 +61,7 @@ const movies4kClaim = new PersistentVolumeClaim('movies4k', {
     namespace: ns.metadata.name,
   },
   spec: {
-    storageClassName: 'erasure-rbd',
+    storageClassName: 'unsafe-rbd',
     accessModes: ['ReadWriteOnce'],
     resources: {
       requests: {
@@ -77,7 +77,7 @@ const tvClaim = new PersistentVolumeClaim('tv', {
     namespace: ns.metadata.name,
   },
   spec: {
-    storageClassName: 'erasure-rbd',
+    storageClassName: 'unsafe-rbd',
     accessModes: ['ReadWriteOnce'],
     resources: {
       requests: {
@@ -93,7 +93,7 @@ const tv4kClaim = new PersistentVolumeClaim('tv4k', {
     namespace: ns.metadata.name,
   },
   spec: {
-    storageClassName: 'erasure-rbd',
+    storageClassName: 'unsafe-rbd',
     accessModes: ['ReadWriteOnce'],
     resources: {
       requests: {
@@ -109,7 +109,7 @@ const musicClaim = new PersistentVolumeClaim('music', {
     namespace: ns.metadata.name,
   },
   spec: {
-    storageClassName: 'erasure-rbd',
+    storageClassName: 'unsafe-rbd',
     accessModes: ['ReadWriteOnce'],
     resources: {
       requests: {
@@ -125,7 +125,7 @@ const photosClaim = new PersistentVolumeClaim('photos', {
     namespace: ns.metadata.name,
   },
   spec: {
-    storageClassName: 'erasure-rbd',
+    storageClassName: 'unsafe-rbd',
     accessModes: ['ReadWriteOnce'],
     resources: {
       requests: {

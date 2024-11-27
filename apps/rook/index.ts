@@ -2,8 +2,8 @@ import * as k8s from '@pulumi/kubernetes';
 import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { versions } from './config';
 
-const ns = new k8s.core.v1.Namespace('rook', {
-  metadata: { name: 'rook' },
+const ns = new k8s.core.v1.Namespace('rook-ceph', {
+  metadata: { name: 'rook-ceph' },
 }, { provider });
 
 const chart = new k8s.helm.v3.Chart('rook', {
@@ -14,6 +14,7 @@ const chart = new k8s.helm.v3.Chart('rook', {
       csi: {
         nfs: { enabled: true },
       },
+      enableDiscoveryDaemon: true,
       env: {},
       resources: {
         limits: {
