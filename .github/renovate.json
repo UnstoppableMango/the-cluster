@@ -3,6 +3,9 @@
   "extends": [
     "config:recommended"
   ],
+	"schedule": [
+		"before 4am on the first day of the month"
+	],
   "ignorePaths": [
     "**/node_modules/**",
     "**/vendor/**",
