@@ -124,16 +124,36 @@ const ingress = new Ingress('dashboard', {
   },
 }, { provider });
 
-const defaultPool = new crds.CephBlockPool('default', {
+// const defaultPool = new crds.CephBlockPool('default', {
+//   metadata: {
+//     name: 'default',
+//     namespace: 'rook',
+//   },
+//   spec: {
+//     deviceClass: 'hdd',
+//     failureDomain: 'osd',
+//     erasureCoded: {
+//       dataChunks: 2,
+//       codingChunks: 1,
+//     },
+//   },
+// }, {
+//   provider,
+//   dependsOn: cluster,
+//   // protect: true,
+// });
+
+const erasurePool = new crds.CephBlockPool('erasure', {
   metadata: {
-    name: 'default',
+    name: 'erasure',
     namespace: 'rook',
   },
   spec: {
+    deviceClass: 'hdd',
     failureDomain: 'osd',
-    replicated: {
-      size: 1,
-      requireSafeReplicaSize: false,
+    erasureCoded: {
+      dataChunks: 2,
+      codingChunks: 1,
     },
   },
 }, {
@@ -142,12 +162,34 @@ const defaultPool = new crds.CephBlockPool('default', {
   protect: true,
 });
 
-const defaultRbdClass = new StorageClass('default-rbd', {
-  metadata: { name: 'default-rbd' },
+// const defaultRbdClass = new StorageClass('default-rbd', {
+//   metadata: { name: 'default-rbd' },
+//   provisioner: 'rook.rbd.csi.ceph.com',
+//   parameters: {
+//     clusterID: 'rook',
+//     pool: 'default',
+//     imageFormat: '2',
+//     imageFeatures: 'layering',
+//     'csi.storage.k8s.io/provisioner-secret-name': 'rook-csi-rbd-provisioner',
+//     'csi.storage.k8s.io/provisioner-secret-namespace': 'rook',
+//     'csi.storage.k8s.io/controller-expand-secret-name': 'rook-csi-rbd-provisioner',
+//     'csi.storage.k8s.io/controller-expand-secret-namespace': 'rook',
+//     'csi.storage.k8s.io/node-stage-secret-name': 'rook-csi-rbd-node',
+//     'csi.storage.k8s.io/node-stage-secret-namespace': 'rook',
+//   },
+//   reclaimPolicy: 'Retain',
+// }, {
+//   provider,
+//   dependsOn: [cluster, defaultPool],
+//   // protect: true,
+// });
+
+const erasureRbdClass = new StorageClass('erasure-rbd', {
+  metadata: { name: 'erasure-rbd' },
   provisioner: 'rook.rbd.csi.ceph.com',
   parameters: {
     clusterID: 'rook',
-    pool: 'default',
+    pool: 'erasure',
     imageFormat: '2',
     imageFeatures: 'layering',
     'csi.storage.k8s.io/provisioner-secret-name': 'rook-csi-rbd-provisioner',
@@ -160,7 +202,7 @@ const defaultRbdClass = new StorageClass('default-rbd', {
   reclaimPolicy: 'Retain',
 }, {
   provider,
-  dependsOn: [cluster, defaultPool],
+  dependsOn: [cluster, erasurePool],
   protect: true,
 });
 
@@ -218,7 +260,7 @@ const defaultCephfsClass = new StorageClass('default-cephfs', {
 });
 
 export const storageClasses = [
-  defaultRbdClass.metadata.name,
+  // defaultRbdClass.metadata.name,
   defaultCephfsClass.metadata.name,
 ];
 
