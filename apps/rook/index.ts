@@ -11,6 +11,7 @@ const chart = new k8s.helm.v3.Chart('rook', {
   namespace: ns.metadata.name,
   values: {
     'rook-ceph': {
+      crds: { enabled: true },
       csi: {
         nfs: { enabled: true },
       },
@@ -28,3 +29,5 @@ const chart = new k8s.helm.v3.Chart('rook', {
     },
   },
 }, { provider });
+
+export const namespace = ns.metadata.name;
