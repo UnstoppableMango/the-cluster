@@ -4,4 +4,4 @@ description: External snapshotter install for THECLUSTER
 config:
   versions:
     value:
-      externalSnapshotter: v7.0.2 # renovate depName=kubernetes-csi/external-snapshotter
+      externalSnapshotter: v8.1.0 # renovate depName=kubernetes-csi/external-snapshotter
