@@ -135,6 +135,70 @@ const photosClaim = new PersistentVolumeClaim('photos', {
   },
 }, { provider });
 
+const archiveClaim = new PersistentVolumeClaim('archive', {
+  metadata: {
+    name: 'archive',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    storageClassName: 'unsafe-rbd',
+    accessModes: ['ReadWriteOnce'],
+    resources: {
+      requests: {
+        storage: '3Ti',
+      },
+    },
+  },
+}, { provider });
+
+const downloadsClaim = new PersistentVolumeClaim('downloads', {
+  metadata: {
+    name: 'downloads',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    storageClassName: 'unsafe-rbd',
+    accessModes: ['ReadWriteOnce'],
+    resources: {
+      requests: {
+        storage: '6Ti',
+      },
+    },
+  },
+}, { provider });
+
+const backupClaim = new PersistentVolumeClaim('backup', {
+  metadata: {
+    name: 'backup',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    storageClassName: 'unsafe-rbd',
+    accessModes: ['ReadWriteOnce'],
+    resources: {
+      requests: {
+        storage: '8Ti',
+      },
+    },
+  },
+}, { provider });
+
+const linuxIsosClaim = new PersistentVolumeClaim('linux-isos', {
+  metadata: {
+    name: 'linux-isos',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    storageClassName: 'unsafe-rbd',
+    accessModes: ['ReadWriteOnce'],
+    resources: {
+      requests: {
+        storage: '1Ti',
+      },
+    },
+  },
+}, { provider });
+
 // const toolbox = new Deployment('ubuntu', {
 //   metadata: {
 //     name: 'ubuntu',
@@ -268,50 +332,7 @@ apt install -y rsync
 rsync -avuhp --info=progress2 /mnt/src /mnt/dst
 `;
 
-const isosRsync = new Job('isos', {
-  metadata: {
-    namespace: ns.metadata.name,
-    annotations: {
-      'pulumi.com/skipAwait': 'true',
-    },
-  },
-  spec: {
-    template: {
-      spec: {
-        restartPolicy: 'Never',
-        containers: [{
-          name: 'rsync',
-          image: `ubuntu:noble-20240904.1`,
-          command: ['bash', '-c', rsyncScript],
-          volumeMounts: [
-            { name: 'isos', mountPath: '/mnt/src' },
-            { name: 'isos-ceph', mountPath: '/mnt/dst' },
-          ],
-        }],
-        volumes: [
-          {
-            name: 'isos-ceph',
-            persistentVolumeClaim: {
-              claimName: isosClaim.metadata.name,
-            },
-          },
-          {
-            name: 'isos',
-            nfs: {
-              server: '192.168.1.10',
-              path: '/tank1/media/isos',
-            },
-          },
-        ],
-      },
-    },
-  },
-}, {
-  provider,
-  dependsOn: isosClaim,
-});
-
-const animeRsync = new Job('anime', {
+const backupRsync = new Job('backup', {
   metadata: {
     namespace: ns.metadata.name,
     annotations: {
@@ -328,21 +349,21 @@ const animeRsync = new Job('anime', {
           command: ['bash', '-c', rsyncScript],
           volumeMounts: [
             { name: 'src', mountPath: '/mnt/src' },
-            { name: 'dst', mountPath: '/mnt/dst' },
+            { name: 'dst', mountPath: '/mnt/dst', subPath: 'thecluster-vms' },
           ],
         }],
         volumes: [
           {
             name: 'dst',
             persistentVolumeClaim: {
-              claimName: animeClaim.metadata.name,
+              claimName: backupClaim.metadata.name,
             },
           },
           {
             name: 'src',
             nfs: {
               server: '192.168.1.10',
-              path: '/tank1/media/anime',
+              path: '/tank1/backup/thecluster-vms',
             },
           },
         ],
@@ -351,177 +372,5 @@ const animeRsync = new Job('anime', {
   },
 }, {
   provider,
-  dependsOn: animeClaim,
-});
-
-const movies4kRsync = new Job('movies4k', {
-  metadata: {
-    namespace: ns.metadata.name,
-    annotations: {
-      'pulumi.com/skipAwait': 'true',
-    },
-  },
-  spec: {
-    template: {
-      spec: {
-        restartPolicy: 'Never',
-        containers: [{
-          name: 'rsync',
-          image: `ubuntu:noble-20240904.1`,
-          command: ['bash', '-c', rsyncScript],
-          volumeMounts: [
-            { name: 'src', mountPath: '/mnt/src' },
-            { name: 'dst', mountPath: '/mnt/dst' },
-          ],
-        }],
-        volumes: [
-          {
-            name: 'dst',
-            persistentVolumeClaim: {
-              claimName: movies4kClaim.metadata.name,
-            },
-          },
-          {
-            name: 'src',
-            nfs: {
-              server: '192.168.1.10',
-              path: '/tank1/media/movies4k',
-            },
-          },
-        ],
-      },
-    },
-  },
-}, {
-  provider,
-  dependsOn: movies4kClaim,
-});
-
-const musicRsync = new Job('music', {
-  metadata: {
-    namespace: ns.metadata.name,
-    annotations: {
-      'pulumi.com/skipAwait': 'true',
-    },
-  },
-  spec: {
-    template: {
-      spec: {
-        restartPolicy: 'Never',
-        containers: [{
-          name: 'rsync',
-          image: `ubuntu:noble-20240904.1`,
-          command: ['bash', '-c', rsyncScript],
-          volumeMounts: [
-            { name: 'src', mountPath: '/mnt/src' },
-            { name: 'dst', mountPath: '/mnt/dst' },
-          ],
-        }],
-        volumes: [
-          {
-            name: 'dst',
-            persistentVolumeClaim: {
-              claimName: musicClaim.metadata.name,
-            },
-          },
-          {
-            name: 'src',
-            nfs: {
-              server: '192.168.1.10',
-              path: '/tank1/media/music',
-            },
-          },
-        ],
-      },
-    },
-  },
-}, {
-  provider,
-  dependsOn: movies4kClaim,
-});
-
-const photosRsync = new Job('photos', {
-  metadata: {
-    namespace: ns.metadata.name,
-    annotations: {
-      'pulumi.com/skipAwait': 'true',
-    },
-  },
-  spec: {
-    template: {
-      spec: {
-        restartPolicy: 'Never',
-        containers: [{
-          name: 'rsync',
-          image: `ubuntu:noble-20240904.1`,
-          command: ['bash', '-c', rsyncScript],
-          volumeMounts: [
-            { name: 'src', mountPath: '/mnt/src' },
-            { name: 'dst', mountPath: '/mnt/dst' },
-          ],
-        }],
-        volumes: [
-          {
-            name: 'dst',
-            persistentVolumeClaim: {
-              claimName: photosClaim.metadata.name,
-            },
-          },
-          {
-            name: 'src',
-            nfs: {
-              server: '192.168.1.10',
-              path: '/tank1/media/photos',
-            },
-          },
-        ],
-      },
-    },
-  },
-}, {
-  provider,
-  dependsOn: photosClaim,
-});
-
-const tv4kRsync = new Job('tv4k', {
-  metadata: {
-    namespace: ns.metadata.name,
-    annotations: {
-      'pulumi.com/skipAwait': 'true',
-    },
-  },
-  spec: {
-    template: {
-      spec: {
-        restartPolicy: 'Never',
-        containers: [{
-          name: 'rsync',
-          image: `ubuntu:noble-20240904.1`,
-          command: ['bash', '-c', rsyncScript],
-          volumeMounts: [
-            { name: 'src', mountPath: '/mnt/src' },
-            { name: 'dst', mountPath: '/mnt/dst' },
-          ],
-        }],
-        volumes: [
-          {
-            name: 'dst',
-            persistentVolumeClaim: {
-              claimName: tv4kClaim.metadata.name,
-            },
-          },
-          {
-            name: 'src',
-            nfs: {
-              server: '192.168.1.10',
-              path: '/tank1/media/tv4k',
-            },
-          },
-        ],
-      },
-    },
-  },
-}, {
-  provider,
-  dependsOn: tv4kClaim,
+  dependsOn: backupClaim,
 });

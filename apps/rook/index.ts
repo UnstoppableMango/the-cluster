@@ -13,9 +13,10 @@ const chart = new k8s.helm.v3.Chart('rook', {
     'rook-ceph': {
       crds: { enabled: true },
       csi: {
-        nfs: { enabled: true },
+        nfs: { enabled: false },
       },
-      enableDiscoveryDaemon: true,
+      // Disabling for memory reasons on the smaller nodes
+      enableDiscoveryDaemon: false,
       env: {},
       resources: {
         limits: {
