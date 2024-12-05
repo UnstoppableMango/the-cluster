@@ -1,0 +1,21 @@
+  pool: tank1
+ state: ONLINE
+status: One or more devices could not be used because the label is missing or
+	invalid.  Sufficient replicas exist for the pool to continue
+	functioning in a degraded state.
+action: Replace the device using 'zpool replace'.
+   see: https://openzfs.github.io/openzfs-docs/msg/ZFS-8000-4J
+  scan: scrub repaired 0B in 20:30:32 with 0 errors on Sun Nov 10 20:54:34 2024
+config:
+
+	NAME                                              STATE     READ WRITE CKSUM
+	tank1                                             ONLINE       0     0     0
+	 raidz2-0                                        ONLINE       0     0     0
+	   /dev/disk/by-id/wwn-0x5000cca273ead8e7-part2  ONLINE       0     0     0
+	   /dev/disk/by-id/wwn-0x5000cca27ec66b98-part2  ONLINE       0     0     0
+	   /dev/disk/by-id/wwn-0x5000cca267cc4c57-part2  ONLINE       0     0     0
+	   /dev/disk/by-id/wwn-0x5000cca267cc4a71-part2  ONLINE       0     0     0
+	   /dev/disk/by-id/wwn-0x5000cca267cb9bc7-part2  ONLINE       0     0     0
+	   /dev/disk/by-id/wwn-0x5000cca267cc3cd3-part2  ONLINE       0     0     0
+	cache
+	 /dev/sdc1                                       FAULTED      0     0     0  corrupted data
