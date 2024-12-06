@@ -32,13 +32,15 @@ TEST_PACKAGES  := $(dir ${TEST_SUITES})
 TEST_SENTINELS := $(addsuffix ${TEST_REPORT},${TEST_PACKAGES})
 GINKGO_REPORTS := $(COV_REPORT) $(TEST_SENTINELS)
 
-PULUMI         := bin/pulumi
-GINKGO         := bin/ginkgo
-KUBEBUILDER    := bin/kubebuilder --plugins thecluster.go.kubebuilder.io/v1-alpha
-KUBECTL        := bin/kubectl
-KUSTOMIZE      := bin/kustomize
-CONTROLLER_GEN := bin/controller-gen
-ENVTEST        := bin/setup-envtest
+THECLUSTER     := ${LOCALBIN}/thecluster
+DEVOPS         := ${LOCALBIN}/devops
+PULUMI         := ${LOCALBIN}/pulumi
+GINKGO         := ${LOCALBIN}/ginkgo
+KUBEBUILDER    := ${LOCALBIN}/kubebuilder --plugins thecluster.go.kubebuilder.io/v1-alpha
+KUBECTL        := ${LOCALBIN}/kubectl
+KUSTOMIZE      := ${LOCALBIN}/kustomize
+CONTROLLER_GEN := ${LOCALBIN}/controller-gen
+ENVTEST        := ${LOCALBIN}/setup-envtest
 
 all: bin/thecluster bin/kubebuilder
 
@@ -70,7 +72,7 @@ lint: .make/operator_lint
 tidy: go.mod go.sum ${GO_SRC} .make/operator_go_mod_tidy
 	go mod tidy
 
-ensure: $(addprefix bin/,kubebuilder kubectl kustomize controller-gen setup-envtest ginkgo pulumi)
+ensure: $(addprefix bin/,kubebuilder kubectl kustomize controller-gen setup-envtest ginkgo pulumi devops)
 
 clean:
 	rm -rf bin
@@ -84,24 +86,23 @@ uninstall: .make/operator_uninstall
 bin/thecluster: go.mod go.sum $(GO_SRC)
 	go build -o $@ ./cmd/thecluster/main.go
 
-kubebuilder: bin/kubebuilder
 bin/kubebuilder: go.mod go.sum $(GO_SRC)
 	go build -o $@ ./cmd/kubebuilder/main.go
+
+bin/devops: go.mod go.sum
+	GOBIN=${LOCALBIN} go install github.com/unmango/go/cmd/devops
 
 bin/kubectl: .versions/kubernetes
 	curl --fail -L -o $@ https://dl.k8s.io/release/v$(shell cat $<)/bin/${GOOS}/${GOARCH}/kubectl
 	chmod +x $@
 
 KUSTOMIZE_INSTALL_SCRIPT ?= "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"
-kustomize: bin/kustomize
 bin/kustomize: .versions/kustomize
 	curl --fail -Ss ${KUSTOMIZE_INSTALL_SCRIPT} | bash -s -- $(shell cat $<) ${LOCALBIN}
 
-controller-gen: bin/controller-gen
 bin/controller-gen: .versions/controller-tools
 	GOBIN=${LOCALBIN} go install sigs.k8s.io/controller-tools/cmd/controller-gen@v$(shell cat $<)
 
-setup-envtest: bin/setup-envtest
 bin/setup-envtest:
 	GOBIN=${LOCALBIN} go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest
 
@@ -149,7 +150,7 @@ go.work.sum: go.work go.mod operator/go.mod
 	go work sync
 
 apps/%: | bin/thecluster
-	bin/thecluster app init $@
+	$(THECLUSTER) app init $@
 
 # .PHONY: $(CONTAINERS)
 # $(CONTAINERS): containers/%: containers/%/Dockerfile
@@ -167,7 +168,7 @@ $(GO_SRC:%.go=%_test.go): %_test.go: | bin/ginkgo
 
 .PHONY: .kube/config
 .kube/config: | bin/thecluster
-	bin/thecluster test-cluster ensure $@
+	$(THECLUSTER) test-cluster ensure $@
 
 .make/clean_ginkgo_reports:
 	rm -f $(GINKGO_REPORTS)
