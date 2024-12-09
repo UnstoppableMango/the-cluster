@@ -1,9 +1,9 @@
 apiVersion: v2
-name: keycloak
-description: Keycloak install for THECLUSTER
+name: velero
+description: Velero install for THECLUSTER
 type: application
 version: 0.1.0
 dependencies:
   - name: velero
     repository: https://vmware-tanzu.github.io/helm-charts
-    version: 7.2.1
+    version: 8.1.0

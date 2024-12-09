@@ -1,13 +1,7 @@
 config:
-  minio:minioAccessKey: gPOdAn2TNzAsbYyXyJTD
-  minio:minioSecretKey:
-    secure: AAABAGVnqvp5Ml/aUwcxnge1TYPvsObn2wTBtfcfOhJCGxmnG0uiMIpw1KuA9p6iBzQUVWcEkfxXSx2Dc0rZ/yh2U8x269wz
-  minio:minioServer: s3.lan.thecluster.io
   thecluster-velero:backblaze:
-    accessKey: 00231686586ff350000000001
+    accessKey: 00231686586ff350000000002
     applicationKey:
-      secure: AAABAJDVP/bz7Nt/S0R4W4AR1ftwjMTThCw9XZGvuUUoxXsIDGMdTen47/ccg2d8Se4oT2US9/JJ16iP1UXX
+      secure: AAABAFUIwuDS4iHvrSRO81zhHTO6EKFWelZa90QdgWdCE8oFFOXo4aaZaMS1/1H3Dx6JtS0FWonY4JWt+K36
     bucketName: thecluster-velero
     keyName: pulumi-thecluster-velero
-  thecluster-velero:backblazeAccessKey: 00231686586ff350000000001
-  thecluster-velero:backblazeKeyName: pulumi-thecluster-velero

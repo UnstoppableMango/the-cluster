@@ -1,49 +1,29 @@
-import { interpolate } from '@pulumi/pulumi';
-import * as k8s from '@pulumi/kubernetes';
-import { S3Bucket } from '@pulumi/minio';
-import { ConfigMap, Namespace, Secret } from '@pulumi/kubernetes/core/v1';
+import { all, Input } from '@pulumi/pulumi';
+import { ConfigMap, Secret } from '@pulumi/kubernetes/core/v1';
 import { Release } from '@pulumi/kubernetes/helm/v3';
-import { clusterIssuers, provider } from '@unstoppablemango/thecluster/cluster/from-stack';
-import { backblaze, minioAccessKey, minioSecretKey, versions } from './config';
-import { join } from '@unstoppablemango/thecluster';
+import { backblaze, versions } from './config';
 
-const backupBucket = new S3Bucket('backup', { bucket: 'velero-backup' });
-const minioCredentialsKey = 'minio-credentials';
 const backblazeCredentialsKey = 'backblaze-credentials';
 
-const ns = Namespace.get('velero', 'velero', { provider });
-
 const config = new ConfigMap('velero', {
-  metadata: {
-    name: 'velero',
-    namespace: ns.metadata.name,
-  },
-  data: {
-  },
-}, { provider });
+  metadata: { namespace: 'velero' },
+  data: {},
+});
 
 const secret = new Secret('velero', {
-  metadata: {
-    name: 'velero',
-    namespace: ns.metadata.name,
-  },
+  metadata: { namespace: 'velero' },
   stringData: {
-    [minioCredentialsKey]: join([
-      '[default]',
-      `aws_access_key_id=${minioAccessKey}`,
-      `aws_secret_access_key=${minioSecretKey}\n`,
-    ], '\n'),
     [backblazeCredentialsKey]: join([
       '[default]',
       `aws_access_key_id=${backblaze.accessKey}`,
       `aws_secret_access_key=${backblaze.applicationKey}\n`,
     ], '\n'),
   },
-}, { provider });
+});
 
 const chart = new Release('velero', {
   chart: './',
-  namespace: ns.metadata.name,
+  namespace: 'velero',
   createNamespace: false,
   skipCrds: false,
   atomic: true,
@@ -77,14 +57,6 @@ const chart = new Release('velero', {
       },
       initContainers: [
         {
-          name: 'velero-plugin-for-csi',
-          image: `velero/velero-plugin-for-csi:${versions.veleroCsi}`,
-          volumeMounts: [{
-            mountPath: '/target',
-            name: 'plugins',
-          }],
-        },
-        {
           name: 'velero-plugin-for-aws',
           image: `velero/velero-plugin-for-aws:${versions.veleroAws}`,
           volumeMounts: [{
@@ -101,12 +73,12 @@ const chart = new Release('velero', {
         capabilities: { drop: ['ALL'] },
         readOnlyRootFilesystem: true,
       },
-      extraVolumes: [{
-        name: 'root-ca',
-        configMap: {
-          name: 'root-ca',
-        },
-      }],
+      // extraVolumes: [{
+      //   name: 'root-ca',
+      //   configMap: {
+      //     name: 'root-ca',
+      //   },
+      // }],
       // The default bundle isn't included in here so the container fails to verify normal certs like backblaze
       // extraVolumeMounts: [{
       //   name: 'root-ca',
@@ -121,23 +93,6 @@ const chart = new Release('velero', {
       },
       configuration: {
         backupStorageLocation: [
-          {
-            name: 'minio',
-            provider: 'aws',
-            bucket: backupBucket.bucket,
-            // caCert: '', // TODO: How to get this in b64 in the values?
-            default: true,
-            // validationFrequency: '',
-            credential: {
-              name: secret.metadata.name,
-              key: minioCredentialsKey,
-            },
-            config: {
-              region: 'goodall-apt',
-              s3Url: 'http://thecluster-hl.minio.svc.cluster.local:9000',
-              publicUrl: 'https://s3.thecluster.io',
-            },
-          },
           {
             name: 'backblaze',
             provider: 'aws',
@@ -156,12 +111,12 @@ const chart = new Release('velero', {
           },
         ],
         volumeSnapshotLocation: [],
-        namespace: ns.metadata.name,
+        namespace: 'velero',
       },
       snapshotsEnabled: false,
       schedules: {
         backblaze: {
-          disabled: false,
+          disabled: true,
           labels: {
             cluster: 'pinkdiamond',
           },
@@ -173,20 +128,11 @@ const chart = new Release('velero', {
             // includeNamespaces: [],
           },
         },
-        minio: {
-          disabled: true,
-          labels: {
-            cluster: 'pinkdiamond',
-          },
-          schedule: '0 * * * *',
-          useOwnerReferencesInBackup: true,
-          template: {
-            ttl: '240h',
-            storageLocation: 'backblaze',
-            // includeNamespaces: [],
-          },
-        },
       },
     },
   },
-}, { provider });
+});
+
+function join(inputs: Input<string>[], sep: string): Input<string> {
+  return all(inputs).apply(x => x.join(sep));
+}
