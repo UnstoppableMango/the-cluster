@@ -15,11 +15,7 @@ export interface Versions {
 }
 
 const config = new Config();
-export const cluster = getStack();
+export const clusterName = getStack();
 
 export const versions = config.requireObject<Versions>('versions');
 export const backblaze = config.requireObject<Backblaze>('backblaze');
-
-const minioConfig = new Config('minio');
-export const minioAccessKey = minioConfig.require('minioAccessKey');
-export const minioSecretKey = minioConfig.require('minioSecretKey');

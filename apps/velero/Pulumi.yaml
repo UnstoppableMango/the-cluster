@@ -4,7 +4,6 @@ description: Velero install for THECLUSTER
 config:
   versions:
     value:
-      bitnamiKubectl: 1.30.2-debian-12-r1 # renovate depName=bitnami/kubectl datasource=docker
-      velero: v1.13.2 # renovate depName=velero/velero datasource=docker
-      veleroCsi: v0.7.1 # renovate depName=velero/velero-plugin-for-csi datasource=docker
-      veleroAws: v1.9.2 # renovate depName=velero/velero-plugin-for-aws datasource=docker
+      bitnamiKubectl: 1.31.0-debian-12-r1 # renovate depName=bitnami/kubectl datasource=docker
+      velero: v1.15.0 # renovate depName=velero/velero datasource=docker
+      veleroAws: v1.11.0 # renovate depName=velero/velero-plugin-for-aws datasource=docker
