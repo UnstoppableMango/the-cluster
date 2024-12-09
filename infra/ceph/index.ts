@@ -250,9 +250,44 @@ const unsafeRbdClass = new StorageClass('unsafe-rbd', {
   protect: true,
 });
 
-const defaultCephfs = new crds.CephFilesystem('default', {
+// const defaultCephfs = new crds.CephFilesystem('default', {
+//   metadata: {
+//     name: 'default',
+//     namespace: 'rook-ceph',
+//   },
+//   spec: {
+//     metadataPool: {
+//       replicated: { size: 2 },
+//     },
+//     dataPools: [
+//       {
+//         name: 'default',
+//         replicated: { size: 2 },
+//       },
+//       {
+//         name: 'data',
+//         failureDomain: 'osd',
+//         erasureCoded: {
+//           dataChunks: 2,
+//           codingChunks: 1,
+//         },
+//       },
+//     ],
+//     preserveFilesystemOnDelete: true,
+//     metadataServer: {
+//       activeCount: 1,
+//       activeStandby: true,
+//     },
+//   },
+// }, {
+//   provider,
+//   dependsOn: cluster,
+//   // protect: true,
+// });
+
+const replicatedCephfs = new crds.CephFilesystem('replicated', {
   metadata: {
-    name: 'default',
+    name: 'replicated',
     namespace: 'rook-ceph',
   },
   spec: {
@@ -261,16 +296,9 @@ const defaultCephfs = new crds.CephFilesystem('default', {
     },
     dataPools: [
       {
-        name: 'default',
-        replicated: { size: 2 },
-      },
-      {
         name: 'data',
         failureDomain: 'osd',
-        erasureCoded: {
-          dataChunks: 2,
-          codingChunks: 1,
-        },
+        replicated: { size: 2 },
       },
     ],
     preserveFilesystemOnDelete: true,
@@ -287,11 +315,11 @@ const defaultCephfs = new crds.CephFilesystem('default', {
 
 const defaultCephfsClass = new StorageClass('default-cephfs', {
   metadata: { name: 'default-cephfs' },
-  provisioner: 'rook.cephfs.csi.ceph.com',
+  provisioner: 'rook-ceph.cephfs.csi.ceph.com',
   parameters: {
     clusterID: 'rook-ceph',
-    fsName: 'default',
-    pool: 'data',
+    fsName: 'replicated',
+    pool: 'replicated-data',
     'csi.storage.k8s.io/provisioner-secret-name': 'rook-csi-cephfs-provisioner',
     'csi.storage.k8s.io/provisioner-secret-namespace': 'rook-ceph',
     'csi.storage.k8s.io/controller-expand-secret-name': 'rook-csi-cephfs-provisioner',
@@ -303,7 +331,7 @@ const defaultCephfsClass = new StorageClass('default-cephfs', {
   allowVolumeExpansion: true,
 }, {
   provider,
-  dependsOn: [cluster, defaultCephfs],
+  dependsOn: [cluster, replicatedCephfs],
   // protect: true,
 });
 
