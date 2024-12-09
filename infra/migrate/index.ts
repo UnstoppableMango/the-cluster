@@ -332,45 +332,45 @@ apt install -y rsync
 rsync -avuhp --info=progress2 /mnt/src /mnt/dst
 `;
 
-const backupRsync = new Job('backup', {
-  metadata: {
-    namespace: ns.metadata.name,
-    annotations: {
-      'pulumi.com/skipAwait': 'true',
-    },
-  },
-  spec: {
-    template: {
-      spec: {
-        restartPolicy: 'Never',
-        containers: [{
-          name: 'rsync',
-          image: `ubuntu:noble-20240904.1`,
-          command: ['bash', '-c', rsyncScript],
-          volumeMounts: [
-            { name: 'src', mountPath: '/mnt/src' },
-            { name: 'dst', mountPath: '/mnt/dst', subPath: 'thecluster-vms' },
-          ],
-        }],
-        volumes: [
-          {
-            name: 'dst',
-            persistentVolumeClaim: {
-              claimName: backupClaim.metadata.name,
-            },
-          },
-          {
-            name: 'src',
-            nfs: {
-              server: '192.168.1.10',
-              path: '/tank1/backup/thecluster-vms',
-            },
-          },
-        ],
-      },
-    },
-  },
-}, {
-  provider,
-  dependsOn: backupClaim,
-});
+// const backupRsync = new Job('backup', {
+//   metadata: {
+//     namespace: ns.metadata.name,
+//     annotations: {
+//       'pulumi.com/skipAwait': 'true',
+//     },
+//   },
+//   spec: {
+//     template: {
+//       spec: {
+//         restartPolicy: 'Never',
+//         containers: [{
+//           name: 'rsync',
+//           image: `ubuntu:noble-20240904.1`,
+//           command: ['bash', '-c', rsyncScript],
+//           volumeMounts: [
+//             { name: 'src', mountPath: '/mnt/src' },
+//             { name: 'dst', mountPath: '/mnt/dst', subPath: 'thecluster-vms' },
+//           ],
+//         }],
+//         volumes: [
+//           {
+//             name: 'dst',
+//             persistentVolumeClaim: {
+//               claimName: backupClaim.metadata.name,
+//             },
+//           },
+//           {
+//             name: 'src',
+//             nfs: {
+//               server: '192.168.1.10',
+//               path: '/tank1/backup/thecluster-vms',
+//             },
+//           },
+//         ],
+//       },
+//     },
+//   },
+// }, {
+//   provider,
+//   dependsOn: backupClaim,
+// });
