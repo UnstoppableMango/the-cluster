@@ -250,41 +250,6 @@ const unsafeRbdClass = new StorageClass('unsafe-rbd', {
   protect: true,
 });
 
-// const defaultCephfs = new crds.CephFilesystem('default', {
-//   metadata: {
-//     name: 'default',
-//     namespace: 'rook-ceph',
-//   },
-//   spec: {
-//     metadataPool: {
-//       replicated: { size: 2 },
-//     },
-//     dataPools: [
-//       {
-//         name: 'default',
-//         replicated: { size: 2 },
-//       },
-//       {
-//         name: 'data',
-//         failureDomain: 'osd',
-//         erasureCoded: {
-//           dataChunks: 2,
-//           codingChunks: 1,
-//         },
-//       },
-//     ],
-//     preserveFilesystemOnDelete: true,
-//     metadataServer: {
-//       activeCount: 1,
-//       activeStandby: true,
-//     },
-//   },
-// }, {
-//   provider,
-//   dependsOn: cluster,
-//   // protect: true,
-// });
-
 const replicatedCephfs = new crds.CephFilesystem('replicated', {
   metadata: {
     name: 'replicated',
@@ -332,12 +297,12 @@ const defaultCephfsClass = new StorageClass('default-cephfs', {
 }, {
   provider,
   dependsOn: [cluster, replicatedCephfs],
-  // protect: true,
+  protect: true,
 });
 
 export const storageClasses = [
   unsafeRbdClass.metadata.name,
-  // defaultCephfsClass.metadata.name,
+  defaultCephfsClass.metadata.name,
 ];
 
 // https://github.com/rook/rook/blob/master/deploy/examples/toolbox.yaml
