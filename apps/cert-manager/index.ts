@@ -1,23 +1,20 @@
 import * as k8s from '@pulumi/kubernetes';
-import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
+import { Chart } from '@pulumi/kubernetes/helm/v4';
 
 const ns = new k8s.core.v1.Namespace('cert-manager', {
   metadata: { name: 'cert-manager' },
-}, { provider });
+});
 
 // Use a release because the cert-manager helm chart uses hooks
-const release = new k8s.helm.v3.Release('cert-manager', {
+const release = new Chart('cert-manager', {
   chart: './',
   name: 'cert-manager',
   namespace: ns.metadata.name,
-  createNamespace: false,
-  atomic: true,
   dependencyUpdate: true,
-  lint: true,
   values: {
     // https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/README.template.md#configuration
     'cert-manager': {
-      installCRDs: true,
+      crds: { enabled: true },
       podDisruptionBudget: {
         enabled: true,
         minAvailable: 1,
@@ -28,6 +25,4 @@ const release = new k8s.helm.v3.Release('cert-manager', {
       enableCertificateOwnerRef: true,
     },
   },
-}, { provider });
-
-// export const resources = release.resourceNames;
+});
