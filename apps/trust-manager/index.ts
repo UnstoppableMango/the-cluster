@@ -1,14 +1,13 @@
 import * as k8s from '@pulumi/kubernetes';
-import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('trust-manager', {
   metadata: { name: 'trust-manager' },
-}, { provider });
+});
 
-const trustNs = k8s.core.v1.Namespace.get('cert-manager', 'cert-manager', { provider });
-const chart = new k8s.helm.v3.Chart('trust-manager', {
-  path: './',
+const trustNs = k8s.core.v1.Namespace.get('cert-manager', 'cert-manager');
+const chart = new k8s.helm.v4.Chart('trust-manager', {
+  chart: './',
   namespace: ns.metadata.name,
   values: {
     // https://github.com/cert-manager/trust-manager/blob/main/deploy/charts/trust-manager/README.md#values
@@ -43,7 +42,7 @@ const chart = new k8s.helm.v3.Chart('trust-manager', {
       },
     },
   },
-}, { provider });
+});
 
 export const namespace = ns.metadata.name;
 export const trustNamespace = ns.metadata.name;
