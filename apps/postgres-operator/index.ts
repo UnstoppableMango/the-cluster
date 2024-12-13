@@ -2,7 +2,7 @@ import { Namespace } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v4';
 
 const ns = new Namespace('postgres-operator', {
-  metadata: { namespace: 'postgres-operator' },
+  metadata: { name: 'postgres-operator' },
 });
 
 const chart = new Chart('operator', {
