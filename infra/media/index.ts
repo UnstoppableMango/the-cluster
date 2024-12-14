@@ -111,6 +111,16 @@ const moviesRsync = new Job('movies', {
             { name: 'src', mountPath: '/mnt/src' },
             { name: 'dst', mountPath: '/mnt/dst' },
           ],
+          resources: {
+            requests: {
+              cpu: '10m',
+              memory: '4Gi',
+            },
+            limits: {
+              cpu: '100m',
+              memory: '8Gi',
+            },
+          },
         }],
         volumes: [
           {
@@ -151,6 +161,16 @@ const tvRsync = new Job('tv', {
             { name: 'src', mountPath: '/mnt/src' },
             { name: 'dst', mountPath: '/mnt/dst' },
           ],
+          resources: {
+            requests: {
+              cpu: '10m',
+              memory: '4Gi',
+            },
+            limits: {
+              cpu: '100m',
+              memory: '8Gi',
+            },
+          },
         }],
         volumes: [
           {
