@@ -87,7 +87,7 @@ const rsyncScript: string = `
 #!/bin/bash
 
 export DEBIAN_FRONTEND=noninteractive
-apt-get update && apt upgrade -y
+apt-get update && apt-get upgrade -y
 apt-get install -y rsync
 rsync -avuhp --info=progress2 /mnt/src/ /mnt/dst
 `;
@@ -113,11 +113,11 @@ const moviesRsync = new Job('movies', {
           ],
           resources: {
             requests: {
-              cpu: '10m',
+              cpu: '100m',
               memory: '4Gi',
             },
             limits: {
-              cpu: '100m',
+              cpu: '2',
               memory: '8Gi',
             },
           },
@@ -163,11 +163,11 @@ const tvRsync = new Job('tv', {
           ],
           resources: {
             requests: {
-              cpu: '10m',
+              cpu: '100m',
               memory: '4Gi',
             },
             limits: {
-              cpu: '100m',
+              cpu: '2',
               memory: '8Gi',
             },
           },
