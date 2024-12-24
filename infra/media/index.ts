@@ -1,5 +1,6 @@
 import { Job } from '@pulumi/kubernetes/batch/v1';
 import { Namespace, PersistentVolumeClaim } from '@pulumi/kubernetes/core/v1';
+import { Wireguard, WireguardPeer } from './crds/nodejs/vpn/v1alpha1';
 
 const ns = new Namespace('media', {
   metadata: { name: 'media' },
@@ -191,6 +192,28 @@ const tvRsync = new Job('tv', {
     },
   },
 }, { dependsOn: movies });
+
+const test = new Wireguard('test', {
+  spec: {
+    address: '',
+    dns: '',
+  },
+})
+
+const peer = new WireguardPeer('test', {
+  metadata: { namespace: ns.metadata.name },
+  spec: {
+    address: '',
+    PrivateKeyRef: {
+      secretKeyRef: {
+        name: '',
+        key: '',
+      },
+    },
+    publicKey: '',
+    dns: '',
+  },
+});
 
 // const ingress = new Ingress('media', {
 //   metadata: {
