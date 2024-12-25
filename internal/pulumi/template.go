@@ -1,6 +1,7 @@
 package pulumi
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"path/filepath"
@@ -17,14 +18,19 @@ var (
 // Basically just:
 // https://github.com/pulumi/pulumi/blob/006a7fc133674a9acce99c286f28f67850478151/pkg/cmd/pulumi/new.go#L195-L221
 
-func TypescriptTemplate() (workspace.Template, error) {
+func TypescriptTemplate(ctx context.Context) (workspace.Template, error) {
 	root, err := util.GitRoot()
 	if err != nil {
 		return workspace.Template{}, fmt.Errorf("unable to locate git root directory: %w", err)
 	}
 
 	templatePath := filepath.Join(root, TypescriptRelativePath)
-	tplRepo, err := workspace.RetrieveTemplates(templatePath, true, workspace.TemplateKindPulumiProject)
+	tplRepo, err := workspace.RetrieveTemplates(
+		ctx,
+		templatePath,
+		true,
+		workspace.TemplateKindPulumiProject,
+	)
 	if err != nil {
 		return workspace.Template{}, fmt.Errorf("unable to retrieve template: %w", err)
 	}

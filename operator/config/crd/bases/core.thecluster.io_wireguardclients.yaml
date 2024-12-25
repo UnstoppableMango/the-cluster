@@ -1,0 +1,92 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.16.3
+  name: wireguardclients.core.thecluster.io
+spec:
+  group: core.thecluster.io
+  names:
+    kind: WireguardClient
+    listKind: WireguardClientList
+    plural: wireguardclients
+    singular: wireguardclient
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: WireguardClient is the Schema for the wireguardclients API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: WireguardClientSpec defines the desired state of WireguardClient
+            properties:
+              allowedIps:
+                description: |-
+                  The IPs/Ranges that the peers will be able to reach using the VPN connection.
+                  If not specified the default value is: '0.0.0.0/0, ::0/0'
+                  This will cause ALL traffic to route through the VPN, if you want split tunneling,
+                  set this to only the IPs you would like to use the tunnel AND the ip of the server's WG ip, such as 10.13.13.1.
+                items:
+                  type: string
+                type: array
+              logConfs:
+                description: |-
+                  Generated QR codes will be displayed in the docker log.
+                  Set to false to skip log output.
+                type: boolean
+              pgid:
+                description: |-
+                  For GroupID, see the [linuxserver explanation]
+
+                  [linuxserver explanation]: https://github.com/linuxserver/docker-wireguard#user--group-identifiers
+                type: string
+              puid:
+                description: |-
+                  For UserID, see the [linuxserver explanation]
+
+                  [linuxserver explanation]: https://github.com/linuxserver/docker-wireguard#user--group-identifiers
+                type: string
+              readonly:
+                description: |-
+                  Run container with a read-only filesystem. More info in the linuxserver.io [docs]
+
+                  [docs]: https://docs.linuxserver.io/misc/read-only/
+                type: boolean
+              tz:
+                description: |-
+                  TZ specifies a timezone to use, see this [list of time zones]
+
+                  [list of time zones]: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List
+                type: string
+            required:
+            - pgid
+            - puid
+            - tz
+            type: object
+          status:
+            description: WireguardClientStatus defines the observed state of WireguardClient
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
