@@ -126,13 +126,6 @@ func (r *WireguardClientReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 	return ctrl.Result{}, nil
 }
 
-// SetupWithManager sets up the controller with the Manager.
-func (r *WireguardClientReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	return ctrl.NewControllerManagedBy(mgr).
-		For(&corev1alpha1.WireguardClient{}).
-		Complete(r)
-}
-
 func (r *WireguardClientReconciler) CreateDeployment(ctx context.Context, wg *corev1alpha1.WireguardClient) error {
 	env := []corev1.EnvVar{
 		{Name: "PUID", Value: strconv.FormatInt(wg.Spec.PUID, 10)},
@@ -153,6 +146,12 @@ func (r *WireguardClientReconciler) CreateDeployment(ctx context.Context, wg *co
 		})
 	}
 
+	labels := map[string]string{
+		"app.kubernetes.io/name":       "wireguard",
+		"app.kubernetes.io/version":    "latest",
+		"app.kubernetes.io/managed-by": "WireguardClientController",
+	}
+
 	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      wg.GetName(),
@@ -161,15 +160,11 @@ func (r *WireguardClientReconciler) CreateDeployment(ctx context.Context, wg *co
 		Spec: appsv1.DeploymentSpec{
 			Replicas: ptr.To[int32](1),
 			Selector: &metav1.LabelSelector{
-				MatchLabels: map[string]string{
-					"app": "wireguard",
-				},
+				MatchLabels: labels,
 			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Labels: map[string]string{
-						"app": "wireguard",
-					},
+					Labels: labels,
 				},
 				Spec: corev1.PodSpec{
 					SecurityContext: &corev1.PodSecurityContext{
@@ -210,4 +205,12 @@ func (r *WireguardClientReconciler) CreateDeployment(ctx context.Context, wg *co
 	}
 
 	return r.Create(ctx, deployment)
+}
+
+// SetupWithManager sets up the controller with the Manager.
+func (r *WireguardClientReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	return ctrl.NewControllerManagedBy(mgr).
+		For(&corev1alpha1.WireguardClient{}).
+		Owns(&appsv1.Deployment{}).
+		Complete(r)
 }

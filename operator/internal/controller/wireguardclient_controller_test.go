@@ -96,13 +96,21 @@ var _ = Describe("WireguardClient Controller", func() {
 			Eventually(func() error {
 				return k8sClient.Get(ctx, typeNamespacedName, deployment)
 			}).Should(Succeed())
-			Expect(deployment.OwnerReferences).To(ConsistOf(
-				And(
-					HaveField("Kind", "WireguardClient"),
-					HaveField("Name", resourceName),
-				),
-			))
+			Expect(deployment.OwnerReferences).To(ConsistOf(And(
+				HaveField("Kind", "WireguardClient"),
+				HaveField("Name", resourceName),
+			)))
 			Expect(deployment.Spec.Replicas).To(Equal(ptr.To[int32](1)))
+			Expect(deployment.Spec.Selector.MatchLabels).To(And(
+				HaveKeyWithValue("app.kubernetes.io/name", "wireguard"),
+				HaveKeyWithValue("app.kubernetes.io/version", "latest"),
+				HaveKeyWithValue("app.kubernetes.io/managed-by", "WireguardClientController"),
+			))
+			Expect(deployment.Spec.Template.Labels).To(And(
+				HaveKeyWithValue("app.kubernetes.io/name", "wireguard"),
+				HaveKeyWithValue("app.kubernetes.io/version", "latest"),
+				HaveKeyWithValue("app.kubernetes.io/managed-by", "WireguardClientController"),
+			))
 			Expect(deployment.Spec.Template.Spec.SecurityContext).NotTo(BeNil())
 			securityContext := deployment.Spec.Template.Spec.SecurityContext
 			Expect(securityContext.RunAsNonRoot).To(Equal(ptr.To(true)), "RunAsNonRoot")
@@ -117,12 +125,10 @@ var _ = Describe("WireguardClient Controller", func() {
 				corev1.EnvVar{Name: "PGID", Value: "4200"},
 				corev1.EnvVar{Name: "TZ", Value: "America/Chicago"},
 			))
-			Expect(container.Ports).To(ConsistOf(
-				corev1.ContainerPort{
-					ContainerPort: 51820,
-					Protocol:      corev1.ProtocolUDP,
-				},
-			))
+			Expect(container.Ports).To(ConsistOf(corev1.ContainerPort{
+				ContainerPort: 51820,
+				Protocol:      corev1.ProtocolUDP,
+			}))
 			Expect(container.SecurityContext).NotTo(BeNil())
 			Expect(container.SecurityContext.Capabilities).NotTo(BeNil())
 			Expect(container.SecurityContext.Capabilities.Add).To(ConsistOf(
