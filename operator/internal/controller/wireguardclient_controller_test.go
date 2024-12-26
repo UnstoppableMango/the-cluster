@@ -18,11 +18,14 @@ package controller
 
 import (
 	"context"
+	"time"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	appsv1 "k8s.io/api/apps/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -31,6 +34,12 @@ import (
 )
 
 var _ = Describe("WireguardClient Controller", func() {
+	const (
+		timeout  = time.Second * 10
+		duration = time.Second * 10
+		interval = time.Millisecond * 250
+	)
+
 	Context("When reconciling a resource", func() {
 		const resourceName = "test-resource"
 
@@ -38,7 +47,7 @@ var _ = Describe("WireguardClient Controller", func() {
 
 		typeNamespacedName := types.NamespacedName{
 			Name:      resourceName,
-			Namespace: "default", // TODO(user):Modify as needed
+			Namespace: "default",
 		}
 		wireguardclient := &corev1alpha1.WireguardClient{}
 
@@ -51,21 +60,26 @@ var _ = Describe("WireguardClient Controller", func() {
 						Name:      resourceName,
 						Namespace: "default",
 					},
-					// TODO(user): Specify other spec details if needed.
+					Spec: corev1alpha1.WireguardClientSpec{},
 				}
 				Expect(k8sClient.Create(ctx, resource)).To(Succeed())
 			}
 		})
 
 		AfterEach(func() {
-			// TODO(user): Cleanup logic after each test, like removing the resource instance.
 			resource := &corev1alpha1.WireguardClient{}
 			err := k8sClient.Get(ctx, typeNamespacedName, resource)
 			Expect(err).NotTo(HaveOccurred())
 
 			By("Cleanup the specific resource instance WireguardClient")
 			Expect(k8sClient.Delete(ctx, resource)).To(Succeed())
+
+			By("Removing any dangling deployments")
+			deployment := &appsv1.Deployment{}
+			err = k8sClient.Get(ctx, typeNamespacedName, deployment)
+			Expect(client.IgnoreNotFound(err)).NotTo(HaveOccurred())
 		})
+
 		It("should successfully reconcile the resource", func() {
 			By("Reconciling the created resource")
 			controllerReconciler := &WireguardClientReconciler{
@@ -77,8 +91,15 @@ var _ = Describe("WireguardClient Controller", func() {
 				NamespacedName: typeNamespacedName,
 			})
 			Expect(err).NotTo(HaveOccurred())
-			// TODO(user): Add more specific assertions depending on your controller's reconciliation logic.
-			// Example: If you expect a certain status condition after reconciliation, verify it here.
+
+			deployment := &appsv1.Deployment{}
+			Eventually(func(g Gomega) {
+				g.Expect(k8sClient.Get(ctx, typeNamespacedName, deployment)).To(Succeed())
+				if len(deployment.Status.Conditions) > 0 {
+					GinkgoWriter.Println(deployment.Status.Conditions[0].Message)
+				}
+				g.Expect(deployment.Status.ReadyReplicas).To(Equal(1))
+			}, duration, interval).Should(Succeed())
 		})
 	})
 })

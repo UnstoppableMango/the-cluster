@@ -58,13 +58,15 @@ spec:
                   For GroupID, see the [linuxserver explanation]
 
                   [linuxserver explanation]: https://github.com/linuxserver/docker-wireguard#user--group-identifiers
-                type: string
+                format: int64
+                type: integer
               puid:
                 description: |-
                   For UserID, see the [linuxserver explanation]
 
                   [linuxserver explanation]: https://github.com/linuxserver/docker-wireguard#user--group-identifiers
-                type: string
+                format: int64
+                type: integer
               readonly:
                 description: |-
                   Run container with a read-only filesystem. More info in the linuxserver.io [docs]

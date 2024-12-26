@@ -25,12 +25,12 @@ type WireguardClientSpec struct {
 	// For UserID, see the [linuxserver explanation]
 	//
 	// [linuxserver explanation]: https://github.com/linuxserver/docker-wireguard#user--group-identifiers
-	PUID string `json:"puid"`
+	PUID int64 `json:"puid"`
 
 	// For GroupID, see the [linuxserver explanation]
 	//
 	// [linuxserver explanation]: https://github.com/linuxserver/docker-wireguard#user--group-identifiers
-	PGID string `json:"pgid"`
+	PGID int64 `json:"pgid"`
 
 	// TZ specifies a timezone to use, see this [list of time zones]
 	//
@@ -41,22 +41,25 @@ type WireguardClientSpec struct {
 	// If not specified the default value is: '0.0.0.0/0, ::0/0'
 	// This will cause ALL traffic to route through the VPN, if you want split tunneling,
 	// set this to only the IPs you would like to use the tunnel AND the ip of the server's WG ip, such as 10.13.13.1.
+	// +optional
 	AllowedIPs []string `json:"allowedIps,omitempty"`
 
 	// Generated QR codes will be displayed in the docker log.
 	// Set to false to skip log output.
-	LogConfs bool `json:"logConfs,omitempty"`
+	// +optional
+	LogConfs *bool `json:"logConfs,omitempty"`
 
 	// Run container with a read-only filesystem. More info in the linuxserver.io [docs]
 	//
 	// [docs]: https://docs.linuxserver.io/misc/read-only/
-	ReadOnly bool `json:"readonly,omitempty"`
+	//
+	// +optional
+	ReadOnly *bool `json:"readonly,omitempty"`
 }
 
 // WireguardClientStatus defines the observed state of WireguardClient
 type WireguardClientStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	Conditions []metav1.Condition `json:"conditions,omitempty" patchStrategy:"merge" patchMergeKey:"type" protobuf:"bytes,1,rep,name=conditions"`
 }
 
 // +kubebuilder:object:root=true
