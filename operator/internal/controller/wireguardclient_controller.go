@@ -40,6 +40,7 @@ import (
 
 var (
 	TypeAvailableWireguardClient = "Available"
+	TypeDegradedWireguardClient  = "Degraded"
 	WireguardClientFinalizer     = "wireguardclient.core.thecluster.io/finalizer"
 )
 
@@ -95,7 +96,61 @@ func (r *WireguardClientReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		}
 	}
 
-	// TODO: Deletion
+	if wg.GetDeletionTimestamp() != nil {
+		if controllerutil.ContainsFinalizer(wg, WireguardClientFinalizer) {
+			log.Info("Performing finalizer operations before deleting resource")
+			_ = meta.SetStatusCondition(
+				&wg.Status.Conditions,
+				metav1.Condition{
+					Type:    TypeDegradedWireguardClient,
+					Status:  metav1.ConditionUnknown,
+					Reason:  "Finalizing",
+					Message: fmt.Sprintf("Performing finalizer operations for %s", wg.Name),
+				},
+			)
+			if err := r.Status().Update(ctx, wg); err != nil {
+				log.Error(err, "Failed to update wireguard client status")
+				return ctrl.Result{}, nil
+			}
+
+			if err := r.FinalizerOperations(ctx, wg); err != nil {
+				log.Error(err, "Failed to perform finalizer operations")
+				return ctrl.Result{Requeue: true}, err
+			}
+
+			if err := r.Get(ctx, req.NamespacedName, wg); err != nil {
+				log.Error(err, "Failed to re-fetch wireguard client")
+				return ctrl.Result{}, err
+			}
+
+			_ = meta.SetStatusCondition(
+				&wg.Status.Conditions,
+				metav1.Condition{
+					Type:    TypeDegradedWireguardClient,
+					Status:  metav1.ConditionTrue,
+					Reason:  "Finalizing",
+					Message: fmt.Sprintf("Finalizer operations for %s completed successfully", wg.Name),
+				},
+			)
+			if err := r.Status().Update(ctx, wg); err != nil {
+				log.Error(err, "Failed to update wireguard client status")
+				return ctrl.Result{}, err
+			}
+
+			log.Info("Removing finalizer")
+			if ok := controllerutil.RemoveFinalizer(wg, WireguardClientFinalizer); !ok {
+				err := fmt.Errorf("finalizer for wireguard client was not removed")
+				log.Error(err, "Failed to remove finalizer")
+				return ctrl.Result{}, err
+			}
+			if err := r.Update(ctx, wg); err != nil {
+				log.Error(err, "Failed to remove finalizer")
+				return ctrl.Result{}, err
+			}
+		}
+
+		return ctrl.Result{}, nil
+	}
 
 	deployment := &appsv1.Deployment{}
 	if err := r.Client.Get(ctx, req.NamespacedName, deployment); errors.IsNotFound(err) {
@@ -219,6 +274,13 @@ func (r *WireguardClientReconciler) CreateDeployment(ctx context.Context, wg *co
 	}
 
 	return r.Create(ctx, deployment)
+}
+
+func (r *WireguardClientReconciler) FinalizerOperations(ctx context.Context, wg *corev1alpha1.WireguardClient) error {
+
+	// TODO: Cleanup
+
+	return nil
 }
 
 // SetupWithManager sets up the controller with the Manager.
