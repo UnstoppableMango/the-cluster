@@ -18,13 +18,14 @@ package controller
 
 import (
 	"context"
-	"time"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/utils/ptr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
@@ -34,12 +35,6 @@ import (
 )
 
 var _ = Describe("WireguardClient Controller", func() {
-	const (
-		timeout  = time.Second * 10
-		duration = time.Second * 10
-		interval = time.Millisecond * 250
-	)
-
 	Context("When reconciling a resource", func() {
 		const resourceName = "test-resource"
 
@@ -60,7 +55,11 @@ var _ = Describe("WireguardClient Controller", func() {
 						Name:      resourceName,
 						Namespace: "default",
 					},
-					Spec: corev1alpha1.WireguardClientSpec{},
+					Spec: corev1alpha1.WireguardClientSpec{
+						PUID: 6969,
+						PGID: 4200,
+						TZ:   "America/Chicago",
+					},
 				}
 				Expect(k8sClient.Create(ctx, resource)).To(Succeed())
 			}
@@ -92,14 +91,46 @@ var _ = Describe("WireguardClient Controller", func() {
 			})
 			Expect(err).NotTo(HaveOccurred())
 
+			By("Checking if the deployment was created")
 			deployment := &appsv1.Deployment{}
-			Eventually(func(g Gomega) {
-				g.Expect(k8sClient.Get(ctx, typeNamespacedName, deployment)).To(Succeed())
-				if len(deployment.Status.Conditions) > 0 {
-					GinkgoWriter.Println(deployment.Status.Conditions[0].Message)
-				}
-				g.Expect(deployment.Status.ReadyReplicas).To(Equal(1))
-			}, duration, interval).Should(Succeed())
+			Eventually(func() error {
+				return k8sClient.Get(ctx, typeNamespacedName, deployment)
+			}).Should(Succeed())
+			Expect(deployment.Spec.Replicas).To(Equal(ptr.To[int32](1)))
+			Expect(deployment.Spec.Template.Spec.Containers).To(HaveLen(1))
+			container := deployment.Spec.Template.Spec.Containers[0]
+			Expect(container.Name).To(Equal("wireguard"))
+			Expect(container.Image).To(Equal("lscr.io/linuxserver/wireguard:latest"))
+			Expect(container.Env).To(ConsistOf(
+				corev1.EnvVar{Name: "PUID", Value: "6969"},
+				corev1.EnvVar{Name: "PGID", Value: "4200"},
+				corev1.EnvVar{Name: "TZ", Value: "America/Chicago"},
+			))
+			Expect(container.Ports).To(ConsistOf(
+				corev1.ContainerPort{
+					ContainerPort: 51820,
+					Protocol:      corev1.ProtocolUDP,
+				},
+			))
+			Expect(container.SecurityContext).NotTo(BeNil())
+			Expect(container.SecurityContext.Capabilities).NotTo(BeNil())
+			Expect(container.SecurityContext.Capabilities.Add).To(ConsistOf(
+				corev1.Capability("NET_ADMIN"),
+			))
+			Expect(container.SecurityContext.RunAsUser).To(Equal(ptr.To[int64](6969)), "RunAsUser")
+			Expect(container.SecurityContext.RunAsGroup).To(Equal(ptr.To[int64](4200)), "RunAsGroup")
+			Expect(container.SecurityContext.RunAsNonRoot).To(Equal(ptr.To(true)), "RunAsNonRoot")
+			Expect(container.SecurityContext.ReadOnlyRootFilesystem).To(BeNil(), "ReadOnlyRootFilesystem")
+
+			By("Checking the latest status condition")
+			Expect(k8sClient.Get(ctx, typeNamespacedName, wireguardclient)).To(Succeed())
+			conditions := []metav1.Condition{}
+			Expect(wireguardclient.Status.Conditions).To(ContainElement(
+				HaveField("Type", TypeAvailableWireguardClient), &conditions,
+			))
+			Expect(conditions).To(HaveLen(1), "Multiple conditions of type %s", TypeAvailableWireguardClient)
+			Expect(conditions[0].Status).To(Equal(metav1.ConditionTrue), "condition %s", TypeAvailableWireguardClient)
+			Expect(conditions[0].Reason).To(Equal("Reconciling"), "condition %s", TypeAvailableWireguardClient)
 		})
 	})
 })

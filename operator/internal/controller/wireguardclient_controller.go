@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -82,28 +83,42 @@ func (r *WireguardClientReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 	// TODO: Finalizer
 
 	deployment := &appsv1.Deployment{}
-	err := r.Client.Get(ctx, req.NamespacedName, deployment)
-	if errors.IsNotFound(err) {
-		deployment = toDeployment(wg)
-		err = r.Create(ctx, deployment)
-	}
-	if err != nil {
-		log.Error(err, "Failed to reconcile deployment")
-		_ = meta.SetStatusCondition(
-			&wg.Status.Conditions,
-			metav1.Condition{
-				Type:    TypeAvailableWireguardClient,
-				Status:  metav1.ConditionFalse,
-				Reason:  "Reconciling",
-				Message: fmt.Sprintf("Failed to reconcile the Deployment: %s", err),
-			},
-		)
+	if err := r.Client.Get(ctx, req.NamespacedName, deployment); errors.IsNotFound(err) {
+		log.Info("Creating a new deployment", "ns", req.Namespace, "name", req.Name)
+		if err := r.CreateDeployment(ctx, wg); err != nil {
+			log.Error(err, "Failed to create deployment for wireguard client")
+			_ = meta.SetStatusCondition(
+				&wg.Status.Conditions,
+				metav1.Condition{
+					Type:    TypeAvailableWireguardClient,
+					Status:  metav1.ConditionFalse,
+					Reason:  "Reconciling",
+					Message: fmt.Sprintf("Failed to create deployment for %s: %s", wg.Name, err),
+				},
+			)
+			if err = r.Status().Update(ctx, wg); err != nil {
+				log.Error(err, "Failed to update status")
+				return ctrl.Result{}, err
+			}
 
-		if err := r.Status().Update(ctx, wg); err != nil {
-			log.Error(err, "Failed to update wireguard client status")
-			return ctrl.Result{}, err
+			return ctrl.Result{RequeueAfter: time.Minute}, err
 		}
+	} else if err != nil {
+		log.Error(err, "Failed to get deployment")
+		return ctrl.Result{}, err
+	}
 
+	meta.SetStatusCondition(
+		&wg.Status.Conditions,
+		metav1.Condition{
+			Type:    TypeAvailableWireguardClient,
+			Status:  metav1.ConditionTrue,
+			Reason:  "Reconciling",
+			Message: fmt.Sprintf("Deployment for %s created successfully", wg.Name),
+		},
+	)
+	if err := r.Status().Update(ctx, wg); err != nil {
+		log.Error(err, "Failed to update status")
 		return ctrl.Result{}, err
 	}
 
@@ -117,7 +132,7 @@ func (r *WireguardClientReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-func toDeployment(wg *corev1alpha1.WireguardClient) *appsv1.Deployment {
+func (r *WireguardClientReconciler) CreateDeployment(ctx context.Context, wg *corev1alpha1.WireguardClient) error {
 	env := []corev1.EnvVar{
 		{Name: "PUID", Value: strconv.FormatInt(wg.Spec.PUID, 10)},
 		{Name: "PGID", Value: strconv.FormatInt(wg.Spec.PGID, 10)},
@@ -137,7 +152,7 @@ func toDeployment(wg *corev1alpha1.WireguardClient) *appsv1.Deployment {
 		})
 	}
 
-	return &appsv1.Deployment{
+	deployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      wg.GetName(),
 			Namespace: wg.GetNamespace(),
@@ -181,4 +196,6 @@ func toDeployment(wg *corev1alpha1.WireguardClient) *appsv1.Deployment {
 			},
 		},
 	}
+
+	return r.Create(ctx, deployment)
 }
