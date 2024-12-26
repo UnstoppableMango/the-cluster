@@ -103,6 +103,11 @@ var _ = Describe("WireguardClient Controller", func() {
 				),
 			))
 			Expect(deployment.Spec.Replicas).To(Equal(ptr.To[int32](1)))
+			Expect(deployment.Spec.Template.Spec.SecurityContext).NotTo(BeNil())
+			securityContext := deployment.Spec.Template.Spec.SecurityContext
+			Expect(securityContext.RunAsNonRoot).To(Equal(ptr.To(true)), "RunAsNonRoot")
+			Expect(securityContext.SeccompProfile).NotTo(BeNil())
+			Expect(securityContext.SeccompProfile.Type).To(Equal(corev1.SeccompProfileTypeRuntimeDefault))
 			Expect(deployment.Spec.Template.Spec.Containers).To(HaveLen(1))
 			container := deployment.Spec.Template.Spec.Containers[0]
 			Expect(container.Name).To(Equal("wireguard"))
@@ -127,6 +132,7 @@ var _ = Describe("WireguardClient Controller", func() {
 			Expect(container.SecurityContext.RunAsGroup).To(Equal(ptr.To[int64](4200)), "RunAsGroup")
 			Expect(container.SecurityContext.RunAsNonRoot).To(Equal(ptr.To(true)), "RunAsNonRoot")
 			Expect(container.SecurityContext.ReadOnlyRootFilesystem).To(BeNil(), "ReadOnlyRootFilesystem")
+			Expect(container.SecurityContext.AllowPrivilegeEscalation).To(Equal(ptr.To(false)), "AllowPrivilegeEscalation")
 
 			By("Checking the latest status condition")
 			Expect(k8sClient.Get(ctx, typeNamespacedName, wireguardclient)).To(Succeed())

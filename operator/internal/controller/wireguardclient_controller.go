@@ -172,6 +172,12 @@ func (r *WireguardClientReconciler) CreateDeployment(ctx context.Context, wg *co
 					},
 				},
 				Spec: corev1.PodSpec{
+					SecurityContext: &corev1.PodSecurityContext{
+						RunAsNonRoot: ptr.To(true),
+						SeccompProfile: &corev1.SeccompProfile{
+							Type: corev1.SeccompProfileTypeRuntimeDefault,
+						},
+					},
 					Containers: []corev1.Container{{
 						Name:  "wireguard",
 						Image: "lscr.io/linuxserver/wireguard:latest",
@@ -187,10 +193,11 @@ func (r *WireguardClientReconciler) CreateDeployment(ctx context.Context, wg *co
 									"NET_ADMIN",
 								},
 							},
-							RunAsUser:              &wg.Spec.PUID,
-							RunAsGroup:             &wg.Spec.PGID,
-							RunAsNonRoot:           ptr.To(true),
-							ReadOnlyRootFilesystem: wg.Spec.ReadOnly,
+							RunAsUser:                &wg.Spec.PUID,
+							RunAsGroup:               &wg.Spec.PGID,
+							RunAsNonRoot:             ptr.To(true),
+							AllowPrivilegeEscalation: ptr.To(false),
+							ReadOnlyRootFilesystem:   wg.Spec.ReadOnly,
 						},
 					}},
 				},
