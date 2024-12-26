@@ -24,12 +24,11 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/utils/ptr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
-
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	corev1alpha1 "github.com/unstoppablemango/the-cluster/operator/api/v1alpha1"
 )
@@ -38,15 +37,13 @@ var _ = Describe("WireguardClient Controller", func() {
 	Context("When reconciling a resource", func() {
 		const resourceName = "test-resource"
 
-		ctx := context.Background()
-
 		typeNamespacedName := types.NamespacedName{
 			Name:      resourceName,
 			Namespace: "default",
 		}
 		wireguardclient := &corev1alpha1.WireguardClient{}
 
-		BeforeEach(func() {
+		BeforeEach(func(ctx context.Context) {
 			By("creating the custom resource for the Kind WireguardClient")
 			err := k8sClient.Get(ctx, typeNamespacedName, wireguardclient)
 			if err != nil && errors.IsNotFound(err) {
@@ -65,7 +62,7 @@ var _ = Describe("WireguardClient Controller", func() {
 			}
 		})
 
-		AfterEach(func() {
+		AfterEach(func(ctx context.Context) {
 			resource := &corev1alpha1.WireguardClient{}
 			err := k8sClient.Get(ctx, typeNamespacedName, resource)
 			Expect(err).NotTo(HaveOccurred())
@@ -79,7 +76,7 @@ var _ = Describe("WireguardClient Controller", func() {
 			Expect(client.IgnoreNotFound(err)).NotTo(HaveOccurred())
 		})
 
-		It("should successfully reconcile the resource", func() {
+		It("should successfully reconcile the resource", func(ctx context.Context) {
 			By("Reconciling the created resource")
 			controllerReconciler := &WireguardClientReconciler{
 				Client: k8sClient,
@@ -149,6 +146,9 @@ var _ = Describe("WireguardClient Controller", func() {
 			Expect(conditions).To(HaveLen(1), "Multiple conditions of type %s", TypeAvailableWireguardClient)
 			Expect(conditions[0].Status).To(Equal(metav1.ConditionTrue), "condition %s", TypeAvailableWireguardClient)
 			Expect(conditions[0].Reason).To(Equal("Reconciling"), "condition %s", TypeAvailableWireguardClient)
+
+			By("Checking that the finalizer was added")
+			Expect(wireguardclient.Finalizers).To(ConsistOf(WireguardClientFinalizer))
 		})
 	})
 })

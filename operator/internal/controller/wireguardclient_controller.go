@@ -32,6 +32,7 @@ import (
 	"k8s.io/utils/ptr"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	corev1alpha1 "github.com/unstoppablemango/the-cluster/operator/api/v1alpha1"
@@ -39,6 +40,7 @@ import (
 
 var (
 	TypeAvailableWireguardClient = "Available"
+	WireguardClientFinalizer     = "wireguardclient.core.thecluster.io/finalizer"
 )
 
 // WireguardClientReconciler reconciles a WireguardClient object
@@ -80,7 +82,19 @@ func (r *WireguardClientReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		}
 	}
 
-	// TODO: Finalizer
+	if !controllerutil.ContainsFinalizer(wg, WireguardClientFinalizer) {
+		log.Info("Adding finalizer for WireguardClient")
+		if ok := controllerutil.AddFinalizer(wg, WireguardClientFinalizer); !ok {
+			err := fmt.Errorf("finalizer was not added")
+			log.Error(err, "Failed to add finalizer")
+			return ctrl.Result{}, err
+		}
+		if err := r.Update(ctx, wg); err != nil {
+			log.Error(err, "Failed to update WireguardClient with finalizer")
+			return ctrl.Result{}, err
+		}
+	}
+
 	// TODO: Deletion
 
 	deployment := &appsv1.Deployment{}
