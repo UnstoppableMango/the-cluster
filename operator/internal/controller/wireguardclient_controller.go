@@ -81,6 +81,7 @@ func (r *WireguardClientReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 	}
 
 	// TODO: Finalizer
+	// TODO: Deletion
 
 	deployment := &appsv1.Deployment{}
 	if err := r.Client.Get(ctx, req.NamespacedName, deployment); errors.IsNotFound(err) {
@@ -195,6 +196,10 @@ func (r *WireguardClientReconciler) CreateDeployment(ctx context.Context, wg *co
 				},
 			},
 		},
+	}
+
+	if err := ctrl.SetControllerReference(wg, deployment, r.Scheme); err != nil {
+		return err
 	}
 
 	return r.Create(ctx, deployment)

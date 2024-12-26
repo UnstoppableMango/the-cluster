@@ -96,6 +96,12 @@ var _ = Describe("WireguardClient Controller", func() {
 			Eventually(func() error {
 				return k8sClient.Get(ctx, typeNamespacedName, deployment)
 			}).Should(Succeed())
+			Expect(deployment.OwnerReferences).To(ConsistOf(
+				And(
+					HaveField("Kind", "WireguardClient"),
+					HaveField("Name", resourceName),
+				),
+			))
 			Expect(deployment.Spec.Replicas).To(Equal(ptr.To[int32](1)))
 			Expect(deployment.Spec.Template.Spec.Containers).To(HaveLen(1))
 			container := deployment.Spec.Template.Spec.Containers[0]
