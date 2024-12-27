@@ -17,8 +17,19 @@ limitations under the License.
 package v1alpha1
 
 import (
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
+
+type WireguardClientConfigSource struct {
+	ConfigMapRef *corev1.ConfigMapKeySelector `json:"configMapRef,omitempty"`
+	SecretKeyRef *corev1.SecretKeySelector    `json:"secretKeyRef,omitempty"`
+}
+
+type WireguardClientConfig struct {
+	Value     *string                      `json:"value,omitempty"`
+	ValueFrom *WireguardClientConfigSource `json:"valueFrom,omitempty"`
+}
 
 // WireguardClientSpec defines the desired state of WireguardClient
 type WireguardClientSpec struct {
@@ -55,6 +66,9 @@ type WireguardClientSpec struct {
 	//
 	// +optional
 	ReadOnly *bool `json:"readonly,omitempty"`
+
+	// Wireguard client configurations to mount in the container
+	Configs []WireguardClientConfig `json:"configs"`
 }
 
 // WireguardClientStatus defines the observed state of WireguardClient

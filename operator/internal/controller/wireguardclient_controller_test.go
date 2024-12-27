@@ -88,6 +88,13 @@ var _ = Describe("WireguardClient Controller", func() {
 			})
 			Expect(err).NotTo(HaveOccurred())
 
+			By("Checking that the config map was created")
+			configMap := &corev1.ConfigMap{}
+			Eventually(func() error {
+				return k8sClient.Get(ctx, typeNamespacedName, configMap)
+			}).Should(Succeed())
+			Expect(configMap.Data).To(HaveKeyWithValue("client.conf", "TODO"))
+
 			By("Checking if the deployment was created")
 			deployment := &appsv1.Deployment{}
 			Eventually(func() error {
