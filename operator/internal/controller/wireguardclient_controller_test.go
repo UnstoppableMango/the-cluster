@@ -56,6 +56,9 @@ var _ = Describe("WireguardClient Controller", func() {
 						PUID: 6969,
 						PGID: 4200,
 						TZ:   "America/Chicago",
+						Configs: []corev1alpha1.WireguardClientConfig{{
+							Value: ptr.To(``),
+						}},
 					},
 				}
 				Expect(k8sClient.Create(ctx, resource)).To(Succeed())
@@ -115,6 +118,10 @@ var _ = Describe("WireguardClient Controller", func() {
 				HaveKeyWithValue("app.kubernetes.io/version", "latest"),
 				HaveKeyWithValue("app.kubernetes.io/managed-by", "WireguardClientController"),
 			))
+			Expect(deployment.Spec.Template.Spec.Volumes).To(HaveLen(1))
+			volume := deployment.Spec.Template.Spec.Volumes[0]
+			Expect(volume.ConfigMap).NotTo(BeNil())
+			Expect(volume.ConfigMap.Name).To(Equal("client"))
 			Expect(deployment.Spec.Template.Spec.SecurityContext).NotTo(BeNil())
 			securityContext := deployment.Spec.Template.Spec.SecurityContext
 			Expect(securityContext.RunAsNonRoot).To(Equal(ptr.To(true)), "RunAsNonRoot")
@@ -133,6 +140,10 @@ var _ = Describe("WireguardClient Controller", func() {
 				ContainerPort: 51820,
 				Protocol:      corev1.ProtocolUDP,
 			}))
+			Expect(container.VolumeMounts).To(HaveLen(1))
+			volumeMount := container.VolumeMounts[0]
+			Expect(volumeMount.Name).To(Equal("client"))
+			Expect(volumeMount.MountPath).To(Equal("/config/client.conf"))
 			Expect(container.SecurityContext).NotTo(BeNil())
 			Expect(container.SecurityContext.Capabilities).NotTo(BeNil())
 			Expect(container.SecurityContext.Capabilities.Add).To(ConsistOf(

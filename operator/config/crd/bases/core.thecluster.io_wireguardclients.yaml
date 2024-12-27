@@ -138,6 +138,7 @@ spec:
                   [list of time zones]: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List
                 type: string
             required:
+            - configs
             - pgid
             - puid
             - tz
