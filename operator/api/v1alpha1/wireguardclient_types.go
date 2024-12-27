@@ -27,7 +27,6 @@ type WireguardClientConfigSource struct {
 }
 
 type WireguardClientConfig struct {
-	Value     *string                      `json:"value,omitempty"`
 	ValueFrom *WireguardClientConfigSource `json:"valueFrom,omitempty"`
 }
 

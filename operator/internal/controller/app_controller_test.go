@@ -25,10 +25,10 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/utils/ptr"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
 	corev1alpha1 "github.com/unstoppablemango/the-cluster/operator/api/v1alpha1"
-	"github.com/unstoppablemango/the-cluster/operator/internal/util"
 )
 
 var _ = Describe("App Controller", func() {
@@ -96,7 +96,7 @@ var _ = Describe("App Controller", func() {
 				err := k8sClient.Get(ctx, typeNamespacedName, resource)
 				Expect(err).NotTo(HaveOccurred())
 
-				resource.Spec.Manage = util.BoolPtr(true)
+				resource.Spec.Manage = ptr.To(true)
 				err = k8sClient.Update(ctx, resource)
 				Expect(err).NotTo(HaveOccurred())
 			})
@@ -131,7 +131,7 @@ var _ = Describe("App Controller", func() {
 				err := k8sClient.Get(ctx, typeNamespacedName, resource)
 				Expect(err).NotTo(HaveOccurred())
 
-				resource.Spec.Manage = util.BoolPtr(false)
+				resource.Spec.Manage = ptr.To(false)
 				err = k8sClient.Update(ctx, resource)
 				Expect(err).NotTo(HaveOccurred())
 			})

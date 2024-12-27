@@ -52,8 +52,6 @@ spec:
                 description: Wireguard client configurations to mount in the container
                 items:
                   properties:
-                    value:
-                      type: string
                     valueFrom:
                       properties:
                         configMapRef:

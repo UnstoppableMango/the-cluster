@@ -196,6 +196,23 @@ func (r *WireguardClientReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 }
 
 func (r *WireguardClientReconciler) CreateDeployment(ctx context.Context, wg *corev1alpha1.WireguardClient) error {
+	volumes := []corev1.Volume{}
+	for _, c := range wg.Spec.Configs {
+		if v, err := r.Volume(ctx, c); err != nil {
+			return err
+		} else {
+			volumes = append(volumes, v)
+		}
+	}
+
+	mounts := []corev1.VolumeMount{}
+	for _, v := range volumes {
+		mounts = append(mounts, corev1.VolumeMount{
+			Name:      v.Name,
+			MountPath: "/config",
+		})
+	}
+
 	env := []corev1.EnvVar{
 		{Name: "PUID", Value: strconv.FormatInt(wg.Spec.PUID, 10)},
 		{Name: "PGID", Value: strconv.FormatInt(wg.Spec.PGID, 10)},
@@ -236,12 +253,6 @@ func (r *WireguardClientReconciler) CreateDeployment(ctx context.Context, wg *co
 					Labels: labels,
 				},
 				Spec: corev1.PodSpec{
-					SecurityContext: &corev1.PodSecurityContext{
-						RunAsNonRoot: ptr.To(true),
-						SeccompProfile: &corev1.SeccompProfile{
-							Type: corev1.SeccompProfileTypeRuntimeDefault,
-						},
-					},
 					Containers: []corev1.Container{{
 						Name:  "wireguard",
 						Image: "lscr.io/linuxserver/wireguard:latest",
@@ -250,6 +261,7 @@ func (r *WireguardClientReconciler) CreateDeployment(ctx context.Context, wg *co
 							ContainerPort: 51820,
 							Protocol:      corev1.ProtocolUDP,
 						}},
+						VolumeMounts: mounts,
 						// TODO: Resources
 						SecurityContext: &corev1.SecurityContext{
 							Capabilities: &corev1.Capabilities{
@@ -264,6 +276,13 @@ func (r *WireguardClientReconciler) CreateDeployment(ctx context.Context, wg *co
 							ReadOnlyRootFilesystem:   wg.Spec.ReadOnly,
 						},
 					}},
+					Volumes: volumes,
+					SecurityContext: &corev1.PodSecurityContext{
+						RunAsNonRoot: ptr.To(true),
+						SeccompProfile: &corev1.SeccompProfile{
+							Type: corev1.SeccompProfileTypeRuntimeDefault,
+						},
+					},
 				},
 			},
 		},
@@ -276,8 +295,41 @@ func (r *WireguardClientReconciler) CreateDeployment(ctx context.Context, wg *co
 	return r.Create(ctx, deployment)
 }
 
-func (r *WireguardClientReconciler) FinalizerOperations(ctx context.Context, wg *corev1alpha1.WireguardClient) error {
+func (r *WireguardClientReconciler) Volume(ctx context.Context, c corev1alpha1.WireguardClientConfig) (corev1.Volume, error) {
+	if c.ValueFrom.SecretKeyRef != nil {
+		secret := c.ValueFrom.SecretKeyRef
+		return corev1.Volume{
+			Name: secret.Name,
+			VolumeSource: corev1.VolumeSource{
+				Secret: &corev1.SecretVolumeSource{
+					SecretName: secret.Name,
+					Items: []corev1.KeyToPath{{
+						Key: secret.Key,
+					}},
+				},
+			},
+		}, nil
+	}
 
+	if c.ValueFrom.ConfigMapRef != nil {
+		cm := c.ValueFrom.ConfigMapRef
+		return corev1.Volume{
+			Name: cm.Name,
+			VolumeSource: corev1.VolumeSource{
+				ConfigMap: &corev1.ConfigMapVolumeSource{
+					LocalObjectReference: cm.LocalObjectReference,
+					Items: []corev1.KeyToPath{{
+						Key: cm.Key,
+					}},
+				},
+			},
+		}, nil
+	}
+
+	return corev1.Volume{}, fmt.Errorf("invalid wireguard client config")
+}
+
+func (r *WireguardClientReconciler) FinalizerOperations(ctx context.Context, wg *corev1alpha1.WireguardClient) error {
 	// TODO: Cleanup
 
 	return nil

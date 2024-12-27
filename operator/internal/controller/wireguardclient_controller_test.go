@@ -42,10 +42,26 @@ var _ = Describe("WireguardClient Controller", func() {
 			Namespace: "default",
 		}
 		wireguardclient := &corev1alpha1.WireguardClient{}
+		configMap := &corev1.ConfigMap{}
 
 		BeforeEach(func(ctx context.Context) {
+			By("Creating a config map with the client config")
+			err := k8sClient.Get(ctx, typeNamespacedName, configMap)
+			if err != nil && errors.IsNotFound(err) {
+				configMap = &corev1.ConfigMap{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      resourceName,
+						Namespace: "default",
+					},
+					Data: map[string]string{
+						"client.conf": "TODO",
+					},
+				}
+				Expect(k8sClient.Create(ctx, configMap)).To(Succeed())
+			}
+
 			By("creating the custom resource for the Kind WireguardClient")
-			err := k8sClient.Get(ctx, typeNamespacedName, wireguardclient)
+			err = k8sClient.Get(ctx, typeNamespacedName, wireguardclient)
 			if err != nil && errors.IsNotFound(err) {
 				resource := &corev1alpha1.WireguardClient{
 					ObjectMeta: metav1.ObjectMeta{
@@ -57,7 +73,14 @@ var _ = Describe("WireguardClient Controller", func() {
 						PGID: 4200,
 						TZ:   "America/Chicago",
 						Configs: []corev1alpha1.WireguardClientConfig{{
-							Value: ptr.To(``),
+							ValueFrom: &corev1alpha1.WireguardClientConfigSource{
+								ConfigMapRef: &corev1.ConfigMapKeySelector{
+									LocalObjectReference: corev1.LocalObjectReference{
+										Name: configMap.Name,
+									},
+									Key: "client.conf",
+								},
+							},
 						}},
 					},
 				}
@@ -121,7 +144,7 @@ var _ = Describe("WireguardClient Controller", func() {
 			Expect(deployment.Spec.Template.Spec.Volumes).To(HaveLen(1))
 			volume := deployment.Spec.Template.Spec.Volumes[0]
 			Expect(volume.ConfigMap).NotTo(BeNil())
-			Expect(volume.ConfigMap.Name).To(Equal("client"))
+			Expect(volume.ConfigMap.Name).To(Equal(resourceName))
 			Expect(deployment.Spec.Template.Spec.SecurityContext).NotTo(BeNil())
 			securityContext := deployment.Spec.Template.Spec.SecurityContext
 			Expect(securityContext.RunAsNonRoot).To(Equal(ptr.To(true)), "RunAsNonRoot")
