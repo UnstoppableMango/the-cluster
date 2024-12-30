@@ -1,0 +1,12 @@
+{
+    "name": "thecluster-wireguard-operator",
+    "main": "index.ts",
+    "devDependencies": {
+        "@types/node": "^18",
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "@pulumi/kubernetes": "^4.19.0",
+        "@pulumi/pulumi": "^3.144.1"
+    }
+}
