@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "operator", "operator", "{167E3447-E28D-4EEB-AD7D-6F8E3358518F}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{1B774BBB-0B4C-4783-8149-FD0611AA8694}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UnMango.TheCluster.FSharp", "lib\dotnet\UnMango.TheCluster.FSharp\UnMango.TheCluster.FSharp.fsproj", "{8BDB3F84-74F1-4B46-8D2E-3CA795B09367}"
@@ -18,11 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{D9E8EC28-E08
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{BC340001-DA38-45E0-93E3-FF264E5809B3}"
 	ProjectSection(SolutionItems) = preProject
-		.drone-consider = .drone-consider
-		.drone.yml = .drone.yml
 		.nvmrc = .nvmrc
 		global.json = global.json
-		NuGet.Config = NuGet.Config
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BA898165-4C64-4598-8F16-128479DBAE66}"
@@ -57,17 +52,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\lib-crds-nodejs.yml = .github\workflows\lib-crds-nodejs.yml
 		.github\workflows\lib-nodejs.yml = .github\workflows\lib-nodejs.yml
 		.github\workflows\operator.yml = .github\workflows\operator.yml
-	EndProjectSection
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UnMango.TheCluster", "operator\UnMango.TheCluster\UnMango.TheCluster.fsproj", "{8F374ADB-485D-438C-85A1-9E0733BA6153}"
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UnMango.TheCluster.Types", "operator\UnMango.TheCluster.Types\UnMango.TheCluster.Types.fsproj", "{7FBBEE7C-7CAF-4469-908A-9D29858E8417}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnMango.TheCluster.Entities", "operator\UnMango.TheCluster.Entities\UnMango.TheCluster.Entities.csproj", "{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "gen", "gen", "{B923EFD9-6D18-497E-B95B-972C12EAD234}"
-	ProjectSection(SolutionItems) = preProject
-		operator\gen\manifests.sh = operator\gen\manifests.sh
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "apps", "apps", "{5DA52B4A-4EE8-4956-B855-8B43838C4D20}"
@@ -135,42 +119,6 @@ Global
 		{7E48402E-B671-47CD-9A4C-E862F8627B9E}.Release|x64.Build.0 = Release|Any CPU
 		{7E48402E-B671-47CD-9A4C-E862F8627B9E}.Release|x86.ActiveCfg = Release|Any CPU
 		{7E48402E-B671-47CD-9A4C-E862F8627B9E}.Release|x86.Build.0 = Release|Any CPU
-		{8F374ADB-485D-438C-85A1-9E0733BA6153}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8F374ADB-485D-438C-85A1-9E0733BA6153}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8F374ADB-485D-438C-85A1-9E0733BA6153}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{8F374ADB-485D-438C-85A1-9E0733BA6153}.Debug|x64.Build.0 = Debug|Any CPU
-		{8F374ADB-485D-438C-85A1-9E0733BA6153}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{8F374ADB-485D-438C-85A1-9E0733BA6153}.Debug|x86.Build.0 = Debug|Any CPU
-		{8F374ADB-485D-438C-85A1-9E0733BA6153}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8F374ADB-485D-438C-85A1-9E0733BA6153}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8F374ADB-485D-438C-85A1-9E0733BA6153}.Release|x64.ActiveCfg = Release|Any CPU
-		{8F374ADB-485D-438C-85A1-9E0733BA6153}.Release|x64.Build.0 = Release|Any CPU
-		{8F374ADB-485D-438C-85A1-9E0733BA6153}.Release|x86.ActiveCfg = Release|Any CPU
-		{8F374ADB-485D-438C-85A1-9E0733BA6153}.Release|x86.Build.0 = Release|Any CPU
-		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Debug|x64.Build.0 = Debug|Any CPU
-		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Debug|x86.Build.0 = Debug|Any CPU
-		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Release|x64.ActiveCfg = Release|Any CPU
-		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Release|x64.Build.0 = Release|Any CPU
-		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Release|x86.ActiveCfg = Release|Any CPU
-		{7FBBEE7C-7CAF-4469-908A-9D29858E8417}.Release|x86.Build.0 = Release|Any CPU
-		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Debug|x64.Build.0 = Debug|Any CPU
-		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Debug|x86.Build.0 = Debug|Any CPU
-		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Release|x64.ActiveCfg = Release|Any CPU
-		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Release|x64.Build.0 = Release|Any CPU
-		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Release|x86.ActiveCfg = Release|Any CPU
-		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9}.Release|x86.Build.0 = Release|Any CPU
 		{45316F56-8194-4585-B9DE-5A3171897AEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{45316F56-8194-4585-B9DE-5A3171897AEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45316F56-8194-4585-B9DE-5A3171897AEA}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -236,9 +184,6 @@ Global
 		{8BDB3F84-74F1-4B46-8D2E-3CA795B09367} = {1B774BBB-0B4C-4783-8149-FD0611AA8694}
 		{7E48402E-B671-47CD-9A4C-E862F8627B9E} = {1B774BBB-0B4C-4783-8149-FD0611AA8694}
 		{D011923B-A8CA-4C48-B6F2-16E3E04DF944} = {31793BC8-723C-42D3-9E91-0E75F9762DAE}
-		{8F374ADB-485D-438C-85A1-9E0733BA6153} = {167E3447-E28D-4EEB-AD7D-6F8E3358518F}
-		{7FBBEE7C-7CAF-4469-908A-9D29858E8417} = {167E3447-E28D-4EEB-AD7D-6F8E3358518F}
-		{728CBDAA-092C-4EC9-8610-B76BBE6F16E9} = {167E3447-E28D-4EEB-AD7D-6F8E3358518F}
 		{45316F56-8194-4585-B9DE-5A3171897AEA} = {5DA52B4A-4EE8-4956-B855-8B43838C4D20}
 		{1743761A-E65B-412F-953A-D766351CBF0E} = {CB47F4E0-36E1-4CDA-AF4C-C43C37F5C4D9}
 		{2C45CB95-8EAE-4904-B890-F1EC982EC997} = {1B774BBB-0B4C-4783-8149-FD0611AA8694}

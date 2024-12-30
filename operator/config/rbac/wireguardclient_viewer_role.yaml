@@ -1,35 +1,23 @@
----
+# permissions for end users to view wireguardclients.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: manager-role
+  labels:
+    app.kubernetes.io/name: thecluster
+    app.kubernetes.io/managed-by: kustomize
+  name: wireguardclient-viewer-role
 rules:
 - apiGroups:
   - core.thecluster.io
   resources:
-  - apps
   - wireguardclients
   verbs:
-  - create
-  - delete
   - get
   - list
-  - patch
-  - update
   - watch
 - apiGroups:
   - core.thecluster.io
   resources:
-  - apps/finalizers
-  - wireguardclients/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - core.thecluster.io
-  resources:
-  - apps/status
   - wireguardclients/status
   verbs:
   - get
-  - patch
-  - update
