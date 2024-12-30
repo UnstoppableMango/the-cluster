@@ -43,9 +43,10 @@ var _ = Describe("WireguardClient Controller", func() {
 		}
 		wireguardclient := &corev1alpha1.WireguardClient{}
 		configMap := &corev1.ConfigMap{}
+		secret := &corev1.Secret{}
 
 		BeforeEach(func(ctx context.Context) {
-			By("Creating a config map with the client config")
+			By("Creating a config map with a client config")
 			err := k8sClient.Get(ctx, typeNamespacedName, configMap)
 			if err != nil && errors.IsNotFound(err) {
 				configMap = &corev1.ConfigMap{
@@ -54,13 +55,28 @@ var _ = Describe("WireguardClient Controller", func() {
 						Namespace: "default",
 					},
 					Data: map[string]string{
-						"client.conf": "TODO",
+						"client.conf": "blah blah config",
 					},
 				}
 				Expect(k8sClient.Create(ctx, configMap)).To(Succeed())
 			}
 
-			By("creating the custom resource for the Kind WireguardClient")
+			By("Creating a secret with a client config")
+			err = k8sClient.Get(ctx, typeNamespacedName, secret)
+			if err != nil && errors.IsNotFound(err) {
+				secret = &corev1.Secret{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      resourceName,
+						Namespace: "default",
+					},
+					StringData: map[string]string{
+						"client.conf": "blah blah config",
+					},
+				}
+				Expect(k8sClient.Create(ctx, secret)).To(Succeed())
+			}
+
+			By("Creating the custom resource for the Kind WireguardClient")
 			err = k8sClient.Get(ctx, typeNamespacedName, wireguardclient)
 			if err != nil && errors.IsNotFound(err) {
 				resource := &corev1alpha1.WireguardClient{
@@ -72,16 +88,30 @@ var _ = Describe("WireguardClient Controller", func() {
 						PUID: 6969,
 						PGID: 4200,
 						TZ:   "America/Chicago",
-						Configs: []corev1alpha1.WireguardClientConfig{{
-							ValueFrom: &corev1alpha1.WireguardClientConfigSource{
-								ConfigMapRef: &corev1.ConfigMapKeySelector{
-									LocalObjectReference: corev1.LocalObjectReference{
-										Name: configMap.Name,
+						Configs: []corev1alpha1.WireguardClientConfig{
+							{
+								Name: "test-config",
+								ValueFrom: &corev1alpha1.WireguardClientConfigSource{
+									ConfigMapKeyRef: &corev1.ConfigMapKeySelector{
+										LocalObjectReference: corev1.LocalObjectReference{
+											Name: configMap.Name,
+										},
+										Key: "client.conf",
 									},
-									Key: "client.conf",
 								},
 							},
-						}},
+							{
+								Name: "test-secret",
+								ValueFrom: &corev1alpha1.WireguardClientConfigSource{
+									SecretKeyRef: &corev1.SecretKeySelector{
+										LocalObjectReference: corev1.LocalObjectReference{
+											Name: secret.Name,
+										},
+										Key: "client.conf",
+									},
+								},
+							},
+						},
 					},
 				}
 				Expect(k8sClient.Create(ctx, resource)).To(Succeed())
@@ -93,13 +123,17 @@ var _ = Describe("WireguardClient Controller", func() {
 			err := k8sClient.Get(ctx, typeNamespacedName, resource)
 			Expect(err).NotTo(HaveOccurred())
 
-			By("Cleanup the specific resource instance WireguardClient")
+			By("Cleaning up the specific resource instance WireguardClient")
 			Expect(k8sClient.Delete(ctx, resource)).To(Succeed())
 
 			By("Removing any dangling deployments")
 			deployment := &appsv1.Deployment{}
 			err = k8sClient.Get(ctx, typeNamespacedName, deployment)
 			Expect(client.IgnoreNotFound(err)).NotTo(HaveOccurred())
+
+			By("Cleaning up everything else")
+			Expect(k8sClient.Delete(ctx, configMap)).To(Succeed())
+			Expect(k8sClient.Delete(ctx, secret)).To(Succeed())
 		})
 
 		It("should successfully reconcile the resource", func(ctx context.Context) {
@@ -114,22 +148,17 @@ var _ = Describe("WireguardClient Controller", func() {
 			})
 			Expect(err).NotTo(HaveOccurred())
 
-			By("Checking that the config map was created")
-			configMap := &corev1.ConfigMap{}
-			Eventually(func() error {
-				return k8sClient.Get(ctx, typeNamespacedName, configMap)
-			}).Should(Succeed())
-			Expect(configMap.Data).To(HaveKeyWithValue("client.conf", "TODO"))
-
 			By("Checking if the deployment was created")
 			deployment := &appsv1.Deployment{}
 			Eventually(func() error {
 				return k8sClient.Get(ctx, typeNamespacedName, deployment)
 			}).Should(Succeed())
+
 			Expect(deployment.OwnerReferences).To(ConsistOf(And(
 				HaveField("Kind", "WireguardClient"),
 				HaveField("Name", resourceName),
 			)))
+
 			Expect(deployment.Spec.Replicas).To(Equal(ptr.To[int32](1)))
 			Expect(deployment.Spec.Selector.MatchLabels).To(And(
 				HaveKeyWithValue("app.kubernetes.io/name", "wireguard"),
@@ -141,15 +170,27 @@ var _ = Describe("WireguardClient Controller", func() {
 				HaveKeyWithValue("app.kubernetes.io/version", "latest"),
 				HaveKeyWithValue("app.kubernetes.io/managed-by", "WireguardClientController"),
 			))
-			Expect(deployment.Spec.Template.Spec.Volumes).To(HaveLen(1))
+
+			Expect(deployment.Spec.Template.Spec.Volumes).To(HaveLen(2))
 			volume := deployment.Spec.Template.Spec.Volumes[0]
 			Expect(volume.ConfigMap).NotTo(BeNil())
-			Expect(volume.ConfigMap.Name).To(Equal(resourceName))
+			Expect(volume.ConfigMap.Name).To(Equal(configMap.Name))
+			Expect(volume.ConfigMap.Items).To(ConsistOf(
+				corev1.KeyToPath{Key: "client.conf", Path: "client.conf"},
+			))
+			volume = deployment.Spec.Template.Spec.Volumes[1]
+			Expect(volume.Secret).NotTo(BeNil())
+			Expect(volume.Secret.SecretName).To(Equal(secret.Name))
+			Expect(volume.Secret.Items).To(ConsistOf(
+				corev1.KeyToPath{Key: "client.conf", Path: "client.conf"},
+			))
+
 			Expect(deployment.Spec.Template.Spec.SecurityContext).NotTo(BeNil())
 			securityContext := deployment.Spec.Template.Spec.SecurityContext
 			Expect(securityContext.RunAsNonRoot).To(Equal(ptr.To(true)), "RunAsNonRoot")
 			Expect(securityContext.SeccompProfile).NotTo(BeNil())
 			Expect(securityContext.SeccompProfile.Type).To(Equal(corev1.SeccompProfileTypeRuntimeDefault))
+
 			Expect(deployment.Spec.Template.Spec.Containers).To(HaveLen(1))
 			container := deployment.Spec.Template.Spec.Containers[0]
 			Expect(container.Name).To(Equal("wireguard"))
@@ -163,10 +204,15 @@ var _ = Describe("WireguardClient Controller", func() {
 				ContainerPort: 51820,
 				Protocol:      corev1.ProtocolUDP,
 			}))
-			Expect(container.VolumeMounts).To(HaveLen(1))
+
+			Expect(container.VolumeMounts).To(HaveLen(2))
 			volumeMount := container.VolumeMounts[0]
-			Expect(volumeMount.Name).To(Equal("client"))
-			Expect(volumeMount.MountPath).To(Equal("/config/client.conf"))
+			Expect(volumeMount.Name).To(Equal("test-config"))
+			Expect(volumeMount.MountPath).To(Equal("/config/test-config.conf"))
+			volumeMount = container.VolumeMounts[1]
+			Expect(volumeMount.Name).To(Equal("test-secret"))
+			Expect(volumeMount.MountPath).To(Equal("/config/test-secret.conf"))
+
 			Expect(container.SecurityContext).NotTo(BeNil())
 			Expect(container.SecurityContext.Capabilities).NotTo(BeNil())
 			Expect(container.SecurityContext.Capabilities.Add).To(ConsistOf(

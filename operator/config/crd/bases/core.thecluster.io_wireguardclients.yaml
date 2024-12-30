@@ -51,11 +51,21 @@ spec:
               configs:
                 description: Wireguard client configurations to mount in the container
                 items:
+                  description: |-
+                    WireguardClientConfig defines a wireguard configuration file to be
+                    mounted in the /config directory of the container
                   properties:
+                    name:
+                      description: The name of the configuration, used as the configuration
+                        file name
+                      type: string
                     valueFrom:
+                      description: An external source for the client configuration
+                        values
                       properties:
                         configMapRef:
-                          description: Selects a key from a ConfigMap.
+                          description: A reference to a config map key that contains
+                            a wireguard client configuration
                           properties:
                             key:
                               description: The key to select.
@@ -78,7 +88,8 @@ spec:
                           type: object
                           x-kubernetes-map-type: atomic
                         secretKeyRef:
-                          description: SecretKeySelector selects a key of a Secret.
+                          description: A reference to a secret key that contains a
+                            wireguard client configuration
                           properties:
                             key:
                               description: The key of the secret to select from.  Must
@@ -102,6 +113,8 @@ spec:
                           type: object
                           x-kubernetes-map-type: atomic
                       type: object
+                  required:
+                  - name
                   type: object
                 type: array
               logConfs:

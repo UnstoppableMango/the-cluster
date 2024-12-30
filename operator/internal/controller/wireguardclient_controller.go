@@ -197,20 +197,17 @@ func (r *WireguardClientReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 
 func (r *WireguardClientReconciler) CreateDeployment(ctx context.Context, wg *corev1alpha1.WireguardClient) error {
 	volumes := []corev1.Volume{}
+	mounts := []corev1.VolumeMount{}
 	for _, c := range wg.Spec.Configs {
-		if v, err := r.Volume(ctx, c); err != nil {
+		if v, err := r.CreateVolume(ctx, c); err != nil {
 			return err
 		} else {
 			volumes = append(volumes, v)
+			mounts = append(mounts, corev1.VolumeMount{
+				Name:      c.Name,
+				MountPath: fmt.Sprintf("/config/%s.conf", c.Name),
+			})
 		}
-	}
-
-	mounts := []corev1.VolumeMount{}
-	for _, v := range volumes {
-		mounts = append(mounts, corev1.VolumeMount{
-			Name:      v.Name,
-			MountPath: "/config",
-		})
 	}
 
 	env := []corev1.EnvVar{
@@ -295,31 +292,33 @@ func (r *WireguardClientReconciler) CreateDeployment(ctx context.Context, wg *co
 	return r.Create(ctx, deployment)
 }
 
-func (r *WireguardClientReconciler) Volume(ctx context.Context, c corev1alpha1.WireguardClientConfig) (corev1.Volume, error) {
+func (r *WireguardClientReconciler) CreateVolume(ctx context.Context, c corev1alpha1.WireguardClientConfig) (corev1.Volume, error) {
 	if c.ValueFrom.SecretKeyRef != nil {
 		secret := c.ValueFrom.SecretKeyRef
 		return corev1.Volume{
-			Name: secret.Name,
+			Name: c.Name,
 			VolumeSource: corev1.VolumeSource{
 				Secret: &corev1.SecretVolumeSource{
 					SecretName: secret.Name,
 					Items: []corev1.KeyToPath{{
-						Key: secret.Key,
+						Key:  secret.Key,
+						Path: secret.Key,
 					}},
 				},
 			},
 		}, nil
 	}
 
-	if c.ValueFrom.ConfigMapRef != nil {
-		cm := c.ValueFrom.ConfigMapRef
+	if c.ValueFrom.ConfigMapKeyRef != nil {
+		cm := c.ValueFrom.ConfigMapKeyRef
 		return corev1.Volume{
-			Name: cm.Name,
+			Name: c.Name,
 			VolumeSource: corev1.VolumeSource{
 				ConfigMap: &corev1.ConfigMapVolumeSource{
 					LocalObjectReference: cm.LocalObjectReference,
 					Items: []corev1.KeyToPath{{
-						Key: cm.Key,
+						Key:  cm.Key,
+						Path: cm.Key,
 					}},
 				},
 			},

@@ -21,12 +21,23 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// WireguardClientConfigSource defines an external source for
+// the WireguardClientConfig
 type WireguardClientConfigSource struct {
-	ConfigMapRef *corev1.ConfigMapKeySelector `json:"configMapRef,omitempty"`
-	SecretKeyRef *corev1.SecretKeySelector    `json:"secretKeyRef,omitempty"`
+	// A reference to a config map key that contains a wireguard client configuration
+	ConfigMapKeyRef *corev1.ConfigMapKeySelector `json:"configMapRef,omitempty"`
+
+	// A reference to a secret key that contains a wireguard client configuration
+	SecretKeyRef *corev1.SecretKeySelector `json:"secretKeyRef,omitempty"`
 }
 
+// WireguardClientConfig defines a wireguard configuration file to be
+// mounted in the /config directory of the container
 type WireguardClientConfig struct {
+	// The name of the configuration, used as the configuration file name
+	Name string `json:"name"`
+
+	// An external source for the client configuration values
 	ValueFrom *WireguardClientConfigSource `json:"valueFrom,omitempty"`
 }
 
