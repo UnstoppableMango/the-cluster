@@ -1,0 +1,127 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: "2024-12-22T04:00:22Z"
+  generation: 1
+  name: wireguards.vpn.wireguard-operator.io
+  resourceVersion: "56135828"
+  uid: aa0aeddd-5cd1-44df-8f65-a773899ad6e6
+spec:
+  conversion:
+    strategy: None
+  group: vpn.wireguard-operator.io
+  names:
+    kind: Wireguard
+    listKind: WireguardList
+    plural: wireguards
+    singular: wireguard
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: Wireguard is the Schema for the wireguards API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: WireguardSpec defines the desired state of Wireguard
+            properties:
+              address:
+                description: A string field that specifies the address for the Wireguard
+                  VPN server. This is the public IP address or hostname that peers
+                  will use to connect to the VPN.
+                type: string
+              dns:
+                description: A string field that specifies the DNS server(s) to be
+                  used by the peers.
+                type: string
+              enableIpForwardOnPodInit:
+                description: A boolean field that specifies whether IP forwarding
+                  should be enabled on the Wireguard VPN pod at startup. This can
+                  be useful to enable if the peers are having problems with sending
+                  traffic to the internet.
+                type: boolean
+              mtu:
+                description: A string field that specifies the maximum transmission
+                  unit (MTU) size for Wireguard packets for all peers.
+                type: string
+              port:
+                description: A field that specifies the value to use for a nodePort
+                  ServiceType
+                format: int32
+                type: integer
+              serviceAnnotations:
+                additionalProperties:
+                  type: string
+                description: A map of key value strings for service annotations
+                type: object
+              serviceType:
+                description: A field that specifies the type of Kubernetes service
+                  that should be used for the Wireguard VPN. This could be NodePort
+                  or LoadBalancer, depending on the needs of the deployment.
+                type: string
+              useWgUserspaceImplementation:
+                description: A boolean field that specifies whether to use the userspace
+                  implementation of Wireguard instead of the kernel one.
+                type: boolean
+            type: object
+          status:
+            description: WireguardStatus defines the observed state of Wireguard
+            properties:
+              address:
+                description: A string field that specifies the address for the Wireguard
+                  VPN server that is currently being used.
+                type: string
+              dns:
+                type: string
+              message:
+                description: A string field that provides additional information about
+                  the status of Wireguard. This could include error messages or other
+                  information that helps to diagnose issues with the wg instance.
+                type: string
+              port:
+                description: A string field that specifies the port for the Wireguard
+                  VPN server that is currently being used.
+                type: string
+              status:
+                description: A string field that represents the current status of
+                  Wireguard. This could include values like ready, pending, or error.
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: Wireguard
+    listKind: WireguardList
+    plural: wireguards
+    singular: wireguard
+  conditions:
+  - lastTransitionTime: "2024-12-22T04:00:22Z"
+    message: no conflicts found
+    reason: NoConflicts
+    status: "True"
+    type: NamesAccepted
+  - lastTransitionTime: "2024-12-22T04:00:22Z"
+    message: the initial names have been accepted
+    reason: InitialNamesAccepted
+    status: "True"
+    type: Established
+  storedVersions:
+  - v1alpha1
