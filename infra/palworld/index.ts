@@ -1,0 +1,125 @@
+import { StatefulSet } from '@pulumi/kubernetes/apps/v1';
+import { Namespace, Secret, Service, ServiceSpecType } from '@pulumi/kubernetes/core/v1';
+import { RandomPassword } from '@pulumi/random';
+
+const ns = new Namespace('palworld', {
+  metadata: { name: 'palworld' },
+});
+
+const server = new RandomPassword('server', { length: 12 });
+const admin = new RandomPassword('admin', { length: 12 });
+
+const serverPasswordKey = 'serverPassword';
+const adminPasswordKey = 'adminPassword';
+
+const secret = new Secret('palworld', {
+  metadata: {
+    name: 'palworld',
+    namespace: ns.metadata.name,
+  },
+  stringData: {
+    [serverPasswordKey]: server.result,
+    [adminPasswordKey]: admin.result,
+  },
+});
+
+const service = new Service('palworld', {
+  metadata: {
+    name: 'palworld',
+    namespace: ns.metadata.name,
+    labels: { 'kubernetes.io/app': 'palworld' },
+  },
+  spec: {
+    selector: { 'kubernetes.io/app': 'palworld' },
+    type: ServiceSpecType.LoadBalancer,
+    ports: [
+      { name: 'server', port: 8211, protocol: 'UDP' },
+      { name: 'query', port: 27015, protocol: 'UDP' },
+    ],
+  },
+});
+
+const statefulSet = new StatefulSet('palworld', {
+  metadata: {
+    name: 'palworld',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    selector: {
+      matchLabels: {
+        'kubernetes.io/app': 'palworld',
+      },
+    },
+    serviceName: service.metadata.name,
+    template: {
+      metadata: {
+        labels: {
+          'kubernetes.io/app': 'palworld',
+        },
+      },
+      spec: {
+        containers: [{
+          name: 'palworld',
+          image: 'thijsvanloef/palworld-server-docker:latest',
+          ports: [
+            { name: 'http', containerPort: 8211, protocol: 'UDP' },
+            { name: 'query', containerPort: 27015, protocol: 'UDP' },
+            { name: 'rest', containerPort: 8212, protocol: 'UDP' },
+          ],
+          env: [
+            { name: 'PUID', value: '1000' },
+            { name: 'PGID', value: '1000' },
+            { name: 'PORT', value: '8211' },
+            { name: 'PLAYERS', value: '16' },
+            { name: 'MULTITHREADING', value: 'true' },
+            { name: 'REST_API_ENABLED', value: 'true' }, // Is this different than RCON?
+            { name: 'RCON_ENABLED', value: 'true' },
+            { name: 'RCON_PORT', value: '25575' },
+            { name: 'TZ', value: 'UTC' },
+            { name: 'COMMUNITY', value: 'false' },
+            { name: 'SERVER_NAME', value: 'THECLUSTER' },
+            { name: 'SERVER_DESCRIPTION', value: 'THECLUSTER PalWorld server' },
+            { name: 'ALLOW_CONNECT_PLATFORM', value: 'Steam' },
+            // {
+            //   name: 'SERVER_PASSWORD',
+            //   valueFrom: {
+            //     secretKeyRef: {
+            //       name: secret.metadata.name,
+            //       key: serverPasswordKey,
+            //     },
+            //   },
+            // },
+            {
+              name: 'ADMIN_PASSWORD',
+              valueFrom: {
+                secretKeyRef: {
+                  name: secret.metadata.name,
+                  key: adminPasswordKey,
+                },
+              },
+            },
+          ],
+          volumeMounts: [{
+            name: 'data',
+            mountPath: '/palworld',
+          }],
+        }],
+      },
+    },
+    volumeClaimTemplates: [{
+      metadata: { name: 'data' },
+      spec: {
+        storageClassName: 'unsafe-rbd',
+        accessModes: ['ReadWriteOncePod'],
+        resources: {
+          requests: {
+            storage: '24Gi',
+          },
+        },
+      },
+    }],
+  },
+});
+
+export const serverPassword = server.result;
+export const adminPassword = admin.result;
