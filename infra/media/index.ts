@@ -93,55 +93,55 @@ apt-get install -y rsync
 rsync -avuhp --info=progress2 /mnt/src/ /mnt/dst
 `;
 
-const moviesRsync = new Job('movies', {
-  metadata: {
-    namespace: ns.metadata.name,
-    annotations: {
-      'pulumi.com/skipAwait': 'true',
-    },
-  },
-  spec: {
-    template: {
-      spec: {
-        restartPolicy: 'Never',
-        containers: [{
-          name: 'rsync',
-          image: `ubuntu:noble-20240904.1`,
-          command: ['bash', '-c', rsyncScript],
-          volumeMounts: [
-            { name: 'src', mountPath: '/mnt/src' },
-            { name: 'dst', mountPath: '/mnt/dst' },
-          ],
-          resources: {
-            requests: {
-              cpu: '100m',
-              memory: '4Gi',
-            },
-            limits: {
-              cpu: '2',
-              memory: '8Gi',
-            },
-          },
-        }],
-        volumes: [
-          {
-            name: 'dst',
-            persistentVolumeClaim: {
-              claimName: movies.metadata.name,
-            },
-          },
-          {
-            name: 'src',
-            nfs: {
-              server: '192.168.1.11',
-              path: '/tank2/media/movies',
-            },
-          },
-        ],
-      },
-    },
-  },
-}, { dependsOn: movies });
+// const moviesRsync = new Job('movies', {
+//   metadata: {
+//     namespace: ns.metadata.name,
+//     annotations: {
+//       'pulumi.com/skipAwait': 'true',
+//     },
+//   },
+//   spec: {
+//     template: {
+//       spec: {
+//         restartPolicy: 'Never',
+//         containers: [{
+//           name: 'rsync',
+//           image: `ubuntu:noble-20240904.1`,
+//           command: ['bash', '-c', rsyncScript],
+//           volumeMounts: [
+//             { name: 'src', mountPath: '/mnt/src' },
+//             { name: 'dst', mountPath: '/mnt/dst' },
+//           ],
+//           resources: {
+//             requests: {
+//               cpu: '100m',
+//               memory: '4Gi',
+//             },
+//             limits: {
+//               cpu: '2',
+//               memory: '8Gi',
+//             },
+//           },
+//         }],
+//         volumes: [
+//           {
+//             name: 'dst',
+//             persistentVolumeClaim: {
+//               claimName: movies.metadata.name,
+//             },
+//           },
+//           {
+//             name: 'src',
+//             nfs: {
+//               server: '192.168.1.11',
+//               path: '/tank2/media/movies',
+//             },
+//           },
+//         ],
+//       },
+//     },
+//   },
+// }, { dependsOn: movies });
 
 const tvRsync = new Job('tv', {
   metadata: {
@@ -192,28 +192,6 @@ const tvRsync = new Job('tv', {
     },
   },
 }, { dependsOn: movies });
-
-const test = new Wireguard('test', {
-  spec: {
-    address: '',
-    dns: '',
-  },
-})
-
-const peer = new WireguardPeer('test', {
-  metadata: { namespace: ns.metadata.name },
-  spec: {
-    address: '',
-    PrivateKeyRef: {
-      secretKeyRef: {
-        name: '',
-        key: '',
-      },
-    },
-    publicKey: '',
-    dns: '',
-  },
-});
 
 // const ingress = new Ingress('media', {
 //   metadata: {
