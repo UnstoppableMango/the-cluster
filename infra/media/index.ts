@@ -6,57 +6,57 @@ const ns = new Namespace('media', {
   metadata: { name: 'media' },
 });
 
-const movies = new PersistentVolumeClaim('movies', {
-  metadata: { namespace: ns.metadata.name },
-  spec: {
-    storageClassName: 'ec-cephfs',
-    accessModes: ['ReadWriteOnce'],
-    resources: {
-      requests: {
-        storage: '20Ti',
-      },
-    },
-  },
-}, { protect: true });
+// const movies = new PersistentVolumeClaim('movies', {
+//   metadata: { namespace: ns.metadata.name },
+//   spec: {
+//     storageClassName: 'ec-cephfs',
+//     accessModes: ['ReadWriteOnce'],
+//     resources: {
+//       requests: {
+//         storage: '20Ti',
+//       },
+//     },
+//   },
+// }, { protect: false });
 
-const movies4k = new PersistentVolumeClaim('movies4k', {
-  metadata: { namespace: ns.metadata.name },
-  spec: {
-    storageClassName: 'ec-cephfs',
-    accessModes: ['ReadWriteOnce'],
-    resources: {
-      requests: {
-        storage: '5Ti',
-      },
-    },
-  },
-}, { protect: true });
+// const movies4k = new PersistentVolumeClaim('movies4k', {
+//   metadata: { namespace: ns.metadata.name },
+//   spec: {
+//     storageClassName: 'ec-cephfs',
+//     accessModes: ['ReadWriteOnce'],
+//     resources: {
+//       requests: {
+//         storage: '5Ti',
+//       },
+//     },
+//   },
+// }, { protect: false });
 
 const tv = new PersistentVolumeClaim('tv', {
   metadata: { namespace: ns.metadata.name },
   spec: {
-    storageClassName: 'ec-cephfs',
-    accessModes: ['ReadWriteOnce'],
+    storageClassName: 'bulk',
+    accessModes: ['ReadWriteOncePod'],
     resources: {
       requests: {
         storage: '20Ti',
       },
     },
   },
-}, { protect: true });
+}, { protect: false });
 
-const tv4k = new PersistentVolumeClaim('tv4k', {
-  metadata: { namespace: ns.metadata.name },
-  spec: {
-    storageClassName: 'ec-cephfs',
-    accessModes: ['ReadWriteOnce'],
-    resources: {
-      requests: {
-        storage: '10Ti',
-      },
-    },
-  },
-}, { protect: true });
+// const tv4k = new PersistentVolumeClaim('tv4k', {
+//   metadata: { namespace: ns.metadata.name },
+//   spec: {
+//     storageClassName: 'ec-cephfs',
+//     accessModes: ['ReadWriteOnce'],
+//     resources: {
+//       requests: {
+//         storage: '10Ti',
+//       },
+//     },
+//   },
+// }, { protect: false });
 
 const anime = new PersistentVolumeClaim('anime', {
   metadata: { namespace: ns.metadata.name },
@@ -143,55 +143,55 @@ rsync -avuhp --info=progress2 /mnt/src/ /mnt/dst
 //   },
 // }, { dependsOn: movies });
 
-const tvRsync = new Job('tv', {
-  metadata: {
-    namespace: ns.metadata.name,
-    annotations: {
-      'pulumi.com/skipAwait': 'true',
-    },
-  },
-  spec: {
-    template: {
-      spec: {
-        restartPolicy: 'Never',
-        containers: [{
-          name: 'rsync',
-          image: `ubuntu:noble-20240904.1`,
-          command: ['bash', '-c', rsyncScript],
-          volumeMounts: [
-            { name: 'src', mountPath: '/mnt/src' },
-            { name: 'dst', mountPath: '/mnt/dst' },
-          ],
-          resources: {
-            requests: {
-              cpu: '100m',
-              memory: '4Gi',
-            },
-            limits: {
-              cpu: '2',
-              memory: '8Gi',
-            },
-          },
-        }],
-        volumes: [
-          {
-            name: 'dst',
-            persistentVolumeClaim: {
-              claimName: tv.metadata.name,
-            },
-          },
-          {
-            name: 'src',
-            nfs: {
-              server: '192.168.1.11',
-              path: '/tank1/media/tv',
-            },
-          },
-        ],
-      },
-    },
-  },
-}, { dependsOn: movies });
+// const tvRsync = new Job('tv', {
+//   metadata: {
+//     namespace: ns.metadata.name,
+//     annotations: {
+//       'pulumi.com/skipAwait': 'true',
+//     },
+//   },
+//   spec: {
+//     template: {
+//       spec: {
+//         restartPolicy: 'Never',
+//         containers: [{
+//           name: 'rsync',
+//           image: `ubuntu:noble-20240904.1`,
+//           command: ['bash', '-c', rsyncScript],
+//           volumeMounts: [
+//             { name: 'src', mountPath: '/mnt/src' },
+//             { name: 'dst', mountPath: '/mnt/dst' },
+//           ],
+//           resources: {
+//             requests: {
+//               cpu: '100m',
+//               memory: '4Gi',
+//             },
+//             limits: {
+//               cpu: '8',
+//               memory: '8Gi',
+//             },
+//           },
+//         }],
+//         volumes: [
+//           {
+//             name: 'dst',
+//             persistentVolumeClaim: {
+//               claimName: tv.metadata.name,
+//             },
+//           },
+//           {
+//             name: 'src',
+//             nfs: {
+//               server: '192.168.1.11',
+//               path: '/tank1/media/tv',
+//             },
+//           },
+//         ],
+//       },
+//     },
+//   },
+// }, { dependsOn: tv });
 
 // const ingress = new Ingress('media', {
 //   metadata: {
