@@ -19,11 +19,12 @@ require (
 	github.com/testcontainers/testcontainers-go/modules/k3s v0.34.0
 	github.com/unmango/go v0.0.21
 	google.golang.org/protobuf v1.35.2
-	sigs.k8s.io/kind v0.25.0
+	sigs.k8s.io/kind v0.27.0
 	sigs.k8s.io/kubebuilder/v4 v4.3.1
 )
 
 require (
+	al.essio.dev/pkg/shellescape v1.5.1 // indirect
 	dario.cat/mergo v1.0.1 // indirect
 	github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161 // indirect
 	github.com/BurntSushi/toml v1.4.0 // indirect
