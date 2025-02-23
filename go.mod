@@ -13,8 +13,8 @@ require (
 	github.com/onsi/gomega v1.36.0
 	github.com/pulumi/pulumi/sdk/v3 v3.142.0
 	github.com/spf13/afero v1.11.0
-	github.com/spf13/cobra v1.8.1
-	github.com/spf13/pflag v1.0.5
+	github.com/spf13/cobra v1.9.1
+	github.com/spf13/pflag v1.0.6
 	github.com/testcontainers/testcontainers-go v0.34.0
 	github.com/testcontainers/testcontainers-go/modules/k3s v0.34.0
 	github.com/unmango/go v0.0.21
