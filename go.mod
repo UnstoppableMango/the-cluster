@@ -9,6 +9,7 @@ require (
 	github.com/charmbracelet/lipgloss v1.0.0
 	github.com/charmbracelet/log v0.4.0
 	github.com/google/go-github/v66 v66.0.0
+	github.com/google/go-github/v69 v69.2.0
 	github.com/onsi/ginkgo/v2 v2.22.0
 	github.com/onsi/gomega v1.36.0
 	github.com/pulumi/pulumi/sdk/v3 v3.142.0
