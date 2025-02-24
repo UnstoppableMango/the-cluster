@@ -1,12 +1,18 @@
+import { Record } from '@pulumi/cloudflare';
+import { getZonesOutput, GetZonesResult } from '@pulumi/cloudflare/getZones';
 import { StatefulSet } from '@pulumi/kubernetes/apps/v1';
 import { Namespace, Secret, Service, ServiceSpecType } from '@pulumi/kubernetes/core/v1';
+import { Ingress } from '@pulumi/kubernetes/networking/v1';
+import { Config } from '@pulumi/pulumi';
 import { RandomPassword } from '@pulumi/random';
+
+const config = new Config();
 
 const ns = new Namespace('palworld', {
 	metadata: { name: 'palworld' },
 });
 
-const server = new RandomPassword('server', { length: 12 });
+export const serverPassword = config.requireSecret('password');
 const admin = new RandomPassword('admin', { length: 12 });
 
 const serverPasswordKey = 'serverPassword';
@@ -18,7 +24,7 @@ const secret = new Secret('palworld', {
 		namespace: ns.metadata.name,
 	},
 	stringData: {
-		[serverPasswordKey]: server.result,
+    [serverPasswordKey]: serverPassword,
 		[adminPasswordKey]: admin.result,
 	},
 });
@@ -81,15 +87,15 @@ const statefulSet = new StatefulSet('palworld', {
 						{ name: 'SERVER_NAME', value: 'THECLUSTER' },
 						{ name: 'SERVER_DESCRIPTION', value: 'THECLUSTER PalWorld server' },
 						{ name: 'CROSSPLAY_PLATFORMS', value: '(Steam,Xbox,PS5,Mac)' },
-						// {
-						//   name: 'SERVER_PASSWORD',
-						//   valueFrom: {
-						//     secretKeyRef: {
-						//       name: secret.metadata.name,
-						//       key: serverPasswordKey,
-						//     },
-						//   },
-						// },
+            {
+              name: 'SERVER_PASSWORD',
+              valueFrom: {
+                secretKeyRef: {
+                  name: secret.metadata.name,
+                  key: serverPasswordKey,
+                },
+              },
+            },
 						{
 							name: 'ADMIN_PASSWORD',
 							valueFrom: {
@@ -133,5 +139,51 @@ const statefulSet = new StatefulSet('palworld', {
 	},
 });
 
-export const serverPassword = server.result;
+// const ingress = new Ingress('palworld', {
+//   metadata: {
+//     name: 'palworld',
+//     namespace: ns.metadata.name,
+//     annotations: {
+//       'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
+//       'pulumi.com/skipAwait': 'true',
+//     },
+//   },
+//   spec: {
+//     ingressClassName: 'thecluster-io',
+//     rules: [{
+//       host: 'palworld.thecluster.io',
+//       http: {
+//         paths: [{
+//           pathType: 'Prefix',
+//           path: '/',
+//           backend: {
+//             service: {
+//               name: service.metadata.name,
+//               port: {
+//                 number: 8211,
+//               },
+//             },
+//           },
+//         }],
+//       },
+//     }],
+//   },
+// });
+
+const zones = getZonesOutput({
+  filter: { name: 'thecluster.io' },
+});
+
+const record = new Record('palworld', {
+  name: 'palworld.thecluster.io',
+  type: 'CNAME',
+  zoneId: zones.apply(zoneId),
+  content: 'thecluster.io',
+});
+
 export const adminPassword = admin.result;
+
+function zoneId(res: GetZonesResult): string {
+  const zone = res.zones[0];
+  return zone.id ?? '';
+}
