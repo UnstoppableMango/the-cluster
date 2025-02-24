@@ -1,0 +1,5 @@
+config:
+  thecluster-palworld:password:
+    secure: AAABAJA8voj3c54Uq2ISbPVlBpb4imkudHnvkyBnGGnhu+BgY0r/ZCIYeQlc6X2bPCQ9hanTZspM
+  cloudflare:apiToken:
+    secure: AAABANNkWLe3FJzFCAVthmiEHXBfEcExXBzV+YIPBXJwgxkQ/u9NTfaYfYNLyMpOoX073zlNdS6OJ/LOF4g7GVSn31iiHtGJ
