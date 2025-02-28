@@ -1,0 +1,10 @@
+name: thecluster-agones
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
+description: Agones install for THECLSUTER
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: typescript
