@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="Pulumi" Version="3.71.1" />
-    <PackageReference Include="Pulumi.FSharp" Version="3.71.1" />
+    <PackageReference Include="Pulumi.FSharp" Version="3.75.2" />
     <PackageReference Include="Pulumi.Kubernetes" Version="4.19.0" />
   </ItemGroup>
 
