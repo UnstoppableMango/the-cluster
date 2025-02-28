@@ -19,7 +19,7 @@ require (
 	github.com/testcontainers/testcontainers-go v0.34.0
 	github.com/testcontainers/testcontainers-go/modules/k3s v0.34.0
 	github.com/unmango/go v0.0.21
-	google.golang.org/protobuf v1.36.1
+	google.golang.org/protobuf v1.36.5
 	sigs.k8s.io/kind v0.27.0
 	sigs.k8s.io/kubebuilder/v4 v4.3.1
 )
