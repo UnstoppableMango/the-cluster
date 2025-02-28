@@ -6,6 +6,8 @@ on:
 
 jobs:
   cli:
+    # This is moving to https://github.com/unmango/thecluster
+    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,6 +34,8 @@ jobs:
         run: make bin/kubebuilder
 
   operator:
+    # This is moving to https://github.com/unmango/thecluster-operator
+    if: false
     runs-on: ubuntu-latest
     steps:
       - name: Set up Docker Buildx
