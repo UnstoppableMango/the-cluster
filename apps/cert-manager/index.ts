@@ -1,33 +1,26 @@
-import * as k8s from '@pulumi/kubernetes';
-import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
+import * as k8s from "@pulumi/kubernetes";
 
-const ns = new k8s.core.v1.Namespace('cert-manager', {
-  metadata: { name: 'cert-manager' },
-}, { provider });
+const ns = new k8s.core.v1.Namespace("cert-manager", {
+  metadata: { name: "cert-manager" },
+});
 
-// Use a release because the cert-manager helm chart uses hooks
-const release = new k8s.helm.v3.Release('cert-manager', {
-  chart: './',
-  name: 'cert-manager',
+const chart = new k8s.helm.v4.Chart("cert-manager", {
+  chart: "./",
+  name: "cert-manager",
   namespace: ns.metadata.name,
-  createNamespace: false,
-  atomic: true,
   dependencyUpdate: true,
-  lint: true,
   values: {
     // https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/README.template.md#configuration
-    'cert-manager': {
-      installCRDs: true,
+    "cert-manager": {
+      crds: {
+        enabled: true,
+        keep: true,
+      },
       podDisruptionBudget: {
         enabled: true,
         minAvailable: 1,
       },
-      // Redundant, but QoL safeguard
-      // https://github.com/cert-manager/cert-manager/blob/4209de23716562f44f3f7295b1f162bbb69f6ccd/deploy/charts/cert-manager/values.yaml#L98-L101C14
-      namespace: ns.metadata.name,
       enableCertificateOwnerRef: true,
     },
   },
-}, { provider });
-
-// export const resources = release.resourceNames;
+});
