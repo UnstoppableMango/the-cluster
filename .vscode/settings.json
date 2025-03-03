@@ -9,5 +9,5 @@
     "https://json.schemastore.org/github-action.json": "file:///**/.github/actions/*/action.yml"
   },
   "makefile.configureOnOpen": false,
-  "dotnet.defaultSolution": "disable"
+  "dotnet.defaultSolution": "UnMango.TheCluster.sln"
 }
