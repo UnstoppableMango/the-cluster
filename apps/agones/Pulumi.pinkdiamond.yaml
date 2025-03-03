@@ -1,0 +1,4 @@
+config:
+  thecluster-agones:serverNamespaces:
+    - shulker-system
+    - gaming-default
