@@ -1,12 +1,12 @@
 import { helm } from '@pulumi/kubernetes';
 import { Namespace } from '@pulumi/kubernetes/core/v1';
+import { Config } from '@pulumi/pulumi';
+
+const config = new Config();
+const serverNamespaces = config.requireObject<string[]>('serverNamespaces');
 
 const ns = new Namespace('agones-system', {
   metadata: { name: 'agones-system' },
-});
-
-const serversNs = new Namespace('game-servers', {
-  metadata: { name: 'game-servers' },
 });
 
 const chart = new helm.v4.Chart('agones', {
@@ -17,7 +17,7 @@ const chart = new helm.v4.Chart('agones', {
   },
   values: {
     gameservers: {
-      namespaces: [serversNs.metadata.name],
+      namespaces: serverNamespaces,
     },
     agones: {
       controller: {
@@ -30,6 +30,13 @@ const chart = new helm.v4.Chart('agones', {
             cpu: '100m',
             memory: '256Mi',
           },
+        },
+      },
+      // https://shulker.jeremylvln.fr/latest/guide/getting-started/prerequisites.html#mandatory-softwares
+      allocator: {
+        install: true,
+        service: {
+          serviceType: 'ClusterIP',
         },
       },
     },
