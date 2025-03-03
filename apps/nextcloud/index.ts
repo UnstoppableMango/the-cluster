@@ -9,7 +9,7 @@ const ns = new Namespace('nextcloud', {
 });
 
 
-const defaultTeam = new CustomResource('nextcloud', {
+const team = new CustomResource('nextcloud', {
   apiVersion: 'acid.zalan.do/v1',
   kind: 'PostgresTeam',
   metadata: { namespace: ns.metadata.name },
@@ -21,7 +21,7 @@ const cluster = new CustomResource('database', {
   kind: 'postgresql',
   metadata: { namespace: ns.metadata.name },
   spec: {
-    teamId: defaultTeam.metadata.name,
+    teamId: team.metadata.name,
     volume: {
       size: '50Gi',
       storageClass: 'unsafe-rbd',
@@ -36,10 +36,11 @@ const cluster = new CustomResource('database', {
         'superuser',
         'createdb',
       ],
-      keycloak: [],
     },
     allowedSourceRanges: [
       '192.168.1.0/24',
+      '10.43.0.0/16', // Service CIDR(?)
+      '10.42.0.0/16', // Pod CIDR(?)
     ],
     databases: {
       keycloak: 'keycloak',
@@ -79,20 +80,24 @@ const chart = new Chart('nextcloud', {
   values: {
     ingress: {
       enabled: true,
-      className: 'thecluster.io',
+      className: 'thecluster-io',
+      annotations: {
+        'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
+        'pulumi.com/skipAwait': 'true',
+      },
     },
     nextcloud: {
       host: 'nextcloud.thecluster.io',
-      // password: password.result,
+      password: password.result,
     },
     resources: {
       requests: {
-        cpu: '10m',
+        cpu: '100m',
         memory: '128Mi',
       },
       limits: {
-        cpu: '100m',
-        memory: '1Gi',
+        cpu: '1',
+        memory: '512Mi',
       },
     },
     rbac: { enabled: true },
@@ -105,10 +110,17 @@ const chart = new Chart('nextcloud', {
       existingSecret: {
         enabled: true,
         secretName: dbSecretName,
-        usernameKey: '',
+        usernameKey: 'username',
+        passwordKey: 'password',
       },
+    },
+    persistance: {
+      enabled: true,
+      accessMode: 'ReadWriteMany',
+      storageClass: 'default-cephfs',
+      size: '500Gi',
     },
   },
 });
 
-// export const adminPassword = password.result;
+export const adminPassword = password.result;
