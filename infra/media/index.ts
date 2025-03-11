@@ -6,18 +6,18 @@ const ns = new Namespace('media', {
   metadata: { name: 'media' },
 });
 
-// const movies = new PersistentVolumeClaim('movies', {
-//   metadata: { namespace: ns.metadata.name },
-//   spec: {
-//     storageClassName: 'ec-cephfs',
-//     accessModes: ['ReadWriteOnce'],
-//     resources: {
-//       requests: {
-//         storage: '20Ti',
-//       },
-//     },
-//   },
-// }, { protect: false });
+const movies = new PersistentVolumeClaim('movies', {
+  metadata: { namespace: ns.metadata.name },
+  spec: {
+    storageClassName: 'bulk',
+    accessModes: ['ReadWriteOncePod'],
+    resources: {
+      requests: {
+        storage: '20Ti',
+      },
+    },
+  },
+}, { protect: false });
 
 // const movies4k = new PersistentVolumeClaim('movies4k', {
 //   metadata: { namespace: ns.metadata.name },
@@ -93,105 +93,55 @@ apt-get install -y rsync
 rsync -avuhp --info=progress2 /mnt/src/ /mnt/dst
 `;
 
-// const moviesRsync = new Job('movies', {
-//   metadata: {
-//     namespace: ns.metadata.name,
-//     annotations: {
-//       'pulumi.com/skipAwait': 'true',
-//     },
-//   },
-//   spec: {
-//     template: {
-//       spec: {
-//         restartPolicy: 'Never',
-//         containers: [{
-//           name: 'rsync',
-//           image: `ubuntu:noble-20240904.1`,
-//           command: ['bash', '-c', rsyncScript],
-//           volumeMounts: [
-//             { name: 'src', mountPath: '/mnt/src' },
-//             { name: 'dst', mountPath: '/mnt/dst' },
-//           ],
-//           resources: {
-//             requests: {
-//               cpu: '100m',
-//               memory: '4Gi',
-//             },
-//             limits: {
-//               cpu: '2',
-//               memory: '8Gi',
-//             },
-//           },
-//         }],
-//         volumes: [
-//           {
-//             name: 'dst',
-//             persistentVolumeClaim: {
-//               claimName: movies.metadata.name,
-//             },
-//           },
-//           {
-//             name: 'src',
-//             nfs: {
-//               server: '192.168.1.11',
-//               path: '/tank2/media/movies',
-//             },
-//           },
-//         ],
-//       },
-//     },
-//   },
-// }, { dependsOn: movies });
-
-// const tvRsync = new Job('tv', {
-//   metadata: {
-//     namespace: ns.metadata.name,
-//     annotations: {
-//       'pulumi.com/skipAwait': 'true',
-//     },
-//   },
-//   spec: {
-//     template: {
-//       spec: {
-//         restartPolicy: 'Never',
-//         containers: [{
-//           name: 'rsync',
-//           image: `ubuntu:noble-20240904.1`,
-//           command: ['bash', '-c', rsyncScript],
-//           volumeMounts: [
-//             { name: 'src', mountPath: '/mnt/src' },
-//             { name: 'dst', mountPath: '/mnt/dst' },
-//           ],
-//           resources: {
-//             requests: {
-//               cpu: '100m',
-//               memory: '4Gi',
-//             },
-//             limits: {
-//               cpu: '8',
-//               memory: '8Gi',
-//             },
-//           },
-//         }],
-//         volumes: [
-//           {
-//             name: 'dst',
-//             persistentVolumeClaim: {
-//               claimName: tv.metadata.name,
-//             },
-//           },
-//           {
-//             name: 'src',
-//             nfs: {
-//               server: '192.168.1.11',
-//               path: '/tank1/media/tv',
-//             },
-//           },
-//         ],
-//       },
-//     },
-//   },
-// }, { dependsOn: tv });
+const moviesRsync = new Job('movies', {
+  metadata: {
+    namespace: ns.metadata.name,
+    annotations: {
+      'pulumi.com/skipAwait': 'true',
+    },
+  },
+  spec: {
+    template: {
+      spec: {
+        restartPolicy: 'Never',
+        containers: [{
+          name: 'rsync',
+          image: `ubuntu:noble-20240904.1`,
+          command: ['bash', '-c', rsyncScript],
+          volumeMounts: [
+            { name: 'src', mountPath: '/mnt/src' },
+            { name: 'dst', mountPath: '/mnt/dst' },
+          ],
+          resources: {
+            requests: {
+              cpu: '100m',
+              memory: '4Gi',
+            },
+            limits: {
+              cpu: '8',
+              memory: '8Gi',
+            },
+          },
+        }],
+        volumes: [
+          {
+            name: 'dst',
+            persistentVolumeClaim: {
+              claimName: movies.metadata.name,
+            },
+          },
+          {
+            name: 'src',
+            nfs: {
+              server: '192.168.1.11',
+              path: '/tank2/media/movies',
+            },
+          },
+        ],
+      },
+    },
+  },
+}, { dependsOn: movies });
 
 // const ingress = new Ingress('media', {
 //   metadata: {
