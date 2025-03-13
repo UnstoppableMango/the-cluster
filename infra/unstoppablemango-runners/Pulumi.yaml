@@ -1,0 +1,10 @@
+name: thecluster-unstoppablemango-runners
+description: GitHub Actions runners for my UnstoppableMango GitHub account
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: typescript
