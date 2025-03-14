@@ -1,6 +1,7 @@
 import { Job } from '@pulumi/kubernetes/batch/v1';
 import { Namespace, PersistentVolumeClaim } from '@pulumi/kubernetes/core/v1';
 import { Wireguard, WireguardPeer } from './crds/nodejs/vpn/v1alpha1';
+import { Chart } from '@pulumi/kubernetes/helm/v4';
 
 const ns = new Namespace('media', {
   metadata: { name: 'media' },
@@ -83,6 +84,20 @@ const music = new PersistentVolumeClaim('music', {
     },
   },
 }, { protect: true });
+
+const plexConfig = new PersistentVolumeClaim('plex-config', {
+  metadata: { namespace: ns.metadata.name },
+  spec: {
+    storageClassName: 'unsafe-rbd',
+  },
+});
+
+const plex = new Chart('plex', {
+  chart: 'plex-media-server',
+  repositoryOpts: {
+    repo: 'https://raw.githubusercontent.com/plexinc/pms-docker/gh-pages',
+  },
+});
 
 // const rsyncScript: string = `
 // #!/bin/bash
