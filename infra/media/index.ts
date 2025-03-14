@@ -84,154 +84,61 @@ const music = new PersistentVolumeClaim('music', {
   },
 }, { protect: true });
 
-const rsyncScript: string = `
-#!/bin/bash
+// const rsyncScript: string = `
+// #!/bin/bash
 
-export DEBIAN_FRONTEND=noninteractive
-apt-get update && apt-get upgrade -y
-apt-get install -y rsync
-rsync -avuhp --info=progress2 /mnt/src/ /mnt/dst
-`;
+// export DEBIAN_FRONTEND=noninteractive
+// apt-get update && apt-get upgrade -y
+// apt-get install -y rsync
+// rsync -avuhp --info=progress2 /mnt/src/ /mnt/dst
+// `;
 
-const moviesRsync = new Job('movies', {
-  metadata: {
-    namespace: ns.metadata.name,
-    annotations: {
-      'pulumi.com/skipAwait': 'true',
-    },
-  },
-  spec: {
-    template: {
-      spec: {
-        restartPolicy: 'Never',
-        containers: [{
-          name: 'rsync',
-          image: `ubuntu:noble-20240904.1`,
-          command: ['bash', '-c', rsyncScript],
-          volumeMounts: [
-            { name: 'src', mountPath: '/mnt/src' },
-            { name: 'dst', mountPath: '/mnt/dst' },
-          ],
-          resources: {
-            requests: {
-              cpu: '100m',
-              memory: '4Gi',
-            },
-            limits: {
-              cpu: '8',
-              memory: '8Gi',
-            },
-          },
-        }],
-        volumes: [
-          {
-            name: 'dst',
-            persistentVolumeClaim: {
-              claimName: movies.metadata.name,
-            },
-          },
-          {
-            name: 'src',
-            nfs: {
-              server: '192.168.1.11',
-              path: '/tank2/media/movies',
-            },
-          },
-        ],
-      },
-    },
-  },
-}, { dependsOn: movies });
-
-// const ingress = new Ingress('media', {
+// const moviesRsync = new Job('movies', {
 //   metadata: {
-//     name: 'media',
-//     namespace: shared.namespaces.media,
+//     namespace: ns.metadata.name,
 //     annotations: {
-//       'nginx.org/websocket-services': apps.deemix.service,
-//       'cert-manager.io/cluster-issuer': clusterIssuers.root,
-//       'external-dns.alpha.kubernetes.io/hostname': [
-//         hosts.internal,
-//         // ...hosts.aliases.internal,
-//       ].join(','),
+//       'pulumi.com/skipAwait': 'true',
 //     },
 //   },
 //   spec: {
-//     ingressClassName: ingresses.internal,
-//     rules: [
-//       {
-//         host: hosts.internal,
-//         http: {
-//           paths: [
-//             {
-//               path: '/deemix',
-//               pathType: 'ImplementationSpecific',
-//               backend: {
-//                 service: {
-//                   name: apps.deemix.service,
-//                   port: {
-//                     name: 'http',
-//                   },
-//                 },
-//               },
-//             },
-//             {
-//               path: '/',
-//               pathType: 'ImplementationSpecific',
-//               backend: {
-//                 service: {
-//                   name: apps.filebrowser.service,
-//                   port: {
-//                     name: 'http',
-//                   },
-//                 },
-//               },
-//             },
+//     template: {
+//       spec: {
+//         restartPolicy: 'Never',
+//         containers: [{
+//           name: 'rsync',
+//           image: `ubuntu:noble-20240904.1`,
+//           command: ['bash', '-c', rsyncScript],
+//           volumeMounts: [
+//             { name: 'src', mountPath: '/mnt/src' },
+//             { name: 'dst', mountPath: '/mnt/dst' },
 //           ],
-//         },
-//       },
-//       {
-//         host: 'deemix.lan.thecluster.io',
-//         http: {
-//           paths: [{
-//             pathType: 'ImplementationSpecific',
-//             backend: {
-//               service: {
-//                 name: apps.deemix.service,
-//                 port: {
-//                   name: 'http',
-//                 },
-//               },
+//           resources: {
+//             requests: {
+//               cpu: '100m',
+//               memory: '4Gi',
 //             },
-//           }],
-//         },
-//       },
-//       {
-//         host: 'plex.lan.thecluster.io',
-//         http: {
-//           paths: [{
-//             pathType: 'ImplementationSpecific',
-//             backend: {
-//               service: {
-//                 name: apps.plex.service,
-//                 port: {
-//                   name: 'http',
-//                 },
-//               },
+//             limits: {
+//               cpu: '8',
+//               memory: '8Gi',
 //             },
-//           }],
-//         },
+//           },
+//         }],
+//         volumes: [
+//           {
+//             name: 'dst',
+//             persistentVolumeClaim: {
+//               claimName: movies.metadata.name,
+//             },
+//           },
+//           {
+//             name: 'src',
+//             nfs: {
+//               server: '192.168.1.11',
+//               path: '/tank2/media/movies',
+//             },
+//           },
+//         ],
 //       },
-//     ],
-//     tls: [
-//       {
-//         hosts: [hosts.internal],
-//         secretName: 'media-certs',
-//       },
-//       {
-//         hosts: ['deemix.lan.thecluster.io'],
-//         secretName: 'deemix-certs',
-//       }
-//     ],
+//     },
 //   },
-// }, { provider });
+// }, { dependsOn: movies });
