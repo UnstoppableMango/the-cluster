@@ -17,15 +17,13 @@ const secret = new Secret('github-config', {
   },
 });
 
-const chart = new Chart('runner-scale-set', {
-  name: 'unstoppablemango-runners', // INSTALLATION_NAME, used for runs-on in workflows
+const chart = new Chart('lang-runner-scale-set', {
+  name: 'lang-runners', // INSTALLATION_NAME, used for runs-on in workflows
   namespace: ns.metadata.name,
   chart: 'oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set',
   values: {
-    githubConfigUrl: 'https://github.com/UnstoppableMango',
+    githubConfigUrl: 'https://github.com/UnstoppableMango/lang',
     githubConfigSecret: secret.metadata.name,
-    maxRunners: 10,
-    minRunners: 1, // idle standby runner
     containerMode: {
       type: 'kubernetes',
       kubernetesModeWorkVolumeClaim: {
@@ -33,7 +31,7 @@ const chart = new Chart('runner-scale-set', {
         storageClassName: 'unsafe-rbd',
         resources: {
           requests: {
-            // Request a large amount of storage for building crap like LLVM
+            // LLVM is chonky
             storage: '100Gi',
           },
         },
