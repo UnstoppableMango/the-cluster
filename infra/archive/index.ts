@@ -50,7 +50,7 @@ const rsync = new Job('vm-101', {
           command: ['bash', '-c', rsyncScript],
           volumeMounts: [
             { name: 'src', mountPath: '/mnt/src' },
-            { name: 'dst', mountPath: '/mnt/dst', subPath: 'vms/vm-101-disk-0' },
+            { name: 'dst', mountPath: '/mnt/dst', subPath: 'vms/vm-114-disk-0' },
           ],
           resources: {
             requests: {
