@@ -27,7 +27,7 @@ const chart = new Chart('lang-runner-scale-set', {
     containerMode: {
       type: 'kubernetes',
       kubernetesModeWorkVolumeClaim: {
-        accessModes: ['ReadWriteOncePod'],
+        accessModes: ['ReadWriteOnce'],
         storageClassName: 'unsafe-rbd',
         resources: {
           requests: {
@@ -35,6 +35,18 @@ const chart = new Chart('lang-runner-scale-set', {
             storage: '100Gi',
           },
         },
+      },
+    },
+    template: {
+      spec: {
+        securityContext: {
+          fsGroup: 1001,
+        },
+        containers: [{
+          name: 'runner',
+          image: 'ghcr.io/actions/actions-runner:latest',
+          command: ['/home/runner/run.sh'],
+        }],
       },
     },
   },
