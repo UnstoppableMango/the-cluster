@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-package io.unmango.thecluster.v1alpha1;
-
-message Workspace {
-  string working_directory = 1;
-}
