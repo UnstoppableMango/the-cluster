@@ -2,8 +2,8 @@
   "name": "thecluster-media",
   "main": "index.ts",
   "dependencies": {
-    "@pulumi/kubernetes": "^4.5.6",
-    "@pulumi/pulumi": "^3.99.0",
+    "@pulumi/kubernetes": "^4.22.1",
+    "@pulumi/pulumi": "^3.156.0",
     "@unstoppablemango/thecluster": "^1.0.0",
     "@unstoppablemango/thecluster-crds": "file:../../lib/crds/nodejs"
   },

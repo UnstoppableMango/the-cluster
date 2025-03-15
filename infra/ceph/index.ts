@@ -1,21 +1,22 @@
 import * as crds from './crds/ceph/v1';
-import { clusterName, provider, versions } from './config';
+import { clusterName, versions } from './config';
 import { StorageClass } from '@pulumi/kubernetes/storage/v1';
 import { Deployment } from '@pulumi/kubernetes/apps/v1';
 import { Ingress } from '@pulumi/kubernetes/networking/v1';
+import { Namespace } from '@pulumi/kubernetes/core/v1';
+
+const ns = Namespace.get('rook-ceph', 'rook-ceph');
 
 const cluster = new crds.CephCluster(clusterName, {
   metadata: {
     name: clusterName,
-    namespace: 'rook-ceph',
+    namespace: ns.metadata.name,
   },
   spec: {
     cephVersion: {
       image: `quay.io/ceph/ceph:v${versions.ceph}`,
     },
-    // This is the default, but I could see myselft wanting to put
-    // this on a specific drive in the future
-    dataDirHostPath: '/var/lib/rook',
+    dataDirHostPath: '/var/lib/rook', // default value
     mon: {
       // https://github.com/rook/rook/blob/0a1dd5e9e619481432cc66347a45072178ca0b48/deploy/examples/cluster.yaml#L51-L52
       count: 3,
@@ -29,6 +30,56 @@ const cluster = new crds.CephCluster(clusterName, {
     dashboard: {
       enabled: true,
       ssl: false,
+    },
+    resources: {
+      mon: {
+        requests: {
+          memory: '1Gi',
+        },
+        limits: {
+          memory: '1Gi',
+        },
+      },
+      mgr: {
+        requests: {
+          memory: '512Mi',
+        },
+        limits: {
+          memory: '512Mi',
+        },
+      },
+      osd: {
+        requests: {
+          memory: '4Gi',
+        },
+        limits: {
+          memory: '4Gi',
+        },
+      },
+      crashcollector: {
+        requests: {
+          memory: '60Mi',
+        },
+        limits: {
+          memory: '60Mi',
+        },
+      },
+      'mgr-sidecar': {
+        requests: {
+          memory: '40Mi',
+        },
+        limits: {
+          memory: '100Mi',
+        },
+      },
+      exporter: {
+        requests: {
+          memory: '50Mi',
+        },
+        limits: {
+          memory: '128Mi',
+        },
+      },
     },
     storage: {
       useAllDevices: false,
@@ -61,6 +112,14 @@ const cluster = new crds.CephCluster(clusterName, {
         },
         {
           name: 'zeus',
+          devices: [
+            { name: 'sdj1' },
+            { name: 'sdk1' },
+            { name: 'sdl1' },
+            { name: 'sdm1' },
+            { name: 'sdn1' },
+            { name: 'sdo1' },
+          ],
         },
         {
           name: 'castor',
@@ -71,15 +130,12 @@ const cluster = new crds.CephCluster(clusterName, {
       ],
     },
   },
-}, {
-  provider,
-  protect: true,
-});
+}, { protect: true });
 
 const ingress = new Ingress('dashboard', {
   metadata: {
     name: 'rook-ceph-dashboard',
-    namespace: 'rook-ceph',
+    namespace: ns.metadata.name,
     annotations: {
       'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
       'pulumi.com/skipAwait': 'true',
@@ -105,20 +161,18 @@ const ingress = new Ingress('dashboard', {
       },
     }],
   },
-}, { provider });
+});
 
 const mgrPool = new crds.CephBlockPool('mgr', {
   metadata: {
     name: 'mgr',
-    namespace: 'rook-ceph',
+    namespace: ns.metadata.name,
   },
   spec: {
     name: '.mgr',
     deviceClass: 'hdd',
     failureDomain: 'osd',
-    replicated: {
-      size: 3,
-    },
+    replicated: { size: 3 },
     parameters: {
       compression_mode: 'none',
     },
@@ -126,15 +180,52 @@ const mgrPool = new crds.CephBlockPool('mgr', {
       enabled: false,
     },
   },
+}, { protect: true });
+
+const bulkPool = new crds.CephBlockPool('bulk', {
+  metadata: {
+    name: 'bulk',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    deviceClass: 'hdd',
+    failureDomain: 'osd',
+    replicated: {
+      size: 1,
+      requireSafeReplicaSize: false,
+    },
+    parameters: { bulk: 'true' },
+  },
 }, {
-  provider,
-  protect: true,
+  dependsOn: cluster,
+  protect: false,
+});
+
+const bulkClass = new StorageClass('bulk', {
+  metadata: { name: 'bulk' },
+  provisioner: 'rook-ceph.rbd.csi.ceph.com',
+  parameters: {
+    clusterID: 'rook-ceph',
+    pool: 'bulk',
+    imageFormat: '2',
+    imageFeatures: 'layering',
+    'csi.storage.k8s.io/provisioner-secret-name': 'rook-csi-rbd-provisioner',
+    'csi.storage.k8s.io/provisioner-secret-namespace': 'rook-ceph',
+    'csi.storage.k8s.io/controller-expand-secret-name': 'rook-csi-rbd-provisioner',
+    'csi.storage.k8s.io/controller-expand-secret-namespace': 'rook-ceph',
+    'csi.storage.k8s.io/node-stage-secret-name': 'rook-csi-rbd-node',
+    'csi.storage.k8s.io/node-stage-secret-namespace': 'rook-ceph',
+  },
+  allowVolumeExpansion: true,
+}, {
+  dependsOn: [cluster, bulkPool],
+  protect: false,
 });
 
 const unsafePool = new crds.CephBlockPool('unsafe-data', {
   metadata: {
     name: 'unsafe-data',
-    namespace: 'rook-ceph',
+    namespace: ns.metadata.name,
   },
   spec: {
     deviceClass: 'hdd',
@@ -143,27 +234,24 @@ const unsafePool = new crds.CephBlockPool('unsafe-data', {
       dataChunks: 2,
       codingChunks: 1,
     },
+    parameters: { bulk: 'true' },
   },
 }, {
-  provider,
   dependsOn: cluster,
-  // protect: true,
+  protect: true,
 });
 
 const unsafeMetaPool = new crds.CephBlockPool('unsafe-metadata', {
   metadata: {
     name: 'unsafe-metadata',
-    namespace: 'rook-ceph',
+    namespace: ns.metadata.name,
   },
   spec: {
     deviceClass: 'hdd',
     failureDomain: 'osd',
-    replicated: {
-      size: 2,
-    },
+    replicated: { size: 2 },
   },
 }, {
-  provider,
   dependsOn: cluster,
   protect: true,
 });
@@ -187,88 +275,169 @@ const unsafeRbdClass = new StorageClass('unsafe-rbd', {
   reclaimPolicy: 'Retain',
   allowVolumeExpansion: true,
 }, {
-  provider,
   dependsOn: [cluster, unsafePool, unsafeMetaPool],
   protect: true,
 });
 
-// const defaultCephfs = new crds.CephFilesystem('default', {
-//   metadata: {
-//     name: 'default',
-//     namespace: 'rook',
-//   },
-//   spec: {
-//     metadataPool: {
-//       replicated: {
-//         size: 1,
-//         requireSafeReplicaSize: false,
-//       },
-//     },
-//     dataPools: [{
-//       name: 'data',
-//       failureDomain: 'osd',
-//       replicated: {
-//         size: 1,
-//         requireSafeReplicaSize: false,
-//       },
-//     }],
-//     preserveFilesystemOnDelete: true,
-//     metadataServer: {
-//       activeCount: 1,
-//       activeStandby: true,
-//     },
-//   },
-// }, {
-//   provider,
-//   dependsOn: cluster,
-//   // protect: true,
-// });
+const defaultPool = new crds.CephBlockPool('default', {
+  metadata: {
+    name: 'default',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    deviceClass: 'hdd',
+    failureDomain: 'host',
+    replicated: { size: 2 },
+    parameters: { bulk: 'true' },
+  },
+}, {
+  dependsOn: cluster,
+  protect: true,
+});
 
-// const defaultCephfsClass = new StorageClass('default-cephfs', {
-//   metadata: { name: 'default-cephfs' },
-//   provisioner: 'rook.cephfs.csi.ceph.com',
-//   parameters: {
-//     clusterID: 'rook',
-//     fsName: 'default',
-//     pool: 'data',
-//     'csi.storage.k8s.io/provisioner-secret-name': 'rook-csi-cephfs-provisioner',
-//     'csi.storage.k8s.io/provisioner-secret-namespace': 'rook',
-//     'csi.storage.k8s.io/controller-expand-secret-name': 'rook-csi-cephfs-provisioner',
-//     'csi.storage.k8s.io/controller-expand-secret-namespace': 'rook',
-//     'csi.storage.k8s.io/node-stage-secret-name': 'rook-csi-cephfs-node',
-//     'csi.storage.k8s.io/node-stage-secret-namespace': 'rook',
-//   },
-//   reclaimPolicy: 'Retain',
-// }, {
-//   provider,
-//   dependsOn: [cluster, defaultCephfs],
-//   // protect: true,
-// });
+const rbdClass = new StorageClass('rbd', {
+  metadata: { name: 'rbd' },
+  provisioner: 'rook-ceph.rbd.csi.ceph.com',
+  parameters: {
+    clusterID: 'rook-ceph',
+    pool: 'default',
+    imageFormat: '2',
+    imageFeatures: 'layering',
+    'csi.storage.k8s.io/provisioner-secret-name': 'rook-csi-rbd-provisioner',
+    'csi.storage.k8s.io/provisioner-secret-namespace': 'rook-ceph',
+    'csi.storage.k8s.io/controller-expand-secret-name': 'rook-csi-rbd-provisioner',
+    'csi.storage.k8s.io/controller-expand-secret-namespace': 'rook-ceph',
+    'csi.storage.k8s.io/node-stage-secret-name': 'rook-csi-rbd-node',
+    'csi.storage.k8s.io/node-stage-secret-namespace': 'rook-ceph',
+  },
+  allowVolumeExpansion: true,
+}, {
+  dependsOn: [cluster, defaultPool],
+  protect: true,
+});
+
+const replicatedCephfs = new crds.CephFilesystem('replicated', {
+  metadata: {
+    name: 'replicated',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    metadataPool: {
+      deviceClass: 'hdd',
+      replicated: { size: 2 },
+    },
+    dataPools: [
+      {
+        name: 'data',
+        deviceClass: 'hdd',
+        failureDomain: 'osd',
+        replicated: { size: 2 },
+        parameters: { bulk: 'true' },
+      },
+    ],
+    preserveFilesystemOnDelete: true,
+    metadataServer: {
+      activeCount: 1,
+      activeStandby: true,
+    },
+  },
+}, {
+  dependsOn: cluster,
+  protect: true,
+});
+
+const defaultCephfsClass = new StorageClass('default-cephfs', {
+  metadata: { name: 'default-cephfs' },
+  provisioner: 'rook-ceph.cephfs.csi.ceph.com',
+  parameters: {
+    clusterID: 'rook-ceph',
+    fsName: 'replicated',
+    pool: 'replicated-data',
+    'csi.storage.k8s.io/provisioner-secret-name': 'rook-csi-cephfs-provisioner',
+    'csi.storage.k8s.io/provisioner-secret-namespace': 'rook-ceph',
+    'csi.storage.k8s.io/controller-expand-secret-name': 'rook-csi-cephfs-provisioner',
+    'csi.storage.k8s.io/controller-expand-secret-namespace': 'rook-ceph',
+    'csi.storage.k8s.io/node-stage-secret-name': 'rook-csi-cephfs-node',
+    'csi.storage.k8s.io/node-stage-secret-namespace': 'rook-ceph',
+  },
+  reclaimPolicy: 'Retain',
+  allowVolumeExpansion: true,
+}, {
+  dependsOn: [cluster, replicatedCephfs],
+  protect: true,
+});
+
+const erasureCodedCephfs = new crds.CephFilesystem('erasure-coded', {
+  metadata: {
+    name: 'erasure-coded',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    metadataPool: {
+      deviceClass: 'hdd',
+      replicated: { size: 2 },
+    },
+    dataPools: [
+      {
+        name: 'default',
+        deviceClass: 'hdd',
+        failureDomain: 'osd',
+        replicated: { size: 2 },
+      },
+      {
+        name: 'data',
+        failureDomain: 'osd',
+        deviceClass: 'hdd',
+        erasureCoded: {
+          dataChunks: 2,
+          codingChunks: 1,
+        },
+      },
+    ],
+    preserveFilesystemOnDelete: true,
+    metadataServer: {
+      activeCount: 1,
+      activeStandby: true,
+    },
+  },
+}, {
+  dependsOn: cluster,
+  protect: true,
+});
+
+const ecCephfsClass = new StorageClass('ec-cephfs', {
+  metadata: { name: 'ec-cephfs' },
+  provisioner: 'rook-ceph.cephfs.csi.ceph.com',
+  parameters: {
+    clusterID: 'rook-ceph',
+    fsName: 'erasure-coded',
+    pool: 'erasure-coded-data',
+    'csi.storage.k8s.io/provisioner-secret-name': 'rook-csi-cephfs-provisioner',
+    'csi.storage.k8s.io/provisioner-secret-namespace': 'rook-ceph',
+    'csi.storage.k8s.io/controller-expand-secret-name': 'rook-csi-cephfs-provisioner',
+    'csi.storage.k8s.io/controller-expand-secret-namespace': 'rook-ceph',
+    'csi.storage.k8s.io/node-stage-secret-name': 'rook-csi-cephfs-node',
+    'csi.storage.k8s.io/node-stage-secret-namespace': 'rook-ceph',
+  },
+  reclaimPolicy: 'Delete',
+  allowVolumeExpansion: true,
+}, {
+  dependsOn: [cluster, erasureCodedCephfs],
+  protect: false,
+});
 
 export const storageClasses = [
-  // defaultRbdClass.metadata.name,
   unsafeRbdClass.metadata.name,
-  // defaultCephfsClass.metadata.name,
+  defaultCephfsClass.metadata.name,
+  ecCephfsClass.metadata.name,
+  rbdClass.metadata.name,
 ];
-
-// const nfs = new crds.CephNFS('backup', {
-//   metadata: {
-//     name: 'backup',
-//     namespace: 'rook',
-//   },
-//   spec: {
-//     server: {
-//       active: 1,
-//     },
-//     security: {},
-//   },
-// }, { provider, dependsOn: [cluster, backupFs] });
 
 // https://github.com/rook/rook/blob/master/deploy/examples/toolbox.yaml
 const toolbox = new Deployment('toolbox', {
   metadata: {
     name: 'rook-ceph-toolbox',
-    namespace: 'rook-ceph',
+    namespace: ns.metadata.name,
   },
   spec: {
     replicas: 1,
@@ -350,7 +519,7 @@ const toolbox = new Deployment('toolbox', {
       },
     },
   },
-}, { provider, dependsOn: [cluster] });
+}, { dependsOn: [cluster] });
 
 function toolboxScript(version: string): Promise<string> {
   const baseUrl = 'https://raw.githubusercontent.com';
