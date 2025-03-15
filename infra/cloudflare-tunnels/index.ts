@@ -2,6 +2,11 @@ import { interpolate } from '@pulumi/pulumi';
 import { ConfigMap, Secret } from '@pulumi/kubernetes/core/v1';
 import { ClusterTunnel } from '@unstoppablemango/thecluster-crds/networking/v1alpha1';
 import { cloudflare, caPem, versions, operatorNamespace, apiSecretsName, tunnels } from './config';
+import { interpolate } from '@pulumi/pulumi';
+
+const ns = new Namespace('cloudflare-tunnels', {
+  metadata: { name: 'cloudflare-tunnels' },
+});
 
 const kubeRootCa = ConfigMap.get('kube-root-ca.crt', 'kube-system/kube-root-ca.crt');
 
