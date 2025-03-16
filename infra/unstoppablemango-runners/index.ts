@@ -38,7 +38,7 @@ const hookExtension = new ConfigMap('hook-extension', {
             },
             limits: {
               cpu: '16',
-              memory: '16Gi',
+              memory: '32Gi',
             },
           },
         }],
