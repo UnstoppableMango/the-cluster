@@ -1,6 +1,7 @@
-import { Namespace, Secret } from "@pulumi/kubernetes/core/v1";
+import { ConfigMap, Namespace, Secret } from "@pulumi/kubernetes/core/v1";
 import { Chart } from "@pulumi/kubernetes/helm/v4";
-import { Config } from "@pulumi/pulumi";
+import { Config, output } from "@pulumi/pulumi";
+import * as YAML from 'yaml';
 
 const config = new Config();
 
@@ -14,6 +15,35 @@ const secret = new Secret('github-config', {
     github_app_id: '169402', // THECLUSTER Bot
     github_app_installation_id: '22901293', // UnstoppableMango
     github_app_private_key: config.requireSecret('private-key'),
+  },
+});
+
+const hookExtension = new ConfigMap('hook-extension', {
+  metadata: {
+    name: 'hook-extension',
+    namespace: ns.metadata.name,
+  },
+  data: {
+    content: output({
+      spec: {
+        containers: [{
+          name: '$job',
+          securityContext: {
+            fsGroup: 1001,
+          },
+          resources: {
+            requests: {
+              cpu: '4',
+              memory: '4Gi',
+            },
+            limits: {
+              cpu: '16',
+              memory: '16Gi',
+            },
+          },
+        }],
+      },
+    }).apply(YAML.stringify),
   },
 });
 
@@ -31,8 +61,8 @@ const chart = new Chart('lang-runner-scale-set', {
         storageClassName: 'unsafe-rbd',
         resources: {
           requests: {
-            // LLVM is chonky
-            storage: '100Gi',
+            // LLVM is chonky I guess
+            storage: '250Gi',
           },
         },
       },
@@ -46,6 +76,34 @@ const chart = new Chart('lang-runner-scale-set', {
           name: 'runner',
           image: 'ghcr.io/actions/actions-runner:latest',
           command: ['/home/runner/run.sh'],
+          env: [{
+            name: 'ACTIONS_RUNNER_CONTAINER_HOOK_TEMPLATE',
+            value: '/home/runner/hooks/hook-extension.yml',
+          }],
+          resources: {
+            requests: {
+              cpu: '10m',
+              memory: '128Mi',
+            },
+            limits: {
+              cpu: '100m',
+              memory: '2Gi',
+            },
+          },
+          volumeMounts: [{
+            name: 'hook-extension',
+            mountPath: '/home/runner/hooks',
+          }],
+        }],
+        volumes: [{
+          name: 'hook-extension',
+          configMap: {
+            name: hookExtension.metadata.name,
+            items: [{
+              key: 'content',
+              path: 'hook-extension.yml',
+            }],
+          },
         }],
       },
     },
