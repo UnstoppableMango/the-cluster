@@ -1,5 +1,5 @@
 import { Job } from '@pulumi/kubernetes/batch/v1';
-import { Namespace, PersistentVolumeClaim } from '@pulumi/kubernetes/core/v1';
+import { Namespace, PersistentVolumeClaim, Pod } from '@pulumi/kubernetes/core/v1';
 import { Wireguard, WireguardPeer } from './crds/nodejs/vpn/v1alpha1';
 import { Chart } from '@pulumi/kubernetes/helm/v4';
 
@@ -85,19 +85,63 @@ const music = new PersistentVolumeClaim('music', {
   },
 }, { protect: true });
 
-const plexConfig = new PersistentVolumeClaim('plex-config', {
+const test = new Pod('mounty', {
   metadata: { namespace: ns.metadata.name },
   spec: {
-    storageClassName: 'unsafe-rbd',
+    containers: [{
+      name: 'shell',
+      image: 'ubuntu',
+      command: ['bash', '-c', '--'],
+      args: ['while true; do sleep 30; done;'],
+      volumeMounts: [
+        { name: 'movies', mountPath: '/mnt/movies' },
+        { name: 'tv', mountPath: '/mnt/tv' },
+        { name: 'anime', mountPath: '/mnt/anime' },
+        { name: 'music', mountPath: '/mnt/music' },
+      ],
+    }],
+    volumes: [
+      {
+        name: 'movies',
+        persistentVolumeClaim: {
+          claimName: movies.metadata.name,
+        },
+      },
+      {
+        name: 'tv',
+        persistentVolumeClaim: {
+          claimName: tv.metadata.name,
+        },
+      },
+      {
+        name: 'anime',
+        persistentVolumeClaim: {
+          claimName: anime.metadata.name,
+        },
+      },
+      {
+        name: 'music',
+        persistentVolumeClaim: {
+          claimName: music.metadata.name,
+        },
+      },
+    ],
   },
 });
 
-const plex = new Chart('plex', {
-  chart: 'plex-media-server',
-  repositoryOpts: {
-    repo: 'https://raw.githubusercontent.com/plexinc/pms-docker/gh-pages',
-  },
-});
+// const plexConfig = new PersistentVolumeClaim('plex-config', {
+//   metadata: { namespace: ns.metadata.name },
+//   spec: {
+//     storageClassName: 'unsafe-rbd',
+//   },
+// });
+
+// const plex = new Chart('plex', {
+//   chart: 'plex-media-server',
+//   repositoryOpts: {
+//     repo: 'https://raw.githubusercontent.com/plexinc/pms-docker/gh-pages',
+//   },
+// });
 
 // const rsyncScript: string = `
 // #!/bin/bash
