@@ -30,7 +30,7 @@ apt-get install -y rsync
 rsync -avuhp --info=progress2 /mnt/src/ /mnt/dst
 `;
 
-const rsync = new Job('vm-101', {
+const rsync = new Job('vm-110', {
   metadata: {
     namespace: ns.metadata.name,
     annotations: {
@@ -50,7 +50,7 @@ const rsync = new Job('vm-101', {
           command: ['bash', '-c', rsyncScript],
           volumeMounts: [
             { name: 'src', mountPath: '/mnt/src' },
-            { name: 'dst', mountPath: '/mnt/dst', subPath: 'vms/vm-114-disk-0' },
+            { name: 'dst', mountPath: '/mnt/dst', subPath: 'vms/vm-110-disk-0' },
           ],
           resources: {
             requests: {
