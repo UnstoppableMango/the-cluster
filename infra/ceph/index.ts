@@ -95,12 +95,12 @@ const cluster = new crds.CephCluster(clusterName, {
             { name: 'sdd1' },
             { name: 'sde1' },
             { name: 'sdf1' },
-            // { name: 'sdg1' },
-            // { name: 'sdh1' },
-            // { name: 'sdi1' },
-            // { name: 'sdj1' },
-            // { name: 'sdk1' },
-            // { name: 'sdl1' },
+            { name: 'sdg1' },
+            { name: 'sdh1' },
+            { name: 'sdi1' },
+            { name: 'sdj1' },
+            { name: 'sdk1' },
+            { name: 'sdl1' },
             { name: 'sdm1' },
             { name: 'sdn1' },
             { name: 'sdo1' },
@@ -113,6 +113,14 @@ const cluster = new crds.CephCluster(clusterName, {
         {
           name: 'zeus',
           devices: [
+            { name: 'sdb1' },
+            { name: 'sdc1' },
+            { name: 'sdd1' },
+            { name: 'sde1' },
+            { name: 'sdf1' },
+            { name: 'sdg1' },
+            { name: 'sdh1' },
+            { name: 'sdi1' },
             { name: 'sdj1' },
             { name: 'sdk1' },
             { name: 'sdl1' },
@@ -313,6 +321,45 @@ const rbdClass = new StorageClass('rbd', {
   allowVolumeExpansion: true,
 }, {
   dependsOn: [cluster, defaultPool],
+  protect: true,
+});
+
+const defaultSsdPool = new crds.CephBlockPool('default-ssd', {
+  metadata: {
+    name: 'default-ssd',
+    namespace: ns.metadata.name,
+  },
+  spec: {
+    deviceClass: 'ssd',
+    failureDomain: 'host',
+    replicated: {
+      size: 1,
+      requireSafeReplicaSize: false,
+    },
+  },
+}, {
+  dependsOn: cluster,
+  protect: true,
+});
+
+const ssdRbdClass = new StorageClass('ssd-rbd', {
+  metadata: { name: 'ssd-rbd' },
+  provisioner: 'rook-ceph.rbd.csi.ceph.com',
+  parameters: {
+    clusterID: 'rook-ceph',
+    pool: 'default-ssd',
+    imageFormat: '2',
+    imageFeatures: 'layering',
+    'csi.storage.k8s.io/provisioner-secret-name': 'rook-csi-rbd-provisioner',
+    'csi.storage.k8s.io/provisioner-secret-namespace': 'rook-ceph',
+    'csi.storage.k8s.io/controller-expand-secret-name': 'rook-csi-rbd-provisioner',
+    'csi.storage.k8s.io/controller-expand-secret-namespace': 'rook-ceph',
+    'csi.storage.k8s.io/node-stage-secret-name': 'rook-csi-rbd-node',
+    'csi.storage.k8s.io/node-stage-secret-namespace': 'rook-ceph',
+  },
+  allowVolumeExpansion: true,
+}, {
+  dependsOn: [cluster, defaultSsdPool],
   protect: true,
 });
 
