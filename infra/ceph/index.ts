@@ -113,6 +113,14 @@ const cluster = new crds.CephCluster(clusterName, {
         {
           name: 'zeus',
           devices: [
+            { name: 'sdb1' },
+            { name: 'sdc1' },
+            { name: 'sdd1' },
+            { name: 'sde1' },
+            { name: 'sdf1' },
+            { name: 'sdg1' },
+            { name: 'sdh1' },
+            { name: 'sdi1' },
             { name: 'sdj1' },
             { name: 'sdk1' },
             { name: 'sdl1' },
