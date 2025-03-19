@@ -129,12 +129,18 @@ const test = new Pod('mounty', {
   },
 });
 
-// const plexConfig = new PersistentVolumeClaim('plex-config', {
-//   metadata: { namespace: ns.metadata.name },
-//   spec: {
-//     storageClassName: 'unsafe-rbd',
-//   },
-// });
+const plexConfig = new PersistentVolumeClaim('plex-config', {
+  metadata: { namespace: ns.metadata.name },
+  spec: {
+    storageClassName: 'ssd-rbd',
+    accessModes: ['ReadWriteOncePod'],
+    resources: {
+      requests: {
+        storage: '500Gi',
+      },
+    },
+  },
+});
 
 // const plex = new Chart('plex', {
 //   chart: 'plex-media-server',
