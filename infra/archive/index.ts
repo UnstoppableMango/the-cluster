@@ -1,5 +1,5 @@
 import { Job } from '@pulumi/kubernetes/batch/v1';
-import { Namespace, PersistentVolumeClaim } from '@pulumi/kubernetes/core/v1';
+import { Namespace, PersistentVolumeClaim, Pod } from '@pulumi/kubernetes/core/v1';
 
 const ns = new Namespace('archive', {
   metadata: { name: 'archive' },
@@ -18,6 +18,29 @@ const defaultPvc = new PersistentVolumeClaim('default', {
         storage: '1Ti',
       },
     },
+  },
+});
+
+const test = new Pod('mounty', {
+  metadata: { namespace: ns.metadata.name },
+  spec: {
+    containers: [{
+      name: 'shell',
+      image: 'ubuntu',
+      command: ['bash', '-c', '--'],
+      args: ['while true; do sleep 30; done;'],
+      volumeMounts: [
+        { name: 'default', mountPath: '/mnt' },
+      ],
+    }],
+    volumes: [
+      {
+        name: 'default',
+        persistentVolumeClaim: {
+          claimName: defaultPvc.metadata.name,
+        },
+      },
+    ],
   },
 });
 
