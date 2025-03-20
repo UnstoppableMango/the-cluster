@@ -85,6 +85,26 @@ const music = new PersistentVolumeClaim('music', {
   },
 }, { protect: true });
 
+const plexConfig = new PersistentVolumeClaim('plex-config', {
+  metadata: { namespace: ns.metadata.name },
+  spec: {
+    storageClassName: 'ssd-rbd',
+    accessModes: ['ReadWriteOncePod'],
+    resources: {
+      requests: {
+        storage: '500Gi',
+      },
+    },
+  },
+});
+
+const pvMigrate = new Chart('migrate', {
+  chart: '',
+  repositoryOpts: {
+    repo: '',
+  },
+});
+
 const test = new Pod('mounty', {
   metadata: { namespace: ns.metadata.name },
   spec: {
@@ -98,6 +118,7 @@ const test = new Pod('mounty', {
         { name: 'tv', mountPath: '/mnt/tv' },
         { name: 'anime', mountPath: '/mnt/anime' },
         { name: 'music', mountPath: '/mnt/music' },
+        { name: 'plex', mountPath: '/mnt/plex' },
       ],
     }],
     volumes: [
@@ -125,20 +146,13 @@ const test = new Pod('mounty', {
           claimName: music.metadata.name,
         },
       },
-    ],
-  },
-});
-
-const plexConfig = new PersistentVolumeClaim('plex-config', {
-  metadata: { namespace: ns.metadata.name },
-  spec: {
-    storageClassName: 'ssd-rbd',
-    accessModes: ['ReadWriteOncePod'],
-    resources: {
-      requests: {
-        storage: '500Gi',
+      {
+        name: 'plex',
+        persistentVolumeClaim: {
+          claimName: plexConfig.metadata.name,
+        },
       },
-    },
+    ],
   },
 });
 
