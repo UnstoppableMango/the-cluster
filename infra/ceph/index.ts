@@ -45,7 +45,7 @@ const cluster = new crds.CephCluster(clusterName, {
           memory: '512Mi',
         },
         limits: {
-          memory: '512Mi',
+          memory: '1Gi',
         },
       },
       osd: {
