@@ -421,7 +421,7 @@ const erasureCodedCephfs = new crds.CephFilesystem('erasure-coded', {
   },
   spec: {
     metadataPool: {
-      deviceClass: 'hdd',
+      deviceClass: 'ssd',
       replicated: { size: 2 },
     },
     dataPools: [
@@ -433,8 +433,8 @@ const erasureCodedCephfs = new crds.CephFilesystem('erasure-coded', {
       },
       {
         name: 'data',
-        failureDomain: 'osd',
         deviceClass: 'hdd',
+        failureDomain: 'osd',
         erasureCoded: {
           dataChunks: 2,
           codingChunks: 1,
@@ -449,7 +449,7 @@ const erasureCodedCephfs = new crds.CephFilesystem('erasure-coded', {
   },
 }, {
   dependsOn: cluster,
-  protect: true,
+  protect: false,
 });
 
 const ecCephfsClass = new StorageClass('ec-cephfs', {
@@ -476,7 +476,7 @@ const ecCephfsClass = new StorageClass('ec-cephfs', {
 export const storageClasses = [
   unsafeRbdClass.metadata.name,
   defaultCephfsClass.metadata.name,
-  ecCephfsClass.metadata.name,
+  // ecCephfsClass.metadata.name,
   rbdClass.metadata.name,
 ];
 
