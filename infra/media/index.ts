@@ -7,11 +7,24 @@ const ns = new Namespace('media', {
   metadata: { name: 'media' },
 });
 
-const movies = new PersistentVolumeClaim('movies', {
+const moviesTmp = new PersistentVolumeClaim('movies-tmp', {
   metadata: { namespace: ns.metadata.name },
   spec: {
     storageClassName: 'bulk',
     accessModes: ['ReadWriteOncePod'],
+    resources: {
+      requests: {
+        storage: '20Ti',
+      },
+    },
+  },
+}, { protect: false });
+
+const movies = new PersistentVolumeClaim('movies', {
+  metadata: { namespace: ns.metadata.name },
+  spec: {
+    storageClassName: 'ec-cephfs',
+    accessModes: ['ReadWriteMany'],
     resources: {
       requests: {
         storage: '20Ti',
@@ -33,11 +46,24 @@ const movies = new PersistentVolumeClaim('movies', {
 //   },
 // }, { protect: false });
 
-const tv = new PersistentVolumeClaim('tv', {
+const tvTmp = new PersistentVolumeClaim('tv-tmp', {
   metadata: { namespace: ns.metadata.name },
   spec: {
     storageClassName: 'bulk',
     accessModes: ['ReadWriteOncePod'],
+    resources: {
+      requests: {
+        storage: '20Ti',
+      },
+    },
+  },
+}, { protect: false });
+
+const tv = new PersistentVolumeClaim('tv', {
+  metadata: { namespace: ns.metadata.name },
+  spec: {
+    storageClassName: 'ec-cephfs',
+    accessModes: ['ReadWriteMany'],
     resources: {
       requests: {
         storage: '20Ti',
@@ -98,13 +124,6 @@ const plexConfig = new PersistentVolumeClaim('plex-config', {
   },
 });
 
-const pvMigrate = new Chart('migrate', {
-  chart: '',
-  repositoryOpts: {
-    repo: '',
-  },
-});
-
 const test = new Pod('mounty', {
   metadata: { namespace: ns.metadata.name },
   spec: {
@@ -114,26 +133,26 @@ const test = new Pod('mounty', {
       command: ['bash', '-c', '--'],
       args: ['while true; do sleep 30; done;'],
       volumeMounts: [
-        { name: 'movies', mountPath: '/mnt/movies' },
-        { name: 'tv', mountPath: '/mnt/tv' },
+        // { name: 'movies', mountPath: '/mnt/movies' },
+        // { name: 'tv', mountPath: '/mnt/tv' },
         { name: 'anime', mountPath: '/mnt/anime' },
         { name: 'music', mountPath: '/mnt/music' },
         { name: 'plex', mountPath: '/mnt/plex' },
       ],
     }],
     volumes: [
-      {
-        name: 'movies',
-        persistentVolumeClaim: {
-          claimName: movies.metadata.name,
-        },
-      },
-      {
-        name: 'tv',
-        persistentVolumeClaim: {
-          claimName: tv.metadata.name,
-        },
-      },
+      // {
+      //   name: 'movies',
+      //   persistentVolumeClaim: {
+      //     claimName: moviesTmp.metadata.name,
+      //   },
+      // },
+      // {
+      //   name: 'tv',
+      //   persistentVolumeClaim: {
+      //     claimName: tvTmp.metadata.name,
+      //   },
+      // },
       {
         name: 'anime',
         persistentVolumeClaim: {
