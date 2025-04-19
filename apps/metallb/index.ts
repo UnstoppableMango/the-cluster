@@ -49,7 +49,10 @@ if (stack === 'pinkdiamond') {
       namespace: ns.metadata.name,
     },
     spec: {
-      addresses: ['192.168.1.80-192.168.1.89'],
+      addresses: [
+        '192.168.1.30-192.168.1.65',
+        '192.168.1.80-192.168.1.89',
+      ],
       autoAssign: true,
       avoidBuggyIPs: true,
     },
