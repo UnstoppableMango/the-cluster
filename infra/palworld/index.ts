@@ -35,6 +35,7 @@ const service = new Service('palworld', {
     ports: [
       { name: 'server', port: 8211, protocol: 'UDP' },
       { name: 'query', port: 27015, protocol: 'UDP' },
+      { name: 'rest', port: 8212, protocol: 'UDP' },
     ],
   },
 });
@@ -79,7 +80,7 @@ const statefulSet = new StatefulSet('palworld', {
             { name: 'COMMUNITY', value: 'false' },
             { name: 'SERVER_NAME', value: 'THECLUSTER' },
             { name: 'SERVER_DESCRIPTION', value: 'THECLUSTER PalWorld server' },
-            { name: 'ALLOW_CONNECT_PLATFORM', value: 'Steam' },
+            { name: 'CROSSPLAY_PLATFORMS', value: '(Steam,Xbox,PS5,Mac)' },
             // {
             //   name: 'SERVER_PASSWORD',
             //   valueFrom: {
@@ -98,6 +99,7 @@ const statefulSet = new StatefulSet('palworld', {
                 },
               },
             },
+            { name: 'BASE_CAMP_WORKER_MAX_NUM', value: '20' },
           ],
           volumeMounts: [{
             name: 'data',
