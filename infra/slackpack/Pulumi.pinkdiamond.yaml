@@ -1,0 +1,4 @@
+config:
+  thecluster-slackpack:curseForge:
+    apiToken:
+      secure: AAABACYW6VtA0WaFUvxhz1DujHlwPtdI22nsi76xKegw6angf3OGZDcPABfRu/TbxHnA3r9OdsYUzzSLKWOz4Mi+k+0=

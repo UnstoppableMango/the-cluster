@@ -1,8 +1,25 @@
 import { StatefulSet } from '@pulumi/kubernetes/apps/v1';
-import { Namespace, PersistentVolumeClaim, Service, ServiceSpecType } from '@pulumi/kubernetes/core/v1';
+import { Namespace, PersistentVolumeClaim, Secret, Service, ServiceSpecType } from '@pulumi/kubernetes/core/v1';
+import { Config } from '@pulumi/pulumi';
+
+interface CurseForgeConfig {
+  apiToken: string;
+}
+
+const config = new Config();
+const curseForge = config.requireSecretObject<CurseForgeConfig>('curseForge');
 
 const ns = new Namespace('slackpack', {
   metadata: { name: 'slackpack' },
+});
+
+const apiTokenKey = 'CF_API_KEY';
+
+const secret = new Secret('slackpack', {
+  metadata: { namespace: ns.metadata.name },
+  stringData: {
+    [apiTokenKey]: curseForge.apiToken,
+  },
 });
 
 const svc = new Service('server', {
@@ -32,6 +49,27 @@ const modsPvc = new PersistentVolumeClaim('mods', {
   },
 });
 
+// const mounty = new Pod('mounty', {
+//   metadata: { namespace: ns.metadata.name },
+//   spec: {
+//     containers: [{
+//       name: 'mounty',
+//       image: 'ubuntu:latest',
+//       command: ['sh', '-c', 'sleep infinity'],
+//       volumeMounts: [{
+//         name: 'mods',
+//         mountPath: '/mods',
+//       }],
+//     }],
+//     volumes: [{
+//       name: 'mods',
+//       persistentVolumeClaim: {
+//         claimName: modsPvc.metadata.name,
+//       },
+//     }],
+//   },
+// });
+
 const sts = new StatefulSet('slackpack', {
   metadata: { namespace: ns.metadata.name },
   spec: {
@@ -50,20 +88,41 @@ const sts = new StatefulSet('slackpack', {
       spec: {
         containers: [{
           name: 'server',
-          image: 'itzg/minecraft-server:java24-graalvm',
+          image: 'itzg/minecraft-server:stable',
+          imagePullPolicy: 'Always',
           ports: [{
             name: 'minecraft',
             containerPort: 25565,
           }],
           env: [
             { name: 'EULA', value: 'true' },
-            { name: 'TYPE', value: 'CURSEFORGE' },
-            { name: 'CF_SERVER_MOD', value: '/modpacks/Slack Pack.zip' },
+            { name: 'MODPACK_PLATFORM', value: 'AUTO_CURSEFORGE' },
+            {
+              name: 'CF_API_KEY',
+              valueFrom: {
+                secretKeyRef: {
+                  name: secret.metadata.name,
+                  key: apiTokenKey
+                },
+              },
+            },
+            { name: 'CF_MODPACK_ZIP', value: '/modpacks/Slack Pack.zip' },
+            { name: 'CF_SLUG', value: 'custom' },
           ],
           volumeMounts: [
-            { name: 'mods', mountPath: '/modpacks' },
+            { name: 'mods', mountPath: '/modpacks', readOnly: true },
             { name: 'data', mountPath: '/data' },
           ],
+          resources: {
+            requests: {
+              cpu: '4',
+              memory: '4Gi',
+            },
+            limits: {
+              cpu: '8',
+              memory: '16Gi',
+            },
+          },
         }],
         volumes: [{
           name: 'mods',
