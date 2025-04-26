@@ -96,6 +96,9 @@ const sts = new StatefulSet('slackpack', {
           }],
           env: [
             { name: 'EULA', value: 'true' },
+            { name: 'VERSION', value: '1.21.1' },
+            { name: 'INIT_MEMORY', value: '4G' },
+            { name: 'MAX_MEMORY', value: '16G' },
             { name: 'MODPACK_PLATFORM', value: 'AUTO_CURSEFORGE' },
             {
               name: 'CF_API_KEY',
@@ -106,8 +109,10 @@ const sts = new StatefulSet('slackpack', {
                 },
               },
             },
-            { name: 'CF_MODPACK_ZIP', value: '/modpacks/Slack Pack.zip' },
-            { name: 'CF_SLUG', value: 'custom' },
+            { name: 'CF_PAGE_URL', value: 'https://www.curseforge.com/minecraft/modpacks/all-the-mods-10' },
+            // { name: 'CF_MODPACK_ZIP', value: '/modpacks/Slack Pack.zip' },
+            // { name: 'CF_MODPACK_MANIFEST', value: '/modpacks/manifest.json' },
+            // { name: 'CF_SLUG', value: 'custom' },
           ],
           volumeMounts: [
             { name: 'mods', mountPath: '/modpacks', readOnly: true },
@@ -115,11 +120,11 @@ const sts = new StatefulSet('slackpack', {
           ],
           resources: {
             requests: {
-              cpu: '4',
+              cpu: '6',
               memory: '4Gi',
             },
             limits: {
-              cpu: '8',
+              cpu: '16',
               memory: '16Gi',
             },
           },
