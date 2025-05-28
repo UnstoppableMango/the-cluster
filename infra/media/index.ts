@@ -1,7 +1,8 @@
 import { Job } from '@pulumi/kubernetes/batch/v1';
-import { Namespace, PersistentVolumeClaim, Pod } from '@pulumi/kubernetes/core/v1';
+import { Namespace, PersistentVolumeClaim, Pod, Secret } from '@pulumi/kubernetes/core/v1';
 import { Wireguard, WireguardPeer } from './crds/nodejs/vpn/v1alpha1';
 import { Chart } from '@pulumi/kubernetes/helm/v4';
+import { Config } from '@pulumi/pulumi';
 
 const ns = new Namespace('media', {
   metadata: { name: 'media' },
@@ -124,35 +125,116 @@ const plexConfig = new PersistentVolumeClaim('plex-config', {
   },
 });
 
-const test = new Pod('mounty', {
+// const test = new Pod('mounty', {
+//   metadata: { namespace: ns.metadata.name },
+//   spec: {
+//     containers: [{
+//       name: 'shell',
+//       image: 'ubuntu',
+//       command: ['bash', '-c', '--'],
+//       args: ['while true; do sleep 30; done;'],
+//       volumeMounts: [
+//         // { name: 'movies', mountPath: '/mnt/movies' },
+//         // { name: 'tv', mountPath: '/mnt/tv' },
+//         { name: 'anime', mountPath: '/mnt/anime' },
+//         { name: 'music', mountPath: '/mnt/music' },
+//         { name: 'plex', mountPath: '/mnt/plex' },
+//       ],
+//     }],
+//     volumes: [
+//       // {
+//       //   name: 'movies',
+//       //   persistentVolumeClaim: {
+//       //     claimName: moviesTmp.metadata.name,
+//       //   },
+//       // },
+//       // {
+//       //   name: 'tv',
+//       //   persistentVolumeClaim: {
+//       //     claimName: tvTmp.metadata.name,
+//       //   },
+//       // },
+//       // {
+//       //   name: 'anime',
+//       //   persistentVolumeClaim: {
+//       //     claimName: anime.metadata.name,
+//       //   },
+//       // },
+//       // {
+//       //   name: 'music',
+//       //   persistentVolumeClaim: {
+//       //     claimName: music.metadata.name,
+//       //   },
+//       // },
+//       // {
+//       //   name: 'plex',
+//       //   persistentVolumeClaim: {
+//       //     claimName: plexConfig.metadata.name,
+//       //   },
+//       // },
+//     ],
+//   },
+// });
+
+const config = new Config();
+
+const plexSecret = new Secret('plex', {
   metadata: { namespace: ns.metadata.name },
-  spec: {
-    containers: [{
-      name: 'shell',
-      image: 'ubuntu',
-      command: ['bash', '-c', '--'],
-      args: ['while true; do sleep 30; done;'],
-      volumeMounts: [
-        // { name: 'movies', mountPath: '/mnt/movies' },
-        // { name: 'tv', mountPath: '/mnt/tv' },
-        { name: 'anime', mountPath: '/mnt/anime' },
-        { name: 'music', mountPath: '/mnt/music' },
-        { name: 'plex', mountPath: '/mnt/plex' },
-      ],
-    }],
-    volumes: [
-      // {
-      //   name: 'movies',
-      //   persistentVolumeClaim: {
-      //     claimName: moviesTmp.metadata.name,
-      //   },
-      // },
-      // {
-      //   name: 'tv',
-      //   persistentVolumeClaim: {
-      //     claimName: tvTmp.metadata.name,
-      //   },
-      // },
+  stringData: {
+    claim: config.requireSecret('plexClaim'),
+  },
+});
+
+const plex = new Chart('plex', {
+  chart: 'plex-media-server',
+  repositoryOpts: {
+    repo: 'https://raw.githubusercontent.com/plexinc/pms-docker/gh-pages',
+  },
+  name: 'plex',
+  namespace: ns.metadata.name,
+  values: {
+    pms: {
+      configExistingClaim: plexConfig.metadata.name,
+      claimSecret: {
+        name: plexSecret.metadata.name,
+        key: 'claim',
+        // I think this is a bug in the chart
+        // https://github.com/plexinc/pms-docker/blob/master/charts/plex-media-server/templates/statefulset.yaml
+        value: 'blah',
+      },
+      resources: {
+        limits: {
+          cpu: '16',
+          memory: '32Gi'
+        },
+        requests: {
+          cpu: '4',
+          memory: '4Gi',
+        },
+      },
+    },
+    service: {
+      type: 'LoadBalancer',
+    },
+    extraVolumeMounts: [
+      { name: 'movies', mountPath: '/mnt/movies' },
+      { name: 'tv', mountPath: '/mnt/tv' },
+      { name: 'anime', mountPath: '/mnt/anime' },
+      { name: 'music', mountPath: '/mnt/music' },
+    ],
+    extraVolumes: [
+      {
+        name: 'movies',
+        persistentVolumeClaim: {
+          claimName: moviesTmp.metadata.name,
+        },
+      },
+      {
+        name: 'tv',
+        persistentVolumeClaim: {
+          claimName: tv.metadata.name,
+        },
+      },
       {
         name: 'anime',
         persistentVolumeClaim: {
@@ -165,22 +247,9 @@ const test = new Pod('mounty', {
           claimName: music.metadata.name,
         },
       },
-      {
-        name: 'plex',
-        persistentVolumeClaim: {
-          claimName: plexConfig.metadata.name,
-        },
-      },
     ],
   },
 });
-
-// const plex = new Chart('plex', {
-//   chart: 'plex-media-server',
-//   repositoryOpts: {
-//     repo: 'https://raw.githubusercontent.com/plexinc/pms-docker/gh-pages',
-//   },
-// });
 
 // const rsyncScript: string = `
 // #!/bin/bash
