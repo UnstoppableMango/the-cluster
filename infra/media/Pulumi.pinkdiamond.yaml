@@ -1,3 +1,5 @@
 config:
   thecluster-media:hosts:
     internal: media.lan.thecluster.io
+  thecluster-media:plexClaim:
+    secure: AAABAAj6W9HuBxAgsUDhW9SRovyNQbLT2rmc7WDjJbhxoK1mIYCbB7NtuhIwBQAg9Bn7cbBTvIgx9g==
