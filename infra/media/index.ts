@@ -213,6 +213,13 @@ const plex = new Chart('plex', {
         },
       },
     },
+    extraEnv: {
+      HOSTNAME: 'plex',
+      TZ: 'America/Chicago',
+      // What do the numbers mean
+      // PLEX_UPDATE_CHANNEL: "5"
+      ALLOWED_NETWORKS: '192.168.1.1/24',
+    },
     service: {
       type: 'LoadBalancer',
     },
