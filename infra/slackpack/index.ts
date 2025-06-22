@@ -125,7 +125,7 @@ const sts = new StatefulSet('slackpack', {
             },
             limits: {
               cpu: '16',
-              memory: '32Gi',
+              memory: '16Gi',
             },
           },
         }],
