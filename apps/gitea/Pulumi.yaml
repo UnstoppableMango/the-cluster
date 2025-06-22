@@ -1,0 +1,7 @@
+name: thecluster-gitea
+runtime: nodejs
+description: Gitea install for THECLUSTER
+config:
+  versions:
+    value:
+      gitea: 1.24.2
