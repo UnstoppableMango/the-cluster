@@ -125,7 +125,7 @@ const sts = new StatefulSet('slackpack', {
             },
             limits: {
               cpu: '16',
-              memory: '16Gi',
+              memory: '32Gi',
             },
           },
         }],
@@ -141,7 +141,7 @@ const sts = new StatefulSet('slackpack', {
     volumeClaimTemplates: [{
       metadata: { name: 'data' },
       spec: {
-        accessModes: ['ReadWriteOncePod'],
+        accessModes: ['ReadWriteOnce'],
         storageClassName: 'ssd-rbd',
         resources: {
           requests: {
