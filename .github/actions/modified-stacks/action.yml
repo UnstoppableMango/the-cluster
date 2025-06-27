@@ -1,8 +1,0 @@
-name: Modified Stacks
-description: Output an object containing modified stacks as boolean fields
-outputs:
-  stacks:
-    description: All stacks
-runs:
-  using: node20
-  main: dist/index.js

@@ -3,7 +3,6 @@
         "golang.go",
         "ms-kubernetes-tools.vscode-kubernetes-tools",
         "tim-koehler.helm-intellisense",
-        "foxundermoon.shell-format",
-        "bufbuild.vscode-buf"
+        "foxundermoon.shell-format"
     ]
 }

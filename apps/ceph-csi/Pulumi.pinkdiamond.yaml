@@ -1,9 +1,0 @@
-config:
-  thecluster-ceph-csi:cephfs:
-    adminId: thecluster-cephfs
-    adminKey:
-      secure: AAABADqLoj1CU7oRkM40GMbTEnQO33aBcGMDlUubmncwZqjaARVj4Sw6j3mzoy9FhI5cPNwOWT15AeQUJdN3MUoPmHNpMQEB
-  thecluster-ceph-csi:rbd:
-    userId: thecluster-rbd
-    userKey:
-      secure: AAABANM+QlkRWCr+k2yDWKtizBn9D9+TkuieGfYmN/Dy1Yl6rdKzj+lQKMXGXNVVNOFwU81GGGEVQE9UEUk+IhJaAVZDtmnq

@@ -1,5 +1,0 @@
-apiVersion: v2
-name: cappx
-description: Cluster API Provider Proxmox install for THECLUSTER
-type: application
-version: 0.1.0

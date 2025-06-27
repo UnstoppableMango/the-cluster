@@ -1,7 +1,0 @@
-name: thecluster-capvc
-runtime: nodejs
-description: Cluster API Provider VCluster install for THECLUSTER
-config:
-  versions:
-    value:
-      capvc: v0.1.3 # renovate depName=loft-sh/cluster-api-provider-vcluster

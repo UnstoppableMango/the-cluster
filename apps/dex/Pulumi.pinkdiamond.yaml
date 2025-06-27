@@ -1,9 +1,0 @@
-config:
-  thecluster-dex:internalHost: dex.lan.thecluster.io
-  thecluster-dex:publicHost: dex.thecluster.io
-  thecluster-dex:hosts:
-    external: dex.thecluster.io
-    internal: dex.lan.thecluster.io
-    aliases:
-      external: []
-      internal: []

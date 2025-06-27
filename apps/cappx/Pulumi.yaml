@@ -1,8 +1,0 @@
-name: thecluster-cappx
-runtime: nodejs
-description: Cluster API Provider Proxmox install for THECLUSTER
-config:
-  versions:
-    value:
-      cappx: v0.3.4 # renovate depName=k8s-proxmox/cluster-api-provider-proxmox
-      uefi: sha-22238b4

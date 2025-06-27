@@ -2,16 +2,10 @@
   "name": "thecluster-cert-manager",
   "main": "index.ts",
   "dependencies": {
-    "@pulumi/kubernetes": "^4.21.1",
-    "@pulumi/pulumi": "^3.153.0",
-    "@unstoppablemango/thecluster": "^1.0.0",
-    "@unstoppablemango/thecluster-crds": "^0.1.0"
+    "@pulumi/kubernetes": "^4.23.0",
+    "@pulumi/pulumi": "^3.180.0"
   },
   "devDependencies": {
-    "@types/node": "^20.10.4"
-  },
-  "workspaces": [
-    "../../lib/crds/nodejs",
-    "../../lib/nodejs"
-  ]
+    "@types/node": "^22.15.33"
+  }
 }

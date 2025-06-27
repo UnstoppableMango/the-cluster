@@ -2,13 +2,10 @@
   "name": "thecluster-actions-runner-controller",
   "main": "index.ts",
   "dependencies": {
-    "@pulumi/kubernetes": "^4.6.1",
-    "@pulumi/pulumi": "^3.97.0",
-    "@pulumi/random": "^4.15.0",
-    "@unstoppablemango/thecluster": "file:../../lib/nodejs",
-    "@unstoppablemango/thecluster-crds": "file:../../lib/crds/nodejs"
+    "@pulumi/kubernetes": "^4.23.0",
+    "@pulumi/pulumi": "^3.180.0"
   },
   "devDependencies": {
-    "@types/node": "^20.10.4"
+    "@types/node": "^22.15.33"
   }
 }

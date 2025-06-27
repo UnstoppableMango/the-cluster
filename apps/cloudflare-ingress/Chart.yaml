@@ -1,9 +1,0 @@
-apiVersion: v2
-name: cloudflare-ingress-controller
-description: Cloudflare Ingress Controller install for THECLUSTER
-type: application
-version: 0.1.0
-dependencies:
-  - name: cloudflare-tunnel-ingress-controller
-    repository: https://helm.strrl.dev/
-    version: 0.0.12

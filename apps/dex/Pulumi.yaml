@@ -1,7 +1,0 @@
-name: thecluster-dex
-runtime: nodejs
-description: Dex install for THECLUSTER
-config:
-  versions:
-    value:
-      dex: v2.39.1 # renovate depName=dexidp/dex

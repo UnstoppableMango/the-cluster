@@ -1,7 +1,0 @@
-name: thecluster-ceph-csi
-runtime: nodejs
-description: Ceph CSI install for THECLUSTER
-config:
-  versions:
-    value:
-      externalSnapshotter: v7.0.2 # renovate depName=kubernetes-csi/external-snapshotter

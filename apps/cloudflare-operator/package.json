@@ -2,11 +2,10 @@
   "name": "thecluster-cloudflare-operator",
   "main": "index.ts",
   "dependencies": {
-    "@pulumi/kubernetes": "^4.7.1",
-    "@pulumi/pulumi": "^3.104.2",
-    "@unstoppablemango/thecluster": "file:../../lib/nodejs"
+    "@pulumi/kubernetes": "^4.23.0",
+    "@pulumi/pulumi": "^3.180.0"
   },
   "devDependencies": {
-    "@types/node": "^20.11.16"
+    "@types/node": "^22.15.33"
   }
 }

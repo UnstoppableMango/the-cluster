@@ -1,9 +1,0 @@
-apiVersion: v2
-name: cert-manager-csi-driver
-description: Cert Manager CSI Driver install for THECLUSTER
-type: application
-version: 0.1.0
-dependencies:
-- name: cert-manager-csi-driver
-  repository: https://charts.jetstack.io
-  version: v0.10.1
