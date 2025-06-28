@@ -1,8 +1,0 @@
-name: thecluster-kong
-runtime: nodejs
-description: Kong install for THECLUSTER
-config:
-  versions:
-    value:
-      # https://docs.konghq.com/gateway-operator/1.1.x/install/
-      gatewayOperator: v1.1.0 # Not sure if there's a public tag for this...

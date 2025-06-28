@@ -1,5 +1,4 @@
 import * as k8s from '@pulumi/kubernetes';
-import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { stack, loadBalancerClass } from './config';
 
 const ns = new k8s.core.v1.Namespace('metallb-system', {
@@ -13,27 +12,28 @@ const ns = new k8s.core.v1.Namespace('metallb-system', {
       'pod-security.kubernetes.io/warn': 'privileged',
     },
   },
-}, { provider });
+});
 
-const chart = new k8s.helm.v3.Chart('metallb', {
-  path: './',
+const chart = new k8s.helm.v4.Chart('metallb', {
+  chart: 'metallb',
+  version: '0.14.8',
+  repositoryOpts: {
+    repo: 'https://metallb.github.io/metallb',
+  },
   namespace: ns.metadata.name,
-  skipCRDRendering: false,
   values: {
-    metallb: {
-      // The CRDs are templated and a pain to install other ways
-      crds: { enabled: true },
-      // Doesn't like to assign IPs the normal way whe LB class is enabled
-      // loadBalancerClass,
-      controller: {
-        priorityClassName: 'system-cluster-critical',
-      },
-      speaker: {
-        priorityClassName: 'system-cluster-critical',
-      },
+    // The CRDs are templated and a pain to install other ways
+    crds: { enabled: true },
+    // Doesn't like to assign IPs the normal way whe LB class is enabled
+    // loadBalancerClass,
+    controller: {
+      priorityClassName: 'system-cluster-critical',
+    },
+    speaker: {
+      priorityClassName: 'system-cluster-critical',
     },
   },
-}, { provider });
+});
 
 let addresses: string | undefined = undefined;
 let pool: k8s.apiextensions.CustomResource | undefined = undefined;
@@ -57,7 +57,7 @@ if (stack === 'pinkdiamond') {
       avoidBuggyIPs: true,
     },
   }, {
-    provider, dependsOn: chart.ready,
+    dependsOn: chart.resources,
     // Would be nice to find a way to ignore just the aggregated manager role rules, not all rules
     ignoreChanges: [
       'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s
@@ -76,7 +76,7 @@ if (stack === 'pinkdiamond') {
       ipAddressPools: [pool.metadata.name],
     },
   }, {
-    provider, dependsOn: chart.ready,
+    dependsOn: chart.resources,
     // Would be nice to find a way to ignore just the aggregated manager role rules, not all rules
     ignoreChanges: [
       'spec.conversion.webhook.clientConfig.caBundle', // cert-manager injects `caBundle`s

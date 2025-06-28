@@ -1,9 +1,0 @@
-apiVersion: v2
-name: postgresql
-description: PostgreSQL install for THECLUSTER
-type: application
-version: 0.1.0
-dependencies:
-- name: postgresql
-  repository: oci://registry-1.docker.io/bitnamicharts
-  version: 15.5.30

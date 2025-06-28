@@ -1,8 +1,0 @@
-name: thecluster-plex
-runtime: nodejs
-description: Plex install for THECLUSTER
-config:
-  versions:
-    value:
-      plex: plexpass
-      kubePlex: sha-45cb6ba # renovate depName=ghcr.io/ressu/kube-plex dataource=docker

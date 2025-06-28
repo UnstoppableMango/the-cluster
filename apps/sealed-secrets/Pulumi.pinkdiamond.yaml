@@ -1,4 +1,0 @@
-config:
-  thecluster-sealed-secrets:hosts:
-    external: sealed-secrets.thecluster.io
-    internal: sealed-secrets.lan.thecluster.io

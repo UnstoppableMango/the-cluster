@@ -1,11 +1,7 @@
-import { ConfigMap, Namespace, Secret } from '@pulumi/kubernetes/core/v1';
+import { interpolate } from '@pulumi/pulumi';
+import { ConfigMap, Secret } from '@pulumi/kubernetes/core/v1';
 import { ClusterTunnel } from '@unstoppablemango/thecluster-crds/networking/v1alpha1';
-import { provider, cloudflare, caPem, versions, operatorNamespace, apiSecretsName, tunnels } from './config';
-import { interpolate, output } from '@pulumi/pulumi';
-
-const ns = new Namespace('cloudflare-tunnels', {
-  metadata: { name: 'cloudflare-tunnels' },
-}, { provider });
+import { cloudflare, caPem, versions, operatorNamespace, apiSecretsName, tunnels } from './config';
 
 const kubeRootCa = ConfigMap.get('kube-root-ca.crt', 'kube-system/kube-root-ca.crt');
 
@@ -18,10 +14,10 @@ const secret = new Secret('origin-ca-pool', {
     'kube-root-ca.crt': kubeRootCa.data.apply(x => x['ca.crt']),
     'tls.crt': caPem,
   },
-}, { provider });
+});
 
 const credentialsId = interpolate`${operatorNamespace}/${apiSecretsName}`;
-const credentials = Secret.get('credentials', credentialsId, { provider });
+const credentials = Secret.get('credentials', credentialsId);
 
 tunnels.map(t => new ClusterTunnel(t.name, {
   metadata: { name: t.name },
@@ -39,6 +35,6 @@ tunnels.map(t => new ClusterTunnel(t.name, {
       secret: credentials.metadata.name,
     },
   },
-}, { provider }));
+}));
 
 export const tunnelNames = tunnels.map(x => x.name);

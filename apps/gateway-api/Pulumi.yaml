@@ -1,8 +1,0 @@
-name: thecluster-gateway-api
-runtime: nodejs
-description: Gateway API install for THECLUSTER
-config:
-  channel: experimental
-  versions:
-    value:
-      gatewayApi: v1.1.0 # renovate depName=kubernetes-sigs/gateway-api

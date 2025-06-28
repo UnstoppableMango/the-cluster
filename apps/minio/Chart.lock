@@ -1,9 +1,0 @@
-dependencies:
-- name: tenant
-  repository: https://operator.min.io
-  version: 6.0.3
-- name: oauth2-proxy
-  repository: https://oauth2-proxy.github.io/manifests
-  version: 7.7.19
-digest: sha256:52fc8fcd0ce77ab45ccd5167adf16cf16c05dfff308980d9d05ef4e49e258160
-generated: "2024-09-13T19:33:05.317589905Z"

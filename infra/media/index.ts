@@ -1,4 +1,4 @@
-import { Namespace, PersistentVolumeClaim, Pod, Secret } from '@pulumi/kubernetes/core/v1';
+import { Namespace, PersistentVolumeClaim } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v4';
 
 const ns = new Namespace('media', {

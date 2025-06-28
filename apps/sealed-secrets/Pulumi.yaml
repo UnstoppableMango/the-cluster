@@ -1,7 +1,0 @@
-name: thecluster-sealed-secrets
-runtime: nodejs
-description: Sealed Secrets install for THECLUSTER
-config:
-  versions:
-    value:
-      sealedSecrets: v0.26.3 # renovate depName=bitnami-labs/sealed-secrets

@@ -1,9 +1,0 @@
-apiVersion: v2
-name: kong
-description: Kong install for THECLUSTER
-type: application
-version: 0.1.0
-dependencies:
-- name: kong
-  repository: https://charts.konghq.com
-  version: 2.41.1

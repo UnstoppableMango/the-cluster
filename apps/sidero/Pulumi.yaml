@@ -1,8 +1,0 @@
-name: thecluster-sidero
-runtime: nodejs
-description: Sidero install for THECLUSTER
-config:
-  versions:
-    value:
-      sidero: v0.6.3 # renovate depName=siderolabs/sidero
-      uefi: sha-22238b4

@@ -1,7 +1,0 @@
-name: thecluster-external-dns
-runtime: nodejs
-description: External DNS install for THECLUSTER
-config:
-  versions:
-    value:
-      externalDns: v0.14.2 # renovate depName=kubernetes-sigs/external-dns

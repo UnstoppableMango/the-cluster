@@ -1,4 +1,0 @@
-config:
-  thecluster-postgresql:hosts:
-    external: pg.thecluster.io
-    internal: pg.lan.thecluster.io

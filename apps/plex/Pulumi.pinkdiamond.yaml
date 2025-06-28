@@ -1,9 +1,0 @@
-config:
-  thecluster-plex:claimToken:
-    secure: AAABAFwml6ynCuhiDEjqumjdp1fxbALbKmQUvTxapsd75IXJ/xSwMbTtsXoCzn4UvJiiZgoIKHTFLA==
-  thecluster-plex:hosts:
-    aliases:
-      external: []
-      internal: ['media.lan.thecluster.io']
-    external: plex.thecluster.io
-    internal: plex.lan.thecluster.io

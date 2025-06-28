@@ -1,11 +1,14 @@
 import * as k8s from '@pulumi/kubernetes';
-import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
 
 const ns = new k8s.core.v1.Namespace('metrics-server', {
   metadata: { name: 'metrics-server' },
-}, { provider });
+});
 
-const chart = new k8s.helm.v3.Chart('metrics-server', {
-  path: './',
+const chart = new k8s.helm.v4.Chart('metrics-server', {
+  chart: 'metrics-server',
+  version: '3.12.1',
+  repositoryOpts: {
+    repo: 'https://kubernetes-sigs.github.io/metrics-server/',
+  },
   namespace: ns.metadata.name,
-}, { provider });
+});

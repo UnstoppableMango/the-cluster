@@ -1,9 +1,0 @@
-name: thecluster-postgresql
-runtime: nodejs
-description: PostgreSQL install for THECLUSTER
-config:
-  versions:
-    value:
-      bitnamiPostgresql: 16.3.0-debian-12-r12 # renovate depName=bitnami/postgresql datasource=docker
-      bitnamiExporter: 0.15.0-debian-12-r34 # renovate depName=bitnami/postgres-exporter datasource=docker
-      bitnamiOsShell: 11-debian-11-r92 # renovate depName=bitnami/os-shell datasoruce=docker

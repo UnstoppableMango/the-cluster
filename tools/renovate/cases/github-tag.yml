@@ -1,2 +1,0 @@
-someDep: 1f546c2c36b80c1268d758fac3e81190581949ea # renovate depName=test/repo tag=testTag
-someDep2: 2f546c2c36b80c1268d758fac3e81190581949ae # renovate depName=test/repo2 tag=testTag2 extractVersion=rosequartz\/v2
