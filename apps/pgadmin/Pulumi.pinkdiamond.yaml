@@ -1,6 +1,0 @@
-config:
-  thecluster-pgadmin:email:
-    secure: AAABAKzJg3frTIiC88fLsITj0ppJoSPUmaBehbuufEeR5078QBlKbWFfLxnlwCrmqykFRlZaew==
-  thecluster-pgadmin:hosts:
-    external: pgadmin.thecluster.io
-    internal: pgadmin.lan.thecluster.io

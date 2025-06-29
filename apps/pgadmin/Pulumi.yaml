@@ -1,7 +1,0 @@
-name: thecluster-pgadmin
-runtime: nodejs
-description: pgAdmin4 install for THECLUSTER
-config:
-  versions:
-    value:
-      pgadmin: '7.8' # renovate depName=dpage/pgadmin4 datasource=docker

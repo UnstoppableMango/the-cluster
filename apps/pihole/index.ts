@@ -1,12 +1,11 @@
-import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
-import { apps, ingresses, provider, storageClasses } from '@unstoppablemango/thecluster/cluster/from-stack';
+import { apps, ingresses, storageClasses } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { hostname, ip, versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('pihole', {
   metadata: { name: 'pihole' },
-}, { provider });
+});
 
 const adminPassword = new random.RandomPassword('admin', {
   length: 32,
@@ -20,10 +19,14 @@ const adminPasswordSecret = new k8s.core.v1.Secret('pihole', {
   stringData: {
     adminPassword: adminPassword.result,
   },
-}, { provider });
+});
 
-const chart = new k8s.helm.v3.Chart('pihole', {
-  path: './',
+const chart = new k8s.helm.v4.Chart('pihole', {
+  chart: 'pihole',
+  version: '2.26.1',
+  repositoryOpts: {
+    repo: 'https://mojo2600.github.io/pihole-kubernetes/',
+  },
   namespace: ns.metadata.name,
   // https://artifacthub.io/packages/helm/mojo2600/pihole#values
   values: {
@@ -91,11 +94,12 @@ const chart = new k8s.helm.v3.Chart('pihole', {
       },
     },
   },
-  transformations: [(obj: any, opts: pulumi.CustomResourceOptions) => {
-    if (obj.kind !== 'Ingress') return;
-    obj.spec.rules[0].http.paths[0].pathType = 'Prefix';
-  }],
-}, { provider });
+  // TODO
+  // transformations: [(obj: any, opts: pulumi.CustomResourceOptions) => {
+  //   if (obj.kind !== 'Ingress') return;
+  //   obj.spec.rules[0].http.paths[0].pathType = 'Prefix';
+  // }],
+});
 
 export { ip, hostname };
 export const password = adminPassword.result;

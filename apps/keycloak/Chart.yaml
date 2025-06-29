@@ -1,9 +1,0 @@
-apiVersion: v2
-name: keycloak
-description: Keycloak install for THECLUSTER
-type: application
-version: 0.1.0
-dependencies:
-  - name: keycloak
-    repository: oci://registry-1.docker.io/bitnamicharts
-    version: 22.2.4

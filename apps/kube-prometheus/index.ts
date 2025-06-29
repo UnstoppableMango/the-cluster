@@ -5,7 +5,7 @@ const ns = new Namespace('kube-prometheus-stack', {
   metadata: { name: 'kube-prometheus-stack' },
 });
 
-const release = new Chart('stack', {
+const chart = new Chart('stack', {
   namespace: ns.metadata.name,
   chart: 'kube-prometheus-stack',
   repositoryOpts: {

@@ -2,14 +2,14 @@
   "name": "thecluster-pihole",
   "main": "index.ts",
   "dependencies": {
-    "@pulumi/kubernetes": "^4.5.5",
-    "@pulumi/pulumi": "^3.95.0",
+    "@pulumi/kubernetes": "^4.23.0",
+    "@pulumi/pulumi": "^3.181.0",
     "@pulumi/random": "^4.14.0",
     "@unmango/pulumi-pihole": "^0.2.0",
     "@unstoppablemango/thecluster": "file:../../lib/nodejs",
     "@unstoppablemango/thecluster-crds": "file:../../lib/crds/nodejs"
   },
   "devDependencies": {
-    "@types/node": "^20.10.3"
+    "@types/node": "^22.15.34"
   }
 }

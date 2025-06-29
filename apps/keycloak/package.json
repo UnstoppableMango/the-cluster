@@ -2,13 +2,13 @@
   "name": "thecluster-keycloak",
   "main": "index.ts",
   "dependencies": {
-    "@pulumi/kubernetes": "^4.5.4",
-    "@pulumi/pulumi": "^3.94.2",
+    "@pulumi/kubernetes": "^4.23.0",
+    "@pulumi/pulumi": "^3.181.0",
     "@pulumi/random": "^4.14.0",
     "@unstoppablemango/thecluster": "file:../../lib/nodejs",
     "@unstoppablemango/thecluster-crds": "file:../../lib/crds/nodejs"
   },
   "devDependencies": {
-    "@types/node": "^20.10.0"
+    "@types/node": "^22.15.34"
   }
 }
