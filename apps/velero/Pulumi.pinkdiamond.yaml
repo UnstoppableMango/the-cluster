@@ -1,7 +1,0 @@
-config:
-  thecluster-velero:backblaze:
-    accessKey: 00231686586ff350000000002
-    applicationKey:
-      secure: AAABAFUIwuDS4iHvrSRO81zhHTO6EKFWelZa90QdgWdCE8oFFOXo4aaZaMS1/1H3Dx6JtS0FWonY4JWt+K36
-    bucketName: thecluster-velero
-    keyName: pulumi-thecluster-velero

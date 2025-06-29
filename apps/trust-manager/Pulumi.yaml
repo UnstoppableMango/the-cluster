@@ -1,8 +1,0 @@
-name: thecluster-trust-manager
-runtime: nodejs
-description: Trust Manager install for THECLUSTER
-config:
-  versions:
-    value:
-      trustManager: v0.16.0 # renovate depName=jetstack/trust-manager datasource=docker
-  zoneName: thecluster.io
