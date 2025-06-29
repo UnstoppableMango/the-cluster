@@ -1,7 +1,0 @@
-name: thecluster-minio
-runtime: nodejs
-description: Minio install for THECLUSTER
-config:
-  versions:
-    value:
-      minio: RELEASE.2023-11-15T20-43-25Z # renovate depName=quay.io/minio/minio datasource=docker

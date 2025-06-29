@@ -1,3 +1,0 @@
-config:
-  thecluster-media:hosts:
-    internal: media.lan.thecluster.io

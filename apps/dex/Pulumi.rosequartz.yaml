@@ -1,5 +1,0 @@
-config:
-  thecluster-dex:clientId: 8251fbb75aff581dd09f
-  thecluster-dex:clientSecret:
-    secure: AAABANS4NduxCnWO8v/1SHWYZkZgowvLCKCPdE+l95BRB/wBU6hXrNIdUXmdHo5zaFFYX0+hUHxFmgM4dXAETmhWZMadIUtZ
-  thecluster-dex:hostname: dex

@@ -1,4 +1,0 @@
-root="$(git rev-parse --show-toplevel)/clusters/rosequartz"
-stack="$(pulumi -C "$root" stack --show-name)"
-export KUBECONFIG="$root/.config/$stack/kubeconfig"
-export TALOSCONFIG="$root/.config/$stack/talosconfig.yaml"

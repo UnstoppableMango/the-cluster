@@ -1,2 +1,0 @@
-config:
-  libvirt:uri: hyperv://vr-machine.int.unmango.net/?transport=http

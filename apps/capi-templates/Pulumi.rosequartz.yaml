@@ -1,6 +1,0 @@
-config:
-  thecluster-capi-templates:proxmox:
-    endpoint: https://192.168.1.10:8006/api2/json
-    password:
-      secure: AAABAHaNIN79w9VBDkAkKUDNwmFtw+Yq/PKzxiJtm7rRdT+cpundTMaVkRYx1TPLRShldDu5t10=
-    username: root@pam

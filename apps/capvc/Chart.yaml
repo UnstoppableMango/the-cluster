@@ -1,5 +1,0 @@
-apiVersion: v2
-name: capvc
-description: Cluster API Provider vCluster install for THECLUSTER
-type: application
-version: 0.1.0

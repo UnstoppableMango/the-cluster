@@ -1,9 +1,0 @@
-config:
-  thecluster-minio:hosts:
-    external: s3.thecluster.io
-    internal: s3.lan.thecluster.io
-    aliases:
-      external:
-        - console.s3.thecluster.io
-      internal:
-        - console.s3.lan.thecluster.io

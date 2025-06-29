@@ -1,58 +1,31 @@
 # Packages
 node_modules/
-bower_components/
-.terraform/
 */*/charts/
-.psc-package/
 components/**/package-lock.json
 
 # Artifacts
 bin/
-obj
 *.raw
 build/
-.pulp-cache/
 output/
 .cache/
-e2e-*/
 
 # IDE Configuration
 .vscode/*
 !.vscode/extensions.json
-!.vscode/settings.json
 .idea/
-.fake
+.fake/
 
 # Configuration
-talosconfig
 kubeconfig
-secrets.yaml
-controlplane.yaml
-worker.yaml
-clusterctl.yaml
 
 # User Specific
-*.user
 .envrc
-.talos/
 .kube/
-**/.config/*
-!.config/dotnet-tools.json
 tmp/
-.backups/
-pools
-.psc*
-.purs*
-.psa*
-.spago
-NuGet.Config
 .make/
 log.txt
-*.profile
-report.json
 *.out
-*.test
-go.work*
 
 # Generated code
 generated.yaml
@@ -63,4 +36,4 @@ gen/**/*.yml
 generated-docs/
 
 # Absolute Garbage
-.DS_store
+.DS_Store

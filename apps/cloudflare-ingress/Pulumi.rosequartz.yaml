@@ -1,4 +1,0 @@
-config:
-  cloudflare:apiToken:
-    secure: AAABADYGlICSd/IODH4NUsuQksoKdWBoaizTAFAxjBo8x3mA0fwFqEdvhJDpWVHWvICCz8d/xXUO06LJNeIRwojZiy4Yakd1
-  thecluster-cloudflare-ingress:cluster: rosequartz

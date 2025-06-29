@@ -1,6 +1,0 @@
-{
-  "name": "pulumi-purescript",
-  "dependencies": {
-    "@pulumi/pulumi": "^3.99.0"
-  }
-}

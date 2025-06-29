@@ -1,2 +1,0 @@
-someDep: 1.2.3 # renovate depName=test
-someOtherDep: 3.2.1 # renovate depName=test2

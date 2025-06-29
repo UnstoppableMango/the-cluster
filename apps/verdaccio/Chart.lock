@@ -1,6 +1,0 @@
-dependencies:
-- name: verdaccio
-  repository: https://charts.verdaccio.org
-  version: 4.17.0
-digest: sha256:b6cd9beb3b806273eb8fbbcb7080e7ab6ae7d98a44486f2747977c1668d79570
-generated: "2024-07-01T01:48:07.81006887Z"

@@ -1,9 +1,0 @@
-config:
-  thecluster-external-dns:pihole:
-    internalDomains:
-      - thecluster.io
-      - unmango.net
-    externalDomains: []
-  thecluster-external-dns:cloudflare:
-    internalDomains: []
-    externalDomains: []

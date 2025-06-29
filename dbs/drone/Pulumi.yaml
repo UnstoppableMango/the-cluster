@@ -1,3 +1,0 @@
-name: thecluster-drone-db
-runtime: nodejs
-description: Drone PostgreSQL database for THECLUSTER

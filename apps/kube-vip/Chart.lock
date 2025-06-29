@@ -1,6 +1,0 @@
-dependencies:
-- name: kube-vip
-  repository: https://kube-vip.github.io/helm-charts
-  version: 0.6.1
-digest: sha256:d215be8b47377e6b4a5482a44ab4aefbd0d1ba5fccfb11e9ea91cf4c9cf47ce1
-generated: "2024-07-01T00:40:31.354185838Z"

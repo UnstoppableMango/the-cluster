@@ -1,6 +1,0 @@
-config:
-  thecluster-kong:hostnames:
-    admin: kong-admin.thecluster.io
-    manager: kong-manager.thecluster.io
-    proxy: kong-proxy.thecluster.io
-    status: kong-status.thecluster.io

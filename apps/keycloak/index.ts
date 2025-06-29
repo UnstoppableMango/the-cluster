@@ -3,13 +3,13 @@ import * as pulumi from '@pulumi/pulumi';
 import * as random from '@pulumi/random';
 import * as k8s from '@pulumi/kubernetes';
 import { ConfigMap, Namespace, Secret } from '@pulumi/kubernetes/core/v1';
+import { Chart } from '@pulumi/kubernetes/helm/v4';
 import { Certificate } from '@unstoppablemango/thecluster-crds/certmanager/v1';
-import { clusterIssuers, databases, ingresses, provider, shared } from '@unstoppablemango/thecluster/cluster/from-stack';
-import { auth, production, hosts, versions } from './config';
+import { clusterIssuers, databases, ingresses, shared } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { required } from '@unstoppablemango/thecluster/util';
-import { Chart } from '@pulumi/kubernetes/helm/v3';
+import { auth, production, hosts, versions } from './config';
 
-const ns = Namespace.get('keycloak', shared.namespaces.keycloak, { provider });
+const ns = Namespace.get('keycloak', shared.namespaces.keycloak);
 
 const { adminUser } = auth;
 const dbHostKey = 'dbHost';
@@ -56,7 +56,7 @@ const cert = new Certificate('keycloak', {
       ...hosts.aliases.internal,
     ],
   },
-}, { provider });
+});
 
 const config = new ConfigMap('keycloak', {
   metadata: {
@@ -82,7 +82,7 @@ const config = new ConfigMap('keycloak', {
       // `sslpassword=${certificatePassword}`,
     ].join('&'),
   },
-}, { provider });
+});
 
 const secret = new Secret('keycloak', {
   metadata: {
@@ -99,7 +99,7 @@ const secret = new Secret('keycloak', {
     database: databases.keycloak.name,
     [certificatePasswordKey]: certificatePassword,
   },
-}, { provider });
+});
 
 const postgresCert = new Certificate('postgres', {
   metadata: {
@@ -129,116 +129,116 @@ const postgresCert = new Certificate('postgres', {
       },
     },
   },
-}, { provider });
+});
 
 const chart = new Chart('keycloak', {
-  path: './',
+  chart: 'oci://registry-1.docker.io/bitnamicharts/keycloak',
+  version: '22.2.4',
   namespace: ns.metadata.name,
   values: {
     // https://github.com/bitnami/charts/tree/main/bitnami/keycloak/#parameters
-    keycloak: {
-      image: {
-        registry: 'docker.io',
-        repository: 'bitnami/keycloak',
-        tag: versions.keycloak,
+    image: {
+      registry: 'docker.io',
+      repository: 'bitnami/keycloak',
+      tag: versions.keycloak,
+    },
+    auth: {
+      adminUser,
+      existingSecret: secret.metadata.name,
+      passwordSecretKey: 'adminPassword',
+    },
+    // tls: {
+    //   enabled: true,
+    //   existingSecret: cert.spec.apply(x => x?.secretName),
+    //   usePem: true,
+    // },
+    production,
+    // proxy: 'reencrypt',
+    proxy: 'edge',
+    // extraEnvVarsCM: config.metadata.name,
+    containerPorts: {
+      http: 8080,
+      https: 8443,
+      infinispan: 7800,
+    },
+    podSecurityContext: { enabled: true },
+    containerSecurityContext: { enabled: true },
+    priorityClassName: 'system-cluster-critical',
+    resources: {
+      limits: {
+        // Initial startup needs a bit of heft
+        cpu: '4',
+        memory: '4Gi',
       },
-      auth: {
-        adminUser,
-        existingSecret: secret.metadata.name,
-        passwordSecretKey: 'adminPassword',
-      },
-      // tls: {
-      //   enabled: true,
-      //   existingSecret: cert.spec.apply(x => x?.secretName),
-      //   usePem: true,
-      // },
-      production,
-      // proxy: 'reencrypt',
-      proxy: 'edge',
-      // extraEnvVarsCM: config.metadata.name,
-      containerPorts: {
-        http: 8080,
-        https: 8443,
-        infinispan: 7800,
-      },
-      podSecurityContext: { enabled: true },
-      containerSecurityContext: { enabled: true },
-      priorityClassName: 'system-cluster-critical',
-      resources: {
-        limits: {
-          // Initial startup needs a bit of heft
-          cpu: '4',
-          memory: '4Gi',
-        },
-        requests: {
-          cpu: '20m',
-          memory: '512Mi',
-        },
-      },
-      extraVolumes: [{
-        name: 'postgres-cert',
-        defaultMode: 0o600,
-        secret: {
-          secretName: postgresCert.spec.apply(x => x?.secretName),
-        },
-      }],
-      extraVolumeMounts: [{
-        name: 'postgres-cert',
-        mountPath: postgresCertDir,
-        readonly: true,
-      }],
-      service: {
-        type: 'ClusterIP',
-        http: {
-          enabled: true,
-        },
-        ports: {
-          http: 80,
-          https: 443,
-        },
-      },
-      ingress: {
-        enabled: true,
-        ingressClassName: ingresses.theclusterIo,
-        pathType: 'Prefix',
-        hostname: hosts.external,
-        extraHosts: hosts.aliases.external.map(h => ({
-          name: h,
-          path: '/',
-          pathType: 'Prefix',
-        })),
-        annotations: {
-          'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
-          // Still adding support for this annotation in the controller
-          'cloudflare-tunnel-ingress-controller.strrl.dev/origin-capool': '/todo/keycloak/ca-certificates.crt',
-          'pulumi.com/skipAwait': 'true',
-        },
-      },
-      pdb: { create: true },
-      autoscaling: {
-        enabled: true,
-        maxReplicas: 3,
-      },
-      metrics: { enabled: true },
-      postgresql: { enabled: false },
-      externalDatabase: {
-        existingSecret: secret.metadata.name,
-        existingSecretHostKey: 'dbHost',
-        existingSecretPortKey: 'dbPort',
-        existingSecretUserKey: 'dbUser',
-        existingSecretDatabaseKey: 'database',
-        existingSecretPasswordKey: 'dbPassword',
+      requests: {
+        cpu: '20m',
+        memory: '512Mi',
       },
     },
+    extraVolumes: [{
+      name: 'postgres-cert',
+      defaultMode: 0o600,
+      secret: {
+        secretName: postgresCert.spec.apply(x => x?.secretName),
+      },
+    }],
+    extraVolumeMounts: [{
+      name: 'postgres-cert',
+      mountPath: postgresCertDir,
+      readonly: true,
+    }],
+    service: {
+      type: 'ClusterIP',
+      http: {
+        enabled: true,
+      },
+      ports: {
+        http: 80,
+        https: 443,
+      },
+    },
+    ingress: {
+      enabled: true,
+      ingressClassName: ingresses.theclusterIo,
+      pathType: 'Prefix',
+      hostname: hosts.external,
+      extraHosts: hosts.aliases.external.map(h => ({
+        name: h,
+        path: '/',
+        pathType: 'Prefix',
+      })),
+      annotations: {
+        'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
+        // Still adding support for this annotation in the controller
+        'cloudflare-tunnel-ingress-controller.strrl.dev/origin-capool': '/todo/keycloak/ca-certificates.crt',
+        'pulumi.com/skipAwait': 'true',
+      },
+    },
+    pdb: { create: true },
+    autoscaling: {
+      enabled: true,
+      maxReplicas: 3,
+    },
+    metrics: { enabled: true },
+    postgresql: { enabled: false },
+    externalDatabase: {
+      existingSecret: secret.metadata.name,
+      existingSecretHostKey: 'dbHost',
+      existingSecretPortKey: 'dbPort',
+      existingSecretUserKey: 'dbUser',
+      existingSecretDatabaseKey: 'database',
+      existingSecretPasswordKey: 'dbPassword',
+    },
   },
-}, { provider });
+});
 
-const service = chart.getResource(
-  'v1/Service',
-  'keycloak/keycloak',
-);
+// const service = chart.getResource(
+//   'v1/Service',
+//   'keycloak/keycloak',
+// );
 
-export const clusterIp = service.spec.clusterIP;
+// export const clusterIp = service.spec.clusterIP;
+export const clusterIp = 'TODO';
 
 const internalHosts = [hosts.internal, ...hosts.aliases.internal];
 const internalIngress = new k8s.networking.v1.Ingress('internal', {
@@ -263,9 +263,11 @@ const internalIngress = new k8s.networking.v1.Ingress('internal', {
           pathType: 'ImplementationSpecific',
           backend: {
             service: {
-              name: service.metadata.name,
+              // name: service.metadata.name,
+              name: 'TODO',
               port: {
-                name: service.spec.ports[0].name,
+                // name: service.spec.ports[0].name,
+                name: 'TODO',
               },
             },
           },
@@ -277,7 +279,7 @@ const internalIngress = new k8s.networking.v1.Ingress('internal', {
       hosts: internalHosts,
     }],
   },
-}, { provider });
+});
 
 export { hosts };
 export const hostname = hosts.external;

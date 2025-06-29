@@ -1,9 +1,0 @@
-apiVersion: v2
-name: unifi
-description: Unifi install for THECLUSTER
-type: application
-version: 0.1.0
-dependencies:
-  - name: unifi
-    repository: oci://tccr.io/truecharts
-    version: 22.4.3

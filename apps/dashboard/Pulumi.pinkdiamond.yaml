@@ -1,4 +1,0 @@
-config:
-  thecluster-dashboard:hosts:
-    external: dashboard.thecluster.io
-    internal: dashboard.lan.thecluster.io

@@ -1,7 +1,0 @@
-name: thecluster-kube-vip
-runtime: nodejs
-description: Kube VIP install for THECLUSTER
-config:
-  versions:
-    value:
-      kube-vip: v0.8.0 # renovate depName=kube-vip/kube-vip

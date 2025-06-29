@@ -1,6 +1,0 @@
-d352f941 d8:3a:dd:75:d5:1e
-6db06b14 d8:3a:dd:75:d5:50
-86031a46 d8:3a:dd:75:d4:09 # Issues
-59203ba9 d8:3a:dd:38:9c:a8
-89ca1312 d8:3a:dd:38:a4:b0 # Issues
-87715828 d8:3a:dd:42:41:01 # Rosequartz

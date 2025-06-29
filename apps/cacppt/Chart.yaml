@@ -1,5 +1,0 @@
-apiVersion: v2
-name: cacppt
-description: Cluster API ControlePlane Provider Talos install for THECLUSTER
-type: application
-version: 0.1.0

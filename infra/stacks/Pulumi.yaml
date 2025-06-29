@@ -1,3 +1,0 @@
-name: thecluster-stacks
-runtime: dotnet
-description: Pulumi Stacks for THECLUSTER

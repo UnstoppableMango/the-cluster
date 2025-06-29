@@ -1,4 +1,0 @@
-config:
-  thecluster-minio-operator:hosts:
-    external: minio.thecluster.io
-    internal: minio.lan.thecluster.io

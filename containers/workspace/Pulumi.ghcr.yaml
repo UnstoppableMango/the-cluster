@@ -1,4 +1,0 @@
-config:
-  thecluster-docker-workspace:platforms:
-    - linux/amd64
-    - linux/arm64

@@ -1,9 +1,0 @@
-apiVersion: v2
-name: sealed-secrets
-description: Sealed secrets install for THECLUSTER
-type: application
-version: 0.1.0
-dependencies:
-  - name: sealed-secrets
-    repository: https://bitnami-labs.github.io/sealed-secrets
-    version: 2.16.1

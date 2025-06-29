@@ -1,5 +1,0 @@
-name: thecluster-dns
-runtime: nodejs
-description: DNS infrastructure for THECLUSTER
-config:
-  accountId: 265a046434c952eeecb9710cfd76617c

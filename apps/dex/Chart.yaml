@@ -1,9 +1,0 @@
-apiVersion: v2
-name: dex
-description: Dex install for THECLUSTER
-type: application
-version: 0.1.0
-dependencies:
-  - name: dex
-    repository: https://charts.dexidp.io
-    version: 0.19.1

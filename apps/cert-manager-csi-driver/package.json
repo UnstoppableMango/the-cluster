@@ -2,12 +2,10 @@
   "name": "thecluster-cert-manager-csi-driver",
   "main": "index.ts",
   "dependencies": {
-    "@pulumi/kubernetes": "^4.5.5",
-    "@pulumi/pulumi": "^3.96.2",
-    "@unstoppablemango/thecluster": "file:../../lib/nodejs",
-    "@unstoppablemango/thecluster-crds": "file:../../lib/crds/nodejs"
+    "@pulumi/kubernetes": "^4.23.0",
+    "@pulumi/pulumi": "^3.180.0"
   },
   "devDependencies": {
-    "@types/node": "^20.10.4"
+    "@types/node": "^22.15.33"
   }
 }

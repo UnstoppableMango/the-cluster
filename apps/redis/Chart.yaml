@@ -1,9 +1,0 @@
-apiVersion: v2
-name: redis
-description: Redis Cluster install for THECLUSTER
-type: application
-version: 0.1.0
-dependencies:
-- name: redis-cluster
-  repository: oci://registry-1.docker.io/bitnamicharts
-  version: 11.0.4

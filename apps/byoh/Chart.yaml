@@ -1,5 +1,0 @@
-apiVersion: v2
-name: byoh
-description: Cluster API Provider Bring Your Own Host install for THECLUSTER
-type: application
-version: 0.1.0
