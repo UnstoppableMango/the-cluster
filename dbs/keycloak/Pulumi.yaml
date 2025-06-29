@@ -1,3 +1,0 @@
-name: thecluster-keycloak-db
-runtime: nodejs
-description: Keycloak PostgreSQL database for THECLUSTER

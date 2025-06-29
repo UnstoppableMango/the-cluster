@@ -1,3 +1,0 @@
-name: thecluster-postgres-db
-runtime: nodejs
-description: Postgres database configuration for THECLUSTER
