@@ -4,5 +4,5 @@ description: Pulumi Kubernetes Operator install for THECLUSTER
 config:
   versions:
     value:
-      pulumiOperator: v1.15.0 # renovate depName=pulumi/pulumi-kubernetes-operator
-      customImage: 2.0.4 # renovate depName=ghcr.io/unstoppablemango/pulumi-kubernetes-operator-nodejs datasource=docker
+      # renovate datasource=git-tags depName=pulumi/pulumi-kubernetes-operator
+      pulumiOperator: '2.1.0'
