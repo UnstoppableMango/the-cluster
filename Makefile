@@ -9,11 +9,15 @@ GO         ?= go
 CRD2PULUMI ?= $(GO) tool crd2pulumi
 CURL       ?= curl
 DEVCTL     ?= $(GO) tool devctl
+DPRINT     ?= dprint
 KUBECTL    ?= bin/kubectl
 PULUMI     ?= bin/pulumi
 
 APPS  := $(wildcard apps/*)
 INFRA := $(wildcard infra/*)
+
+format fmt:
+	$(DPRINT) fmt
 
 .PHONY: ${APPS} ${INFRA}
 ${APPS} ${INFRA}: | bin/pulumi
