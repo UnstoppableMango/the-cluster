@@ -10,18 +10,23 @@ export type Provider = import("./provider").Provider;
 export const Provider: typeof import("./provider").Provider = null as any;
 utilities.lazyLoad(exports, ["Provider"], () => require("./provider"));
 
+
 // Export sub-modules:
 import * as ceph from "./ceph";
 import * as objectbucket from "./objectbucket";
 import * as types from "./types";
 
-export { ceph, objectbucket, types };
+export {
+    ceph,
+    objectbucket,
+    types,
+};
 pulumi.runtime.registerResourcePackage("crds", {
-  version: utilities.getVersion(),
-  constructProvider: (name: string, type: string, urn: string): pulumi.ProviderResource => {
-    if (type !== "pulumi:providers:kubernetes") {
-      throw new Error(`unknown provider type ${type}`);
-    }
-    return new Provider(name, <any> undefined, { urn });
-  },
+    version: utilities.getVersion(),
+    constructProvider: (name: string, type: string, urn: string): pulumi.ProviderResource => {
+        if (type !== "pulumi:providers:kubernetes") {
+            throw new Error(`unknown provider type ${type}`);
+        }
+        return new Provider(name, <any>undefined, { urn });
+    },
 });
