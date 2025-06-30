@@ -13,11 +13,25 @@ const sa = new ServiceAccount('pulumi-operator', {
   metadata: { namespace: ns.metadata.name },
 });
 
-const crb = new ClusterRoleBinding('pulumi-operator:system:auth-delegator', {
+const delegateBinding = new ClusterRoleBinding('pulumi-operator:system:auth-delegator', {
   roleRef: {
     apiGroup: 'rbac.authorization.k8s.io',
     kind: 'ClusterRole',
     name: 'system:auth-delegator',
+  },
+  subjects: [{
+    kind: 'ServiceAccount',
+    name: sa.metadata.name,
+    namespace: sa.metadata.namespace,
+  }],
+});
+
+// This feels gross...
+const adminBinding = new ClusterRoleBinding('pulumi-operator:cluster-admin', {
+  roleRef: {
+    apiGroup: 'rbac.authorization.k8s.io',
+    kind: 'ClusterRole',
+    name: 'cluster-admin',
   },
   subjects: [{
     kind: 'ServiceAccount',
@@ -40,20 +54,6 @@ const secret = new Secret('pulumi-operator', {
 });
 
 const projectRepo = 'https://github.com/UnstoppableMango/the-cluster';
-
-const certManagerBinding = new RoleBinding('pulumi-operator:admin', {
-  metadata: { namespace: 'cert-manager', },
-  roleRef: {
-    apiGroup: 'rbac.authorization.k8s.io',
-    kind: 'ClusterRole',
-    name: 'cluster-admin',
-  },
-  subjects: [{
-    kind: 'ServiceAccount',
-    name: sa.metadata.name,
-    namespace: sa.metadata.namespace,
-  }],
-});
 
 const certManager = new CustomResource('cert-manager', {
   apiVersion: 'pulumi.com/v1',
@@ -82,4 +82,4 @@ const certManager = new CustomResource('cert-manager', {
       },
     },
   },
-}, { dependsOn: [sa, crb, certManagerBinding, secret] });
+}, { dependsOn: [sa, delegateBinding, adminBinding, secret] });
