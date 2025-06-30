@@ -6,92 +6,92 @@ import * as inputs from "../../types/input";
 import * as outputs from "../../types/output";
 import * as utilities from "../../utilities";
 
-import { ObjectMeta } from "../../meta/v1";
+import {ObjectMeta} from "../../meta/v1";
 
 /**
  * ServerBinding defines the binding between the MetalMachine and the Server.
  *  ServerBinding always has matching ID with the Server object. ServerBinding optionally binds to the ServerClass which Server was picked from.
  */
 export class ServerBinding extends pulumi.CustomResource {
-  /**
-   * Get an existing ServerBinding resource's state with the given name, ID, and optional extra
-   * properties used to qualify the lookup.
-   *
-   * @param name The _unique_ name of the resulting resource.
-   * @param id The _unique_ provider ID of the resource to lookup.
-   * @param opts Optional settings to control the behavior of the CustomResource.
-   */
-  public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): ServerBinding {
-    return new ServerBinding(name, undefined as any, { ...opts, id: id });
-  }
-
-  /** @internal */
-  public static readonly __pulumiType = "kubernetes:infrastructure.cluster.x-k8s.io/v1alpha3:ServerBinding";
-
-  /**
-   * Returns true if the given object is an instance of ServerBinding.  This is designed to work even
-   * when multiple copies of the Pulumi SDK have been loaded into the same process.
-   */
-  public static isInstance(obj: any): obj is ServerBinding {
-    if (obj === undefined || obj === null) {
-      return false;
+    /**
+     * Get an existing ServerBinding resource's state with the given name, ID, and optional extra
+     * properties used to qualify the lookup.
+     *
+     * @param name The _unique_ name of the resulting resource.
+     * @param id The _unique_ provider ID of the resource to lookup.
+     * @param opts Optional settings to control the behavior of the CustomResource.
+     */
+    public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): ServerBinding {
+        return new ServerBinding(name, undefined as any, { ...opts, id: id });
     }
-    return obj["__pulumiType"] === ServerBinding.__pulumiType;
-  }
 
-  public readonly apiVersion!: pulumi.Output<"infrastructure.cluster.x-k8s.io/v1alpha3" | undefined>;
-  public readonly kind!: pulumi.Output<"ServerBinding" | undefined>;
-  public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
-  /**
-   * ServerBindingSpec defines the spec of the ServerBinding object.
-   */
-  public readonly spec!: pulumi.Output<outputs.infrastructure.v1alpha3.ServerBindingSpec | undefined>;
-  /**
-   * ServerBindingState defines the observed state of ServerBinding.
-   */
-  public readonly status!: pulumi.Output<outputs.infrastructure.v1alpha3.ServerBindingStatus | undefined>;
+    /** @internal */
+    public static readonly __pulumiType = 'kubernetes:infrastructure.cluster.x-k8s.io/v1alpha3:ServerBinding';
 
-  /**
-   * Create a ServerBinding resource with the given unique name, arguments, and options.
-   *
-   * @param name The _unique_ name of the resource.
-   * @param args The arguments to use to populate this resource's properties.
-   * @param opts A bag of options that control this resource's behavior.
-   */
-  constructor(name: string, args?: ServerBindingArgs, opts?: pulumi.CustomResourceOptions) {
-    let resourceInputs: pulumi.Inputs = {};
-    opts = opts || {};
-    if (!opts.id) {
-      resourceInputs["apiVersion"] = "infrastructure.cluster.x-k8s.io/v1alpha3";
-      resourceInputs["kind"] = "ServerBinding";
-      resourceInputs["metadata"] = args ? args.metadata : undefined;
-      resourceInputs["spec"] = args ? args.spec : undefined;
-      resourceInputs["status"] = args ? args.status : undefined;
-    } else {
-      resourceInputs["apiVersion"] = undefined /*out*/;
-      resourceInputs["kind"] = undefined /*out*/;
-      resourceInputs["metadata"] = undefined /*out*/;
-      resourceInputs["spec"] = undefined /*out*/;
-      resourceInputs["status"] = undefined /*out*/;
+    /**
+     * Returns true if the given object is an instance of ServerBinding.  This is designed to work even
+     * when multiple copies of the Pulumi SDK have been loaded into the same process.
+     */
+    public static isInstance(obj: any): obj is ServerBinding {
+        if (obj === undefined || obj === null) {
+            return false;
+        }
+        return obj['__pulumiType'] === ServerBinding.__pulumiType;
     }
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-    super(ServerBinding.__pulumiType, name, resourceInputs, opts);
-  }
+
+    public readonly apiVersion!: pulumi.Output<"infrastructure.cluster.x-k8s.io/v1alpha3" | undefined>;
+    public readonly kind!: pulumi.Output<"ServerBinding" | undefined>;
+    public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
+    /**
+     * ServerBindingSpec defines the spec of the ServerBinding object.
+     */
+    public readonly spec!: pulumi.Output<outputs.infrastructure.v1alpha3.ServerBindingSpec | undefined>;
+    /**
+     * ServerBindingState defines the observed state of ServerBinding.
+     */
+    public readonly status!: pulumi.Output<outputs.infrastructure.v1alpha3.ServerBindingStatus | undefined>;
+
+    /**
+     * Create a ServerBinding resource with the given unique name, arguments, and options.
+     *
+     * @param name The _unique_ name of the resource.
+     * @param args The arguments to use to populate this resource's properties.
+     * @param opts A bag of options that control this resource's behavior.
+     */
+    constructor(name: string, args?: ServerBindingArgs, opts?: pulumi.CustomResourceOptions) {
+        let resourceInputs: pulumi.Inputs = {};
+        opts = opts || {};
+        if (!opts.id) {
+            resourceInputs["apiVersion"] = "infrastructure.cluster.x-k8s.io/v1alpha3";
+            resourceInputs["kind"] = "ServerBinding";
+            resourceInputs["metadata"] = args ? args.metadata : undefined;
+            resourceInputs["spec"] = args ? args.spec : undefined;
+            resourceInputs["status"] = args ? args.status : undefined;
+        } else {
+            resourceInputs["apiVersion"] = undefined /*out*/;
+            resourceInputs["kind"] = undefined /*out*/;
+            resourceInputs["metadata"] = undefined /*out*/;
+            resourceInputs["spec"] = undefined /*out*/;
+            resourceInputs["status"] = undefined /*out*/;
+        }
+        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+        super(ServerBinding.__pulumiType, name, resourceInputs, opts);
+    }
 }
 
 /**
  * The set of arguments for constructing a ServerBinding resource.
  */
 export interface ServerBindingArgs {
-  apiVersion?: pulumi.Input<"infrastructure.cluster.x-k8s.io/v1alpha3">;
-  kind?: pulumi.Input<"ServerBinding">;
-  metadata?: pulumi.Input<ObjectMeta>;
-  /**
-   * ServerBindingSpec defines the spec of the ServerBinding object.
-   */
-  spec?: pulumi.Input<inputs.infrastructure.v1alpha3.ServerBindingSpecArgs>;
-  /**
-   * ServerBindingState defines the observed state of ServerBinding.
-   */
-  status?: pulumi.Input<inputs.infrastructure.v1alpha3.ServerBindingStatusArgs>;
+    apiVersion?: pulumi.Input<"infrastructure.cluster.x-k8s.io/v1alpha3">;
+    kind?: pulumi.Input<"ServerBinding">;
+    metadata?: pulumi.Input<ObjectMeta>;
+    /**
+     * ServerBindingSpec defines the spec of the ServerBinding object.
+     */
+    spec?: pulumi.Input<inputs.infrastructure.v1alpha3.ServerBindingSpecArgs>;
+    /**
+     * ServerBindingState defines the observed state of ServerBinding.
+     */
+    status?: pulumi.Input<inputs.infrastructure.v1alpha3.ServerBindingStatusArgs>;
 }

@@ -25,21 +25,22 @@ export type ServerBinding = import("./serverBinding").ServerBinding;
 export const ServerBinding: typeof import("./serverBinding").ServerBinding = null as any;
 utilities.lazyLoad(exports, ["ServerBinding"], () => require("./serverBinding"));
 
+
 const _module = {
-  version: utilities.getVersion(),
-  construct: (name: string, type: string, urn: string): pulumi.Resource => {
-    switch (type) {
-      case "kubernetes:infrastructure.cluster.x-k8s.io/v1alpha3:MetalCluster":
-        return new MetalCluster(name, <any> undefined, { urn });
-      case "kubernetes:infrastructure.cluster.x-k8s.io/v1alpha3:MetalMachine":
-        return new MetalMachine(name, <any> undefined, { urn });
-      case "kubernetes:infrastructure.cluster.x-k8s.io/v1alpha3:MetalMachineTemplate":
-        return new MetalMachineTemplate(name, <any> undefined, { urn });
-      case "kubernetes:infrastructure.cluster.x-k8s.io/v1alpha3:ServerBinding":
-        return new ServerBinding(name, <any> undefined, { urn });
-      default:
-        throw new Error(`unknown resource type ${type}`);
-    }
-  },
+    version: utilities.getVersion(),
+    construct: (name: string, type: string, urn: string): pulumi.Resource => {
+        switch (type) {
+            case "kubernetes:infrastructure.cluster.x-k8s.io/v1alpha3:MetalCluster":
+                return new MetalCluster(name, <any>undefined, { urn })
+            case "kubernetes:infrastructure.cluster.x-k8s.io/v1alpha3:MetalMachine":
+                return new MetalMachine(name, <any>undefined, { urn })
+            case "kubernetes:infrastructure.cluster.x-k8s.io/v1alpha3:MetalMachineTemplate":
+                return new MetalMachineTemplate(name, <any>undefined, { urn })
+            case "kubernetes:infrastructure.cluster.x-k8s.io/v1alpha3:ServerBinding":
+                return new ServerBinding(name, <any>undefined, { urn })
+            default:
+                throw new Error(`unknown resource type ${type}`);
+        }
+    },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "infrastructure.cluster.x-k8s.io/v1alpha3", _module);
+pulumi.runtime.registerResourceModule("thecluster-crds", "infrastructure.cluster.x-k8s.io/v1alpha3", _module)

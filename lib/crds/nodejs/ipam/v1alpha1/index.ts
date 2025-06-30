@@ -15,17 +15,18 @@ export type IPAddressClaim = import("./ipaddressClaim").IPAddressClaim;
 export const IPAddressClaim: typeof import("./ipaddressClaim").IPAddressClaim = null as any;
 utilities.lazyLoad(exports, ["IPAddressClaim"], () => require("./ipaddressClaim"));
 
+
 const _module = {
-  version: utilities.getVersion(),
-  construct: (name: string, type: string, urn: string): pulumi.Resource => {
-    switch (type) {
-      case "kubernetes:ipam.cluster.x-k8s.io/v1alpha1:IPAddress":
-        return new IPAddress(name, <any> undefined, { urn });
-      case "kubernetes:ipam.cluster.x-k8s.io/v1alpha1:IPAddressClaim":
-        return new IPAddressClaim(name, <any> undefined, { urn });
-      default:
-        throw new Error(`unknown resource type ${type}`);
-    }
-  },
+    version: utilities.getVersion(),
+    construct: (name: string, type: string, urn: string): pulumi.Resource => {
+        switch (type) {
+            case "kubernetes:ipam.cluster.x-k8s.io/v1alpha1:IPAddress":
+                return new IPAddress(name, <any>undefined, { urn })
+            case "kubernetes:ipam.cluster.x-k8s.io/v1alpha1:IPAddressClaim":
+                return new IPAddressClaim(name, <any>undefined, { urn })
+            default:
+                throw new Error(`unknown resource type ${type}`);
+        }
+    },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "ipam.cluster.x-k8s.io/v1alpha1", _module);
+pulumi.runtime.registerResourceModule("thecluster-crds", "ipam.cluster.x-k8s.io/v1alpha1", _module)

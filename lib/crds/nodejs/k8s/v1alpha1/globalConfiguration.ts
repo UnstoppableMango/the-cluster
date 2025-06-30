@@ -6,85 +6,81 @@ import * as inputs from "../../types/input";
 import * as outputs from "../../types/output";
 import * as utilities from "../../utilities";
 
-import { ObjectMeta } from "../../meta/v1";
+import {ObjectMeta} from "../../meta/v1";
 
 /**
  * GlobalConfiguration defines the GlobalConfiguration resource.
  */
 export class GlobalConfiguration extends pulumi.CustomResource {
-  /**
-   * Get an existing GlobalConfiguration resource's state with the given name, ID, and optional extra
-   * properties used to qualify the lookup.
-   *
-   * @param name The _unique_ name of the resulting resource.
-   * @param id The _unique_ provider ID of the resource to lookup.
-   * @param opts Optional settings to control the behavior of the CustomResource.
-   */
-  public static get(
-    name: string,
-    id: pulumi.Input<pulumi.ID>,
-    opts?: pulumi.CustomResourceOptions,
-  ): GlobalConfiguration {
-    return new GlobalConfiguration(name, undefined as any, { ...opts, id: id });
-  }
-
-  /** @internal */
-  public static readonly __pulumiType = "kubernetes:k8s.nginx.org/v1alpha1:GlobalConfiguration";
-
-  /**
-   * Returns true if the given object is an instance of GlobalConfiguration.  This is designed to work even
-   * when multiple copies of the Pulumi SDK have been loaded into the same process.
-   */
-  public static isInstance(obj: any): obj is GlobalConfiguration {
-    if (obj === undefined || obj === null) {
-      return false;
+    /**
+     * Get an existing GlobalConfiguration resource's state with the given name, ID, and optional extra
+     * properties used to qualify the lookup.
+     *
+     * @param name The _unique_ name of the resulting resource.
+     * @param id The _unique_ provider ID of the resource to lookup.
+     * @param opts Optional settings to control the behavior of the CustomResource.
+     */
+    public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): GlobalConfiguration {
+        return new GlobalConfiguration(name, undefined as any, { ...opts, id: id });
     }
-    return obj["__pulumiType"] === GlobalConfiguration.__pulumiType;
-  }
 
-  public readonly apiVersion!: pulumi.Output<"k8s.nginx.org/v1alpha1" | undefined>;
-  public readonly kind!: pulumi.Output<"GlobalConfiguration" | undefined>;
-  public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
-  /**
-   * GlobalConfigurationSpec is the spec of the GlobalConfiguration resource.
-   */
-  public readonly spec!: pulumi.Output<outputs.k8s.v1alpha1.GlobalConfigurationSpec | undefined>;
+    /** @internal */
+    public static readonly __pulumiType = 'kubernetes:k8s.nginx.org/v1alpha1:GlobalConfiguration';
 
-  /**
-   * Create a GlobalConfiguration resource with the given unique name, arguments, and options.
-   *
-   * @param name The _unique_ name of the resource.
-   * @param args The arguments to use to populate this resource's properties.
-   * @param opts A bag of options that control this resource's behavior.
-   */
-  constructor(name: string, args?: GlobalConfigurationArgs, opts?: pulumi.CustomResourceOptions) {
-    let resourceInputs: pulumi.Inputs = {};
-    opts = opts || {};
-    if (!opts.id) {
-      resourceInputs["apiVersion"] = "k8s.nginx.org/v1alpha1";
-      resourceInputs["kind"] = "GlobalConfiguration";
-      resourceInputs["metadata"] = args ? args.metadata : undefined;
-      resourceInputs["spec"] = args ? args.spec : undefined;
-    } else {
-      resourceInputs["apiVersion"] = undefined /*out*/;
-      resourceInputs["kind"] = undefined /*out*/;
-      resourceInputs["metadata"] = undefined /*out*/;
-      resourceInputs["spec"] = undefined /*out*/;
+    /**
+     * Returns true if the given object is an instance of GlobalConfiguration.  This is designed to work even
+     * when multiple copies of the Pulumi SDK have been loaded into the same process.
+     */
+    public static isInstance(obj: any): obj is GlobalConfiguration {
+        if (obj === undefined || obj === null) {
+            return false;
+        }
+        return obj['__pulumiType'] === GlobalConfiguration.__pulumiType;
     }
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-    super(GlobalConfiguration.__pulumiType, name, resourceInputs, opts);
-  }
+
+    public readonly apiVersion!: pulumi.Output<"k8s.nginx.org/v1alpha1" | undefined>;
+    public readonly kind!: pulumi.Output<"GlobalConfiguration" | undefined>;
+    public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
+    /**
+     * GlobalConfigurationSpec is the spec of the GlobalConfiguration resource.
+     */
+    public readonly spec!: pulumi.Output<outputs.k8s.v1alpha1.GlobalConfigurationSpec | undefined>;
+
+    /**
+     * Create a GlobalConfiguration resource with the given unique name, arguments, and options.
+     *
+     * @param name The _unique_ name of the resource.
+     * @param args The arguments to use to populate this resource's properties.
+     * @param opts A bag of options that control this resource's behavior.
+     */
+    constructor(name: string, args?: GlobalConfigurationArgs, opts?: pulumi.CustomResourceOptions) {
+        let resourceInputs: pulumi.Inputs = {};
+        opts = opts || {};
+        if (!opts.id) {
+            resourceInputs["apiVersion"] = "k8s.nginx.org/v1alpha1";
+            resourceInputs["kind"] = "GlobalConfiguration";
+            resourceInputs["metadata"] = args ? args.metadata : undefined;
+            resourceInputs["spec"] = args ? args.spec : undefined;
+        } else {
+            resourceInputs["apiVersion"] = undefined /*out*/;
+            resourceInputs["kind"] = undefined /*out*/;
+            resourceInputs["metadata"] = undefined /*out*/;
+            resourceInputs["spec"] = undefined /*out*/;
+        }
+        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+        super(GlobalConfiguration.__pulumiType, name, resourceInputs, opts);
+    }
 }
 
 /**
  * The set of arguments for constructing a GlobalConfiguration resource.
  */
 export interface GlobalConfigurationArgs {
-  apiVersion?: pulumi.Input<"k8s.nginx.org/v1alpha1">;
-  kind?: pulumi.Input<"GlobalConfiguration">;
-  metadata?: pulumi.Input<ObjectMeta>;
-  /**
-   * GlobalConfigurationSpec is the spec of the GlobalConfiguration resource.
-   */
-  spec?: pulumi.Input<inputs.k8s.v1alpha1.GlobalConfigurationSpecArgs>;
+    apiVersion?: pulumi.Input<"k8s.nginx.org/v1alpha1">;
+    kind?: pulumi.Input<"GlobalConfiguration">;
+    metadata?: pulumi.Input<ObjectMeta>;
+    /**
+     * GlobalConfigurationSpec is the spec of the GlobalConfiguration resource.
+     */
+    spec?: pulumi.Input<inputs.k8s.v1alpha1.GlobalConfigurationSpecArgs>;
 }

@@ -20,19 +20,20 @@ export type VolumeSnapshotContent = import("./volumeSnapshotContent").VolumeSnap
 export const VolumeSnapshotContent: typeof import("./volumeSnapshotContent").VolumeSnapshotContent = null as any;
 utilities.lazyLoad(exports, ["VolumeSnapshotContent"], () => require("./volumeSnapshotContent"));
 
+
 const _module = {
-  version: utilities.getVersion(),
-  construct: (name: string, type: string, urn: string): pulumi.Resource => {
-    switch (type) {
-      case "kubernetes:snapshot.storage.k8s.io/v1beta1:VolumeSnapshot":
-        return new VolumeSnapshot(name, <any> undefined, { urn });
-      case "kubernetes:snapshot.storage.k8s.io/v1beta1:VolumeSnapshotClass":
-        return new VolumeSnapshotClass(name, <any> undefined, { urn });
-      case "kubernetes:snapshot.storage.k8s.io/v1beta1:VolumeSnapshotContent":
-        return new VolumeSnapshotContent(name, <any> undefined, { urn });
-      default:
-        throw new Error(`unknown resource type ${type}`);
-    }
-  },
+    version: utilities.getVersion(),
+    construct: (name: string, type: string, urn: string): pulumi.Resource => {
+        switch (type) {
+            case "kubernetes:snapshot.storage.k8s.io/v1beta1:VolumeSnapshot":
+                return new VolumeSnapshot(name, <any>undefined, { urn })
+            case "kubernetes:snapshot.storage.k8s.io/v1beta1:VolumeSnapshotClass":
+                return new VolumeSnapshotClass(name, <any>undefined, { urn })
+            case "kubernetes:snapshot.storage.k8s.io/v1beta1:VolumeSnapshotContent":
+                return new VolumeSnapshotContent(name, <any>undefined, { urn })
+            default:
+                throw new Error(`unknown resource type ${type}`);
+        }
+    },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "snapshot.storage.k8s.io/v1beta1", _module);
+pulumi.runtime.registerResourceModule("thecluster-crds", "snapshot.storage.k8s.io/v1beta1", _module)

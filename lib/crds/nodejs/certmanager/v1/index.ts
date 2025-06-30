@@ -25,21 +25,22 @@ export type Issuer = import("./issuer").Issuer;
 export const Issuer: typeof import("./issuer").Issuer = null as any;
 utilities.lazyLoad(exports, ["Issuer"], () => require("./issuer"));
 
+
 const _module = {
-  version: utilities.getVersion(),
-  construct: (name: string, type: string, urn: string): pulumi.Resource => {
-    switch (type) {
-      case "kubernetes:cert-manager.io/v1:Certificate":
-        return new Certificate(name, <any> undefined, { urn });
-      case "kubernetes:cert-manager.io/v1:CertificateRequest":
-        return new CertificateRequest(name, <any> undefined, { urn });
-      case "kubernetes:cert-manager.io/v1:ClusterIssuer":
-        return new ClusterIssuer(name, <any> undefined, { urn });
-      case "kubernetes:cert-manager.io/v1:Issuer":
-        return new Issuer(name, <any> undefined, { urn });
-      default:
-        throw new Error(`unknown resource type ${type}`);
-    }
-  },
+    version: utilities.getVersion(),
+    construct: (name: string, type: string, urn: string): pulumi.Resource => {
+        switch (type) {
+            case "kubernetes:cert-manager.io/v1:Certificate":
+                return new Certificate(name, <any>undefined, { urn })
+            case "kubernetes:cert-manager.io/v1:CertificateRequest":
+                return new CertificateRequest(name, <any>undefined, { urn })
+            case "kubernetes:cert-manager.io/v1:ClusterIssuer":
+                return new ClusterIssuer(name, <any>undefined, { urn })
+            case "kubernetes:cert-manager.io/v1:Issuer":
+                return new Issuer(name, <any>undefined, { urn })
+            default:
+                throw new Error(`unknown resource type ${type}`);
+        }
+    },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "cert-manager.io/v1", _module);
+pulumi.runtime.registerResourceModule("thecluster-crds", "cert-manager.io/v1", _module)

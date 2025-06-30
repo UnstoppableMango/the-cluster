@@ -10,15 +10,16 @@ export type ExtensionConfig = import("./extensionConfig").ExtensionConfig;
 export const ExtensionConfig: typeof import("./extensionConfig").ExtensionConfig = null as any;
 utilities.lazyLoad(exports, ["ExtensionConfig"], () => require("./extensionConfig"));
 
+
 const _module = {
-  version: utilities.getVersion(),
-  construct: (name: string, type: string, urn: string): pulumi.Resource => {
-    switch (type) {
-      case "kubernetes:runtime.cluster.x-k8s.io/v1alpha1:ExtensionConfig":
-        return new ExtensionConfig(name, <any> undefined, { urn });
-      default:
-        throw new Error(`unknown resource type ${type}`);
-    }
-  },
+    version: utilities.getVersion(),
+    construct: (name: string, type: string, urn: string): pulumi.Resource => {
+        switch (type) {
+            case "kubernetes:runtime.cluster.x-k8s.io/v1alpha1:ExtensionConfig":
+                return new ExtensionConfig(name, <any>undefined, { urn })
+            default:
+                throw new Error(`unknown resource type ${type}`);
+        }
+    },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "runtime.cluster.x-k8s.io/v1alpha1", _module);
+pulumi.runtime.registerResourceModule("thecluster-crds", "runtime.cluster.x-k8s.io/v1alpha1", _module)

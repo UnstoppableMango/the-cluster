@@ -10,15 +10,16 @@ export type Stack = import("./stack").Stack;
 export const Stack: typeof import("./stack").Stack = null as any;
 utilities.lazyLoad(exports, ["Stack"], () => require("./stack"));
 
+
 const _module = {
-  version: utilities.getVersion(),
-  construct: (name: string, type: string, urn: string): pulumi.Resource => {
-    switch (type) {
-      case "kubernetes:pulumi.com/v1alpha1:Stack":
-        return new Stack(name, <any> undefined, { urn });
-      default:
-        throw new Error(`unknown resource type ${type}`);
-    }
-  },
+    version: utilities.getVersion(),
+    construct: (name: string, type: string, urn: string): pulumi.Resource => {
+        switch (type) {
+            case "kubernetes:pulumi.com/v1alpha1:Stack":
+                return new Stack(name, <any>undefined, { urn })
+            default:
+                throw new Error(`unknown resource type ${type}`);
+        }
+    },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "pulumi.com/v1alpha1", _module);
+pulumi.runtime.registerResourceModule("thecluster-crds", "pulumi.com/v1alpha1", _module)

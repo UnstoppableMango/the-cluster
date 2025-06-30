@@ -6,95 +6,95 @@ import * as inputs from "../../types/input";
 import * as outputs from "../../types/output";
 import * as utilities from "../../utilities";
 
-import { ObjectMeta } from "../../meta/v1";
+import {ObjectMeta} from "../../meta/v1";
 
 /**
  * TunnelBinding is the Schema for the tunnelbindings API
  */
 export class TunnelBinding extends pulumi.CustomResource {
-  /**
-   * Get an existing TunnelBinding resource's state with the given name, ID, and optional extra
-   * properties used to qualify the lookup.
-   *
-   * @param name The _unique_ name of the resulting resource.
-   * @param id The _unique_ provider ID of the resource to lookup.
-   * @param opts Optional settings to control the behavior of the CustomResource.
-   */
-  public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): TunnelBinding {
-    return new TunnelBinding(name, undefined as any, { ...opts, id: id });
-  }
-
-  /** @internal */
-  public static readonly __pulumiType = "kubernetes:networking.cfargotunnel.com/v1alpha1:TunnelBinding";
-
-  /**
-   * Returns true if the given object is an instance of TunnelBinding.  This is designed to work even
-   * when multiple copies of the Pulumi SDK have been loaded into the same process.
-   */
-  public static isInstance(obj: any): obj is TunnelBinding {
-    if (obj === undefined || obj === null) {
-      return false;
+    /**
+     * Get an existing TunnelBinding resource's state with the given name, ID, and optional extra
+     * properties used to qualify the lookup.
+     *
+     * @param name The _unique_ name of the resulting resource.
+     * @param id The _unique_ provider ID of the resource to lookup.
+     * @param opts Optional settings to control the behavior of the CustomResource.
+     */
+    public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): TunnelBinding {
+        return new TunnelBinding(name, undefined as any, { ...opts, id: id });
     }
-    return obj["__pulumiType"] === TunnelBinding.__pulumiType;
-  }
 
-  public readonly apiVersion!: pulumi.Output<"networking.cfargotunnel.com/v1alpha1" | undefined>;
-  public readonly kind!: pulumi.Output<"TunnelBinding" | undefined>;
-  public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
-  /**
-   * TunnelBindingStatus defines the observed state of TunnelBinding
-   */
-  public readonly status!: pulumi.Output<outputs.networking.v1alpha1.TunnelBindingStatus | undefined>;
-  public readonly subjects!: pulumi.Output<outputs.networking.v1alpha1.TunnelBindingSubjects[]>;
-  /**
-   * TunnelRef defines the Tunnel TunnelBinding connects to
-   */
-  public readonly tunnelRef!: pulumi.Output<outputs.networking.v1alpha1.TunnelBindingTunnelRef>;
+    /** @internal */
+    public static readonly __pulumiType = 'kubernetes:networking.cfargotunnel.com/v1alpha1:TunnelBinding';
 
-  /**
-   * Create a TunnelBinding resource with the given unique name, arguments, and options.
-   *
-   * @param name The _unique_ name of the resource.
-   * @param args The arguments to use to populate this resource's properties.
-   * @param opts A bag of options that control this resource's behavior.
-   */
-  constructor(name: string, args?: TunnelBindingArgs, opts?: pulumi.CustomResourceOptions) {
-    let resourceInputs: pulumi.Inputs = {};
-    opts = opts || {};
-    if (!opts.id) {
-      resourceInputs["apiVersion"] = "networking.cfargotunnel.com/v1alpha1";
-      resourceInputs["kind"] = "TunnelBinding";
-      resourceInputs["metadata"] = args ? args.metadata : undefined;
-      resourceInputs["status"] = args ? args.status : undefined;
-      resourceInputs["subjects"] = args ? args.subjects : undefined;
-      resourceInputs["tunnelRef"] = args ? args.tunnelRef : undefined;
-    } else {
-      resourceInputs["apiVersion"] = undefined /*out*/;
-      resourceInputs["kind"] = undefined /*out*/;
-      resourceInputs["metadata"] = undefined /*out*/;
-      resourceInputs["status"] = undefined /*out*/;
-      resourceInputs["subjects"] = undefined /*out*/;
-      resourceInputs["tunnelRef"] = undefined /*out*/;
+    /**
+     * Returns true if the given object is an instance of TunnelBinding.  This is designed to work even
+     * when multiple copies of the Pulumi SDK have been loaded into the same process.
+     */
+    public static isInstance(obj: any): obj is TunnelBinding {
+        if (obj === undefined || obj === null) {
+            return false;
+        }
+        return obj['__pulumiType'] === TunnelBinding.__pulumiType;
     }
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-    super(TunnelBinding.__pulumiType, name, resourceInputs, opts);
-  }
+
+    public readonly apiVersion!: pulumi.Output<"networking.cfargotunnel.com/v1alpha1" | undefined>;
+    public readonly kind!: pulumi.Output<"TunnelBinding" | undefined>;
+    public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
+    /**
+     * TunnelBindingStatus defines the observed state of TunnelBinding
+     */
+    public readonly status!: pulumi.Output<outputs.networking.v1alpha1.TunnelBindingStatus | undefined>;
+    public readonly subjects!: pulumi.Output<outputs.networking.v1alpha1.TunnelBindingSubjects[]>;
+    /**
+     * TunnelRef defines the Tunnel TunnelBinding connects to
+     */
+    public readonly tunnelRef!: pulumi.Output<outputs.networking.v1alpha1.TunnelBindingTunnelRef>;
+
+    /**
+     * Create a TunnelBinding resource with the given unique name, arguments, and options.
+     *
+     * @param name The _unique_ name of the resource.
+     * @param args The arguments to use to populate this resource's properties.
+     * @param opts A bag of options that control this resource's behavior.
+     */
+    constructor(name: string, args?: TunnelBindingArgs, opts?: pulumi.CustomResourceOptions) {
+        let resourceInputs: pulumi.Inputs = {};
+        opts = opts || {};
+        if (!opts.id) {
+            resourceInputs["apiVersion"] = "networking.cfargotunnel.com/v1alpha1";
+            resourceInputs["kind"] = "TunnelBinding";
+            resourceInputs["metadata"] = args ? args.metadata : undefined;
+            resourceInputs["status"] = args ? args.status : undefined;
+            resourceInputs["subjects"] = args ? args.subjects : undefined;
+            resourceInputs["tunnelRef"] = args ? args.tunnelRef : undefined;
+        } else {
+            resourceInputs["apiVersion"] = undefined /*out*/;
+            resourceInputs["kind"] = undefined /*out*/;
+            resourceInputs["metadata"] = undefined /*out*/;
+            resourceInputs["status"] = undefined /*out*/;
+            resourceInputs["subjects"] = undefined /*out*/;
+            resourceInputs["tunnelRef"] = undefined /*out*/;
+        }
+        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+        super(TunnelBinding.__pulumiType, name, resourceInputs, opts);
+    }
 }
 
 /**
  * The set of arguments for constructing a TunnelBinding resource.
  */
 export interface TunnelBindingArgs {
-  apiVersion?: pulumi.Input<"networking.cfargotunnel.com/v1alpha1">;
-  kind?: pulumi.Input<"TunnelBinding">;
-  metadata?: pulumi.Input<ObjectMeta>;
-  /**
-   * TunnelBindingStatus defines the observed state of TunnelBinding
-   */
-  status?: pulumi.Input<inputs.networking.v1alpha1.TunnelBindingStatusArgs>;
-  subjects?: pulumi.Input<pulumi.Input<inputs.networking.v1alpha1.TunnelBindingSubjectsArgs>[]>;
-  /**
-   * TunnelRef defines the Tunnel TunnelBinding connects to
-   */
-  tunnelRef?: pulumi.Input<inputs.networking.v1alpha1.TunnelBindingTunnelRefArgs>;
+    apiVersion?: pulumi.Input<"networking.cfargotunnel.com/v1alpha1">;
+    kind?: pulumi.Input<"TunnelBinding">;
+    metadata?: pulumi.Input<ObjectMeta>;
+    /**
+     * TunnelBindingStatus defines the observed state of TunnelBinding
+     */
+    status?: pulumi.Input<inputs.networking.v1alpha1.TunnelBindingStatusArgs>;
+    subjects?: pulumi.Input<pulumi.Input<inputs.networking.v1alpha1.TunnelBindingSubjectsArgs>[]>;
+    /**
+     * TunnelRef defines the Tunnel TunnelBinding connects to
+     */
+    tunnelRef?: pulumi.Input<inputs.networking.v1alpha1.TunnelBindingTunnelRefArgs>;
 }

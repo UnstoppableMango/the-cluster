@@ -6,96 +6,92 @@ import * as inputs from "../../types/input";
 import * as outputs from "../../types/output";
 import * as utilities from "../../utilities";
 
-import { ObjectMeta } from "../../meta/v1";
+import {ObjectMeta} from "../../meta/v1";
 
 /**
  * MachineDeployment is the Schema for the machinedeployments API.
  *  Deprecated: This type will be removed in one of the next releases.
  */
 export class MachineDeployment extends pulumi.CustomResource {
-  /**
-   * Get an existing MachineDeployment resource's state with the given name, ID, and optional extra
-   * properties used to qualify the lookup.
-   *
-   * @param name The _unique_ name of the resulting resource.
-   * @param id The _unique_ provider ID of the resource to lookup.
-   * @param opts Optional settings to control the behavior of the CustomResource.
-   */
-  public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): MachineDeployment {
-    return new MachineDeployment(name, undefined as any, { ...opts, id: id });
-  }
-
-  /** @internal */
-  public static readonly __pulumiType = "kubernetes:cluster.x-k8s.io/v1alpha4:MachineDeployment";
-
-  /**
-   * Returns true if the given object is an instance of MachineDeployment.  This is designed to work even
-   * when multiple copies of the Pulumi SDK have been loaded into the same process.
-   */
-  public static isInstance(obj: any): obj is MachineDeployment {
-    if (obj === undefined || obj === null) {
-      return false;
+    /**
+     * Get an existing MachineDeployment resource's state with the given name, ID, and optional extra
+     * properties used to qualify the lookup.
+     *
+     * @param name The _unique_ name of the resulting resource.
+     * @param id The _unique_ provider ID of the resource to lookup.
+     * @param opts Optional settings to control the behavior of the CustomResource.
+     */
+    public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): MachineDeployment {
+        return new MachineDeployment(name, undefined as any, { ...opts, id: id });
     }
-    return obj["__pulumiType"] === MachineDeployment.__pulumiType;
-  }
 
-  public readonly apiVersion!: pulumi.Output<"cluster.x-k8s.io/v1alpha4" | undefined>;
-  public readonly kind!: pulumi.Output<"MachineDeployment" | undefined>;
-  public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
-  /**
-   * MachineDeploymentSpec defines the desired state of MachineDeployment.
-   */
-  public readonly spec!: pulumi.Output<outputs.cluster.v1alpha4.MachineDeploymentSpec | undefined>;
-  /**
-   * MachineDeploymentStatus defines the observed state of MachineDeployment.
-   */
-  public readonly status!: pulumi.Output<outputs.cluster.v1alpha4.MachineDeploymentStatus | undefined>;
+    /** @internal */
+    public static readonly __pulumiType = 'kubernetes:cluster.x-k8s.io/v1alpha4:MachineDeployment';
 
-  /**
-   * Create a MachineDeployment resource with the given unique name, arguments, and options.
-   *
-   * @param name The _unique_ name of the resource.
-   * @param args The arguments to use to populate this resource's properties.
-   * @param opts A bag of options that control this resource's behavior.
-   */
-  constructor(name: string, args?: MachineDeploymentArgs, opts?: pulumi.CustomResourceOptions) {
-    let resourceInputs: pulumi.Inputs = {};
-    opts = opts || {};
-    if (!opts.id) {
-      resourceInputs["apiVersion"] = "cluster.x-k8s.io/v1alpha4";
-      resourceInputs["kind"] = "MachineDeployment";
-      resourceInputs["metadata"] = args ? args.metadata : undefined;
-      resourceInputs["spec"] = args
-        ? (args.spec
-          ? pulumi.output(args.spec).apply(inputs.cluster.v1alpha4.machineDeploymentSpecArgsProvideDefaults)
-          : undefined)
-        : undefined;
-      resourceInputs["status"] = args ? args.status : undefined;
-    } else {
-      resourceInputs["apiVersion"] = undefined /*out*/;
-      resourceInputs["kind"] = undefined /*out*/;
-      resourceInputs["metadata"] = undefined /*out*/;
-      resourceInputs["spec"] = undefined /*out*/;
-      resourceInputs["status"] = undefined /*out*/;
+    /**
+     * Returns true if the given object is an instance of MachineDeployment.  This is designed to work even
+     * when multiple copies of the Pulumi SDK have been loaded into the same process.
+     */
+    public static isInstance(obj: any): obj is MachineDeployment {
+        if (obj === undefined || obj === null) {
+            return false;
+        }
+        return obj['__pulumiType'] === MachineDeployment.__pulumiType;
     }
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-    super(MachineDeployment.__pulumiType, name, resourceInputs, opts);
-  }
+
+    public readonly apiVersion!: pulumi.Output<"cluster.x-k8s.io/v1alpha4" | undefined>;
+    public readonly kind!: pulumi.Output<"MachineDeployment" | undefined>;
+    public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
+    /**
+     * MachineDeploymentSpec defines the desired state of MachineDeployment.
+     */
+    public readonly spec!: pulumi.Output<outputs.cluster.v1alpha4.MachineDeploymentSpec | undefined>;
+    /**
+     * MachineDeploymentStatus defines the observed state of MachineDeployment.
+     */
+    public readonly status!: pulumi.Output<outputs.cluster.v1alpha4.MachineDeploymentStatus | undefined>;
+
+    /**
+     * Create a MachineDeployment resource with the given unique name, arguments, and options.
+     *
+     * @param name The _unique_ name of the resource.
+     * @param args The arguments to use to populate this resource's properties.
+     * @param opts A bag of options that control this resource's behavior.
+     */
+    constructor(name: string, args?: MachineDeploymentArgs, opts?: pulumi.CustomResourceOptions) {
+        let resourceInputs: pulumi.Inputs = {};
+        opts = opts || {};
+        if (!opts.id) {
+            resourceInputs["apiVersion"] = "cluster.x-k8s.io/v1alpha4";
+            resourceInputs["kind"] = "MachineDeployment";
+            resourceInputs["metadata"] = args ? args.metadata : undefined;
+            resourceInputs["spec"] = args ? (args.spec ? pulumi.output(args.spec).apply(inputs.cluster.v1alpha4.machineDeploymentSpecArgsProvideDefaults) : undefined) : undefined;
+            resourceInputs["status"] = args ? args.status : undefined;
+        } else {
+            resourceInputs["apiVersion"] = undefined /*out*/;
+            resourceInputs["kind"] = undefined /*out*/;
+            resourceInputs["metadata"] = undefined /*out*/;
+            resourceInputs["spec"] = undefined /*out*/;
+            resourceInputs["status"] = undefined /*out*/;
+        }
+        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+        super(MachineDeployment.__pulumiType, name, resourceInputs, opts);
+    }
 }
 
 /**
  * The set of arguments for constructing a MachineDeployment resource.
  */
 export interface MachineDeploymentArgs {
-  apiVersion?: pulumi.Input<"cluster.x-k8s.io/v1alpha4">;
-  kind?: pulumi.Input<"MachineDeployment">;
-  metadata?: pulumi.Input<ObjectMeta>;
-  /**
-   * MachineDeploymentSpec defines the desired state of MachineDeployment.
-   */
-  spec?: pulumi.Input<inputs.cluster.v1alpha4.MachineDeploymentSpecArgs>;
-  /**
-   * MachineDeploymentStatus defines the observed state of MachineDeployment.
-   */
-  status?: pulumi.Input<inputs.cluster.v1alpha4.MachineDeploymentStatusArgs>;
+    apiVersion?: pulumi.Input<"cluster.x-k8s.io/v1alpha4">;
+    kind?: pulumi.Input<"MachineDeployment">;
+    metadata?: pulumi.Input<ObjectMeta>;
+    /**
+     * MachineDeploymentSpec defines the desired state of MachineDeployment.
+     */
+    spec?: pulumi.Input<inputs.cluster.v1alpha4.MachineDeploymentSpecArgs>;
+    /**
+     * MachineDeploymentStatus defines the observed state of MachineDeployment.
+     */
+    status?: pulumi.Input<inputs.cluster.v1alpha4.MachineDeploymentStatusArgs>;
 }

@@ -10,15 +10,16 @@ export type NginxIngress = import("./nginxIngress").NginxIngress;
 export const NginxIngress: typeof import("./nginxIngress").NginxIngress = null as any;
 utilities.lazyLoad(exports, ["NginxIngress"], () => require("./nginxIngress"));
 
+
 const _module = {
-  version: utilities.getVersion(),
-  construct: (name: string, type: string, urn: string): pulumi.Resource => {
-    switch (type) {
-      case "kubernetes:charts.nginx.org/v1alpha1:NginxIngress":
-        return new NginxIngress(name, <any> undefined, { urn });
-      default:
-        throw new Error(`unknown resource type ${type}`);
-    }
-  },
+    version: utilities.getVersion(),
+    construct: (name: string, type: string, urn: string): pulumi.Resource => {
+        switch (type) {
+            case "kubernetes:charts.nginx.org/v1alpha1:NginxIngress":
+                return new NginxIngress(name, <any>undefined, { urn })
+            default:
+                throw new Error(`unknown resource type ${type}`);
+        }
+    },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "charts.nginx.org/v1alpha1", _module);
+pulumi.runtime.registerResourceModule("thecluster-crds", "charts.nginx.org/v1alpha1", _module)

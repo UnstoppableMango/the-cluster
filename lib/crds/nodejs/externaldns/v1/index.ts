@@ -10,15 +10,16 @@ export type DNSEndpoint = import("./dnsendpoint").DNSEndpoint;
 export const DNSEndpoint: typeof import("./dnsendpoint").DNSEndpoint = null as any;
 utilities.lazyLoad(exports, ["DNSEndpoint"], () => require("./dnsendpoint"));
 
+
 const _module = {
-  version: utilities.getVersion(),
-  construct: (name: string, type: string, urn: string): pulumi.Resource => {
-    switch (type) {
-      case "kubernetes:externaldns.nginx.org/v1:DNSEndpoint":
-        return new DNSEndpoint(name, <any> undefined, { urn });
-      default:
-        throw new Error(`unknown resource type ${type}`);
-    }
-  },
+    version: utilities.getVersion(),
+    construct: (name: string, type: string, urn: string): pulumi.Resource => {
+        switch (type) {
+            case "kubernetes:externaldns.nginx.org/v1:DNSEndpoint":
+                return new DNSEndpoint(name, <any>undefined, { urn })
+            default:
+                throw new Error(`unknown resource type ${type}`);
+        }
+    },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "externaldns.nginx.org/v1", _module);
+pulumi.runtime.registerResourceModule("thecluster-crds", "externaldns.nginx.org/v1", _module)

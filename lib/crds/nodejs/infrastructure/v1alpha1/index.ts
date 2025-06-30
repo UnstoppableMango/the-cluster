@@ -10,15 +10,16 @@ export type VCluster = import("./vcluster").VCluster;
 export const VCluster: typeof import("./vcluster").VCluster = null as any;
 utilities.lazyLoad(exports, ["VCluster"], () => require("./vcluster"));
 
+
 const _module = {
-  version: utilities.getVersion(),
-  construct: (name: string, type: string, urn: string): pulumi.Resource => {
-    switch (type) {
-      case "kubernetes:infrastructure.cluster.x-k8s.io/v1alpha1:VCluster":
-        return new VCluster(name, <any> undefined, { urn });
-      default:
-        throw new Error(`unknown resource type ${type}`);
-    }
-  },
+    version: utilities.getVersion(),
+    construct: (name: string, type: string, urn: string): pulumi.Resource => {
+        switch (type) {
+            case "kubernetes:infrastructure.cluster.x-k8s.io/v1alpha1:VCluster":
+                return new VCluster(name, <any>undefined, { urn })
+            default:
+                throw new Error(`unknown resource type ${type}`);
+        }
+    },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "infrastructure.cluster.x-k8s.io/v1alpha1", _module);
+pulumi.runtime.registerResourceModule("thecluster-crds", "infrastructure.cluster.x-k8s.io/v1alpha1", _module)

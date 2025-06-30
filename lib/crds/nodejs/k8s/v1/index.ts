@@ -30,23 +30,24 @@ export type VirtualServerRoute = import("./virtualServerRoute").VirtualServerRou
 export const VirtualServerRoute: typeof import("./virtualServerRoute").VirtualServerRoute = null as any;
 utilities.lazyLoad(exports, ["VirtualServerRoute"], () => require("./virtualServerRoute"));
 
+
 const _module = {
-  version: utilities.getVersion(),
-  construct: (name: string, type: string, urn: string): pulumi.Resource => {
-    switch (type) {
-      case "kubernetes:k8s.nginx.org/v1:GlobalConfiguration":
-        return new GlobalConfiguration(name, <any> undefined, { urn });
-      case "kubernetes:k8s.nginx.org/v1:Policy":
-        return new Policy(name, <any> undefined, { urn });
-      case "kubernetes:k8s.nginx.org/v1:TransportServer":
-        return new TransportServer(name, <any> undefined, { urn });
-      case "kubernetes:k8s.nginx.org/v1:VirtualServer":
-        return new VirtualServer(name, <any> undefined, { urn });
-      case "kubernetes:k8s.nginx.org/v1:VirtualServerRoute":
-        return new VirtualServerRoute(name, <any> undefined, { urn });
-      default:
-        throw new Error(`unknown resource type ${type}`);
-    }
-  },
+    version: utilities.getVersion(),
+    construct: (name: string, type: string, urn: string): pulumi.Resource => {
+        switch (type) {
+            case "kubernetes:k8s.nginx.org/v1:GlobalConfiguration":
+                return new GlobalConfiguration(name, <any>undefined, { urn })
+            case "kubernetes:k8s.nginx.org/v1:Policy":
+                return new Policy(name, <any>undefined, { urn })
+            case "kubernetes:k8s.nginx.org/v1:TransportServer":
+                return new TransportServer(name, <any>undefined, { urn })
+            case "kubernetes:k8s.nginx.org/v1:VirtualServer":
+                return new VirtualServer(name, <any>undefined, { urn })
+            case "kubernetes:k8s.nginx.org/v1:VirtualServerRoute":
+                return new VirtualServerRoute(name, <any>undefined, { urn })
+            default:
+                throw new Error(`unknown resource type ${type}`);
+        }
+    },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "k8s.nginx.org/v1", _module);
+pulumi.runtime.registerResourceModule("thecluster-crds", "k8s.nginx.org/v1", _module)

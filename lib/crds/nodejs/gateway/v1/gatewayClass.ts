@@ -6,7 +6,7 @@ import * as inputs from "../../types/input";
 import * as outputs from "../../types/output";
 import * as utilities from "../../utilities";
 
-import { ObjectMeta } from "../../meta/v1";
+import {ObjectMeta} from "../../meta/v1";
 
 /**
  * GatewayClass describes a class of Gateways available to the user for creating Gateway resources.
@@ -15,87 +15,87 @@ import { ObjectMeta } from "../../meta/v1";
  *  GatewayClass is a Cluster level resource.
  */
 export class GatewayClass extends pulumi.CustomResource {
-  /**
-   * Get an existing GatewayClass resource's state with the given name, ID, and optional extra
-   * properties used to qualify the lookup.
-   *
-   * @param name The _unique_ name of the resulting resource.
-   * @param id The _unique_ provider ID of the resource to lookup.
-   * @param opts Optional settings to control the behavior of the CustomResource.
-   */
-  public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): GatewayClass {
-    return new GatewayClass(name, undefined as any, { ...opts, id: id });
-  }
-
-  /** @internal */
-  public static readonly __pulumiType = "kubernetes:gateway.networking.k8s.io/v1:GatewayClass";
-
-  /**
-   * Returns true if the given object is an instance of GatewayClass.  This is designed to work even
-   * when multiple copies of the Pulumi SDK have been loaded into the same process.
-   */
-  public static isInstance(obj: any): obj is GatewayClass {
-    if (obj === undefined || obj === null) {
-      return false;
+    /**
+     * Get an existing GatewayClass resource's state with the given name, ID, and optional extra
+     * properties used to qualify the lookup.
+     *
+     * @param name The _unique_ name of the resulting resource.
+     * @param id The _unique_ provider ID of the resource to lookup.
+     * @param opts Optional settings to control the behavior of the CustomResource.
+     */
+    public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): GatewayClass {
+        return new GatewayClass(name, undefined as any, { ...opts, id: id });
     }
-    return obj["__pulumiType"] === GatewayClass.__pulumiType;
-  }
 
-  public readonly apiVersion!: pulumi.Output<"gateway.networking.k8s.io/v1" | undefined>;
-  public readonly kind!: pulumi.Output<"GatewayClass" | undefined>;
-  public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
-  /**
-   * Spec defines the desired state of GatewayClass.
-   */
-  public readonly spec!: pulumi.Output<outputs.gateway.v1.GatewayClassSpec>;
-  /**
-   * Status defines the current state of GatewayClass.
-   *  Implementations MUST populate status on all GatewayClass resources which specify their controller name.
-   */
-  public readonly status!: pulumi.Output<outputs.gateway.v1.GatewayClassStatus | undefined>;
+    /** @internal */
+    public static readonly __pulumiType = 'kubernetes:gateway.networking.k8s.io/v1:GatewayClass';
 
-  /**
-   * Create a GatewayClass resource with the given unique name, arguments, and options.
-   *
-   * @param name The _unique_ name of the resource.
-   * @param args The arguments to use to populate this resource's properties.
-   * @param opts A bag of options that control this resource's behavior.
-   */
-  constructor(name: string, args?: GatewayClassArgs, opts?: pulumi.CustomResourceOptions) {
-    let resourceInputs: pulumi.Inputs = {};
-    opts = opts || {};
-    if (!opts.id) {
-      resourceInputs["apiVersion"] = "gateway.networking.k8s.io/v1";
-      resourceInputs["kind"] = "GatewayClass";
-      resourceInputs["metadata"] = args ? args.metadata : undefined;
-      resourceInputs["spec"] = args ? args.spec : undefined;
-      resourceInputs["status"] = args ? args.status : undefined;
-    } else {
-      resourceInputs["apiVersion"] = undefined /*out*/;
-      resourceInputs["kind"] = undefined /*out*/;
-      resourceInputs["metadata"] = undefined /*out*/;
-      resourceInputs["spec"] = undefined /*out*/;
-      resourceInputs["status"] = undefined /*out*/;
+    /**
+     * Returns true if the given object is an instance of GatewayClass.  This is designed to work even
+     * when multiple copies of the Pulumi SDK have been loaded into the same process.
+     */
+    public static isInstance(obj: any): obj is GatewayClass {
+        if (obj === undefined || obj === null) {
+            return false;
+        }
+        return obj['__pulumiType'] === GatewayClass.__pulumiType;
     }
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-    super(GatewayClass.__pulumiType, name, resourceInputs, opts);
-  }
+
+    public readonly apiVersion!: pulumi.Output<"gateway.networking.k8s.io/v1" | undefined>;
+    public readonly kind!: pulumi.Output<"GatewayClass" | undefined>;
+    public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
+    /**
+     * Spec defines the desired state of GatewayClass.
+     */
+    public readonly spec!: pulumi.Output<outputs.gateway.v1.GatewayClassSpec>;
+    /**
+     * Status defines the current state of GatewayClass. 
+     *  Implementations MUST populate status on all GatewayClass resources which specify their controller name.
+     */
+    public readonly status!: pulumi.Output<outputs.gateway.v1.GatewayClassStatus | undefined>;
+
+    /**
+     * Create a GatewayClass resource with the given unique name, arguments, and options.
+     *
+     * @param name The _unique_ name of the resource.
+     * @param args The arguments to use to populate this resource's properties.
+     * @param opts A bag of options that control this resource's behavior.
+     */
+    constructor(name: string, args?: GatewayClassArgs, opts?: pulumi.CustomResourceOptions) {
+        let resourceInputs: pulumi.Inputs = {};
+        opts = opts || {};
+        if (!opts.id) {
+            resourceInputs["apiVersion"] = "gateway.networking.k8s.io/v1";
+            resourceInputs["kind"] = "GatewayClass";
+            resourceInputs["metadata"] = args ? args.metadata : undefined;
+            resourceInputs["spec"] = args ? args.spec : undefined;
+            resourceInputs["status"] = args ? args.status : undefined;
+        } else {
+            resourceInputs["apiVersion"] = undefined /*out*/;
+            resourceInputs["kind"] = undefined /*out*/;
+            resourceInputs["metadata"] = undefined /*out*/;
+            resourceInputs["spec"] = undefined /*out*/;
+            resourceInputs["status"] = undefined /*out*/;
+        }
+        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+        super(GatewayClass.__pulumiType, name, resourceInputs, opts);
+    }
 }
 
 /**
  * The set of arguments for constructing a GatewayClass resource.
  */
 export interface GatewayClassArgs {
-  apiVersion?: pulumi.Input<"gateway.networking.k8s.io/v1">;
-  kind?: pulumi.Input<"GatewayClass">;
-  metadata?: pulumi.Input<ObjectMeta>;
-  /**
-   * Spec defines the desired state of GatewayClass.
-   */
-  spec?: pulumi.Input<inputs.gateway.v1.GatewayClassSpecArgs>;
-  /**
-   * Status defines the current state of GatewayClass.
-   *  Implementations MUST populate status on all GatewayClass resources which specify their controller name.
-   */
-  status?: pulumi.Input<inputs.gateway.v1.GatewayClassStatusArgs>;
+    apiVersion?: pulumi.Input<"gateway.networking.k8s.io/v1">;
+    kind?: pulumi.Input<"GatewayClass">;
+    metadata?: pulumi.Input<ObjectMeta>;
+    /**
+     * Spec defines the desired state of GatewayClass.
+     */
+    spec?: pulumi.Input<inputs.gateway.v1.GatewayClassSpecArgs>;
+    /**
+     * Status defines the current state of GatewayClass. 
+     *  Implementations MUST populate status on all GatewayClass resources which specify their controller name.
+     */
+    status?: pulumi.Input<inputs.gateway.v1.GatewayClassStatusArgs>;
 }

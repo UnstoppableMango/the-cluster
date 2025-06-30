@@ -25,21 +25,22 @@ export type EphemeralRunnerSet = import("./ephemeralRunnerSet").EphemeralRunnerS
 export const EphemeralRunnerSet: typeof import("./ephemeralRunnerSet").EphemeralRunnerSet = null as any;
 utilities.lazyLoad(exports, ["EphemeralRunnerSet"], () => require("./ephemeralRunnerSet"));
 
+
 const _module = {
-  version: utilities.getVersion(),
-  construct: (name: string, type: string, urn: string): pulumi.Resource => {
-    switch (type) {
-      case "kubernetes:actions.github.com/v1alpha1:AutoscalingListener":
-        return new AutoscalingListener(name, <any> undefined, { urn });
-      case "kubernetes:actions.github.com/v1alpha1:AutoscalingRunnerSet":
-        return new AutoscalingRunnerSet(name, <any> undefined, { urn });
-      case "kubernetes:actions.github.com/v1alpha1:EphemeralRunner":
-        return new EphemeralRunner(name, <any> undefined, { urn });
-      case "kubernetes:actions.github.com/v1alpha1:EphemeralRunnerSet":
-        return new EphemeralRunnerSet(name, <any> undefined, { urn });
-      default:
-        throw new Error(`unknown resource type ${type}`);
-    }
-  },
+    version: utilities.getVersion(),
+    construct: (name: string, type: string, urn: string): pulumi.Resource => {
+        switch (type) {
+            case "kubernetes:actions.github.com/v1alpha1:AutoscalingListener":
+                return new AutoscalingListener(name, <any>undefined, { urn })
+            case "kubernetes:actions.github.com/v1alpha1:AutoscalingRunnerSet":
+                return new AutoscalingRunnerSet(name, <any>undefined, { urn })
+            case "kubernetes:actions.github.com/v1alpha1:EphemeralRunner":
+                return new EphemeralRunner(name, <any>undefined, { urn })
+            case "kubernetes:actions.github.com/v1alpha1:EphemeralRunnerSet":
+                return new EphemeralRunnerSet(name, <any>undefined, { urn })
+            default:
+                throw new Error(`unknown resource type ${type}`);
+        }
+    },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "actions.github.com/v1alpha1", _module);
+pulumi.runtime.registerResourceModule("thecluster-crds", "actions.github.com/v1alpha1", _module)

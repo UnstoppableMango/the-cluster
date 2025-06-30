@@ -40,27 +40,28 @@ export type MachineSet = import("./machineSet").MachineSet;
 export const MachineSet: typeof import("./machineSet").MachineSet = null as any;
 utilities.lazyLoad(exports, ["MachineSet"], () => require("./machineSet"));
 
+
 const _module = {
-  version: utilities.getVersion(),
-  construct: (name: string, type: string, urn: string): pulumi.Resource => {
-    switch (type) {
-      case "kubernetes:cluster.x-k8s.io/v1alpha4:Cluster":
-        return new Cluster(name, <any> undefined, { urn });
-      case "kubernetes:cluster.x-k8s.io/v1alpha4:ClusterClass":
-        return new ClusterClass(name, <any> undefined, { urn });
-      case "kubernetes:cluster.x-k8s.io/v1alpha4:Machine":
-        return new Machine(name, <any> undefined, { urn });
-      case "kubernetes:cluster.x-k8s.io/v1alpha4:MachineDeployment":
-        return new MachineDeployment(name, <any> undefined, { urn });
-      case "kubernetes:cluster.x-k8s.io/v1alpha4:MachineHealthCheck":
-        return new MachineHealthCheck(name, <any> undefined, { urn });
-      case "kubernetes:cluster.x-k8s.io/v1alpha4:MachinePool":
-        return new MachinePool(name, <any> undefined, { urn });
-      case "kubernetes:cluster.x-k8s.io/v1alpha4:MachineSet":
-        return new MachineSet(name, <any> undefined, { urn });
-      default:
-        throw new Error(`unknown resource type ${type}`);
-    }
-  },
+    version: utilities.getVersion(),
+    construct: (name: string, type: string, urn: string): pulumi.Resource => {
+        switch (type) {
+            case "kubernetes:cluster.x-k8s.io/v1alpha4:Cluster":
+                return new Cluster(name, <any>undefined, { urn })
+            case "kubernetes:cluster.x-k8s.io/v1alpha4:ClusterClass":
+                return new ClusterClass(name, <any>undefined, { urn })
+            case "kubernetes:cluster.x-k8s.io/v1alpha4:Machine":
+                return new Machine(name, <any>undefined, { urn })
+            case "kubernetes:cluster.x-k8s.io/v1alpha4:MachineDeployment":
+                return new MachineDeployment(name, <any>undefined, { urn })
+            case "kubernetes:cluster.x-k8s.io/v1alpha4:MachineHealthCheck":
+                return new MachineHealthCheck(name, <any>undefined, { urn })
+            case "kubernetes:cluster.x-k8s.io/v1alpha4:MachinePool":
+                return new MachinePool(name, <any>undefined, { urn })
+            case "kubernetes:cluster.x-k8s.io/v1alpha4:MachineSet":
+                return new MachineSet(name, <any>undefined, { urn })
+            default:
+                throw new Error(`unknown resource type ${type}`);
+        }
+    },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "cluster.x-k8s.io/v1alpha4", _module);
+pulumi.runtime.registerResourceModule("thecluster-crds", "cluster.x-k8s.io/v1alpha4", _module)

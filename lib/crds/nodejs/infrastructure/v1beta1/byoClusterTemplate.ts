@@ -6,85 +6,81 @@ import * as inputs from "../../types/input";
 import * as outputs from "../../types/output";
 import * as utilities from "../../utilities";
 
-import { ObjectMeta } from "../../meta/v1";
+import {ObjectMeta} from "../../meta/v1";
 
 /**
  * ByoClusterTemplate is the Schema for the byoclustertemplates API.
  */
 export class ByoClusterTemplate extends pulumi.CustomResource {
-  /**
-   * Get an existing ByoClusterTemplate resource's state with the given name, ID, and optional extra
-   * properties used to qualify the lookup.
-   *
-   * @param name The _unique_ name of the resulting resource.
-   * @param id The _unique_ provider ID of the resource to lookup.
-   * @param opts Optional settings to control the behavior of the CustomResource.
-   */
-  public static get(
-    name: string,
-    id: pulumi.Input<pulumi.ID>,
-    opts?: pulumi.CustomResourceOptions,
-  ): ByoClusterTemplate {
-    return new ByoClusterTemplate(name, undefined as any, { ...opts, id: id });
-  }
-
-  /** @internal */
-  public static readonly __pulumiType = "kubernetes:infrastructure.cluster.x-k8s.io/v1beta1:ByoClusterTemplate";
-
-  /**
-   * Returns true if the given object is an instance of ByoClusterTemplate.  This is designed to work even
-   * when multiple copies of the Pulumi SDK have been loaded into the same process.
-   */
-  public static isInstance(obj: any): obj is ByoClusterTemplate {
-    if (obj === undefined || obj === null) {
-      return false;
+    /**
+     * Get an existing ByoClusterTemplate resource's state with the given name, ID, and optional extra
+     * properties used to qualify the lookup.
+     *
+     * @param name The _unique_ name of the resulting resource.
+     * @param id The _unique_ provider ID of the resource to lookup.
+     * @param opts Optional settings to control the behavior of the CustomResource.
+     */
+    public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): ByoClusterTemplate {
+        return new ByoClusterTemplate(name, undefined as any, { ...opts, id: id });
     }
-    return obj["__pulumiType"] === ByoClusterTemplate.__pulumiType;
-  }
 
-  public readonly apiVersion!: pulumi.Output<"infrastructure.cluster.x-k8s.io/v1beta1" | undefined>;
-  public readonly kind!: pulumi.Output<"ByoClusterTemplate" | undefined>;
-  public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
-  /**
-   * ByoClusterTemplateSpec defines the desired state of ByoClusterTemplate.
-   */
-  public readonly spec!: pulumi.Output<outputs.infrastructure.v1beta1.ByoClusterTemplateSpec | undefined>;
+    /** @internal */
+    public static readonly __pulumiType = 'kubernetes:infrastructure.cluster.x-k8s.io/v1beta1:ByoClusterTemplate';
 
-  /**
-   * Create a ByoClusterTemplate resource with the given unique name, arguments, and options.
-   *
-   * @param name The _unique_ name of the resource.
-   * @param args The arguments to use to populate this resource's properties.
-   * @param opts A bag of options that control this resource's behavior.
-   */
-  constructor(name: string, args?: ByoClusterTemplateArgs, opts?: pulumi.CustomResourceOptions) {
-    let resourceInputs: pulumi.Inputs = {};
-    opts = opts || {};
-    if (!opts.id) {
-      resourceInputs["apiVersion"] = "infrastructure.cluster.x-k8s.io/v1beta1";
-      resourceInputs["kind"] = "ByoClusterTemplate";
-      resourceInputs["metadata"] = args ? args.metadata : undefined;
-      resourceInputs["spec"] = args ? args.spec : undefined;
-    } else {
-      resourceInputs["apiVersion"] = undefined /*out*/;
-      resourceInputs["kind"] = undefined /*out*/;
-      resourceInputs["metadata"] = undefined /*out*/;
-      resourceInputs["spec"] = undefined /*out*/;
+    /**
+     * Returns true if the given object is an instance of ByoClusterTemplate.  This is designed to work even
+     * when multiple copies of the Pulumi SDK have been loaded into the same process.
+     */
+    public static isInstance(obj: any): obj is ByoClusterTemplate {
+        if (obj === undefined || obj === null) {
+            return false;
+        }
+        return obj['__pulumiType'] === ByoClusterTemplate.__pulumiType;
     }
-    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-    super(ByoClusterTemplate.__pulumiType, name, resourceInputs, opts);
-  }
+
+    public readonly apiVersion!: pulumi.Output<"infrastructure.cluster.x-k8s.io/v1beta1" | undefined>;
+    public readonly kind!: pulumi.Output<"ByoClusterTemplate" | undefined>;
+    public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
+    /**
+     * ByoClusterTemplateSpec defines the desired state of ByoClusterTemplate.
+     */
+    public readonly spec!: pulumi.Output<outputs.infrastructure.v1beta1.ByoClusterTemplateSpec | undefined>;
+
+    /**
+     * Create a ByoClusterTemplate resource with the given unique name, arguments, and options.
+     *
+     * @param name The _unique_ name of the resource.
+     * @param args The arguments to use to populate this resource's properties.
+     * @param opts A bag of options that control this resource's behavior.
+     */
+    constructor(name: string, args?: ByoClusterTemplateArgs, opts?: pulumi.CustomResourceOptions) {
+        let resourceInputs: pulumi.Inputs = {};
+        opts = opts || {};
+        if (!opts.id) {
+            resourceInputs["apiVersion"] = "infrastructure.cluster.x-k8s.io/v1beta1";
+            resourceInputs["kind"] = "ByoClusterTemplate";
+            resourceInputs["metadata"] = args ? args.metadata : undefined;
+            resourceInputs["spec"] = args ? args.spec : undefined;
+        } else {
+            resourceInputs["apiVersion"] = undefined /*out*/;
+            resourceInputs["kind"] = undefined /*out*/;
+            resourceInputs["metadata"] = undefined /*out*/;
+            resourceInputs["spec"] = undefined /*out*/;
+        }
+        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+        super(ByoClusterTemplate.__pulumiType, name, resourceInputs, opts);
+    }
 }
 
 /**
  * The set of arguments for constructing a ByoClusterTemplate resource.
  */
 export interface ByoClusterTemplateArgs {
-  apiVersion?: pulumi.Input<"infrastructure.cluster.x-k8s.io/v1beta1">;
-  kind?: pulumi.Input<"ByoClusterTemplate">;
-  metadata?: pulumi.Input<ObjectMeta>;
-  /**
-   * ByoClusterTemplateSpec defines the desired state of ByoClusterTemplate.
-   */
-  spec?: pulumi.Input<inputs.infrastructure.v1beta1.ByoClusterTemplateSpecArgs>;
+    apiVersion?: pulumi.Input<"infrastructure.cluster.x-k8s.io/v1beta1">;
+    kind?: pulumi.Input<"ByoClusterTemplate">;
+    metadata?: pulumi.Input<ObjectMeta>;
+    /**
+     * ByoClusterTemplateSpec defines the desired state of ByoClusterTemplate.
+     */
+    spec?: pulumi.Input<inputs.infrastructure.v1beta1.ByoClusterTemplateSpecArgs>;
 }

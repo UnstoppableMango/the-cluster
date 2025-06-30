@@ -10,15 +10,16 @@ export type TalosControlPlane = import("./talosControlPlane").TalosControlPlane;
 export const TalosControlPlane: typeof import("./talosControlPlane").TalosControlPlane = null as any;
 utilities.lazyLoad(exports, ["TalosControlPlane"], () => require("./talosControlPlane"));
 
+
 const _module = {
-  version: utilities.getVersion(),
-  construct: (name: string, type: string, urn: string): pulumi.Resource => {
-    switch (type) {
-      case "kubernetes:controlplane.cluster.x-k8s.io/v1alpha3:TalosControlPlane":
-        return new TalosControlPlane(name, <any> undefined, { urn });
-      default:
-        throw new Error(`unknown resource type ${type}`);
-    }
-  },
+    version: utilities.getVersion(),
+    construct: (name: string, type: string, urn: string): pulumi.Resource => {
+        switch (type) {
+            case "kubernetes:controlplane.cluster.x-k8s.io/v1alpha3:TalosControlPlane":
+                return new TalosControlPlane(name, <any>undefined, { urn })
+            default:
+                throw new Error(`unknown resource type ${type}`);
+        }
+    },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "controlplane.cluster.x-k8s.io/v1alpha3", _module);
+pulumi.runtime.registerResourceModule("thecluster-crds", "controlplane.cluster.x-k8s.io/v1alpha3", _module)

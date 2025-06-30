@@ -10,6 +10,7 @@ export type Provider = import("./provider").Provider;
 export const Provider: typeof import("./provider").Provider = null as any;
 utilities.lazyLoad(exports, ["Provider"], () => require("./provider"));
 
+
 // Export sub-modules:
 import * as acme from "./acme";
 import * as actions from "./actions";
@@ -37,37 +38,37 @@ import * as trust from "./trust";
 import * as types from "./types";
 
 export {
-  acme,
-  actions,
-  addons,
-  bootstrap,
-  certmanager,
-  charts,
-  cluster,
-  controlplane,
-  externaldns,
-  gateway,
-  gatewayoperator,
-  infrastructure,
-  ipam,
-  k8s,
-  metal,
-  metallb,
-  minio,
-  networking,
-  pulumiOperator,
-  runtime,
-  snapshot,
-  sts,
-  trust,
-  types,
+    acme,
+    actions,
+    addons,
+    bootstrap,
+    certmanager,
+    charts,
+    cluster,
+    controlplane,
+    externaldns,
+    gateway,
+    gatewayoperator,
+    infrastructure,
+    ipam,
+    k8s,
+    metal,
+    metallb,
+    minio,
+    networking,
+    pulumiOperator,
+    runtime,
+    snapshot,
+    sts,
+    trust,
+    types,
 };
 pulumi.runtime.registerResourcePackage("thecluster-crds", {
-  version: utilities.getVersion(),
-  constructProvider: (name: string, type: string, urn: string): pulumi.ProviderResource => {
-    if (type !== "pulumi:providers:crds") {
-      throw new Error(`unknown provider type ${type}`);
-    }
-    return new Provider(name, <any> undefined, { urn });
-  },
+    version: utilities.getVersion(),
+    constructProvider: (name: string, type: string, urn: string): pulumi.ProviderResource => {
+        if (type !== "pulumi:providers:crds") {
+            throw new Error(`unknown provider type ${type}`);
+        }
+        return new Provider(name, <any>undefined, { urn });
+    },
 });

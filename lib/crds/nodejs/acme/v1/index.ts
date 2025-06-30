@@ -15,17 +15,18 @@ export type Order = import("./order").Order;
 export const Order: typeof import("./order").Order = null as any;
 utilities.lazyLoad(exports, ["Order"], () => require("./order"));
 
+
 const _module = {
-  version: utilities.getVersion(),
-  construct: (name: string, type: string, urn: string): pulumi.Resource => {
-    switch (type) {
-      case "kubernetes:acme.cert-manager.io/v1:Challenge":
-        return new Challenge(name, <any> undefined, { urn });
-      case "kubernetes:acme.cert-manager.io/v1:Order":
-        return new Order(name, <any> undefined, { urn });
-      default:
-        throw new Error(`unknown resource type ${type}`);
-    }
-  },
+    version: utilities.getVersion(),
+    construct: (name: string, type: string, urn: string): pulumi.Resource => {
+        switch (type) {
+            case "kubernetes:acme.cert-manager.io/v1:Challenge":
+                return new Challenge(name, <any>undefined, { urn })
+            case "kubernetes:acme.cert-manager.io/v1:Order":
+                return new Order(name, <any>undefined, { urn })
+            default:
+                throw new Error(`unknown resource type ${type}`);
+        }
+    },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "acme.cert-manager.io/v1", _module);
+pulumi.runtime.registerResourceModule("thecluster-crds", "acme.cert-manager.io/v1", _module)

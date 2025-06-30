@@ -10,15 +10,16 @@ export type BGPPeer = import("./bgppeer").BGPPeer;
 export const BGPPeer: typeof import("./bgppeer").BGPPeer = null as any;
 utilities.lazyLoad(exports, ["BGPPeer"], () => require("./bgppeer"));
 
+
 const _module = {
-  version: utilities.getVersion(),
-  construct: (name: string, type: string, urn: string): pulumi.Resource => {
-    switch (type) {
-      case "kubernetes:metallb.io/v1beta2:BGPPeer":
-        return new BGPPeer(name, <any> undefined, { urn });
-      default:
-        throw new Error(`unknown resource type ${type}`);
-    }
-  },
+    version: utilities.getVersion(),
+    construct: (name: string, type: string, urn: string): pulumi.Resource => {
+        switch (type) {
+            case "kubernetes:metallb.io/v1beta2:BGPPeer":
+                return new BGPPeer(name, <any>undefined, { urn })
+            default:
+                throw new Error(`unknown resource type ${type}`);
+        }
+    },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "metallb.io/v1beta2", _module);
+pulumi.runtime.registerResourceModule("thecluster-crds", "metallb.io/v1beta2", _module)
