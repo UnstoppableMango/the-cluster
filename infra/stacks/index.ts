@@ -2,9 +2,16 @@ import * as pulumi from '@pulumi/pulumi';
 import { AccessToken } from '@pulumi/pulumiservice';
 import { Namespace, Secret, ServiceAccount } from '@pulumi/kubernetes/core/v1';
 import { CustomResource } from '@pulumi/kubernetes/apiextensions';
-import { ClusterRoleBinding } from '@pulumi/kubernetes/rbac/v1';
+import { ClusterRoleBinding, RoleBinding } from '@pulumi/kubernetes/rbac/v1';
+import { versions } from './config';
 
-const sa = new ServiceAccount('pulumi-operator', {});
+const ns = new Namespace('thecluster-stacks', {
+  metadata: { name: 'thecluster-stacks' },
+});
+
+const sa = new ServiceAccount('pulumi-operator', {
+  metadata: { namespace: ns.metadata.name },
+});
 
 const crb = new ClusterRoleBinding('pulumi-operator:system:auth-delegator', {
   roleRef: {
@@ -17,10 +24,6 @@ const crb = new ClusterRoleBinding('pulumi-operator:system:auth-delegator', {
     name: sa.metadata.name,
     namespace: sa.metadata.namespace,
   }],
-});
-
-const ns = new Namespace('stacks', {
-  metadata: { name: 'thecluster-stacks' },
 });
 
 const secretKey = 'accessToken';
@@ -38,13 +41,28 @@ const secret = new Secret('pulumi-operator', {
 
 const projectRepo = 'https://github.com/UnstoppableMango/the-cluster';
 
-const stacks = new CustomResource('stacks', {
+const certManagerBinding = new RoleBinding('pulumi-operator:admin', {
+  metadata: { namespace: 'cert-manager', },
+  roleRef: {
+    apiGroup: 'rbac.authorization.k8s.io',
+    kind: 'ClusterRole',
+    name: 'cluster-admin',
+  },
+  subjects: [{
+    kind: 'ServiceAccount',
+    name: sa.metadata.name,
+    namespace: sa.metadata.namespace,
+  }],
+});
+
+const certManager = new CustomResource('cert-manager', {
   apiVersion: 'pulumi.com/v1',
   kind: 'Stack',
+  metadata: { namespace: ns.metadata.name },
   spec: {
     serviceAccountName: sa.metadata.name,
     projectRepo,
-    repoDir: 'infra/stacks',
+    repoDir: 'apps/cert-manager',
     branch: 'main',
     shallow: true,
     stack: 'pinkdiamond',
@@ -58,5 +76,10 @@ const stacks = new CustomResource('stacks', {
         },
       },
     },
+    workspaceTemplate: {
+      spec: {
+        image: `pulumi/pulumi:${versions.pulumiImage}`,
+      },
+    },
   },
-}, { dependsOn: [sa, crb, secret] });
+}, { dependsOn: [sa, crb, certManagerBinding, secret] });
