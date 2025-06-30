@@ -1,0 +1,13 @@
+{
+  "name": "thecluster-stacks",
+  "main": "index.ts",
+  "dependencies": {
+    "@pulumi/kubernetes": "^4.23.0",
+    "@pulumi/pulumi": "^3.181.0",
+    "@pulumi/pulumiservice": "^0.29.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.34",
+    "typescript": "^5.0.0"
+  }
+}
