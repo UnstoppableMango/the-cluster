@@ -1,23 +1,17 @@
+import { Namespace, Secret } from '@pulumi/kubernetes/core/v1';
+import { Chart } from '@pulumi/kubernetes/helm/v4';
 import { getStack } from '@pulumi/pulumi';
 import { AccessToken } from '@pulumi/pulumiservice';
-import { Secret } from '@pulumi/kubernetes/core/v1';
-import { Directory } from '@pulumi/kubernetes/kustomize/v2';
-import { stack, versions } from './config';
+import { versions } from './config';
 
-const accessToken = new AccessToken(`pulumi-operator-${getStack()}`, {
-  description: 'Token for the operator to use to deploy stacks',
+const ns = new Namespace('pulumi-operator', {
+  metadata: { name: 'pulumi-kubernetes-operator' },
 });
 
-const secret = new Secret('pulumi-operator', {
-  metadata: { namespace: 'pulumi-kubernetes-operator' },
-  stringData: {
-    accessToken: accessToken.value,
-  },
+const chart = new Chart('pulumi-operator', {
+  chart: 'oci://ghcr.io/pulumi/helm-charts/pulumi-kubernetes-operator',
+  version: versions.pulumiOperator,
+  namespace: ns.metadata.name,
 });
 
-const manifests = new Directory('operator', {
-  namespace: 'pulumi-operator',
-  directory: `https://github.com/pulumi/pulumi-kubernetes-operator/operator/config/default/?ref=v2.0.0-beta.3`,
-}, { dependsOn: secret });
-
-export { versions, stack }
+export { versions };

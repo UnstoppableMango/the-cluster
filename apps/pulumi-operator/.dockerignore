@@ -1,9 +1,0 @@
-.kube/
-.talos/
-node_modules/
-charts/
-.helmignore
-Chart.*
-*.ts
-*.json
-Pulumi.*

@@ -1,3 +1,0 @@
-config:
-  thecluster-pulumi-operator:stack:
-    name: pinkdiamond
