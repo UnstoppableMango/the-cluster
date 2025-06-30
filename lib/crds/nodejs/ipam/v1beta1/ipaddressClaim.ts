@@ -6,91 +6,91 @@ import * as inputs from "../../types/input";
 import * as outputs from "../../types/output";
 import * as utilities from "../../utilities";
 
-import {ObjectMeta} from "../../meta/v1";
+import { ObjectMeta } from "../../meta/v1";
 
 /**
  * IPAddressClaim is the Schema for the ipaddressclaim API.
  */
 export class IPAddressClaim extends pulumi.CustomResource {
-    /**
-     * Get an existing IPAddressClaim resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): IPAddressClaim {
-        return new IPAddressClaim(name, undefined as any, { ...opts, id: id });
+  /**
+   * Get an existing IPAddressClaim resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): IPAddressClaim {
+    return new IPAddressClaim(name, undefined as any, { ...opts, id: id });
+  }
+
+  /** @internal */
+  public static readonly __pulumiType = "kubernetes:ipam.cluster.x-k8s.io/v1beta1:IPAddressClaim";
+
+  /**
+   * Returns true if the given object is an instance of IPAddressClaim.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  public static isInstance(obj: any): obj is IPAddressClaim {
+    if (obj === undefined || obj === null) {
+      return false;
     }
+    return obj["__pulumiType"] === IPAddressClaim.__pulumiType;
+  }
 
-    /** @internal */
-    public static readonly __pulumiType = 'kubernetes:ipam.cluster.x-k8s.io/v1beta1:IPAddressClaim';
+  public readonly apiVersion!: pulumi.Output<"ipam.cluster.x-k8s.io/v1beta1" | undefined>;
+  public readonly kind!: pulumi.Output<"IPAddressClaim" | undefined>;
+  public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
+  /**
+   * IPAddressClaimSpec is the desired state of an IPAddressClaim.
+   */
+  public readonly spec!: pulumi.Output<outputs.ipam.v1beta1.IPAddressClaimSpec | undefined>;
+  /**
+   * IPAddressClaimStatus is the observed status of a IPAddressClaim.
+   */
+  public readonly status!: pulumi.Output<outputs.ipam.v1beta1.IPAddressClaimStatus | undefined>;
 
-    /**
-     * Returns true if the given object is an instance of IPAddressClaim.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    public static isInstance(obj: any): obj is IPAddressClaim {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === IPAddressClaim.__pulumiType;
+  /**
+   * Create a IPAddressClaim resource with the given unique name, arguments, and options.
+   *
+   * @param name The _unique_ name of the resource.
+   * @param args The arguments to use to populate this resource's properties.
+   * @param opts A bag of options that control this resource's behavior.
+   */
+  constructor(name: string, args?: IPAddressClaimArgs, opts?: pulumi.CustomResourceOptions) {
+    let resourceInputs: pulumi.Inputs = {};
+    opts = opts || {};
+    if (!opts.id) {
+      resourceInputs["apiVersion"] = "ipam.cluster.x-k8s.io/v1beta1";
+      resourceInputs["kind"] = "IPAddressClaim";
+      resourceInputs["metadata"] = args ? args.metadata : undefined;
+      resourceInputs["spec"] = args ? args.spec : undefined;
+      resourceInputs["status"] = args ? args.status : undefined;
+    } else {
+      resourceInputs["apiVersion"] = undefined /*out*/;
+      resourceInputs["kind"] = undefined /*out*/;
+      resourceInputs["metadata"] = undefined /*out*/;
+      resourceInputs["spec"] = undefined /*out*/;
+      resourceInputs["status"] = undefined /*out*/;
     }
-
-    public readonly apiVersion!: pulumi.Output<"ipam.cluster.x-k8s.io/v1beta1" | undefined>;
-    public readonly kind!: pulumi.Output<"IPAddressClaim" | undefined>;
-    public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
-    /**
-     * IPAddressClaimSpec is the desired state of an IPAddressClaim.
-     */
-    public readonly spec!: pulumi.Output<outputs.ipam.v1beta1.IPAddressClaimSpec | undefined>;
-    /**
-     * IPAddressClaimStatus is the observed status of a IPAddressClaim.
-     */
-    public readonly status!: pulumi.Output<outputs.ipam.v1beta1.IPAddressClaimStatus | undefined>;
-
-    /**
-     * Create a IPAddressClaim resource with the given unique name, arguments, and options.
-     *
-     * @param name The _unique_ name of the resource.
-     * @param args The arguments to use to populate this resource's properties.
-     * @param opts A bag of options that control this resource's behavior.
-     */
-    constructor(name: string, args?: IPAddressClaimArgs, opts?: pulumi.CustomResourceOptions) {
-        let resourceInputs: pulumi.Inputs = {};
-        opts = opts || {};
-        if (!opts.id) {
-            resourceInputs["apiVersion"] = "ipam.cluster.x-k8s.io/v1beta1";
-            resourceInputs["kind"] = "IPAddressClaim";
-            resourceInputs["metadata"] = args ? args.metadata : undefined;
-            resourceInputs["spec"] = args ? args.spec : undefined;
-            resourceInputs["status"] = args ? args.status : undefined;
-        } else {
-            resourceInputs["apiVersion"] = undefined /*out*/;
-            resourceInputs["kind"] = undefined /*out*/;
-            resourceInputs["metadata"] = undefined /*out*/;
-            resourceInputs["spec"] = undefined /*out*/;
-            resourceInputs["status"] = undefined /*out*/;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        super(IPAddressClaim.__pulumiType, name, resourceInputs, opts);
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    super(IPAddressClaim.__pulumiType, name, resourceInputs, opts);
+  }
 }
 
 /**
  * The set of arguments for constructing a IPAddressClaim resource.
  */
 export interface IPAddressClaimArgs {
-    apiVersion?: pulumi.Input<"ipam.cluster.x-k8s.io/v1beta1">;
-    kind?: pulumi.Input<"IPAddressClaim">;
-    metadata?: pulumi.Input<ObjectMeta>;
-    /**
-     * IPAddressClaimSpec is the desired state of an IPAddressClaim.
-     */
-    spec?: pulumi.Input<inputs.ipam.v1beta1.IPAddressClaimSpecArgs>;
-    /**
-     * IPAddressClaimStatus is the observed status of a IPAddressClaim.
-     */
-    status?: pulumi.Input<inputs.ipam.v1beta1.IPAddressClaimStatusArgs>;
+  apiVersion?: pulumi.Input<"ipam.cluster.x-k8s.io/v1beta1">;
+  kind?: pulumi.Input<"IPAddressClaim">;
+  metadata?: pulumi.Input<ObjectMeta>;
+  /**
+   * IPAddressClaimSpec is the desired state of an IPAddressClaim.
+   */
+  spec?: pulumi.Input<inputs.ipam.v1beta1.IPAddressClaimSpecArgs>;
+  /**
+   * IPAddressClaimStatus is the observed status of a IPAddressClaim.
+   */
+  status?: pulumi.Input<inputs.ipam.v1beta1.IPAddressClaimStatusArgs>;
 }

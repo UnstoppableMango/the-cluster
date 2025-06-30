@@ -6,81 +6,85 @@ import * as inputs from "../../types/input";
 import * as outputs from "../../types/output";
 import * as utilities from "../../utilities";
 
-import {ObjectMeta} from "../../meta/v1";
+import { ObjectMeta } from "../../meta/v1";
 
 /**
  * TalosConfigTemplate is the Schema for the talosconfigtemplates API
  */
 export class TalosConfigTemplate extends pulumi.CustomResource {
-    /**
-     * Get an existing TalosConfigTemplate resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): TalosConfigTemplate {
-        return new TalosConfigTemplate(name, undefined as any, { ...opts, id: id });
+  /**
+   * Get an existing TalosConfigTemplate resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  public static get(
+    name: string,
+    id: pulumi.Input<pulumi.ID>,
+    opts?: pulumi.CustomResourceOptions,
+  ): TalosConfigTemplate {
+    return new TalosConfigTemplate(name, undefined as any, { ...opts, id: id });
+  }
+
+  /** @internal */
+  public static readonly __pulumiType = "kubernetes:bootstrap.cluster.x-k8s.io/v1alpha3:TalosConfigTemplate";
+
+  /**
+   * Returns true if the given object is an instance of TalosConfigTemplate.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  public static isInstance(obj: any): obj is TalosConfigTemplate {
+    if (obj === undefined || obj === null) {
+      return false;
     }
+    return obj["__pulumiType"] === TalosConfigTemplate.__pulumiType;
+  }
 
-    /** @internal */
-    public static readonly __pulumiType = 'kubernetes:bootstrap.cluster.x-k8s.io/v1alpha3:TalosConfigTemplate';
+  public readonly apiVersion!: pulumi.Output<"bootstrap.cluster.x-k8s.io/v1alpha3" | undefined>;
+  public readonly kind!: pulumi.Output<"TalosConfigTemplate" | undefined>;
+  public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
+  /**
+   * TalosConfigTemplateSpec defines the desired state of TalosConfigTemplate
+   */
+  public readonly spec!: pulumi.Output<outputs.bootstrap.v1alpha3.TalosConfigTemplateSpec | undefined>;
 
-    /**
-     * Returns true if the given object is an instance of TalosConfigTemplate.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    public static isInstance(obj: any): obj is TalosConfigTemplate {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === TalosConfigTemplate.__pulumiType;
+  /**
+   * Create a TalosConfigTemplate resource with the given unique name, arguments, and options.
+   *
+   * @param name The _unique_ name of the resource.
+   * @param args The arguments to use to populate this resource's properties.
+   * @param opts A bag of options that control this resource's behavior.
+   */
+  constructor(name: string, args?: TalosConfigTemplateArgs, opts?: pulumi.CustomResourceOptions) {
+    let resourceInputs: pulumi.Inputs = {};
+    opts = opts || {};
+    if (!opts.id) {
+      resourceInputs["apiVersion"] = "bootstrap.cluster.x-k8s.io/v1alpha3";
+      resourceInputs["kind"] = "TalosConfigTemplate";
+      resourceInputs["metadata"] = args ? args.metadata : undefined;
+      resourceInputs["spec"] = args ? args.spec : undefined;
+    } else {
+      resourceInputs["apiVersion"] = undefined /*out*/;
+      resourceInputs["kind"] = undefined /*out*/;
+      resourceInputs["metadata"] = undefined /*out*/;
+      resourceInputs["spec"] = undefined /*out*/;
     }
-
-    public readonly apiVersion!: pulumi.Output<"bootstrap.cluster.x-k8s.io/v1alpha3" | undefined>;
-    public readonly kind!: pulumi.Output<"TalosConfigTemplate" | undefined>;
-    public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
-    /**
-     * TalosConfigTemplateSpec defines the desired state of TalosConfigTemplate
-     */
-    public readonly spec!: pulumi.Output<outputs.bootstrap.v1alpha3.TalosConfigTemplateSpec | undefined>;
-
-    /**
-     * Create a TalosConfigTemplate resource with the given unique name, arguments, and options.
-     *
-     * @param name The _unique_ name of the resource.
-     * @param args The arguments to use to populate this resource's properties.
-     * @param opts A bag of options that control this resource's behavior.
-     */
-    constructor(name: string, args?: TalosConfigTemplateArgs, opts?: pulumi.CustomResourceOptions) {
-        let resourceInputs: pulumi.Inputs = {};
-        opts = opts || {};
-        if (!opts.id) {
-            resourceInputs["apiVersion"] = "bootstrap.cluster.x-k8s.io/v1alpha3";
-            resourceInputs["kind"] = "TalosConfigTemplate";
-            resourceInputs["metadata"] = args ? args.metadata : undefined;
-            resourceInputs["spec"] = args ? args.spec : undefined;
-        } else {
-            resourceInputs["apiVersion"] = undefined /*out*/;
-            resourceInputs["kind"] = undefined /*out*/;
-            resourceInputs["metadata"] = undefined /*out*/;
-            resourceInputs["spec"] = undefined /*out*/;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        super(TalosConfigTemplate.__pulumiType, name, resourceInputs, opts);
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    super(TalosConfigTemplate.__pulumiType, name, resourceInputs, opts);
+  }
 }
 
 /**
  * The set of arguments for constructing a TalosConfigTemplate resource.
  */
 export interface TalosConfigTemplateArgs {
-    apiVersion?: pulumi.Input<"bootstrap.cluster.x-k8s.io/v1alpha3">;
-    kind?: pulumi.Input<"TalosConfigTemplate">;
-    metadata?: pulumi.Input<ObjectMeta>;
-    /**
-     * TalosConfigTemplateSpec defines the desired state of TalosConfigTemplate
-     */
-    spec?: pulumi.Input<inputs.bootstrap.v1alpha3.TalosConfigTemplateSpecArgs>;
+  apiVersion?: pulumi.Input<"bootstrap.cluster.x-k8s.io/v1alpha3">;
+  kind?: pulumi.Input<"TalosConfigTemplate">;
+  metadata?: pulumi.Input<ObjectMeta>;
+  /**
+   * TalosConfigTemplateSpec defines the desired state of TalosConfigTemplate
+   */
+  spec?: pulumi.Input<inputs.bootstrap.v1alpha3.TalosConfigTemplateSpecArgs>;
 }

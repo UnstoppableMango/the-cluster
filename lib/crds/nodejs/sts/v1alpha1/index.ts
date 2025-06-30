@@ -10,16 +10,15 @@ export type PolicyBinding = import("./policyBinding").PolicyBinding;
 export const PolicyBinding: typeof import("./policyBinding").PolicyBinding = null as any;
 utilities.lazyLoad(exports, ["PolicyBinding"], () => require("./policyBinding"));
 
-
 const _module = {
-    version: utilities.getVersion(),
-    construct: (name: string, type: string, urn: string): pulumi.Resource => {
-        switch (type) {
-            case "kubernetes:sts.min.io/v1alpha1:PolicyBinding":
-                return new PolicyBinding(name, <any>undefined, { urn })
-            default:
-                throw new Error(`unknown resource type ${type}`);
-        }
-    },
+  version: utilities.getVersion(),
+  construct: (name: string, type: string, urn: string): pulumi.Resource => {
+    switch (type) {
+      case "kubernetes:sts.min.io/v1alpha1:PolicyBinding":
+        return new PolicyBinding(name, <any> undefined, { urn });
+      default:
+        throw new Error(`unknown resource type ${type}`);
+    }
+  },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "sts.min.io/v1alpha1", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "sts.min.io/v1alpha1", _module);

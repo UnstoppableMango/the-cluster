@@ -7,7 +7,4 @@ import * as utilities from "../utilities";
 import * as v1alpha1 from "./v1alpha1";
 import * as v1alpha2 from "./v1alpha2";
 
-export {
-    v1alpha1,
-    v1alpha2,
-};
+export { v1alpha1, v1alpha2 };

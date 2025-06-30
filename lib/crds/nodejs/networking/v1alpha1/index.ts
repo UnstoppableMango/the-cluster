@@ -20,20 +20,19 @@ export type TunnelBinding = import("./tunnelBinding").TunnelBinding;
 export const TunnelBinding: typeof import("./tunnelBinding").TunnelBinding = null as any;
 utilities.lazyLoad(exports, ["TunnelBinding"], () => require("./tunnelBinding"));
 
-
 const _module = {
-    version: utilities.getVersion(),
-    construct: (name: string, type: string, urn: string): pulumi.Resource => {
-        switch (type) {
-            case "kubernetes:networking.cfargotunnel.com/v1alpha1:ClusterTunnel":
-                return new ClusterTunnel(name, <any>undefined, { urn })
-            case "kubernetes:networking.cfargotunnel.com/v1alpha1:Tunnel":
-                return new Tunnel(name, <any>undefined, { urn })
-            case "kubernetes:networking.cfargotunnel.com/v1alpha1:TunnelBinding":
-                return new TunnelBinding(name, <any>undefined, { urn })
-            default:
-                throw new Error(`unknown resource type ${type}`);
-        }
-    },
+  version: utilities.getVersion(),
+  construct: (name: string, type: string, urn: string): pulumi.Resource => {
+    switch (type) {
+      case "kubernetes:networking.cfargotunnel.com/v1alpha1:ClusterTunnel":
+        return new ClusterTunnel(name, <any> undefined, { urn });
+      case "kubernetes:networking.cfargotunnel.com/v1alpha1:Tunnel":
+        return new Tunnel(name, <any> undefined, { urn });
+      case "kubernetes:networking.cfargotunnel.com/v1alpha1:TunnelBinding":
+        return new TunnelBinding(name, <any> undefined, { urn });
+      default:
+        throw new Error(`unknown resource type ${type}`);
+    }
+  },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "networking.cfargotunnel.com/v1alpha1", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "networking.cfargotunnel.com/v1alpha1", _module);

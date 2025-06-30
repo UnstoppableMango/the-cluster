@@ -6,91 +6,91 @@ import * as inputs from "../../types/input";
 import * as outputs from "../../types/output";
 import * as utilities from "../../utilities";
 
-import {ObjectMeta} from "../../meta/v1";
+import { ObjectMeta } from "../../meta/v1";
 
 /**
  * ServerClass is the Schema for the serverclasses API.
  */
 export class ServerClass extends pulumi.CustomResource {
-    /**
-     * Get an existing ServerClass resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): ServerClass {
-        return new ServerClass(name, undefined as any, { ...opts, id: id });
+  /**
+   * Get an existing ServerClass resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): ServerClass {
+    return new ServerClass(name, undefined as any, { ...opts, id: id });
+  }
+
+  /** @internal */
+  public static readonly __pulumiType = "kubernetes:metal.sidero.dev/v1alpha2:ServerClass";
+
+  /**
+   * Returns true if the given object is an instance of ServerClass.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  public static isInstance(obj: any): obj is ServerClass {
+    if (obj === undefined || obj === null) {
+      return false;
     }
+    return obj["__pulumiType"] === ServerClass.__pulumiType;
+  }
 
-    /** @internal */
-    public static readonly __pulumiType = 'kubernetes:metal.sidero.dev/v1alpha2:ServerClass';
+  public readonly apiVersion!: pulumi.Output<"metal.sidero.dev/v1alpha2" | undefined>;
+  public readonly kind!: pulumi.Output<"ServerClass" | undefined>;
+  public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
+  /**
+   * ServerClassSpec defines the desired state of ServerClass.
+   */
+  public readonly spec!: pulumi.Output<outputs.metal.v1alpha2.ServerClassSpec | undefined>;
+  /**
+   * ServerClassStatus defines the observed state of ServerClass.
+   */
+  public readonly status!: pulumi.Output<outputs.metal.v1alpha2.ServerClassStatus | undefined>;
 
-    /**
-     * Returns true if the given object is an instance of ServerClass.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    public static isInstance(obj: any): obj is ServerClass {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === ServerClass.__pulumiType;
+  /**
+   * Create a ServerClass resource with the given unique name, arguments, and options.
+   *
+   * @param name The _unique_ name of the resource.
+   * @param args The arguments to use to populate this resource's properties.
+   * @param opts A bag of options that control this resource's behavior.
+   */
+  constructor(name: string, args?: ServerClassArgs, opts?: pulumi.CustomResourceOptions) {
+    let resourceInputs: pulumi.Inputs = {};
+    opts = opts || {};
+    if (!opts.id) {
+      resourceInputs["apiVersion"] = "metal.sidero.dev/v1alpha2";
+      resourceInputs["kind"] = "ServerClass";
+      resourceInputs["metadata"] = args ? args.metadata : undefined;
+      resourceInputs["spec"] = args ? args.spec : undefined;
+      resourceInputs["status"] = args ? args.status : undefined;
+    } else {
+      resourceInputs["apiVersion"] = undefined /*out*/;
+      resourceInputs["kind"] = undefined /*out*/;
+      resourceInputs["metadata"] = undefined /*out*/;
+      resourceInputs["spec"] = undefined /*out*/;
+      resourceInputs["status"] = undefined /*out*/;
     }
-
-    public readonly apiVersion!: pulumi.Output<"metal.sidero.dev/v1alpha2" | undefined>;
-    public readonly kind!: pulumi.Output<"ServerClass" | undefined>;
-    public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
-    /**
-     * ServerClassSpec defines the desired state of ServerClass.
-     */
-    public readonly spec!: pulumi.Output<outputs.metal.v1alpha2.ServerClassSpec | undefined>;
-    /**
-     * ServerClassStatus defines the observed state of ServerClass.
-     */
-    public readonly status!: pulumi.Output<outputs.metal.v1alpha2.ServerClassStatus | undefined>;
-
-    /**
-     * Create a ServerClass resource with the given unique name, arguments, and options.
-     *
-     * @param name The _unique_ name of the resource.
-     * @param args The arguments to use to populate this resource's properties.
-     * @param opts A bag of options that control this resource's behavior.
-     */
-    constructor(name: string, args?: ServerClassArgs, opts?: pulumi.CustomResourceOptions) {
-        let resourceInputs: pulumi.Inputs = {};
-        opts = opts || {};
-        if (!opts.id) {
-            resourceInputs["apiVersion"] = "metal.sidero.dev/v1alpha2";
-            resourceInputs["kind"] = "ServerClass";
-            resourceInputs["metadata"] = args ? args.metadata : undefined;
-            resourceInputs["spec"] = args ? args.spec : undefined;
-            resourceInputs["status"] = args ? args.status : undefined;
-        } else {
-            resourceInputs["apiVersion"] = undefined /*out*/;
-            resourceInputs["kind"] = undefined /*out*/;
-            resourceInputs["metadata"] = undefined /*out*/;
-            resourceInputs["spec"] = undefined /*out*/;
-            resourceInputs["status"] = undefined /*out*/;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        super(ServerClass.__pulumiType, name, resourceInputs, opts);
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    super(ServerClass.__pulumiType, name, resourceInputs, opts);
+  }
 }
 
 /**
  * The set of arguments for constructing a ServerClass resource.
  */
 export interface ServerClassArgs {
-    apiVersion?: pulumi.Input<"metal.sidero.dev/v1alpha2">;
-    kind?: pulumi.Input<"ServerClass">;
-    metadata?: pulumi.Input<ObjectMeta>;
-    /**
-     * ServerClassSpec defines the desired state of ServerClass.
-     */
-    spec?: pulumi.Input<inputs.metal.v1alpha2.ServerClassSpecArgs>;
-    /**
-     * ServerClassStatus defines the observed state of ServerClass.
-     */
-    status?: pulumi.Input<inputs.metal.v1alpha2.ServerClassStatusArgs>;
+  apiVersion?: pulumi.Input<"metal.sidero.dev/v1alpha2">;
+  kind?: pulumi.Input<"ServerClass">;
+  metadata?: pulumi.Input<ObjectMeta>;
+  /**
+   * ServerClassSpec defines the desired state of ServerClass.
+   */
+  spec?: pulumi.Input<inputs.metal.v1alpha2.ServerClassSpecArgs>;
+  /**
+   * ServerClassStatus defines the observed state of ServerClass.
+   */
+  status?: pulumi.Input<inputs.metal.v1alpha2.ServerClassStatusArgs>;
 }

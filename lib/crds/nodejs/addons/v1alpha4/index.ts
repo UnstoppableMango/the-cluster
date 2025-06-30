@@ -12,21 +12,21 @@ utilities.lazyLoad(exports, ["ClusterResourceSet"], () => require("./clusterReso
 
 export { ClusterResourceSetBindingArgs } from "./clusterResourceSetBinding";
 export type ClusterResourceSetBinding = import("./clusterResourceSetBinding").ClusterResourceSetBinding;
-export const ClusterResourceSetBinding: typeof import("./clusterResourceSetBinding").ClusterResourceSetBinding = null as any;
+export const ClusterResourceSetBinding: typeof import("./clusterResourceSetBinding").ClusterResourceSetBinding =
+  null as any;
 utilities.lazyLoad(exports, ["ClusterResourceSetBinding"], () => require("./clusterResourceSetBinding"));
 
-
 const _module = {
-    version: utilities.getVersion(),
-    construct: (name: string, type: string, urn: string): pulumi.Resource => {
-        switch (type) {
-            case "kubernetes:addons.cluster.x-k8s.io/v1alpha4:ClusterResourceSet":
-                return new ClusterResourceSet(name, <any>undefined, { urn })
-            case "kubernetes:addons.cluster.x-k8s.io/v1alpha4:ClusterResourceSetBinding":
-                return new ClusterResourceSetBinding(name, <any>undefined, { urn })
-            default:
-                throw new Error(`unknown resource type ${type}`);
-        }
-    },
+  version: utilities.getVersion(),
+  construct: (name: string, type: string, urn: string): pulumi.Resource => {
+    switch (type) {
+      case "kubernetes:addons.cluster.x-k8s.io/v1alpha4:ClusterResourceSet":
+        return new ClusterResourceSet(name, <any> undefined, { urn });
+      case "kubernetes:addons.cluster.x-k8s.io/v1alpha4:ClusterResourceSetBinding":
+        return new ClusterResourceSetBinding(name, <any> undefined, { urn });
+      default:
+        throw new Error(`unknown resource type ${type}`);
+    }
+  },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "addons.cluster.x-k8s.io/v1alpha4", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "addons.cluster.x-k8s.io/v1alpha4", _module);

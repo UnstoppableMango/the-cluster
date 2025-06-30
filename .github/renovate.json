@@ -1,39 +1,39 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "github>UnstoppableMango/renovate-config"
-  ],
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": [
+		"github>UnstoppableMango/renovate-config"
+	],
 	"schedule": [
 		"before 4am on the first day of the month"
 	],
-  "ignorePaths": [
-    "**/node_modules/**",
-    "**/vendor/**",
-    "**/test/**",
-    "**/tests/**",
-    "**/testdata/**",
-    "**/.save/**",
-    "apps/**",
-    "charts/**",
-    "clusters/**",
-    "containers/**",
-    "dbs/**",
-    "infra/**",
-    "lib/**",
-    "tools/**",
-    "**/pulumi-crds/**",
-    "**/crds/**"
-  ],
-  "ignoreDeps": [
-    "@unstoppablemango/thecluster",
-    "@unstoppablemango/thecluster-crds"
-  ],
-  "major": {
-    "dependencyDashboardApproval": true
-  },
-  "git-submodules": {
-    "enabled": true
-  },
-  "customManagers": [],
-  "packageRules": []
+	"ignorePaths": [
+		"**/node_modules/**",
+		"**/vendor/**",
+		"**/test/**",
+		"**/tests/**",
+		"**/testdata/**",
+		"**/.save/**",
+		"apps/**",
+		"charts/**",
+		"clusters/**",
+		"containers/**",
+		"dbs/**",
+		"infra/**",
+		"lib/**",
+		"tools/**",
+		"**/pulumi-crds/**",
+		"**/crds/**"
+	],
+	"ignoreDeps": [
+		"@unstoppablemango/thecluster",
+		"@unstoppablemango/thecluster-crds"
+	],
+	"major": {
+		"dependencyDashboardApproval": true
+	},
+	"git-submodules": {
+		"enabled": true
+	},
+	"customManagers": [],
+	"packageRules": []
 }

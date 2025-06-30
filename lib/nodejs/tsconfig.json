@@ -1,12 +1,12 @@
 {
-  "exclude": [".npmrc"],
-  "compilerOptions": {
-    "target": "es2016",
-    "module": "CommonJS",
-    "removeComments": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true
-  }
+	"exclude": [".npmrc"],
+	"compilerOptions": {
+		"target": "es2016",
+		"module": "CommonJS",
+		"removeComments": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"skipLibCheck": true
+	}
 }

@@ -7,8 +7,8 @@ using infrastructure as code, which Pulumi then uses to drive the Kubernetes API
 
 If this is your first time using this package, these two resources may be helpful:
 
-* [Kubernetes Getting Started Guide](https://www.pulumi.com/docs/quickstart/kubernetes/): Get up and running quickly.
-* [Kubernetes Pulumi Setup Documentation](https://www.pulumi.com/docs/quickstart/kubernetes/configure/): How to configure Pulumi
-    for use with your Kubernetes cluster.
+- [Kubernetes Getting Started Guide](https://www.pulumi.com/docs/quickstart/kubernetes/): Get up and running quickly.
+- [Kubernetes Pulumi Setup Documentation](https://www.pulumi.com/docs/quickstart/kubernetes/configure/): How to configure Pulumi
+  for use with your Kubernetes cluster.
 
 Use the navigation below to see detailed documentation for each of the supported Kubernetes resources.

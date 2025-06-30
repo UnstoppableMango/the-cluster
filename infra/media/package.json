@@ -1,11 +1,11 @@
 {
-  "name": "thecluster-media",
-  "main": "index.ts",
-  "dependencies": {
-    "@pulumi/kubernetes": "^4.23.0",
-    "@pulumi/pulumi": "^3.181.0"
-  },
-  "devDependencies": {
-    "@types/node": "^22.15.33"
-  }
+	"name": "thecluster-media",
+	"main": "index.ts",
+	"dependencies": {
+		"@pulumi/kubernetes": "^4.23.0",
+		"@pulumi/pulumi": "^3.181.0"
+	},
+	"devDependencies": {
+		"@types/node": "^22.15.33"
+	}
 }

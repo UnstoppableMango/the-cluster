@@ -35,26 +35,25 @@ export type L2Advertisement = import("./l2advertisement").L2Advertisement;
 export const L2Advertisement: typeof import("./l2advertisement").L2Advertisement = null as any;
 utilities.lazyLoad(exports, ["L2Advertisement"], () => require("./l2advertisement"));
 
-
 const _module = {
-    version: utilities.getVersion(),
-    construct: (name: string, type: string, urn: string): pulumi.Resource => {
-        switch (type) {
-            case "kubernetes:metallb.io/v1beta1:BFDProfile":
-                return new BFDProfile(name, <any>undefined, { urn })
-            case "kubernetes:metallb.io/v1beta1:BGPAdvertisement":
-                return new BGPAdvertisement(name, <any>undefined, { urn })
-            case "kubernetes:metallb.io/v1beta1:BGPPeer":
-                return new BGPPeer(name, <any>undefined, { urn })
-            case "kubernetes:metallb.io/v1beta1:Community":
-                return new Community(name, <any>undefined, { urn })
-            case "kubernetes:metallb.io/v1beta1:IPAddressPool":
-                return new IPAddressPool(name, <any>undefined, { urn })
-            case "kubernetes:metallb.io/v1beta1:L2Advertisement":
-                return new L2Advertisement(name, <any>undefined, { urn })
-            default:
-                throw new Error(`unknown resource type ${type}`);
-        }
-    },
+  version: utilities.getVersion(),
+  construct: (name: string, type: string, urn: string): pulumi.Resource => {
+    switch (type) {
+      case "kubernetes:metallb.io/v1beta1:BFDProfile":
+        return new BFDProfile(name, <any> undefined, { urn });
+      case "kubernetes:metallb.io/v1beta1:BGPAdvertisement":
+        return new BGPAdvertisement(name, <any> undefined, { urn });
+      case "kubernetes:metallb.io/v1beta1:BGPPeer":
+        return new BGPPeer(name, <any> undefined, { urn });
+      case "kubernetes:metallb.io/v1beta1:Community":
+        return new Community(name, <any> undefined, { urn });
+      case "kubernetes:metallb.io/v1beta1:IPAddressPool":
+        return new IPAddressPool(name, <any> undefined, { urn });
+      case "kubernetes:metallb.io/v1beta1:L2Advertisement":
+        return new L2Advertisement(name, <any> undefined, { urn });
+      default:
+        throw new Error(`unknown resource type ${type}`);
+    }
+  },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "metallb.io/v1beta1", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "metallb.io/v1beta1", _module);

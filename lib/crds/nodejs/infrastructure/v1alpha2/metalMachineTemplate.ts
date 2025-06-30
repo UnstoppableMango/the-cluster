@@ -6,91 +6,95 @@ import * as inputs from "../../types/input";
 import * as outputs from "../../types/output";
 import * as utilities from "../../utilities";
 
-import {ObjectMeta} from "../../meta/v1";
+import { ObjectMeta } from "../../meta/v1";
 
 /**
  * MetalMachineTemplate is the Schema for the metalmachinetemplates API.
  */
 export class MetalMachineTemplate extends pulumi.CustomResource {
-    /**
-     * Get an existing MetalMachineTemplate resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): MetalMachineTemplate {
-        return new MetalMachineTemplate(name, undefined as any, { ...opts, id: id });
+  /**
+   * Get an existing MetalMachineTemplate resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  public static get(
+    name: string,
+    id: pulumi.Input<pulumi.ID>,
+    opts?: pulumi.CustomResourceOptions,
+  ): MetalMachineTemplate {
+    return new MetalMachineTemplate(name, undefined as any, { ...opts, id: id });
+  }
+
+  /** @internal */
+  public static readonly __pulumiType = "kubernetes:infrastructure.cluster.x-k8s.io/v1alpha2:MetalMachineTemplate";
+
+  /**
+   * Returns true if the given object is an instance of MetalMachineTemplate.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  public static isInstance(obj: any): obj is MetalMachineTemplate {
+    if (obj === undefined || obj === null) {
+      return false;
     }
+    return obj["__pulumiType"] === MetalMachineTemplate.__pulumiType;
+  }
 
-    /** @internal */
-    public static readonly __pulumiType = 'kubernetes:infrastructure.cluster.x-k8s.io/v1alpha2:MetalMachineTemplate';
+  public readonly apiVersion!: pulumi.Output<"infrastructure.cluster.x-k8s.io/v1alpha2" | undefined>;
+  public readonly kind!: pulumi.Output<"MetalMachineTemplate" | undefined>;
+  public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
+  /**
+   * MetalMachineTemplateSpec defines the desired state of MetalMachineTemplate.
+   */
+  public readonly spec!: pulumi.Output<outputs.infrastructure.v1alpha2.MetalMachineTemplateSpec | undefined>;
+  /**
+   * MetalMachineTemplateStatus defines the observed state of MetalMachineTemplate.
+   */
+  public readonly status!: pulumi.Output<{ [key: string]: any } | undefined>;
 
-    /**
-     * Returns true if the given object is an instance of MetalMachineTemplate.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    public static isInstance(obj: any): obj is MetalMachineTemplate {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === MetalMachineTemplate.__pulumiType;
+  /**
+   * Create a MetalMachineTemplate resource with the given unique name, arguments, and options.
+   *
+   * @param name The _unique_ name of the resource.
+   * @param args The arguments to use to populate this resource's properties.
+   * @param opts A bag of options that control this resource's behavior.
+   */
+  constructor(name: string, args?: MetalMachineTemplateArgs, opts?: pulumi.CustomResourceOptions) {
+    let resourceInputs: pulumi.Inputs = {};
+    opts = opts || {};
+    if (!opts.id) {
+      resourceInputs["apiVersion"] = "infrastructure.cluster.x-k8s.io/v1alpha2";
+      resourceInputs["kind"] = "MetalMachineTemplate";
+      resourceInputs["metadata"] = args ? args.metadata : undefined;
+      resourceInputs["spec"] = args ? args.spec : undefined;
+      resourceInputs["status"] = args ? args.status : undefined;
+    } else {
+      resourceInputs["apiVersion"] = undefined /*out*/;
+      resourceInputs["kind"] = undefined /*out*/;
+      resourceInputs["metadata"] = undefined /*out*/;
+      resourceInputs["spec"] = undefined /*out*/;
+      resourceInputs["status"] = undefined /*out*/;
     }
-
-    public readonly apiVersion!: pulumi.Output<"infrastructure.cluster.x-k8s.io/v1alpha2" | undefined>;
-    public readonly kind!: pulumi.Output<"MetalMachineTemplate" | undefined>;
-    public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
-    /**
-     * MetalMachineTemplateSpec defines the desired state of MetalMachineTemplate.
-     */
-    public readonly spec!: pulumi.Output<outputs.infrastructure.v1alpha2.MetalMachineTemplateSpec | undefined>;
-    /**
-     * MetalMachineTemplateStatus defines the observed state of MetalMachineTemplate.
-     */
-    public readonly status!: pulumi.Output<{[key: string]: any} | undefined>;
-
-    /**
-     * Create a MetalMachineTemplate resource with the given unique name, arguments, and options.
-     *
-     * @param name The _unique_ name of the resource.
-     * @param args The arguments to use to populate this resource's properties.
-     * @param opts A bag of options that control this resource's behavior.
-     */
-    constructor(name: string, args?: MetalMachineTemplateArgs, opts?: pulumi.CustomResourceOptions) {
-        let resourceInputs: pulumi.Inputs = {};
-        opts = opts || {};
-        if (!opts.id) {
-            resourceInputs["apiVersion"] = "infrastructure.cluster.x-k8s.io/v1alpha2";
-            resourceInputs["kind"] = "MetalMachineTemplate";
-            resourceInputs["metadata"] = args ? args.metadata : undefined;
-            resourceInputs["spec"] = args ? args.spec : undefined;
-            resourceInputs["status"] = args ? args.status : undefined;
-        } else {
-            resourceInputs["apiVersion"] = undefined /*out*/;
-            resourceInputs["kind"] = undefined /*out*/;
-            resourceInputs["metadata"] = undefined /*out*/;
-            resourceInputs["spec"] = undefined /*out*/;
-            resourceInputs["status"] = undefined /*out*/;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        super(MetalMachineTemplate.__pulumiType, name, resourceInputs, opts);
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    super(MetalMachineTemplate.__pulumiType, name, resourceInputs, opts);
+  }
 }
 
 /**
  * The set of arguments for constructing a MetalMachineTemplate resource.
  */
 export interface MetalMachineTemplateArgs {
-    apiVersion?: pulumi.Input<"infrastructure.cluster.x-k8s.io/v1alpha2">;
-    kind?: pulumi.Input<"MetalMachineTemplate">;
-    metadata?: pulumi.Input<ObjectMeta>;
-    /**
-     * MetalMachineTemplateSpec defines the desired state of MetalMachineTemplate.
-     */
-    spec?: pulumi.Input<inputs.infrastructure.v1alpha2.MetalMachineTemplateSpecArgs>;
-    /**
-     * MetalMachineTemplateStatus defines the observed state of MetalMachineTemplate.
-     */
-    status?: pulumi.Input<{[key: string]: any}>;
+  apiVersion?: pulumi.Input<"infrastructure.cluster.x-k8s.io/v1alpha2">;
+  kind?: pulumi.Input<"MetalMachineTemplate">;
+  metadata?: pulumi.Input<ObjectMeta>;
+  /**
+   * MetalMachineTemplateSpec defines the desired state of MetalMachineTemplate.
+   */
+  spec?: pulumi.Input<inputs.infrastructure.v1alpha2.MetalMachineTemplateSpecArgs>;
+  /**
+   * MetalMachineTemplateStatus defines the observed state of MetalMachineTemplate.
+   */
+  status?: pulumi.Input<{ [key: string]: any }>;
 }

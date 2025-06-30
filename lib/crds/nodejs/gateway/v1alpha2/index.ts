@@ -35,26 +35,25 @@ export type UDPRoute = import("./udproute").UDPRoute;
 export const UDPRoute: typeof import("./udproute").UDPRoute = null as any;
 utilities.lazyLoad(exports, ["UDPRoute"], () => require("./udproute"));
 
-
 const _module = {
-    version: utilities.getVersion(),
-    construct: (name: string, type: string, urn: string): pulumi.Resource => {
-        switch (type) {
-            case "kubernetes:gateway.networking.k8s.io/v1alpha2:BackendTLSPolicy":
-                return new BackendTLSPolicy(name, <any>undefined, { urn })
-            case "kubernetes:gateway.networking.k8s.io/v1alpha2:GRPCRoute":
-                return new GRPCRoute(name, <any>undefined, { urn })
-            case "kubernetes:gateway.networking.k8s.io/v1alpha2:ReferenceGrant":
-                return new ReferenceGrant(name, <any>undefined, { urn })
-            case "kubernetes:gateway.networking.k8s.io/v1alpha2:TCPRoute":
-                return new TCPRoute(name, <any>undefined, { urn })
-            case "kubernetes:gateway.networking.k8s.io/v1alpha2:TLSRoute":
-                return new TLSRoute(name, <any>undefined, { urn })
-            case "kubernetes:gateway.networking.k8s.io/v1alpha2:UDPRoute":
-                return new UDPRoute(name, <any>undefined, { urn })
-            default:
-                throw new Error(`unknown resource type ${type}`);
-        }
-    },
+  version: utilities.getVersion(),
+  construct: (name: string, type: string, urn: string): pulumi.Resource => {
+    switch (type) {
+      case "kubernetes:gateway.networking.k8s.io/v1alpha2:BackendTLSPolicy":
+        return new BackendTLSPolicy(name, <any> undefined, { urn });
+      case "kubernetes:gateway.networking.k8s.io/v1alpha2:GRPCRoute":
+        return new GRPCRoute(name, <any> undefined, { urn });
+      case "kubernetes:gateway.networking.k8s.io/v1alpha2:ReferenceGrant":
+        return new ReferenceGrant(name, <any> undefined, { urn });
+      case "kubernetes:gateway.networking.k8s.io/v1alpha2:TCPRoute":
+        return new TCPRoute(name, <any> undefined, { urn });
+      case "kubernetes:gateway.networking.k8s.io/v1alpha2:TLSRoute":
+        return new TLSRoute(name, <any> undefined, { urn });
+      case "kubernetes:gateway.networking.k8s.io/v1alpha2:UDPRoute":
+        return new UDPRoute(name, <any> undefined, { urn });
+      default:
+        throw new Error(`unknown resource type ${type}`);
+    }
+  },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "gateway.networking.k8s.io/v1alpha2", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "gateway.networking.k8s.io/v1alpha2", _module);

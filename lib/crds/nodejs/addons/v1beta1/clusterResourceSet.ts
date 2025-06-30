@@ -6,91 +6,95 @@ import * as inputs from "../../types/input";
 import * as outputs from "../../types/output";
 import * as utilities from "../../utilities";
 
-import {ObjectMeta} from "../../meta/v1";
+import { ObjectMeta } from "../../meta/v1";
 
 /**
  * ClusterResourceSet is the Schema for the clusterresourcesets API.
  */
 export class ClusterResourceSet extends pulumi.CustomResource {
-    /**
-     * Get an existing ClusterResourceSet resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): ClusterResourceSet {
-        return new ClusterResourceSet(name, undefined as any, { ...opts, id: id });
+  /**
+   * Get an existing ClusterResourceSet resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  public static get(
+    name: string,
+    id: pulumi.Input<pulumi.ID>,
+    opts?: pulumi.CustomResourceOptions,
+  ): ClusterResourceSet {
+    return new ClusterResourceSet(name, undefined as any, { ...opts, id: id });
+  }
+
+  /** @internal */
+  public static readonly __pulumiType = "kubernetes:addons.cluster.x-k8s.io/v1beta1:ClusterResourceSet";
+
+  /**
+   * Returns true if the given object is an instance of ClusterResourceSet.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  public static isInstance(obj: any): obj is ClusterResourceSet {
+    if (obj === undefined || obj === null) {
+      return false;
     }
+    return obj["__pulumiType"] === ClusterResourceSet.__pulumiType;
+  }
 
-    /** @internal */
-    public static readonly __pulumiType = 'kubernetes:addons.cluster.x-k8s.io/v1beta1:ClusterResourceSet';
+  public readonly apiVersion!: pulumi.Output<"addons.cluster.x-k8s.io/v1beta1" | undefined>;
+  public readonly kind!: pulumi.Output<"ClusterResourceSet" | undefined>;
+  public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
+  /**
+   * ClusterResourceSetSpec defines the desired state of ClusterResourceSet.
+   */
+  public readonly spec!: pulumi.Output<outputs.addons.v1beta1.ClusterResourceSetSpec | undefined>;
+  /**
+   * ClusterResourceSetStatus defines the observed state of ClusterResourceSet.
+   */
+  public readonly status!: pulumi.Output<outputs.addons.v1beta1.ClusterResourceSetStatus | undefined>;
 
-    /**
-     * Returns true if the given object is an instance of ClusterResourceSet.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    public static isInstance(obj: any): obj is ClusterResourceSet {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === ClusterResourceSet.__pulumiType;
+  /**
+   * Create a ClusterResourceSet resource with the given unique name, arguments, and options.
+   *
+   * @param name The _unique_ name of the resource.
+   * @param args The arguments to use to populate this resource's properties.
+   * @param opts A bag of options that control this resource's behavior.
+   */
+  constructor(name: string, args?: ClusterResourceSetArgs, opts?: pulumi.CustomResourceOptions) {
+    let resourceInputs: pulumi.Inputs = {};
+    opts = opts || {};
+    if (!opts.id) {
+      resourceInputs["apiVersion"] = "addons.cluster.x-k8s.io/v1beta1";
+      resourceInputs["kind"] = "ClusterResourceSet";
+      resourceInputs["metadata"] = args ? args.metadata : undefined;
+      resourceInputs["spec"] = args ? args.spec : undefined;
+      resourceInputs["status"] = args ? args.status : undefined;
+    } else {
+      resourceInputs["apiVersion"] = undefined /*out*/;
+      resourceInputs["kind"] = undefined /*out*/;
+      resourceInputs["metadata"] = undefined /*out*/;
+      resourceInputs["spec"] = undefined /*out*/;
+      resourceInputs["status"] = undefined /*out*/;
     }
-
-    public readonly apiVersion!: pulumi.Output<"addons.cluster.x-k8s.io/v1beta1" | undefined>;
-    public readonly kind!: pulumi.Output<"ClusterResourceSet" | undefined>;
-    public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
-    /**
-     * ClusterResourceSetSpec defines the desired state of ClusterResourceSet.
-     */
-    public readonly spec!: pulumi.Output<outputs.addons.v1beta1.ClusterResourceSetSpec | undefined>;
-    /**
-     * ClusterResourceSetStatus defines the observed state of ClusterResourceSet.
-     */
-    public readonly status!: pulumi.Output<outputs.addons.v1beta1.ClusterResourceSetStatus | undefined>;
-
-    /**
-     * Create a ClusterResourceSet resource with the given unique name, arguments, and options.
-     *
-     * @param name The _unique_ name of the resource.
-     * @param args The arguments to use to populate this resource's properties.
-     * @param opts A bag of options that control this resource's behavior.
-     */
-    constructor(name: string, args?: ClusterResourceSetArgs, opts?: pulumi.CustomResourceOptions) {
-        let resourceInputs: pulumi.Inputs = {};
-        opts = opts || {};
-        if (!opts.id) {
-            resourceInputs["apiVersion"] = "addons.cluster.x-k8s.io/v1beta1";
-            resourceInputs["kind"] = "ClusterResourceSet";
-            resourceInputs["metadata"] = args ? args.metadata : undefined;
-            resourceInputs["spec"] = args ? args.spec : undefined;
-            resourceInputs["status"] = args ? args.status : undefined;
-        } else {
-            resourceInputs["apiVersion"] = undefined /*out*/;
-            resourceInputs["kind"] = undefined /*out*/;
-            resourceInputs["metadata"] = undefined /*out*/;
-            resourceInputs["spec"] = undefined /*out*/;
-            resourceInputs["status"] = undefined /*out*/;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        super(ClusterResourceSet.__pulumiType, name, resourceInputs, opts);
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    super(ClusterResourceSet.__pulumiType, name, resourceInputs, opts);
+  }
 }
 
 /**
  * The set of arguments for constructing a ClusterResourceSet resource.
  */
 export interface ClusterResourceSetArgs {
-    apiVersion?: pulumi.Input<"addons.cluster.x-k8s.io/v1beta1">;
-    kind?: pulumi.Input<"ClusterResourceSet">;
-    metadata?: pulumi.Input<ObjectMeta>;
-    /**
-     * ClusterResourceSetSpec defines the desired state of ClusterResourceSet.
-     */
-    spec?: pulumi.Input<inputs.addons.v1beta1.ClusterResourceSetSpecArgs>;
-    /**
-     * ClusterResourceSetStatus defines the observed state of ClusterResourceSet.
-     */
-    status?: pulumi.Input<inputs.addons.v1beta1.ClusterResourceSetStatusArgs>;
+  apiVersion?: pulumi.Input<"addons.cluster.x-k8s.io/v1beta1">;
+  kind?: pulumi.Input<"ClusterResourceSet">;
+  metadata?: pulumi.Input<ObjectMeta>;
+  /**
+   * ClusterResourceSetSpec defines the desired state of ClusterResourceSet.
+   */
+  spec?: pulumi.Input<inputs.addons.v1beta1.ClusterResourceSetSpecArgs>;
+  /**
+   * ClusterResourceSetStatus defines the observed state of ClusterResourceSet.
+   */
+  status?: pulumi.Input<inputs.addons.v1beta1.ClusterResourceSetStatusArgs>;
 }

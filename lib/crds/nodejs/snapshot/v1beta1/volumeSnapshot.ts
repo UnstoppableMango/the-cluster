@@ -6,91 +6,91 @@ import * as inputs from "../../types/input";
 import * as outputs from "../../types/output";
 import * as utilities from "../../utilities";
 
-import {ObjectMeta} from "../../meta/v1";
+import { ObjectMeta } from "../../meta/v1";
 
 /**
  * VolumeSnapshot is a user's request for either creating a point-in-time snapshot of a persistent volume, or binding to a pre-existing snapshot.
  */
 export class VolumeSnapshot extends pulumi.CustomResource {
-    /**
-     * Get an existing VolumeSnapshot resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): VolumeSnapshot {
-        return new VolumeSnapshot(name, undefined as any, { ...opts, id: id });
+  /**
+   * Get an existing VolumeSnapshot resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): VolumeSnapshot {
+    return new VolumeSnapshot(name, undefined as any, { ...opts, id: id });
+  }
+
+  /** @internal */
+  public static readonly __pulumiType = "kubernetes:snapshot.storage.k8s.io/v1beta1:VolumeSnapshot";
+
+  /**
+   * Returns true if the given object is an instance of VolumeSnapshot.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  public static isInstance(obj: any): obj is VolumeSnapshot {
+    if (obj === undefined || obj === null) {
+      return false;
     }
+    return obj["__pulumiType"] === VolumeSnapshot.__pulumiType;
+  }
 
-    /** @internal */
-    public static readonly __pulumiType = 'kubernetes:snapshot.storage.k8s.io/v1beta1:VolumeSnapshot';
+  public readonly apiVersion!: pulumi.Output<"snapshot.storage.k8s.io/v1beta1" | undefined>;
+  public readonly kind!: pulumi.Output<"VolumeSnapshot" | undefined>;
+  public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
+  /**
+   * spec defines the desired characteristics of a snapshot requested by a user. More info: https://kubernetes.io/docs/concepts/storage/volume-snapshots#volumesnapshots Required.
+   */
+  public readonly spec!: pulumi.Output<outputs.snapshot.v1beta1.VolumeSnapshotSpec>;
+  /**
+   * status represents the current information of a snapshot. Consumers must verify binding between VolumeSnapshot and VolumeSnapshotContent objects is successful (by validating that both VolumeSnapshot and VolumeSnapshotContent point at each other) before using this object.
+   */
+  public readonly status!: pulumi.Output<outputs.snapshot.v1beta1.VolumeSnapshotStatus | undefined>;
 
-    /**
-     * Returns true if the given object is an instance of VolumeSnapshot.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    public static isInstance(obj: any): obj is VolumeSnapshot {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === VolumeSnapshot.__pulumiType;
+  /**
+   * Create a VolumeSnapshot resource with the given unique name, arguments, and options.
+   *
+   * @param name The _unique_ name of the resource.
+   * @param args The arguments to use to populate this resource's properties.
+   * @param opts A bag of options that control this resource's behavior.
+   */
+  constructor(name: string, args?: VolumeSnapshotArgs, opts?: pulumi.CustomResourceOptions) {
+    let resourceInputs: pulumi.Inputs = {};
+    opts = opts || {};
+    if (!opts.id) {
+      resourceInputs["apiVersion"] = "snapshot.storage.k8s.io/v1beta1";
+      resourceInputs["kind"] = "VolumeSnapshot";
+      resourceInputs["metadata"] = args ? args.metadata : undefined;
+      resourceInputs["spec"] = args ? args.spec : undefined;
+      resourceInputs["status"] = args ? args.status : undefined;
+    } else {
+      resourceInputs["apiVersion"] = undefined /*out*/;
+      resourceInputs["kind"] = undefined /*out*/;
+      resourceInputs["metadata"] = undefined /*out*/;
+      resourceInputs["spec"] = undefined /*out*/;
+      resourceInputs["status"] = undefined /*out*/;
     }
-
-    public readonly apiVersion!: pulumi.Output<"snapshot.storage.k8s.io/v1beta1" | undefined>;
-    public readonly kind!: pulumi.Output<"VolumeSnapshot" | undefined>;
-    public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
-    /**
-     * spec defines the desired characteristics of a snapshot requested by a user. More info: https://kubernetes.io/docs/concepts/storage/volume-snapshots#volumesnapshots Required.
-     */
-    public readonly spec!: pulumi.Output<outputs.snapshot.v1beta1.VolumeSnapshotSpec>;
-    /**
-     * status represents the current information of a snapshot. Consumers must verify binding between VolumeSnapshot and VolumeSnapshotContent objects is successful (by validating that both VolumeSnapshot and VolumeSnapshotContent point at each other) before using this object.
-     */
-    public readonly status!: pulumi.Output<outputs.snapshot.v1beta1.VolumeSnapshotStatus | undefined>;
-
-    /**
-     * Create a VolumeSnapshot resource with the given unique name, arguments, and options.
-     *
-     * @param name The _unique_ name of the resource.
-     * @param args The arguments to use to populate this resource's properties.
-     * @param opts A bag of options that control this resource's behavior.
-     */
-    constructor(name: string, args?: VolumeSnapshotArgs, opts?: pulumi.CustomResourceOptions) {
-        let resourceInputs: pulumi.Inputs = {};
-        opts = opts || {};
-        if (!opts.id) {
-            resourceInputs["apiVersion"] = "snapshot.storage.k8s.io/v1beta1";
-            resourceInputs["kind"] = "VolumeSnapshot";
-            resourceInputs["metadata"] = args ? args.metadata : undefined;
-            resourceInputs["spec"] = args ? args.spec : undefined;
-            resourceInputs["status"] = args ? args.status : undefined;
-        } else {
-            resourceInputs["apiVersion"] = undefined /*out*/;
-            resourceInputs["kind"] = undefined /*out*/;
-            resourceInputs["metadata"] = undefined /*out*/;
-            resourceInputs["spec"] = undefined /*out*/;
-            resourceInputs["status"] = undefined /*out*/;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        super(VolumeSnapshot.__pulumiType, name, resourceInputs, opts);
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    super(VolumeSnapshot.__pulumiType, name, resourceInputs, opts);
+  }
 }
 
 /**
  * The set of arguments for constructing a VolumeSnapshot resource.
  */
 export interface VolumeSnapshotArgs {
-    apiVersion?: pulumi.Input<"snapshot.storage.k8s.io/v1beta1">;
-    kind?: pulumi.Input<"VolumeSnapshot">;
-    metadata?: pulumi.Input<ObjectMeta>;
-    /**
-     * spec defines the desired characteristics of a snapshot requested by a user. More info: https://kubernetes.io/docs/concepts/storage/volume-snapshots#volumesnapshots Required.
-     */
-    spec?: pulumi.Input<inputs.snapshot.v1beta1.VolumeSnapshotSpecArgs>;
-    /**
-     * status represents the current information of a snapshot. Consumers must verify binding between VolumeSnapshot and VolumeSnapshotContent objects is successful (by validating that both VolumeSnapshot and VolumeSnapshotContent point at each other) before using this object.
-     */
-    status?: pulumi.Input<inputs.snapshot.v1beta1.VolumeSnapshotStatusArgs>;
+  apiVersion?: pulumi.Input<"snapshot.storage.k8s.io/v1beta1">;
+  kind?: pulumi.Input<"VolumeSnapshot">;
+  metadata?: pulumi.Input<ObjectMeta>;
+  /**
+   * spec defines the desired characteristics of a snapshot requested by a user. More info: https://kubernetes.io/docs/concepts/storage/volume-snapshots#volumesnapshots Required.
+   */
+  spec?: pulumi.Input<inputs.snapshot.v1beta1.VolumeSnapshotSpecArgs>;
+  /**
+   * status represents the current information of a snapshot. Consumers must verify binding between VolumeSnapshot and VolumeSnapshotContent objects is successful (by validating that both VolumeSnapshot and VolumeSnapshotContent point at each other) before using this object.
+   */
+  status?: pulumi.Input<inputs.snapshot.v1beta1.VolumeSnapshotStatusArgs>;
 }

@@ -22,17 +22,22 @@ utilities.lazyLoad(exports, ["CephBlockPoolPatch"], () => require("./cephBlockPo
 
 export { CephBlockPoolRadosNamespaceArgs } from "./cephBlockPoolRadosNamespace";
 export type CephBlockPoolRadosNamespace = import("./cephBlockPoolRadosNamespace").CephBlockPoolRadosNamespace;
-export const CephBlockPoolRadosNamespace: typeof import("./cephBlockPoolRadosNamespace").CephBlockPoolRadosNamespace = null as any;
+export const CephBlockPoolRadosNamespace: typeof import("./cephBlockPoolRadosNamespace").CephBlockPoolRadosNamespace =
+  null as any;
 utilities.lazyLoad(exports, ["CephBlockPoolRadosNamespace"], () => require("./cephBlockPoolRadosNamespace"));
 
 export { CephBlockPoolRadosNamespaceListArgs } from "./cephBlockPoolRadosNamespaceList";
-export type CephBlockPoolRadosNamespaceList = import("./cephBlockPoolRadosNamespaceList").CephBlockPoolRadosNamespaceList;
-export const CephBlockPoolRadosNamespaceList: typeof import("./cephBlockPoolRadosNamespaceList").CephBlockPoolRadosNamespaceList = null as any;
+export type CephBlockPoolRadosNamespaceList =
+  import("./cephBlockPoolRadosNamespaceList").CephBlockPoolRadosNamespaceList;
+export const CephBlockPoolRadosNamespaceList:
+  typeof import("./cephBlockPoolRadosNamespaceList").CephBlockPoolRadosNamespaceList = null as any;
 utilities.lazyLoad(exports, ["CephBlockPoolRadosNamespaceList"], () => require("./cephBlockPoolRadosNamespaceList"));
 
 export { CephBlockPoolRadosNamespacePatchArgs } from "./cephBlockPoolRadosNamespacePatch";
-export type CephBlockPoolRadosNamespacePatch = import("./cephBlockPoolRadosNamespacePatch").CephBlockPoolRadosNamespacePatch;
-export const CephBlockPoolRadosNamespacePatch: typeof import("./cephBlockPoolRadosNamespacePatch").CephBlockPoolRadosNamespacePatch = null as any;
+export type CephBlockPoolRadosNamespacePatch =
+  import("./cephBlockPoolRadosNamespacePatch").CephBlockPoolRadosNamespacePatch;
+export const CephBlockPoolRadosNamespacePatch:
+  typeof import("./cephBlockPoolRadosNamespacePatch").CephBlockPoolRadosNamespacePatch = null as any;
 utilities.lazyLoad(exports, ["CephBlockPoolRadosNamespacePatch"], () => require("./cephBlockPoolRadosNamespacePatch"));
 
 export { CephBucketNotificationArgs } from "./cephBucketNotification";
@@ -42,12 +47,14 @@ utilities.lazyLoad(exports, ["CephBucketNotification"], () => require("./cephBuc
 
 export { CephBucketNotificationListArgs } from "./cephBucketNotificationList";
 export type CephBucketNotificationList = import("./cephBucketNotificationList").CephBucketNotificationList;
-export const CephBucketNotificationList: typeof import("./cephBucketNotificationList").CephBucketNotificationList = null as any;
+export const CephBucketNotificationList: typeof import("./cephBucketNotificationList").CephBucketNotificationList =
+  null as any;
 utilities.lazyLoad(exports, ["CephBucketNotificationList"], () => require("./cephBucketNotificationList"));
 
 export { CephBucketNotificationPatchArgs } from "./cephBucketNotificationPatch";
 export type CephBucketNotificationPatch = import("./cephBucketNotificationPatch").CephBucketNotificationPatch;
-export const CephBucketNotificationPatch: typeof import("./cephBucketNotificationPatch").CephBucketNotificationPatch = null as any;
+export const CephBucketNotificationPatch: typeof import("./cephBucketNotificationPatch").CephBucketNotificationPatch =
+  null as any;
 utilities.lazyLoad(exports, ["CephBucketNotificationPatch"], () => require("./cephBucketNotificationPatch"));
 
 export { CephBucketTopicArgs } from "./cephBucketTopic";
@@ -127,12 +134,14 @@ utilities.lazyLoad(exports, ["CephFilesystemMirror"], () => require("./cephFiles
 
 export { CephFilesystemMirrorListArgs } from "./cephFilesystemMirrorList";
 export type CephFilesystemMirrorList = import("./cephFilesystemMirrorList").CephFilesystemMirrorList;
-export const CephFilesystemMirrorList: typeof import("./cephFilesystemMirrorList").CephFilesystemMirrorList = null as any;
+export const CephFilesystemMirrorList: typeof import("./cephFilesystemMirrorList").CephFilesystemMirrorList =
+  null as any;
 utilities.lazyLoad(exports, ["CephFilesystemMirrorList"], () => require("./cephFilesystemMirrorList"));
 
 export { CephFilesystemMirrorPatchArgs } from "./cephFilesystemMirrorPatch";
 export type CephFilesystemMirrorPatch = import("./cephFilesystemMirrorPatch").CephFilesystemMirrorPatch;
-export const CephFilesystemMirrorPatch: typeof import("./cephFilesystemMirrorPatch").CephFilesystemMirrorPatch = null as any;
+export const CephFilesystemMirrorPatch: typeof import("./cephFilesystemMirrorPatch").CephFilesystemMirrorPatch =
+  null as any;
 utilities.lazyLoad(exports, ["CephFilesystemMirrorPatch"], () => require("./cephFilesystemMirrorPatch"));
 
 export { CephFilesystemPatchArgs } from "./cephFilesystemPatch";
@@ -142,18 +151,27 @@ utilities.lazyLoad(exports, ["CephFilesystemPatch"], () => require("./cephFilesy
 
 export { CephFilesystemSubVolumeGroupArgs } from "./cephFilesystemSubVolumeGroup";
 export type CephFilesystemSubVolumeGroup = import("./cephFilesystemSubVolumeGroup").CephFilesystemSubVolumeGroup;
-export const CephFilesystemSubVolumeGroup: typeof import("./cephFilesystemSubVolumeGroup").CephFilesystemSubVolumeGroup = null as any;
+export const CephFilesystemSubVolumeGroup:
+  typeof import("./cephFilesystemSubVolumeGroup").CephFilesystemSubVolumeGroup = null as any;
 utilities.lazyLoad(exports, ["CephFilesystemSubVolumeGroup"], () => require("./cephFilesystemSubVolumeGroup"));
 
 export { CephFilesystemSubVolumeGroupListArgs } from "./cephFilesystemSubVolumeGroupList";
-export type CephFilesystemSubVolumeGroupList = import("./cephFilesystemSubVolumeGroupList").CephFilesystemSubVolumeGroupList;
-export const CephFilesystemSubVolumeGroupList: typeof import("./cephFilesystemSubVolumeGroupList").CephFilesystemSubVolumeGroupList = null as any;
+export type CephFilesystemSubVolumeGroupList =
+  import("./cephFilesystemSubVolumeGroupList").CephFilesystemSubVolumeGroupList;
+export const CephFilesystemSubVolumeGroupList:
+  typeof import("./cephFilesystemSubVolumeGroupList").CephFilesystemSubVolumeGroupList = null as any;
 utilities.lazyLoad(exports, ["CephFilesystemSubVolumeGroupList"], () => require("./cephFilesystemSubVolumeGroupList"));
 
 export { CephFilesystemSubVolumeGroupPatchArgs } from "./cephFilesystemSubVolumeGroupPatch";
-export type CephFilesystemSubVolumeGroupPatch = import("./cephFilesystemSubVolumeGroupPatch").CephFilesystemSubVolumeGroupPatch;
-export const CephFilesystemSubVolumeGroupPatch: typeof import("./cephFilesystemSubVolumeGroupPatch").CephFilesystemSubVolumeGroupPatch = null as any;
-utilities.lazyLoad(exports, ["CephFilesystemSubVolumeGroupPatch"], () => require("./cephFilesystemSubVolumeGroupPatch"));
+export type CephFilesystemSubVolumeGroupPatch =
+  import("./cephFilesystemSubVolumeGroupPatch").CephFilesystemSubVolumeGroupPatch;
+export const CephFilesystemSubVolumeGroupPatch:
+  typeof import("./cephFilesystemSubVolumeGroupPatch").CephFilesystemSubVolumeGroupPatch = null as any;
+utilities.lazyLoad(
+  exports,
+  ["CephFilesystemSubVolumeGroupPatch"],
+  () => require("./cephFilesystemSubVolumeGroupPatch"),
+);
 
 export { CephNFSArgs } from "./cephNFS";
 export type CephNFS = import("./cephNFS").CephNFS;
@@ -212,7 +230,8 @@ utilities.lazyLoad(exports, ["CephObjectStoreUserList"], () => require("./cephOb
 
 export { CephObjectStoreUserPatchArgs } from "./cephObjectStoreUserPatch";
 export type CephObjectStoreUserPatch = import("./cephObjectStoreUserPatch").CephObjectStoreUserPatch;
-export const CephObjectStoreUserPatch: typeof import("./cephObjectStoreUserPatch").CephObjectStoreUserPatch = null as any;
+export const CephObjectStoreUserPatch: typeof import("./cephObjectStoreUserPatch").CephObjectStoreUserPatch =
+  null as any;
 utilities.lazyLoad(exports, ["CephObjectStoreUserPatch"], () => require("./cephObjectStoreUserPatch"));
 
 export { CephObjectZoneArgs } from "./cephObjectZone";
@@ -232,7 +251,8 @@ utilities.lazyLoad(exports, ["CephObjectZoneGroupList"], () => require("./cephOb
 
 export { CephObjectZoneGroupPatchArgs } from "./cephObjectZoneGroupPatch";
 export type CephObjectZoneGroupPatch = import("./cephObjectZoneGroupPatch").CephObjectZoneGroupPatch;
-export const CephObjectZoneGroupPatch: typeof import("./cephObjectZoneGroupPatch").CephObjectZoneGroupPatch = null as any;
+export const CephObjectZoneGroupPatch: typeof import("./cephObjectZoneGroupPatch").CephObjectZoneGroupPatch =
+  null as any;
 utilities.lazyLoad(exports, ["CephObjectZoneGroupPatch"], () => require("./cephObjectZoneGroupPatch"));
 
 export { CephObjectZoneListArgs } from "./cephObjectZoneList";
@@ -260,116 +280,115 @@ export type CephRBDMirrorPatch = import("./cephRBDMirrorPatch").CephRBDMirrorPat
 export const CephRBDMirrorPatch: typeof import("./cephRBDMirrorPatch").CephRBDMirrorPatch = null as any;
 utilities.lazyLoad(exports, ["CephRBDMirrorPatch"], () => require("./cephRBDMirrorPatch"));
 
-
 const _module = {
-    version: utilities.getVersion(),
-    construct: (name: string, type: string, urn: string): pulumi.Resource => {
-        switch (type) {
-            case "kubernetes:ceph.rook.io/v1:CephBlockPool":
-                return new CephBlockPool(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephBlockPoolList":
-                return new CephBlockPoolList(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephBlockPoolPatch":
-                return new CephBlockPoolPatch(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephBlockPoolRadosNamespace":
-                return new CephBlockPoolRadosNamespace(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephBlockPoolRadosNamespaceList":
-                return new CephBlockPoolRadosNamespaceList(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephBlockPoolRadosNamespacePatch":
-                return new CephBlockPoolRadosNamespacePatch(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephBucketNotification":
-                return new CephBucketNotification(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephBucketNotificationList":
-                return new CephBucketNotificationList(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephBucketNotificationPatch":
-                return new CephBucketNotificationPatch(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephBucketTopic":
-                return new CephBucketTopic(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephBucketTopicList":
-                return new CephBucketTopicList(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephBucketTopicPatch":
-                return new CephBucketTopicPatch(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephCOSIDriver":
-                return new CephCOSIDriver(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephCOSIDriverList":
-                return new CephCOSIDriverList(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephCOSIDriverPatch":
-                return new CephCOSIDriverPatch(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephClient":
-                return new CephClient(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephClientList":
-                return new CephClientList(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephClientPatch":
-                return new CephClientPatch(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephCluster":
-                return new CephCluster(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephClusterList":
-                return new CephClusterList(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephClusterPatch":
-                return new CephClusterPatch(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephFilesystem":
-                return new CephFilesystem(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephFilesystemList":
-                return new CephFilesystemList(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephFilesystemMirror":
-                return new CephFilesystemMirror(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephFilesystemMirrorList":
-                return new CephFilesystemMirrorList(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephFilesystemMirrorPatch":
-                return new CephFilesystemMirrorPatch(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephFilesystemPatch":
-                return new CephFilesystemPatch(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephFilesystemSubVolumeGroup":
-                return new CephFilesystemSubVolumeGroup(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephFilesystemSubVolumeGroupList":
-                return new CephFilesystemSubVolumeGroupList(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephFilesystemSubVolumeGroupPatch":
-                return new CephFilesystemSubVolumeGroupPatch(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephNFS":
-                return new CephNFS(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephNFSList":
-                return new CephNFSList(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephNFSPatch":
-                return new CephNFSPatch(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephObjectRealm":
-                return new CephObjectRealm(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephObjectRealmList":
-                return new CephObjectRealmList(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephObjectRealmPatch":
-                return new CephObjectRealmPatch(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephObjectStore":
-                return new CephObjectStore(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephObjectStoreList":
-                return new CephObjectStoreList(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephObjectStorePatch":
-                return new CephObjectStorePatch(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephObjectStoreUser":
-                return new CephObjectStoreUser(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephObjectStoreUserList":
-                return new CephObjectStoreUserList(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephObjectStoreUserPatch":
-                return new CephObjectStoreUserPatch(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephObjectZone":
-                return new CephObjectZone(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephObjectZoneGroup":
-                return new CephObjectZoneGroup(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephObjectZoneGroupList":
-                return new CephObjectZoneGroupList(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephObjectZoneGroupPatch":
-                return new CephObjectZoneGroupPatch(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephObjectZoneList":
-                return new CephObjectZoneList(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephObjectZonePatch":
-                return new CephObjectZonePatch(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephRBDMirror":
-                return new CephRBDMirror(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephRBDMirrorList":
-                return new CephRBDMirrorList(name, <any>undefined, { urn })
-            case "kubernetes:ceph.rook.io/v1:CephRBDMirrorPatch":
-                return new CephRBDMirrorPatch(name, <any>undefined, { urn })
-            default:
-                throw new Error(`unknown resource type ${type}`);
-        }
-    },
+  version: utilities.getVersion(),
+  construct: (name: string, type: string, urn: string): pulumi.Resource => {
+    switch (type) {
+      case "kubernetes:ceph.rook.io/v1:CephBlockPool":
+        return new CephBlockPool(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephBlockPoolList":
+        return new CephBlockPoolList(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephBlockPoolPatch":
+        return new CephBlockPoolPatch(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephBlockPoolRadosNamespace":
+        return new CephBlockPoolRadosNamespace(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephBlockPoolRadosNamespaceList":
+        return new CephBlockPoolRadosNamespaceList(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephBlockPoolRadosNamespacePatch":
+        return new CephBlockPoolRadosNamespacePatch(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephBucketNotification":
+        return new CephBucketNotification(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephBucketNotificationList":
+        return new CephBucketNotificationList(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephBucketNotificationPatch":
+        return new CephBucketNotificationPatch(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephBucketTopic":
+        return new CephBucketTopic(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephBucketTopicList":
+        return new CephBucketTopicList(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephBucketTopicPatch":
+        return new CephBucketTopicPatch(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephCOSIDriver":
+        return new CephCOSIDriver(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephCOSIDriverList":
+        return new CephCOSIDriverList(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephCOSIDriverPatch":
+        return new CephCOSIDriverPatch(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephClient":
+        return new CephClient(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephClientList":
+        return new CephClientList(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephClientPatch":
+        return new CephClientPatch(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephCluster":
+        return new CephCluster(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephClusterList":
+        return new CephClusterList(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephClusterPatch":
+        return new CephClusterPatch(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephFilesystem":
+        return new CephFilesystem(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephFilesystemList":
+        return new CephFilesystemList(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephFilesystemMirror":
+        return new CephFilesystemMirror(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephFilesystemMirrorList":
+        return new CephFilesystemMirrorList(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephFilesystemMirrorPatch":
+        return new CephFilesystemMirrorPatch(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephFilesystemPatch":
+        return new CephFilesystemPatch(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephFilesystemSubVolumeGroup":
+        return new CephFilesystemSubVolumeGroup(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephFilesystemSubVolumeGroupList":
+        return new CephFilesystemSubVolumeGroupList(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephFilesystemSubVolumeGroupPatch":
+        return new CephFilesystemSubVolumeGroupPatch(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephNFS":
+        return new CephNFS(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephNFSList":
+        return new CephNFSList(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephNFSPatch":
+        return new CephNFSPatch(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephObjectRealm":
+        return new CephObjectRealm(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephObjectRealmList":
+        return new CephObjectRealmList(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephObjectRealmPatch":
+        return new CephObjectRealmPatch(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephObjectStore":
+        return new CephObjectStore(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephObjectStoreList":
+        return new CephObjectStoreList(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephObjectStorePatch":
+        return new CephObjectStorePatch(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephObjectStoreUser":
+        return new CephObjectStoreUser(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephObjectStoreUserList":
+        return new CephObjectStoreUserList(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephObjectStoreUserPatch":
+        return new CephObjectStoreUserPatch(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephObjectZone":
+        return new CephObjectZone(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephObjectZoneGroup":
+        return new CephObjectZoneGroup(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephObjectZoneGroupList":
+        return new CephObjectZoneGroupList(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephObjectZoneGroupPatch":
+        return new CephObjectZoneGroupPatch(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephObjectZoneList":
+        return new CephObjectZoneList(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephObjectZonePatch":
+        return new CephObjectZonePatch(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephRBDMirror":
+        return new CephRBDMirror(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephRBDMirrorList":
+        return new CephRBDMirrorList(name, <any> undefined, { urn });
+      case "kubernetes:ceph.rook.io/v1:CephRBDMirrorPatch":
+        return new CephRBDMirrorPatch(name, <any> undefined, { urn });
+      default:
+        throw new Error(`unknown resource type ${type}`);
+    }
+  },
 };
-pulumi.runtime.registerResourceModule("crds", "ceph.rook.io/v1", _module)
+pulumi.runtime.registerResourceModule("crds", "ceph.rook.io/v1", _module);

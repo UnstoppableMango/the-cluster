@@ -1,16 +1,16 @@
 import { Config } from '@pulumi/pulumi';
 
 export interface Hosts {
-  external: string;
-  internal: string;
-  aliases: {
-    external: string[];
-    internal: string[];
-  };
+	external: string;
+	internal: string;
+	aliases: {
+		external: string[];
+		internal: string[];
+	};
 }
 
 export interface Versions {
-  deemix: string;
+	deemix: string;
 }
 
 const config = new Config();

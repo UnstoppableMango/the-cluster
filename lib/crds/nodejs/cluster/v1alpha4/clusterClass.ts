@@ -6,82 +6,82 @@ import * as inputs from "../../types/input";
 import * as outputs from "../../types/output";
 import * as utilities from "../../utilities";
 
-import {ObjectMeta} from "../../meta/v1";
+import { ObjectMeta } from "../../meta/v1";
 
 /**
  * ClusterClass is a template which can be used to create managed topologies.
  *  Deprecated: This type will be removed in one of the next releases.
  */
 export class ClusterClass extends pulumi.CustomResource {
-    /**
-     * Get an existing ClusterClass resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): ClusterClass {
-        return new ClusterClass(name, undefined as any, { ...opts, id: id });
+  /**
+   * Get an existing ClusterClass resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): ClusterClass {
+    return new ClusterClass(name, undefined as any, { ...opts, id: id });
+  }
+
+  /** @internal */
+  public static readonly __pulumiType = "kubernetes:cluster.x-k8s.io/v1alpha4:ClusterClass";
+
+  /**
+   * Returns true if the given object is an instance of ClusterClass.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  public static isInstance(obj: any): obj is ClusterClass {
+    if (obj === undefined || obj === null) {
+      return false;
     }
+    return obj["__pulumiType"] === ClusterClass.__pulumiType;
+  }
 
-    /** @internal */
-    public static readonly __pulumiType = 'kubernetes:cluster.x-k8s.io/v1alpha4:ClusterClass';
+  public readonly apiVersion!: pulumi.Output<"cluster.x-k8s.io/v1alpha4" | undefined>;
+  public readonly kind!: pulumi.Output<"ClusterClass" | undefined>;
+  public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
+  /**
+   * ClusterClassSpec describes the desired state of the ClusterClass.
+   */
+  public readonly spec!: pulumi.Output<outputs.cluster.v1alpha4.ClusterClassSpec | undefined>;
 
-    /**
-     * Returns true if the given object is an instance of ClusterClass.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    public static isInstance(obj: any): obj is ClusterClass {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === ClusterClass.__pulumiType;
+  /**
+   * Create a ClusterClass resource with the given unique name, arguments, and options.
+   *
+   * @param name The _unique_ name of the resource.
+   * @param args The arguments to use to populate this resource's properties.
+   * @param opts A bag of options that control this resource's behavior.
+   */
+  constructor(name: string, args?: ClusterClassArgs, opts?: pulumi.CustomResourceOptions) {
+    let resourceInputs: pulumi.Inputs = {};
+    opts = opts || {};
+    if (!opts.id) {
+      resourceInputs["apiVersion"] = "cluster.x-k8s.io/v1alpha4";
+      resourceInputs["kind"] = "ClusterClass";
+      resourceInputs["metadata"] = args ? args.metadata : undefined;
+      resourceInputs["spec"] = args ? args.spec : undefined;
+    } else {
+      resourceInputs["apiVersion"] = undefined /*out*/;
+      resourceInputs["kind"] = undefined /*out*/;
+      resourceInputs["metadata"] = undefined /*out*/;
+      resourceInputs["spec"] = undefined /*out*/;
     }
-
-    public readonly apiVersion!: pulumi.Output<"cluster.x-k8s.io/v1alpha4" | undefined>;
-    public readonly kind!: pulumi.Output<"ClusterClass" | undefined>;
-    public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
-    /**
-     * ClusterClassSpec describes the desired state of the ClusterClass.
-     */
-    public readonly spec!: pulumi.Output<outputs.cluster.v1alpha4.ClusterClassSpec | undefined>;
-
-    /**
-     * Create a ClusterClass resource with the given unique name, arguments, and options.
-     *
-     * @param name The _unique_ name of the resource.
-     * @param args The arguments to use to populate this resource's properties.
-     * @param opts A bag of options that control this resource's behavior.
-     */
-    constructor(name: string, args?: ClusterClassArgs, opts?: pulumi.CustomResourceOptions) {
-        let resourceInputs: pulumi.Inputs = {};
-        opts = opts || {};
-        if (!opts.id) {
-            resourceInputs["apiVersion"] = "cluster.x-k8s.io/v1alpha4";
-            resourceInputs["kind"] = "ClusterClass";
-            resourceInputs["metadata"] = args ? args.metadata : undefined;
-            resourceInputs["spec"] = args ? args.spec : undefined;
-        } else {
-            resourceInputs["apiVersion"] = undefined /*out*/;
-            resourceInputs["kind"] = undefined /*out*/;
-            resourceInputs["metadata"] = undefined /*out*/;
-            resourceInputs["spec"] = undefined /*out*/;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        super(ClusterClass.__pulumiType, name, resourceInputs, opts);
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    super(ClusterClass.__pulumiType, name, resourceInputs, opts);
+  }
 }
 
 /**
  * The set of arguments for constructing a ClusterClass resource.
  */
 export interface ClusterClassArgs {
-    apiVersion?: pulumi.Input<"cluster.x-k8s.io/v1alpha4">;
-    kind?: pulumi.Input<"ClusterClass">;
-    metadata?: pulumi.Input<ObjectMeta>;
-    /**
-     * ClusterClassSpec describes the desired state of the ClusterClass.
-     */
-    spec?: pulumi.Input<inputs.cluster.v1alpha4.ClusterClassSpecArgs>;
+  apiVersion?: pulumi.Input<"cluster.x-k8s.io/v1alpha4">;
+  kind?: pulumi.Input<"ClusterClass">;
+  metadata?: pulumi.Input<ObjectMeta>;
+  /**
+   * ClusterClassSpec describes the desired state of the ClusterClass.
+   */
+  spec?: pulumi.Input<inputs.cluster.v1alpha4.ClusterClassSpecArgs>;
 }

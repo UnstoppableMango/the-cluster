@@ -20,20 +20,19 @@ export type HTTPRoute = import("./httproute").HTTPRoute;
 export const HTTPRoute: typeof import("./httproute").HTTPRoute = null as any;
 utilities.lazyLoad(exports, ["HTTPRoute"], () => require("./httproute"));
 
-
 const _module = {
-    version: utilities.getVersion(),
-    construct: (name: string, type: string, urn: string): pulumi.Resource => {
-        switch (type) {
-            case "kubernetes:gateway.networking.k8s.io/v1:Gateway":
-                return new Gateway(name, <any>undefined, { urn })
-            case "kubernetes:gateway.networking.k8s.io/v1:GatewayClass":
-                return new GatewayClass(name, <any>undefined, { urn })
-            case "kubernetes:gateway.networking.k8s.io/v1:HTTPRoute":
-                return new HTTPRoute(name, <any>undefined, { urn })
-            default:
-                throw new Error(`unknown resource type ${type}`);
-        }
-    },
+  version: utilities.getVersion(),
+  construct: (name: string, type: string, urn: string): pulumi.Resource => {
+    switch (type) {
+      case "kubernetes:gateway.networking.k8s.io/v1:Gateway":
+        return new Gateway(name, <any> undefined, { urn });
+      case "kubernetes:gateway.networking.k8s.io/v1:GatewayClass":
+        return new GatewayClass(name, <any> undefined, { urn });
+      case "kubernetes:gateway.networking.k8s.io/v1:HTTPRoute":
+        return new HTTPRoute(name, <any> undefined, { urn });
+      default:
+        throw new Error(`unknown resource type ${type}`);
+    }
+  },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "gateway.networking.k8s.io/v1", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "gateway.networking.k8s.io/v1", _module);

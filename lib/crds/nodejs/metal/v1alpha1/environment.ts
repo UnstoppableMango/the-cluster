@@ -6,91 +6,91 @@ import * as inputs from "../../types/input";
 import * as outputs from "../../types/output";
 import * as utilities from "../../utilities";
 
-import {ObjectMeta} from "../../meta/v1";
+import { ObjectMeta } from "../../meta/v1";
 
 /**
  * Environment is the Schema for the environments API.
  */
 export class Environment extends pulumi.CustomResource {
-    /**
-     * Get an existing Environment resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): Environment {
-        return new Environment(name, undefined as any, { ...opts, id: id });
+  /**
+   * Get an existing Environment resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): Environment {
+    return new Environment(name, undefined as any, { ...opts, id: id });
+  }
+
+  /** @internal */
+  public static readonly __pulumiType = "kubernetes:metal.sidero.dev/v1alpha1:Environment";
+
+  /**
+   * Returns true if the given object is an instance of Environment.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  public static isInstance(obj: any): obj is Environment {
+    if (obj === undefined || obj === null) {
+      return false;
     }
+    return obj["__pulumiType"] === Environment.__pulumiType;
+  }
 
-    /** @internal */
-    public static readonly __pulumiType = 'kubernetes:metal.sidero.dev/v1alpha1:Environment';
+  public readonly apiVersion!: pulumi.Output<"metal.sidero.dev/v1alpha1" | undefined>;
+  public readonly kind!: pulumi.Output<"Environment" | undefined>;
+  public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
+  /**
+   * EnvironmentSpec defines the desired state of Environment.
+   */
+  public readonly spec!: pulumi.Output<outputs.metal.v1alpha1.EnvironmentSpec | undefined>;
+  /**
+   * EnvironmentStatus defines the observed state of Environment.
+   */
+  public readonly status!: pulumi.Output<outputs.metal.v1alpha1.EnvironmentStatus | undefined>;
 
-    /**
-     * Returns true if the given object is an instance of Environment.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    public static isInstance(obj: any): obj is Environment {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === Environment.__pulumiType;
+  /**
+   * Create a Environment resource with the given unique name, arguments, and options.
+   *
+   * @param name The _unique_ name of the resource.
+   * @param args The arguments to use to populate this resource's properties.
+   * @param opts A bag of options that control this resource's behavior.
+   */
+  constructor(name: string, args?: EnvironmentArgs, opts?: pulumi.CustomResourceOptions) {
+    let resourceInputs: pulumi.Inputs = {};
+    opts = opts || {};
+    if (!opts.id) {
+      resourceInputs["apiVersion"] = "metal.sidero.dev/v1alpha1";
+      resourceInputs["kind"] = "Environment";
+      resourceInputs["metadata"] = args ? args.metadata : undefined;
+      resourceInputs["spec"] = args ? args.spec : undefined;
+      resourceInputs["status"] = args ? args.status : undefined;
+    } else {
+      resourceInputs["apiVersion"] = undefined /*out*/;
+      resourceInputs["kind"] = undefined /*out*/;
+      resourceInputs["metadata"] = undefined /*out*/;
+      resourceInputs["spec"] = undefined /*out*/;
+      resourceInputs["status"] = undefined /*out*/;
     }
-
-    public readonly apiVersion!: pulumi.Output<"metal.sidero.dev/v1alpha1" | undefined>;
-    public readonly kind!: pulumi.Output<"Environment" | undefined>;
-    public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
-    /**
-     * EnvironmentSpec defines the desired state of Environment.
-     */
-    public readonly spec!: pulumi.Output<outputs.metal.v1alpha1.EnvironmentSpec | undefined>;
-    /**
-     * EnvironmentStatus defines the observed state of Environment.
-     */
-    public readonly status!: pulumi.Output<outputs.metal.v1alpha1.EnvironmentStatus | undefined>;
-
-    /**
-     * Create a Environment resource with the given unique name, arguments, and options.
-     *
-     * @param name The _unique_ name of the resource.
-     * @param args The arguments to use to populate this resource's properties.
-     * @param opts A bag of options that control this resource's behavior.
-     */
-    constructor(name: string, args?: EnvironmentArgs, opts?: pulumi.CustomResourceOptions) {
-        let resourceInputs: pulumi.Inputs = {};
-        opts = opts || {};
-        if (!opts.id) {
-            resourceInputs["apiVersion"] = "metal.sidero.dev/v1alpha1";
-            resourceInputs["kind"] = "Environment";
-            resourceInputs["metadata"] = args ? args.metadata : undefined;
-            resourceInputs["spec"] = args ? args.spec : undefined;
-            resourceInputs["status"] = args ? args.status : undefined;
-        } else {
-            resourceInputs["apiVersion"] = undefined /*out*/;
-            resourceInputs["kind"] = undefined /*out*/;
-            resourceInputs["metadata"] = undefined /*out*/;
-            resourceInputs["spec"] = undefined /*out*/;
-            resourceInputs["status"] = undefined /*out*/;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        super(Environment.__pulumiType, name, resourceInputs, opts);
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    super(Environment.__pulumiType, name, resourceInputs, opts);
+  }
 }
 
 /**
  * The set of arguments for constructing a Environment resource.
  */
 export interface EnvironmentArgs {
-    apiVersion?: pulumi.Input<"metal.sidero.dev/v1alpha1">;
-    kind?: pulumi.Input<"Environment">;
-    metadata?: pulumi.Input<ObjectMeta>;
-    /**
-     * EnvironmentSpec defines the desired state of Environment.
-     */
-    spec?: pulumi.Input<inputs.metal.v1alpha1.EnvironmentSpecArgs>;
-    /**
-     * EnvironmentStatus defines the observed state of Environment.
-     */
-    status?: pulumi.Input<inputs.metal.v1alpha1.EnvironmentStatusArgs>;
+  apiVersion?: pulumi.Input<"metal.sidero.dev/v1alpha1">;
+  kind?: pulumi.Input<"Environment">;
+  metadata?: pulumi.Input<ObjectMeta>;
+  /**
+   * EnvironmentSpec defines the desired state of Environment.
+   */
+  spec?: pulumi.Input<inputs.metal.v1alpha1.EnvironmentSpecArgs>;
+  /**
+   * EnvironmentStatus defines the observed state of Environment.
+   */
+  status?: pulumi.Input<inputs.metal.v1alpha1.EnvironmentStatusArgs>;
 }

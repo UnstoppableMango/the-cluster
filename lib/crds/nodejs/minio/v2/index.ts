@@ -10,16 +10,15 @@ export type Tenant = import("./tenant").Tenant;
 export const Tenant: typeof import("./tenant").Tenant = null as any;
 utilities.lazyLoad(exports, ["Tenant"], () => require("./tenant"));
 
-
 const _module = {
-    version: utilities.getVersion(),
-    construct: (name: string, type: string, urn: string): pulumi.Resource => {
-        switch (type) {
-            case "kubernetes:minio.min.io/v2:Tenant":
-                return new Tenant(name, <any>undefined, { urn })
-            default:
-                throw new Error(`unknown resource type ${type}`);
-        }
-    },
+  version: utilities.getVersion(),
+  construct: (name: string, type: string, urn: string): pulumi.Resource => {
+    switch (type) {
+      case "kubernetes:minio.min.io/v2:Tenant":
+        return new Tenant(name, <any> undefined, { urn });
+      default:
+        throw new Error(`unknown resource type ${type}`);
+    }
+  },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "minio.min.io/v2", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "minio.min.io/v2", _module);

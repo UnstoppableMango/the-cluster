@@ -1,24 +1,24 @@
 import { Config, getStack } from '@pulumi/pulumi';
 
 export interface Auth {
-  adminUser: string;
+	adminUser: string;
 }
 
 export interface Hosts {
-  external: string;
-  internal: string;
-  aliases: {
-    external: string[];
-    internal: string[];
-  };
+	external: string;
+	internal: string;
+	aliases: {
+		external: string[];
+		internal: string[];
+	};
 }
 
 export interface Postgres {
-  username: string;
+	username: string;
 }
 
 export interface Versions {
-  keycloak: string;
+	keycloak: string;
 }
 
 const config = new Config();

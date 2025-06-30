@@ -10,16 +10,15 @@ export type DataPlane = import("./dataPlane").DataPlane;
 export const DataPlane: typeof import("./dataPlane").DataPlane = null as any;
 utilities.lazyLoad(exports, ["DataPlane"], () => require("./dataPlane"));
 
-
 const _module = {
-    version: utilities.getVersion(),
-    construct: (name: string, type: string, urn: string): pulumi.Resource => {
-        switch (type) {
-            case "kubernetes:gateway-operator.konghq.com/v1beta1:DataPlane":
-                return new DataPlane(name, <any>undefined, { urn })
-            default:
-                throw new Error(`unknown resource type ${type}`);
-        }
-    },
+  version: utilities.getVersion(),
+  construct: (name: string, type: string, urn: string): pulumi.Resource => {
+    switch (type) {
+      case "kubernetes:gateway-operator.konghq.com/v1beta1:DataPlane":
+        return new DataPlane(name, <any> undefined, { urn });
+      default:
+        throw new Error(`unknown resource type ${type}`);
+    }
+  },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "gateway-operator.konghq.com/v1beta1", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "gateway-operator.konghq.com/v1beta1", _module);

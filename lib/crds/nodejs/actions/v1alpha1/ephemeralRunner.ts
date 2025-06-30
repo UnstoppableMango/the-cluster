@@ -6,91 +6,91 @@ import * as inputs from "../../types/input";
 import * as outputs from "../../types/output";
 import * as utilities from "../../utilities";
 
-import {ObjectMeta} from "../../meta/v1";
+import { ObjectMeta } from "../../meta/v1";
 
 /**
  * EphemeralRunner is the Schema for the ephemeralrunners API
  */
 export class EphemeralRunner extends pulumi.CustomResource {
-    /**
-     * Get an existing EphemeralRunner resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): EphemeralRunner {
-        return new EphemeralRunner(name, undefined as any, { ...opts, id: id });
+  /**
+   * Get an existing EphemeralRunner resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): EphemeralRunner {
+    return new EphemeralRunner(name, undefined as any, { ...opts, id: id });
+  }
+
+  /** @internal */
+  public static readonly __pulumiType = "kubernetes:actions.github.com/v1alpha1:EphemeralRunner";
+
+  /**
+   * Returns true if the given object is an instance of EphemeralRunner.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  public static isInstance(obj: any): obj is EphemeralRunner {
+    if (obj === undefined || obj === null) {
+      return false;
     }
+    return obj["__pulumiType"] === EphemeralRunner.__pulumiType;
+  }
 
-    /** @internal */
-    public static readonly __pulumiType = 'kubernetes:actions.github.com/v1alpha1:EphemeralRunner';
+  public readonly apiVersion!: pulumi.Output<"actions.github.com/v1alpha1" | undefined>;
+  public readonly kind!: pulumi.Output<"EphemeralRunner" | undefined>;
+  public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
+  /**
+   * EphemeralRunnerSpec defines the desired state of EphemeralRunner
+   */
+  public readonly spec!: pulumi.Output<outputs.actions.v1alpha1.EphemeralRunnerSpec | undefined>;
+  /**
+   * EphemeralRunnerStatus defines the observed state of EphemeralRunner
+   */
+  public readonly status!: pulumi.Output<outputs.actions.v1alpha1.EphemeralRunnerStatus | undefined>;
 
-    /**
-     * Returns true if the given object is an instance of EphemeralRunner.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    public static isInstance(obj: any): obj is EphemeralRunner {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === EphemeralRunner.__pulumiType;
+  /**
+   * Create a EphemeralRunner resource with the given unique name, arguments, and options.
+   *
+   * @param name The _unique_ name of the resource.
+   * @param args The arguments to use to populate this resource's properties.
+   * @param opts A bag of options that control this resource's behavior.
+   */
+  constructor(name: string, args?: EphemeralRunnerArgs, opts?: pulumi.CustomResourceOptions) {
+    let resourceInputs: pulumi.Inputs = {};
+    opts = opts || {};
+    if (!opts.id) {
+      resourceInputs["apiVersion"] = "actions.github.com/v1alpha1";
+      resourceInputs["kind"] = "EphemeralRunner";
+      resourceInputs["metadata"] = args ? args.metadata : undefined;
+      resourceInputs["spec"] = args ? args.spec : undefined;
+      resourceInputs["status"] = args ? args.status : undefined;
+    } else {
+      resourceInputs["apiVersion"] = undefined /*out*/;
+      resourceInputs["kind"] = undefined /*out*/;
+      resourceInputs["metadata"] = undefined /*out*/;
+      resourceInputs["spec"] = undefined /*out*/;
+      resourceInputs["status"] = undefined /*out*/;
     }
-
-    public readonly apiVersion!: pulumi.Output<"actions.github.com/v1alpha1" | undefined>;
-    public readonly kind!: pulumi.Output<"EphemeralRunner" | undefined>;
-    public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
-    /**
-     * EphemeralRunnerSpec defines the desired state of EphemeralRunner
-     */
-    public readonly spec!: pulumi.Output<outputs.actions.v1alpha1.EphemeralRunnerSpec | undefined>;
-    /**
-     * EphemeralRunnerStatus defines the observed state of EphemeralRunner
-     */
-    public readonly status!: pulumi.Output<outputs.actions.v1alpha1.EphemeralRunnerStatus | undefined>;
-
-    /**
-     * Create a EphemeralRunner resource with the given unique name, arguments, and options.
-     *
-     * @param name The _unique_ name of the resource.
-     * @param args The arguments to use to populate this resource's properties.
-     * @param opts A bag of options that control this resource's behavior.
-     */
-    constructor(name: string, args?: EphemeralRunnerArgs, opts?: pulumi.CustomResourceOptions) {
-        let resourceInputs: pulumi.Inputs = {};
-        opts = opts || {};
-        if (!opts.id) {
-            resourceInputs["apiVersion"] = "actions.github.com/v1alpha1";
-            resourceInputs["kind"] = "EphemeralRunner";
-            resourceInputs["metadata"] = args ? args.metadata : undefined;
-            resourceInputs["spec"] = args ? args.spec : undefined;
-            resourceInputs["status"] = args ? args.status : undefined;
-        } else {
-            resourceInputs["apiVersion"] = undefined /*out*/;
-            resourceInputs["kind"] = undefined /*out*/;
-            resourceInputs["metadata"] = undefined /*out*/;
-            resourceInputs["spec"] = undefined /*out*/;
-            resourceInputs["status"] = undefined /*out*/;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        super(EphemeralRunner.__pulumiType, name, resourceInputs, opts);
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    super(EphemeralRunner.__pulumiType, name, resourceInputs, opts);
+  }
 }
 
 /**
  * The set of arguments for constructing a EphemeralRunner resource.
  */
 export interface EphemeralRunnerArgs {
-    apiVersion?: pulumi.Input<"actions.github.com/v1alpha1">;
-    kind?: pulumi.Input<"EphemeralRunner">;
-    metadata?: pulumi.Input<ObjectMeta>;
-    /**
-     * EphemeralRunnerSpec defines the desired state of EphemeralRunner
-     */
-    spec?: pulumi.Input<inputs.actions.v1alpha1.EphemeralRunnerSpecArgs>;
-    /**
-     * EphemeralRunnerStatus defines the observed state of EphemeralRunner
-     */
-    status?: pulumi.Input<inputs.actions.v1alpha1.EphemeralRunnerStatusArgs>;
+  apiVersion?: pulumi.Input<"actions.github.com/v1alpha1">;
+  kind?: pulumi.Input<"EphemeralRunner">;
+  metadata?: pulumi.Input<ObjectMeta>;
+  /**
+   * EphemeralRunnerSpec defines the desired state of EphemeralRunner
+   */
+  spec?: pulumi.Input<inputs.actions.v1alpha1.EphemeralRunnerSpecArgs>;
+  /**
+   * EphemeralRunnerStatus defines the observed state of EphemeralRunner
+   */
+  status?: pulumi.Input<inputs.actions.v1alpha1.EphemeralRunnerStatusArgs>;
 }

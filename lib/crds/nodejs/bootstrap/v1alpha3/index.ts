@@ -15,18 +15,17 @@ export type TalosConfigTemplate = import("./talosConfigTemplate").TalosConfigTem
 export const TalosConfigTemplate: typeof import("./talosConfigTemplate").TalosConfigTemplate = null as any;
 utilities.lazyLoad(exports, ["TalosConfigTemplate"], () => require("./talosConfigTemplate"));
 
-
 const _module = {
-    version: utilities.getVersion(),
-    construct: (name: string, type: string, urn: string): pulumi.Resource => {
-        switch (type) {
-            case "kubernetes:bootstrap.cluster.x-k8s.io/v1alpha3:TalosConfig":
-                return new TalosConfig(name, <any>undefined, { urn })
-            case "kubernetes:bootstrap.cluster.x-k8s.io/v1alpha3:TalosConfigTemplate":
-                return new TalosConfigTemplate(name, <any>undefined, { urn })
-            default:
-                throw new Error(`unknown resource type ${type}`);
-        }
-    },
+  version: utilities.getVersion(),
+  construct: (name: string, type: string, urn: string): pulumi.Resource => {
+    switch (type) {
+      case "kubernetes:bootstrap.cluster.x-k8s.io/v1alpha3:TalosConfig":
+        return new TalosConfig(name, <any> undefined, { urn });
+      case "kubernetes:bootstrap.cluster.x-k8s.io/v1alpha3:TalosConfigTemplate":
+        return new TalosConfigTemplate(name, <any> undefined, { urn });
+      default:
+        throw new Error(`unknown resource type ${type}`);
+    }
+  },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "bootstrap.cluster.x-k8s.io/v1alpha3", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "bootstrap.cluster.x-k8s.io/v1alpha3", _module);

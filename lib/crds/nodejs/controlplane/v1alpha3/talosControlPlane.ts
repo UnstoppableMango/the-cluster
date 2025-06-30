@@ -6,91 +6,91 @@ import * as inputs from "../../types/input";
 import * as outputs from "../../types/output";
 import * as utilities from "../../utilities";
 
-import {ObjectMeta} from "../../meta/v1";
+import { ObjectMeta } from "../../meta/v1";
 
 /**
  * TalosControlPlane is the Schema for the taloscontrolplanes API
  */
 export class TalosControlPlane extends pulumi.CustomResource {
-    /**
-     * Get an existing TalosControlPlane resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): TalosControlPlane {
-        return new TalosControlPlane(name, undefined as any, { ...opts, id: id });
+  /**
+   * Get an existing TalosControlPlane resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): TalosControlPlane {
+    return new TalosControlPlane(name, undefined as any, { ...opts, id: id });
+  }
+
+  /** @internal */
+  public static readonly __pulumiType = "kubernetes:controlplane.cluster.x-k8s.io/v1alpha3:TalosControlPlane";
+
+  /**
+   * Returns true if the given object is an instance of TalosControlPlane.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  public static isInstance(obj: any): obj is TalosControlPlane {
+    if (obj === undefined || obj === null) {
+      return false;
     }
+    return obj["__pulumiType"] === TalosControlPlane.__pulumiType;
+  }
 
-    /** @internal */
-    public static readonly __pulumiType = 'kubernetes:controlplane.cluster.x-k8s.io/v1alpha3:TalosControlPlane';
+  public readonly apiVersion!: pulumi.Output<"controlplane.cluster.x-k8s.io/v1alpha3" | undefined>;
+  public readonly kind!: pulumi.Output<"TalosControlPlane" | undefined>;
+  public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
+  /**
+   * TalosControlPlaneSpec defines the desired state of TalosControlPlane
+   */
+  public readonly spec!: pulumi.Output<outputs.controlplane.v1alpha3.TalosControlPlaneSpec | undefined>;
+  /**
+   * TalosControlPlaneStatus defines the observed state of TalosControlPlane
+   */
+  public readonly status!: pulumi.Output<outputs.controlplane.v1alpha3.TalosControlPlaneStatus | undefined>;
 
-    /**
-     * Returns true if the given object is an instance of TalosControlPlane.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    public static isInstance(obj: any): obj is TalosControlPlane {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === TalosControlPlane.__pulumiType;
+  /**
+   * Create a TalosControlPlane resource with the given unique name, arguments, and options.
+   *
+   * @param name The _unique_ name of the resource.
+   * @param args The arguments to use to populate this resource's properties.
+   * @param opts A bag of options that control this resource's behavior.
+   */
+  constructor(name: string, args?: TalosControlPlaneArgs, opts?: pulumi.CustomResourceOptions) {
+    let resourceInputs: pulumi.Inputs = {};
+    opts = opts || {};
+    if (!opts.id) {
+      resourceInputs["apiVersion"] = "controlplane.cluster.x-k8s.io/v1alpha3";
+      resourceInputs["kind"] = "TalosControlPlane";
+      resourceInputs["metadata"] = args ? args.metadata : undefined;
+      resourceInputs["spec"] = args ? args.spec : undefined;
+      resourceInputs["status"] = args ? args.status : undefined;
+    } else {
+      resourceInputs["apiVersion"] = undefined /*out*/;
+      resourceInputs["kind"] = undefined /*out*/;
+      resourceInputs["metadata"] = undefined /*out*/;
+      resourceInputs["spec"] = undefined /*out*/;
+      resourceInputs["status"] = undefined /*out*/;
     }
-
-    public readonly apiVersion!: pulumi.Output<"controlplane.cluster.x-k8s.io/v1alpha3" | undefined>;
-    public readonly kind!: pulumi.Output<"TalosControlPlane" | undefined>;
-    public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
-    /**
-     * TalosControlPlaneSpec defines the desired state of TalosControlPlane
-     */
-    public readonly spec!: pulumi.Output<outputs.controlplane.v1alpha3.TalosControlPlaneSpec | undefined>;
-    /**
-     * TalosControlPlaneStatus defines the observed state of TalosControlPlane
-     */
-    public readonly status!: pulumi.Output<outputs.controlplane.v1alpha3.TalosControlPlaneStatus | undefined>;
-
-    /**
-     * Create a TalosControlPlane resource with the given unique name, arguments, and options.
-     *
-     * @param name The _unique_ name of the resource.
-     * @param args The arguments to use to populate this resource's properties.
-     * @param opts A bag of options that control this resource's behavior.
-     */
-    constructor(name: string, args?: TalosControlPlaneArgs, opts?: pulumi.CustomResourceOptions) {
-        let resourceInputs: pulumi.Inputs = {};
-        opts = opts || {};
-        if (!opts.id) {
-            resourceInputs["apiVersion"] = "controlplane.cluster.x-k8s.io/v1alpha3";
-            resourceInputs["kind"] = "TalosControlPlane";
-            resourceInputs["metadata"] = args ? args.metadata : undefined;
-            resourceInputs["spec"] = args ? args.spec : undefined;
-            resourceInputs["status"] = args ? args.status : undefined;
-        } else {
-            resourceInputs["apiVersion"] = undefined /*out*/;
-            resourceInputs["kind"] = undefined /*out*/;
-            resourceInputs["metadata"] = undefined /*out*/;
-            resourceInputs["spec"] = undefined /*out*/;
-            resourceInputs["status"] = undefined /*out*/;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        super(TalosControlPlane.__pulumiType, name, resourceInputs, opts);
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    super(TalosControlPlane.__pulumiType, name, resourceInputs, opts);
+  }
 }
 
 /**
  * The set of arguments for constructing a TalosControlPlane resource.
  */
 export interface TalosControlPlaneArgs {
-    apiVersion?: pulumi.Input<"controlplane.cluster.x-k8s.io/v1alpha3">;
-    kind?: pulumi.Input<"TalosControlPlane">;
-    metadata?: pulumi.Input<ObjectMeta>;
-    /**
-     * TalosControlPlaneSpec defines the desired state of TalosControlPlane
-     */
-    spec?: pulumi.Input<inputs.controlplane.v1alpha3.TalosControlPlaneSpecArgs>;
-    /**
-     * TalosControlPlaneStatus defines the observed state of TalosControlPlane
-     */
-    status?: pulumi.Input<inputs.controlplane.v1alpha3.TalosControlPlaneStatusArgs>;
+  apiVersion?: pulumi.Input<"controlplane.cluster.x-k8s.io/v1alpha3">;
+  kind?: pulumi.Input<"TalosControlPlane">;
+  metadata?: pulumi.Input<ObjectMeta>;
+  /**
+   * TalosControlPlaneSpec defines the desired state of TalosControlPlane
+   */
+  spec?: pulumi.Input<inputs.controlplane.v1alpha3.TalosControlPlaneSpecArgs>;
+  /**
+   * TalosControlPlaneStatus defines the observed state of TalosControlPlane
+   */
+  status?: pulumi.Input<inputs.controlplane.v1alpha3.TalosControlPlaneStatusArgs>;
 }

@@ -10,16 +10,15 @@ export type Bundle = import("./bundle").Bundle;
 export const Bundle: typeof import("./bundle").Bundle = null as any;
 utilities.lazyLoad(exports, ["Bundle"], () => require("./bundle"));
 
-
 const _module = {
-    version: utilities.getVersion(),
-    construct: (name: string, type: string, urn: string): pulumi.Resource => {
-        switch (type) {
-            case "kubernetes:trust.cert-manager.io/v1alpha1:Bundle":
-                return new Bundle(name, <any>undefined, { urn })
-            default:
-                throw new Error(`unknown resource type ${type}`);
-        }
-    },
+  version: utilities.getVersion(),
+  construct: (name: string, type: string, urn: string): pulumi.Resource => {
+    switch (type) {
+      case "kubernetes:trust.cert-manager.io/v1alpha1:Bundle":
+        return new Bundle(name, <any> undefined, { urn });
+      default:
+        throw new Error(`unknown resource type ${type}`);
+    }
+  },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "trust.cert-manager.io/v1alpha1", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "trust.cert-manager.io/v1alpha1", _module);

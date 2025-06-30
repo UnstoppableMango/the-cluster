@@ -6,91 +6,91 @@ import * as inputs from "../../types/input";
 import * as outputs from "../../types/output";
 import * as utilities from "../../utilities";
 
-import {ObjectMeta} from "../../meta/v1";
+import { ObjectMeta } from "../../meta/v1";
 
 /**
  * VirtualServer defines the VirtualServer resource.
  */
 export class VirtualServer extends pulumi.CustomResource {
-    /**
-     * Get an existing VirtualServer resource's state with the given name, ID, and optional extra
-     * properties used to qualify the lookup.
-     *
-     * @param name The _unique_ name of the resulting resource.
-     * @param id The _unique_ provider ID of the resource to lookup.
-     * @param opts Optional settings to control the behavior of the CustomResource.
-     */
-    public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): VirtualServer {
-        return new VirtualServer(name, undefined as any, { ...opts, id: id });
+  /**
+   * Get an existing VirtualServer resource's state with the given name, ID, and optional extra
+   * properties used to qualify the lookup.
+   *
+   * @param name The _unique_ name of the resulting resource.
+   * @param id The _unique_ provider ID of the resource to lookup.
+   * @param opts Optional settings to control the behavior of the CustomResource.
+   */
+  public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): VirtualServer {
+    return new VirtualServer(name, undefined as any, { ...opts, id: id });
+  }
+
+  /** @internal */
+  public static readonly __pulumiType = "kubernetes:k8s.nginx.org/v1:VirtualServer";
+
+  /**
+   * Returns true if the given object is an instance of VirtualServer.  This is designed to work even
+   * when multiple copies of the Pulumi SDK have been loaded into the same process.
+   */
+  public static isInstance(obj: any): obj is VirtualServer {
+    if (obj === undefined || obj === null) {
+      return false;
     }
+    return obj["__pulumiType"] === VirtualServer.__pulumiType;
+  }
 
-    /** @internal */
-    public static readonly __pulumiType = 'kubernetes:k8s.nginx.org/v1:VirtualServer';
+  public readonly apiVersion!: pulumi.Output<"k8s.nginx.org/v1" | undefined>;
+  public readonly kind!: pulumi.Output<"VirtualServer" | undefined>;
+  public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
+  /**
+   * VirtualServerSpec is the spec of the VirtualServer resource.
+   */
+  public readonly spec!: pulumi.Output<outputs.k8s.v1.VirtualServerSpec | undefined>;
+  /**
+   * VirtualServerStatus defines the status for the VirtualServer resource.
+   */
+  public readonly status!: pulumi.Output<outputs.k8s.v1.VirtualServerStatus | undefined>;
 
-    /**
-     * Returns true if the given object is an instance of VirtualServer.  This is designed to work even
-     * when multiple copies of the Pulumi SDK have been loaded into the same process.
-     */
-    public static isInstance(obj: any): obj is VirtualServer {
-        if (obj === undefined || obj === null) {
-            return false;
-        }
-        return obj['__pulumiType'] === VirtualServer.__pulumiType;
+  /**
+   * Create a VirtualServer resource with the given unique name, arguments, and options.
+   *
+   * @param name The _unique_ name of the resource.
+   * @param args The arguments to use to populate this resource's properties.
+   * @param opts A bag of options that control this resource's behavior.
+   */
+  constructor(name: string, args?: VirtualServerArgs, opts?: pulumi.CustomResourceOptions) {
+    let resourceInputs: pulumi.Inputs = {};
+    opts = opts || {};
+    if (!opts.id) {
+      resourceInputs["apiVersion"] = "k8s.nginx.org/v1";
+      resourceInputs["kind"] = "VirtualServer";
+      resourceInputs["metadata"] = args ? args.metadata : undefined;
+      resourceInputs["spec"] = args ? args.spec : undefined;
+      resourceInputs["status"] = args ? args.status : undefined;
+    } else {
+      resourceInputs["apiVersion"] = undefined /*out*/;
+      resourceInputs["kind"] = undefined /*out*/;
+      resourceInputs["metadata"] = undefined /*out*/;
+      resourceInputs["spec"] = undefined /*out*/;
+      resourceInputs["status"] = undefined /*out*/;
     }
-
-    public readonly apiVersion!: pulumi.Output<"k8s.nginx.org/v1" | undefined>;
-    public readonly kind!: pulumi.Output<"VirtualServer" | undefined>;
-    public readonly metadata!: pulumi.Output<ObjectMeta | undefined>;
-    /**
-     * VirtualServerSpec is the spec of the VirtualServer resource.
-     */
-    public readonly spec!: pulumi.Output<outputs.k8s.v1.VirtualServerSpec | undefined>;
-    /**
-     * VirtualServerStatus defines the status for the VirtualServer resource.
-     */
-    public readonly status!: pulumi.Output<outputs.k8s.v1.VirtualServerStatus | undefined>;
-
-    /**
-     * Create a VirtualServer resource with the given unique name, arguments, and options.
-     *
-     * @param name The _unique_ name of the resource.
-     * @param args The arguments to use to populate this resource's properties.
-     * @param opts A bag of options that control this resource's behavior.
-     */
-    constructor(name: string, args?: VirtualServerArgs, opts?: pulumi.CustomResourceOptions) {
-        let resourceInputs: pulumi.Inputs = {};
-        opts = opts || {};
-        if (!opts.id) {
-            resourceInputs["apiVersion"] = "k8s.nginx.org/v1";
-            resourceInputs["kind"] = "VirtualServer";
-            resourceInputs["metadata"] = args ? args.metadata : undefined;
-            resourceInputs["spec"] = args ? args.spec : undefined;
-            resourceInputs["status"] = args ? args.status : undefined;
-        } else {
-            resourceInputs["apiVersion"] = undefined /*out*/;
-            resourceInputs["kind"] = undefined /*out*/;
-            resourceInputs["metadata"] = undefined /*out*/;
-            resourceInputs["spec"] = undefined /*out*/;
-            resourceInputs["status"] = undefined /*out*/;
-        }
-        opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        super(VirtualServer.__pulumiType, name, resourceInputs, opts);
-    }
+    opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+    super(VirtualServer.__pulumiType, name, resourceInputs, opts);
+  }
 }
 
 /**
  * The set of arguments for constructing a VirtualServer resource.
  */
 export interface VirtualServerArgs {
-    apiVersion?: pulumi.Input<"k8s.nginx.org/v1">;
-    kind?: pulumi.Input<"VirtualServer">;
-    metadata?: pulumi.Input<ObjectMeta>;
-    /**
-     * VirtualServerSpec is the spec of the VirtualServer resource.
-     */
-    spec?: pulumi.Input<inputs.k8s.v1.VirtualServerSpecArgs>;
-    /**
-     * VirtualServerStatus defines the status for the VirtualServer resource.
-     */
-    status?: pulumi.Input<inputs.k8s.v1.VirtualServerStatusArgs>;
+  apiVersion?: pulumi.Input<"k8s.nginx.org/v1">;
+  kind?: pulumi.Input<"VirtualServer">;
+  metadata?: pulumi.Input<ObjectMeta>;
+  /**
+   * VirtualServerSpec is the spec of the VirtualServer resource.
+   */
+  spec?: pulumi.Input<inputs.k8s.v1.VirtualServerSpecArgs>;
+  /**
+   * VirtualServerStatus defines the status for the VirtualServer resource.
+   */
+  status?: pulumi.Input<inputs.k8s.v1.VirtualServerStatusArgs>;
 }

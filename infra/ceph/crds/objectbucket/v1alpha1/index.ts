@@ -35,26 +35,25 @@ export type ObjectBucketPatch = import("./objectBucketPatch").ObjectBucketPatch;
 export const ObjectBucketPatch: typeof import("./objectBucketPatch").ObjectBucketPatch = null as any;
 utilities.lazyLoad(exports, ["ObjectBucketPatch"], () => require("./objectBucketPatch"));
 
-
 const _module = {
-    version: utilities.getVersion(),
-    construct: (name: string, type: string, urn: string): pulumi.Resource => {
-        switch (type) {
-            case "kubernetes:objectbucket.io/v1alpha1:ObjectBucket":
-                return new ObjectBucket(name, <any>undefined, { urn })
-            case "kubernetes:objectbucket.io/v1alpha1:ObjectBucketClaim":
-                return new ObjectBucketClaim(name, <any>undefined, { urn })
-            case "kubernetes:objectbucket.io/v1alpha1:ObjectBucketClaimList":
-                return new ObjectBucketClaimList(name, <any>undefined, { urn })
-            case "kubernetes:objectbucket.io/v1alpha1:ObjectBucketClaimPatch":
-                return new ObjectBucketClaimPatch(name, <any>undefined, { urn })
-            case "kubernetes:objectbucket.io/v1alpha1:ObjectBucketList":
-                return new ObjectBucketList(name, <any>undefined, { urn })
-            case "kubernetes:objectbucket.io/v1alpha1:ObjectBucketPatch":
-                return new ObjectBucketPatch(name, <any>undefined, { urn })
-            default:
-                throw new Error(`unknown resource type ${type}`);
-        }
-    },
+  version: utilities.getVersion(),
+  construct: (name: string, type: string, urn: string): pulumi.Resource => {
+    switch (type) {
+      case "kubernetes:objectbucket.io/v1alpha1:ObjectBucket":
+        return new ObjectBucket(name, <any> undefined, { urn });
+      case "kubernetes:objectbucket.io/v1alpha1:ObjectBucketClaim":
+        return new ObjectBucketClaim(name, <any> undefined, { urn });
+      case "kubernetes:objectbucket.io/v1alpha1:ObjectBucketClaimList":
+        return new ObjectBucketClaimList(name, <any> undefined, { urn });
+      case "kubernetes:objectbucket.io/v1alpha1:ObjectBucketClaimPatch":
+        return new ObjectBucketClaimPatch(name, <any> undefined, { urn });
+      case "kubernetes:objectbucket.io/v1alpha1:ObjectBucketList":
+        return new ObjectBucketList(name, <any> undefined, { urn });
+      case "kubernetes:objectbucket.io/v1alpha1:ObjectBucketPatch":
+        return new ObjectBucketPatch(name, <any> undefined, { urn });
+      default:
+        throw new Error(`unknown resource type ${type}`);
+    }
+  },
 };
-pulumi.runtime.registerResourceModule("crds", "objectbucket.io/v1alpha1", _module)
+pulumi.runtime.registerResourceModule("crds", "objectbucket.io/v1alpha1", _module);

@@ -15,18 +15,17 @@ export type GatewayConfiguration = import("./gatewayConfiguration").GatewayConfi
 export const GatewayConfiguration: typeof import("./gatewayConfiguration").GatewayConfiguration = null as any;
 utilities.lazyLoad(exports, ["GatewayConfiguration"], () => require("./gatewayConfiguration"));
 
-
 const _module = {
-    version: utilities.getVersion(),
-    construct: (name: string, type: string, urn: string): pulumi.Resource => {
-        switch (type) {
-            case "kubernetes:gateway-operator.konghq.com/v1alpha1:ControlPlane":
-                return new ControlPlane(name, <any>undefined, { urn })
-            case "kubernetes:gateway-operator.konghq.com/v1alpha1:GatewayConfiguration":
-                return new GatewayConfiguration(name, <any>undefined, { urn })
-            default:
-                throw new Error(`unknown resource type ${type}`);
-        }
-    },
+  version: utilities.getVersion(),
+  construct: (name: string, type: string, urn: string): pulumi.Resource => {
+    switch (type) {
+      case "kubernetes:gateway-operator.konghq.com/v1alpha1:ControlPlane":
+        return new ControlPlane(name, <any> undefined, { urn });
+      case "kubernetes:gateway-operator.konghq.com/v1alpha1:GatewayConfiguration":
+        return new GatewayConfiguration(name, <any> undefined, { urn });
+      default:
+        throw new Error(`unknown resource type ${type}`);
+    }
+  },
 };
-pulumi.runtime.registerResourceModule("thecluster-crds", "gateway-operator.konghq.com/v1alpha1", _module)
+pulumi.runtime.registerResourceModule("thecluster-crds", "gateway-operator.konghq.com/v1alpha1", _module);
