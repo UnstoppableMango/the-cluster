@@ -1,7 +1,7 @@
 import { Config } from '@pulumi/pulumi';
 
 interface Versions {
-  pulumiImage: string;
+	pulumiImage: string;
 }
 
 const config = new Config();

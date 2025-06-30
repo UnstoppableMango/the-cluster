@@ -6,44 +6,44 @@
 	"schedule": [
 		"before 4am on the first day of the month"
 	],
-  "ignorePaths": [
-    "**/node_modules/**",
-    "**/vendor/**",
-    "**/test/**",
-    "**/tests/**",
-    "**/testdata/**",
-    "**/.save/**",
-    "apps/**",
-    "charts/**",
-    "clusters/**",
-    "containers/**",
-    "dbs/**",
-    "infra/**",
-    "lib/**",
-    "tools/**",
-    "**/pulumi-crds/**",
-    "**/crds/**"
-  ],
-  "ignoreDeps": [
-    "@unstoppablemango/thecluster",
-    "@unstoppablemango/thecluster-crds"
-  ],
-  "major": {
-    "dependencyDashboardApproval": true
-  },
-  "git-submodules": {
-    "enabled": true
-  },
-  "customManagers": [
-    {
-      "customType": "regex",
-      "managerFilePatterns": [
-        "/(^|/)Pulumi\\.ya?ml$/"
-      ],
-      "matchStrings": [
-        "# renovate: datasource=(?<datasource>[a-zA-Z0-9-._]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[A-Za-z0-9_]+?\\s*:\\s*[\"']?(?<currentValue>.+?)[\"']?\\s"
-      ]
-    }
-  ],
-  "packageRules": []
+	"ignorePaths": [
+		"**/node_modules/**",
+		"**/vendor/**",
+		"**/test/**",
+		"**/tests/**",
+		"**/testdata/**",
+		"**/.save/**",
+		"apps/**",
+		"charts/**",
+		"clusters/**",
+		"containers/**",
+		"dbs/**",
+		"infra/**",
+		"lib/**",
+		"tools/**",
+		"**/pulumi-crds/**",
+		"**/crds/**"
+	],
+	"ignoreDeps": [
+		"@unstoppablemango/thecluster",
+		"@unstoppablemango/thecluster-crds"
+	],
+	"major": {
+		"dependencyDashboardApproval": true
+	},
+	"git-submodules": {
+		"enabled": true
+	},
+	"customManagers": [
+		{
+			"customType": "regex",
+			"managerFilePatterns": [
+				"/(^|/)Pulumi\\.ya?ml$/"
+			],
+			"matchStrings": [
+				"# renovate: datasource=(?<datasource>[a-zA-Z0-9-._]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[A-Za-z0-9_]+?\\s*:\\s*[\"']?(?<currentValue>.+?)[\"']?\\s"
+			]
+		}
+	],
+	"packageRules": []
 }
