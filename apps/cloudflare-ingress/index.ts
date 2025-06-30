@@ -2,7 +2,7 @@ import * as k8s from '@pulumi/kubernetes';
 import { CloudflareTunnelIngressController } from '@unmango/pulumi-cloudflare-ingress';
 
 const theclusterNs = new k8s.core.v1.Namespace('thecluster-io-ingress', {
-  metadata: { name: 'thecluster-io-ingress' },
+	metadata: { name: 'thecluster-io-ingress' },
 });
 
 // const unmangoNs = new k8s.core.v1.Namespace('unmango-net-ingress', {
@@ -10,12 +10,12 @@ const theclusterNs = new k8s.core.v1.Namespace('thecluster-io-ingress', {
 // });
 
 const theclusterIo = new CloudflareTunnelIngressController('thecluster.io', {
-  namespace: theclusterNs.metadata.name,
-  version: '0.0.9',
-  ingressClassName: 'thecluster-io',
-  apiTokenName: 'THECLUSTER-ingress-thecluster-io',
-  defaultClass: true,
-  zone: 'thecluster.io',
+	namespace: theclusterNs.metadata.name,
+	version: '0.0.9',
+	ingressClassName: 'thecluster-io',
+	apiTokenName: 'THECLUSTER-ingress-thecluster-io',
+	defaultClass: true,
+	zone: 'thecluster.io',
 });
 
 // const unmangoNet = new CloudflareTunnelIngressController('unmango.net', {

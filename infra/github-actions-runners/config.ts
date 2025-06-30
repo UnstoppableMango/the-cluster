@@ -2,25 +2,25 @@ import { core } from '@pulumi/kubernetes/types/input';
 import { Config } from '@pulumi/pulumi';
 
 export interface GitHub {
-  appId: string;
+	appId: string;
 }
 
 export interface ScaleSet {
-  name: string;
-  githubUrl: string;
-  installationId: string;
-  minRunners: number;
-  maxRunners: number;
-  volumes?: core.v1.Volume[];
-  volumeMounts?: core.v1.VolumeMount[];
+	name: string;
+	githubUrl: string;
+	installationId: string;
+	minRunners: number;
+	maxRunners: number;
+	volumes?: core.v1.Volume[];
+	volumeMounts?: core.v1.VolumeMount[];
 }
 
 export interface Versions {
-  actionsRunner: string;
-  actionsRunnerController: string;
-  dind: string;
-  rbacProxy: string;
-  scaleSetController: string;
+	actionsRunner: string;
+	actionsRunnerController: string;
+	dind: string;
+	rbacProxy: string;
+	scaleSetController: string;
 }
 
 const config = new Config();

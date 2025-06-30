@@ -1,22 +1,22 @@
-import { Config, StackReference, getStack } from '@pulumi/pulumi';
+import { Config, getStack, StackReference } from '@pulumi/pulumi';
 import * as cluster from '@unstoppablemango/thecluster/cluster';
 
 export interface Cloudflare {
-  accountId: string;
-  apiToken: string;
-  email: string;
-  globalApiKey: string;
-  zoneId: string;
+	accountId: string;
+	apiToken: string;
+	email: string;
+	globalApiKey: string;
+	zoneId: string;
 }
 
 export interface Tunnel {
-  name: string;
-  domain: string;
-  size: number;
+	name: string;
+	domain: string;
+	size: number;
 }
 
 export interface Versions {
-  cloudflared: string;
+	cloudflared: string;
 }
 
 const config = new Config();
@@ -28,13 +28,13 @@ export const tunnels = config.requireObject<Tunnel[]>('tunnels');
 export const versions = config.requireObject<Versions>('versions');
 
 const caRef = new StackReference('ca', {
-  name: `UnstoppableMango/thecluster-ca/${config.require('caStack')}`,
+	name: `UnstoppableMango/thecluster-ca/${config.require('caStack')}`,
 });
 
 export const caPem = caRef.requireOutput('caPem');
 
 const operatorRef = new StackReference('operator-ref', {
-  name: `UnstoppableMango/thecluster-cloudflare-operator/${config.require('operatorStack')}`,
+	name: `UnstoppableMango/thecluster-cloudflare-operator/${config.require('operatorStack')}`,
 });
 
 export const operatorNamespace = operatorRef.requireOutput('namespace');

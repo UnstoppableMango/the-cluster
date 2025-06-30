@@ -1,12 +1,12 @@
 {
-    "name": "thecluster-crossplane",
-    "main": "index.ts",
-    "devDependencies": {
-        "@types/node": "^18",
-        "typescript": "^5.0.0"
-    },
-    "dependencies": {
-        "@pulumi/kubernetes": "^4.23.0",
-        "@pulumi/pulumi": "^3.180.0"
-    }
+	"name": "thecluster-crossplane",
+	"main": "index.ts",
+	"devDependencies": {
+		"@types/node": "^18",
+		"typescript": "^5.0.0"
+	},
+	"dependencies": {
+		"@pulumi/kubernetes": "^4.23.0",
+		"@pulumi/pulumi": "^3.180.0"
+	}
 }

@@ -1,4 +1,4 @@
-import { getStack, Config } from '@pulumi/pulumi';
+import { Config, getStack } from '@pulumi/pulumi';
 
 const config = new Config();
 

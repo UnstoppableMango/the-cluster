@@ -6,6 +6,6 @@ import * as config from './config';
 // source of truth
 
 export const kubeconfig = config.kubeconfig.apply(x => {
-  // I know this is lazy but I'm tired and I just want this working right now
-  return x.replace('127.0.0.1', '192.168.1.100');
+	// I know this is lazy but I'm tired and I just want this working right now
+	return x.replace('127.0.0.1', '192.168.1.100');
 });

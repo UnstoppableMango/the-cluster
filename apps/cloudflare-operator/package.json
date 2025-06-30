@@ -1,11 +1,11 @@
 {
-  "name": "thecluster-cloudflare-operator",
-  "main": "index.ts",
-  "dependencies": {
-    "@pulumi/kubernetes": "^4.23.0",
-    "@pulumi/pulumi": "^3.180.0"
-  },
-  "devDependencies": {
-    "@types/node": "^22.15.33"
-  }
+	"name": "thecluster-cloudflare-operator",
+	"main": "index.ts",
+	"dependencies": {
+		"@pulumi/kubernetes": "^4.23.0",
+		"@pulumi/pulumi": "^3.180.0"
+	},
+	"devDependencies": {
+		"@types/node": "^22.15.33"
+	}
 }

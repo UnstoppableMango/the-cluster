@@ -1,13 +1,13 @@
 {
-    "name": "thecluster-unstoppablemang-runners",
-    "main": "index.ts",
-    "devDependencies": {
-        "@types/node": "^18",
-        "typescript": "^5.0.0"
-    },
-    "dependencies": {
-        "@pulumi/kubernetes": "^4.21.1",
-        "@pulumi/pulumi": "^3.156.0",
-        "yaml": "^2.7.0"
-    }
+	"name": "thecluster-unstoppablemang-runners",
+	"main": "index.ts",
+	"devDependencies": {
+		"@types/node": "^18",
+		"typescript": "^5.0.0"
+	},
+	"dependencies": {
+		"@pulumi/kubernetes": "^4.21.1",
+		"@pulumi/pulumi": "^3.156.0",
+		"yaml": "^2.7.0"
+	}
 }

@@ -1,8 +1,8 @@
 import { Config, getStack } from '@pulumi/pulumi';
 
 export interface Versions {
-  ceph: string;
-  rook: string;
+	ceph: string;
+	rook: string;
 }
 
 const config = new Config();

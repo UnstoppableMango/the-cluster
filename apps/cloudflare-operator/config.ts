@@ -1,8 +1,8 @@
 import { Config, getStack } from '@pulumi/pulumi';
 
 export interface Cloudflare {
-  apiToken: string;
-  globalApiKey: string;
+	apiToken: string;
+	globalApiKey: string;
 }
 
 const config = new Config();

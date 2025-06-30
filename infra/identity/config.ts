@@ -1,22 +1,22 @@
 import { Config, getStack } from '@pulumi/pulumi';
 
 export interface Idp {
-  clientId: string;
-  clientSecret: string;
+	clientId: string;
+	clientSecret: string;
 }
 
 export interface MicrosoftIdp extends Idp {
-  tenantId: string;
+	tenantId: string;
 }
 
 export interface StackExchangeIdp extends Idp {
-  key: string;
+	key: string;
 }
 
 export interface Me {
-  firstName: string;
-  lastName: string;
-  email: string;
+	firstName: string;
+	lastName: string;
+	email: string;
 }
 
 const config = new Config();

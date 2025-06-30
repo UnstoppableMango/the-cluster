@@ -1,8 +1,8 @@
 {
-    "recommendations": [
-        "golang.go",
-        "ms-kubernetes-tools.vscode-kubernetes-tools",
-        "tim-koehler.helm-intellisense",
-        "foxundermoon.shell-format"
-    ]
+	"recommendations": [
+		"golang.go",
+		"ms-kubernetes-tools.vscode-kubernetes-tools",
+		"tim-koehler.helm-intellisense",
+		"foxundermoon.shell-format"
+	]
 }

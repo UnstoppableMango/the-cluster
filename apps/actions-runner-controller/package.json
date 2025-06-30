@@ -1,11 +1,11 @@
 {
-  "name": "thecluster-actions-runner-controller",
-  "main": "index.ts",
-  "dependencies": {
-    "@pulumi/kubernetes": "^4.23.0",
-    "@pulumi/pulumi": "^3.180.0"
-  },
-  "devDependencies": {
-    "@types/node": "^22.15.33"
-  }
+	"name": "thecluster-actions-runner-controller",
+	"main": "index.ts",
+	"dependencies": {
+		"@pulumi/kubernetes": "^4.23.0",
+		"@pulumi/pulumi": "^3.180.0"
+	},
+	"devDependencies": {
+		"@types/node": "^22.15.33"
+	}
 }

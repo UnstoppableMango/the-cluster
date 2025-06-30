@@ -10,6 +10,4 @@ export * from './misc';
 //   map,
 // } from './Output';
 
-export {
-  certificate,
-} from './volumes';
+export { certificate } from './volumes';

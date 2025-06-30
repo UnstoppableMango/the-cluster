@@ -1,11 +1,11 @@
 {
-  "name": "pulumi-operator-ts",
-  "dependencies": {
-    "@pulumi/kubernetes": "^4.23.0",
-    "@pulumi/pulumi": "^3.181.0",
-    "@pulumi/pulumiservice": "^0.29.3"
-  },
-  "devDependencies": {
-    "@types/node": "^22.15.33"
-  }
+	"name": "pulumi-operator-ts",
+	"dependencies": {
+		"@pulumi/kubernetes": "^4.23.0",
+		"@pulumi/pulumi": "^3.181.0",
+		"@pulumi/pulumiservice": "^0.29.3"
+	},
+	"devDependencies": {
+		"@types/node": "^22.15.33"
+	}
 }

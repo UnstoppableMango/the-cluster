@@ -1,13 +1,13 @@
 {
-    "name": "thecluster-palworld",
-    "main": "index.ts",
-    "devDependencies": {
-        "@types/node": "^18",
-        "typescript": "^5.0.0"
-    },
-    "dependencies": {
-        "@pulumi/kubernetes": "^4.21.1",
-        "@pulumi/pulumi": "^3.149.0",
-        "@pulumi/random": "^4.17.0"
-    }
+	"name": "thecluster-palworld",
+	"main": "index.ts",
+	"devDependencies": {
+		"@types/node": "^18",
+		"typescript": "^5.0.0"
+	},
+	"dependencies": {
+		"@pulumi/kubernetes": "^4.21.1",
+		"@pulumi/pulumi": "^3.149.0",
+		"@pulumi/random": "^4.17.0"
+	}
 }
