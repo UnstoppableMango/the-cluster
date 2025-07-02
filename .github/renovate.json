@@ -9,20 +9,11 @@
 	"ignorePaths": [
 		"**/node_modules/**",
 		"**/vendor/**",
-		"**/test/**",
-		"**/tests/**",
 		"**/testdata/**",
-		"**/.save/**",
 		"apps/**",
 		"charts/**",
 		"clusters/**",
-		"containers/**",
-		"dbs/**",
-		"infra/**",
-		"lib/**",
-		"tools/**",
-		"**/pulumi-crds/**",
-		"**/crds/**"
+		"lib/**"
 	],
 	"ignoreDeps": [
 		"@unstoppablemango/thecluster",
@@ -30,9 +21,6 @@
 	],
 	"major": {
 		"dependencyDashboardApproval": true
-	},
-	"git-submodules": {
-		"enabled": true
 	},
 	"customManagers": [
 		{

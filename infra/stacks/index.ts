@@ -27,7 +27,7 @@ const delegateBinding = new ClusterRoleBinding('pulumi-operator:system:auth-dele
 });
 
 // This feels gross...
-const adminBinding = new ClusterRoleBinding('pulumi-operator:cluster-admin', {
+const clusterAdminBinding = new ClusterRoleBinding('pulumi-operator:cluster-admin', {
 	roleRef: {
 		apiGroup: 'rbac.authorization.k8s.io',
 		kind: 'ClusterRole',
@@ -82,4 +82,4 @@ const certManager = new CustomResource('cert-manager', {
 			},
 		},
 	},
-}, { dependsOn: [sa, delegateBinding, adminBinding, secret] });
+}, { dependsOn: [sa, delegateBinding, clusterAdminBinding, secret] });

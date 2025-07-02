@@ -1,0 +1,4 @@
+.items[] | select(
+	.metadata.name == "*.pulumi.com" or
+	.metadata.name == "*.rook.io"
+) | split_doc
