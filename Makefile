@@ -14,6 +14,9 @@ KUBECTL    ?= bin/kubectl
 PULUMI     ?= bin/pulumi
 YQ         ?= $(GO) tool yq
 
+GOOS   != $(GO) env GOOS
+GOARCH != $(GO) env GOARCH
+
 APPS  := $(wildcard apps/*)
 INFRA := $(wildcard infra/*)
 
@@ -37,17 +40,10 @@ bin/pulumi: .versions/pulumi
 	sh -s -- --install-root ${CURDIR} --version $(shell cat $<) --no-edit-path
 	@touch $@
 
-bin/crds.yml: | bin/kubectl
-	$(KUBECTL) get crds -oyaml | yq '.items[] | select(.metadata.name == "")'
-
-infra/ceph/crds: infra/crds/manifests/ceph.rook.io.yaml
-	$(CRD2PULUMI) $< --nodejsPath $@
-infra/media/crds: $(addprefix infra/crds/manifests/,wireguards.vpn.wireguard-operator.io.yaml wireguardpeers.vpn.wireguard-operator.io.yaml)
-	$(CRD2PULUMI) $< --nodejsPath $@
-infra/crds/manifests/ceph.rook.io.yaml: .versions/rook | bin/kubectl
-	$(CURL) --fail -L -o $@ https://raw.githubusercontent.com/rook/rook/v$(shell cat $<)/deploy/examples/crds.yaml
-infra/crds/manifests/%.yaml: | bin/kubectl
-	$(KUBECTL) get crd $* -oyaml > $@
+bin/crds.yml: hack/crd-filter.yq | bin/kubectl
+	$(KUBECTL) get crds -oyaml | $(YQ) --from-file $< >$@
+crds/package.json: bin/crds.yml
+	rm -rf crds && $(CRD2PULUMI) --nodejsPath crds $<
 
 .envrc: hack/example.envrc
 	cp $< $@
