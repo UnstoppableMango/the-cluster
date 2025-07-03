@@ -13,6 +13,7 @@
 		"apps/**",
 		"charts/**",
 		"clusters/**",
+		"crds/**",
 		"lib/**"
 	],
 	"ignoreDeps": [
