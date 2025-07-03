@@ -61,7 +61,7 @@ const stacks = [
 	// ['cloudflare-ingress', 'apps/cloudflare-ingress'],
 	['cloudflare-operator', 'apps/cloudflare-operator'],
 	['crossplane', 'apps/crossplane'],
-	// ['external-snapshotter', 'apps/external-snapshotter'],
+	['external-snapshotter', 'apps/external-snapshotter'],
 	['metallb', 'apps/metallb'],
 	['metrics-server', 'apps/metrics-server'],
 	['pulumi-operator', 'apps/pulumi-operator'],
