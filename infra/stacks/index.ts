@@ -55,31 +55,50 @@ const secret = new Secret('pulumi-operator', {
 
 const projectRepo = 'https://github.com/UnstoppableMango/the-cluster';
 
-const certManager = new CustomResource('cert-manager', {
-	apiVersion: 'pulumi.com/v1',
-	kind: 'Stack',
-	metadata: { namespace: ns.metadata.name },
-	spec: {
-		serviceAccountName: sa.metadata.name,
-		projectRepo,
-		repoDir: 'apps/cert-manager',
-		branch: 'main',
-		shallow: true,
-		stack: 'pinkdiamond',
-		refresh: true,
-		envRefs: {
-			PULUMI_ACCESS_TOKEN: {
-				type: 'Secret',
-				secret: {
-					name: secret.metadata.name,
-					key: secretKey,
+const stacks = [
+	['gharc', 'apps/actions-runner-controller'],
+	['cert-manager', 'apps/cert-manager'],
+	// ['cloudflare-ingress', 'apps/cloudflare-ingress'],
+	['cloudflare-operator', 'apps/cloudflare-operator'],
+	['crossplane', 'apps/crossplane'],
+	// ['external-snapshotter', 'apps/external-snapshotter'],
+	['metallb', 'apps/metallb'],
+	['metrics-server', 'apps/metrics-server'],
+	['pulumi-operator', 'apps/pulumi-operator'],
+	// ['rook', 'apps/rook'],
+	// ['cloudflare-tunnels', 'infra/cloudflare-tunnels'],
+	['palworld', 'infra/palworld'],
+	['slackpack', 'infra/slackpack'],
+	['unstoppablemango-runners', 'infra/unstoppablemango-runners'],
+].map(([name, dir]) => stack(name, dir));
+
+function stack(name: string, dir: string): CustomResource {
+	return new CustomResource(name, {
+		apiVersion: 'pulumi.com/v1',
+		kind: 'Stack',
+		metadata: { namespace: ns.metadata.name },
+		spec: {
+			serviceAccountName: sa.metadata.name,
+			projectRepo,
+			repoDir: dir,
+			branch: 'main',
+			shallow: true,
+			stack: 'pinkdiamond',
+			refresh: true,
+			envRefs: {
+				PULUMI_ACCESS_TOKEN: {
+					type: 'Secret',
+					secret: {
+						name: secret.metadata.name,
+						key: secretKey,
+					},
+				},
+			},
+			workspaceTemplate: {
+				spec: {
+					image: `pulumi/pulumi:${versions.pulumiImage}`,
 				},
 			},
 		},
-		workspaceTemplate: {
-			spec: {
-				image: `pulumi/pulumi:${versions.pulumiImage}`,
-			},
-		},
-	},
-}, { dependsOn: [sa, delegateBinding, clusterAdminBinding, secret] });
+	}, { dependsOn: [sa, delegateBinding, clusterAdminBinding, secret] });
+}
