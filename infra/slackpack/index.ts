@@ -109,7 +109,7 @@ const sts = new StatefulSet('slackpack', {
 								},
 							},
 						},
-						{ name: 'CF_PAGE_URL', value: 'https://www.curseforge.com/minecraft/modpacks/all-the-mods-10' },
+						{ name: 'CF_PAGE_URL', value: 'https://www.curseforge.com/minecraft/modpacks/all-the-mods-10/files/6696915' },
 						// { name: 'CF_MODPACK_ZIP', value: '/modpacks/Slack Pack.zip' },
 						// { name: 'CF_MODPACK_MANIFEST', value: '/modpacks/manifest.json' },
 						// { name: 'CF_SLUG', value: 'custom' },
