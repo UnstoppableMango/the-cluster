@@ -1,0 +1,10 @@
+name: thecluster-pki
+description: THECLUSTER certificate stuff
+runtime:
+  name: nodejs
+  options:
+    packagemanager: npm
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: typescript
