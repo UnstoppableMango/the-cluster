@@ -1,0 +1,4 @@
+config:
+  thecluster-pki:cloudflare:
+    apiToken:
+      secure: AAABAA5HcLNdCdbtD1+uMLRwVGyVm+ECZZ1wloTE89RV7ZPqwooOtzylvYQfjeLu3s3gdzpTKup6j0cmDWuey6otbvR8OTiq
