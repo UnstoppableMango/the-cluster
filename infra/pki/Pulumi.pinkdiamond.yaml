@@ -2,3 +2,8 @@ config:
   thecluster-pki:cloudflare:
     apiToken:
       secure: AAABAA5HcLNdCdbtD1+uMLRwVGyVm+ECZZ1wloTE89RV7ZPqwooOtzylvYQfjeLu3s3gdzpTKup6j0cmDWuey6otbvR8OTiq
+    apiTokens:
+      originCa:
+        secure: AAABAHNO8Bv+1G8470Brz+k5EVNGYH9sHQQ+oz4lIDsjwp8+QuKeMUmKit1HXvZ8XJVR18P1QwBVhzGawfOOpdDTvlYHesLp
+      certManager:
+        secure: AAABAOPObdGexmVnX1InhGg0unHhqoVscaB3HM/FFgftACCVV/Lgz20spM61AmUkuLt6u+zXPDAC4dR1iD38cfQw1sBvoFZX

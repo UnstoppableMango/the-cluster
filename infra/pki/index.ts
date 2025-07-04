@@ -1,5 +1,5 @@
 import { CustomResource } from '@pulumi/kubernetes/apiextensions';
-import { Secret } from '@pulumi/kubernetes/core/v1';
+import { Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { Config, Output, StackReference } from '@pulumi/pulumi';
 import { CertRequest, LocallySignedCert, PrivateKey } from '@pulumi/tls';
 import * as z from 'zod/v4';
@@ -10,7 +10,10 @@ const CA = z.object({
 });
 
 const CloudflareConfig = z.object({
-	apiToken: z.string(),
+	apiTokens: z.object({
+		originCa: z.string(),
+		certManager: z.string(),
+	}),
 });
 
 type CA = z.infer<typeof CA>;
@@ -28,31 +31,50 @@ const pki = new StackReference('pki', {
 const ca = pki.requireOutput('thecluster').apply(CA.parse);
 const cf = config.requireSecretObject('cloudflare').apply(CloudflareConfig.parse);
 
-const apiTokenKey = 'api-token';
+const ns = new Namespace('pki', {
+	metadata: { name: 'pki' },
+});
+
+const originCaKey = 'origin-ca-api-token';
 const secret = new Secret('cloudflare', {
-	metadata: {},
+	metadata: { namespace: ns.metadata.name },
 	stringData: {
-		[apiTokenKey]: cf.apiToken,
+		[originCaKey]: cf.apiTokens.originCa,
 	},
 });
 
-const cfIssuer = new CustomResource('cloudflare', {
-	apiVersion: 'cert-manager.io/v1',
-	kind: 'Issuer',
-	metadata: { namespace: '' },
+const originIssuer = new CustomResource('cloudflare-origin', {
+	apiVersion: 'cert-manager.k8s.cloudflare.com/v1',
+	kind: 'OriginIssuer',
+	metadata: { namespace: ns.metadata.name },
 	spec: {
-		acme: {
-			server: '',
-			solvers: [{
-				dns01: {
-					cloudflare: {
-						apiTokenSecretRef: {
-							name: secret.metadata.name,
-							key: apiTokenKey,
-						},
-					},
-				},
-			}],
+		requestType: 'OriginECC',
+		auth: {
+			tokenRef: {
+				name: secret.metadata.name,
+				key: originCaKey,
+			},
 		},
 	},
 });
+
+// const cfIssuer = new CustomResource('cloudflare', {
+// 	apiVersion: 'cert-manager.io/v1',
+// 	kind: 'Issuer',
+// 	metadata: { namespace: '' },
+// 	spec: {
+// 		acme: {
+// 			server: '',
+// 			solvers: [{
+// 				dns01: {
+// 					cloudflare: {
+// 						apiTokenSecretRef: {
+// 							name: secret.metadata.name,
+// 							key: apiTokenKey,
+// 						},
+// 					},
+// 				},
+// 			}],
+// 		},
+// 	},
+// });
