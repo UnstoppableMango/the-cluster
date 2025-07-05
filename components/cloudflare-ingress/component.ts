@@ -1,4 +1,4 @@
-import { ApiToken, getApiTokenPermissionGroups, getZoneOutput } from '@pulumi/cloudflare';
+import { ApiToken, getApiTokenPermissionGroupsList, getZoneOutput } from '@pulumi/cloudflare';
 import { Chart } from '@pulumi/kubernetes/helm/v3';
 import { ComponentResource, ComponentResourceOptions, output } from '@pulumi/pulumi';
 import { CloudflareTunnelIngressControllerArgs } from './types';
@@ -11,7 +11,7 @@ export class CloudflareTunnelIngressController extends ComponentResource {
 		super('thecluster:index:CloudflareTunnelIngressController', name, args, opts);
 
 		const zone = getZoneOutput({ name: args.zone });
-		const all = getApiTokenPermissionGroups();
+		const all = getApiTokenPermissionGroupsList();
 		const apiToken = new ApiToken(name, {
 			name: args.apiTokenName,
 			policies: [{
@@ -37,7 +37,7 @@ export class CloudflareTunnelIngressController extends ComponentResource {
 			values: {
 				cloudflare: {
 					apiToken: apiToken.value,
-					accountId: zone.accountId,
+					accountId: zone.account.id,
 					tunnelName: args.ingressClassName,
 				},
 				ingressClass: {
