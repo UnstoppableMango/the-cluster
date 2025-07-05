@@ -1,7 +1,6 @@
 # Packages
 node_modules/
 */*/charts/
-components/**/package-lock.json
 
 # Artifacts
 bin/

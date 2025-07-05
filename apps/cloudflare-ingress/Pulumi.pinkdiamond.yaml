@@ -1,4 +1,0 @@
-config:
-  cloudflare:apiToken:
-    secure: AAABALvVu60rf4JCwwys4/hbRce//OjL0C3skwpN/3HbRqb5N2zLGlIbjjea+tJz1NmppiQRgTA8LB4OEFsgxbT38feN6l67
-  thecluster-cloudflare-ingress:cluster: pinkdiamond
