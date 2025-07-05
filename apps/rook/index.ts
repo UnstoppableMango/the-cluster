@@ -1,5 +1,4 @@
 import * as k8s from '@pulumi/kubernetes';
-import { versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('rook-ceph', {
 	metadata: { name: 'rook-ceph' },
