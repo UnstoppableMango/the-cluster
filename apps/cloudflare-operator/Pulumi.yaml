@@ -1,6 +1,9 @@
 name: thecluster-cloudflare-operator
-runtime: nodejs
 description: Cloudflare Operator install for THECLUSTER
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn
 config:
   pulumi:tags:
     value:

@@ -1,4 +1,7 @@
 name: thecluster-actions-runner-controller
-runtime: nodejs
 description: GitHub Actions Runner Controller install for THECLUSTER
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn
 config:

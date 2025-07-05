@@ -1,3 +1,6 @@
 name: thecluster-media
-runtime: nodejs
 description: Media infrastructure for THECLUSTER
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn

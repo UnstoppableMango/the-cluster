@@ -3,7 +3,7 @@ description: Slack Pack MC Server
 runtime:
   name: nodejs
   options:
-    packagemanager: npm
+    packagemanager: yarn
 config:
   pulumi:tags:
     value:

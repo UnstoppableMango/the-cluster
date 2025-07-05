@@ -1,6 +1,9 @@
 name: thecluster-cert-manager
-runtime: nodejs
 description: Cert Manager install for THECLUSTER
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn
 config:
   versions:
     value:

@@ -2,7 +2,7 @@ name: rook
 runtime:
   name: nodejs
   options:
-    packagemanager: npm
+    packagemanager: yarn
 description: Rook install for THECLUSTER
 config:
   pulumi:tags:

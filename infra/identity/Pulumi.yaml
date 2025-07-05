@@ -1,3 +1,6 @@
 name: thecluster-identity
-runtime: nodejs
 description: Identity infrastructure for THECLUSTER
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn

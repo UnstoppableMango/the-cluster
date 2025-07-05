@@ -1,6 +1,9 @@
 name: thecluster-external-snapshotter
-runtime: nodejs
 description: External snapshotter install for THECLUSTER
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn
 config:
   versions:
     value:

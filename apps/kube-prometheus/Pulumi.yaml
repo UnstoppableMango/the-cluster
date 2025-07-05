@@ -3,7 +3,7 @@ description: kube-prometheus-stack install for THECLUSTER
 runtime:
   name: nodejs
   options:
-    packagemanager: npm
+    packagemanager: yarn
 config:
   pulumi:tags:
     value:

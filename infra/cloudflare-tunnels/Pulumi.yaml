@@ -1,6 +1,9 @@
 name: thecluster-cloudflare-tunnels
-runtime: nodejs
 description: Cloudflare Tunnels for THECLUSTER
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn
 config:
   pulumi:tags:
     value:
