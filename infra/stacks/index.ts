@@ -55,24 +55,23 @@ const secret = new Secret('pulumi-operator', {
 
 const projectRepo = 'https://github.com/UnstoppableMango/the-cluster';
 
-const stacks = [
-	['gharc', 'apps/actions-runner-controller'],
-	['cert-manager', 'apps/cert-manager'],
-	// ['cloudflare-ingress', 'apps/cloudflare-ingress'],
-	['cloudflare-operator', 'apps/cloudflare-operator'],
-	['crossplane', 'apps/crossplane'],
-	['external-snapshotter', 'apps/external-snapshotter'],
-	['metallb', 'apps/metallb'],
-	['metrics-server', 'apps/metrics-server'],
-	['pulumi-operator', 'apps/pulumi-operator'],
-	// ['rook', 'apps/rook'],
-	// ['cloudflare-tunnels', 'infra/cloudflare-tunnels'],
-	['palworld', 'infra/palworld'],
-	['slackpack', 'infra/slackpack'],
-	['unstoppablemango-runners', 'infra/unstoppablemango-runners'],
-].map(([name, dir]) => stack(name, dir));
+const metallb = stack('metallb', 'apps/metallb');
+const certManager = stack('cert-manager', 'apps/cert-manager');
+const gharc = stack('gharc', 'apps/actions-runner-controller');
+const cloudflareOperator = stack('cloudflare-operator', 'apps/cloudflare-operator');
+const crossplane = stack('crossplane', 'apps/crossplane');
+// const externalSnapshotter = stack('external-snapshotter', 'apps/external-snapshotter');
+const metricsServer = stack('metrics-server', 'apps/metrics-server');
+const pulumiOperator = stack('pulumi-operator', 'apps/pulumi-operator');
+const palworld = stack('palworld', 'infra/palworld', [metallb.metadata.name]);
+const slackpack = stack('slackpack', 'infra/slackpack', [metallb.metadata.name]);
+// const rook = stack('rook', 'apps/rook');
+// const cloudflareTunnels = stack('cloudflare-tunnels', 'infra/cloudflare-tunnels');
+const unstoppablemangoRunners = stack('unstoppablemango-runners', 'infra/unstoppablemango-runners', [
+	gharc.metadata.name,
+]);
 
-function stack(name: string, dir: string): CustomResource {
+function stack(name: string, dir: string, prereqs?: pulumi.Output<string>[]): CustomResource {
 	return new CustomResource(name, {
 		apiVersion: 'pulumi.com/v1',
 		kind: 'Stack',
@@ -85,6 +84,7 @@ function stack(name: string, dir: string): CustomResource {
 			shallow: true,
 			stack: 'pinkdiamond',
 			refresh: true,
+			prerequisites: prereqs?.map(p => ({ name: p })),
 			envRefs: {
 				PULUMI_ACCESS_TOKEN: {
 					type: 'Secret',
