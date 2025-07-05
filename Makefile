@@ -42,10 +42,6 @@ bin/kubectl: .versions/kubernetes
 	$(CURL) --fail -L -o $@ https://dl.k8s.io/release/v$(shell cat $<)/bin/${GOOS}/${GOARCH}/kubectl
 	@chmod +x $@
 
-bin/kubectl-slice: .versions/kubectl-slice
-	$(DEVCTL) install $(@F) \
-	https://github.com/patrickdappollonio/kubectl-slice/releases/download/v$(shell cat $<)/kubectl-slice_linux_x86_64.tar.gz
-
 bin/pulumi: .versions/pulumi
 	$(CURL) -fsSL https://get.pulumi.com | \
 	sh -s -- --install-root ${CURDIR} --version $(shell cat $<) --no-edit-path
