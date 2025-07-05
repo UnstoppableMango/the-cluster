@@ -1,4 +1,5 @@
-import { Namespace } from '@pulumi/kubernetes/core/v1';
+import { CustomResource } from '@pulumi/kubernetes/apiextensions';
+import { Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v4';
 import { ConfigGroup } from '@pulumi/kubernetes/yaml/v2';
 import * as pulumi from '@pulumi/pulumi';
@@ -37,3 +38,28 @@ const chart = new Chart('origin-ca-issuer', {
 		},
 	},
 }, { dependsOn: crds });
+
+const apiTokenKey = 'api-token';
+const secret = new Secret('cloudflare', {
+	metadata: { namespace: ns.metadata.name },
+	stringData: {
+		[apiTokenKey]: config.requireSecret('apiToken'),
+	},
+});
+
+const clusterIssuer = new CustomResource('cloudflare', {
+	apiVersion: 'cert-manager.k8s.cloudflare.com/v1',
+	kind: 'ClusterOriginIssuer',
+	metadata: {},
+	spec: {
+		requestType: 'OriginECC',
+		auth: {
+			tokenRef: {
+				name: secret.metadata.name,
+				key: apiTokenKey,
+			},
+		},
+	},
+}, { dependsOn: chart });
+
+export const clusterIssuerName = clusterIssuer.metadata.name;
