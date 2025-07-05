@@ -620,7 +620,7 @@
   dependencies:
     undici-types "~6.21.0"
 
-"@types/node@^22.14.1", "@types/node@^22.15.33", "@types/node@^22.15.34", "@types/node@^22.16.0", "@types/node@^22.7.6":
+"@types/node@^22.14.1", "@types/node@^22.15.33", "@types/node@^22.15.34", "@types/node@^22.16.0", "@types/node@^22.7.6", "@types/node@^22.9.3":
   version "22.16.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-22.16.0.tgz#352bc4951fd089df32f2b6412a61d339b67ded8b"
   integrity sha512-B2egV9wALML1JCpv3VQoQ+yesQKAmNMBIAY7OteVrikcOcAkWm+dGL6qpeCktPjAv6N1JLnhbNiqS35UpFyBsQ==
@@ -702,7 +702,7 @@
     "@pulumi/postgresql" "^3.10.0"
     "@pulumi/pulumi" "^3.142.0"
     "@unmango/pulumi-pihole" "^0.1.3"
-    "@unstoppablemango/thecluster-crds" "file:../../../../.cache/yarn/v6/npm-@unstoppablemango-thecluster-1.0.0-0fa1b711-ada7-49c3-acac-5c4787bd26a6-1751698746266/node_modules/@unstoppablemango/crds/nodejs"
+    "@unstoppablemango/thecluster-crds" "file:../../../../.cache/yarn/v6/npm-@unstoppablemango-thecluster-1.0.0-9e794daf-e2d7-44e3-8aa2-5a52125782b8-1751699287043/node_modules/@unstoppablemango/crds/nodejs"
     fp-ts "^2.16.1"
     json-schema-to-ts "^3.0.0"
     typescript "^5.3.2"

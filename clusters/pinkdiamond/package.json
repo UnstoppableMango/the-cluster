@@ -1,6 +1,6 @@
 {
 	"name": "thecluster-pinkdiamond",
-  "version": "0.0.1",
+	"version": "0.0.1",
 	"main": "index.ts",
 	"dependencies": {
 		"@pulumi/cloudflare": "^5.33.1",
