@@ -2,7 +2,7 @@ REPOSITORY  := github.com/unstoppablemango/the-cluster
 DOMAIN      := thecluster.io
 
 CLUSTER ?= pinkdiamond
-CMD     ?= preview
+CMD     ?= up
 STACK   ?= ${CLUSTER}
 
 # If ${CMD} is `up` or `preview`
