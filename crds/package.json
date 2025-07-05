@@ -16,7 +16,7 @@
         "postinstall": "node ./scripts/postinstall.js"
     },
     "dependencies": {
-        "@pulumi/kubernetes": "4.23.0",
+        "@pulumi/kubernetes": "4.18.0",
         "@pulumi/pulumi": "^3.25.0",
         "@types/node-fetch": "^2.1.4",
         "@types/tmp": "^0.0.33",
