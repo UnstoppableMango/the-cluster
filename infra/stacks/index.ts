@@ -67,7 +67,9 @@ const palworld = stack('palworld', 'infra/palworld', [metallb.metadata.name]);
 const slackpack = stack('slackpack', 'infra/slackpack', [metallb.metadata.name]);
 // const rook = stack('rook', 'apps/rook');
 // const cloudflareTunnels = stack('cloudflare-tunnels', 'infra/cloudflare-tunnels');
-const unstoppablemangoRunners = stack('unstoppablemango-runners', 'infra/unstoppablemango-runners', [gharc.metadata.name]);
+const unstoppablemangoRunners = stack('unstoppablemango-runners', 'infra/unstoppablemango-runners', [
+	gharc.metadata.name,
+]);
 
 function stack(name: string, dir: string, prereqs?: pulumi.Output<string>[]): CustomResource {
 	return new CustomResource(name, {
