@@ -1,0 +1,31 @@
+{
+  "name": "the-cluster",
+  "version": "2.0.5",
+  "description": "UnstoppableMango's kubernetes resources (THECLUSTER)",
+	"private": true,
+  "main": "index.js",
+	"packageManager": "yarn@1.22.22",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UnstoppableMango/the-cluster.git"
+  },
+  "keywords": [
+    "kubernetes",
+    "pulumi",
+    "typescript",
+    "homelab",
+    "cluster"
+  ],
+  "author": "UnstoppableMango",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/UnstoppableMango/the-cluster/issues"
+  },
+  "homepage": "https://github.com/UnstoppableMango/the-cluster#readme",
+	"workspaces": [
+		"apps/*",
+		"clusters/*",
+		"components/*",
+		"infra/*"
+	]
+}

@@ -1,5 +1,6 @@
 {
 	"name": "thecluster-kube-prometheus",
+	"version": "0.0.1",
 	"main": "index.ts",
 	"dependencies": {
 		"@pulumi/kubernetes": "^4.23.0",
