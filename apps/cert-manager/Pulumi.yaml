@@ -1,3 +1,8 @@
 name: thecluster-cert-manager
 runtime: nodejs
 description: Cert Manager install for THECLUSTER
+config:
+  versions:
+    value:
+      # renovate: datasource=github-tags depName=cert-manager/cert-manager
+      certManager: v1.18.2
