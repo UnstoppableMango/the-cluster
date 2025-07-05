@@ -63,12 +63,14 @@ const crossplane = stack('crossplane', 'apps/crossplane');
 // const externalSnapshotter = stack('external-snapshotter', 'apps/external-snapshotter');
 const metricsServer = stack('metrics-server', 'apps/metrics-server');
 const pulumiOperator = stack('pulumi-operator', 'apps/pulumi-operator');
-const palworld = stack('palworld', 'infra/palworld', [metallb.metadata.name]);
-const slackpack = stack('slackpack', 'infra/slackpack', [metallb.metadata.name]);
-// const rook = stack('rook', 'apps/rook');
+const rook = stack('rook', 'apps/rook');
+const ceph = stack('ceph', 'infra/ceph', [rook.metadata.name, metallb.metadata.name]);
+const palworld = stack('palworld', 'infra/palworld', [metallb.metadata.name, ceph.metadata.name]);
+const slackpack = stack('slackpack', 'infra/slackpack', [metallb.metadata.name, ceph.metadata.name]);
 // const cloudflareTunnels = stack('cloudflare-tunnels', 'infra/cloudflare-tunnels');
 const unstoppablemangoRunners = stack('unstoppablemango-runners', 'infra/unstoppablemango-runners', [
 	gharc.metadata.name,
+	ceph.metadata.name,
 ]);
 
 function stack(name: string, dir: string, prereqs?: pulumi.Output<string>[]): CustomResource {

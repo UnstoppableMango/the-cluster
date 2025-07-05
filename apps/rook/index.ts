@@ -1,10 +1,8 @@
 import * as k8s from '@pulumi/kubernetes';
-import { provider } from '@unstoppablemango/thecluster/cluster/from-stack';
-import { versions } from './config';
 
 const ns = new k8s.core.v1.Namespace('rook-ceph', {
 	metadata: { name: 'rook-ceph' },
-}, { provider });
+});
 
 const chart = new k8s.helm.v3.Chart('rook', {
 	path: './',
@@ -29,6 +27,6 @@ const chart = new k8s.helm.v3.Chart('rook', {
 			},
 		},
 	},
-}, { provider });
+});
 
 export const namespace = ns.metadata.name;
