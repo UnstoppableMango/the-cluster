@@ -1,5 +1,6 @@
 {
 	"name": "thecluster-deemix",
+	"version": "0.0.1",
 	"main": "index.ts",
 	"dependencies": {
 		"@pulumi/keycloak": "^5.2.1",

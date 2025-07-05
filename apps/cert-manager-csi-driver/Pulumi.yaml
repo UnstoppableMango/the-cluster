@@ -1,10 +1,16 @@
 name: thecluster-cert-manager-csi-driver
-runtime: nodejs
 description: Cert Manager CSI Driver install for THECLUSTER
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn
 config:
   zoneName: thecluster.io
   versions:
     value:
-      certManagerCsi: v0.6.0 # renovate depName=jetstack/cert-manager-csi-driver datasource=docker
-      csiNodeDriverRegistrar: v2.9.2 # renovate depName=sig-storage/csi-node-driver-registrar datasource=docker
-      livenessProbe: v2.11.0 # renovate depName=sig-storage/livenessprobe datasource=docker
+      # renovate: datasource=docker depName=jetstack/cert-manager-csi-driver
+      certManagerCsi: v0.6.0
+      # renovate: datasource=docker depName=sig-storage/csi-node-driver-registrar
+      csiNodeDriverRegistrar: v2.9.2
+      # renovate: datasource=docker depName=sig-storage/livenessprobe
+      livenessProbe: v2.11.0

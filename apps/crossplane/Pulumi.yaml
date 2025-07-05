@@ -1,9 +1,9 @@
 name: thecluster-crossplane
-description: Crossplan install for THECLUSTER
+description: Crossplane install for THECLUSTER
 runtime:
   name: nodejs
   options:
-    packagemanager: npm
+    packagemanager: yarn
 config:
   pulumi:tags:
     value:

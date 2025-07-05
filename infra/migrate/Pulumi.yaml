@@ -3,7 +3,7 @@ description: Whatever crap I decide I need for migrating data
 runtime:
   name: nodejs
   options:
-    packagemanager: npm
+    packagemanager: yarn
 config:
   pulumi:tags:
     value:

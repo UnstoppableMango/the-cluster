@@ -1,8 +1,11 @@
 name: thecluster-pulumi-operator
-runtime: nodejs
 description: Pulumi Kubernetes Operator install for THECLUSTER
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn
 config:
   versions:
     value:
-      # renovate datasource=git-tags depName=pulumi/pulumi-kubernetes-operator
+      # renovate: datasource=github-tags depName=pulumi/pulumi-kubernetes-operator
       pulumiOperator: '2.1.0'

@@ -1,6 +1,9 @@
 name: thecluster-deemix
-runtime: nodejs
 description: Deemix install for THECLUSTER
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn
 config:
   versions:
     value:

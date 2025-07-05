@@ -1,5 +1,6 @@
 {
 	"name": "thecluster-origin-ca-issuer",
+	"version": "0.0.1",
 	"main": "index.ts",
 	"dependencies": {
 		"@pulumi/kubernetes": "^4.23.0",

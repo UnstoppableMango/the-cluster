@@ -1,6 +1,9 @@
 name: thecluster-keycloak
-runtime: nodejs
 description: Keycloak install for THECLUSTER
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn
 config:
   versions:
     value:
