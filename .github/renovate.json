@@ -17,6 +17,7 @@
 		"lib/**"
 	],
 	"ignoreDeps": [
+		"@pulumi/crds",
 		"@unstoppablemango/thecluster",
 		"@unstoppablemango/thecluster-crds"
 	],
