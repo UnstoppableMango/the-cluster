@@ -1,4 +1,6 @@
 .items[] | select(
-	.metadata.name == "*.pulumi.com" or
-	.metadata.name == "*.rook.io"
+	.metadata.name == "*.cert-manager.io" or
+	.metadata.name == "cephblockpools.ceph.rook.io" or
+	.metadata.name == "cephclusters.ceph.rook.io" or
+	.metadata.name == "cephfilesystems.ceph.rook.io"
 ) | split_doc

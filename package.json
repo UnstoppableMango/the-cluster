@@ -26,6 +26,7 @@
 		"apps/*",
 		"clusters/*",
 		"components/*",
+		"crds",
 		"infra/*",
 		"lib/nodejs"
 	]
