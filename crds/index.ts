@@ -13,11 +13,13 @@ utilities.lazyLoad(exports, ["Provider"], () => require("./provider"));
 
 // Export sub-modules:
 import * as acme from "./acme";
+import * as ceph from "./ceph";
 import * as cert_manager from "./cert_manager";
 import * as types from "./types";
 
 export {
     acme,
+    ceph,
     cert_manager,
     types,
 };

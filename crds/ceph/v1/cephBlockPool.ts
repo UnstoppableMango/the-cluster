@@ -6,8 +6,6 @@ import * as inputs from "../../types/input";
 import * as outputs from "../../types/output";
 import * as utilities from "../../utilities";
 
-import {ObjectMeta} from "../../meta/v1";
-
 /**
  * CephBlockPool represents a Ceph Storage Pool
  */
@@ -49,7 +47,7 @@ export class CephBlockPool extends pulumi.CustomResource {
     /**
      * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
      */
-    public readonly metadata!: pulumi.Output<ObjectMeta>;
+    public readonly metadata!: pulumi.Output<outputs.meta.v1.ObjectMeta>;
     public readonly spec!: pulumi.Output<outputs.ceph.v1.CephBlockPoolSpec>;
     /**
      * CephBlockPoolStatus represents the mirroring status of Ceph Storage Pool
@@ -99,6 +97,6 @@ export interface CephBlockPoolArgs {
     /**
      * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
      */
-    metadata?: pulumi.Input<ObjectMeta>;
+    metadata?: pulumi.Input<inputs.meta.v1.ObjectMeta>;
     spec?: pulumi.Input<inputs.ceph.v1.CephBlockPoolSpec>;
 }

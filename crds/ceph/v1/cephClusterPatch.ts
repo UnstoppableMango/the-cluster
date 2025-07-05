@@ -6,8 +6,6 @@ import * as inputs from "../../types/input";
 import * as outputs from "../../types/output";
 import * as utilities from "../../utilities";
 
-import {ObjectMetaPatch} from "../../meta/v1";
-
 /**
  * Patch resources are used to modify existing Kubernetes resources by using
  * Server-Side Apply updates. The name of the resource must be specified, but all other properties are optional. More than
@@ -55,7 +53,7 @@ export class CephClusterPatch extends pulumi.CustomResource {
     /**
      * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
      */
-    public readonly metadata!: pulumi.Output<ObjectMetaPatch>;
+    public readonly metadata!: pulumi.Output<outputs.meta.v1.ObjectMetaPatch>;
     public readonly spec!: pulumi.Output<outputs.ceph.v1.CephClusterSpecPatch>;
     /**
      * ClusterStatus represents the status of a Ceph cluster
@@ -105,6 +103,6 @@ export interface CephClusterPatchArgs {
     /**
      * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
      */
-    metadata?: pulumi.Input<ObjectMetaPatch>;
+    metadata?: pulumi.Input<inputs.meta.v1.ObjectMetaPatch>;
     spec?: pulumi.Input<inputs.ceph.v1.CephClusterSpecPatch>;
 }

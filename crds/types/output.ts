@@ -6284,6 +6284,4732 @@ export namespace acme {
     }
 }
 
+export namespace ceph {
+    export namespace v1 {
+        /**
+         * CephBlockPool represents a Ceph Storage Pool
+         */
+        export interface CephBlockPool {
+            /**
+             * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+             */
+            apiVersion: "ceph.rook.io/v1";
+            /**
+             * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind: "CephBlockPool";
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata: outputs.meta.v1.ObjectMeta;
+            spec: outputs.ceph.v1.CephBlockPoolSpec;
+            /**
+             * CephBlockPoolStatus represents the mirroring status of Ceph Storage Pool
+             */
+            status: {[key: string]: any};
+        }
+
+        /**
+         * NamedBlockPoolSpec allows a block pool to be created with a non-default name.
+         * This is more specific than the NamedPoolSpec so we get schema validation on the
+         * allowed pool names that can be specified.
+         */
+        export interface CephBlockPoolSpec {
+            /**
+             * The application name to set on the pool. Only expected to be set for rgw pools.
+             */
+            application: string;
+            /**
+             * DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force"
+             * The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)
+             * Do NOT set a default value for kubebuilder as this will override the Parameters
+             */
+            compressionMode: string;
+            /**
+             * The root of the crush hierarchy utilized by the pool
+             */
+            crushRoot: string;
+            /**
+             * The device class the OSD should set to for use in the pool
+             */
+            deviceClass: string;
+            /**
+             * Allow rook operator to change the pool CRUSH tunables once the pool is created
+             */
+            enableCrushUpdates: boolean;
+            /**
+             * EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
+             */
+            enableRBDStats: boolean;
+            erasureCoded: outputs.ceph.v1.CephBlockPoolSpecErasureCoded;
+            /**
+             * The failure domain: osd/host/(region or zone if available) - technically also any type in the crush map
+             */
+            failureDomain: string;
+            mirroring: outputs.ceph.v1.CephBlockPoolSpecMirroring;
+            /**
+             * The desired name of the pool if different from the CephBlockPool CR name.
+             */
+            name: string;
+            /**
+             * Parameters is a list of properties to enable on a given pool
+             */
+            parameters: {[key: string]: any};
+            quotas: outputs.ceph.v1.CephBlockPoolSpecQuotas;
+            replicated: outputs.ceph.v1.CephBlockPoolSpecReplicated;
+            /**
+             * The mirroring statusCheck
+             */
+            statusCheck: {[key: string]: any};
+        }
+
+        /**
+         * The erasure code settings
+         */
+        export interface CephBlockPoolSpecErasureCoded {
+            /**
+             * The algorithm for erasure coding
+             */
+            algorithm: string;
+            /**
+             * Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+             * This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
+             */
+            codingChunks: number;
+            /**
+             * Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+             * The number of chunks required to recover an object when any single OSD is lost is the same
+             * as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
+             */
+            dataChunks: number;
+        }
+
+        /**
+         * The erasure code settings
+         */
+        export interface CephBlockPoolSpecErasureCodedPatch {
+            /**
+             * The algorithm for erasure coding
+             */
+            algorithm: string;
+            /**
+             * Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+             * This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
+             */
+            codingChunks: number;
+            /**
+             * Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+             * The number of chunks required to recover an object when any single OSD is lost is the same
+             * as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
+             */
+            dataChunks: number;
+        }
+
+        /**
+         * The mirroring settings
+         */
+        export interface CephBlockPoolSpecMirroring {
+            /**
+             * Enabled whether this pool is mirrored or not
+             */
+            enabled: boolean;
+            /**
+             * Mode is the mirroring mode: either pool or image
+             */
+            mode: string;
+            peers: outputs.ceph.v1.CephBlockPoolSpecMirroringPeers;
+            /**
+             * SnapshotSchedules is the scheduling of snapshot for mirrored images/pools
+             */
+            snapshotSchedules: outputs.ceph.v1.CephBlockPoolSpecMirroringSnapshotSchedules[];
+        }
+
+        /**
+         * The mirroring settings
+         */
+        export interface CephBlockPoolSpecMirroringPatch {
+            /**
+             * Enabled whether this pool is mirrored or not
+             */
+            enabled: boolean;
+            /**
+             * Mode is the mirroring mode: either pool or image
+             */
+            mode: string;
+            peers: outputs.ceph.v1.CephBlockPoolSpecMirroringPeersPatch;
+            /**
+             * SnapshotSchedules is the scheduling of snapshot for mirrored images/pools
+             */
+            snapshotSchedules: outputs.ceph.v1.CephBlockPoolSpecMirroringSnapshotSchedulesPatch[];
+        }
+
+        /**
+         * Peers represents the peers spec
+         */
+        export interface CephBlockPoolSpecMirroringPeers {
+            /**
+             * SecretNames represents the Kubernetes Secret names to add rbd-mirror or cephfs-mirror peers
+             */
+            secretNames: string[];
+        }
+
+        /**
+         * Peers represents the peers spec
+         */
+        export interface CephBlockPoolSpecMirroringPeersPatch {
+            /**
+             * SecretNames represents the Kubernetes Secret names to add rbd-mirror or cephfs-mirror peers
+             */
+            secretNames: string[];
+        }
+
+        /**
+         * SnapshotScheduleSpec represents the snapshot scheduling settings of a mirrored pool
+         */
+        export interface CephBlockPoolSpecMirroringSnapshotSchedules {
+            /**
+             * Interval represent the periodicity of the snapshot.
+             */
+            interval: string;
+            /**
+             * Path is the path to snapshot, only valid for CephFS
+             */
+            path: string;
+            /**
+             * StartTime indicates when to start the snapshot
+             */
+            startTime: string;
+        }
+
+        /**
+         * SnapshotScheduleSpec represents the snapshot scheduling settings of a mirrored pool
+         */
+        export interface CephBlockPoolSpecMirroringSnapshotSchedulesPatch {
+            /**
+             * Interval represent the periodicity of the snapshot.
+             */
+            interval: string;
+            /**
+             * Path is the path to snapshot, only valid for CephFS
+             */
+            path: string;
+            /**
+             * StartTime indicates when to start the snapshot
+             */
+            startTime: string;
+        }
+
+        /**
+         * NamedBlockPoolSpec allows a block pool to be created with a non-default name.
+         * This is more specific than the NamedPoolSpec so we get schema validation on the
+         * allowed pool names that can be specified.
+         */
+        export interface CephBlockPoolSpecPatch {
+            /**
+             * The application name to set on the pool. Only expected to be set for rgw pools.
+             */
+            application: string;
+            /**
+             * DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force"
+             * The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)
+             * Do NOT set a default value for kubebuilder as this will override the Parameters
+             */
+            compressionMode: string;
+            /**
+             * The root of the crush hierarchy utilized by the pool
+             */
+            crushRoot: string;
+            /**
+             * The device class the OSD should set to for use in the pool
+             */
+            deviceClass: string;
+            /**
+             * Allow rook operator to change the pool CRUSH tunables once the pool is created
+             */
+            enableCrushUpdates: boolean;
+            /**
+             * EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
+             */
+            enableRBDStats: boolean;
+            erasureCoded: outputs.ceph.v1.CephBlockPoolSpecErasureCodedPatch;
+            /**
+             * The failure domain: osd/host/(region or zone if available) - technically also any type in the crush map
+             */
+            failureDomain: string;
+            mirroring: outputs.ceph.v1.CephBlockPoolSpecMirroringPatch;
+            /**
+             * The desired name of the pool if different from the CephBlockPool CR name.
+             */
+            name: string;
+            /**
+             * Parameters is a list of properties to enable on a given pool
+             */
+            parameters: {[key: string]: any};
+            quotas: outputs.ceph.v1.CephBlockPoolSpecQuotasPatch;
+            replicated: outputs.ceph.v1.CephBlockPoolSpecReplicatedPatch;
+            /**
+             * The mirroring statusCheck
+             */
+            statusCheck: {[key: string]: any};
+        }
+
+        /**
+         * The quota settings
+         */
+        export interface CephBlockPoolSpecQuotas {
+            /**
+             * MaxBytes represents the quota in bytes
+             * Deprecated in favor of MaxSize
+             */
+            maxBytes: number;
+            /**
+             * MaxObjects represents the quota in objects
+             */
+            maxObjects: number;
+            /**
+             * MaxSize represents the quota in bytes as a string
+             */
+            maxSize: string;
+        }
+
+        /**
+         * The quota settings
+         */
+        export interface CephBlockPoolSpecQuotasPatch {
+            /**
+             * MaxBytes represents the quota in bytes
+             * Deprecated in favor of MaxSize
+             */
+            maxBytes: number;
+            /**
+             * MaxObjects represents the quota in objects
+             */
+            maxObjects: number;
+            /**
+             * MaxSize represents the quota in bytes as a string
+             */
+            maxSize: string;
+        }
+
+        /**
+         * The replication settings
+         */
+        export interface CephBlockPoolSpecReplicated {
+            hybridStorage: outputs.ceph.v1.CephBlockPoolSpecReplicatedHybridStorage;
+            /**
+             * ReplicasPerFailureDomain the number of replica in the specified failure domain
+             */
+            replicasPerFailureDomain: number;
+            /**
+             * RequireSafeReplicaSize if false allows you to set replica 1
+             */
+            requireSafeReplicaSize: boolean;
+            /**
+             * Size - Number of copies per object in a replicated storage pool, including the object itself (required for replicated pool type)
+             */
+            size: number;
+            /**
+             * SubFailureDomain the name of the sub-failure domain
+             */
+            subFailureDomain: string;
+            /**
+             * TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
+             */
+            targetSizeRatio: number;
+        }
+
+        /**
+         * HybridStorage represents hybrid storage tier settings
+         */
+        export interface CephBlockPoolSpecReplicatedHybridStorage {
+            /**
+             * PrimaryDeviceClass represents high performance tier (for example SSD or NVME) for Primary OSD
+             */
+            primaryDeviceClass: string;
+            /**
+             * SecondaryDeviceClass represents low performance tier (for example HDDs) for remaining OSDs
+             */
+            secondaryDeviceClass: string;
+        }
+
+        /**
+         * HybridStorage represents hybrid storage tier settings
+         */
+        export interface CephBlockPoolSpecReplicatedHybridStoragePatch {
+            /**
+             * PrimaryDeviceClass represents high performance tier (for example SSD or NVME) for Primary OSD
+             */
+            primaryDeviceClass: string;
+            /**
+             * SecondaryDeviceClass represents low performance tier (for example HDDs) for remaining OSDs
+             */
+            secondaryDeviceClass: string;
+        }
+
+        /**
+         * The replication settings
+         */
+        export interface CephBlockPoolSpecReplicatedPatch {
+            hybridStorage: outputs.ceph.v1.CephBlockPoolSpecReplicatedHybridStoragePatch;
+            /**
+             * ReplicasPerFailureDomain the number of replica in the specified failure domain
+             */
+            replicasPerFailureDomain: number;
+            /**
+             * RequireSafeReplicaSize if false allows you to set replica 1
+             */
+            requireSafeReplicaSize: boolean;
+            /**
+             * Size - Number of copies per object in a replicated storage pool, including the object itself (required for replicated pool type)
+             */
+            size: number;
+            /**
+             * SubFailureDomain the name of the sub-failure domain
+             */
+            subFailureDomain: string;
+            /**
+             * TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
+             */
+            targetSizeRatio: number;
+        }
+
+        /**
+         * CephCluster is a Ceph storage cluster
+         */
+        export interface CephCluster {
+            /**
+             * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+             */
+            apiVersion: "ceph.rook.io/v1";
+            /**
+             * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind: "CephCluster";
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata: outputs.meta.v1.ObjectMeta;
+            spec: outputs.ceph.v1.CephClusterSpec;
+            /**
+             * ClusterStatus represents the status of a Ceph cluster
+             */
+            status: {[key: string]: any};
+        }
+
+        /**
+         * ClusterSpec represents the specification of Ceph Cluster
+         */
+        export interface CephClusterSpec {
+            /**
+             * The annotations-related configuration to add/set on each Pod related object.
+             */
+            annotations: {[key: string]: any};
+            /**
+             * Ceph Config options
+             */
+            cephConfig: {[key: string]: {[key: string]: string}};
+            cephVersion: outputs.ceph.v1.CephClusterSpecCephVersion;
+            cleanupPolicy: outputs.ceph.v1.CephClusterSpecCleanupPolicy;
+            /**
+             * ContinueUpgradeAfterChecksEvenIfNotHealthy defines if an upgrade should continue even if PGs are not clean
+             */
+            continueUpgradeAfterChecksEvenIfNotHealthy: boolean;
+            crashCollector: outputs.ceph.v1.CephClusterSpecCrashCollector;
+            csi: outputs.ceph.v1.CephClusterSpecCsi;
+            dashboard: outputs.ceph.v1.CephClusterSpecDashboard;
+            /**
+             * The path on the host where config and data can be persisted
+             */
+            dataDirHostPath: string;
+            disruptionManagement: outputs.ceph.v1.CephClusterSpecDisruptionManagement;
+            /**
+             * Whether the Ceph Cluster is running external to this Kubernetes cluster
+             * mon, mgr, osd, mds, and discover daemons will not be created for external clusters.
+             */
+            external: {[key: string]: any};
+            healthCheck: outputs.ceph.v1.CephClusterSpecHealthCheck;
+            /**
+             * The labels-related configuration to add/set on each Pod related object.
+             */
+            labels: {[key: string]: any};
+            logCollector: outputs.ceph.v1.CephClusterSpecLogCollector;
+            mgr: outputs.ceph.v1.CephClusterSpecMgr;
+            mon: outputs.ceph.v1.CephClusterSpecMon;
+            monitoring: outputs.ceph.v1.CephClusterSpecMonitoring;
+            /**
+             * Network related configuration
+             */
+            network: {[key: string]: any};
+            placement: {[key: string]: any};
+            /**
+             * PriorityClassNames sets priority classes on components
+             */
+            priorityClassNames: {[key: string]: any};
+            /**
+             * Remove the OSD that is out and safe to remove only if this option is true
+             */
+            removeOSDsIfOutAndSafeToRemove: boolean;
+            /**
+             * Resources set resource requests and limits
+             */
+            resources: {[key: string]: any};
+            security: outputs.ceph.v1.CephClusterSpecSecurity;
+            /**
+             * SkipUpgradeChecks defines if an upgrade should be forced even if one of the check fails
+             */
+            skipUpgradeChecks: boolean;
+            storage: outputs.ceph.v1.CephClusterSpecStorage;
+            /**
+             * UpgradeOSDRequiresHealthyPGs defines if OSD upgrade requires PGs are clean. If set to `true` OSD upgrade process won't start until PGs are healthy.
+             * This configuration will be ignored if `skipUpgradeChecks` is `true`.
+             * Default is false.
+             */
+            upgradeOSDRequiresHealthyPGs: boolean;
+            /**
+             * WaitTimeoutForHealthyOSDInMinutes defines the time the operator would wait before an OSD can be stopped for upgrade or restart.
+             * If the timeout exceeds and OSD is not ok to stop, then the operator would skip upgrade for the current OSD and proceed with the next one
+             * if `continueUpgradeAfterChecksEvenIfNotHealthy` is `false`. If `continueUpgradeAfterChecksEvenIfNotHealthy` is `true`, then operator would
+             * continue with the upgrade of an OSD even if its not ok to stop after the timeout. This timeout won't be applied if `skipUpgradeChecks` is `true`.
+             * The default wait timeout is 10 minutes.
+             */
+            waitTimeoutForHealthyOSDInMinutes: number;
+        }
+
+        /**
+         * The version information that instructs Rook to orchestrate a particular version of Ceph.
+         */
+        export interface CephClusterSpecCephVersion {
+            /**
+             * Whether to allow unsupported versions (do not set to true in production)
+             */
+            allowUnsupported: boolean;
+            /**
+             * Image is the container image used to launch the ceph daemons, such as quay.io/ceph/ceph:<tag>
+             * The full list of images can be found at https://quay.io/repository/ceph/ceph?tab=tags
+             */
+            image: string;
+            /**
+             * ImagePullPolicy describes a policy for if/when to pull a container image
+             * One of Always, Never, IfNotPresent.
+             */
+            imagePullPolicy: string;
+        }
+
+        /**
+         * The version information that instructs Rook to orchestrate a particular version of Ceph.
+         */
+        export interface CephClusterSpecCephVersionPatch {
+            /**
+             * Whether to allow unsupported versions (do not set to true in production)
+             */
+            allowUnsupported: boolean;
+            /**
+             * Image is the container image used to launch the ceph daemons, such as quay.io/ceph/ceph:<tag>
+             * The full list of images can be found at https://quay.io/repository/ceph/ceph?tab=tags
+             */
+            image: string;
+            /**
+             * ImagePullPolicy describes a policy for if/when to pull a container image
+             * One of Always, Never, IfNotPresent.
+             */
+            imagePullPolicy: string;
+        }
+
+        /**
+         * Indicates user intent when deleting a cluster; blocks orchestration and should not be set if cluster
+         * deletion is not imminent.
+         */
+        export interface CephClusterSpecCleanupPolicy {
+            /**
+             * AllowUninstallWithVolumes defines whether we can proceed with the uninstall if they are RBD images still present
+             */
+            allowUninstallWithVolumes: boolean;
+            /**
+             * Confirmation represents the cleanup confirmation
+             */
+            confirmation: string;
+            sanitizeDisks: outputs.ceph.v1.CephClusterSpecCleanupPolicySanitizeDisks;
+        }
+
+        /**
+         * Indicates user intent when deleting a cluster; blocks orchestration and should not be set if cluster
+         * deletion is not imminent.
+         */
+        export interface CephClusterSpecCleanupPolicyPatch {
+            /**
+             * AllowUninstallWithVolumes defines whether we can proceed with the uninstall if they are RBD images still present
+             */
+            allowUninstallWithVolumes: boolean;
+            /**
+             * Confirmation represents the cleanup confirmation
+             */
+            confirmation: string;
+            sanitizeDisks: outputs.ceph.v1.CephClusterSpecCleanupPolicySanitizeDisksPatch;
+        }
+
+        /**
+         * SanitizeDisks represents way we sanitize disks
+         */
+        export interface CephClusterSpecCleanupPolicySanitizeDisks {
+            /**
+             * DataSource is the data source to use to sanitize the disk with
+             */
+            dataSource: string;
+            /**
+             * Iteration is the number of pass to apply the sanitizing
+             */
+            iteration: number;
+            /**
+             * Method is the method we use to sanitize disks
+             */
+            method: string;
+        }
+
+        /**
+         * SanitizeDisks represents way we sanitize disks
+         */
+        export interface CephClusterSpecCleanupPolicySanitizeDisksPatch {
+            /**
+             * DataSource is the data source to use to sanitize the disk with
+             */
+            dataSource: string;
+            /**
+             * Iteration is the number of pass to apply the sanitizing
+             */
+            iteration: number;
+            /**
+             * Method is the method we use to sanitize disks
+             */
+            method: string;
+        }
+
+        /**
+         * A spec for the crash controller
+         */
+        export interface CephClusterSpecCrashCollector {
+            /**
+             * DaysToRetain represents the number of days to retain crash until they get pruned
+             */
+            daysToRetain: number;
+            /**
+             * Disable determines whether we should enable the crash collector
+             */
+            disable: boolean;
+        }
+
+        /**
+         * A spec for the crash controller
+         */
+        export interface CephClusterSpecCrashCollectorPatch {
+            /**
+             * DaysToRetain represents the number of days to retain crash until they get pruned
+             */
+            daysToRetain: number;
+            /**
+             * Disable determines whether we should enable the crash collector
+             */
+            disable: boolean;
+        }
+
+        /**
+         * CSI Driver Options applied per cluster.
+         */
+        export interface CephClusterSpecCsi {
+            cephfs: outputs.ceph.v1.CephClusterSpecCsiCephfs;
+            readAffinity: outputs.ceph.v1.CephClusterSpecCsiReadAffinity;
+        }
+
+        /**
+         * CephFS defines CSI Driver settings for CephFS driver.
+         */
+        export interface CephClusterSpecCsiCephfs {
+            /**
+             * FuseMountOptions defines the mount options for ceph fuse mounter.
+             */
+            fuseMountOptions: string;
+            /**
+             * KernelMountOptions defines the mount options for kernel mounter.
+             */
+            kernelMountOptions: string;
+        }
+
+        /**
+         * CephFS defines CSI Driver settings for CephFS driver.
+         */
+        export interface CephClusterSpecCsiCephfsPatch {
+            /**
+             * FuseMountOptions defines the mount options for ceph fuse mounter.
+             */
+            fuseMountOptions: string;
+            /**
+             * KernelMountOptions defines the mount options for kernel mounter.
+             */
+            kernelMountOptions: string;
+        }
+
+        /**
+         * CSI Driver Options applied per cluster.
+         */
+        export interface CephClusterSpecCsiPatch {
+            cephfs: outputs.ceph.v1.CephClusterSpecCsiCephfsPatch;
+            readAffinity: outputs.ceph.v1.CephClusterSpecCsiReadAffinityPatch;
+        }
+
+        /**
+         * ReadAffinity defines the read affinity settings for CSI driver.
+         */
+        export interface CephClusterSpecCsiReadAffinity {
+            /**
+             * CrushLocationLabels defines which node labels to use
+             * as CRUSH location. This should correspond to the values set in
+             * the CRUSH map.
+             */
+            crushLocationLabels: string[];
+            /**
+             * Enables read affinity for CSI driver.
+             */
+            enabled: boolean;
+        }
+
+        /**
+         * ReadAffinity defines the read affinity settings for CSI driver.
+         */
+        export interface CephClusterSpecCsiReadAffinityPatch {
+            /**
+             * CrushLocationLabels defines which node labels to use
+             * as CRUSH location. This should correspond to the values set in
+             * the CRUSH map.
+             */
+            crushLocationLabels: string[];
+            /**
+             * Enables read affinity for CSI driver.
+             */
+            enabled: boolean;
+        }
+
+        /**
+         * Dashboard settings
+         */
+        export interface CephClusterSpecDashboard {
+            /**
+             * Enabled determines whether to enable the dashboard
+             */
+            enabled: boolean;
+            /**
+             * Port is the dashboard webserver port
+             */
+            port: number;
+            /**
+             * Endpoint for the Prometheus host
+             */
+            prometheusEndpoint: string;
+            /**
+             * Whether to verify the ssl endpoint for prometheus. Set to false for a self-signed cert.
+             */
+            prometheusEndpointSSLVerify: boolean;
+            /**
+             * SSL determines whether SSL should be used
+             */
+            ssl: boolean;
+            /**
+             * URLPrefix is a prefix for all URLs to use the dashboard with a reverse proxy
+             */
+            urlPrefix: string;
+        }
+
+        /**
+         * Dashboard settings
+         */
+        export interface CephClusterSpecDashboardPatch {
+            /**
+             * Enabled determines whether to enable the dashboard
+             */
+            enabled: boolean;
+            /**
+             * Port is the dashboard webserver port
+             */
+            port: number;
+            /**
+             * Endpoint for the Prometheus host
+             */
+            prometheusEndpoint: string;
+            /**
+             * Whether to verify the ssl endpoint for prometheus. Set to false for a self-signed cert.
+             */
+            prometheusEndpointSSLVerify: boolean;
+            /**
+             * SSL determines whether SSL should be used
+             */
+            ssl: boolean;
+            /**
+             * URLPrefix is a prefix for all URLs to use the dashboard with a reverse proxy
+             */
+            urlPrefix: string;
+        }
+
+        /**
+         * A spec for configuring disruption management.
+         */
+        export interface CephClusterSpecDisruptionManagement {
+            /**
+             * Deprecated. Namespace to look for MDBs by the machineDisruptionBudgetController
+             */
+            machineDisruptionBudgetNamespace: string;
+            /**
+             * Deprecated. This enables management of machinedisruptionbudgets.
+             */
+            manageMachineDisruptionBudgets: boolean;
+            /**
+             * This enables management of poddisruptionbudgets
+             */
+            managePodBudgets: boolean;
+            /**
+             * OSDMaintenanceTimeout sets how many additional minutes the DOWN/OUT interval is for drained failure domains
+             * it only works if managePodBudgets is true.
+             * the default is 30 minutes
+             */
+            osdMaintenanceTimeout: number;
+            /**
+             * PGHealthCheckTimeout is the time (in minutes) that the operator will wait for the placement groups to become
+             * healthy (active+clean) after a drain was completed and OSDs came back up. Rook will continue with the next drain
+             * if the timeout exceeds. It only works if managePodBudgets is true.
+             * No values or 0 means that the operator will wait until the placement groups are healthy before unblocking the next drain.
+             */
+            pgHealthCheckTimeout: number;
+            /**
+             * PgHealthyRegex is the regular expression that is used to determine which PG states should be considered healthy.
+             * The default is `^(active\+clean|active\+clean\+scrubbing|active\+clean\+scrubbing\+deep)$`
+             */
+            pgHealthyRegex: string;
+        }
+
+        /**
+         * A spec for configuring disruption management.
+         */
+        export interface CephClusterSpecDisruptionManagementPatch {
+            /**
+             * Deprecated. Namespace to look for MDBs by the machineDisruptionBudgetController
+             */
+            machineDisruptionBudgetNamespace: string;
+            /**
+             * Deprecated. This enables management of machinedisruptionbudgets.
+             */
+            manageMachineDisruptionBudgets: boolean;
+            /**
+             * This enables management of poddisruptionbudgets
+             */
+            managePodBudgets: boolean;
+            /**
+             * OSDMaintenanceTimeout sets how many additional minutes the DOWN/OUT interval is for drained failure domains
+             * it only works if managePodBudgets is true.
+             * the default is 30 minutes
+             */
+            osdMaintenanceTimeout: number;
+            /**
+             * PGHealthCheckTimeout is the time (in minutes) that the operator will wait for the placement groups to become
+             * healthy (active+clean) after a drain was completed and OSDs came back up. Rook will continue with the next drain
+             * if the timeout exceeds. It only works if managePodBudgets is true.
+             * No values or 0 means that the operator will wait until the placement groups are healthy before unblocking the next drain.
+             */
+            pgHealthCheckTimeout: number;
+            /**
+             * PgHealthyRegex is the regular expression that is used to determine which PG states should be considered healthy.
+             * The default is `^(active\+clean|active\+clean\+scrubbing|active\+clean\+scrubbing\+deep)$`
+             */
+            pgHealthyRegex: string;
+        }
+
+        /**
+         * Internal daemon healthchecks and liveness probe
+         */
+        export interface CephClusterSpecHealthCheck {
+            daemonHealth: outputs.ceph.v1.CephClusterSpecHealthCheckDaemonHealth;
+            /**
+             * LivenessProbe allows changing the livenessProbe configuration for a given daemon
+             */
+            livenessProbe: {[key: string]: {[key: string]: string}};
+            /**
+             * StartupProbe allows changing the startupProbe configuration for a given daemon
+             */
+            startupProbe: {[key: string]: {[key: string]: string}};
+        }
+
+        /**
+         * DaemonHealth is the health check for a given daemon
+         */
+        export interface CephClusterSpecHealthCheckDaemonHealth {
+            mon: outputs.ceph.v1.CephClusterSpecHealthCheckDaemonHealthMon;
+            osd: outputs.ceph.v1.CephClusterSpecHealthCheckDaemonHealthOsd;
+            status: outputs.ceph.v1.CephClusterSpecHealthCheckDaemonHealthStatus;
+        }
+
+        /**
+         * Monitor represents the health check settings for the Ceph monitor
+         */
+        export interface CephClusterSpecHealthCheckDaemonHealthMon {
+            disabled: boolean;
+            /**
+             * Interval is the internal in second or minute for the health check to run like 60s for 60 seconds
+             */
+            interval: string;
+            timeout: string;
+        }
+
+        /**
+         * Monitor represents the health check settings for the Ceph monitor
+         */
+        export interface CephClusterSpecHealthCheckDaemonHealthMonPatch {
+            disabled: boolean;
+            /**
+             * Interval is the internal in second or minute for the health check to run like 60s for 60 seconds
+             */
+            interval: string;
+            timeout: string;
+        }
+
+        /**
+         * ObjectStorageDaemon represents the health check settings for the Ceph OSDs
+         */
+        export interface CephClusterSpecHealthCheckDaemonHealthOsd {
+            disabled: boolean;
+            /**
+             * Interval is the internal in second or minute for the health check to run like 60s for 60 seconds
+             */
+            interval: string;
+            timeout: string;
+        }
+
+        /**
+         * ObjectStorageDaemon represents the health check settings for the Ceph OSDs
+         */
+        export interface CephClusterSpecHealthCheckDaemonHealthOsdPatch {
+            disabled: boolean;
+            /**
+             * Interval is the internal in second or minute for the health check to run like 60s for 60 seconds
+             */
+            interval: string;
+            timeout: string;
+        }
+
+        /**
+         * DaemonHealth is the health check for a given daemon
+         */
+        export interface CephClusterSpecHealthCheckDaemonHealthPatch {
+            mon: outputs.ceph.v1.CephClusterSpecHealthCheckDaemonHealthMonPatch;
+            osd: outputs.ceph.v1.CephClusterSpecHealthCheckDaemonHealthOsdPatch;
+            status: outputs.ceph.v1.CephClusterSpecHealthCheckDaemonHealthStatusPatch;
+        }
+
+        /**
+         * Status represents the health check settings for the Ceph health
+         */
+        export interface CephClusterSpecHealthCheckDaemonHealthStatus {
+            disabled: boolean;
+            /**
+             * Interval is the internal in second or minute for the health check to run like 60s for 60 seconds
+             */
+            interval: string;
+            timeout: string;
+        }
+
+        /**
+         * Status represents the health check settings for the Ceph health
+         */
+        export interface CephClusterSpecHealthCheckDaemonHealthStatusPatch {
+            disabled: boolean;
+            /**
+             * Interval is the internal in second or minute for the health check to run like 60s for 60 seconds
+             */
+            interval: string;
+            timeout: string;
+        }
+
+        /**
+         * Internal daemon healthchecks and liveness probe
+         */
+        export interface CephClusterSpecHealthCheckPatch {
+            daemonHealth: outputs.ceph.v1.CephClusterSpecHealthCheckDaemonHealthPatch;
+            /**
+             * LivenessProbe allows changing the livenessProbe configuration for a given daemon
+             */
+            livenessProbe: {[key: string]: {[key: string]: string}};
+            /**
+             * StartupProbe allows changing the startupProbe configuration for a given daemon
+             */
+            startupProbe: {[key: string]: {[key: string]: string}};
+        }
+
+        /**
+         * Logging represents loggings settings
+         */
+        export interface CephClusterSpecLogCollector {
+            /**
+             * Enabled represents whether the log collector is enabled
+             */
+            enabled: boolean;
+            /**
+             * MaxLogSize is the maximum size of the log per ceph daemons. Must be at least 1M.
+             */
+            maxLogSize: number | string;
+            /**
+             * Periodicity is the periodicity of the log rotation.
+             */
+            periodicity: string;
+        }
+
+        /**
+         * Logging represents loggings settings
+         */
+        export interface CephClusterSpecLogCollectorPatch {
+            /**
+             * Enabled represents whether the log collector is enabled
+             */
+            enabled: boolean;
+            /**
+             * MaxLogSize is the maximum size of the log per ceph daemons. Must be at least 1M.
+             */
+            maxLogSize: number | string;
+            /**
+             * Periodicity is the periodicity of the log rotation.
+             */
+            periodicity: string;
+        }
+
+        /**
+         * A spec for mgr related options
+         */
+        export interface CephClusterSpecMgr {
+            /**
+             * AllowMultiplePerNode allows to run multiple managers on the same node (not recommended)
+             */
+            allowMultiplePerNode: boolean;
+            /**
+             * Count is the number of manager daemons to run
+             */
+            count: number;
+            /**
+             * Modules is the list of ceph manager modules to enable/disable
+             */
+            modules: outputs.ceph.v1.CephClusterSpecMgrModules[];
+        }
+
+        /**
+         * Module represents mgr modules that the user wants to enable or disable
+         */
+        export interface CephClusterSpecMgrModules {
+            /**
+             * Enabled determines whether a module should be enabled or not
+             */
+            enabled: boolean;
+            /**
+             * Name is the name of the ceph manager module
+             */
+            name: string;
+            settings: outputs.ceph.v1.CephClusterSpecMgrModulesSettings;
+        }
+
+        /**
+         * Module represents mgr modules that the user wants to enable or disable
+         */
+        export interface CephClusterSpecMgrModulesPatch {
+            /**
+             * Enabled determines whether a module should be enabled or not
+             */
+            enabled: boolean;
+            /**
+             * Name is the name of the ceph manager module
+             */
+            name: string;
+            settings: outputs.ceph.v1.CephClusterSpecMgrModulesSettingsPatch;
+        }
+
+        /**
+         * Settings to further configure the module
+         */
+        export interface CephClusterSpecMgrModulesSettings {
+            /**
+             * BalancerMode sets the `balancer` module with different modes like `upmap`, `crush-compact` etc
+             */
+            balancerMode: string;
+        }
+
+        /**
+         * Settings to further configure the module
+         */
+        export interface CephClusterSpecMgrModulesSettingsPatch {
+            /**
+             * BalancerMode sets the `balancer` module with different modes like `upmap`, `crush-compact` etc
+             */
+            balancerMode: string;
+        }
+
+        /**
+         * A spec for mgr related options
+         */
+        export interface CephClusterSpecMgrPatch {
+            /**
+             * AllowMultiplePerNode allows to run multiple managers on the same node (not recommended)
+             */
+            allowMultiplePerNode: boolean;
+            /**
+             * Count is the number of manager daemons to run
+             */
+            count: number;
+            /**
+             * Modules is the list of ceph manager modules to enable/disable
+             */
+            modules: outputs.ceph.v1.CephClusterSpecMgrModulesPatch[];
+        }
+
+        /**
+         * A spec for mon related options
+         */
+        export interface CephClusterSpecMon {
+            /**
+             * AllowMultiplePerNode determines if we can run multiple monitors on the same node (not recommended)
+             */
+            allowMultiplePerNode: boolean;
+            /**
+             * Count is the number of Ceph monitors
+             */
+            count: number;
+            failureDomainLabel: string;
+            stretchCluster: outputs.ceph.v1.CephClusterSpecMonStretchCluster;
+            /**
+             * VolumeClaimTemplate is the PVC definition
+             */
+            volumeClaimTemplate: {[key: string]: any};
+            /**
+             * Zones are specified when we want to provide zonal awareness to mons
+             */
+            zones: outputs.ceph.v1.CephClusterSpecMonZones[];
+        }
+
+        /**
+         * A spec for mon related options
+         */
+        export interface CephClusterSpecMonPatch {
+            /**
+             * AllowMultiplePerNode determines if we can run multiple monitors on the same node (not recommended)
+             */
+            allowMultiplePerNode: boolean;
+            /**
+             * Count is the number of Ceph monitors
+             */
+            count: number;
+            failureDomainLabel: string;
+            stretchCluster: outputs.ceph.v1.CephClusterSpecMonStretchClusterPatch;
+            /**
+             * VolumeClaimTemplate is the PVC definition
+             */
+            volumeClaimTemplate: {[key: string]: any};
+            /**
+             * Zones are specified when we want to provide zonal awareness to mons
+             */
+            zones: outputs.ceph.v1.CephClusterSpecMonZonesPatch[];
+        }
+
+        /**
+         * StretchCluster is the stretch cluster specification
+         */
+        export interface CephClusterSpecMonStretchCluster {
+            /**
+             * FailureDomainLabel the failure domain name (e,g: zone)
+             */
+            failureDomainLabel: string;
+            /**
+             * SubFailureDomain is the failure domain within a zone
+             */
+            subFailureDomain: string;
+            /**
+             * Zones is the list of zones
+             */
+            zones: outputs.ceph.v1.CephClusterSpecMonStretchClusterZones[];
+        }
+
+        /**
+         * StretchCluster is the stretch cluster specification
+         */
+        export interface CephClusterSpecMonStretchClusterPatch {
+            /**
+             * FailureDomainLabel the failure domain name (e,g: zone)
+             */
+            failureDomainLabel: string;
+            /**
+             * SubFailureDomain is the failure domain within a zone
+             */
+            subFailureDomain: string;
+            /**
+             * Zones is the list of zones
+             */
+            zones: outputs.ceph.v1.CephClusterSpecMonStretchClusterZonesPatch[];
+        }
+
+        /**
+         * MonZoneSpec represents the specification of a zone in a Ceph Cluster
+         */
+        export interface CephClusterSpecMonStretchClusterZones {
+            /**
+             * Arbiter determines if the zone contains the arbiter used for stretch cluster mode
+             */
+            arbiter: boolean;
+            /**
+             * Name is the name of the zone
+             */
+            name: string;
+            /**
+             * VolumeClaimTemplate is the PVC template
+             */
+            volumeClaimTemplate: {[key: string]: any};
+        }
+
+        /**
+         * MonZoneSpec represents the specification of a zone in a Ceph Cluster
+         */
+        export interface CephClusterSpecMonStretchClusterZonesPatch {
+            /**
+             * Arbiter determines if the zone contains the arbiter used for stretch cluster mode
+             */
+            arbiter: boolean;
+            /**
+             * Name is the name of the zone
+             */
+            name: string;
+            /**
+             * VolumeClaimTemplate is the PVC template
+             */
+            volumeClaimTemplate: {[key: string]: any};
+        }
+
+        /**
+         * MonZoneSpec represents the specification of a zone in a Ceph Cluster
+         */
+        export interface CephClusterSpecMonZones {
+            /**
+             * Arbiter determines if the zone contains the arbiter used for stretch cluster mode
+             */
+            arbiter: boolean;
+            /**
+             * Name is the name of the zone
+             */
+            name: string;
+            /**
+             * VolumeClaimTemplate is the PVC template
+             */
+            volumeClaimTemplate: {[key: string]: any};
+        }
+
+        /**
+         * MonZoneSpec represents the specification of a zone in a Ceph Cluster
+         */
+        export interface CephClusterSpecMonZonesPatch {
+            /**
+             * Arbiter determines if the zone contains the arbiter used for stretch cluster mode
+             */
+            arbiter: boolean;
+            /**
+             * Name is the name of the zone
+             */
+            name: string;
+            /**
+             * VolumeClaimTemplate is the PVC template
+             */
+            volumeClaimTemplate: {[key: string]: any};
+        }
+
+        /**
+         * Prometheus based Monitoring settings
+         */
+        export interface CephClusterSpecMonitoring {
+            /**
+             * Enabled determines whether to create the prometheus rules for the ceph cluster. If true, the prometheus
+             * types must exist or the creation will fail. Default is false.
+             */
+            enabled: boolean;
+            exporter: outputs.ceph.v1.CephClusterSpecMonitoringExporter;
+            /**
+             * ExternalMgrEndpoints points to an existing Ceph prometheus exporter endpoint
+             */
+            externalMgrEndpoints: outputs.ceph.v1.CephClusterSpecMonitoringExternalMgrEndpoints[];
+            /**
+             * ExternalMgrPrometheusPort Prometheus exporter port
+             */
+            externalMgrPrometheusPort: number;
+            /**
+             * Interval determines prometheus scrape interval
+             */
+            interval: string;
+            /**
+             * Whether to disable the metrics reported by Ceph. If false, the prometheus mgr module and Ceph exporter are enabled.
+             * If true, the prometheus mgr module and Ceph exporter are both disabled. Default is false.
+             */
+            metricsDisabled: boolean;
+            /**
+             * Port is the prometheus server port
+             */
+            port: number;
+        }
+
+        /**
+         * Ceph exporter configuration
+         */
+        export interface CephClusterSpecMonitoringExporter {
+            /**
+             * Only performance counters greater than or equal to this option are fetched
+             */
+            perfCountersPrioLimit: number;
+            /**
+             * Time to wait before sending requests again to exporter server (seconds)
+             */
+            statsPeriodSeconds: number;
+        }
+
+        /**
+         * Ceph exporter configuration
+         */
+        export interface CephClusterSpecMonitoringExporterPatch {
+            /**
+             * Only performance counters greater than or equal to this option are fetched
+             */
+            perfCountersPrioLimit: number;
+            /**
+             * Time to wait before sending requests again to exporter server (seconds)
+             */
+            statsPeriodSeconds: number;
+        }
+
+        /**
+         * EndpointAddress is a tuple that describes single IP address.
+         */
+        export interface CephClusterSpecMonitoringExternalMgrEndpoints {
+            /**
+             * The Hostname of this endpoint
+             */
+            hostname: string;
+            /**
+             * The IP of this endpoint.
+             * May not be loopback (127.0.0.0/8 or ::1), link-local (169.254.0.0/16 or fe80::/10),
+             * or link-local multicast (224.0.0.0/24 or ff02::/16).
+             */
+            ip: string;
+            /**
+             * Optional: Node hosting this endpoint. This can be used to determine endpoints local to a node.
+             */
+            nodeName: string;
+            targetRef: outputs.ceph.v1.CephClusterSpecMonitoringExternalMgrEndpointsTargetRef;
+        }
+
+        /**
+         * EndpointAddress is a tuple that describes single IP address.
+         */
+        export interface CephClusterSpecMonitoringExternalMgrEndpointsPatch {
+            /**
+             * The Hostname of this endpoint
+             */
+            hostname: string;
+            /**
+             * The IP of this endpoint.
+             * May not be loopback (127.0.0.0/8 or ::1), link-local (169.254.0.0/16 or fe80::/10),
+             * or link-local multicast (224.0.0.0/24 or ff02::/16).
+             */
+            ip: string;
+            /**
+             * Optional: Node hosting this endpoint. This can be used to determine endpoints local to a node.
+             */
+            nodeName: string;
+            targetRef: outputs.ceph.v1.CephClusterSpecMonitoringExternalMgrEndpointsTargetRefPatch;
+        }
+
+        /**
+         * Reference to object providing the endpoint.
+         */
+        export interface CephClusterSpecMonitoringExternalMgrEndpointsTargetRef {
+            /**
+             * API version of the referent.
+             */
+            apiVersion: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string
+             * should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+             * For example, if the object reference is to a container within a pod, this would take on a value like:
+             * "spec.containers{name}" (where "name" refers to the name of the container that triggered
+             * the event) or if no container name is specified "spec.containers[2]" (container with
+             * index 2 in this pod). This syntax is chosen only to have some well-defined way of
+             * referencing a part of an object.
+             */
+            fieldPath: string;
+            /**
+             * Kind of the referent.
+             * More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind: string;
+            /**
+             * Name of the referent.
+             * More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name: string;
+            /**
+             * Namespace of the referent.
+             * More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any.
+             * More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion: string;
+            /**
+             * UID of the referent.
+             * More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid: string;
+        }
+
+        /**
+         * Reference to object providing the endpoint.
+         */
+        export interface CephClusterSpecMonitoringExternalMgrEndpointsTargetRefPatch {
+            /**
+             * API version of the referent.
+             */
+            apiVersion: string;
+            /**
+             * If referring to a piece of an object instead of an entire object, this string
+             * should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+             * For example, if the object reference is to a container within a pod, this would take on a value like:
+             * "spec.containers{name}" (where "name" refers to the name of the container that triggered
+             * the event) or if no container name is specified "spec.containers[2]" (container with
+             * index 2 in this pod). This syntax is chosen only to have some well-defined way of
+             * referencing a part of an object.
+             */
+            fieldPath: string;
+            /**
+             * Kind of the referent.
+             * More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind: string;
+            /**
+             * Name of the referent.
+             * More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+             */
+            name: string;
+            /**
+             * Namespace of the referent.
+             * More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+             */
+            namespace: string;
+            /**
+             * Specific resourceVersion to which this reference is made, if any.
+             * More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+             */
+            resourceVersion: string;
+            /**
+             * UID of the referent.
+             * More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+             */
+            uid: string;
+        }
+
+        /**
+         * Prometheus based Monitoring settings
+         */
+        export interface CephClusterSpecMonitoringPatch {
+            /**
+             * Enabled determines whether to create the prometheus rules for the ceph cluster. If true, the prometheus
+             * types must exist or the creation will fail. Default is false.
+             */
+            enabled: boolean;
+            exporter: outputs.ceph.v1.CephClusterSpecMonitoringExporterPatch;
+            /**
+             * ExternalMgrEndpoints points to an existing Ceph prometheus exporter endpoint
+             */
+            externalMgrEndpoints: outputs.ceph.v1.CephClusterSpecMonitoringExternalMgrEndpointsPatch[];
+            /**
+             * ExternalMgrPrometheusPort Prometheus exporter port
+             */
+            externalMgrPrometheusPort: number;
+            /**
+             * Interval determines prometheus scrape interval
+             */
+            interval: string;
+            /**
+             * Whether to disable the metrics reported by Ceph. If false, the prometheus mgr module and Ceph exporter are enabled.
+             * If true, the prometheus mgr module and Ceph exporter are both disabled. Default is false.
+             */
+            metricsDisabled: boolean;
+            /**
+             * Port is the prometheus server port
+             */
+            port: number;
+        }
+
+        /**
+         * ClusterSpec represents the specification of Ceph Cluster
+         */
+        export interface CephClusterSpecPatch {
+            /**
+             * The annotations-related configuration to add/set on each Pod related object.
+             */
+            annotations: {[key: string]: any};
+            /**
+             * Ceph Config options
+             */
+            cephConfig: {[key: string]: {[key: string]: string}};
+            cephVersion: outputs.ceph.v1.CephClusterSpecCephVersionPatch;
+            cleanupPolicy: outputs.ceph.v1.CephClusterSpecCleanupPolicyPatch;
+            /**
+             * ContinueUpgradeAfterChecksEvenIfNotHealthy defines if an upgrade should continue even if PGs are not clean
+             */
+            continueUpgradeAfterChecksEvenIfNotHealthy: boolean;
+            crashCollector: outputs.ceph.v1.CephClusterSpecCrashCollectorPatch;
+            csi: outputs.ceph.v1.CephClusterSpecCsiPatch;
+            dashboard: outputs.ceph.v1.CephClusterSpecDashboardPatch;
+            /**
+             * The path on the host where config and data can be persisted
+             */
+            dataDirHostPath: string;
+            disruptionManagement: outputs.ceph.v1.CephClusterSpecDisruptionManagementPatch;
+            /**
+             * Whether the Ceph Cluster is running external to this Kubernetes cluster
+             * mon, mgr, osd, mds, and discover daemons will not be created for external clusters.
+             */
+            external: {[key: string]: any};
+            healthCheck: outputs.ceph.v1.CephClusterSpecHealthCheckPatch;
+            /**
+             * The labels-related configuration to add/set on each Pod related object.
+             */
+            labels: {[key: string]: any};
+            logCollector: outputs.ceph.v1.CephClusterSpecLogCollectorPatch;
+            mgr: outputs.ceph.v1.CephClusterSpecMgrPatch;
+            mon: outputs.ceph.v1.CephClusterSpecMonPatch;
+            monitoring: outputs.ceph.v1.CephClusterSpecMonitoringPatch;
+            /**
+             * Network related configuration
+             */
+            network: {[key: string]: any};
+            placement: {[key: string]: any};
+            /**
+             * PriorityClassNames sets priority classes on components
+             */
+            priorityClassNames: {[key: string]: any};
+            /**
+             * Remove the OSD that is out and safe to remove only if this option is true
+             */
+            removeOSDsIfOutAndSafeToRemove: boolean;
+            /**
+             * Resources set resource requests and limits
+             */
+            resources: {[key: string]: any};
+            security: outputs.ceph.v1.CephClusterSpecSecurityPatch;
+            /**
+             * SkipUpgradeChecks defines if an upgrade should be forced even if one of the check fails
+             */
+            skipUpgradeChecks: boolean;
+            storage: outputs.ceph.v1.CephClusterSpecStoragePatch;
+            /**
+             * UpgradeOSDRequiresHealthyPGs defines if OSD upgrade requires PGs are clean. If set to `true` OSD upgrade process won't start until PGs are healthy.
+             * This configuration will be ignored if `skipUpgradeChecks` is `true`.
+             * Default is false.
+             */
+            upgradeOSDRequiresHealthyPGs: boolean;
+            /**
+             * WaitTimeoutForHealthyOSDInMinutes defines the time the operator would wait before an OSD can be stopped for upgrade or restart.
+             * If the timeout exceeds and OSD is not ok to stop, then the operator would skip upgrade for the current OSD and proceed with the next one
+             * if `continueUpgradeAfterChecksEvenIfNotHealthy` is `false`. If `continueUpgradeAfterChecksEvenIfNotHealthy` is `true`, then operator would
+             * continue with the upgrade of an OSD even if its not ok to stop after the timeout. This timeout won't be applied if `skipUpgradeChecks` is `true`.
+             * The default wait timeout is 10 minutes.
+             */
+            waitTimeoutForHealthyOSDInMinutes: number;
+        }
+
+        /**
+         * Security represents security settings
+         */
+        export interface CephClusterSpecSecurity {
+            keyRotation: outputs.ceph.v1.CephClusterSpecSecurityKeyRotation;
+            kms: outputs.ceph.v1.CephClusterSpecSecurityKms;
+        }
+
+        /**
+         * KeyRotation defines options for Key Rotation.
+         */
+        export interface CephClusterSpecSecurityKeyRotation {
+            /**
+             * Enabled represents whether the key rotation is enabled.
+             */
+            enabled: boolean;
+            /**
+             * Schedule represents the cron schedule for key rotation.
+             */
+            schedule: string;
+        }
+
+        /**
+         * KeyRotation defines options for Key Rotation.
+         */
+        export interface CephClusterSpecSecurityKeyRotationPatch {
+            /**
+             * Enabled represents whether the key rotation is enabled.
+             */
+            enabled: boolean;
+            /**
+             * Schedule represents the cron schedule for key rotation.
+             */
+            schedule: string;
+        }
+
+        /**
+         * KeyManagementService is the main Key Management option
+         */
+        export interface CephClusterSpecSecurityKms {
+            /**
+             * ConnectionDetails contains the KMS connection details (address, port etc)
+             */
+            connectionDetails: {[key: string]: any};
+            /**
+             * TokenSecretName is the kubernetes secret containing the KMS token
+             */
+            tokenSecretName: string;
+        }
+
+        /**
+         * KeyManagementService is the main Key Management option
+         */
+        export interface CephClusterSpecSecurityKmsPatch {
+            /**
+             * ConnectionDetails contains the KMS connection details (address, port etc)
+             */
+            connectionDetails: {[key: string]: any};
+            /**
+             * TokenSecretName is the kubernetes secret containing the KMS token
+             */
+            tokenSecretName: string;
+        }
+
+        /**
+         * Security represents security settings
+         */
+        export interface CephClusterSpecSecurityPatch {
+            keyRotation: outputs.ceph.v1.CephClusterSpecSecurityKeyRotationPatch;
+            kms: outputs.ceph.v1.CephClusterSpecSecurityKmsPatch;
+        }
+
+        /**
+         * A spec for available storage in the cluster and how it should be used
+         */
+        export interface CephClusterSpecStorage {
+            /**
+             * Whether to allow updating the device class after the OSD is initially provisioned
+             */
+            allowDeviceClassUpdate: boolean;
+            /**
+             * Whether Rook will resize the OSD CRUSH weight when the OSD PVC size is increased.
+             * This allows cluster data to be rebalanced to make most effective use of new OSD space.
+             * The default is false since data rebalancing can cause temporary cluster slowdown.
+             */
+            allowOsdCrushWeightUpdate: boolean;
+            /**
+             * BackfillFullRatio is the ratio at which the cluster is too full for backfill. Backfill will be disabled if above this threshold. Default is 0.90.
+             */
+            backfillFullRatio: number;
+            config: {[key: string]: any};
+            /**
+             * A regular expression to allow more fine-grained selection of devices on nodes across the cluster
+             */
+            deviceFilter: string;
+            /**
+             * A regular expression to allow more fine-grained selection of devices with path names
+             */
+            devicePathFilter: string;
+            /**
+             * List of devices to use as storage devices
+             */
+            devices: {[key: string]: any};
+            /**
+             * FlappingRestartIntervalHours defines the time for which the OSD pods, that failed with zero exit code, will sleep before restarting.
+             * This is needed for OSD flapping where OSD daemons are marked down more than 5 times in 600 seconds by Ceph.
+             * Preventing the OSD pods to restart immediately in such scenarios will prevent Rook from marking OSD as `up` and thus
+             * peering of the PGs mapped to the OSD.
+             * User needs to manually restart the OSD pod if they manage to fix the underlying OSD flapping issue before the restart interval.
+             * The sleep will be disabled if this interval is set to 0.
+             */
+            flappingRestartIntervalHours: number;
+            /**
+             * FullRatio is the ratio at which the cluster is considered full and ceph will stop accepting writes. Default is 0.95.
+             */
+            fullRatio: number;
+            migration: outputs.ceph.v1.CephClusterSpecStorageMigration;
+            /**
+             * NearFullRatio is the ratio at which the cluster is considered nearly full and will raise a ceph health warning. Default is 0.85.
+             */
+            nearFullRatio: number;
+            nodes: outputs.ceph.v1.CephClusterSpecStorageNodes[];
+            onlyApplyOSDPlacement: boolean;
+            /**
+             * Whether to always schedule OSDs on a node even if the node is not currently scheduleable or ready
+             */
+            scheduleAlways: boolean;
+            storageClassDeviceSets: outputs.ceph.v1.CephClusterSpecStorageStorageClassDeviceSets[];
+            store: outputs.ceph.v1.CephClusterSpecStorageStore;
+            /**
+             * Whether to consume all the storage devices found on a machine
+             */
+            useAllDevices: boolean;
+            useAllNodes: boolean;
+            /**
+             * PersistentVolumeClaims to use as storage
+             */
+            volumeClaimTemplates: outputs.ceph.v1.CephClusterSpecStorageVolumeClaimTemplates[];
+        }
+
+        /**
+         * Migration handles the OSD migration
+         */
+        export interface CephClusterSpecStorageMigration {
+            /**
+             * A user confirmation to migrate the OSDs. It destroys each OSD one at a time, cleans up the backing disk
+             * and prepares OSD with same ID on that disk
+             */
+            confirmation: string;
+        }
+
+        /**
+         * Migration handles the OSD migration
+         */
+        export interface CephClusterSpecStorageMigrationPatch {
+            /**
+             * A user confirmation to migrate the OSDs. It destroys each OSD one at a time, cleans up the backing disk
+             * and prepares OSD with same ID on that disk
+             */
+            confirmation: string;
+        }
+
+        /**
+         * Node is a storage nodes
+         */
+        export interface CephClusterSpecStorageNodes {
+            config: {[key: string]: any};
+            /**
+             * A regular expression to allow more fine-grained selection of devices on nodes across the cluster
+             */
+            deviceFilter: string;
+            /**
+             * A regular expression to allow more fine-grained selection of devices with path names
+             */
+            devicePathFilter: string;
+            /**
+             * List of devices to use as storage devices
+             */
+            devices: {[key: string]: any};
+            name: string;
+            /**
+             * ResourceRequirements describes the compute resource requirements.
+             */
+            resources: {[key: string]: any};
+            /**
+             * Whether to consume all the storage devices found on a machine
+             */
+            useAllDevices: boolean;
+            /**
+             * PersistentVolumeClaims to use as storage
+             */
+            volumeClaimTemplates: outputs.ceph.v1.CephClusterSpecStorageNodesVolumeClaimTemplates[];
+        }
+
+        /**
+         * Node is a storage nodes
+         */
+        export interface CephClusterSpecStorageNodesPatch {
+            config: {[key: string]: any};
+            /**
+             * A regular expression to allow more fine-grained selection of devices on nodes across the cluster
+             */
+            deviceFilter: string;
+            /**
+             * A regular expression to allow more fine-grained selection of devices with path names
+             */
+            devicePathFilter: string;
+            /**
+             * List of devices to use as storage devices
+             */
+            devices: {[key: string]: any};
+            name: string;
+            /**
+             * ResourceRequirements describes the compute resource requirements.
+             */
+            resources: {[key: string]: any};
+            /**
+             * Whether to consume all the storage devices found on a machine
+             */
+            useAllDevices: boolean;
+            /**
+             * PersistentVolumeClaims to use as storage
+             */
+            volumeClaimTemplates: outputs.ceph.v1.CephClusterSpecStorageNodesVolumeClaimTemplatesPatch[];
+        }
+
+        /**
+         * VolumeClaimTemplate is a simplified version of K8s corev1's PVC. It has no type meta or status.
+         */
+        export interface CephClusterSpecStorageNodesVolumeClaimTemplates {
+            metadata: outputs.ceph.v1.CephClusterSpecStorageNodesVolumeClaimTemplatesMetadata;
+            spec: outputs.ceph.v1.CephClusterSpecStorageNodesVolumeClaimTemplatesSpec;
+        }
+
+        /**
+         * Standard object's metadata.
+         * More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface CephClusterSpecStorageNodesVolumeClaimTemplatesMetadata {
+            annotations: {[key: string]: string};
+            finalizers: string[];
+            labels: {[key: string]: string};
+            name: string;
+            namespace: string;
+        }
+
+        /**
+         * Standard object's metadata.
+         * More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface CephClusterSpecStorageNodesVolumeClaimTemplatesMetadataPatch {
+            annotations: {[key: string]: string};
+            finalizers: string[];
+            labels: {[key: string]: string};
+            name: string;
+            namespace: string;
+        }
+
+        /**
+         * VolumeClaimTemplate is a simplified version of K8s corev1's PVC. It has no type meta or status.
+         */
+        export interface CephClusterSpecStorageNodesVolumeClaimTemplatesPatch {
+            metadata: outputs.ceph.v1.CephClusterSpecStorageNodesVolumeClaimTemplatesMetadataPatch;
+            spec: outputs.ceph.v1.CephClusterSpecStorageNodesVolumeClaimTemplatesSpecPatch;
+        }
+
+        /**
+         * spec defines the desired characteristics of a volume requested by a pod author.
+         * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+         */
+        export interface CephClusterSpecStorageNodesVolumeClaimTemplatesSpec {
+            /**
+             * accessModes contains the desired access modes the volume should have.
+             * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+             */
+            accessModes: string[];
+            dataSource: outputs.ceph.v1.CephClusterSpecStorageNodesVolumeClaimTemplatesSpecDataSource;
+            dataSourceRef: outputs.ceph.v1.CephClusterSpecStorageNodesVolumeClaimTemplatesSpecDataSourceRef;
+            resources: outputs.ceph.v1.CephClusterSpecStorageNodesVolumeClaimTemplatesSpecResources;
+            selector: outputs.ceph.v1.CephClusterSpecStorageNodesVolumeClaimTemplatesSpecSelector;
+            /**
+             * storageClassName is the name of the StorageClass required by the claim.
+             * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+             */
+            storageClassName: string;
+            /**
+             * volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+             * If specified, the CSI driver will create or update the volume with the attributes defined
+             * in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+             * it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+             * will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+             * If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+             * will be set by the persistentvolume controller if it exists.
+             * If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+             * set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+             * exists.
+             * More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
+             * (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
+             */
+            volumeAttributesClassName: string;
+            /**
+             * volumeMode defines what type of volume is required by the claim.
+             * Value of Filesystem is implied when not included in claim spec.
+             */
+            volumeMode: string;
+            /**
+             * volumeName is the binding reference to the PersistentVolume backing this claim.
+             */
+            volumeName: string;
+        }
+
+        /**
+         * dataSource field can be used to specify either:
+         * * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+         * * An existing PVC (PersistentVolumeClaim)
+         * If the provisioner or an external controller can support the specified data source,
+         * it will create a new volume based on the contents of the specified data source.
+         * When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+         * and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+         * If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+         */
+        export interface CephClusterSpecStorageNodesVolumeClaimTemplatesSpecDataSource {
+            /**
+             * APIGroup is the group for the resource being referenced.
+             * If APIGroup is not specified, the specified Kind must be in the core API group.
+             * For any other third-party types, APIGroup is required.
+             */
+            apiGroup: string;
+            /**
+             * Kind is the type of resource being referenced
+             */
+            kind: string;
+            /**
+             * Name is the name of resource being referenced
+             */
+            name: string;
+        }
+
+        /**
+         * dataSource field can be used to specify either:
+         * * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+         * * An existing PVC (PersistentVolumeClaim)
+         * If the provisioner or an external controller can support the specified data source,
+         * it will create a new volume based on the contents of the specified data source.
+         * When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+         * and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+         * If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+         */
+        export interface CephClusterSpecStorageNodesVolumeClaimTemplatesSpecDataSourcePatch {
+            /**
+             * APIGroup is the group for the resource being referenced.
+             * If APIGroup is not specified, the specified Kind must be in the core API group.
+             * For any other third-party types, APIGroup is required.
+             */
+            apiGroup: string;
+            /**
+             * Kind is the type of resource being referenced
+             */
+            kind: string;
+            /**
+             * Name is the name of resource being referenced
+             */
+            name: string;
+        }
+
+        /**
+         * dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+         * volume is desired. This may be any object from a non-empty API group (non
+         * core object) or a PersistentVolumeClaim object.
+         * When this field is specified, volume binding will only succeed if the type of
+         * the specified object matches some installed volume populator or dynamic
+         * provisioner.
+         * This field will replace the functionality of the dataSource field and as such
+         * if both fields are non-empty, they must have the same value. For backwards
+         * compatibility, when namespace isn't specified in dataSourceRef,
+         * both fields (dataSource and dataSourceRef) will be set to the same
+         * value automatically if one of them is empty and the other is non-empty.
+         * When namespace is specified in dataSourceRef,
+         * dataSource isn't set to the same value and must be empty.
+         * There are three important differences between dataSource and dataSourceRef:
+         * * While dataSource only allows two specific types of objects, dataSourceRef
+         *   allows any non-core object, as well as PersistentVolumeClaim objects.
+         * * While dataSource ignores disallowed values (dropping them), dataSourceRef
+         *   preserves all values, and generates an error if a disallowed value is
+         *   specified.
+         * * While dataSource only allows local objects, dataSourceRef allows objects
+         *   in any namespaces.
+         * (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+         * (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+         */
+        export interface CephClusterSpecStorageNodesVolumeClaimTemplatesSpecDataSourceRef {
+            /**
+             * APIGroup is the group for the resource being referenced.
+             * If APIGroup is not specified, the specified Kind must be in the core API group.
+             * For any other third-party types, APIGroup is required.
+             */
+            apiGroup: string;
+            /**
+             * Kind is the type of resource being referenced
+             */
+            kind: string;
+            /**
+             * Name is the name of resource being referenced
+             */
+            name: string;
+            /**
+             * Namespace is the namespace of resource being referenced
+             * Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
+             * (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+             */
+            namespace: string;
+        }
+
+        /**
+         * dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+         * volume is desired. This may be any object from a non-empty API group (non
+         * core object) or a PersistentVolumeClaim object.
+         * When this field is specified, volume binding will only succeed if the type of
+         * the specified object matches some installed volume populator or dynamic
+         * provisioner.
+         * This field will replace the functionality of the dataSource field and as such
+         * if both fields are non-empty, they must have the same value. For backwards
+         * compatibility, when namespace isn't specified in dataSourceRef,
+         * both fields (dataSource and dataSourceRef) will be set to the same
+         * value automatically if one of them is empty and the other is non-empty.
+         * When namespace is specified in dataSourceRef,
+         * dataSource isn't set to the same value and must be empty.
+         * There are three important differences between dataSource and dataSourceRef:
+         * * While dataSource only allows two specific types of objects, dataSourceRef
+         *   allows any non-core object, as well as PersistentVolumeClaim objects.
+         * * While dataSource ignores disallowed values (dropping them), dataSourceRef
+         *   preserves all values, and generates an error if a disallowed value is
+         *   specified.
+         * * While dataSource only allows local objects, dataSourceRef allows objects
+         *   in any namespaces.
+         * (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+         * (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+         */
+        export interface CephClusterSpecStorageNodesVolumeClaimTemplatesSpecDataSourceRefPatch {
+            /**
+             * APIGroup is the group for the resource being referenced.
+             * If APIGroup is not specified, the specified Kind must be in the core API group.
+             * For any other third-party types, APIGroup is required.
+             */
+            apiGroup: string;
+            /**
+             * Kind is the type of resource being referenced
+             */
+            kind: string;
+            /**
+             * Name is the name of resource being referenced
+             */
+            name: string;
+            /**
+             * Namespace is the namespace of resource being referenced
+             * Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
+             * (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+             */
+            namespace: string;
+        }
+
+        /**
+         * spec defines the desired characteristics of a volume requested by a pod author.
+         * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+         */
+        export interface CephClusterSpecStorageNodesVolumeClaimTemplatesSpecPatch {
+            /**
+             * accessModes contains the desired access modes the volume should have.
+             * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+             */
+            accessModes: string[];
+            dataSource: outputs.ceph.v1.CephClusterSpecStorageNodesVolumeClaimTemplatesSpecDataSourcePatch;
+            dataSourceRef: outputs.ceph.v1.CephClusterSpecStorageNodesVolumeClaimTemplatesSpecDataSourceRefPatch;
+            resources: outputs.ceph.v1.CephClusterSpecStorageNodesVolumeClaimTemplatesSpecResourcesPatch;
+            selector: outputs.ceph.v1.CephClusterSpecStorageNodesVolumeClaimTemplatesSpecSelectorPatch;
+            /**
+             * storageClassName is the name of the StorageClass required by the claim.
+             * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+             */
+            storageClassName: string;
+            /**
+             * volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+             * If specified, the CSI driver will create or update the volume with the attributes defined
+             * in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+             * it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+             * will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+             * If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+             * will be set by the persistentvolume controller if it exists.
+             * If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+             * set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+             * exists.
+             * More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
+             * (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
+             */
+            volumeAttributesClassName: string;
+            /**
+             * volumeMode defines what type of volume is required by the claim.
+             * Value of Filesystem is implied when not included in claim spec.
+             */
+            volumeMode: string;
+            /**
+             * volumeName is the binding reference to the PersistentVolume backing this claim.
+             */
+            volumeName: string;
+        }
+
+        /**
+         * resources represents the minimum resources the volume should have.
+         * If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+         * that are lower than previous value but must still be higher than capacity recorded in the
+         * status field of the claim.
+         * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+         */
+        export interface CephClusterSpecStorageNodesVolumeClaimTemplatesSpecResources {
+            /**
+             * Limits describes the maximum amount of compute resources allowed.
+             * More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+             */
+            limits: {[key: string]: number | string};
+            /**
+             * Requests describes the minimum amount of compute resources required.
+             * If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+             * otherwise to an implementation-defined value. Requests cannot exceed Limits.
+             * More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+             */
+            requests: {[key: string]: number | string};
+        }
+
+        /**
+         * resources represents the minimum resources the volume should have.
+         * If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+         * that are lower than previous value but must still be higher than capacity recorded in the
+         * status field of the claim.
+         * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+         */
+        export interface CephClusterSpecStorageNodesVolumeClaimTemplatesSpecResourcesPatch {
+            /**
+             * Limits describes the maximum amount of compute resources allowed.
+             * More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+             */
+            limits: {[key: string]: number | string};
+            /**
+             * Requests describes the minimum amount of compute resources required.
+             * If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+             * otherwise to an implementation-defined value. Requests cannot exceed Limits.
+             * More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+             */
+            requests: {[key: string]: number | string};
+        }
+
+        /**
+         * selector is a label query over volumes to consider for binding.
+         */
+        export interface CephClusterSpecStorageNodesVolumeClaimTemplatesSpecSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions: outputs.ceph.v1.CephClusterSpecStorageNodesVolumeClaimTemplatesSpecSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+             * map is equivalent to an element of matchExpressions, whose key field is "key", the
+             * operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that
+         * relates the key and values.
+         */
+        export interface CephClusterSpecStorageNodesVolumeClaimTemplatesSpecSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values.
+             * Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn,
+             * the values array must be non-empty. If the operator is Exists or DoesNotExist,
+             * the values array must be empty. This array is replaced during a strategic
+             * merge patch.
+             */
+            values: string[];
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that
+         * relates the key and values.
+         */
+        export interface CephClusterSpecStorageNodesVolumeClaimTemplatesSpecSelectorMatchExpressionsPatch {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values.
+             * Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn,
+             * the values array must be non-empty. If the operator is Exists or DoesNotExist,
+             * the values array must be empty. This array is replaced during a strategic
+             * merge patch.
+             */
+            values: string[];
+        }
+
+        /**
+         * selector is a label query over volumes to consider for binding.
+         */
+        export interface CephClusterSpecStorageNodesVolumeClaimTemplatesSpecSelectorPatch {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions: outputs.ceph.v1.CephClusterSpecStorageNodesVolumeClaimTemplatesSpecSelectorMatchExpressionsPatch[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+             * map is equivalent to an element of matchExpressions, whose key field is "key", the
+             * operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels: {[key: string]: string};
+        }
+
+        /**
+         * A spec for available storage in the cluster and how it should be used
+         */
+        export interface CephClusterSpecStoragePatch {
+            /**
+             * Whether to allow updating the device class after the OSD is initially provisioned
+             */
+            allowDeviceClassUpdate: boolean;
+            /**
+             * Whether Rook will resize the OSD CRUSH weight when the OSD PVC size is increased.
+             * This allows cluster data to be rebalanced to make most effective use of new OSD space.
+             * The default is false since data rebalancing can cause temporary cluster slowdown.
+             */
+            allowOsdCrushWeightUpdate: boolean;
+            /**
+             * BackfillFullRatio is the ratio at which the cluster is too full for backfill. Backfill will be disabled if above this threshold. Default is 0.90.
+             */
+            backfillFullRatio: number;
+            config: {[key: string]: any};
+            /**
+             * A regular expression to allow more fine-grained selection of devices on nodes across the cluster
+             */
+            deviceFilter: string;
+            /**
+             * A regular expression to allow more fine-grained selection of devices with path names
+             */
+            devicePathFilter: string;
+            /**
+             * List of devices to use as storage devices
+             */
+            devices: {[key: string]: any};
+            /**
+             * FlappingRestartIntervalHours defines the time for which the OSD pods, that failed with zero exit code, will sleep before restarting.
+             * This is needed for OSD flapping where OSD daemons are marked down more than 5 times in 600 seconds by Ceph.
+             * Preventing the OSD pods to restart immediately in such scenarios will prevent Rook from marking OSD as `up` and thus
+             * peering of the PGs mapped to the OSD.
+             * User needs to manually restart the OSD pod if they manage to fix the underlying OSD flapping issue before the restart interval.
+             * The sleep will be disabled if this interval is set to 0.
+             */
+            flappingRestartIntervalHours: number;
+            /**
+             * FullRatio is the ratio at which the cluster is considered full and ceph will stop accepting writes. Default is 0.95.
+             */
+            fullRatio: number;
+            migration: outputs.ceph.v1.CephClusterSpecStorageMigrationPatch;
+            /**
+             * NearFullRatio is the ratio at which the cluster is considered nearly full and will raise a ceph health warning. Default is 0.85.
+             */
+            nearFullRatio: number;
+            nodes: outputs.ceph.v1.CephClusterSpecStorageNodesPatch[];
+            onlyApplyOSDPlacement: boolean;
+            /**
+             * Whether to always schedule OSDs on a node even if the node is not currently scheduleable or ready
+             */
+            scheduleAlways: boolean;
+            storageClassDeviceSets: outputs.ceph.v1.CephClusterSpecStorageStorageClassDeviceSetsPatch[];
+            store: outputs.ceph.v1.CephClusterSpecStorageStorePatch;
+            /**
+             * Whether to consume all the storage devices found on a machine
+             */
+            useAllDevices: boolean;
+            useAllNodes: boolean;
+            /**
+             * PersistentVolumeClaims to use as storage
+             */
+            volumeClaimTemplates: outputs.ceph.v1.CephClusterSpecStorageVolumeClaimTemplatesPatch[];
+        }
+
+        /**
+         * StorageClassDeviceSet is a storage class device set
+         */
+        export interface CephClusterSpecStorageStorageClassDeviceSets {
+            /**
+             * Provider-specific device configuration
+             */
+            config: {[key: string]: any};
+            /**
+             * Count is the number of devices in this set
+             */
+            count: number;
+            /**
+             * Whether to encrypt the deviceSet
+             */
+            encrypted: boolean;
+            /**
+             * Name is a unique identifier for the set
+             */
+            name: string;
+            placement: {[key: string]: any};
+            /**
+             * Portable represents OSD portability across the hosts
+             */
+            portable: boolean;
+            preparePlacement: {[key: string]: any};
+            /**
+             * ResourceRequirements describes the compute resource requirements.
+             */
+            resources: {[key: string]: any};
+            /**
+             * Scheduler name for OSD pod placement
+             */
+            schedulerName: string;
+            /**
+             * TuneSlowDeviceClass Tune the OSD when running on a slow Device Class
+             */
+            tuneDeviceClass: boolean;
+            /**
+             * TuneFastDeviceClass Tune the OSD when running on a fast Device Class
+             */
+            tuneFastDeviceClass: boolean;
+            /**
+             * VolumeClaimTemplates is a list of PVC templates for the underlying storage devices
+             */
+            volumeClaimTemplates: outputs.ceph.v1.CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplates[];
+        }
+
+        /**
+         * StorageClassDeviceSet is a storage class device set
+         */
+        export interface CephClusterSpecStorageStorageClassDeviceSetsPatch {
+            /**
+             * Provider-specific device configuration
+             */
+            config: {[key: string]: any};
+            /**
+             * Count is the number of devices in this set
+             */
+            count: number;
+            /**
+             * Whether to encrypt the deviceSet
+             */
+            encrypted: boolean;
+            /**
+             * Name is a unique identifier for the set
+             */
+            name: string;
+            placement: {[key: string]: any};
+            /**
+             * Portable represents OSD portability across the hosts
+             */
+            portable: boolean;
+            preparePlacement: {[key: string]: any};
+            /**
+             * ResourceRequirements describes the compute resource requirements.
+             */
+            resources: {[key: string]: any};
+            /**
+             * Scheduler name for OSD pod placement
+             */
+            schedulerName: string;
+            /**
+             * TuneSlowDeviceClass Tune the OSD when running on a slow Device Class
+             */
+            tuneDeviceClass: boolean;
+            /**
+             * TuneFastDeviceClass Tune the OSD when running on a fast Device Class
+             */
+            tuneFastDeviceClass: boolean;
+            /**
+             * VolumeClaimTemplates is a list of PVC templates for the underlying storage devices
+             */
+            volumeClaimTemplates: outputs.ceph.v1.CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesPatch[];
+        }
+
+        /**
+         * VolumeClaimTemplate is a simplified version of K8s corev1's PVC. It has no type meta or status.
+         */
+        export interface CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplates {
+            metadata: outputs.ceph.v1.CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesMetadata;
+            spec: outputs.ceph.v1.CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpec;
+        }
+
+        /**
+         * Standard object's metadata.
+         * More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesMetadata {
+            annotations: {[key: string]: any};
+            finalizers: string[];
+            labels: {[key: string]: string};
+            name: string;
+            namespace: string;
+        }
+
+        /**
+         * Standard object's metadata.
+         * More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesMetadataPatch {
+            annotations: {[key: string]: any};
+            finalizers: string[];
+            labels: {[key: string]: string};
+            name: string;
+            namespace: string;
+        }
+
+        /**
+         * VolumeClaimTemplate is a simplified version of K8s corev1's PVC. It has no type meta or status.
+         */
+        export interface CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesPatch {
+            metadata: outputs.ceph.v1.CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesMetadataPatch;
+            spec: outputs.ceph.v1.CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecPatch;
+        }
+
+        /**
+         * spec defines the desired characteristics of a volume requested by a pod author.
+         * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+         */
+        export interface CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpec {
+            /**
+             * accessModes contains the desired access modes the volume should have.
+             * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+             */
+            accessModes: string[];
+            dataSource: outputs.ceph.v1.CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecDataSource;
+            dataSourceRef: outputs.ceph.v1.CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecDataSourceRef;
+            resources: outputs.ceph.v1.CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecResources;
+            selector: outputs.ceph.v1.CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecSelector;
+            /**
+             * storageClassName is the name of the StorageClass required by the claim.
+             * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+             */
+            storageClassName: string;
+            /**
+             * volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+             * If specified, the CSI driver will create or update the volume with the attributes defined
+             * in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+             * it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+             * will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+             * If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+             * will be set by the persistentvolume controller if it exists.
+             * If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+             * set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+             * exists.
+             * More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
+             * (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
+             */
+            volumeAttributesClassName: string;
+            /**
+             * volumeMode defines what type of volume is required by the claim.
+             * Value of Filesystem is implied when not included in claim spec.
+             */
+            volumeMode: string;
+            /**
+             * volumeName is the binding reference to the PersistentVolume backing this claim.
+             */
+            volumeName: string;
+        }
+
+        /**
+         * dataSource field can be used to specify either:
+         * * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+         * * An existing PVC (PersistentVolumeClaim)
+         * If the provisioner or an external controller can support the specified data source,
+         * it will create a new volume based on the contents of the specified data source.
+         * When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+         * and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+         * If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+         */
+        export interface CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecDataSource {
+            /**
+             * APIGroup is the group for the resource being referenced.
+             * If APIGroup is not specified, the specified Kind must be in the core API group.
+             * For any other third-party types, APIGroup is required.
+             */
+            apiGroup: string;
+            /**
+             * Kind is the type of resource being referenced
+             */
+            kind: string;
+            /**
+             * Name is the name of resource being referenced
+             */
+            name: string;
+        }
+
+        /**
+         * dataSource field can be used to specify either:
+         * * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+         * * An existing PVC (PersistentVolumeClaim)
+         * If the provisioner or an external controller can support the specified data source,
+         * it will create a new volume based on the contents of the specified data source.
+         * When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+         * and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+         * If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+         */
+        export interface CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecDataSourcePatch {
+            /**
+             * APIGroup is the group for the resource being referenced.
+             * If APIGroup is not specified, the specified Kind must be in the core API group.
+             * For any other third-party types, APIGroup is required.
+             */
+            apiGroup: string;
+            /**
+             * Kind is the type of resource being referenced
+             */
+            kind: string;
+            /**
+             * Name is the name of resource being referenced
+             */
+            name: string;
+        }
+
+        /**
+         * dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+         * volume is desired. This may be any object from a non-empty API group (non
+         * core object) or a PersistentVolumeClaim object.
+         * When this field is specified, volume binding will only succeed if the type of
+         * the specified object matches some installed volume populator or dynamic
+         * provisioner.
+         * This field will replace the functionality of the dataSource field and as such
+         * if both fields are non-empty, they must have the same value. For backwards
+         * compatibility, when namespace isn't specified in dataSourceRef,
+         * both fields (dataSource and dataSourceRef) will be set to the same
+         * value automatically if one of them is empty and the other is non-empty.
+         * When namespace is specified in dataSourceRef,
+         * dataSource isn't set to the same value and must be empty.
+         * There are three important differences between dataSource and dataSourceRef:
+         * * While dataSource only allows two specific types of objects, dataSourceRef
+         *   allows any non-core object, as well as PersistentVolumeClaim objects.
+         * * While dataSource ignores disallowed values (dropping them), dataSourceRef
+         *   preserves all values, and generates an error if a disallowed value is
+         *   specified.
+         * * While dataSource only allows local objects, dataSourceRef allows objects
+         *   in any namespaces.
+         * (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+         * (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+         */
+        export interface CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecDataSourceRef {
+            /**
+             * APIGroup is the group for the resource being referenced.
+             * If APIGroup is not specified, the specified Kind must be in the core API group.
+             * For any other third-party types, APIGroup is required.
+             */
+            apiGroup: string;
+            /**
+             * Kind is the type of resource being referenced
+             */
+            kind: string;
+            /**
+             * Name is the name of resource being referenced
+             */
+            name: string;
+            /**
+             * Namespace is the namespace of resource being referenced
+             * Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
+             * (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+             */
+            namespace: string;
+        }
+
+        /**
+         * dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+         * volume is desired. This may be any object from a non-empty API group (non
+         * core object) or a PersistentVolumeClaim object.
+         * When this field is specified, volume binding will only succeed if the type of
+         * the specified object matches some installed volume populator or dynamic
+         * provisioner.
+         * This field will replace the functionality of the dataSource field and as such
+         * if both fields are non-empty, they must have the same value. For backwards
+         * compatibility, when namespace isn't specified in dataSourceRef,
+         * both fields (dataSource and dataSourceRef) will be set to the same
+         * value automatically if one of them is empty and the other is non-empty.
+         * When namespace is specified in dataSourceRef,
+         * dataSource isn't set to the same value and must be empty.
+         * There are three important differences between dataSource and dataSourceRef:
+         * * While dataSource only allows two specific types of objects, dataSourceRef
+         *   allows any non-core object, as well as PersistentVolumeClaim objects.
+         * * While dataSource ignores disallowed values (dropping them), dataSourceRef
+         *   preserves all values, and generates an error if a disallowed value is
+         *   specified.
+         * * While dataSource only allows local objects, dataSourceRef allows objects
+         *   in any namespaces.
+         * (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+         * (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+         */
+        export interface CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecDataSourceRefPatch {
+            /**
+             * APIGroup is the group for the resource being referenced.
+             * If APIGroup is not specified, the specified Kind must be in the core API group.
+             * For any other third-party types, APIGroup is required.
+             */
+            apiGroup: string;
+            /**
+             * Kind is the type of resource being referenced
+             */
+            kind: string;
+            /**
+             * Name is the name of resource being referenced
+             */
+            name: string;
+            /**
+             * Namespace is the namespace of resource being referenced
+             * Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
+             * (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+             */
+            namespace: string;
+        }
+
+        /**
+         * spec defines the desired characteristics of a volume requested by a pod author.
+         * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+         */
+        export interface CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecPatch {
+            /**
+             * accessModes contains the desired access modes the volume should have.
+             * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+             */
+            accessModes: string[];
+            dataSource: outputs.ceph.v1.CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecDataSourcePatch;
+            dataSourceRef: outputs.ceph.v1.CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecDataSourceRefPatch;
+            resources: outputs.ceph.v1.CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecResourcesPatch;
+            selector: outputs.ceph.v1.CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecSelectorPatch;
+            /**
+             * storageClassName is the name of the StorageClass required by the claim.
+             * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+             */
+            storageClassName: string;
+            /**
+             * volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+             * If specified, the CSI driver will create or update the volume with the attributes defined
+             * in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+             * it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+             * will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+             * If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+             * will be set by the persistentvolume controller if it exists.
+             * If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+             * set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+             * exists.
+             * More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
+             * (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
+             */
+            volumeAttributesClassName: string;
+            /**
+             * volumeMode defines what type of volume is required by the claim.
+             * Value of Filesystem is implied when not included in claim spec.
+             */
+            volumeMode: string;
+            /**
+             * volumeName is the binding reference to the PersistentVolume backing this claim.
+             */
+            volumeName: string;
+        }
+
+        /**
+         * resources represents the minimum resources the volume should have.
+         * If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+         * that are lower than previous value but must still be higher than capacity recorded in the
+         * status field of the claim.
+         * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+         */
+        export interface CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecResources {
+            /**
+             * Limits describes the maximum amount of compute resources allowed.
+             * More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+             */
+            limits: {[key: string]: number | string};
+            /**
+             * Requests describes the minimum amount of compute resources required.
+             * If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+             * otherwise to an implementation-defined value. Requests cannot exceed Limits.
+             * More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+             */
+            requests: {[key: string]: number | string};
+        }
+
+        /**
+         * resources represents the minimum resources the volume should have.
+         * If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+         * that are lower than previous value but must still be higher than capacity recorded in the
+         * status field of the claim.
+         * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+         */
+        export interface CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecResourcesPatch {
+            /**
+             * Limits describes the maximum amount of compute resources allowed.
+             * More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+             */
+            limits: {[key: string]: number | string};
+            /**
+             * Requests describes the minimum amount of compute resources required.
+             * If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+             * otherwise to an implementation-defined value. Requests cannot exceed Limits.
+             * More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+             */
+            requests: {[key: string]: number | string};
+        }
+
+        /**
+         * selector is a label query over volumes to consider for binding.
+         */
+        export interface CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions: outputs.ceph.v1.CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+             * map is equivalent to an element of matchExpressions, whose key field is "key", the
+             * operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that
+         * relates the key and values.
+         */
+        export interface CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values.
+             * Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn,
+             * the values array must be non-empty. If the operator is Exists or DoesNotExist,
+             * the values array must be empty. This array is replaced during a strategic
+             * merge patch.
+             */
+            values: string[];
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that
+         * relates the key and values.
+         */
+        export interface CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecSelectorMatchExpressionsPatch {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values.
+             * Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn,
+             * the values array must be non-empty. If the operator is Exists or DoesNotExist,
+             * the values array must be empty. This array is replaced during a strategic
+             * merge patch.
+             */
+            values: string[];
+        }
+
+        /**
+         * selector is a label query over volumes to consider for binding.
+         */
+        export interface CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecSelectorPatch {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions: outputs.ceph.v1.CephClusterSpecStorageStorageClassDeviceSetsVolumeClaimTemplatesSpecSelectorMatchExpressionsPatch[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+             * map is equivalent to an element of matchExpressions, whose key field is "key", the
+             * operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels: {[key: string]: string};
+        }
+
+        /**
+         * OSDStore is the backend storage type used for creating the OSDs
+         */
+        export interface CephClusterSpecStorageStore {
+            /**
+             * Type of backend storage to be used while creating OSDs. If empty, then bluestore will be used
+             */
+            type: string;
+            /**
+             * UpdateStore updates the backend store for existing OSDs. It destroys each OSD one at a time, cleans up the backing disk
+             * and prepares same OSD on that disk
+             */
+            updateStore: string;
+        }
+
+        /**
+         * OSDStore is the backend storage type used for creating the OSDs
+         */
+        export interface CephClusterSpecStorageStorePatch {
+            /**
+             * Type of backend storage to be used while creating OSDs. If empty, then bluestore will be used
+             */
+            type: string;
+            /**
+             * UpdateStore updates the backend store for existing OSDs. It destroys each OSD one at a time, cleans up the backing disk
+             * and prepares same OSD on that disk
+             */
+            updateStore: string;
+        }
+
+        /**
+         * VolumeClaimTemplate is a simplified version of K8s corev1's PVC. It has no type meta or status.
+         */
+        export interface CephClusterSpecStorageVolumeClaimTemplates {
+            metadata: outputs.ceph.v1.CephClusterSpecStorageVolumeClaimTemplatesMetadata;
+            spec: outputs.ceph.v1.CephClusterSpecStorageVolumeClaimTemplatesSpec;
+        }
+
+        /**
+         * Standard object's metadata.
+         * More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface CephClusterSpecStorageVolumeClaimTemplatesMetadata {
+            annotations: {[key: string]: string};
+            finalizers: string[];
+            labels: {[key: string]: string};
+            name: string;
+            namespace: string;
+        }
+
+        /**
+         * Standard object's metadata.
+         * More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+         */
+        export interface CephClusterSpecStorageVolumeClaimTemplatesMetadataPatch {
+            annotations: {[key: string]: string};
+            finalizers: string[];
+            labels: {[key: string]: string};
+            name: string;
+            namespace: string;
+        }
+
+        /**
+         * VolumeClaimTemplate is a simplified version of K8s corev1's PVC. It has no type meta or status.
+         */
+        export interface CephClusterSpecStorageVolumeClaimTemplatesPatch {
+            metadata: outputs.ceph.v1.CephClusterSpecStorageVolumeClaimTemplatesMetadataPatch;
+            spec: outputs.ceph.v1.CephClusterSpecStorageVolumeClaimTemplatesSpecPatch;
+        }
+
+        /**
+         * spec defines the desired characteristics of a volume requested by a pod author.
+         * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+         */
+        export interface CephClusterSpecStorageVolumeClaimTemplatesSpec {
+            /**
+             * accessModes contains the desired access modes the volume should have.
+             * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+             */
+            accessModes: string[];
+            dataSource: outputs.ceph.v1.CephClusterSpecStorageVolumeClaimTemplatesSpecDataSource;
+            dataSourceRef: outputs.ceph.v1.CephClusterSpecStorageVolumeClaimTemplatesSpecDataSourceRef;
+            resources: outputs.ceph.v1.CephClusterSpecStorageVolumeClaimTemplatesSpecResources;
+            selector: outputs.ceph.v1.CephClusterSpecStorageVolumeClaimTemplatesSpecSelector;
+            /**
+             * storageClassName is the name of the StorageClass required by the claim.
+             * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+             */
+            storageClassName: string;
+            /**
+             * volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+             * If specified, the CSI driver will create or update the volume with the attributes defined
+             * in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+             * it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+             * will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+             * If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+             * will be set by the persistentvolume controller if it exists.
+             * If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+             * set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+             * exists.
+             * More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
+             * (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
+             */
+            volumeAttributesClassName: string;
+            /**
+             * volumeMode defines what type of volume is required by the claim.
+             * Value of Filesystem is implied when not included in claim spec.
+             */
+            volumeMode: string;
+            /**
+             * volumeName is the binding reference to the PersistentVolume backing this claim.
+             */
+            volumeName: string;
+        }
+
+        /**
+         * dataSource field can be used to specify either:
+         * * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+         * * An existing PVC (PersistentVolumeClaim)
+         * If the provisioner or an external controller can support the specified data source,
+         * it will create a new volume based on the contents of the specified data source.
+         * When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+         * and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+         * If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+         */
+        export interface CephClusterSpecStorageVolumeClaimTemplatesSpecDataSource {
+            /**
+             * APIGroup is the group for the resource being referenced.
+             * If APIGroup is not specified, the specified Kind must be in the core API group.
+             * For any other third-party types, APIGroup is required.
+             */
+            apiGroup: string;
+            /**
+             * Kind is the type of resource being referenced
+             */
+            kind: string;
+            /**
+             * Name is the name of resource being referenced
+             */
+            name: string;
+        }
+
+        /**
+         * dataSource field can be used to specify either:
+         * * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+         * * An existing PVC (PersistentVolumeClaim)
+         * If the provisioner or an external controller can support the specified data source,
+         * it will create a new volume based on the contents of the specified data source.
+         * When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+         * and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+         * If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+         */
+        export interface CephClusterSpecStorageVolumeClaimTemplatesSpecDataSourcePatch {
+            /**
+             * APIGroup is the group for the resource being referenced.
+             * If APIGroup is not specified, the specified Kind must be in the core API group.
+             * For any other third-party types, APIGroup is required.
+             */
+            apiGroup: string;
+            /**
+             * Kind is the type of resource being referenced
+             */
+            kind: string;
+            /**
+             * Name is the name of resource being referenced
+             */
+            name: string;
+        }
+
+        /**
+         * dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+         * volume is desired. This may be any object from a non-empty API group (non
+         * core object) or a PersistentVolumeClaim object.
+         * When this field is specified, volume binding will only succeed if the type of
+         * the specified object matches some installed volume populator or dynamic
+         * provisioner.
+         * This field will replace the functionality of the dataSource field and as such
+         * if both fields are non-empty, they must have the same value. For backwards
+         * compatibility, when namespace isn't specified in dataSourceRef,
+         * both fields (dataSource and dataSourceRef) will be set to the same
+         * value automatically if one of them is empty and the other is non-empty.
+         * When namespace is specified in dataSourceRef,
+         * dataSource isn't set to the same value and must be empty.
+         * There are three important differences between dataSource and dataSourceRef:
+         * * While dataSource only allows two specific types of objects, dataSourceRef
+         *   allows any non-core object, as well as PersistentVolumeClaim objects.
+         * * While dataSource ignores disallowed values (dropping them), dataSourceRef
+         *   preserves all values, and generates an error if a disallowed value is
+         *   specified.
+         * * While dataSource only allows local objects, dataSourceRef allows objects
+         *   in any namespaces.
+         * (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+         * (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+         */
+        export interface CephClusterSpecStorageVolumeClaimTemplatesSpecDataSourceRef {
+            /**
+             * APIGroup is the group for the resource being referenced.
+             * If APIGroup is not specified, the specified Kind must be in the core API group.
+             * For any other third-party types, APIGroup is required.
+             */
+            apiGroup: string;
+            /**
+             * Kind is the type of resource being referenced
+             */
+            kind: string;
+            /**
+             * Name is the name of resource being referenced
+             */
+            name: string;
+            /**
+             * Namespace is the namespace of resource being referenced
+             * Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
+             * (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+             */
+            namespace: string;
+        }
+
+        /**
+         * dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+         * volume is desired. This may be any object from a non-empty API group (non
+         * core object) or a PersistentVolumeClaim object.
+         * When this field is specified, volume binding will only succeed if the type of
+         * the specified object matches some installed volume populator or dynamic
+         * provisioner.
+         * This field will replace the functionality of the dataSource field and as such
+         * if both fields are non-empty, they must have the same value. For backwards
+         * compatibility, when namespace isn't specified in dataSourceRef,
+         * both fields (dataSource and dataSourceRef) will be set to the same
+         * value automatically if one of them is empty and the other is non-empty.
+         * When namespace is specified in dataSourceRef,
+         * dataSource isn't set to the same value and must be empty.
+         * There are three important differences between dataSource and dataSourceRef:
+         * * While dataSource only allows two specific types of objects, dataSourceRef
+         *   allows any non-core object, as well as PersistentVolumeClaim objects.
+         * * While dataSource ignores disallowed values (dropping them), dataSourceRef
+         *   preserves all values, and generates an error if a disallowed value is
+         *   specified.
+         * * While dataSource only allows local objects, dataSourceRef allows objects
+         *   in any namespaces.
+         * (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+         * (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+         */
+        export interface CephClusterSpecStorageVolumeClaimTemplatesSpecDataSourceRefPatch {
+            /**
+             * APIGroup is the group for the resource being referenced.
+             * If APIGroup is not specified, the specified Kind must be in the core API group.
+             * For any other third-party types, APIGroup is required.
+             */
+            apiGroup: string;
+            /**
+             * Kind is the type of resource being referenced
+             */
+            kind: string;
+            /**
+             * Name is the name of resource being referenced
+             */
+            name: string;
+            /**
+             * Namespace is the namespace of resource being referenced
+             * Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
+             * (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+             */
+            namespace: string;
+        }
+
+        /**
+         * spec defines the desired characteristics of a volume requested by a pod author.
+         * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+         */
+        export interface CephClusterSpecStorageVolumeClaimTemplatesSpecPatch {
+            /**
+             * accessModes contains the desired access modes the volume should have.
+             * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+             */
+            accessModes: string[];
+            dataSource: outputs.ceph.v1.CephClusterSpecStorageVolumeClaimTemplatesSpecDataSourcePatch;
+            dataSourceRef: outputs.ceph.v1.CephClusterSpecStorageVolumeClaimTemplatesSpecDataSourceRefPatch;
+            resources: outputs.ceph.v1.CephClusterSpecStorageVolumeClaimTemplatesSpecResourcesPatch;
+            selector: outputs.ceph.v1.CephClusterSpecStorageVolumeClaimTemplatesSpecSelectorPatch;
+            /**
+             * storageClassName is the name of the StorageClass required by the claim.
+             * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+             */
+            storageClassName: string;
+            /**
+             * volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+             * If specified, the CSI driver will create or update the volume with the attributes defined
+             * in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+             * it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+             * will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+             * If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+             * will be set by the persistentvolume controller if it exists.
+             * If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+             * set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+             * exists.
+             * More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
+             * (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
+             */
+            volumeAttributesClassName: string;
+            /**
+             * volumeMode defines what type of volume is required by the claim.
+             * Value of Filesystem is implied when not included in claim spec.
+             */
+            volumeMode: string;
+            /**
+             * volumeName is the binding reference to the PersistentVolume backing this claim.
+             */
+            volumeName: string;
+        }
+
+        /**
+         * resources represents the minimum resources the volume should have.
+         * If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+         * that are lower than previous value but must still be higher than capacity recorded in the
+         * status field of the claim.
+         * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+         */
+        export interface CephClusterSpecStorageVolumeClaimTemplatesSpecResources {
+            /**
+             * Limits describes the maximum amount of compute resources allowed.
+             * More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+             */
+            limits: {[key: string]: number | string};
+            /**
+             * Requests describes the minimum amount of compute resources required.
+             * If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+             * otherwise to an implementation-defined value. Requests cannot exceed Limits.
+             * More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+             */
+            requests: {[key: string]: number | string};
+        }
+
+        /**
+         * resources represents the minimum resources the volume should have.
+         * If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+         * that are lower than previous value but must still be higher than capacity recorded in the
+         * status field of the claim.
+         * More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+         */
+        export interface CephClusterSpecStorageVolumeClaimTemplatesSpecResourcesPatch {
+            /**
+             * Limits describes the maximum amount of compute resources allowed.
+             * More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+             */
+            limits: {[key: string]: number | string};
+            /**
+             * Requests describes the minimum amount of compute resources required.
+             * If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+             * otherwise to an implementation-defined value. Requests cannot exceed Limits.
+             * More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+             */
+            requests: {[key: string]: number | string};
+        }
+
+        /**
+         * selector is a label query over volumes to consider for binding.
+         */
+        export interface CephClusterSpecStorageVolumeClaimTemplatesSpecSelector {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions: outputs.ceph.v1.CephClusterSpecStorageVolumeClaimTemplatesSpecSelectorMatchExpressions[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+             * map is equivalent to an element of matchExpressions, whose key field is "key", the
+             * operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels: {[key: string]: string};
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that
+         * relates the key and values.
+         */
+        export interface CephClusterSpecStorageVolumeClaimTemplatesSpecSelectorMatchExpressions {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values.
+             * Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn,
+             * the values array must be non-empty. If the operator is Exists or DoesNotExist,
+             * the values array must be empty. This array is replaced during a strategic
+             * merge patch.
+             */
+            values: string[];
+        }
+
+        /**
+         * A label selector requirement is a selector that contains values, a key, and an operator that
+         * relates the key and values.
+         */
+        export interface CephClusterSpecStorageVolumeClaimTemplatesSpecSelectorMatchExpressionsPatch {
+            /**
+             * key is the label key that the selector applies to.
+             */
+            key: string;
+            /**
+             * operator represents a key's relationship to a set of values.
+             * Valid operators are In, NotIn, Exists and DoesNotExist.
+             */
+            operator: string;
+            /**
+             * values is an array of string values. If the operator is In or NotIn,
+             * the values array must be non-empty. If the operator is Exists or DoesNotExist,
+             * the values array must be empty. This array is replaced during a strategic
+             * merge patch.
+             */
+            values: string[];
+        }
+
+        /**
+         * selector is a label query over volumes to consider for binding.
+         */
+        export interface CephClusterSpecStorageVolumeClaimTemplatesSpecSelectorPatch {
+            /**
+             * matchExpressions is a list of label selector requirements. The requirements are ANDed.
+             */
+            matchExpressions: outputs.ceph.v1.CephClusterSpecStorageVolumeClaimTemplatesSpecSelectorMatchExpressionsPatch[];
+            /**
+             * matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+             * map is equivalent to an element of matchExpressions, whose key field is "key", the
+             * operator is "In", and the values array contains only "value". The requirements are ANDed.
+             */
+            matchLabels: {[key: string]: string};
+        }
+
+        /**
+         * CephFilesystem represents a Ceph Filesystem
+         */
+        export interface CephFilesystem {
+            /**
+             * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+             */
+            apiVersion: "ceph.rook.io/v1";
+            /**
+             * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+             */
+            kind: "CephFilesystem";
+            /**
+             * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+             */
+            metadata: outputs.meta.v1.ObjectMeta;
+            spec: outputs.ceph.v1.CephFilesystemSpec;
+            /**
+             * CephFilesystemStatus represents the status of a Ceph Filesystem
+             */
+            status: {[key: string]: any};
+        }
+
+        /**
+         * FilesystemSpec represents the spec of a file system
+         */
+        export interface CephFilesystemSpec {
+            /**
+             * The data pool settings, with optional predefined pool name.
+             */
+            dataPools: outputs.ceph.v1.CephFilesystemSpecDataPools[];
+            metadataPool: outputs.ceph.v1.CephFilesystemSpecMetadataPool;
+            metadataServer: outputs.ceph.v1.CephFilesystemSpecMetadataServer;
+            mirroring: outputs.ceph.v1.CephFilesystemSpecMirroring;
+            /**
+             * Preserve the fs in the cluster on CephFilesystem CR deletion. Setting this to true automatically implies PreservePoolsOnDelete is true.
+             */
+            preserveFilesystemOnDelete: boolean;
+            /**
+             * Preserve pool names as specified
+             */
+            preservePoolNames: boolean;
+            /**
+             * Preserve pools on filesystem deletion
+             */
+            preservePoolsOnDelete: boolean;
+            /**
+             * The mirroring statusCheck
+             */
+            statusCheck: {[key: string]: any};
+        }
+
+        /**
+         * NamedPoolSpec represents the named ceph pool spec
+         */
+        export interface CephFilesystemSpecDataPools {
+            /**
+             * The application name to set on the pool. Only expected to be set for rgw pools.
+             */
+            application: string;
+            /**
+             * DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force"
+             * The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)
+             * Do NOT set a default value for kubebuilder as this will override the Parameters
+             */
+            compressionMode: string;
+            /**
+             * The root of the crush hierarchy utilized by the pool
+             */
+            crushRoot: string;
+            /**
+             * The device class the OSD should set to for use in the pool
+             */
+            deviceClass: string;
+            /**
+             * Allow rook operator to change the pool CRUSH tunables once the pool is created
+             */
+            enableCrushUpdates: boolean;
+            /**
+             * EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
+             */
+            enableRBDStats: boolean;
+            erasureCoded: outputs.ceph.v1.CephFilesystemSpecDataPoolsErasureCoded;
+            /**
+             * The failure domain: osd/host/(region or zone if available) - technically also any type in the crush map
+             */
+            failureDomain: string;
+            mirroring: outputs.ceph.v1.CephFilesystemSpecDataPoolsMirroring;
+            /**
+             * Name of the pool
+             */
+            name: string;
+            /**
+             * Parameters is a list of properties to enable on a given pool
+             */
+            parameters: {[key: string]: any};
+            quotas: outputs.ceph.v1.CephFilesystemSpecDataPoolsQuotas;
+            replicated: outputs.ceph.v1.CephFilesystemSpecDataPoolsReplicated;
+            /**
+             * The mirroring statusCheck
+             */
+            statusCheck: {[key: string]: any};
+        }
+
+        /**
+         * The erasure code settings
+         */
+        export interface CephFilesystemSpecDataPoolsErasureCoded {
+            /**
+             * The algorithm for erasure coding
+             */
+            algorithm: string;
+            /**
+             * Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+             * This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
+             */
+            codingChunks: number;
+            /**
+             * Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+             * The number of chunks required to recover an object when any single OSD is lost is the same
+             * as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
+             */
+            dataChunks: number;
+        }
+
+        /**
+         * The erasure code settings
+         */
+        export interface CephFilesystemSpecDataPoolsErasureCodedPatch {
+            /**
+             * The algorithm for erasure coding
+             */
+            algorithm: string;
+            /**
+             * Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+             * This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
+             */
+            codingChunks: number;
+            /**
+             * Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+             * The number of chunks required to recover an object when any single OSD is lost is the same
+             * as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
+             */
+            dataChunks: number;
+        }
+
+        /**
+         * The mirroring settings
+         */
+        export interface CephFilesystemSpecDataPoolsMirroring {
+            /**
+             * Enabled whether this pool is mirrored or not
+             */
+            enabled: boolean;
+            /**
+             * Mode is the mirroring mode: either pool or image
+             */
+            mode: string;
+            peers: outputs.ceph.v1.CephFilesystemSpecDataPoolsMirroringPeers;
+            /**
+             * SnapshotSchedules is the scheduling of snapshot for mirrored images/pools
+             */
+            snapshotSchedules: outputs.ceph.v1.CephFilesystemSpecDataPoolsMirroringSnapshotSchedules[];
+        }
+
+        /**
+         * The mirroring settings
+         */
+        export interface CephFilesystemSpecDataPoolsMirroringPatch {
+            /**
+             * Enabled whether this pool is mirrored or not
+             */
+            enabled: boolean;
+            /**
+             * Mode is the mirroring mode: either pool or image
+             */
+            mode: string;
+            peers: outputs.ceph.v1.CephFilesystemSpecDataPoolsMirroringPeersPatch;
+            /**
+             * SnapshotSchedules is the scheduling of snapshot for mirrored images/pools
+             */
+            snapshotSchedules: outputs.ceph.v1.CephFilesystemSpecDataPoolsMirroringSnapshotSchedulesPatch[];
+        }
+
+        /**
+         * Peers represents the peers spec
+         */
+        export interface CephFilesystemSpecDataPoolsMirroringPeers {
+            /**
+             * SecretNames represents the Kubernetes Secret names to add rbd-mirror or cephfs-mirror peers
+             */
+            secretNames: string[];
+        }
+
+        /**
+         * Peers represents the peers spec
+         */
+        export interface CephFilesystemSpecDataPoolsMirroringPeersPatch {
+            /**
+             * SecretNames represents the Kubernetes Secret names to add rbd-mirror or cephfs-mirror peers
+             */
+            secretNames: string[];
+        }
+
+        /**
+         * SnapshotScheduleSpec represents the snapshot scheduling settings of a mirrored pool
+         */
+        export interface CephFilesystemSpecDataPoolsMirroringSnapshotSchedules {
+            /**
+             * Interval represent the periodicity of the snapshot.
+             */
+            interval: string;
+            /**
+             * Path is the path to snapshot, only valid for CephFS
+             */
+            path: string;
+            /**
+             * StartTime indicates when to start the snapshot
+             */
+            startTime: string;
+        }
+
+        /**
+         * SnapshotScheduleSpec represents the snapshot scheduling settings of a mirrored pool
+         */
+        export interface CephFilesystemSpecDataPoolsMirroringSnapshotSchedulesPatch {
+            /**
+             * Interval represent the periodicity of the snapshot.
+             */
+            interval: string;
+            /**
+             * Path is the path to snapshot, only valid for CephFS
+             */
+            path: string;
+            /**
+             * StartTime indicates when to start the snapshot
+             */
+            startTime: string;
+        }
+
+        /**
+         * NamedPoolSpec represents the named ceph pool spec
+         */
+        export interface CephFilesystemSpecDataPoolsPatch {
+            /**
+             * The application name to set on the pool. Only expected to be set for rgw pools.
+             */
+            application: string;
+            /**
+             * DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force"
+             * The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)
+             * Do NOT set a default value for kubebuilder as this will override the Parameters
+             */
+            compressionMode: string;
+            /**
+             * The root of the crush hierarchy utilized by the pool
+             */
+            crushRoot: string;
+            /**
+             * The device class the OSD should set to for use in the pool
+             */
+            deviceClass: string;
+            /**
+             * Allow rook operator to change the pool CRUSH tunables once the pool is created
+             */
+            enableCrushUpdates: boolean;
+            /**
+             * EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
+             */
+            enableRBDStats: boolean;
+            erasureCoded: outputs.ceph.v1.CephFilesystemSpecDataPoolsErasureCodedPatch;
+            /**
+             * The failure domain: osd/host/(region or zone if available) - technically also any type in the crush map
+             */
+            failureDomain: string;
+            mirroring: outputs.ceph.v1.CephFilesystemSpecDataPoolsMirroringPatch;
+            /**
+             * Name of the pool
+             */
+            name: string;
+            /**
+             * Parameters is a list of properties to enable on a given pool
+             */
+            parameters: {[key: string]: any};
+            quotas: outputs.ceph.v1.CephFilesystemSpecDataPoolsQuotasPatch;
+            replicated: outputs.ceph.v1.CephFilesystemSpecDataPoolsReplicatedPatch;
+            /**
+             * The mirroring statusCheck
+             */
+            statusCheck: {[key: string]: any};
+        }
+
+        /**
+         * The quota settings
+         */
+        export interface CephFilesystemSpecDataPoolsQuotas {
+            /**
+             * MaxBytes represents the quota in bytes
+             * Deprecated in favor of MaxSize
+             */
+            maxBytes: number;
+            /**
+             * MaxObjects represents the quota in objects
+             */
+            maxObjects: number;
+            /**
+             * MaxSize represents the quota in bytes as a string
+             */
+            maxSize: string;
+        }
+
+        /**
+         * The quota settings
+         */
+        export interface CephFilesystemSpecDataPoolsQuotasPatch {
+            /**
+             * MaxBytes represents the quota in bytes
+             * Deprecated in favor of MaxSize
+             */
+            maxBytes: number;
+            /**
+             * MaxObjects represents the quota in objects
+             */
+            maxObjects: number;
+            /**
+             * MaxSize represents the quota in bytes as a string
+             */
+            maxSize: string;
+        }
+
+        /**
+         * The replication settings
+         */
+        export interface CephFilesystemSpecDataPoolsReplicated {
+            hybridStorage: outputs.ceph.v1.CephFilesystemSpecDataPoolsReplicatedHybridStorage;
+            /**
+             * ReplicasPerFailureDomain the number of replica in the specified failure domain
+             */
+            replicasPerFailureDomain: number;
+            /**
+             * RequireSafeReplicaSize if false allows you to set replica 1
+             */
+            requireSafeReplicaSize: boolean;
+            /**
+             * Size - Number of copies per object in a replicated storage pool, including the object itself (required for replicated pool type)
+             */
+            size: number;
+            /**
+             * SubFailureDomain the name of the sub-failure domain
+             */
+            subFailureDomain: string;
+            /**
+             * TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
+             */
+            targetSizeRatio: number;
+        }
+
+        /**
+         * HybridStorage represents hybrid storage tier settings
+         */
+        export interface CephFilesystemSpecDataPoolsReplicatedHybridStorage {
+            /**
+             * PrimaryDeviceClass represents high performance tier (for example SSD or NVME) for Primary OSD
+             */
+            primaryDeviceClass: string;
+            /**
+             * SecondaryDeviceClass represents low performance tier (for example HDDs) for remaining OSDs
+             */
+            secondaryDeviceClass: string;
+        }
+
+        /**
+         * HybridStorage represents hybrid storage tier settings
+         */
+        export interface CephFilesystemSpecDataPoolsReplicatedHybridStoragePatch {
+            /**
+             * PrimaryDeviceClass represents high performance tier (for example SSD or NVME) for Primary OSD
+             */
+            primaryDeviceClass: string;
+            /**
+             * SecondaryDeviceClass represents low performance tier (for example HDDs) for remaining OSDs
+             */
+            secondaryDeviceClass: string;
+        }
+
+        /**
+         * The replication settings
+         */
+        export interface CephFilesystemSpecDataPoolsReplicatedPatch {
+            hybridStorage: outputs.ceph.v1.CephFilesystemSpecDataPoolsReplicatedHybridStoragePatch;
+            /**
+             * ReplicasPerFailureDomain the number of replica in the specified failure domain
+             */
+            replicasPerFailureDomain: number;
+            /**
+             * RequireSafeReplicaSize if false allows you to set replica 1
+             */
+            requireSafeReplicaSize: boolean;
+            /**
+             * Size - Number of copies per object in a replicated storage pool, including the object itself (required for replicated pool type)
+             */
+            size: number;
+            /**
+             * SubFailureDomain the name of the sub-failure domain
+             */
+            subFailureDomain: string;
+            /**
+             * TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
+             */
+            targetSizeRatio: number;
+        }
+
+        /**
+         * The metadata pool settings
+         */
+        export interface CephFilesystemSpecMetadataPool {
+            /**
+             * The application name to set on the pool. Only expected to be set for rgw pools.
+             */
+            application: string;
+            /**
+             * DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force"
+             * The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)
+             * Do NOT set a default value for kubebuilder as this will override the Parameters
+             */
+            compressionMode: string;
+            /**
+             * The root of the crush hierarchy utilized by the pool
+             */
+            crushRoot: string;
+            /**
+             * The device class the OSD should set to for use in the pool
+             */
+            deviceClass: string;
+            /**
+             * Allow rook operator to change the pool CRUSH tunables once the pool is created
+             */
+            enableCrushUpdates: boolean;
+            /**
+             * EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
+             */
+            enableRBDStats: boolean;
+            erasureCoded: outputs.ceph.v1.CephFilesystemSpecMetadataPoolErasureCoded;
+            /**
+             * The failure domain: osd/host/(region or zone if available) - technically also any type in the crush map
+             */
+            failureDomain: string;
+            mirroring: outputs.ceph.v1.CephFilesystemSpecMetadataPoolMirroring;
+            /**
+             * Name of the pool
+             */
+            name: string;
+            /**
+             * Parameters is a list of properties to enable on a given pool
+             */
+            parameters: {[key: string]: any};
+            quotas: outputs.ceph.v1.CephFilesystemSpecMetadataPoolQuotas;
+            replicated: outputs.ceph.v1.CephFilesystemSpecMetadataPoolReplicated;
+            /**
+             * The mirroring statusCheck
+             */
+            statusCheck: {[key: string]: any};
+        }
+
+        /**
+         * The erasure code settings
+         */
+        export interface CephFilesystemSpecMetadataPoolErasureCoded {
+            /**
+             * The algorithm for erasure coding
+             */
+            algorithm: string;
+            /**
+             * Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+             * This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
+             */
+            codingChunks: number;
+            /**
+             * Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+             * The number of chunks required to recover an object when any single OSD is lost is the same
+             * as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
+             */
+            dataChunks: number;
+        }
+
+        /**
+         * The erasure code settings
+         */
+        export interface CephFilesystemSpecMetadataPoolErasureCodedPatch {
+            /**
+             * The algorithm for erasure coding
+             */
+            algorithm: string;
+            /**
+             * Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+             * This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
+             */
+            codingChunks: number;
+            /**
+             * Number of data chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
+             * The number of chunks required to recover an object when any single OSD is lost is the same
+             * as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
+             */
+            dataChunks: number;
+        }
+
+        /**
+         * The mirroring settings
+         */
+        export interface CephFilesystemSpecMetadataPoolMirroring {
+            /**
+             * Enabled whether this pool is mirrored or not
+             */
+            enabled: boolean;
+            /**
+             * Mode is the mirroring mode: either pool or image
+             */
+            mode: string;
+            peers: outputs.ceph.v1.CephFilesystemSpecMetadataPoolMirroringPeers;
+            /**
+             * SnapshotSchedules is the scheduling of snapshot for mirrored images/pools
+             */
+            snapshotSchedules: outputs.ceph.v1.CephFilesystemSpecMetadataPoolMirroringSnapshotSchedules[];
+        }
+
+        /**
+         * The mirroring settings
+         */
+        export interface CephFilesystemSpecMetadataPoolMirroringPatch {
+            /**
+             * Enabled whether this pool is mirrored or not
+             */
+            enabled: boolean;
+            /**
+             * Mode is the mirroring mode: either pool or image
+             */
+            mode: string;
+            peers: outputs.ceph.v1.CephFilesystemSpecMetadataPoolMirroringPeersPatch;
+            /**
+             * SnapshotSchedules is the scheduling of snapshot for mirrored images/pools
+             */
+            snapshotSchedules: outputs.ceph.v1.CephFilesystemSpecMetadataPoolMirroringSnapshotSchedulesPatch[];
+        }
+
+        /**
+         * Peers represents the peers spec
+         */
+        export interface CephFilesystemSpecMetadataPoolMirroringPeers {
+            /**
+             * SecretNames represents the Kubernetes Secret names to add rbd-mirror or cephfs-mirror peers
+             */
+            secretNames: string[];
+        }
+
+        /**
+         * Peers represents the peers spec
+         */
+        export interface CephFilesystemSpecMetadataPoolMirroringPeersPatch {
+            /**
+             * SecretNames represents the Kubernetes Secret names to add rbd-mirror or cephfs-mirror peers
+             */
+            secretNames: string[];
+        }
+
+        /**
+         * SnapshotScheduleSpec represents the snapshot scheduling settings of a mirrored pool
+         */
+        export interface CephFilesystemSpecMetadataPoolMirroringSnapshotSchedules {
+            /**
+             * Interval represent the periodicity of the snapshot.
+             */
+            interval: string;
+            /**
+             * Path is the path to snapshot, only valid for CephFS
+             */
+            path: string;
+            /**
+             * StartTime indicates when to start the snapshot
+             */
+            startTime: string;
+        }
+
+        /**
+         * SnapshotScheduleSpec represents the snapshot scheduling settings of a mirrored pool
+         */
+        export interface CephFilesystemSpecMetadataPoolMirroringSnapshotSchedulesPatch {
+            /**
+             * Interval represent the periodicity of the snapshot.
+             */
+            interval: string;
+            /**
+             * Path is the path to snapshot, only valid for CephFS
+             */
+            path: string;
+            /**
+             * StartTime indicates when to start the snapshot
+             */
+            startTime: string;
+        }
+
+        /**
+         * The metadata pool settings
+         */
+        export interface CephFilesystemSpecMetadataPoolPatch {
+            /**
+             * The application name to set on the pool. Only expected to be set for rgw pools.
+             */
+            application: string;
+            /**
+             * DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force"
+             * The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)
+             * Do NOT set a default value for kubebuilder as this will override the Parameters
+             */
+            compressionMode: string;
+            /**
+             * The root of the crush hierarchy utilized by the pool
+             */
+            crushRoot: string;
+            /**
+             * The device class the OSD should set to for use in the pool
+             */
+            deviceClass: string;
+            /**
+             * Allow rook operator to change the pool CRUSH tunables once the pool is created
+             */
+            enableCrushUpdates: boolean;
+            /**
+             * EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
+             */
+            enableRBDStats: boolean;
+            erasureCoded: outputs.ceph.v1.CephFilesystemSpecMetadataPoolErasureCodedPatch;
+            /**
+             * The failure domain: osd/host/(region or zone if available) - technically also any type in the crush map
+             */
+            failureDomain: string;
+            mirroring: outputs.ceph.v1.CephFilesystemSpecMetadataPoolMirroringPatch;
+            /**
+             * Name of the pool
+             */
+            name: string;
+            /**
+             * Parameters is a list of properties to enable on a given pool
+             */
+            parameters: {[key: string]: any};
+            quotas: outputs.ceph.v1.CephFilesystemSpecMetadataPoolQuotasPatch;
+            replicated: outputs.ceph.v1.CephFilesystemSpecMetadataPoolReplicatedPatch;
+            /**
+             * The mirroring statusCheck
+             */
+            statusCheck: {[key: string]: any};
+        }
+
+        /**
+         * The quota settings
+         */
+        export interface CephFilesystemSpecMetadataPoolQuotas {
+            /**
+             * MaxBytes represents the quota in bytes
+             * Deprecated in favor of MaxSize
+             */
+            maxBytes: number;
+            /**
+             * MaxObjects represents the quota in objects
+             */
+            maxObjects: number;
+            /**
+             * MaxSize represents the quota in bytes as a string
+             */
+            maxSize: string;
+        }
+
+        /**
+         * The quota settings
+         */
+        export interface CephFilesystemSpecMetadataPoolQuotasPatch {
+            /**
+             * MaxBytes represents the quota in bytes
+             * Deprecated in favor of MaxSize
+             */
+            maxBytes: number;
+            /**
+             * MaxObjects represents the quota in objects
+             */
+            maxObjects: number;
+            /**
+             * MaxSize represents the quota in bytes as a string
+             */
+            maxSize: string;
+        }
+
+        /**
+         * The replication settings
+         */
+        export interface CephFilesystemSpecMetadataPoolReplicated {
+            hybridStorage: outputs.ceph.v1.CephFilesystemSpecMetadataPoolReplicatedHybridStorage;
+            /**
+             * ReplicasPerFailureDomain the number of replica in the specified failure domain
+             */
+            replicasPerFailureDomain: number;
+            /**
+             * RequireSafeReplicaSize if false allows you to set replica 1
+             */
+            requireSafeReplicaSize: boolean;
+            /**
+             * Size - Number of copies per object in a replicated storage pool, including the object itself (required for replicated pool type)
+             */
+            size: number;
+            /**
+             * SubFailureDomain the name of the sub-failure domain
+             */
+            subFailureDomain: string;
+            /**
+             * TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
+             */
+            targetSizeRatio: number;
+        }
+
+        /**
+         * HybridStorage represents hybrid storage tier settings
+         */
+        export interface CephFilesystemSpecMetadataPoolReplicatedHybridStorage {
+            /**
+             * PrimaryDeviceClass represents high performance tier (for example SSD or NVME) for Primary OSD
+             */
+            primaryDeviceClass: string;
+            /**
+             * SecondaryDeviceClass represents low performance tier (for example HDDs) for remaining OSDs
+             */
+            secondaryDeviceClass: string;
+        }
+
+        /**
+         * HybridStorage represents hybrid storage tier settings
+         */
+        export interface CephFilesystemSpecMetadataPoolReplicatedHybridStoragePatch {
+            /**
+             * PrimaryDeviceClass represents high performance tier (for example SSD or NVME) for Primary OSD
+             */
+            primaryDeviceClass: string;
+            /**
+             * SecondaryDeviceClass represents low performance tier (for example HDDs) for remaining OSDs
+             */
+            secondaryDeviceClass: string;
+        }
+
+        /**
+         * The replication settings
+         */
+        export interface CephFilesystemSpecMetadataPoolReplicatedPatch {
+            hybridStorage: outputs.ceph.v1.CephFilesystemSpecMetadataPoolReplicatedHybridStoragePatch;
+            /**
+             * ReplicasPerFailureDomain the number of replica in the specified failure domain
+             */
+            replicasPerFailureDomain: number;
+            /**
+             * RequireSafeReplicaSize if false allows you to set replica 1
+             */
+            requireSafeReplicaSize: boolean;
+            /**
+             * Size - Number of copies per object in a replicated storage pool, including the object itself (required for replicated pool type)
+             */
+            size: number;
+            /**
+             * SubFailureDomain the name of the sub-failure domain
+             */
+            subFailureDomain: string;
+            /**
+             * TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
+             */
+            targetSizeRatio: number;
+        }
+
+        /**
+         * The mds pod info
+         */
+        export interface CephFilesystemSpecMetadataServer {
+            /**
+             * The number of metadata servers that are active. The remaining servers in the cluster will be in standby mode.
+             */
+            activeCount: number;
+            /**
+             * Whether each active MDS instance will have an active standby with a warm metadata cache for faster failover.
+             * If false, standbys will still be available, but will not have a warm metadata cache.
+             */
+            activeStandby: boolean;
+            /**
+             * The annotations-related configuration to add/set on each Pod related object.
+             */
+            annotations: {[key: string]: any};
+            /**
+             * The labels-related configuration to add/set on each Pod related object.
+             */
+            labels: {[key: string]: any};
+            livenessProbe: outputs.ceph.v1.CephFilesystemSpecMetadataServerLivenessProbe;
+            placement: {[key: string]: any};
+            /**
+             * PriorityClassName sets priority classes on components
+             */
+            priorityClassName: string;
+            /**
+             * The resource requirements for the mds pods
+             */
+            resources: {[key: string]: any};
+            startupProbe: outputs.ceph.v1.CephFilesystemSpecMetadataServerStartupProbe;
+        }
+
+        /**
+         * ProbeSpec is a wrapper around Probe so it can be enabled or disabled for a Ceph daemon
+         */
+        export interface CephFilesystemSpecMetadataServerLivenessProbe {
+            /**
+             * Disabled determines whether probe is disable or not
+             */
+            disabled: boolean;
+            probe: outputs.ceph.v1.CephFilesystemSpecMetadataServerLivenessProbeProbe;
+        }
+
+        /**
+         * ProbeSpec is a wrapper around Probe so it can be enabled or disabled for a Ceph daemon
+         */
+        export interface CephFilesystemSpecMetadataServerLivenessProbePatch {
+            /**
+             * Disabled determines whether probe is disable or not
+             */
+            disabled: boolean;
+            probe: outputs.ceph.v1.CephFilesystemSpecMetadataServerLivenessProbeProbePatch;
+        }
+
+        /**
+         * Probe describes a health check to be performed against a container to determine whether it is
+         * alive or ready to receive traffic.
+         */
+        export interface CephFilesystemSpecMetadataServerLivenessProbeProbe {
+            exec: outputs.ceph.v1.CephFilesystemSpecMetadataServerLivenessProbeProbeExec;
+            /**
+             * Minimum consecutive failures for the probe to be considered failed after having succeeded.
+             * Defaults to 3. Minimum value is 1.
+             */
+            failureThreshold: number;
+            grpc: outputs.ceph.v1.CephFilesystemSpecMetadataServerLivenessProbeProbeGrpc;
+            httpGet: outputs.ceph.v1.CephFilesystemSpecMetadataServerLivenessProbeProbeHttpGet;
+            /**
+             * Number of seconds after the container has started before liveness probes are initiated.
+             * More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+             */
+            initialDelaySeconds: number;
+            /**
+             * How often (in seconds) to perform the probe.
+             * Default to 10 seconds. Minimum value is 1.
+             */
+            periodSeconds: number;
+            /**
+             * Minimum consecutive successes for the probe to be considered successful after having failed.
+             * Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+             */
+            successThreshold: number;
+            tcpSocket: outputs.ceph.v1.CephFilesystemSpecMetadataServerLivenessProbeProbeTcpSocket;
+            terminationGracePeriodSeconds: number;
+            /**
+             * Number of seconds after which the probe times out.
+             * Defaults to 1 second. Minimum value is 1.
+             * More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+             */
+            timeoutSeconds: number;
+        }
+
+        /**
+         * Exec specifies a command to execute in the container.
+         */
+        export interface CephFilesystemSpecMetadataServerLivenessProbeProbeExec {
+            /**
+             * Command is the command line to execute inside the container, the working directory for the
+             * command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+             * not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+             * a shell, you need to explicitly call out to that shell.
+             * Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+             */
+            command: string[];
+        }
+
+        /**
+         * Exec specifies a command to execute in the container.
+         */
+        export interface CephFilesystemSpecMetadataServerLivenessProbeProbeExecPatch {
+            /**
+             * Command is the command line to execute inside the container, the working directory for the
+             * command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+             * not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+             * a shell, you need to explicitly call out to that shell.
+             * Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+             */
+            command: string[];
+        }
+
+        /**
+         * GRPC specifies a GRPC HealthCheckRequest.
+         */
+        export interface CephFilesystemSpecMetadataServerLivenessProbeProbeGrpc {
+            /**
+             * Port number of the gRPC service. Number must be in the range 1 to 65535.
+             */
+            port: number;
+            /**
+             * Service is the name of the service to place in the gRPC HealthCheckRequest
+             * (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+             *
+             * If this is not specified, the default behavior is defined by gRPC.
+             */
+            service: string;
+        }
+
+        /**
+         * GRPC specifies a GRPC HealthCheckRequest.
+         */
+        export interface CephFilesystemSpecMetadataServerLivenessProbeProbeGrpcPatch {
+            /**
+             * Port number of the gRPC service. Number must be in the range 1 to 65535.
+             */
+            port: number;
+            /**
+             * Service is the name of the service to place in the gRPC HealthCheckRequest
+             * (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+             *
+             * If this is not specified, the default behavior is defined by gRPC.
+             */
+            service: string;
+        }
+
+        /**
+         * HTTPGet specifies an HTTP GET request to perform.
+         */
+        export interface CephFilesystemSpecMetadataServerLivenessProbeProbeHttpGet {
+            /**
+             * Host name to connect to, defaults to the pod IP. You probably want to set
+             * "Host" in httpHeaders instead.
+             */
+            host: string;
+            /**
+             * Custom headers to set in the request. HTTP allows repeated headers.
+             */
+            httpHeaders: outputs.ceph.v1.CephFilesystemSpecMetadataServerLivenessProbeProbeHttpGetHttpHeaders[];
+            /**
+             * Path to access on the HTTP server.
+             */
+            path: string;
+            /**
+             * Name or number of the port to access on the container.
+             * Number must be in the range 1 to 65535.
+             * Name must be an IANA_SVC_NAME.
+             */
+            port: number | string;
+            /**
+             * Scheme to use for connecting to the host.
+             * Defaults to HTTP.
+             */
+            scheme: string;
+        }
+
+        /**
+         * HTTPHeader describes a custom header to be used in HTTP probes
+         */
+        export interface CephFilesystemSpecMetadataServerLivenessProbeProbeHttpGetHttpHeaders {
+            /**
+             * The header field name.
+             * This will be canonicalized upon output, so case-variant names will be understood as the same header.
+             */
+            name: string;
+            /**
+             * The header field value
+             */
+            value: string;
+        }
+
+        /**
+         * HTTPHeader describes a custom header to be used in HTTP probes
+         */
+        export interface CephFilesystemSpecMetadataServerLivenessProbeProbeHttpGetHttpHeadersPatch {
+            /**
+             * The header field name.
+             * This will be canonicalized upon output, so case-variant names will be understood as the same header.
+             */
+            name: string;
+            /**
+             * The header field value
+             */
+            value: string;
+        }
+
+        /**
+         * HTTPGet specifies an HTTP GET request to perform.
+         */
+        export interface CephFilesystemSpecMetadataServerLivenessProbeProbeHttpGetPatch {
+            /**
+             * Host name to connect to, defaults to the pod IP. You probably want to set
+             * "Host" in httpHeaders instead.
+             */
+            host: string;
+            /**
+             * Custom headers to set in the request. HTTP allows repeated headers.
+             */
+            httpHeaders: outputs.ceph.v1.CephFilesystemSpecMetadataServerLivenessProbeProbeHttpGetHttpHeadersPatch[];
+            /**
+             * Path to access on the HTTP server.
+             */
+            path: string;
+            /**
+             * Name or number of the port to access on the container.
+             * Number must be in the range 1 to 65535.
+             * Name must be an IANA_SVC_NAME.
+             */
+            port: number | string;
+            /**
+             * Scheme to use for connecting to the host.
+             * Defaults to HTTP.
+             */
+            scheme: string;
+        }
+
+        /**
+         * Probe describes a health check to be performed against a container to determine whether it is
+         * alive or ready to receive traffic.
+         */
+        export interface CephFilesystemSpecMetadataServerLivenessProbeProbePatch {
+            exec: outputs.ceph.v1.CephFilesystemSpecMetadataServerLivenessProbeProbeExecPatch;
+            /**
+             * Minimum consecutive failures for the probe to be considered failed after having succeeded.
+             * Defaults to 3. Minimum value is 1.
+             */
+            failureThreshold: number;
+            grpc: outputs.ceph.v1.CephFilesystemSpecMetadataServerLivenessProbeProbeGrpcPatch;
+            httpGet: outputs.ceph.v1.CephFilesystemSpecMetadataServerLivenessProbeProbeHttpGetPatch;
+            /**
+             * Number of seconds after the container has started before liveness probes are initiated.
+             * More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+             */
+            initialDelaySeconds: number;
+            /**
+             * How often (in seconds) to perform the probe.
+             * Default to 10 seconds. Minimum value is 1.
+             */
+            periodSeconds: number;
+            /**
+             * Minimum consecutive successes for the probe to be considered successful after having failed.
+             * Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+             */
+            successThreshold: number;
+            tcpSocket: outputs.ceph.v1.CephFilesystemSpecMetadataServerLivenessProbeProbeTcpSocketPatch;
+            terminationGracePeriodSeconds: number;
+            /**
+             * Number of seconds after which the probe times out.
+             * Defaults to 1 second. Minimum value is 1.
+             * More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+             */
+            timeoutSeconds: number;
+        }
+
+        /**
+         * TCPSocket specifies a connection to a TCP port.
+         */
+        export interface CephFilesystemSpecMetadataServerLivenessProbeProbeTcpSocket {
+            /**
+             * Optional: Host name to connect to, defaults to the pod IP.
+             */
+            host: string;
+            /**
+             * Number or name of the port to access on the container.
+             * Number must be in the range 1 to 65535.
+             * Name must be an IANA_SVC_NAME.
+             */
+            port: number | string;
+        }
+
+        /**
+         * TCPSocket specifies a connection to a TCP port.
+         */
+        export interface CephFilesystemSpecMetadataServerLivenessProbeProbeTcpSocketPatch {
+            /**
+             * Optional: Host name to connect to, defaults to the pod IP.
+             */
+            host: string;
+            /**
+             * Number or name of the port to access on the container.
+             * Number must be in the range 1 to 65535.
+             * Name must be an IANA_SVC_NAME.
+             */
+            port: number | string;
+        }
+
+        /**
+         * The mds pod info
+         */
+        export interface CephFilesystemSpecMetadataServerPatch {
+            /**
+             * The number of metadata servers that are active. The remaining servers in the cluster will be in standby mode.
+             */
+            activeCount: number;
+            /**
+             * Whether each active MDS instance will have an active standby with a warm metadata cache for faster failover.
+             * If false, standbys will still be available, but will not have a warm metadata cache.
+             */
+            activeStandby: boolean;
+            /**
+             * The annotations-related configuration to add/set on each Pod related object.
+             */
+            annotations: {[key: string]: any};
+            /**
+             * The labels-related configuration to add/set on each Pod related object.
+             */
+            labels: {[key: string]: any};
+            livenessProbe: outputs.ceph.v1.CephFilesystemSpecMetadataServerLivenessProbePatch;
+            placement: {[key: string]: any};
+            /**
+             * PriorityClassName sets priority classes on components
+             */
+            priorityClassName: string;
+            /**
+             * The resource requirements for the mds pods
+             */
+            resources: {[key: string]: any};
+            startupProbe: outputs.ceph.v1.CephFilesystemSpecMetadataServerStartupProbePatch;
+        }
+
+        /**
+         * ProbeSpec is a wrapper around Probe so it can be enabled or disabled for a Ceph daemon
+         */
+        export interface CephFilesystemSpecMetadataServerStartupProbe {
+            /**
+             * Disabled determines whether probe is disable or not
+             */
+            disabled: boolean;
+            probe: outputs.ceph.v1.CephFilesystemSpecMetadataServerStartupProbeProbe;
+        }
+
+        /**
+         * ProbeSpec is a wrapper around Probe so it can be enabled or disabled for a Ceph daemon
+         */
+        export interface CephFilesystemSpecMetadataServerStartupProbePatch {
+            /**
+             * Disabled determines whether probe is disable or not
+             */
+            disabled: boolean;
+            probe: outputs.ceph.v1.CephFilesystemSpecMetadataServerStartupProbeProbePatch;
+        }
+
+        /**
+         * Probe describes a health check to be performed against a container to determine whether it is
+         * alive or ready to receive traffic.
+         */
+        export interface CephFilesystemSpecMetadataServerStartupProbeProbe {
+            exec: outputs.ceph.v1.CephFilesystemSpecMetadataServerStartupProbeProbeExec;
+            /**
+             * Minimum consecutive failures for the probe to be considered failed after having succeeded.
+             * Defaults to 3. Minimum value is 1.
+             */
+            failureThreshold: number;
+            grpc: outputs.ceph.v1.CephFilesystemSpecMetadataServerStartupProbeProbeGrpc;
+            httpGet: outputs.ceph.v1.CephFilesystemSpecMetadataServerStartupProbeProbeHttpGet;
+            /**
+             * Number of seconds after the container has started before liveness probes are initiated.
+             * More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+             */
+            initialDelaySeconds: number;
+            /**
+             * How often (in seconds) to perform the probe.
+             * Default to 10 seconds. Minimum value is 1.
+             */
+            periodSeconds: number;
+            /**
+             * Minimum consecutive successes for the probe to be considered successful after having failed.
+             * Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+             */
+            successThreshold: number;
+            tcpSocket: outputs.ceph.v1.CephFilesystemSpecMetadataServerStartupProbeProbeTcpSocket;
+            terminationGracePeriodSeconds: number;
+            /**
+             * Number of seconds after which the probe times out.
+             * Defaults to 1 second. Minimum value is 1.
+             * More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+             */
+            timeoutSeconds: number;
+        }
+
+        /**
+         * Exec specifies a command to execute in the container.
+         */
+        export interface CephFilesystemSpecMetadataServerStartupProbeProbeExec {
+            /**
+             * Command is the command line to execute inside the container, the working directory for the
+             * command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+             * not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+             * a shell, you need to explicitly call out to that shell.
+             * Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+             */
+            command: string[];
+        }
+
+        /**
+         * Exec specifies a command to execute in the container.
+         */
+        export interface CephFilesystemSpecMetadataServerStartupProbeProbeExecPatch {
+            /**
+             * Command is the command line to execute inside the container, the working directory for the
+             * command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+             * not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+             * a shell, you need to explicitly call out to that shell.
+             * Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+             */
+            command: string[];
+        }
+
+        /**
+         * GRPC specifies a GRPC HealthCheckRequest.
+         */
+        export interface CephFilesystemSpecMetadataServerStartupProbeProbeGrpc {
+            /**
+             * Port number of the gRPC service. Number must be in the range 1 to 65535.
+             */
+            port: number;
+            /**
+             * Service is the name of the service to place in the gRPC HealthCheckRequest
+             * (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+             *
+             * If this is not specified, the default behavior is defined by gRPC.
+             */
+            service: string;
+        }
+
+        /**
+         * GRPC specifies a GRPC HealthCheckRequest.
+         */
+        export interface CephFilesystemSpecMetadataServerStartupProbeProbeGrpcPatch {
+            /**
+             * Port number of the gRPC service. Number must be in the range 1 to 65535.
+             */
+            port: number;
+            /**
+             * Service is the name of the service to place in the gRPC HealthCheckRequest
+             * (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+             *
+             * If this is not specified, the default behavior is defined by gRPC.
+             */
+            service: string;
+        }
+
+        /**
+         * HTTPGet specifies an HTTP GET request to perform.
+         */
+        export interface CephFilesystemSpecMetadataServerStartupProbeProbeHttpGet {
+            /**
+             * Host name to connect to, defaults to the pod IP. You probably want to set
+             * "Host" in httpHeaders instead.
+             */
+            host: string;
+            /**
+             * Custom headers to set in the request. HTTP allows repeated headers.
+             */
+            httpHeaders: outputs.ceph.v1.CephFilesystemSpecMetadataServerStartupProbeProbeHttpGetHttpHeaders[];
+            /**
+             * Path to access on the HTTP server.
+             */
+            path: string;
+            /**
+             * Name or number of the port to access on the container.
+             * Number must be in the range 1 to 65535.
+             * Name must be an IANA_SVC_NAME.
+             */
+            port: number | string;
+            /**
+             * Scheme to use for connecting to the host.
+             * Defaults to HTTP.
+             */
+            scheme: string;
+        }
+
+        /**
+         * HTTPHeader describes a custom header to be used in HTTP probes
+         */
+        export interface CephFilesystemSpecMetadataServerStartupProbeProbeHttpGetHttpHeaders {
+            /**
+             * The header field name.
+             * This will be canonicalized upon output, so case-variant names will be understood as the same header.
+             */
+            name: string;
+            /**
+             * The header field value
+             */
+            value: string;
+        }
+
+        /**
+         * HTTPHeader describes a custom header to be used in HTTP probes
+         */
+        export interface CephFilesystemSpecMetadataServerStartupProbeProbeHttpGetHttpHeadersPatch {
+            /**
+             * The header field name.
+             * This will be canonicalized upon output, so case-variant names will be understood as the same header.
+             */
+            name: string;
+            /**
+             * The header field value
+             */
+            value: string;
+        }
+
+        /**
+         * HTTPGet specifies an HTTP GET request to perform.
+         */
+        export interface CephFilesystemSpecMetadataServerStartupProbeProbeHttpGetPatch {
+            /**
+             * Host name to connect to, defaults to the pod IP. You probably want to set
+             * "Host" in httpHeaders instead.
+             */
+            host: string;
+            /**
+             * Custom headers to set in the request. HTTP allows repeated headers.
+             */
+            httpHeaders: outputs.ceph.v1.CephFilesystemSpecMetadataServerStartupProbeProbeHttpGetHttpHeadersPatch[];
+            /**
+             * Path to access on the HTTP server.
+             */
+            path: string;
+            /**
+             * Name or number of the port to access on the container.
+             * Number must be in the range 1 to 65535.
+             * Name must be an IANA_SVC_NAME.
+             */
+            port: number | string;
+            /**
+             * Scheme to use for connecting to the host.
+             * Defaults to HTTP.
+             */
+            scheme: string;
+        }
+
+        /**
+         * Probe describes a health check to be performed against a container to determine whether it is
+         * alive or ready to receive traffic.
+         */
+        export interface CephFilesystemSpecMetadataServerStartupProbeProbePatch {
+            exec: outputs.ceph.v1.CephFilesystemSpecMetadataServerStartupProbeProbeExecPatch;
+            /**
+             * Minimum consecutive failures for the probe to be considered failed after having succeeded.
+             * Defaults to 3. Minimum value is 1.
+             */
+            failureThreshold: number;
+            grpc: outputs.ceph.v1.CephFilesystemSpecMetadataServerStartupProbeProbeGrpcPatch;
+            httpGet: outputs.ceph.v1.CephFilesystemSpecMetadataServerStartupProbeProbeHttpGetPatch;
+            /**
+             * Number of seconds after the container has started before liveness probes are initiated.
+             * More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+             */
+            initialDelaySeconds: number;
+            /**
+             * How often (in seconds) to perform the probe.
+             * Default to 10 seconds. Minimum value is 1.
+             */
+            periodSeconds: number;
+            /**
+             * Minimum consecutive successes for the probe to be considered successful after having failed.
+             * Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
+             */
+            successThreshold: number;
+            tcpSocket: outputs.ceph.v1.CephFilesystemSpecMetadataServerStartupProbeProbeTcpSocketPatch;
+            terminationGracePeriodSeconds: number;
+            /**
+             * Number of seconds after which the probe times out.
+             * Defaults to 1 second. Minimum value is 1.
+             * More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+             */
+            timeoutSeconds: number;
+        }
+
+        /**
+         * TCPSocket specifies a connection to a TCP port.
+         */
+        export interface CephFilesystemSpecMetadataServerStartupProbeProbeTcpSocket {
+            /**
+             * Optional: Host name to connect to, defaults to the pod IP.
+             */
+            host: string;
+            /**
+             * Number or name of the port to access on the container.
+             * Number must be in the range 1 to 65535.
+             * Name must be an IANA_SVC_NAME.
+             */
+            port: number | string;
+        }
+
+        /**
+         * TCPSocket specifies a connection to a TCP port.
+         */
+        export interface CephFilesystemSpecMetadataServerStartupProbeProbeTcpSocketPatch {
+            /**
+             * Optional: Host name to connect to, defaults to the pod IP.
+             */
+            host: string;
+            /**
+             * Number or name of the port to access on the container.
+             * Number must be in the range 1 to 65535.
+             * Name must be an IANA_SVC_NAME.
+             */
+            port: number | string;
+        }
+
+        /**
+         * The mirroring settings
+         */
+        export interface CephFilesystemSpecMirroring {
+            /**
+             * Enabled whether this filesystem is mirrored or not
+             */
+            enabled: boolean;
+            peers: outputs.ceph.v1.CephFilesystemSpecMirroringPeers;
+            /**
+             * Retention is the retention policy for a snapshot schedule
+             * One path has exactly one retention policy.
+             * A policy can however contain multiple count-time period pairs in order to specify complex retention policies
+             */
+            snapshotRetention: outputs.ceph.v1.CephFilesystemSpecMirroringSnapshotRetention[];
+            /**
+             * SnapshotSchedules is the scheduling of snapshot for mirrored filesystems
+             */
+            snapshotSchedules: outputs.ceph.v1.CephFilesystemSpecMirroringSnapshotSchedules[];
+        }
+
+        /**
+         * The mirroring settings
+         */
+        export interface CephFilesystemSpecMirroringPatch {
+            /**
+             * Enabled whether this filesystem is mirrored or not
+             */
+            enabled: boolean;
+            peers: outputs.ceph.v1.CephFilesystemSpecMirroringPeersPatch;
+            /**
+             * Retention is the retention policy for a snapshot schedule
+             * One path has exactly one retention policy.
+             * A policy can however contain multiple count-time period pairs in order to specify complex retention policies
+             */
+            snapshotRetention: outputs.ceph.v1.CephFilesystemSpecMirroringSnapshotRetentionPatch[];
+            /**
+             * SnapshotSchedules is the scheduling of snapshot for mirrored filesystems
+             */
+            snapshotSchedules: outputs.ceph.v1.CephFilesystemSpecMirroringSnapshotSchedulesPatch[];
+        }
+
+        /**
+         * Peers represents the peers spec
+         */
+        export interface CephFilesystemSpecMirroringPeers {
+            /**
+             * SecretNames represents the Kubernetes Secret names to add rbd-mirror or cephfs-mirror peers
+             */
+            secretNames: string[];
+        }
+
+        /**
+         * Peers represents the peers spec
+         */
+        export interface CephFilesystemSpecMirroringPeersPatch {
+            /**
+             * SecretNames represents the Kubernetes Secret names to add rbd-mirror or cephfs-mirror peers
+             */
+            secretNames: string[];
+        }
+
+        /**
+         * SnapshotScheduleRetentionSpec is a retention policy
+         */
+        export interface CephFilesystemSpecMirroringSnapshotRetention {
+            /**
+             * Duration represents the retention duration for a snapshot
+             */
+            duration: string;
+            /**
+             * Path is the path to snapshot
+             */
+            path: string;
+        }
+
+        /**
+         * SnapshotScheduleRetentionSpec is a retention policy
+         */
+        export interface CephFilesystemSpecMirroringSnapshotRetentionPatch {
+            /**
+             * Duration represents the retention duration for a snapshot
+             */
+            duration: string;
+            /**
+             * Path is the path to snapshot
+             */
+            path: string;
+        }
+
+        /**
+         * SnapshotScheduleSpec represents the snapshot scheduling settings of a mirrored pool
+         */
+        export interface CephFilesystemSpecMirroringSnapshotSchedules {
+            /**
+             * Interval represent the periodicity of the snapshot.
+             */
+            interval: string;
+            /**
+             * Path is the path to snapshot, only valid for CephFS
+             */
+            path: string;
+            /**
+             * StartTime indicates when to start the snapshot
+             */
+            startTime: string;
+        }
+
+        /**
+         * SnapshotScheduleSpec represents the snapshot scheduling settings of a mirrored pool
+         */
+        export interface CephFilesystemSpecMirroringSnapshotSchedulesPatch {
+            /**
+             * Interval represent the periodicity of the snapshot.
+             */
+            interval: string;
+            /**
+             * Path is the path to snapshot, only valid for CephFS
+             */
+            path: string;
+            /**
+             * StartTime indicates when to start the snapshot
+             */
+            startTime: string;
+        }
+
+        /**
+         * FilesystemSpec represents the spec of a file system
+         */
+        export interface CephFilesystemSpecPatch {
+            /**
+             * The data pool settings, with optional predefined pool name.
+             */
+            dataPools: outputs.ceph.v1.CephFilesystemSpecDataPoolsPatch[];
+            metadataPool: outputs.ceph.v1.CephFilesystemSpecMetadataPoolPatch;
+            metadataServer: outputs.ceph.v1.CephFilesystemSpecMetadataServerPatch;
+            mirroring: outputs.ceph.v1.CephFilesystemSpecMirroringPatch;
+            /**
+             * Preserve the fs in the cluster on CephFilesystem CR deletion. Setting this to true automatically implies PreservePoolsOnDelete is true.
+             */
+            preserveFilesystemOnDelete: boolean;
+            /**
+             * Preserve pool names as specified
+             */
+            preservePoolNames: boolean;
+            /**
+             * Preserve pools on filesystem deletion
+             */
+            preservePoolsOnDelete: boolean;
+            /**
+             * The mirroring statusCheck
+             */
+            statusCheck: {[key: string]: any};
+        }
+
+    }
+}
+
 export namespace cert_manager {
     export namespace v1 {
         /**

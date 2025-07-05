@@ -6,36 +6,34 @@ import * as inputs from "../../types/input";
 import * as outputs from "../../types/output";
 import * as utilities from "../../utilities";
 
-import {ObjectMeta} from "../../meta/v1";
-
 /**
- * CephBlockPoolRadosNamespace represents a Ceph BlockPool Rados Namespace
+ * CephCluster is a Ceph storage cluster
  */
-export class CephBlockPoolRadosNamespace extends pulumi.CustomResource {
+export class CephCluster extends pulumi.CustomResource {
     /**
-     * Get an existing CephBlockPoolRadosNamespace resource's state with the given name, ID, and optional extra
+     * Get an existing CephCluster resource's state with the given name, ID, and optional extra
      * properties used to qualify the lookup.
      *
      * @param name The _unique_ name of the resulting resource.
      * @param id The _unique_ provider ID of the resource to lookup.
      * @param opts Optional settings to control the behavior of the CustomResource.
      */
-    public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): CephBlockPoolRadosNamespace {
-        return new CephBlockPoolRadosNamespace(name, undefined as any, { ...opts, id: id });
+    public static get(name: string, id: pulumi.Input<pulumi.ID>, opts?: pulumi.CustomResourceOptions): CephCluster {
+        return new CephCluster(name, undefined as any, { ...opts, id: id });
     }
 
     /** @internal */
-    public static readonly __pulumiType = 'kubernetes:ceph.rook.io/v1:CephBlockPoolRadosNamespace';
+    public static readonly __pulumiType = 'kubernetes:ceph.rook.io/v1:CephCluster';
 
     /**
-     * Returns true if the given object is an instance of CephBlockPoolRadosNamespace.  This is designed to work even
+     * Returns true if the given object is an instance of CephCluster.  This is designed to work even
      * when multiple copies of the Pulumi SDK have been loaded into the same process.
      */
-    public static isInstance(obj: any): obj is CephBlockPoolRadosNamespace {
+    public static isInstance(obj: any): obj is CephCluster {
         if (obj === undefined || obj === null) {
             return false;
         }
-        return obj['__pulumiType'] === CephBlockPoolRadosNamespace.__pulumiType;
+        return obj['__pulumiType'] === CephCluster.__pulumiType;
     }
 
     /**
@@ -45,30 +43,30 @@ export class CephBlockPoolRadosNamespace extends pulumi.CustomResource {
     /**
      * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
      */
-    public readonly kind!: pulumi.Output<"CephBlockPoolRadosNamespace">;
+    public readonly kind!: pulumi.Output<"CephCluster">;
     /**
      * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
      */
-    public readonly metadata!: pulumi.Output<ObjectMeta>;
-    public readonly spec!: pulumi.Output<outputs.ceph.v1.CephBlockPoolRadosNamespaceSpec>;
+    public readonly metadata!: pulumi.Output<outputs.meta.v1.ObjectMeta>;
+    public readonly spec!: pulumi.Output<outputs.ceph.v1.CephClusterSpec>;
     /**
-     * Status represents the status of a CephBlockPool Rados Namespace
+     * ClusterStatus represents the status of a Ceph cluster
      */
     public /*out*/ readonly status!: pulumi.Output<{[key: string]: any}>;
 
     /**
-     * Create a CephBlockPoolRadosNamespace resource with the given unique name, arguments, and options.
+     * Create a CephCluster resource with the given unique name, arguments, and options.
      *
      * @param name The _unique_ name of the resource.
      * @param args The arguments to use to populate this resource's properties.
      * @param opts A bag of options that control this resource's behavior.
      */
-    constructor(name: string, args?: CephBlockPoolRadosNamespaceArgs, opts?: pulumi.CustomResourceOptions) {
+    constructor(name: string, args?: CephClusterArgs, opts?: pulumi.CustomResourceOptions) {
         let resourceInputs: pulumi.Inputs = {};
         opts = opts || {};
         if (!opts.id) {
             resourceInputs["apiVersion"] = "ceph.rook.io/v1";
-            resourceInputs["kind"] = "CephBlockPoolRadosNamespace";
+            resourceInputs["kind"] = "CephCluster";
             resourceInputs["metadata"] = args ? args.metadata : undefined;
             resourceInputs["spec"] = args ? args.spec : undefined;
             resourceInputs["status"] = undefined /*out*/;
@@ -80,14 +78,14 @@ export class CephBlockPoolRadosNamespace extends pulumi.CustomResource {
             resourceInputs["status"] = undefined /*out*/;
         }
         opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        super(CephBlockPoolRadosNamespace.__pulumiType, name, resourceInputs, opts);
+        super(CephCluster.__pulumiType, name, resourceInputs, opts);
     }
 }
 
 /**
- * The set of arguments for constructing a CephBlockPoolRadosNamespace resource.
+ * The set of arguments for constructing a CephCluster resource.
  */
-export interface CephBlockPoolRadosNamespaceArgs {
+export interface CephClusterArgs {
     /**
      * APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
      */
@@ -95,10 +93,10 @@ export interface CephBlockPoolRadosNamespaceArgs {
     /**
      * Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
      */
-    kind?: pulumi.Input<"CephBlockPoolRadosNamespace">;
+    kind?: pulumi.Input<"CephCluster">;
     /**
      * Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
      */
-    metadata?: pulumi.Input<ObjectMeta>;
-    spec?: pulumi.Input<inputs.ceph.v1.CephBlockPoolRadosNamespaceSpec>;
+    metadata?: pulumi.Input<inputs.meta.v1.ObjectMeta>;
+    spec?: pulumi.Input<inputs.ceph.v1.CephClusterSpec>;
 }

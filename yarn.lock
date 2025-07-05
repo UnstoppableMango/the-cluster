@@ -730,7 +730,7 @@
     "@pulumi/postgresql" "^3.10.0"
     "@pulumi/pulumi" "^3.142.0"
     "@unmango/pulumi-pihole" "^0.1.3"
-    "@unstoppablemango/thecluster-crds" "file:../../../../.cache/yarn/v6/npm-@unstoppablemango-thecluster-1.0.0-fdf4f161-73de-404d-bd58-0721765f2ad4-1751700994520/node_modules/@unstoppablemango/crds/nodejs"
+    "@unstoppablemango/thecluster-crds" "file:../../../../.cache/yarn/v6/npm-@unstoppablemango-thecluster-1.0.0-bdd32f1e-e074-401c-bd11-4151f429d27f-1751701862294/node_modules/@unstoppablemango/crds/nodejs"
     fp-ts "^2.16.1"
     json-schema-to-ts "^3.0.0"
     typescript "^5.3.2"

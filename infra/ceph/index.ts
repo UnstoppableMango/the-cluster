@@ -2,8 +2,8 @@ import { Deployment } from '@pulumi/kubernetes/apps/v1';
 import { Namespace } from '@pulumi/kubernetes/core/v1';
 import { Ingress } from '@pulumi/kubernetes/networking/v1';
 import { StorageClass } from '@pulumi/kubernetes/storage/v1';
+import * as crds from '@pulumi/crds/ceph/v1';
 import { clusterName, versions } from './config';
-import * as crds from './crds/ceph/v1';
 
 const ns = Namespace.get('rook-ceph', 'rook-ceph');
 
