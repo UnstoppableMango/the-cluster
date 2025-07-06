@@ -21,13 +21,8 @@ const secret = new Secret('admin', {
 
 // https://gitea.com/gitea/helm-chart
 const chart = new Chart('gitea', {
-  chart: 'gitea',
-  dependencyUpdate: true,
+  chart: 'oci://registry-1.docker.io/giteacharts/gitea',
   namespace: ns.metadata.name,
-  repositoryOpts: {
-    // TODO: OCI repository? https://gitea.com/gitea/helm-gitea#installing
-    repo: 'https://dl.gitea.com/charts/',
-  },
   values: {
     gitea: {
       admin: {
