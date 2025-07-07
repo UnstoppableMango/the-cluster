@@ -31,6 +31,9 @@ const chart = new Chart('ingress-nginx', {
 			admissionWebhooks: {
 				certManager: { enabled: true },
 			},
+			// Preserve source IPs when using MetalLB
+			// https://kubernetes.github.io/ingress-nginx/deploy/baremetal/#a-pure-software-solution-metallb
+			service: { externalTrafficPolicy: 'Local' },
 		},
 	},
 });
