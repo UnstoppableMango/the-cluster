@@ -17,9 +17,7 @@ github.com/UnstoppableMango/the-cluster
 ├── infra             # Infrastructure Pulumi stacks
 ├── lib               # Shared code exposed as `npm` packages
 │   ├── crds          # Custom Resource Definition codegen
-│   │   ├── <lang>    # crd2pulumi output for <lang>
-│   │   ├── manifests # CRD codegen input manifests
-│   │   └── scripts   # Codegen scripts
+│   │   └── nodejs    # Legacy crd2pulumi output for node
 │   └── nodejs        # Shared code for node
 └── .versions         # Ad-hoc version pinning
 ```
