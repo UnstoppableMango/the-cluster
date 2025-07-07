@@ -60,6 +60,7 @@ const certManager = stack('cert-manager', 'apps/cert-manager');
 const gharc = stack('gharc', 'apps/actions-runner-controller');
 const cloudflareOperator = stack('cloudflare-operator', 'apps/cloudflare-operator');
 const crossplane = stack('crossplane', 'apps/crossplane');
+const ingressNginx = stack('ingress-nginx', 'apps/ingress-nginx', [certManager.metadata.name, metallb.metadata.name]);
 // const externalSnapshotter = stack('external-snapshotter', 'apps/external-snapshotter');
 const metricsServer = stack('metrics-server', 'apps/metrics-server');
 const pulumiOperator = stack('pulumi-operator', 'apps/pulumi-operator');
