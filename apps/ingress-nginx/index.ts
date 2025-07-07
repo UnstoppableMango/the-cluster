@@ -1,6 +1,6 @@
 import { Namespace } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v4';
-import * as pulumi from "@pulumi/pulumi";
+import * as pulumi from '@pulumi/pulumi';
 import z from 'zod';
 
 const Versions = z.object({
