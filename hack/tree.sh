@@ -1,4 +1,5 @@
 #!/bin/bash
+set -ex
 
 root="$(git rev-parse --show-toplevel)"
 ignoreNames=(

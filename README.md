@@ -8,21 +8,18 @@ Built on [Kubernetes](https://kubernetes.io) with [Pulumi](https://www.pulumi.co
 ```shell
 github.com/UnstoppableMango/the-cluster
 ├── apps              # Application Pulumi stacks
+├── assets            # Assorted images and documents
 ├── charts            # Haphazard Helm charts
 ├── clusters          # Cluster bootstrapping Pulumi stacks
-├── containers        # Haphazard Docker containers
-├── dbs               # Database Pulumi stacks
+├── components        # Pulumi component packages
+├── crds              # crd2pulumi nodejs output
 ├── hack              # Boilerplate, scripts, development tooling
 ├── infra             # Infrastructure Pulumi stacks
 ├── lib               # Shared code exposed as `npm` packages
-│   ├── components    # Pulumi component packages
 │   ├── crds          # Custom Resource Definition codegen
 │   │   ├── <lang>    # crd2pulumi output for <lang>
 │   │   ├── manifests # CRD codegen input manifests
 │   │   └── scripts   # Codegen scripts
-│   └── <lang>        # Packages for <lang>
-├── scripts           # Legacy script directory
-├── templates         # Pulumi project templates
-├── tools             # Legacy development tooling
+│   └── nodejs        # Shared code for node
 └── .versions         # Ad-hoc version pinning
 ```
