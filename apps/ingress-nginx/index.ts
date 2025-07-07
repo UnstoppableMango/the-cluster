@@ -24,11 +24,13 @@ const chart = new Chart('ingress-nginx', {
 		repo: 'https://kubernetes.github.io/ingress-nginx',
 	},
 	namespace: ns.metadata.name,
-	skipAwait: true,
 	values: {
 		controller: {
 			image: { tag: `v${versions.app}` },
 			kind: 'DaemonSet',
+			admissionWebhooks: {
+				certManager: { enabled: true },
+			},
 		},
 	},
 });
