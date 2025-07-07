@@ -1,0 +1,14 @@
+{
+	"name": "thecluster-ingress-nginx",
+	"version": "0.0.1",
+	"main": "index.ts",
+	"dependencies": {
+		"@pulumi/kubernetes": "^4.23.0",
+		"@pulumi/pulumi": "^3.181.0",
+		"zod": "^3.25.74"
+	},
+	"devDependencies": {
+		"@types/node": "^22.16.0",
+		"typescript": "^5.8.3"
+	}
+}

@@ -1,0 +1,16 @@
+name: thecluster-ingress-nginx
+description: THECLUSTER Ingress NGINX install
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: typescript
+  versions:
+    value:
+      # renovate: datasource=docker depName=ingress-nginx/controller
+      app: 1.12.3
+      # renovate: datasource=helm depName=kubernetes/ingress-nginx
+      chart: 4.12.3
