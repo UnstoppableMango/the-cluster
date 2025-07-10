@@ -4,6 +4,7 @@ import { Namespace } from '@pulumi/kubernetes/core/v1';
 import { Ingress } from '@pulumi/kubernetes/networking/v1';
 import { StorageClass } from '@pulumi/kubernetes/storage/v1';
 import { clusterName, versions } from './config';
+import { StackReference } from '@pulumi/pulumi';
 
 const ns = Namespace.get('rook-ceph', 'rook-ceph');
 
@@ -140,17 +141,22 @@ const cluster = new crds.CephCluster(clusterName, {
 	},
 }, { protect: true });
 
+const originCaIssuer = new StackReference('origin-ca-issuer', {
+	name: 'UnstoppableMango/thecluster-origin-ca-issuer/pinkdiamond',
+});
+
 const ingress = new Ingress('dashboard', {
 	metadata: {
 		name: 'rook-ceph-dashboard',
 		namespace: ns.metadata.name,
 		annotations: {
-			'cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol': 'http',
-			'pulumi.com/skipAwait': 'true',
+			'cert-manager.io/issuer': originCaIssuer.requireOutput('clusterIssuerName'),
+			'cert-manager.io/issuer-kind': 'ClusterOriginIssuer',
+			'cert-manager.io/issuer-group': 'cert-manager.k8s.cloudflare.com',
 		},
 	},
 	spec: {
-		ingressClassName: 'thecluster-io',
+		ingressClassName: 'nginx',
 		rules: [{
 			host: 'ceph.thecluster.io',
 			http: {
@@ -167,6 +173,10 @@ const ingress = new Ingress('dashboard', {
 					},
 				}],
 			},
+		}],
+		tls: [{
+			hosts: ['ceph.thecluster.io'],
+			secretName: 'rook-ceph-mgr-dashboard-tls',
 		}],
 	},
 });
