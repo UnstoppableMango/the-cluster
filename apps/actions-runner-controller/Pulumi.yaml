@@ -5,3 +5,6 @@ runtime:
   options:
     packagemanager: yarn
 config:
+  versions:
+    value:
+      chart: 0.12.1

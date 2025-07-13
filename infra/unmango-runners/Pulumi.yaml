@@ -1,5 +1,5 @@
-name: thecluster-unstoppablemango-runners
-description: GitHub Actions runners for my UnstoppableMango GitHub account
+name: thecluster-unmango-runners
+description: GitHub Actions runners fo the unmango org
 runtime:
   name: nodejs
   options:
