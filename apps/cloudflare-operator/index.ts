@@ -3,7 +3,7 @@ import { Secret } from '@pulumi/kubernetes/core/v1';
 import { cloudflare } from './config';
 
 const kustomization = new kustomize.Directory('cloudflare-operator', {
-	directory: './',
+	directory: 'https://github.com/unmango/cloudflare-operator.git/config/default?ref=v0.0.2&submodules=false',
 });
 
 const ns = kustomization.getResource('v1/Namespace', 'cloudflare-operator-system');
