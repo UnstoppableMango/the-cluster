@@ -1,6 +1,6 @@
 import { ConfigMap, Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v4';
-import { Config, interpolate, output } from '@pulumi/pulumi';
+import * as pulumi from '@pulumi/pulumi';
 import * as YAML from 'yaml';
 import z from 'zod/v4';
 
@@ -11,18 +11,18 @@ const Versions = z.object({
 
 type Versions = z.infer<typeof Versions>;
 
-const config = new Config();
+const config = new pulumi.Config();
 const versions = Versions.parse(config.requireObject('versions'));
 
-const ns = new Namespace('unstoppablemango-runners', {
-	metadata: { name: 'unstoppablemango-runners' },
+const ns = new Namespace('unmango-runners', {
+	metadata: { name: 'unmango-runners' },
 });
 
 const secret = new Secret('github-config', {
 	metadata: { namespace: ns.metadata.name },
 	stringData: {
-		github_app_id: '169402', // THECLUSTER Bot
-		github_app_installation_id: '22901293', // UnstoppableMango
+		github_app_id: config.require('app-id'),
+		github_app_installation_id: config.require('installation-id'),
 		github_app_private_key: config.requireSecret('private-key'),
 	},
 });
@@ -33,7 +33,7 @@ const hookExtension = new ConfigMap('hook-extension', {
 		namespace: ns.metadata.name,
 	},
 	data: {
-		content: output({
+		content: pulumi.output({
 			spec: {
 				containers: [{
 					name: '$job',
@@ -56,25 +56,19 @@ const hookExtension = new ConfigMap('hook-extension', {
 	},
 });
 
-const chart = new Chart('lang-runner-scale-set', {
-	name: 'lang-runners', // INSTALLATION_NAME, used for runs-on in workflows
+const chart = new Chart('unmango-runners', {
+	name: 'thecluster', // INSTALLATION_NAME, used for runs-on in workflows
 	namespace: ns.metadata.name,
 	chart: 'oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set',
 	version: versions.chart,
 	values: {
-		githubConfigUrl: 'https://github.com/UnstoppableMango/lang',
+		githubConfigUrl: 'https://github.com/unmango',
 		githubConfigSecret: secret.metadata.name,
 		containerMode: {
 			type: 'kubernetes',
 			kubernetesModeWorkVolumeClaim: {
 				accessModes: ['ReadWriteOnce'],
 				storageClassName: 'unsafe-rbd',
-				resources: {
-					requests: {
-						// LLVM is chonky I guess
-						storage: '250Gi',
-					},
-				},
 			},
 		},
 		template: {
@@ -84,7 +78,7 @@ const chart = new Chart('lang-runner-scale-set', {
 				},
 				containers: [{
 					name: 'runner',
-					image: interpolate`ghcr.io/actions/actions-runner:${versions.actionsRunner}`,
+					image: pulumi.interpolate`ghcr.io/actions/actions-runner:${versions.actionsRunner}`,
 					command: ['/home/runner/run.sh'],
 					env: [{
 						name: 'ACTIONS_RUNNER_CONTAINER_HOOK_TEMPLATE',

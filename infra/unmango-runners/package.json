@@ -1,13 +1,15 @@
 {
-	"name": "thecluster-actions-runner-controller",
+	"name": "thecluster-unmango-runners",
 	"version": "0.0.1",
 	"main": "index.ts",
 	"dependencies": {
 		"@pulumi/kubernetes": "^4.23.0",
-		"@pulumi/pulumi": "^3.180.0",
+		"@pulumi/pulumi": "^3.181.0",
+		"yaml": "^2.8.0",
 		"zod": "^4.0.5"
 	},
 	"devDependencies": {
-		"@types/node": "^22.15.33"
+		"@types/node": "^22",
+		"typescript": "^5.0.0"
 	}
 }
