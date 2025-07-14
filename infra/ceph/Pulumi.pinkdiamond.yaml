@@ -1,0 +1,5 @@
+config:
+  thecluster-ceph:public-ip:
+    secure: AAABAC1VOLf18P3M07ypwbI8ObVxEARCKhOHutdMaQZikGY0uzNJR37Mgd9Y4A==
+  cloudflare:apiToken:
+    secure: AAABAAMHSdpntEYPk8Qv6l6aXiYpQgW9XIsPyucrI2Its7xmMCFDnNiRQe4Jdd+jPKmaynGLWmoMDa1Rwd1+52EFx7KdjdXT

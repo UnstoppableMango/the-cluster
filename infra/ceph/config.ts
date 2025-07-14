@@ -6,5 +6,6 @@ export interface Versions {
 }
 
 const config = new Config();
+export const publicIp = config.requireSecret('public-ip');
 export const versions = config.requireObject<Versions>('versions');
 export const clusterName = getStack();

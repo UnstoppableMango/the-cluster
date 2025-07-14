@@ -1,10 +1,11 @@
+import { DnsRecord, getZoneOutput } from '@pulumi/cloudflare';
 import * as crds from '@pulumi/crds/ceph/v1';
 import { Deployment } from '@pulumi/kubernetes/apps/v1';
 import { Namespace } from '@pulumi/kubernetes/core/v1';
 import { Ingress } from '@pulumi/kubernetes/networking/v1';
 import { StorageClass } from '@pulumi/kubernetes/storage/v1';
-import { clusterName, versions } from './config';
 import { StackReference } from '@pulumi/pulumi';
+import { clusterName, publicIp, versions } from './config';
 
 const ns = Namespace.get('rook-ceph', 'rook-ceph');
 
@@ -145,6 +146,19 @@ const originCaIssuer = new StackReference('origin-ca-issuer', {
 	name: 'UnstoppableMango/thecluster-origin-ca-issuer/pinkdiamond',
 });
 
+const cloudflareZone = getZoneOutput({
+	filter: { name: 'thecluster.io' },
+});
+
+const dashboardRecord = new DnsRecord('ceph', {
+	name: 'ceph',
+	ttl: 1,
+	type: 'A',
+	zoneId: cloudflareZone.zoneId?.apply(x => x ?? '') ?? '',
+	content: publicIp,
+	proxied: false,
+});
+
 const ingress = new Ingress('dashboard', {
 	metadata: {
 		name: 'rook-ceph-dashboard',
@@ -179,7 +193,7 @@ const ingress = new Ingress('dashboard', {
 			secretName: 'rook-ceph-mgr-dashboard-tls',
 		}],
 	},
-});
+}, { dependsOn: dashboardRecord });
 
 const mgrPool = new crds.CephBlockPool('mgr', {
 	metadata: {
