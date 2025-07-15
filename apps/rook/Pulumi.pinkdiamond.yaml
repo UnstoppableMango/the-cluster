@@ -1,0 +1,9 @@
+config:
+  rook:ceph-secret:
+    secure: AAABAHDUumUnMxt3TOdd0w/lQp2hCM//4cUzPVrs2S7hIMLVW1kaSqljzYyNFvY2G3dnyB+ou9S2yr6qW8rSJVFD2SFV1cbd
+  rook:mon-secret:
+    secure: AAABAEwRPjpe8z5ukQQK41TzYb1puAGpSeeNmbY9yFsn3MazUUGUHJ0KUwVHRb8XRaVkl9XHbixS0J/cF+kSWseGOTjaUTl7
+  rook:ceph-username:
+    secure: AAABABK2J6hnD5bgRGoZOHniLEV+rkRORsuZKERMG2UTQlHWkp6NMX+Z+Qg=
+  rook:fsid:
+    secure: AAABAMMBk/tfOiT+/HTHZUTvVPI7aqNSYV38apfmRYHQjMza9DguN/0SQkCCA+V8n2r7zzWzPlAp7VkvpV7aolU46AM=
