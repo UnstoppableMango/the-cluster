@@ -151,7 +151,7 @@ const cloudflareZone = getZoneOutput({
 });
 
 const dashboardRecord = new DnsRecord('ceph', {
-	name: 'ceph',
+	name: 'ceph.thecluster.io',
 	ttl: 1,
 	type: 'A',
 	zoneId: cloudflareZone.zoneId?.apply(x => x ?? '') ?? '',
