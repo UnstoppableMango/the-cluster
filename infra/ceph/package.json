@@ -4,9 +4,10 @@
 	"license": "Apache-2.0",
 	"main": "index.ts",
 	"dependencies": {
+		"@pulumi/crds": "0.0.0-dev",
 		"@pulumi/kubernetes": "^4.23.0",
 		"@pulumi/pulumi": "^3.181.0",
-		"@pulumi/crds": "0.0.0-dev"
+		"zod": "^4.0.5"
 	},
 	"devDependencies": {
 		"@types/node": "^22.15.33"

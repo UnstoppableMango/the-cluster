@@ -9,4 +9,5 @@ config:
     value:
       pulumi:template: /Users/erik.rasmussen/src/github.com/UnstoppableMango/the-cluster/templates/pulumi/typescript
   versions:
-    value: {}
+    value:
+      chart: 1.16.8
