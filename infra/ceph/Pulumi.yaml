@@ -11,4 +11,5 @@ config:
   versions:
     value:
       ceph: 18.2.4
+      chart: 1.17.6
       rook: 1.15.4

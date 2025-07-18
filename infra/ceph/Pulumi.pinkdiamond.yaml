@@ -1,0 +1,9 @@
+config:
+  thecluster-ceph:ceph-secret:
+    secure: AAABAPtNo+9Ro1j/Ok9ybDT7Zb2F/SWZXbQco9i2gPJaInj0d7Uh0zuTr5hn4A5V6e6CWOmaYBv8Gl1jyUA1GrNofe+o9Uyp
+  thecluster-ceph:ceph-username:
+    secure: AAABAFoyuK8aznkio7C+kPYynBv+jnA+d+DhjMGQ794yFcP8TplSea62vzM=
+  thecluster-ceph:mon-secret:
+    secure: AAABAGi82RcvlvQwtyyiFut3E2WRvtdAWN7b1dxlme7ClErO8Ueas8dCM2bwIx+NcLnptPizxJYLahX6M6rpXJuYnTxu//7M
+  thecluster-ceph:fsid:
+    secure: AAABAMhjbwEaHNjErMh1zTGwdfWTNPvyFmP9d/Ee/H25QrTCl5EbTewc8CEViIncL2wXHu4Ah3G4xM5pd4rx8WtrXY0=
