@@ -1,8 +1,9 @@
+import { DnsRecord, getZoneOutput } from '@pulumi/cloudflare';
 import { CephBlockPool, CephFilesystem } from '@pulumi/crds/bin/ceph/v1';
 import { ConfigMap, Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v4';
 import { StorageClass } from '@pulumi/kubernetes/storage/v1';
-import { Config, getStack } from '@pulumi/pulumi';
+import { Config, getStack, jsonStringify, StackReference } from '@pulumi/pulumi';
 import z from 'zod/v4';
 
 const Versions = z.object({
@@ -16,6 +17,7 @@ type Versions = z.infer<typeof Versions>;
 const config = new Config();
 const versions = Versions.parse(config.requireObject('versions'));
 const clusterName = getStack();
+const hostname = config.requireSecret('hostname');
 
 const ns = Namespace.get('rook-ceph', 'rook-ceph');
 
@@ -41,11 +43,49 @@ const rookCephMonEndpoints = new ConfigMap('rook-ceph-mon-endpoints', {
 		finalizers: ['ceph.rook.io/disaster-protection'],
 	},
 	data: {
-		'csi-cluster-config-json':
-			'[{"clusterID":"rook-ceph","monitors":["10.43.98.167:6789","10.43.75.167:6789","10.43.59.5"],"namespace":""}]',
-		data: 'c=10.43.98.167:6789,d=10.43.75.167:6789,b=10.43.59.5',
-		mapping:
-			'{"node":{"c":{"Name":"castor","Hostname":"castor","Address":"192.168.1.13"},"b":{"Name":"zeus","Hostname":"zeus","Address":"192.168.1.10"},"d":{"Name":"zeus","Hostname":"zeus","Address":"192.168.1.10"}}}',
+		'csi-cluster-config-json': jsonStringify([{
+			clusterID: 'rook-ceph',
+			monitors: ['10.43.98.167:6789', '10.43.75.167:6789', '10.43.59.5:6789'],
+			namespace: '',
+			// Re-create what the operator seems to want
+			cephFS: {
+				fuseMountOptions: '',
+				kernelMountOptions: '',
+				netNamespaceFilePath: '',
+				radosNamespace: '',
+				subvolumeGroup: '',
+			},
+			nfs: { netNamespaceFilePath: '' },
+			rbd: {
+				mirrorDaemonCount: 0,
+				netNamespaceFilePath: '',
+				radosNamespace: '',
+			},
+			readAffinity: {
+				crushLocationLabels: null,
+				enabled: false,
+			},
+		}]),
+		data: 'c=10.43.98.167:6789,d=10.43.75.167:6789,b=10.43.59.5:6789',
+		mapping: jsonStringify({
+			node: {
+				c: {
+					Name: 'castor',
+					Hostname: 'castor',
+					Address: '192.168.1.13',
+				},
+				b: {
+					Name: 'zeus',
+					Hostname: 'zeus',
+					Address: '192.168.1.10',
+				},
+				d: {
+					Name: 'zeus',
+					Hostname: 'zeus',
+					Address: '192.168.1.10',
+				},
+			},
+		}),
 		maxMonId: '4',
 	},
 });
@@ -67,6 +107,23 @@ const mgrPool = new CephBlockPool('mgr', {
 			enabled: false,
 		},
 	},
+});
+
+const originCaIssuer = new StackReference('origin-ca-issuer', {
+	name: 'UnstoppableMango/thecluster-origin-ca-issuer/pinkdiamond',
+});
+
+const cloudflareZone = getZoneOutput({
+	filter: { name: 'thecluster.io' },
+});
+
+const dashboardRecord = new DnsRecord('ceph', {
+	name: hostname,
+	ttl: 1,
+	type: 'A',
+	zoneId: cloudflareZone.zoneId?.apply(x => x ?? '') ?? '',
+	content: config.requireSecret('public-ip'),
+	proxied: false,
 });
 
 const chart = new Chart(clusterName, {
@@ -155,7 +212,20 @@ const chart = new Chart(clusterName, {
 			},
 		},
 		ingress: {
-			dashboard: {},
+			dashboard: {
+				enabled: true,
+				annotations: {
+					'cert-manager.io/issuer': originCaIssuer.requireOutput('clusterIssuerName'),
+					'cert-manager.io/issuer-kind': 'ClusterOriginIssuer',
+					'cert-manager.io/issuer-group': 'cert-manager.k8s.cloudflare.com',
+				},
+				host: { name: hostname },
+				tls: [{
+					hosts: [hostname],
+					secretName: 'rook-ceph-mgr-dashboard-tls',
+				}],
+				ingressClassName: 'nginx',
+			},
 		},
 		toolbox: { enabled: true },
 	},
@@ -450,99 +520,3 @@ export const storageClasses = [
 	// ecCephfsClass.metadata.name,
 	rbdClass.metadata.name,
 ];
-
-// https://github.com/rook/rook/blob/master/deploy/examples/toolbox.yaml
-// const toolbox = new Deployment('toolbox', {
-// 	metadata: {
-// 		name: 'rook-ceph-toolbox',
-// 		namespace: ns.metadata.name,
-// 	},
-// 	spec: {
-// 		replicas: 1,
-// 		selector: {
-// 			matchLabels: {
-// 				app: 'rook-ceph-tools',
-// 			},
-// 		},
-// 		template: {
-// 			metadata: {
-// 				labels: {
-// 					app: 'rook-ceph-tools',
-// 				},
-// 			},
-// 			spec: {
-// 				dnsPolicy: 'ClusterFirstWithHostNet',
-// 				serviceAccountName: 'rook-ceph-default',
-// 				containers: [{
-// 					name: 'rook-ceph-tools',
-// 					image: `quay.io/ceph/ceph:v${versions.ceph}`,
-// 					command: [
-// 						'/bin/bash',
-// 						'-c',
-// 						toolboxScript(versions.rook),
-// 					],
-// 					imagePullPolicy: 'IfNotPresent',
-// 					tty: true,
-// 					securityContext: {
-// 						runAsNonRoot: true,
-// 						runAsUser: 2016,
-// 						runAsGroup: 2016,
-// 						capabilities: {
-// 							drop: ['ALL'],
-// 						},
-// 					},
-// 					env: [{
-// 						name: 'ROOK_CEPH_USERNAME',
-// 						valueFrom: {
-// 							secretKeyRef: {
-// 								name: 'rook-ceph-mon',
-// 								key: 'ceph-username',
-// 							},
-// 						},
-// 					}],
-// 					volumeMounts: [
-// 						{ name: 'ceph-config', mountPath: '/etc/ceph' },
-// 						{ name: 'mon-endpoint-volume', mountPath: '/etc/rook' },
-// 						{ name: 'ceph-admin-secret', mountPath: '/var/lib/rook-ceph-mon', readOnly: true },
-// 					],
-// 				}],
-// 				volumes: [
-// 					{
-// 						name: 'ceph-admin-secret',
-// 						secret: {
-// 							secretName: 'rook-ceph-mon',
-// 							optional: false,
-// 							items: [
-// 								{ key: 'ceph-secret', path: 'secret.keyring' },
-// 							],
-// 						},
-// 					},
-// 					{
-// 						name: 'mon-endpoint-volume',
-// 						configMap: {
-// 							name: 'rook-ceph-mon-endpoints',
-// 							items: [
-// 								{ key: 'data', path: 'mon-endpoints' },
-// 							],
-// 						},
-// 					},
-// 					{ name: 'ceph-config', emptyDir: {} },
-// 				],
-// 				tolerations: [{
-// 					key: 'node.kubernetes.io/unreachable',
-// 					operator: 'Exists',
-// 					effect: 'NoExecute',
-// 					tolerationSeconds: 5,
-// 				}],
-// 			},
-// 		},
-// 	},
-// }, { dependsOn: [chart] });
-
-// function toolboxScript(version: string): Promise<string> {
-// 	const baseUrl = 'https://raw.githubusercontent.com';
-// 	const script = 'images/ceph/toolbox.sh';
-// 	const url = `${baseUrl}/rook/rook/refs/tags/v${version}/${script}`;
-
-// 	return fetch(url).then(x => x.text());
-// }
