@@ -4,6 +4,7 @@
 	"license": "Apache-2.0",
 	"main": "index.ts",
 	"dependencies": {
+		"@pulumi/cloudflare": "^6.4.1",
 		"@pulumi/crds": "0.0.0-dev",
 		"@pulumi/kubernetes": "^4.23.0",
 		"@pulumi/pulumi": "^3.181.0",

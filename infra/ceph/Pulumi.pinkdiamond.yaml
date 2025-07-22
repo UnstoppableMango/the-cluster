@@ -1,4 +1,6 @@
 config:
+  cloudflare:apiToken:
+    secure: AAABAAMHSdpntEYPk8Qv6l6aXiYpQgW9XIsPyucrI2Its7xmMCFDnNiRQe4Jdd+jPKmaynGLWmoMDa1Rwd1+52EFx7KdjdXT
   thecluster-ceph:ceph-secret:
     secure: AAABAPtNo+9Ro1j/Ok9ybDT7Zb2F/SWZXbQco9i2gPJaInj0d7Uh0zuTr5hn4A5V6e6CWOmaYBv8Gl1jyUA1GrNofe+o9Uyp
   thecluster-ceph:ceph-username:
@@ -7,3 +9,7 @@ config:
     secure: AAABAGi82RcvlvQwtyyiFut3E2WRvtdAWN7b1dxlme7ClErO8Ueas8dCM2bwIx+NcLnptPizxJYLahX6M6rpXJuYnTxu//7M
   thecluster-ceph:fsid:
     secure: AAABAMhjbwEaHNjErMh1zTGwdfWTNPvyFmP9d/Ee/H25QrTCl5EbTewc8CEViIncL2wXHu4Ah3G4xM5pd4rx8WtrXY0=
+  thecluster-ceph:public-ip:
+    secure: AAABAMv5aC0SXZ7NW/ltEBbD0FM7nW4AIsPXAGdlk5NWFsZV+5bESWR17If5+g==
+  thecluster-ceph:hostname:
+    secure: AAABAJ3eMaAM3rAv0Ry7EHggejmt7s/6+2mJDqIk6gW2o5Peh+qYsvs2IHQS9uvqaCI=

@@ -1,3 +1,4 @@
+import { DnsRecord, getZoneOutput } from '@pulumi/cloudflare';
 import { CephBlockPool, CephFilesystem } from '@pulumi/crds/bin/ceph/v1';
 import { ConfigMap, Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v4';
@@ -16,6 +17,7 @@ type Versions = z.infer<typeof Versions>;
 const config = new Config();
 const versions = Versions.parse(config.requireObject('versions'));
 const clusterName = getStack();
+const hostname = config.requireSecret('hostname');
 
 const ns = Namespace.get('rook-ceph', 'rook-ceph');
 
@@ -107,6 +109,23 @@ const mgrPool = new CephBlockPool('mgr', {
 	},
 });
 
+const originCaIssuer = new StackReference('origin-ca-issuer', {
+	name: 'UnstoppableMango/thecluster-origin-ca-issuer/pinkdiamond',
+});
+
+const cloudflareZone = getZoneOutput({
+	filter: { name: 'thecluster.io' },
+});
+
+const dashboardRecord = new DnsRecord('ceph', {
+	name: hostname,
+	ttl: 1,
+	type: 'A',
+	zoneId: cloudflareZone.zoneId?.apply(x => x ?? '') ?? '',
+	content: config.requireSecret('public-ip'),
+	proxied: false,
+});
+
 const chart = new Chart(clusterName, {
 	chart: 'rook-ceph-cluster',
 	repositoryOpts: {
@@ -193,7 +212,20 @@ const chart = new Chart(clusterName, {
 			},
 		},
 		ingress: {
-			dashboard: {},
+			dashboard: {
+				enabled: true,
+				annotations: {
+					'cert-manager.io/issuer': originCaIssuer.requireOutput('clusterIssuerName'),
+					'cert-manager.io/issuer-kind': 'ClusterOriginIssuer',
+					'cert-manager.io/issuer-group': 'cert-manager.k8s.cloudflare.com',
+				},
+				host: { name: hostname },
+				tls: [{
+					hosts: [hostname],
+					secretName: 'rook-ceph-mgr-dashboard-tls',
+				}],
+				ingressClassName: 'nginx',
+			},
 		},
 		toolbox: { enabled: true },
 	},
