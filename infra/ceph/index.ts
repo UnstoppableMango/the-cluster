@@ -138,7 +138,42 @@ const chart = new Chart(clusterName, {
 		operatorNamespace: ns.metadata.name,
 		cephBlockPools: [],
 		cephFileSystems: [],
-		cephObjectStores: [],
+		cephObjectStores: [
+			{
+				name: 'velero-default',
+				spec: {
+					metadataPool: {
+						failureDomain: 'osd',
+						replicated: { size: 3 },
+						deviceClass: 'ssd',
+					},
+					dataPool: {
+						failureDomain: 'osd',
+						erasureCoded: {
+							dataChunks: 2,
+							codingChunks: 1,
+						},
+						deviceClass: 'hdd',
+					},
+					preservePoolsOnDelete: true,
+					gateway: {
+						instances: 1,
+						resources: {
+							limits: {
+								memory: '1024Mi',
+							},
+							requests: {
+								cpu: '500m',
+								memory: '1024Mi',
+							},
+						},
+					},
+				},
+				storageClass: {
+					enabled: false,
+				},
+			}
+		],
 		cephClusterSpec: {
 			cephVersion: {
 				image: `quay.io/ceph/ceph:v${versions.ceph}`,
