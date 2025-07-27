@@ -1,0 +1,16 @@
+name: thecluster-velero
+description: Velero install for THECLUSTER
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: typescript
+  versions:
+    value:
+      # renovate: datasource=helm depName=velero
+      chart: 10.0.10
+      # renovate: datasource=docker depName=velero/velero
+      velero: 1.16.1
