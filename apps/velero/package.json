@@ -1,0 +1,14 @@
+{
+	"name": "thecluster-velero",
+	"version": "0.0.1",
+	"main": "index.ts",
+	"dependencies": {
+		"@pulumi/kubernetes": "^4.23.0",
+		"@pulumi/pulumi": "^3.186.0",
+		"zod": "^4.0.10"
+	},
+	"devDependencies": {
+		"@types/node": "^22",
+		"typescript": "^5.8.3"
+	}
+}
