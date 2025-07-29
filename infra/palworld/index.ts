@@ -101,6 +101,16 @@ const statefulSet = new StatefulSet('palworld', {
 						},
 						{ name: 'BASE_CAMP_WORKER_MAX_NUM', value: '20' },
 					],
+					resources: {
+						requests: {
+							cpu: '4',
+							memory: '4Gi',
+						},
+						limits: {
+							cpu: '8',
+							memory: '16Gi',
+						},
+					},
 					volumeMounts: [{
 						name: 'data',
 						mountPath: '/palworld',
