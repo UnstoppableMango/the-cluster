@@ -99,7 +99,7 @@ const sts = new StatefulSet('slackpack', {
 						{ name: 'EULA', value: 'true' },
 						{ name: 'VERSION', value: '1.21.1' },
 						{ name: 'INIT_MEMORY', value: '4G' },
-						{ name: 'MAX_MEMORY', value: '16G' },
+						{ name: 'MAX_MEMORY', value: '32G' },
 						{ name: 'MODPACK_PLATFORM', value: 'AUTO_CURSEFORGE' },
 						{
 							name: 'CF_API_KEY',
@@ -126,7 +126,7 @@ const sts = new StatefulSet('slackpack', {
 						},
 						limits: {
 							cpu: '16',
-							memory: '16Gi',
+							memory: '32Gi',
 						},
 					},
 				}],
