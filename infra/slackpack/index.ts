@@ -112,7 +112,7 @@ const sts = new StatefulSet('slackpack', {
 						},
 						{
 							name: 'CF_PAGE_URL',
-							value: 'https://www.curseforge.com/minecraft/modpacks/all-the-mods-10/files/6696915',
+							value: 'https://www.curseforge.com/minecraft/modpacks/all-the-mods-10/files/6826503',
 						},
 					],
 					volumeMounts: [
