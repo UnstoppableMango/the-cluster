@@ -100,6 +100,7 @@ const sts = new StatefulSet('slackpack', {
 						{ name: 'VERSION', value: '1.21.1' },
 						{ name: 'INIT_MEMORY', value: '4G' },
 						{ name: 'MAX_MEMORY', value: '32G' },
+						{ name: 'MAX_TICK_TIME', value: '-1' },
 						{ name: 'MODPACK_PLATFORM', value: 'AUTO_CURSEFORGE' },
 						{
 							name: 'CF_API_KEY',
