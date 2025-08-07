@@ -136,8 +136,9 @@ const sts = new StatefulSet('slackpack', {
 					livenessProbe: {
 						exec: { command: ['mc-health'] },
 						periodSeconds: 5,
-						initialDelaySeconds: 120,
+						initialDelaySeconds: 300,
 						failureThreshold: 20,
+						timeoutSeconds: 5,
 					},
 				}],
 				volumes: [{
