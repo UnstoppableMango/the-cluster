@@ -97,7 +97,8 @@ const sts = new StatefulSet('slackpack', {
 					env: [
 						{ name: 'EULA', value: 'true' },
 						{ name: 'VERSION', value: '1.21.1' },
-						{ name: 'INIT_MEMORY', value: '4G' },
+						{ name: 'MEMORY', value: '' },
+						// { name: 'INIT_MEMORY', value: '4G' },
 						// { name: 'MAX_MEMORY', value: '32G' },
 						{ name: 'JVM_XX_OPTS', value: '-XX:MaxRAMPercentage=75' },
 						{ name: 'USE_MEOWICE_FLAGS', value: 'true' },
