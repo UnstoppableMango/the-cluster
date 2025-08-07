@@ -95,12 +95,14 @@ const sts = new StatefulSet('slackpack', {
 						containerPort: 25565,
 					}],
 					env: [
-						{ name: 'ALLOW_FLIGHT', value: 'true' },
 						{ name: 'EULA', value: 'true' },
 						{ name: 'VERSION', value: '1.21.1' },
 						{ name: 'INIT_MEMORY', value: '4G' },
-						{ name: 'MAX_MEMORY', value: '32G' },
+						// { name: 'MAX_MEMORY', value: '32G' },
+						{ name: 'JVM_XX_OPTS', value: '-XX:MaxRAMPercentage=75' },
+						{ name: 'USE_MEOWICE_FLAGS', value: 'true' },
 						{ name: 'MAX_TICK_TIME', value: '-1' },
+						{ name: 'ALLOW_FLIGHT', value: 'true' },
 						{ name: 'MODPACK_PLATFORM', value: 'AUTO_CURSEFORGE' },
 						{
 							name: 'CF_API_KEY',
@@ -129,6 +131,12 @@ const sts = new StatefulSet('slackpack', {
 							cpu: '16',
 							memory: '32Gi',
 						},
+					},
+					livenessProbe: {
+						exec: { command: ['mc-health'] },
+						periodSeconds: 5,
+						initialDelaySeconds: 60,
+						failureThreshold: 3,
 					},
 				}],
 				volumes: [{
