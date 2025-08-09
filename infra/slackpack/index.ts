@@ -1,5 +1,6 @@
+import * as fs from 'node:fs/promises';
 import { StatefulSet } from '@pulumi/kubernetes/apps/v1';
-import { Namespace, PersistentVolumeClaim, Secret, Service, ServiceSpecType } from '@pulumi/kubernetes/core/v1';
+import { ConfigMap, Namespace, PersistentVolumeClaim, Secret, Service, ServiceSpecType } from '@pulumi/kubernetes/core/v1';
 import { Config } from '@pulumi/pulumi';
 
 interface CurseForgeConfig {
@@ -19,6 +20,13 @@ const secret = new Secret('slackpack', {
 	metadata: { namespace: ns.metadata.name },
 	stringData: {
 		[apiTokenKey]: curseForge.apiToken,
+	},
+});
+
+const serverConfig = new ConfigMap('slackpack', {
+	metadata: { namespace: ns.metadata.name },
+	data: {
+		'minecolonies-server.toml': fs.readFile('minecolonies-server.toml', 'utf-8'),
 	},
 });
 
@@ -122,6 +130,12 @@ const sts = new StatefulSet('slackpack', {
 					volumeMounts: [
 						{ name: 'mods', mountPath: '/modpacks', readOnly: true },
 						{ name: 'data', mountPath: '/data' },
+						{
+							name: 'config',
+							mountPath: '/data/config/minecolonies-server.toml',
+							subPath: 'minecolonies-server.toml',
+							readOnly: true,
+						},
 					],
 					resources: {
 						requests: {
@@ -141,13 +155,21 @@ const sts = new StatefulSet('slackpack', {
 						timeoutSeconds: 5,
 					},
 				}],
-				volumes: [{
-					name: 'mods',
-					persistentVolumeClaim: {
-						claimName: modsPvc.metadata.name,
-						readOnly: true,
+				volumes: [
+					{
+						name: 'mods',
+						persistentVolumeClaim: {
+							claimName: modsPvc.metadata.name,
+							readOnly: true,
+						},
 					},
-				}],
+					{
+						name: 'config',
+						configMap: {
+							name: serverConfig.metadata.name,
+						},
+					},
+				],
 			},
 		},
 		volumeClaimTemplates: [{
