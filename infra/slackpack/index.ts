@@ -1,7 +1,14 @@
-import * as fs from 'node:fs/promises';
 import { StatefulSet } from '@pulumi/kubernetes/apps/v1';
-import { ConfigMap, Namespace, PersistentVolumeClaim, Secret, Service, ServiceSpecType } from '@pulumi/kubernetes/core/v1';
+import {
+	ConfigMap,
+	Namespace,
+	PersistentVolumeClaim,
+	Secret,
+	Service,
+	ServiceSpecType,
+} from '@pulumi/kubernetes/core/v1';
 import { Config } from '@pulumi/pulumi';
+import * as fs from 'node:fs/promises';
 
 interface CurseForgeConfig {
 	apiToken: string;
