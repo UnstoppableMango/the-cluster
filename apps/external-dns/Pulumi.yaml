@@ -1,0 +1,14 @@
+name: thecluster-external-dns
+description: ExternalDNS install for THECLUSTER
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: typescript
+  versions:
+    value:
+      app: 0.18.0
+      chart: 1.18.0
