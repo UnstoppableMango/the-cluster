@@ -486,7 +486,7 @@
   dependencies:
     "@pulumi/pulumi" "^3.0.0"
 
-"@pulumi/random@^4.14.0", "@pulumi/random@^4.16.2", "@pulumi/random@^4.17.0":
+"@pulumi/random@^4.14.0", "@pulumi/random@^4.16.2", "@pulumi/random@^4.17.0", "@pulumi/random@^4.18.3":
   version "4.18.3"
   resolved "https://registry.yarnpkg.com/@pulumi/random/-/random-4.18.3.tgz#9d1fe8a7f3cd2185a0240d3efd3cd9815798dffb"
   integrity sha512-2OKJPNTZu0YyxOMvxnHiUzh3qGm5EowIffAx9dKNUQRQLHOqm3TM2HQ0jYMQUrydrRbXopaiRavFFPD0QKyJEg==
@@ -641,6 +641,13 @@
   version "22.17.2"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-22.17.2.tgz#47a93d6f4b79327da63af727e7c54e8cab8c4d33"
   integrity sha512-gL6z5N9Jm9mhY+U2KXZpteb+09zyffliRkZyZOHODGATyC5B1Jt/7TzuuiLkFsSUMLbS1OLmlj/E+/3KF4Q/4w==
+  dependencies:
+    undici-types "~6.21.0"
+
+"@types/node@^22.13.10":
+  version "22.17.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.17.1.tgz#484a755050497ebc3b37ff5adb7470f2e3ea5f5b"
+  integrity sha512-y3tBaz+rjspDTylNjAX37jEC3TETEFGNJL6uQDxwF9/8GLLIjW1rvVHlynyuUKMnMr1Roq8jOv3vkopBjC4/VA==
   dependencies:
     undici-types "~6.21.0"
 
