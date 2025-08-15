@@ -118,7 +118,7 @@ const plex = new Chart('plex', {
 			},
 		},
 		image: {
-			tag: '1.41.8.9834-071366d65',
+			tag: '1.42.1.10060-4e8b05daf',
 		},
 		extraEnv: {
 			HOSTNAME: 'plex',
