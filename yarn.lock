@@ -472,6 +472,40 @@
     tmp "^0.2.1"
     upath "^1.1.0"
 
+"@pulumi/pulumi@^3.154.0", "@pulumi/pulumi@^3.189.0":
+  version "3.189.0"
+  resolved "https://registry.yarnpkg.com/@pulumi/pulumi/-/pulumi-3.189.0.tgz#99c1ef23e8cba97028d28b748bc4794dc569d32c"
+  integrity sha512-QVhCypSdsf/k2n4UT2htN5RWr6jHJWHLvdDipCirAqDEPg+svrdUMY74ZATXA/KpGNJjy31w46nm1IcljkKpig==
+  dependencies:
+    "@grpc/grpc-js" "^1.10.1"
+    "@logdna/tail-file" "^2.0.6"
+    "@npmcli/arborist" "^7.3.1"
+    "@opentelemetry/api" "^1.9"
+    "@opentelemetry/exporter-zipkin" "^1.28"
+    "@opentelemetry/instrumentation" "^0.55"
+    "@opentelemetry/instrumentation-grpc" "^0.55"
+    "@opentelemetry/resources" "^1.28"
+    "@opentelemetry/sdk-trace-base" "^1.28"
+    "@opentelemetry/sdk-trace-node" "^1.28"
+    "@types/google-protobuf" "^3.15.5"
+    "@types/semver" "^7.5.6"
+    "@types/tmp" "^0.2.6"
+    execa "^5.1.0"
+    fdir "^6.1.1"
+    google-protobuf "^3.5.0"
+    got "^11.8.6"
+    ini "^2.0.0"
+    js-yaml "^3.14.0"
+    minimist "^1.2.6"
+    normalize-package-data "^6.0.0"
+    picomatch "^3.0.1"
+    pkg-dir "^7.0.0"
+    require-from-string "^2.0.1"
+    semver "^7.5.2"
+    source-map-support "^0.5.6"
+    tmp "^0.2.4"
+    upath "^1.1.0"
+
 "@pulumi/pulumiservice@^0.29.3":
   version "0.29.3"
   resolved "https://registry.npmjs.org/@pulumi/pulumiservice/-/pulumiservice-0.29.3.tgz"
@@ -486,7 +520,7 @@
   dependencies:
     "@pulumi/pulumi" "^3.0.0"
 
-"@pulumi/random@^4.14.0", "@pulumi/random@^4.16.2", "@pulumi/random@^4.17.0":
+"@pulumi/random@^4.14.0", "@pulumi/random@^4.16.2", "@pulumi/random@^4.17.0", "@pulumi/random@^4.18.3":
   version "4.18.3"
   resolved "https://registry.yarnpkg.com/@pulumi/random/-/random-4.18.3.tgz#9d1fe8a7f3cd2185a0240d3efd3cd9815798dffb"
   integrity sha512-2OKJPNTZu0YyxOMvxnHiUzh3qGm5EowIffAx9dKNUQRQLHOqm3TM2HQ0jYMQUrydrRbXopaiRavFFPD0QKyJEg==
@@ -644,6 +678,13 @@
   dependencies:
     undici-types "~6.21.0"
 
+"@types/node@^22.13.10":
+  version "22.17.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.17.1.tgz#484a755050497ebc3b37ff5adb7470f2e3ea5f5b"
+  integrity sha512-y3tBaz+rjspDTylNjAX37jEC3TETEFGNJL6uQDxwF9/8GLLIjW1rvVHlynyuUKMnMr1Roq8jOv3vkopBjC4/VA==
+  dependencies:
+    undici-types "~6.21.0"
+
 "@types/responselike@^1.0.0":
   version "1.0.3"
   resolved "https://registry.npmjs.org/@types/responselike/-/responselike-1.0.3.tgz"
@@ -724,7 +765,7 @@
     "@pulumi/postgresql" "^3.10.0"
     "@pulumi/pulumi" "^3.142.0"
     "@unmango/pulumi-pihole" "^0.1.3"
-    "@unstoppablemango/thecluster-crds" "file:lib/crds/nodejs"
+    "@unstoppablemango/thecluster-crds" "file:../../../../.cache/yarn/v6/npm-@unstoppablemango-thecluster-1.0.0-40da4b42-db9e-4cae-8e0c-83c0bbc1ffca-1755223090055/node_modules/@unstoppablemango/crds/nodejs"
     fp-ts "^2.16.1"
     json-schema-to-ts "^3.0.0"
     typescript "^5.3.2"
@@ -2313,6 +2354,11 @@ tmp@^0.2.1:
   resolved "https://registry.npmjs.org/tmp/-/tmp-0.2.3.tgz"
   integrity sha512-nZD7m9iCPC5g0pYmcaxogYKggSfLsdxl8of3Q/oIbqCqLLIO9IAF0GWjX1z9NZRHPiXv8Wex4yDCaZsgEw0Y8w==
 
+tmp@^0.2.4:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.2.5.tgz#b06bcd23f0f3c8357b426891726d16015abfd8f8"
+  integrity sha512-voyz6MApa1rQGUxT3E+BK7/ROe8itEx7vD8/HEvt4xwXucvQ5G5oeEiHkmHZJuBO21RpOf+YYm9MOivj709jow==
+
 tr46@~0.0.3:
   version "0.0.3"
   resolved "https://registry.npmjs.org/tr46/-/tr46-0.0.3.tgz"
@@ -2513,6 +2559,11 @@ zod@^3.23.8, zod@^3.25.72, zod@^3.25.74:
   version "3.25.74"
   resolved "https://registry.yarnpkg.com/zod/-/zod-3.25.74.tgz#9368a3986fe756bd94b9a5baad9919660ff3f250"
   integrity sha512-J8poo92VuhKjNknViHRAIuuN6li/EwFbAC8OedzI8uxpEPGiXHGQu9wemIAioIpqgfB4SySaJhdk0mH5Y4ICBg==
+
+zod@^4.0.17:
+  version "4.0.17"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-4.0.17.tgz#95931170715f73f7426c385c237b7477750d6c8d"
+  integrity sha512-1PHjlYRevNxxdy2JZ8JcNAw7rX8V9P1AKkP+x/xZfxB0K5FYfuV+Ug6P/6NVSR2jHQ+FzDDoDHS04nYUsOIyLQ==
 
 zod@^4.0.5:
   version "4.0.5"

@@ -44,9 +44,7 @@ const test = new Pod('mounty', {
 	},
 });
 
-const rsyncScript: string = `
-#!/bin/bash
-
+const rsyncScript: string = `#!/bin/bash
 export DEBIAN_FRONTEND=noninteractive
 apt-get update && apt-get upgrade -y
 apt-get install -y rsync
