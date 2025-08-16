@@ -513,10 +513,10 @@
   dependencies:
     "@pulumi/pulumi" "^3.0.0"
 
-"@pulumi/pulumiservice@^0.30.0":
-  version "0.30.0"
-  resolved "https://registry.yarnpkg.com/@pulumi/pulumiservice/-/pulumiservice-0.30.0.tgz#af0588b2d61bd4deddfc9d22cc9c7a02d3250d7b"
-  integrity sha512-FBtCF4O2W3blBpJDYmE0AcmUagmygh4apu5c6AQHgJ5EBS+xcYX8WaAB1cfvAG/cPEfZAdnQOflauv7eS0qnrw==
+"@pulumi/pulumiservice@^0.31.0":
+  version "0.31.0"
+  resolved "https://registry.yarnpkg.com/@pulumi/pulumiservice/-/pulumiservice-0.31.0.tgz#86c83ac28490ac07bffd9ba2a83391faa9e73411"
+  integrity sha512-qbusybLrWd8sptANmK+9x1k3DWwQVr6tRAnEYxhCeu/ytPl8E6+XzQOxWlUZOputILWyfhFPFUa0Dm1G5yVLQQ==
   dependencies:
     "@pulumi/pulumi" "^3.0.0"
 
