@@ -6,3 +6,6 @@ runtime:
     packagemanager: yarn
 config:
   loadBalancerClass: metallb
+  versions:
+    value:
+      chart: 0.15.2

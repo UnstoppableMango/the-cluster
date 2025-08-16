@@ -6,7 +6,8 @@
 		"@pulumi/kubernetes": "^4.23.0",
 		"@pulumi/pulumi": "^3.181.0",
 		"@unstoppablemango/thecluster": "file:../../lib/nodejs",
-		"@unstoppablemango/thecluster-crds": "file:../../lib/crds/nodejs"
+		"@unstoppablemango/thecluster-crds": "file:../../lib/crds/nodejs",
+		"zod": "^4.0.17"
 	},
 	"devDependencies": {
 		"@types/node": "^22.15.33"
