@@ -1,0 +1,14 @@
+name: thecluster-flux
+description: Flux CD install for THECLUSTER
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: typescript
+  versions:
+    value:
+      instanceChart: 0.27.0
+      operatorChart: 0.27.0
