@@ -157,6 +157,7 @@ const chart = new Chart(clusterName, {
 					},
 					preservePoolsOnDelete: true,
 					gateway: {
+						port: 80,
 						instances: 1,
 						resources: {
 							limits: {
