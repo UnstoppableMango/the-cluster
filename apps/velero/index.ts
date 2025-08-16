@@ -4,6 +4,7 @@ import { Config, interpolate } from '@pulumi/pulumi';
 import z from 'zod';
 
 const Versions = z.object({
+	awsPlugin: z.string(),
 	chart: z.string(),
 	velero: z.string(),
 });
@@ -23,10 +24,20 @@ const chart = new Chart('velero', {
 	repositoryOpts: {
 		repo: 'https://vmware-tanzu.github.io/helm-charts',
 	},
+	namespace: ns.metadata.name,
 	values: {
 		image: {
 			tag: interpolate`v${versions.velero}`,
 		},
+		initContainers: [{
+			name: 'velero-plugin-for-aws',
+			image: interpolate`velero/velero-plugin-for-aws:v${versions.awsPlugin}`,
+			imagePullPolicy: 'IfNotPresent',
+			volumeMounts: [{
+				mountPath: '/target',
+				name: 'plugins',
+			}],
+		}],
 		resources: {
 			requests: {
 				cpu: '500m',
@@ -59,7 +70,17 @@ const chart = new Chart('velero', {
 			readOnlyRootFilesystem: true,
 		},
 		configuration: {
-			backupStorageLocation: [],
+			backupStorageLocation: [
+				{
+					name: 'pinkdiamond-ceph',
+					provider: 'aws',
+					bucket: 'velero',
+					default: true,
+					config: {
+						s3Url: 'http://rook-ceph-rgw-velero-default.rook-ceph.svc:80',
+					},
+				},
+			],
 			volumeSnapshotLocation: [],
 		},
 	},
