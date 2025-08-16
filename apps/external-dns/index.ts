@@ -21,9 +21,7 @@ const ns = new Namespace('external-dns', {
 
 const sec = new Secret('external-dns', {
 	metadata: { namespace: ns.metadata.name },
-	stringData: {
-
-	},
+	stringData: {},
 });
 
 const chart = new Chart('external-dns', {
