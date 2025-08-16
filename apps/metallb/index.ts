@@ -1,5 +1,16 @@
 import * as k8s from '@pulumi/kubernetes';
 import { loadBalancerClass, stack } from './config';
+import z from 'zod';
+import { Config } from '@pulumi/pulumi';
+
+const Versions = z.object({
+	chart: z.string(),
+});
+
+type Versions = z.infer<typeof Versions>;
+
+const config = new Config();
+const versions = Versions.parse(config.requireObject('versions'));
 
 const ns = new k8s.core.v1.Namespace('metallb-system', {
 	metadata: {
@@ -16,15 +27,14 @@ const ns = new k8s.core.v1.Namespace('metallb-system', {
 
 const chart = new k8s.helm.v4.Chart('metallb', {
 	chart: 'metallb',
-	version: '0.14.8',
+	version: versions.chart,
 	repositoryOpts: {
 		repo: 'https://metallb.github.io/metallb',
 	},
 	namespace: ns.metadata.name,
 	values: {
-		// The CRDs are templated and a pain to install other ways
 		crds: { enabled: true },
-		// Doesn't like to assign IPs the normal way whe LB class is enabled
+		// Doesn't like to assign IPs the normal way when LB class is enabled
 		// loadBalancerClass,
 		controller: {
 			priorityClassName: 'system-cluster-critical',
