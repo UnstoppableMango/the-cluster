@@ -14,3 +14,4 @@ config:
       chart: 10.0.10
       # renovate: datasource=docker depName=velero/velero
       velero: 1.16.1
+      awsPlugin: 1.12.2
