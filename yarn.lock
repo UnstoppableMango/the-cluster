@@ -438,41 +438,7 @@
   dependencies:
     "@pulumi/pulumi" "^3.142.0"
 
-"@pulumi/pulumi@^3.0.0", "@pulumi/pulumi@^3.122.0", "@pulumi/pulumi@^3.136.0", "@pulumi/pulumi@^3.137.0", "@pulumi/pulumi@^3.142.0", "@pulumi/pulumi@^3.149.0", "@pulumi/pulumi@^3.156.0", "@pulumi/pulumi@^3.163.0", "@pulumi/pulumi@^3.180.0", "@pulumi/pulumi@^3.181.0", "@pulumi/pulumi@^3.25.0", "@pulumi/pulumi@^3.42.0", "@pulumi/pulumi@^3.94.2", "@pulumi/pulumi@^3.96.2":
-  version "3.187.0"
-  resolved "https://registry.yarnpkg.com/@pulumi/pulumi/-/pulumi-3.187.0.tgz#446fede9012128a7f29a958ac8fd3df2ccc8207a"
-  integrity sha512-CkyvSdP58FpbLaa/ccLD2B9ZvoriT88nYkCkjbv+omPRlLAtClfyaFQUkXMrnYw8XO8oGBq/iR5i7AixH4yvng==
-  dependencies:
-    "@grpc/grpc-js" "^1.10.1"
-    "@logdna/tail-file" "^2.0.6"
-    "@npmcli/arborist" "^7.3.1"
-    "@opentelemetry/api" "^1.9"
-    "@opentelemetry/exporter-zipkin" "^1.28"
-    "@opentelemetry/instrumentation" "^0.55"
-    "@opentelemetry/instrumentation-grpc" "^0.55"
-    "@opentelemetry/resources" "^1.28"
-    "@opentelemetry/sdk-trace-base" "^1.28"
-    "@opentelemetry/sdk-trace-node" "^1.28"
-    "@types/google-protobuf" "^3.15.5"
-    "@types/semver" "^7.5.6"
-    "@types/tmp" "^0.2.6"
-    execa "^5.1.0"
-    fdir "^6.1.1"
-    google-protobuf "^3.5.0"
-    got "^11.8.6"
-    ini "^2.0.0"
-    js-yaml "^3.14.0"
-    minimist "^1.2.6"
-    normalize-package-data "^6.0.0"
-    picomatch "^3.0.1"
-    pkg-dir "^7.0.0"
-    require-from-string "^2.0.1"
-    semver "^7.5.2"
-    source-map-support "^0.5.6"
-    tmp "^0.2.1"
-    upath "^1.1.0"
-
-"@pulumi/pulumi@^3.190.0":
+"@pulumi/pulumi@^3.0.0", "@pulumi/pulumi@^3.122.0", "@pulumi/pulumi@^3.136.0", "@pulumi/pulumi@^3.137.0", "@pulumi/pulumi@^3.142.0", "@pulumi/pulumi@^3.149.0", "@pulumi/pulumi@^3.156.0", "@pulumi/pulumi@^3.163.0", "@pulumi/pulumi@^3.180.0", "@pulumi/pulumi@^3.181.0", "@pulumi/pulumi@^3.190.0", "@pulumi/pulumi@^3.25.0", "@pulumi/pulumi@^3.42.0", "@pulumi/pulumi@^3.94.2", "@pulumi/pulumi@^3.96.2":
   version "3.190.0"
   resolved "https://registry.yarnpkg.com/@pulumi/pulumi/-/pulumi-3.190.0.tgz#fe5c6b390c8d84c34530bd9924d4b698c5ac0ed4"
   integrity sha512-dYMqL3TxZQaMS3yWXub8/XnT7fbq2FpJlaP/qItn62Ycs009wWNpp2mg9QF5+BW1Hd2DiVmdwXZCA+29pss3pg==
@@ -1266,7 +1232,7 @@ glob@^10.2.2, glob@^10.3.10:
     package-json-from-dist "^1.0.0"
     path-scurry "^1.11.1"
 
-google-protobuf@^3.21.4, google-protobuf@^3.5.0:
+google-protobuf@^3.21.4:
   version "3.21.4"
   resolved "https://registry.npmjs.org/google-protobuf/-/google-protobuf-3.21.4.tgz"
   integrity sha512-MnG7N936zcKTco4Jd2PX2U96Kf9PxygAPKBug+74LHzmHXmceN16MmRcdgZv+DGef/S9YvQAfRsNCn4cjf9yyQ==
@@ -2341,11 +2307,6 @@ tmp@^0.0.33:
   integrity sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==
   dependencies:
     os-tmpdir "~1.0.2"
-
-tmp@^0.2.1:
-  version "0.2.3"
-  resolved "https://registry.npmjs.org/tmp/-/tmp-0.2.3.tgz"
-  integrity sha512-nZD7m9iCPC5g0pYmcaxogYKggSfLsdxl8of3Q/oIbqCqLLIO9IAF0GWjX1z9NZRHPiXv8Wex4yDCaZsgEw0Y8w==
 
 tmp@^0.2.4:
   version "0.2.5"
