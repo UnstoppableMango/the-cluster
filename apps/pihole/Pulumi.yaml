@@ -11,4 +11,5 @@ config:
   versions:
     value:
       # renovate: datasource=docker depName=pihole/pihole
-      docker: '2025.08.0'
+      docker: 2025.08.0
+      chart: 2.34.0
