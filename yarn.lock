@@ -382,9 +382,9 @@
     "@pulumi/pulumi" "^3.142.0"
 
 "@pulumi/cloudflare@^6.4.1":
-  version "6.4.1"
-  resolved "https://registry.yarnpkg.com/@pulumi/cloudflare/-/cloudflare-6.4.1.tgz#74053c8e5040ecc88edb2c9e96d54b390f17dd75"
-  integrity sha512-H6ao7yVdnHhGCHgucSS2nBxLg7H0mUhKAW1Urpsk2bOYGHACHjBQn6aD3nrp2ERyFBQWTX0DWhhIjEbR3IXWow==
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/@pulumi/cloudflare/-/cloudflare-6.5.0.tgz#489112f13994a4074476ac24c1c34976ee441891"
+  integrity sha512-gAnLfePSY9xF4+wpC7uBnVB/OMS5Qw/sTQmQcy1yyyCAMm/au9tCFXcgp37+n+vy+q6Yrv8qRclfbuXf93BTmQ==
   dependencies:
     "@pulumi/pulumi" "^3.142.0"
 
@@ -758,7 +758,7 @@
     "@pulumi/postgresql" "^3.10.0"
     "@pulumi/pulumi" "^3.142.0"
     "@unmango/pulumi-pihole" "^0.1.3"
-    "@unstoppablemango/thecluster-crds" "file:../../../../.cache/yarn/v6/npm-@unstoppablemango-thecluster-1.0.0-a3c7d1a0-2085-4735-9a82-ac1aba3bb376-1755313140355/node_modules/@unstoppablemango/crds/nodejs"
+    "@unstoppablemango/thecluster-crds" "file:lib/crds/nodejs"
     fp-ts "^2.16.1"
     json-schema-to-ts "^3.0.0"
     typescript "^5.3.2"
