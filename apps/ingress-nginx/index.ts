@@ -33,7 +33,10 @@ const chart = new Chart('ingress-nginx', {
 			},
 			// Preserve source IPs when using MetalLB
 			// https://kubernetes.github.io/ingress-nginx/deploy/baremetal/#a-pure-software-solution-metallb
-			service: { externalTrafficPolicy: 'Local' },
+			service: {
+				externalTrafficPolicy: 'Local',
+				loadBalancerIP: config.require('loadBalancerIP'),
+			},
 		},
 	},
 });

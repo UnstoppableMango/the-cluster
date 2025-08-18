@@ -12,7 +12,8 @@
 	"excludes": [
 		"**/node_modules",
 		"**/*-lock.json",
-		"**/crds/**"
+		"**/crds/**",
+		"**/minecolonies-server.toml"
 	],
 	"plugins": [
 		"https://plugins.dprint.dev/typescript-0.95.8.wasm",
