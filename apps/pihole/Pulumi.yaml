@@ -1,0 +1,15 @@
+name: thecluster-pihole
+description: Pi-hole install for THECLUSTER
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: typescript
+  versions:
+    value:
+      # renovate: datasource=docker depName=pihole/pihole
+      docker: 2025.08.0
+      chart: 2.34.0
