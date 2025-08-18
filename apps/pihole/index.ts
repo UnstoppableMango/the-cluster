@@ -1,7 +1,6 @@
-import { StatefulSet } from '@pulumi/kubernetes/apps/v1';
 import { Namespace, Secret, Service } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v4';
-import { Config, interpolate } from '@pulumi/pulumi';
+import { Config } from '@pulumi/pulumi';
 import { RandomPassword } from '@pulumi/random';
 import z from 'zod';
 
@@ -53,8 +52,8 @@ const chart = new Chart('pihole', {
 			enabled: true,
 			policy: 'None',
 			nameservers: [
+				'127.0.0.1',
 				'1.1.1.1',
-				'1.0.0.1',
 			],
 		},
 		admin: {
@@ -62,41 +61,44 @@ const chart = new Chart('pihole', {
 			passwordKey: passwordKey,
 		},
 		ftl: {
+			dhcp_active: 'false',
+			dns_domain: 'thecluster.lan',
+			webserver_domain: 'pihole.thecluster.lan',
 			webserver_interface_theme: 'default-darker',
+			// webserver_tls_cert: '/etc/pihole/tls.pem',
+			// webserver_paths_prefix: '',
 			misc_readonly: 'true',
+			ntp_ipv4_active: 'false',
+			ntp_ipv6_active: 'false',
+			ntp_sync_server: 'pool.ntp.org', // default
+			resolver_resolveIPv4: 'true',
+			resolver_resolveIPv6: 'false',
 		},
 		extraEnvVars: {
 			FTLCONF_webserver_port: '80,443',
+			TZ: 'America/Chicago',
 		},
 		capabilities: {
 			add: ['SYS_NICE'],
 		},
-		persistentVolumeClaim: {
-			enabled: true,
-			storageClass: 'ssd-rbd',
-		},
-		serviceWeb: {
-			type: 'LoadBalancer',
-			loadBalancerIP,
-			annotations: {
-				'metallb.universe.tf/allow-shared-ip': 'pihole-svc',
-			},
-		},
 		serviceDns: {
+			mixedService: true,
 			type: 'LoadBalancer',
 			loadBalancerIP,
-			annotations: {
-				'metallb.universe.tf/allow-shared-ip': 'pihole-svc',
-			},
 		},
 		serviceDhcp: { enabled: false },
+		ingress: {
+			enabled: true,
+			ingressClassName: 'nginx',
+			hosts: ['pihole.thecluster.lan'],
+		},
 		resources: {
 			requests: {
 				cpu: '50m',
 				memory: '64Mi',
 			},
 			limits: {
-				cpu: '100m',
+				cpu: '200m',
 				memory: '512Mi',
 			},
 		},

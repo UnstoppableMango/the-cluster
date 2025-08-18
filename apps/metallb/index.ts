@@ -2,17 +2,6 @@ import * as k8s from '@pulumi/kubernetes';
 import { Config } from '@pulumi/pulumi';
 import z from 'zod';
 import { loadBalancerClass, stack } from './config';
-import z from 'zod';
-import { Config } from '@pulumi/pulumi';
-
-const Versions = z.object({
-	chart: z.string(),
-});
-
-type Versions = z.infer<typeof Versions>;
-
-const config = new Config();
-const versions = Versions.parse(config.requireObject('versions'));
 
 const Versions = z.object({
 	chart: z.string(),

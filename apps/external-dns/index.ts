@@ -1,6 +1,6 @@
 import { Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v4';
-import * as pulumi from '@pulumi/pulumi';
+import { Config, interpolate, StackReference } from '@pulumi/pulumi';
 import z from 'zod';
 
 const Versions = z.object({
@@ -10,31 +10,36 @@ const Versions = z.object({
 
 type Versions = z.infer<typeof Versions>;
 
-const config = new pulumi.Config();
+const config = new Config();
 const versions = Versions.parse(config.requireObject('versions'));
 
-const piholeStack = new pulumi.StackReference('UnstoppableMango/thecluster-pihole/pinkdiamond');
+const piholeStack = new StackReference('UnstoppableMango/thecluster-pihole/pinkdiamond');
 
 const ns = new Namespace('external-dns', {
 	metadata: { name: 'external-dns' },
 });
 
-const sec = new Secret('external-dns', {
+const piholePasswordKey = 'EXTERNAL_DNS_PIHOLE_PASSWORD';
+
+const sec = new Secret('pihole', {
 	metadata: { namespace: ns.metadata.name },
-	stringData: {},
+	stringData: {
+		[piholePasswordKey]: piholeStack.requireOutput('adminPassword'),
+	},
 });
 
-const chart = new Chart('external-dns', {
+const chart = new Chart('pihole', {
 	chart: 'external-dns',
 	version: versions.chart,
 	repositoryOpts: {
 		repo: 'https://kubernetes-sigs.github.io/external-dns',
 	},
 	namespace: ns.metadata.name,
+	// https://github.com/kubernetes-sigs/external-dns/blob/master/charts/external-dns/values.yaml
 	values: {
 		image: {
 			repository: 'registry.k8s.io/external-dns/external-dns',
-			tag: versions.app,
+			tag: interpolate`v${versions.app}`,
 		},
 		resources: {
 			requests: {
@@ -45,6 +50,25 @@ const chart = new Chart('external-dns', {
 				cpu: '100m',
 				memory: '1Gi',
 			},
+		},
+		// https://kubernetes-sigs.github.io/external-dns/latest/docs/tutorials/pihole/#arguments
+		env: [
+			{
+				name: 'EXTERNAL_DNS_PIHOLE_PASSWORD',
+				valueFrom: {
+					secretKeyRef: {
+						name: sec.metadata.name,
+						key: piholePasswordKey,
+					},
+				},
+			},
+			{ name: 'EXTERNAL_DNS_PIHOLE_SERVER', value: 'http://pihole-web.pihole.svc.cluster.local' },
+			{ name: 'EXTERNAL_DNS_PIHOLE_TLS_SKIP_VERIFY', value: 'true' },
+			{ name: 'EXTERNAL_DNS_PIHOLE_API_VERSION', value: '6' },
+		],
+		registry: 'noop', // Pi-hole doesn't manage TXT records
+		provider: {
+			name: 'pihole',
 		},
 	},
 });
