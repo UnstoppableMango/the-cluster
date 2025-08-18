@@ -8,6 +8,6 @@
 	},
 	"dependencies": {
 		"@pulumi/kubernetes": "^4.21.1",
-		"@pulumi/pulumi": "^3.154.0"
+		"@pulumi/pulumi": "^3.190.0"
 	}
 }

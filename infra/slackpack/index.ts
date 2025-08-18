@@ -38,7 +38,11 @@ const serverConfig = new ConfigMap('slackpack', {
 });
 
 const svc = new Service('server', {
-	metadata: { namespace: ns.metadata.name },
+	metadata: {
+		// From that one time I broke things and Pulumi tried to delete and replace the StatefulSet
+		name: 'server-e29672fa',
+		namespace: ns.metadata.name,
+	},
 	spec: {
 		type: ServiceSpecType.LoadBalancer,
 		selector: {
