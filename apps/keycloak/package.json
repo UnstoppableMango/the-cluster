@@ -4,7 +4,7 @@
 	"main": "index.ts",
 	"dependencies": {
 		"@pulumi/kubernetes": "^4.23.0",
-		"@pulumi/pulumi": "^3.181.0",
+		"@pulumi/pulumi": "^3.190.0",
 		"@pulumi/random": "^4.14.0",
 		"@unstoppablemango/thecluster": "file:../../lib/nodejs",
 		"@unstoppablemango/thecluster-crds": "file:../../lib/crds/nodejs"

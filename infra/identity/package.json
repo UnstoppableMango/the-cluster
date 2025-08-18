@@ -4,7 +4,7 @@
 	"main": "index.ts",
 	"dependencies": {
 		"@pulumi/keycloak": "^5.2.1",
-		"@pulumi/pulumi": "^3.96.2",
+		"@pulumi/pulumi": "^3.190.0",
 		"@unstoppablemango/thecluster": "file:../../lib/nodejs",
 		"@unstoppablemango/thecluster-crds": "file:../../lib/crds/nodejs"
 	},

@@ -5,7 +5,7 @@
 	"dependencies": {
 		"@pulumi/keycloak": "^5.2.1",
 		"@pulumi/kubernetes": "^4.23.0",
-		"@pulumi/pulumi": "^3.180.0",
+		"@pulumi/pulumi": "^3.190.0",
 		"@unstoppablemango/thecluster": "file:../../lib/nodejs",
 		"@unstoppablemango/thecluster-crds": "file:../../lib/crds/nodejs"
 	},

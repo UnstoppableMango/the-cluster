@@ -4,7 +4,7 @@
 	"main": "index.ts",
 	"dependencies": {
 		"@pulumi/kubernetes": "^4.23.0",
-		"@pulumi/pulumi": "^3.181.0",
+		"@pulumi/pulumi": "^3.190.0",
 		"yaml": "^2.8.0",
 		"zod": "^4.0.5"
 	},
