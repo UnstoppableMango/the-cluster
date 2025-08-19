@@ -4,7 +4,7 @@
 	"dependencies": {
 		"@pulumi/kubernetes": "^4.23.0",
 		"@pulumi/pulumi": "^3.190.0",
-		"@pulumi/pulumiservice": "^0.29.3"
+		"@pulumi/pulumiservice": "^0.31.0"
 	},
 	"devDependencies": {
 		"@types/node": "^22.15.33"
