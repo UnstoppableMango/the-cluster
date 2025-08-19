@@ -9,7 +9,7 @@ config:
   versions:
     value:
       # renovate: datasource=docker depName=quay.io/jetstack/cert-manager-csi-driver
-      certManagerCsi: v0.6.0
+      certManagerCsi: v0.11.0
       # renovate: datasource=docker depName=registry.k8s.io/sig-storage/csi-node-driver-registrar
       csiNodeDriverRegistrar: v2.14.0
       # renovate: datasource=docker depName=registry.k8s.io/sig-storage/livenessprobe
