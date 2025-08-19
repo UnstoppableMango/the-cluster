@@ -5,7 +5,7 @@
 	"dependencies": {
 		"@pulumi/kubernetes": "^4.23.0",
 		"@pulumi/pulumi": "^3.190.0",
-		"zod": "^3.25.72"
+		"zod": "^4.0.0"
 	},
 	"devDependencies": {
 		"@types/node": "^22.16.0",
