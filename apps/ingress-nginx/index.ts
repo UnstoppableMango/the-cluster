@@ -26,7 +26,11 @@ const chart = new Chart('ingress-nginx', {
 	namespace: ns.metadata.name,
 	values: {
 		controller: {
-			image: { tag: `v${versions.app}` },
+			image: {
+				registry: 'registry.k8s.io', // default
+				image: 'ingress-nginx/controller', // default
+				tag: `v${versions.app}`,
+			},
 			kind: 'DaemonSet',
 			admissionWebhooks: {
 				certManager: { enabled: true },

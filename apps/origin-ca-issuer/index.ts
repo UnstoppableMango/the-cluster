@@ -17,8 +17,8 @@ const versions = Versions.parse(config.requireObject('versions'));
 
 const crds = new ConfigGroup('crds', {
 	files: [
-		`https://raw.githubusercontent.com/cloudflare/origin-ca-issuer/${versions.app}/deploy/crds/cert-manager.k8s.cloudflare.com_originissuers.yaml`,
-		`https://raw.githubusercontent.com/cloudflare/origin-ca-issuer/${versions.app}/deploy/crds/cert-manager.k8s.cloudflare.com_clusteroriginissuers.yaml`,
+		`https://raw.githubusercontent.com/cloudflare/origin-ca-issuer/v${versions.app}/deploy/crds/cert-manager.k8s.cloudflare.com_originissuers.yaml`,
+		`https://raw.githubusercontent.com/cloudflare/origin-ca-issuer/v${versions.app}/deploy/crds/cert-manager.k8s.cloudflare.com_clusteroriginissuers.yaml`,
 	],
 });
 
@@ -30,9 +30,11 @@ const chart = new Chart('origin-ca-issuer', {
 	chart: 'oci://ghcr.io/cloudflare/origin-ca-issuer-charts/origin-ca-issuer',
 	version: versions.chart,
 	namespace: ns.metadata.name,
+	// https://github.com/cloudflare/origin-ca-issuer/blob/trunk/deploy/charts/origin-ca-issuer/values.yaml
 	values: {
 		controller: {
 			image: {
+				repository: 'cloudflare/origin-ca-issuer', // default
 				tag: versions.app,
 			},
 		},
