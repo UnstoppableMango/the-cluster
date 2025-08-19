@@ -8,4 +8,4 @@ config:
   versions:
     value:
       # renovate: datasource=github-tags depName=pulumi/pulumi-kubernetes-operator
-      pulumiOperator: '2.1.0'
+      pulumiOperator: '2.2.0'
