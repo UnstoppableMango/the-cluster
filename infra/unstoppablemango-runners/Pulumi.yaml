@@ -10,6 +10,6 @@ config:
       pulumi:template: typescript
   versions:
     value:
-      # renovate: datasource=docker depName=actions/actions-runner
+      # renovate: datasource=docker depName=ghcr.io/actions/actions-runner
       actionsRunner: 2.326.0
       chart: 0.12.1
