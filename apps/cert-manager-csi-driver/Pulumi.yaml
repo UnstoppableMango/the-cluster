@@ -13,4 +13,4 @@ config:
       # renovate: datasource=docker depName=registry.k8s.io/sig-storage/csi-node-driver-registrar
       csiNodeDriverRegistrar: v2.9.2
       # renovate: datasource=docker depName=registry.k8s.io/sig-storage/livenessprobe
-      livenessProbe: v2.11.0
+      livenessProbe: v2.16.0
