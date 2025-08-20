@@ -13,3 +13,7 @@ config:
       # renovate: datasource=docker depName=pihole/pihole
       docker: 2025.08.0
       chart: 2.34.0
+      externalDns:
+        # renovate: datasource=docker depName=registry.k8s.io/external-dns/external-dns
+        docker: 0.18.0
+        chart: 1.18.0

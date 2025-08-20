@@ -1,2 +1,6 @@
 config:
-  thecluster-pihole:loadBalancerIP: 192.168.1.44
+  thecluster-pihole:instances:
+    - name: pihole-a
+      loadBalancerIP: 192.168.1.44
+    - name: pihole-b
+      loadBalancerIP: 192.168.1.45
