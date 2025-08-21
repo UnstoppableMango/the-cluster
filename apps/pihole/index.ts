@@ -77,7 +77,7 @@ const charts = instances.map(({ name, loadBalancerIP }) =>
 			ftl: {
 				dhcp_active: 'false',
 				dns_domain: 'thecluster.lan',
-				webserver_domain: 'pihole.thecluster.lan',
+				webserver_domain: `${name}.thecluster.lan`,
 				webserver_interface_theme: 'default-darker',
 				// webserver_tls_cert: '/etc/pihole/tls.pem',
 				// webserver_paths_prefix: '',
