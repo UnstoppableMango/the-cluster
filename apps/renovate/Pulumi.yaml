@@ -1,0 +1,15 @@
+name: thecluster-renovate
+description: Renovate install for THECLUSTER
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: typescript
+  versions:
+    value:
+      chart: 43.15.0
+      # renovate: datasource=docker depName=ghcr.io/renovatebot/renovate
+      docker: 41.82.1
