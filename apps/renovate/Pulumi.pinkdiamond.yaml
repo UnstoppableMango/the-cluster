@@ -1,0 +1,3 @@
+config:
+  thecluster-renovate:githubToken:
+    secure: AAABAOX9RSlElkWNot6IC1YSuPiDcjZQqUjTO9KR9euN1cxoSO/XrVy9q1qvu3MSNOHKjPP6JZelb6W1ybKu9tSbDR0fzLl8
