@@ -181,6 +181,9 @@ const sts = new StatefulSet('slackpack', {
 						},
 					},
 				],
+				nodeSelector: {
+					'kubernetes.io/hostname': 'zeus',
+				},
 			},
 		},
 		volumeClaimTemplates: [{
