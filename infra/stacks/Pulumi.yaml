@@ -11,4 +11,4 @@ config:
   versions:
     value:
       # renovate: datasource=docker depName=pulumi/pulumi
-      pulumiImage: 3.190.0-nonroot
+      pulumiImage: 3.191.0-nonroot
