@@ -1,16 +1,26 @@
 import { Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v4';
-import { Config } from '@pulumi/pulumi';
+import { Config, interpolate } from '@pulumi/pulumi';
+import path = require('node:path');
 import z from 'zod';
 
+const GitHub = z.object({
+	appId: z.string(),
+	installationId: z.string(),
+	privateKey: z.string(),
+});
+
 const Versions = z.object({
+	bun: z.string(),
 	chart: z.string(),
 	docker: z.string(),
 });
 
+type GitHub = z.infer<typeof GitHub>;
 type Versions = z.infer<typeof Versions>;
 
 const config = new Config();
+const github = GitHub.parse(config.requireObject('github'));
 const versions = Versions.parse(config.requireObject('versions'));
 
 const ns = new Namespace('renovate', {
@@ -20,10 +30,26 @@ const ns = new Namespace('renovate', {
 const sec = new Secret('renovate', {
 	metadata: { namespace: ns.metadata.name },
 	stringData: {
-		// https://github.com/renovatebot/helm-charts/issues/248
-		RENOVATE_TOKEN: config.requireSecret('githubToken'),
+		'key.pem': github.privateKey,
 	},
 });
+
+const tokenPath = '/shared/token';
+
+const configjs = `
+const fs = require('fs');
+
+const token = fs.readFileSync('${tokenPath}', 'utf8').trim();
+
+module.exports = {
+	token,
+	platform: 'github',
+	autodiscover: false, // default
+	autodiscoverFilter: [], // default
+	repositories: ['UnstoppableMango/the-cluster'],
+	presetCachePersistence: true,
+};
+`;
 
 const chart = new Chart('renovate', {
 	chart: 'renovate',
@@ -35,9 +61,53 @@ const chart = new Chart('renovate', {
 	// https://github.com/renovatebot/helm-charts/blob/main/charts/renovate/values.yaml
 	values: {
 		cronjob: {
-			schedule: '0 1 * * *', // at 01:00 every day, default
+			schedule: '*/10 * * * *', // Every 10 minutes
 			timeZone: 'America/Chicago',
+			initContainers: [{
+				name: 'github-app-auth',
+				image: interpolate`oven/bun:${versions.bun}`,
+				command: [
+					'/bin/sh',
+					'-c',
+					[
+						'bunx github-app-installation-token',
+						`--appId ${github.appId}`,
+						`--installationId ${github.installationId}`,
+						`--privateKeyLocation /auth/key.pem`,
+						`> ${tokenPath}`,
+					].join(' '),
+				],
+				volumeMounts: [
+					{
+						name: 'private-key',
+						mountPath: '/auth',
+					},
+					{
+						name: 'shared',
+						mountPath: '/shared',
+					},
+				],
+			}],
 		},
+		env: {
+			LOG_LEVEL: 'debug',
+		},
+		extraVolumeMounts: [{
+			name: 'shared',
+			mountPath: '/shared',
+		}],
+		extraVolumes: [
+			{
+				name: 'private-key',
+				secret: {
+					secretName: sec.metadata.name,
+				},
+			},
+			{
+				name: 'shared',
+				emptyDir: {},
+			},
+		],
 		image: {
 			registry: 'ghcr.io', // default
 			repository: 'renovatebot/renovate', // default
@@ -45,15 +115,9 @@ const chart = new Chart('renovate', {
 		},
 		renovate: {
 			// https://docs.renovatebot.com/self-hosted-configuration
-			config: JSON.stringify({
-				platform: 'github',
-				autodiscover: false, // default
-				autodiscoverFilter: [], // default
-				repositories: ['UnstoppableMango/the-cluster'],
-				presetCachePersistence: true,
-			}),
+			config: configjs,
+			configIsJavaScript: true,
 		},
-		existingSecret: sec.metadata.name,
 		resources: {
 			requests: {
 				cpu: '1',
