@@ -12,5 +12,5 @@ config:
     value:
       # renovate: datasource=docker depName=cloudflare/origin-ca-issuer
       app: 0.12.1
-      # renovate: datasource=helm depName=oci://ghcr.io/cloudflare/origin-ca-issuer-charts/origin-ca-issuer
+      # renovate!!! datasource=helm depName=oci://ghcr.io/cloudflare/origin-ca-issuer-charts/origin-ca-issuer
       chart: 0.5.12
