@@ -12,5 +12,5 @@ config:
     value:
       # renovate: datasource=docker depName=registry.k8s.io/ingress-nginx/controller
       app: 1.13.1
-      # renovate: datasource=helm depName=https://kubernetes.github.io/ingress-nginx/ingress-nginx
+      # renovate!!! datasource=helm depName=https://kubernetes.github.io/ingress-nginx/ingress-nginx
       chart: 4.12.3
