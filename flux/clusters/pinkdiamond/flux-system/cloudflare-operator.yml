@@ -4,5 +4,5 @@ metadata:
   name: cloudflare-operator
   namespace: flux-system
 spec:
-  url: https://unstoppablemango.github.io/cloudflare-operator
+  url: https://unmango.github.io/cloudflare-operator
   interval: 1m
