@@ -28,7 +28,7 @@ spec:
       hosts:
         - host: headlamp.thecluster.lan
           paths:
-            - pathType: Prefix
+            - type: Prefix
               path: /
     resources:
       requests:
