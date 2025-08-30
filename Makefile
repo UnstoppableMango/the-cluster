@@ -16,6 +16,7 @@ CURL       ?= curl
 DEVCTL     ?= $(GO) tool devctl
 DPRINT     ?= dprint
 KUBECTL    ?= bin/kubectl
+KUBESEAL   ?= $(GO) tool kubeseal
 NPM        ?= npm
 PULUMI     ?= bin/pulumi
 YQ         ?= $(GO) tool yq
@@ -37,6 +38,12 @@ ${APPS} ${INFRA}: | bin/pulumi
 .PHONY: components ${COMPONENTS}
 components ${COMPONENTS}:
 	cd $@ && $(NPM) install
+
+sealed-secrets.pub:
+	$(KUBESEAL) --fetch-cert \
+	--controller-name sealed-secrets-controller \
+	--controller-namespace=kube-system \
+	> $@
 
 bin/kubectl: .versions/kubernetes
 	$(CURL) --fail -L -o $@ https://dl.k8s.io/release/v$(shell cat $<)/bin/${GOOS}/${GOARCH}/kubectl
