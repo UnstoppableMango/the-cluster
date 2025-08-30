@@ -39,10 +39,13 @@ ${APPS} ${INFRA}: | bin/pulumi
 components ${COMPONENTS}:
 	cd $@ && $(NPM) install
 
+%-sealed.yml: | sealed-secrets.pub
+	$(KUBESEAL) --format=yaml --cert=$| < $*.yml > $@
+
 sealed-secrets.pub:
 	$(KUBESEAL) --fetch-cert \
 	--controller-name sealed-secrets-controller \
-	--controller-namespace=kube-system \
+	--controller-namespace flux-system \
 	> $@
 
 bin/kubectl: .versions/kubernetes
