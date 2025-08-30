@@ -1,8 +1,8 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: cloudflare-operator
+  name: headlamp
   namespace: flux-system
 spec:
-  url: https://unmango.github.io/cloudflare-operator
+  url: https://kubernetes-sigs.github.io/headlamp/
   interval: 1h0m0s
