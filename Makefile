@@ -39,8 +39,8 @@ ${APPS} ${INFRA}: | bin/pulumi
 components ${COMPONENTS}:
 	cd $@ && $(NPM) install
 
-%-sealed.yml: | sealed-secrets.pub
-	$(KUBESEAL) --format=yaml --cert=$| < $*.yml > $@
+flux/%-sealed.yml: hack/secrets/%.yml | sealed-secrets.pub
+	$(KUBESEAL) --format=yaml --cert=$| < $< > $@
 
 sealed-secrets.pub:
 	$(KUBESEAL) --fetch-cert \

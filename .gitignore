@@ -8,6 +8,7 @@ bin/
 build/
 output/
 .cache/
+hack/secrets/
 
 # IDE Configuration
 .vscode/*
