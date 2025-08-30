@@ -57,13 +57,13 @@ const caSecret = new Secret('ca', {
 	},
 });
 
-const internalIssuer = new CustomResource('internal', {
+const theclusterIssuer = new CustomResource('thecluster.io', {
 	apiVersion: 'cert-manager.io/v1',
 	kind: 'ClusterIssuer',
-	metadata: {},
+	metadata: { name: 'thecluster.io' },
 	spec: {
 		ca: { secretName: caSecret.metadata.name },
 	},
 });
 
-export const internalIssuerName = internalIssuer.metadata.name;
+export const theclusterIssuerName = theclusterIssuer.metadata.name;
