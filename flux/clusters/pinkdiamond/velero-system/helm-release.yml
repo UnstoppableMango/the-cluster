@@ -15,38 +15,38 @@ spec:
         kind: HelmRepository
         name: vmware-tanzu
         namespace: flux-system
-    # https://github.com/vmware-tanzu/helm-charts/blob/main/charts/velero/values.yaml
-    values:
-      image:
-        repository: velero/velero # default
-        tag: v1.16.2
-      initContainers:
-        - name: velero-plugin-for-aws
-          image: velero/velero-plugin-for-aws:v1.12.2
-          volumeMounts:
-            - mountPath: /target
-              name: plugins
-      resources:
-        limits:
-          cpu: 1000m
-          memory: 512Mi
-        requests:
-          cpu: 500m
-          memory: 128Mi
-      upgradeJobResources:
-        limits:
-          cpu: 100m
-          memory: 256Mi
-        requests:
-          cpu: 50m
-          memory: 128Mi
-      podSecurityContext:
-        fsGroup: 1337
-      containerSecurityContext:
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop: [ALL]
-        readOnlyRootFilesystem: true
-      configuration:
-        backupStorageLocation: []
-        volumeSnapshotLocation: []
+  # https://github.com/vmware-tanzu/helm-charts/blob/main/charts/velero/values.yaml
+  values:
+    image:
+      repository: velero/velero # default
+      tag: v1.16.2
+    initContainers:
+      - name: velero-plugin-for-aws
+        image: velero/velero-plugin-for-aws:v1.12.2
+        volumeMounts:
+          - mountPath: /target
+            name: plugins
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 512Mi
+      requests:
+        cpu: 500m
+        memory: 128Mi
+    upgradeJobResources:
+      limits:
+        cpu: 100m
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 128Mi
+    podSecurityContext:
+      fsGroup: 1337
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: [ALL]
+      readOnlyRootFilesystem: true
+    configuration:
+      backupStorageLocation: []
+      volumeSnapshotLocation: []
