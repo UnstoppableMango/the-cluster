@@ -29,12 +29,6 @@
 	"flux": {
 		"managerFilePatterns": ["/flux/.+\\.ya?ml$/"]
 	},
-	"helm-values": {
-		"managerFilePatterns": [
-			"/(^|/)values\\.ya?ml$/",
-			"/flux/.+\\.ya?ml$/"
-		]
-	},
 	"customManagers": [
 		{
 			"customType": "regex",
