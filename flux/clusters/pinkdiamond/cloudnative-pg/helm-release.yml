@@ -22,7 +22,6 @@ spec:
   values:
     image:
       repository: ghcr.io/cloudnative-pg/cloudnative-pg # default
-      # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/cloudnative-pg
       tag: 1.27.0
     resources:
       requests:

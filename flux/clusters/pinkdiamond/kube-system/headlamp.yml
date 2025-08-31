@@ -20,7 +20,6 @@ spec:
     image:
       registry: ghcr.io # default
       repository: headlamp-k8s/headlamp # default
-      # renovate: datasource=docker depName=ghcr.io/headlamp-k8s/headlamp
       tag: v0.34.0
     ingress:
       enabled: true

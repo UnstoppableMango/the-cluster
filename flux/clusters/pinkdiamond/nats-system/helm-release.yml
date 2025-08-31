@@ -30,12 +30,10 @@ spec:
     container:
       image:
         repository: nats # default
-        # renovate: datasource=docker depName=nats
         tag: 2.11.8-linux
     reloader:
       image:
         repository: natsio/nats-server-config-reloader # default
-        # renovate: datasource=docker depName=natsio/nats-server-config-reloader
         tag: 0.19.1
     service:
       ports:
@@ -59,5 +57,4 @@ spec:
       container:
         image:
           repository: natsio/nats-box # default
-          # renovate: datasource=docker depName=natsio/nats-box
           tag: 0.18.0
