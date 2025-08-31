@@ -27,10 +27,10 @@ const service = new Service('palworld', {
 	metadata: {
 		name: 'palworld',
 		namespace: ns.metadata.name,
-		labels: { 'kubernetes.io/app': 'palworld' },
+		labels: { 'app.kubernetes.io/name': 'palworld' },
 	},
 	spec: {
-		selector: { 'kubernetes.io/app': 'palworld' },
+		selector: { 'app.kubernetes.io/name': 'palworld' },
 		type: ServiceSpecType.LoadBalancer,
 		ports: [
 			{ name: 'server', port: 8211, protocol: 'UDP' },
@@ -48,14 +48,14 @@ const statefulSet = new StatefulSet('palworld', {
 	spec: {
 		selector: {
 			matchLabels: {
-				'kubernetes.io/app': 'palworld',
+				'app.kubernetes.io/name': 'palworld',
 			},
 		},
 		serviceName: service.metadata.name,
 		template: {
 			metadata: {
 				labels: {
-					'kubernetes.io/app': 'palworld',
+					'app.kubernetes.io/name': 'palworld',
 				},
 			},
 			spec: {
