@@ -173,7 +173,7 @@ const chart = new Chart(clusterName, {
 				storageClass: {
 					enabled: false,
 				},
-			}
+			},
 		],
 		cephClusterSpec: {
 			cephVersion: {
