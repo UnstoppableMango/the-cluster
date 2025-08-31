@@ -57,4 +57,4 @@ spec:
       container:
         image:
           repository: natsio/nats-box # default
-          tag: 0.18.0
+          tag: 0.18.1
