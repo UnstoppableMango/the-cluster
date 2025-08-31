@@ -1,0 +1,33 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cloudnative-pg
+  namespace: cnpg-system
+spec:
+  interval: 10m
+  releaseName: cnpg
+  targetNamespace: cnpg-system
+  chart:
+    spec:
+      chart: cloudnative-pg
+      version: 0.26.0
+      sourceRef:
+        kind: HelmRepository
+        name: cnpg
+        namespace: flux-system
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+  values:
+    image:
+      repository: ghcr.io/cloudnative-pg/cloudnative-pg # default
+      # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/cloudnative-pg
+      tag: 1.27.0
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        cpu: 100m
+        memory: 200Mi
