@@ -1,0 +1,63 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nats
+  namespace: nats-system
+spec:
+  interval: 10m
+  releaseName: nats
+  targetNamespace: nats-system
+  chart:
+    spec:
+      chart: nats
+      version: 1.3.13
+      sourceRef:
+        kind: HelmRepository
+        name: nats
+        namespace: flux-system
+  # https://github.com/nats-io/k8s/blob/main/helm/charts/nats/values.yaml
+  values:
+    config:
+      nats:
+        port: 4222 # default
+      websocket:
+        enabled: true
+        port: 8080 # default
+        ingress:
+          enabled: true
+          hosts: [nats.thecluster.lan]
+          className: nginx
+    container:
+      image:
+        repository: nats # default
+        # renovate: datasource=docker depName=nats
+        tag: 2.11.8-linux
+    reloader:
+      image:
+        repository: natsio/nats-server-config-reloader # default
+        # renovate: datasource=docker depName=natsio/nats-server-config-reloader
+        tag: 0.19.1
+    service:
+      ports:
+        nats:
+          enabled: true # default
+        leafnodes:
+          enabled: true # default
+        websocket:
+          enabled: true # default
+        mqtt:
+          enabled: false
+        cluster:
+          enabled: false # default
+        gateway:
+          enabled: false # default
+        monitor:
+          enabled: false # default
+        profiling:
+          enabled: false # default
+    natsBox:
+      container:
+        image:
+          repository: natsio/nats-box # default
+          # renovate: datasource=docker depName=natsio/nats-box
+          tag: 0.18.0
