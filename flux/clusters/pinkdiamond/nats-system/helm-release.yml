@@ -58,3 +58,16 @@ spec:
         image:
           repository: natsio/nats-box # default
           tag: 0.18.1
+    podTemplate:
+      merge:
+        spec:
+          affinity:
+            nodeAffinity:
+              preferredDuringSchedulingIgnoredDuringExecution:
+                - weight: 1
+                  preference:
+                    matchExpressions:
+                      - key: kubernetes.io/hostname
+                        operator: NotIn
+                        values:
+                          - gaea
