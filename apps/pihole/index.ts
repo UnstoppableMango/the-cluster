@@ -132,7 +132,14 @@ const charts = instances.map(({ name, loadBalancerIP }) =>
 );
 
 const ingress = new Ingress('pihole', {
-	metadata: { namespace: ns.metadata.name },
+	metadata: {
+		namespace: ns.metadata.name,
+		annotations: {
+			'cert-manager.io/issuer-group': 'cert-manager.io',
+			'cert-manager.io/issuer-kind': 'ClusterIssuer',
+			'cert-manager.io/issuer': 'thecluster.lan',
+		},
+	},
 	spec: {
 		ingressClassName: 'nginx',
 		rules: instances.map(({ name }) => ({
@@ -152,6 +159,10 @@ const ingress = new Ingress('pihole', {
 				}],
 			},
 		})),
+		tls: [{
+			secretName: 'pihole-tls',
+			hosts: instances.map(({ name }) => `${name}.thecluster.lan`),
+		}],
 	},
 });
 

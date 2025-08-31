@@ -1,5 +1,5 @@
 import { Deployment, StatefulSet } from '@pulumi/kubernetes/apps/v1';
-import { ConfigMap, Namespace, PersistentVolumeClaim, Secret, Service } from '@pulumi/kubernetes/core/v1';
+import { ConfigMap, Namespace, PersistentVolumeClaim, Service } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v4';
 import { Ingress } from '@pulumi/kubernetes/networking/v1';
 import { Config } from '@pulumi/pulumi';
@@ -26,10 +26,6 @@ const versions = Versions.parse(config.requireObject('versions'));
 
 const ns = new Namespace('media', {
 	metadata: { name: 'media' },
-});
-
-const sec = new Secret('media', {
-	metadata: { namespace: ns.metadata.name },
 });
 
 const movies = new PersistentVolumeClaim('movies', {
@@ -363,6 +359,7 @@ const copyparty = new Deployment('copyparty', {
 						{ name: 'tv4k', mountPath: '/w/tv4k' },
 						{ name: 'anime', mountPath: '/w/anime' },
 						{ name: 'music', mountPath: '/w/music' },
+						{ name: 'youtube', mountPath: '/w/youtube' },
 					],
 					resources: {
 						requests: {
@@ -418,6 +415,12 @@ const copyparty = new Deployment('copyparty', {
 							claimName: music.metadata.name,
 						},
 					},
+					{
+						name: 'youtube',
+						persistentVolumeClaim: {
+							claimName: youtube.metadata.name,
+						},
+					},
 				],
 			},
 		},
@@ -436,7 +439,14 @@ const copypartyService = new Service('copyparty', {
 });
 
 const copypartyIngress = new Ingress('copyparty', {
-	metadata: { namespace: ns.metadata.name },
+	metadata: {
+		namespace: ns.metadata.name,
+		annotations: {
+			'cert-manager.io/issuer-group': 'cert-manager.io',
+			'cert-manager.io/issuer-kind': 'ClusterIssuer',
+			'cert-manager.io/issuer': 'thecluster.lan',
+		},
+	},
 	spec: {
 		ingressClassName: 'nginx',
 		rules: [{
@@ -453,6 +463,10 @@ const copypartyIngress = new Ingress('copyparty', {
 					},
 				}],
 			},
+		}],
+		tls: [{
+			secretName: 'copyparty-tls',
+			hosts: ['copyparty.thecluster.lan'],
 		}],
 	},
 });
