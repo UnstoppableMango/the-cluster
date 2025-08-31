@@ -47,7 +47,7 @@ const rookCephMonEndpoints = new ConfigMap('rook-ceph-mon-endpoints', {
 			monitors: [
 				'10.43.98.167:6789',
 				'10.43.75.167:6789',
-				'10.43.59.5:6789'
+				'10.43.59.5:6789',
 			],
 			// Re-create what the operator seems to want
 			cephFS: {
