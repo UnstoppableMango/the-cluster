@@ -17,7 +17,7 @@ type Versions = z.infer<typeof Versions>;
 const config = new Config();
 const versions = Versions.parse(config.requireObject('versions'));
 const clusterName = getStack();
-const hostname = config.requireSecret('hostname');
+const hostname = 'ceph.thecluster.lan';
 
 const ns = Namespace.get('rook-ceph', 'rook-ceph');
 
@@ -215,9 +215,9 @@ const chart = new Chart(clusterName, {
 			dashboard: {
 				enabled: true,
 				annotations: {
-					'cert-manager.io/issuer': originCaIssuer.requireOutput('clusterIssuerName'),
-					'cert-manager.io/issuer-kind': 'ClusterOriginIssuer',
-					'cert-manager.io/issuer-group': 'cert-manager.k8s.cloudflare.com',
+					'cert-manager.io/issuer-group': 'cert-manager.io',
+					'cert-manager.io/issuer-kind': 'ClusterIssuer',
+					'cert-manager.io/issuer': 'thecluster.lan',
 				},
 				host: { name: hostname },
 				tls: [{

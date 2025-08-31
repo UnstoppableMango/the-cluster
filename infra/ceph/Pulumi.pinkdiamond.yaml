@@ -11,5 +11,3 @@ config:
     secure: AAABAMhjbwEaHNjErMh1zTGwdfWTNPvyFmP9d/Ee/H25QrTCl5EbTewc8CEViIncL2wXHu4Ah3G4xM5pd4rx8WtrXY0=
   thecluster-ceph:public-ip:
     secure: AAABAMv5aC0SXZ7NW/ltEBbD0FM7nW4AIsPXAGdlk5NWFsZV+5bESWR17If5+g==
-  thecluster-ceph:hostname:
-    secure: AAABAJ3eMaAM3rAv0Ry7EHggejmt7s/6+2mJDqIk6gW2o5Peh+qYsvs2IHQS9uvqaCI=
