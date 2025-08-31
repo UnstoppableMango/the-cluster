@@ -1,9 +1,8 @@
-import { DnsRecord, getZoneOutput } from '@pulumi/cloudflare';
 import { CephBlockPool, CephFilesystem } from '@pulumi/crds/bin/ceph/v1';
 import { ConfigMap, Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v4';
 import { StorageClass } from '@pulumi/kubernetes/storage/v1';
-import { Config, getStack, jsonStringify, StackReference } from '@pulumi/pulumi';
+import { Config, getStack, jsonStringify } from '@pulumi/pulumi';
 import z from 'zod/v4';
 
 const Versions = z.object({
@@ -45,39 +44,43 @@ const rookCephMonEndpoints = new ConfigMap('rook-ceph-mon-endpoints', {
 	data: {
 		'csi-cluster-config-json': jsonStringify([{
 			clusterID: 'rook-ceph',
-			monitors: ['10.43.98.167:6789', '10.43.75.167:6789', '10.43.59.5:6789'],
-			namespace: '',
+			monitors: [
+				'10.43.98.167:6789',
+				'10.43.75.167:6789',
+				'10.43.59.5:6789',
+			],
 			// Re-create what the operator seems to want
 			cephFS: {
-				fuseMountOptions: '',
+				netNamespaceFilePath: '',
+				subvolumeGroup: '',
+				radosNamespace: '',
 				kernelMountOptions: '',
+				fuseMountOptions: '',
+			},
+			rbd: {
 				netNamespaceFilePath: '',
 				radosNamespace: '',
-				subvolumeGroup: '',
+				mirrorDaemonCount: 0,
 			},
 			nfs: { netNamespaceFilePath: '' },
-			rbd: {
-				mirrorDaemonCount: 0,
-				netNamespaceFilePath: '',
-				radosNamespace: '',
-			},
 			readAffinity: {
-				crushLocationLabels: null,
 				enabled: false,
+				crushLocationLabels: null,
 			},
+			namespace: '',
 		}]),
 		data: 'c=10.43.98.167:6789,d=10.43.75.167:6789,b=10.43.59.5:6789',
 		mapping: jsonStringify({
 			node: {
-				c: {
-					Name: 'castor',
-					Hostname: 'castor',
-					Address: '192.168.1.13',
-				},
 				b: {
 					Name: 'zeus',
 					Hostname: 'zeus',
 					Address: '192.168.1.10',
+				},
+				c: {
+					Name: 'castor',
+					Hostname: 'castor',
+					Address: '192.168.1.13',
 				},
 				d: {
 					Name: 'zeus',
@@ -107,23 +110,6 @@ const mgrPool = new CephBlockPool('mgr', {
 			enabled: false,
 		},
 	},
-});
-
-const originCaIssuer = new StackReference('origin-ca-issuer', {
-	name: 'UnstoppableMango/thecluster-origin-ca-issuer/pinkdiamond',
-});
-
-const cloudflareZone = getZoneOutput({
-	filter: { name: 'thecluster.io' },
-});
-
-const dashboardRecord = new DnsRecord('ceph', {
-	name: hostname,
-	ttl: 1,
-	type: 'A',
-	zoneId: cloudflareZone.zoneId?.apply(x => x ?? '') ?? '',
-	content: config.requireSecret('public-ip'),
-	proxied: false,
 });
 
 const chart = new Chart(clusterName, {
