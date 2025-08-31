@@ -23,7 +23,7 @@ spec:
       tag: v2.0.2
     provider:
       packages:
-        - provider-kubernetes:v1.0.0
-        - provider-family-aws:v2.0.0
-        - provider-family-azure:v2.0.0
-        - provider-keycloak:v2.6.0
+        - xpkg.crossplane.io/crossplane-contrib/provider-kubernetes:v1.0.0
+        - xpkg.crossplane.io/crossplane-contrib/provider-family-aws:v2.0.0
+        - xpkg.crossplane.io/crossplane-contrib/provider-family-azure:v2.0.0
+        - xpkg.crossplane.io/crossplane-contrib/provider-keycloak:v2.6.0
