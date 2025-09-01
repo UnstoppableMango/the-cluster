@@ -1,4 +1,0 @@
-config:
-  thecluster-cloudflare-operator:cloudflare:
-    apiToken:
-      secure: AAABAGFcnCgCxuWe3BpGqi85rflZZiR7P4Qa1z8i5eUL99s5DlYAffXlsgsccDfZInxxopbJ5Pts78WpFzT32m9F0dT5vssR
