@@ -15,6 +15,7 @@ CRD2PULUMI ?= $(GO) tool crd2pulumi
 CURL       ?= curl
 DEVCTL     ?= $(GO) tool devctl
 DPRINT     ?= dprint
+FLUX       ?= flux
 KUBECTL    ?= bin/kubectl
 KUBESEAL   ?= $(GO) tool kubeseal
 NPM        ?= npm
@@ -27,6 +28,11 @@ GOARCH != $(GO) env GOARCH
 APPS       := $(wildcard apps/*)
 INFRA      := $(wildcard infra/*)
 COMPONENTS := $(addprefix components/,cloudflare-ingress oauth oauth2-proxy postgres-db)
+
+FLUX_SOURCE ?= flux-system
+
+reconcile:
+	$(FLUX) reconcile source git ${FLUX_SOURCE}
 
 format fmt:
 	$(DPRINT) fmt
