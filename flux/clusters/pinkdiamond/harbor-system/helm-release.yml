@@ -1,0 +1,142 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: harbor
+  namespace: harbor-system
+spec:
+  interval: 10m
+  releaseName: harbor
+  targetNamespace: harbor-system
+  chart:
+    spec:
+      chart: harbor
+      version: 1.17.1
+      sourceRef:
+        kind: HelmRepository
+        name: harbor
+        namespace: flux-system
+  # https://github.com/goharbor/harbor-helm/blob/v1.17.1/values.yaml
+  values:
+    expose:
+      type: ingress # default
+      tls:
+        enabled: true # default
+        certSource: auto # default
+      ingress:
+        hosts:
+          core: core.harbor.thecluster.lan
+        className: nginx
+    externalURL: https://core.harbor.thecluster.lan
+    # Hmm... the docs don't match the chart
+    # https://goharbor.io/docs/2.13.0/install-config/harbor-ha-helm/
+    persistence:
+      enabled: true # default
+      persistentVolumeClaim:
+        registry:
+          storageClass: ec-cephfs
+          accessMode: ReadWriteMany
+          size: 5Gi # default
+        chartmuseum:
+          storageClass: ec-cephfs
+          accessMode: ReadWriteMany
+        jobservice:
+          jobLog:
+            storageClass: ec-cephfs
+            accessMode: ReadWriteMany
+            size: 1Gi # default
+        trivy:
+          storageClass: ec-cephfs
+          accessMode: ReadWriteMany
+          size: 5Gi # default
+      imageChartStorage:
+        type: filesystem # default
+        filesystem:
+          rootdirectory: /storage # default
+    internalTLS:
+      enabled: false # default
+    portal:
+      image:
+        repository: goharbor/harbor-portal # default
+        tag: v2.13.1
+      replicas: 1 # default
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+    core:
+      image:
+        repository: goharbor/harbor-core # default
+        tag: v2.13.1
+      replicas: 1 # default
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+    jobservice:
+      image:
+        repository: goharbor/harbor-jobservice # default
+        tag: v2.13.1
+      replicas: 1 # default
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+    registry:
+      registry:
+        image:
+          repository: goharbor/registry-photon # default
+          tag: v2.13.1
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+      controller:
+        image:
+          repository: goharbor/harbor-registryctl # default
+          tag: v2.13.1
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+      replicas: 1 # default
+    trivy:
+      enabled: true # default
+      image:
+        repository: goharbor/trivy-adapter-photon # default
+        tag: v2.13.1
+      replicas: 1
+      resources:
+        requests:
+          cpu: 200m # default
+          memory: 512Mi # default
+        limits:
+          cpu: 1 # default
+          memory: 1Gi # default
+    database:
+      type: internal # default
+      internal:
+        image:
+          repository: goharbor/harbor-db # default
+          tag: v2.13.1
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+    redis:
+      type: internal # default
+      internal:
+        image:
+          repository: goharbor/redis-photon # default
+          tag: v2.13.1
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+    exporter:
+      image:
+        repository: goharbor/harbor-exporter # default
+        tag: v2.13.1
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
