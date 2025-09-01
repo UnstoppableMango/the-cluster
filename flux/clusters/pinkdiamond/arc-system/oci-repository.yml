@@ -15,7 +15,7 @@ spec:
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: gha-runner-scale-set-controller
+  name: gha-runner-scale-set
   namespace: arc-system
 spec:
   interval: 30m
