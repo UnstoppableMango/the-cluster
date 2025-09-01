@@ -57,7 +57,7 @@ spec:
     portal:
       image:
         repository: goharbor/harbor-portal # default
-        tag: v2.13.1
+        tag: v2.13.2
       replicas: 1 # default
       resources:
         requests:
@@ -76,7 +76,7 @@ spec:
     core:
       image:
         repository: goharbor/harbor-core # default
-        tag: v2.13.1
+        tag: v2.13.2
       replicas: 1 # default
       resources:
         requests:
@@ -85,7 +85,7 @@ spec:
     jobservice:
       image:
         repository: goharbor/harbor-jobservice # default
-        tag: v2.13.1
+        tag: v2.13.2
       replicas: 1 # default
       resources:
         requests:
@@ -95,7 +95,7 @@ spec:
       registry:
         image:
           repository: goharbor/registry-photon # default
-          tag: v2.13.1
+          tag: v2.13.2
         resources:
           requests:
             cpu: 100m
@@ -103,7 +103,7 @@ spec:
       controller:
         image:
           repository: goharbor/harbor-registryctl # default
-          tag: v2.13.1
+          tag: v2.13.2
         resources:
           requests:
             cpu: 100m
@@ -113,7 +113,7 @@ spec:
       enabled: true # default
       image:
         repository: goharbor/trivy-adapter-photon # default
-        tag: v2.13.1
+        tag: v2.13.2
       replicas: 1
       resources:
         requests:
@@ -127,7 +127,7 @@ spec:
       internal:
         image:
           repository: goharbor/harbor-db # default
-          tag: v2.13.1
+          tag: v2.13.2
         resources:
           requests:
             cpu: 100m
@@ -137,7 +137,7 @@ spec:
       internal:
         image:
           repository: goharbor/redis-photon # default
-          tag: v2.13.1
+          tag: v2.13.2
         resources:
           requests:
             cpu: 100m
@@ -145,7 +145,7 @@ spec:
     exporter:
       image:
         repository: goharbor/harbor-exporter # default
-        tag: v2.13.1
+        tag: v2.13.2
       resources:
         requests:
           cpu: 100m
