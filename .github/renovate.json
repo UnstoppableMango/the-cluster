@@ -38,5 +38,10 @@
 			]
 		}
 	],
-	"packageRules": []
+	"packageRules": [
+		{
+			"matchPackageNames": ["/^goharbor\\/.*/"],
+			"groupName": "harbor"
+		}
+	]
 }
