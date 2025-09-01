@@ -1,35 +1,6 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: gha-runner-scale-set-controller
-  namespace: arc-runners
-spec:
-  chartRef:
-    kind: OCIRepository
-    name: gha-runner-scale-set-controller
-  interval: 10m
-  values:
-    replicaCount: 2
-    image:
-      repository: ghcr.io/actions/gha-runner-scale-set-controller # default
-      tag: 0.12.1
-    securityContext:
-      capabilities:
-        drop: [ALL]
-      readOnlyRootFilesystem: true
-      runAsNonRoot: true
-      runAsUser: 1000
-    resources:
-      limits:
-        cpu: 100m
-        memory: 128Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
----
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
   name: lang-runners
   namespace: arc-runners
 spec:
