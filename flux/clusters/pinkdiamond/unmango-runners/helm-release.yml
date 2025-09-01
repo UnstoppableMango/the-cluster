@@ -1,7 +1,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: lang-runners
+  name: unmango-runners
   namespace: arc-runners
 spec:
   chartRef:
@@ -10,7 +10,7 @@ spec:
   interval: 10m
   # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml
   values:
-    githubConfigUrl: https://github.com/UnstoppableMango/lang
+    githubConfigUrl: https://github.com/unmango
     githubConfigSecret: thecluster-bot
     containerMode:
       type: kubernetes
@@ -19,7 +19,7 @@ spec:
         storageClassName: unsafe-rbd
         resources:
           requests:
-            storage: 250Gi
+            storage: 1Gi
     template:
       spec:
         containers:
