@@ -26,7 +26,7 @@ spec:
         # https://github.com/actions/actions-runner-controller/issues/2890
         initContainers:
           - name: kube-init
-            image: ghcr.io/actions/actions-runner:2.238.0
+            image: ghcr.io/actions/actions-runner:2.328.0
             command: [sudo, chown, -R, 1001:123, /home/runner/_work]
             volumeMounts:
               - name: work
@@ -64,7 +64,7 @@ spec:
         # https://github.com/actions/actions-runner-controller/issues/2890
         initContainers:
           - name: kube-init
-            image: ghcr.io/actions/actions-runner:2.238.0
+            image: ghcr.io/actions/actions-runner:2.328.0
             command: [sudo, chown, -R, 1001:123, /home/runner/_work]
             volumeMounts:
               - name: work

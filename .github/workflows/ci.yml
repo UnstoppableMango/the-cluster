@@ -8,7 +8,8 @@ on:
 
 jobs:
   dprint:
-    runs-on: thecluster-runners
+    # runs-on: thecluster-runners
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
       - uses: dprint/check@v2.3
