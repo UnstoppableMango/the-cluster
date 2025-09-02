@@ -12,3 +12,7 @@ spec:
     name: cloudflare-operator
   targetNamespace: cloudflare-system
   wait: true
+  images:
+    - name: controller
+      newName: adyanth/cloudflare-operator
+      newTag: 0.13.1
