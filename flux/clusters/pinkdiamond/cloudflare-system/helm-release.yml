@@ -72,8 +72,9 @@ spec:
       isDefaultClass: false # default
     replicaCount: 2
     image:
-      repository: cr.strrl.dev/strrl/cloudflare-tunnel-ingress-controller # default
-      tag: v0.0.18
+      # https://github.com/STRRL/cloudflare-tunnel-ingress-controller/issues/202
+      repository: ghcr.io/strrl/cloudflare-tunnel-ingress-controller
+      tag: 0.0.18
     resources:
       limits:
         cpu: 100m # default
