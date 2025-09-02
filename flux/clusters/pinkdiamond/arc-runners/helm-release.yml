@@ -26,7 +26,7 @@ spec:
         containers:
           - name: runner
             image: ghcr.io/actions/actions-runner:2.328.0
-            command: [/home/runnery/run.sh]
+            command: [/home/runner/run.sh]
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -56,4 +56,4 @@ spec:
         containers:
           - name: runner
             image: ghcr.io/actions/actions-runner:2.328.0
-            command: [/home/runnery/run.sh]
+            command: [/home/runner/run.sh]
