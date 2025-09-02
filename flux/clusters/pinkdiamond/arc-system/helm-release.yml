@@ -7,7 +7,12 @@ spec:
   chartRef:
     kind: OCIRepository
     name: gha-runner-scale-set-controller
-  interval: 10m
+  interval: 1h
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+  # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set-controller/values.yaml
   values:
     replicaCount: 2
     image:
