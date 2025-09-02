@@ -51,7 +51,7 @@ spec:
   chart:
     spec:
       chart: cloudflare-tunnel-ingress-controller
-      version: v0.1.0
+      version: 0.0.18
       sourceRef:
         kind: HelmRepository
         name: strll.dev
