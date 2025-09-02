@@ -51,6 +51,7 @@ spec:
   values:
     githubConfigUrl: https://github.com/UnstoppableMango/the-cluster
     githubConfigSecret: thecluster-bot
+    minRunners: 1 # it's soooo sllooowwwwwww
     containerMode:
       type: kubernetes
       kubernetesModeWorkVolumeClaim:
