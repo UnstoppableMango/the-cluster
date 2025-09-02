@@ -4,7 +4,7 @@ metadata:
   name: unmango-operator
   namespace: cloudflare-system
 spec:
-  interval: 10m
+  interval: 1h
   releaseName: cloudflare-operator
   targetNamespace: cloudflare-system
   chart:
@@ -14,7 +14,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: cloudflare-operator
-        namespace: flux-system
   install:
     crds: Create
   upgrade:
@@ -39,3 +38,50 @@ spec:
           limits:
             cpu: 100m
             memory: 200Mi
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cloudflare-tunnel-ingress-controller
+  namespace: cloudflare-system
+spec:
+  interval: 10m
+  releaseName: cloudflare-tunnel-ingress-controller
+  targetNamespace: cloudflare-system
+  chart:
+    spec:
+      chart: cloudflare-tunnel-ingress-controller
+      version: v0.1.0
+      sourceRef:
+        kind: HelmRepository
+        name: strll.dev
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+  values:
+    cloudflare:
+      secretRef:
+        name: credentials
+        accountIDKey: CLOUDFLARE_ACCOUNT_ID
+        apiTokenKey: CLOUDFLARE_API_TOKEN
+    ingressClass:
+      name: cloudflare-tunnel # default
+      controllerValue: strrl.dev/cloudflare-tunnel-ingress-controller # default
+      isDefaultClass: false # default
+    replicaCount: 2
+    image:
+      repository: cr.strrl.dev/strrl/cloudflare-tunnel-ingress-controller # default
+      tag: v0.0.18
+    resources:
+      limits:
+        cpu: 100m # default
+        memory: 128Mi # default
+      requests:
+        cpu: 100m # default
+        memory: 128Mi # default
+    cloudflared:
+      image:
+        repository: cloudflare/cloudflared # default
+        tag: 2025.8.1
+      replicaCount: 3
