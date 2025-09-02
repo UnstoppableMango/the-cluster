@@ -65,6 +65,7 @@ spec:
         name: credentials
         accountIDKey: CLOUDFLARE_ACCOUNT_ID
         apiTokenKey: CLOUDFLARE_API_TOKEN
+        tunnelNameKey: CFTIC_TUNNEL_NAME
     ingressClass:
       name: cloudflare-tunnel # default
       controllerValue: strrl.dev/cloudflare-tunnel-ingress-controller # default
