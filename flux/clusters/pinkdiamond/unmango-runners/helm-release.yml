@@ -13,14 +13,6 @@ spec:
   values:
     githubConfigUrl: https://github.com/unmango
     githubConfigSecret: thecluster-bot
-    containerMode:
-      type: kubernetes
-      kubernetesModeWorkVolumeClaim:
-        accessModes: [ReadWriteOnce]
-        storageClassName: unsafe-rbd
-        resources:
-          requests:
-            storage: 1Gi
     template:
       spec:
         containers:

@@ -13,20 +13,20 @@ spec:
   values:
     githubConfigUrl: https://github.com/UnstoppableMango/lang
     githubConfigSecret: thecluster-bot
-    # template:
-    #   spec:
-    #     # https://github.com/actions/actions-runner-controller/issues/2890
-    #     initContainers:
-    #       - name: kube-init
-    #         image: ghcr.io/actions/actions-runner:2.328.0
-    #         command: [sudo, chown, -R, 1001:123, /home/runner/_work]
-    #         volumeMounts:
-    #           - name: work
-    #             mountPath: /home/runner/_work
-    #     containers:
-    #       - name: runner
-    #         image: ghcr.io/actions/actions-runner:2.328.0
-    #         command: [/home/runner/run.sh]
+    template:
+      spec:
+        # https://github.com/actions/actions-runner-controller/issues/2890
+        initContainers:
+          - name: kube-init
+            image: ghcr.io/actions/actions-runner:2.328.0
+            command: [sudo, chown, -R, 1001:123, /home/runner/_work]
+            volumeMounts:
+              - name: work
+                mountPath: /home/runner/_work
+        containers:
+          - name: runner
+            image: ghcr.io/actions/actions-runner:2.328.0
+            command: [/home/runner/run.sh]
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -44,17 +44,17 @@ spec:
     githubConfigUrl: https://github.com/UnstoppableMango/the-cluster
     githubConfigSecret: thecluster-bot
     minRunners: 1 # it's soooo sllooowwwwwww
-    # template:
-    #   spec:
-    #     # https://github.com/actions/actions-runner-controller/issues/2890
-    #     initContainers:
-    #       - name: kube-init
-    #         image: ghcr.io/actions/actions-runner:2.328.0
-    #         command: [sudo, chown, -R, 1001:123, /home/runner/_work]
-    #         volumeMounts:
-    #           - name: work
-    #             mountPath: /home/runner/_work
-    #     containers:
-    #       - name: runner
-    #         image: ghcr.io/actions/actions-runner:2.328.0
-    #         command: [/home/runner/run.sh]
+    template:
+      spec:
+        # https://github.com/actions/actions-runner-controller/issues/2890
+        initContainers:
+          - name: kube-init
+            image: ghcr.io/actions/actions-runner:2.328.0
+            command: [sudo, chown, -R, 1001:123, /home/runner/_work]
+            volumeMounts:
+              - name: work
+                mountPath: /home/runner/_work
+        containers:
+          - name: runner
+            image: ghcr.io/actions/actions-runner:2.328.0
+            command: [/home/runner/run.sh]
