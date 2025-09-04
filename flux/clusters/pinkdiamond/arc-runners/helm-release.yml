@@ -13,14 +13,6 @@ spec:
   values:
     githubConfigUrl: https://github.com/UnstoppableMango/lang
     githubConfigSecret: thecluster-bot
-    containerMode:
-      type: kubernetes
-      kubernetesModeWorkVolumeClaim:
-        accessModes: [ReadWriteOnce]
-        storageClassName: unsafe-rbd
-        resources:
-          requests:
-            storage: 250Gi
     template:
       spec:
         # https://github.com/actions/actions-runner-controller/issues/2890
@@ -52,14 +44,6 @@ spec:
     githubConfigUrl: https://github.com/UnstoppableMango/the-cluster
     githubConfigSecret: thecluster-bot
     minRunners: 1 # it's soooo sllooowwwwwww
-    containerMode:
-      type: kubernetes
-      kubernetesModeWorkVolumeClaim:
-        accessModes: [ReadWriteOnce]
-        storageClassName: unsafe-rbd
-        resources:
-          requests:
-            storage: 1Gi
     template:
       spec:
         # https://github.com/actions/actions-runner-controller/issues/2890
