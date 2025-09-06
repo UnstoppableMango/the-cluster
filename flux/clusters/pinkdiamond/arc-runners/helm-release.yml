@@ -15,14 +15,6 @@ spec:
     githubConfigSecret: thecluster-bot
     template:
       spec:
-        # https://github.com/actions/actions-runner-controller/issues/2890
-        # initContainers:
-        #   - name: kube-init
-        #     image: ghcr.io/actions/actions-runner:2.328.0
-        #     command: [sudo, chown, -R, 1001:123, /home/runner/_work]
-        #     volumeMounts:
-        #       - name: work
-        #         mountPath: /home/runner/_work
         containers:
           - name: runner
             image: ghcr.io/actions/actions-runner:2.328.0
@@ -46,14 +38,6 @@ spec:
     minRunners: 1 # it's soooo sllooowwwwwww
     template:
       spec:
-        # https://github.com/actions/actions-runner-controller/issues/2890
-        # initContainers:
-        #   - name: kube-init
-        #     image: ghcr.io/actions/actions-runner:2.328.0
-        #     command: [sudo, chown, -R, 1001:123, /home/runner/_work]
-        #     volumeMounts:
-        #       - name: work
-        #         mountPath: /home/runner/_work
         containers:
           - name: runner
             image: ghcr.io/actions/actions-runner:2.328.0
