@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: quay.io/jetstack/cert-manager-csi-driver
-      tag: v0.6.0
+      tag: v0.11.0
     nodeDriverRegistrarImage:
       repository: registry.k8s.io/sig-storage/csi-node-driver-registrar
       tag: v2.9.2
