@@ -21,7 +21,7 @@ spec:
       tag: v0.6.0
     nodeDriverRegistrarImage:
       repository: registry.k8s.io/sig-storage/csi-node-driver-registrar
-      tag: v2.9.2
+      tag: v2.14.0
     livenessProbeImage:
       repository: registry.k8s.io/sig-storage/livenessprobe
       tag: v2.16.0
