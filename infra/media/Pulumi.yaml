@@ -16,4 +16,4 @@ config:
         docker: 1.19.7
       tubesync:
         # renovate: datasource=docker depName=ghcr.io/meeb/tubesync
-        docker: v0.15.8
+        docker: v0.15.9
