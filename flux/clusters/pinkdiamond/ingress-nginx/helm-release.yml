@@ -1,0 +1,59 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ingress-nginx
+  namespace: ingress-nginx
+spec:
+  interval: 10m
+  releaseName: ingress-nginx
+  targetNamespace: ingress-nginx
+  chart:
+    spec:
+      chart: ingress-nginx
+      version: 4.13.2
+      sourceRef:
+        kind: HelmRepository
+        name: ingress-nginx
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+  # https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/values.yaml
+  values:
+    controller:
+      image:
+        registry: registry.k8s.io # default
+        image: ingress-nginx/controller
+        tag: v1.13.2
+      ingressClassResource:
+        name: nginx # default
+        enabled: true # default
+        controllerValue: k8s.io/ingress-nginx # default
+      kind: Deployment # default
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: NotIn
+                    values: [gaea]
+      replicaCount: 2
+      resources:
+        limits:
+          cpu: 100m
+          memory: 90Mi
+        requests:
+          cpu: 100m
+          memory: 90Mi
+      service:
+        enabled: true # default
+        type: LoadBalancer # default
+        loadBalancerIP: 192.168.1.43
+        # Preserve source IPs when using MetalLB
+        # https://kubernetes.github.io/ingress-nginx/deploy/baremetal/#a-pure-software-solution-metallb
+        externalTrafficPolicy: Local
+      admissionWebhooks:
+        certManager:
+          enabled: true
