@@ -34,7 +34,7 @@ spec:
     reloader:
       image:
         repository: natsio/nats-server-config-reloader # default
-        tag: 0.19.1
+        tag: 0.19.2
     service:
       ports:
         nats:
