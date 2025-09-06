@@ -8,8 +8,9 @@ on:
 
 jobs:
   dprint:
-    runs-on: thecluster-runners
-    container: ghcr.io/catthehacker/ubuntu:runner-24.04-20250901
+    runs-on: ubuntu-latest
+    # runs-on: thecluster-runners
+    # container: ghcr.io/catthehacker/ubuntu:runner-24.04-20250901
     steps:
       - uses: actions/checkout@v5
       - uses: dprint/check@v2.3
