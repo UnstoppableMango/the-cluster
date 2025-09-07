@@ -1,7 +1,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
-  name: cloudflare-operator
+  name: adyanth-cloudflare-operator
   namespace: cloudflare-system
 spec:
   url: https://github.com/adyanth/cloudflare-operator
