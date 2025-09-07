@@ -10,7 +10,7 @@ spec:
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: cloudflare-operator
+  name: unmango-cloudflare-operator
   namespace: cloudflare-system
 spec:
   url: https://unmango.github.io/cloudflare-operator

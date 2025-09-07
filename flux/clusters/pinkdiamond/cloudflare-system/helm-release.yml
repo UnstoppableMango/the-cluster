@@ -5,7 +5,7 @@ metadata:
   namespace: cloudflare-system
 spec:
   interval: 1h
-  releaseName: cloudflare-operator
+  releaseName: unmango-operator
   targetNamespace: cloudflare-system
   chart:
     spec:
@@ -13,7 +13,7 @@ spec:
       version: v0.0.1
       sourceRef:
         kind: HelmRepository
-        name: cloudflare-operator
+        name: unmango-cloudflare-operator
   install:
     crds: Create
   upgrade:
