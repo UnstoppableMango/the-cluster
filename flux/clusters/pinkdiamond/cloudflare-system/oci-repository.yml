@@ -2,7 +2,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
   name: origin-ca-issuer
-  namespace: origin-ca-issuer
+  namespace: cloudflare-system
 spec:
   url: oci://ghcr.io/cloudflare/origin-ca-issuer-charts/origin-ca-issuer
   interval: 1h

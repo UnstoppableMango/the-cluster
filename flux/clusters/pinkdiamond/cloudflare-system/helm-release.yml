@@ -87,3 +87,32 @@ spec:
         repository: cloudflare/cloudflared # default
         tag: 2025.8.1
       replicaCount: 3
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: origin-ca-issuer
+  namespace: cloudflare-system
+spec:
+  interval: 1h
+  releaseName: origin-ca-issuer
+  targetNamespace: cloudflare-system
+  chartRef:
+    kind: OCIRepository
+    name: origin-ca-issuer
+  # https://github.com/cloudflare/origin-ca-issuer/blob/trunk/deploy/charts/origin-ca-issuer/values.yaml
+  values:
+    controller:
+      image:
+        repository: cloudflare/origin-ca-issuer # default
+        tag: v0.12.1
+      resources:
+        limits:
+          cpu: '1' # default
+          memory: 512Mi # default
+        requests:
+          cpu: '1' # default
+          memory: 512Mi # default
+    certmanager:
+      namespace: cert-manager # default
+      serviceAccountName: cert-manager # default
