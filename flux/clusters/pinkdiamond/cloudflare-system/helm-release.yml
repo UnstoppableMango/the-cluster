@@ -4,6 +4,7 @@ metadata:
   name: unmango-operator
   namespace: cloudflare-system
 spec:
+  suspend: true
   interval: 1h
   releaseName: unmango-operator
   targetNamespace: cloudflare-system
