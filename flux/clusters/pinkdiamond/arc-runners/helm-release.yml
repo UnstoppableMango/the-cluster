@@ -35,7 +35,7 @@ spec:
   values:
     githubConfigUrl: https://github.com/UnstoppableMango/the-cluster
     githubConfigSecret: thecluster-bot
-    minRunners: 1 # it's soooo sllooowwwwwww
+    minRunners: 1
     template:
       spec:
         containers:
