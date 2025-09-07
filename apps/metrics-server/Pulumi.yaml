@@ -1,6 +1,0 @@
-name: thecluster-metrics-server
-description: Metrics Server install for THECLUSTER
-runtime:
-  name: nodejs
-  options:
-    packagemanager: yarn
