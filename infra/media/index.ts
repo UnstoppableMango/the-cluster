@@ -264,6 +264,9 @@ const plex = new Chart('plex', {
 		service: {
 			type: 'LoadBalancer',
 		},
+		dnsConfig: {
+			options: [{ name: 'ndots', value: '0' }],
+		},
 		ingress: {
 			enabled: true,
 			ingressClassName: 'nginx',
@@ -315,9 +318,6 @@ const plex = new Chart('plex', {
 				},
 			},
 		],
-		dnsConfig: {
-			options: [{ name: 'ndots', value: '0' }],
-		},
 	},
 });
 
