@@ -1,8 +1,8 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: harbor
-  namespace: flux-system
+  name: nats
+  namespace: nats-system
 spec:
-  url: https://helm.goharbor.io
+  url: https://nats-io.github.io/k8s/helm/charts/
   interval: 1h
