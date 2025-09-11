@@ -6,5 +6,5 @@ spec:
   requestType: OriginECC
   auth:
     tokenRef:
-      key: api-token
-      name: cloudflare
+      key: CLOUDFLARE_API_TOKEN
+      name: credentials
