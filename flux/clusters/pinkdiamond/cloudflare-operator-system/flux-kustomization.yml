@@ -1,0 +1,18 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cloudflare-operator
+  namespace: cloudflare-operator-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: cloudflare-operator
+  path: ./config/default
+  interval: 30m
+  prune: true
+  targetNamespace: cloudflare-operator-system
+  wait: true
+  images:
+    - name: controller
+      newName: adyanth/cloudflare-operator
+      newTag: 10.0.2

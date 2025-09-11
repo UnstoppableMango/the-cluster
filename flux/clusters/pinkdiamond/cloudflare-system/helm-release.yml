@@ -1,10 +1,9 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: unmango-operator
+  name: cloudflare-operator
   namespace: cloudflare-system
 spec:
-  suspend: true
   interval: 1h
   releaseName: unmango-operator
   targetNamespace: cloudflare-system
@@ -14,7 +13,7 @@ spec:
       version: v0.0.1
       sourceRef:
         kind: HelmRepository
-        name: unmango-cloudflare-operator
+        name: cloudflare-operator
   install:
     crds: Create
   upgrade:

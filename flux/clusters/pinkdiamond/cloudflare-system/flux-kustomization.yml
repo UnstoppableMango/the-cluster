@@ -11,23 +11,3 @@ spec:
   interval: 1h
   prune: true
   targetNamespace: cloudflare-system
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: adyanth-operator
-  namespace: cloudflare-system
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: adyanth-cloudflare-operator
-  path: ./config/default
-  interval: 30m
-  prune: true
-  targetNamespace: cloudflare-system
-  wait: true
-  images:
-    - name: controller
-      newName: adyanth/cloudflare-operator
-      newTag: 10.0.2
-
