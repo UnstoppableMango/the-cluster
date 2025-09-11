@@ -13,12 +13,12 @@ spec:
       version: 0.26.0
       sourceRef:
         kind: HelmRepository
-        name: cnpg
-        namespace: flux-system
+        name: cloudnative-pg
   install:
     crds: Create
   upgrade:
     crds: CreateReplace
+  # https://github.com/cloudnative-pg/charts/blob/main/charts/cloudnative-pg/values.yaml
   values:
     image:
       repository: ghcr.io/cloudnative-pg/cloudnative-pg # default

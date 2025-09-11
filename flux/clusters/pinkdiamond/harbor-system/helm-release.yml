@@ -14,7 +14,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: harbor
-        namespace: flux-system
   # https://github.com/goharbor/harbor-helm/blob/v1.17.1/values.yaml
   values:
     expose:

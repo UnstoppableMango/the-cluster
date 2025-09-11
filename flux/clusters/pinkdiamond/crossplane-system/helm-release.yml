@@ -14,7 +14,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: crossplane-stable
-        namespace: flux-system
   # https://github.com/crossplane/crossplane/blob/main/cluster/charts/crossplane/values.yaml
   values:
     replicas: 2
