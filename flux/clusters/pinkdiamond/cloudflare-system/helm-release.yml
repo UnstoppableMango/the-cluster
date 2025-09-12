@@ -5,7 +5,7 @@ metadata:
   namespace: cloudflare-system
 spec:
   interval: 1h
-  releaseName: unmango-operator
+  releaseName: cloudflare-operator
   targetNamespace: cloudflare-system
   chart:
     spec:
