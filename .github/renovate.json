@@ -42,6 +42,17 @@
 		{
 			"matchPackageNames": ["/^goharbor\\/.*/"],
 			"groupName": "harbor"
+		},
+		{
+			"matchPackageNames": ["/^@?pulumi\\/pulumi/"],
+			"groupName": "pulumi"
+		},
+		{
+			"matchPackageNames": [
+				"bitnami/sealed-secrets-controller",
+				"bitnami-labs/sealed-secrets"
+			],
+			"groupName": "sealed-secrets"
 		}
 	]
 }
