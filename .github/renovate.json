@@ -49,8 +49,8 @@
 		},
 		{
 			"matchPackageNames": [
-				"bitnami\\/sealed-secrets-controller",
-				"bitnami-labs\\/sealed-secrets"
+				"/bitnami\\/sealed-secrets-controller/",
+				"/bitnami-labs\\/sealed-secrets/"
 			],
 			"groupName": "sealed-secrets"
 		}
