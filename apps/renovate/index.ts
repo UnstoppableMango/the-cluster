@@ -46,7 +46,10 @@ module.exports = {
 	platform: 'github',
 	autodiscover: false, // default
 	autodiscoverFilter: [], // default
-	repositories: ['UnstoppableMango/the-cluster'],
+	repositories: [
+		'UnstoppableMango/the-cluster',
+		'UnstoppableMango/ux',
+	],
 	presetCachePersistence: true,
 };
 `;
