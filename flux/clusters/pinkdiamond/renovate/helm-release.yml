@@ -78,7 +78,8 @@ spec:
               --privateKeyLocation /auth/key.pem
           volumeMounts:
             - name: private-key
-              mountPath: /auth
+              mountPath: /auth/key.pem
+              subPath: key.pem
             - name: shared
               mountPath: /shared
     env:
