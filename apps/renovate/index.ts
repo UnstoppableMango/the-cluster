@@ -1,7 +1,6 @@
 import { Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v4';
 import { Config, interpolate } from '@pulumi/pulumi';
-import path = require('node:path');
 import z from 'zod';
 
 const GitHub = z.object({
