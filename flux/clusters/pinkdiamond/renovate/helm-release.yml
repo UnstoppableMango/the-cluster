@@ -1,0 +1,105 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: unmango-renovate
+  namespace: renovate
+spec:
+  interval: 1h
+  releaseName: unmango-renovate
+  targetNamespace: renovate
+  chart:
+    spec:
+      chart: renovate
+      version: 43.15.0
+      sourceRef:
+        kind: HelmRepository
+        name: renovate
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+  # https://github.com/renovatebot/helm-charts/blob/main/charts/renovate/values.yaml
+  values:
+    image:
+      registry: ghcr.io # default
+      repository: renovatebot/renovate # default
+      tag: 41.112.0
+    renovate:
+      configIsJavaScript: true
+      config: |
+        const fs = require('fs');
+
+        const token = fs.readFileSync('/auth/key.pem', 'utf8').trim();
+
+        module.exports = {
+          token,
+          platform: 'github',
+          autodiscover: false, // default
+          autodiscoverFilter: [], // default
+          repositories: [
+            'unmango/aferox',
+            'unmango/devctl',
+            'unmango/charts',
+            'unmango/cloudlare-operator',
+            'unmango/github',
+            'unmango/go',
+            'unmango/go-make',
+            'unmango/gnumake-go',
+            'unmango/kubebuilder',
+            'unmango/protofs',
+            'unmango/thecluster-operator',
+          ],
+          presetCachePersistence: true,
+        };
+    cronjob:
+      schedule: '*/30 * * * *'
+      timeZone: 'America/Chicago'
+      initContainers:
+        - name: github-app-auth
+          image: oven/bun:1.2.21
+          env:
+            - name: GITHUB_APP_ID
+              valueFrom:
+                secretKeyRef:
+                  name: thecluster-app
+                  key: app-id
+            - name: GITHUB_INSTALLATION_ID
+              valueFrom:
+                secretKeyRef:
+                  name: thecluster-app
+                  key: installation-id
+          command:
+            - /bin/sh
+            - -c
+            - |
+              bunx github-app-installation-token \
+              --appId "${GITHUB_APP_ID}" \
+              --installationId "${GITHUB_INSTALLATION_ID}" \
+              --privateKeyLocation /auth/key.pem
+          volumeMounts:
+            - name: private-key
+              mountPath: /auth
+            - name: shared
+              mountPath: /shared
+    env:
+      LOG_LEVEL: debug
+    extraVolumeMounts:
+      - name: shared
+        mountPath: /shared
+    extraVolumes:
+      - name: private-key
+        secret:
+          secretName: thecluster-app
+      - name: shared
+        emptyDir: {}
+    resources:
+      requests:
+        cpu: '1'
+        memory: 256Mi
+      limits:
+        cpu: '2'
+        memory: 4Gi
+    # TODO: Probably use a shared instance between all renovate jobs
+    # https://github.com/bitnami/charts/tree/master/bitnami/redis
+    redis:
+      enabled: true
