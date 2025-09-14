@@ -11,7 +11,7 @@ config:
   versions:
     value:
       # renovate: datasource=docker depName=oven/bun
-      bun: 1.2.21
+      bun: 1.2.22
       chart: 43.15.0
       # renovate: datasource=docker depName=ghcr.io/renovatebot/renovate
       docker: 41.113.3
