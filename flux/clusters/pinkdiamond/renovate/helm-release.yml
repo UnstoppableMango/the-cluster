@@ -29,7 +29,7 @@ spec:
       config: |
         const fs = require('fs');
 
-        const token = fs.readFileSync('/auth/key.pem', 'utf8').trim();
+        const token = fs.readFileSync('/shared/token', 'utf8').trim();
 
         module.exports = {
           token,
@@ -75,7 +75,8 @@ spec:
               bunx github-app-installation-token \
               --appId "${GITHUB_APP_ID}" \
               --installationId "${GITHUB_INSTALLATION_ID}" \
-              --privateKeyLocation /auth/key.pem
+              --privateKeyLocation /auth/key.pem \
+              > /shared/token
           volumeMounts:
             - name: private-key
               mountPath: /auth/key.pem
