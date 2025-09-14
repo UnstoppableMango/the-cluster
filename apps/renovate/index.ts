@@ -1,7 +1,6 @@
 import { Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v4';
 import { Config, interpolate } from '@pulumi/pulumi';
-import path = require('node:path');
 import z from 'zod';
 
 const GitHub = z.object({
@@ -47,8 +46,32 @@ module.exports = {
 	autodiscover: false, // default
 	autodiscoverFilter: [], // default
 	repositories: [
+		'UnstoppableMango/audio',
+		'UnstoppableMango/github',
+		'UnstoppableMango/lang',
+		'UnstoppableMango/openapi2go',
+		'UnstoppableMango/openapi2terraform',
+		'UnstoppableMango/ouranosis',
+		'UnstoppableMango/minecraft-manager',
+		'UnstoppableMango/nixos',
+		'UnstoppableMango/pcl2openapi',
+		'UnstoppableMango/pfsense-operator',
+		'UnstoppableMango/plex-operator',
+		'UnstoppableMango/pia-manual-connections',
+		'UnstoppableMango/pulumi2crd',
+		'UnstoppableMango/pulumi-bun',
+		'UnstoppableMango/renovate-config',
+		'UnstoppableMango/resume',
+		'UnstoppableMango/tdl',
+		'UnstoppableMango/terraform-provider-pfsense',
+		'UnstoppableMango/terraform2crd',
+		'UnstoppableMango/thecluster.io',
 		'UnstoppableMango/the-cluster',
+		'UnstoppableMango/UnMango.Extensions.CommandLine',
+		'UnstoppableMango/unstoppablemango.io',
 		'UnstoppableMango/ux',
+		'UnstoppableMango/wireguard-cni',
+		'UnstoppableMango/xmage-docker',
 	],
 	presetCachePersistence: true,
 };
