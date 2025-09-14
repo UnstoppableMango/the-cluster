@@ -48,10 +48,11 @@ ${APPS} ${INFRA}: | bin/pulumi
 components ${COMPONENTS}:
 	cd $@ && $(NPM) install
 
-flux/%-sealed.yml: hack/secrets/%.yml | sealed-secrets.pub
-	$(KUBESEAL) --format=yaml --cert=$| < $< > $@
+flux/%-sealed.yml: hack/secrets/%.yml | hack/sealed-secrets.pub
+	$(KUBESEAL) --format=yaml --cert=$| \
+	--secret-file $< --sealed-secret-file $@
 
-sealed-secrets.pub:
+hack/sealed-secrets.pub:
 	$(KUBESEAL) --fetch-cert \
 	--controller-name sealed-secrets-controller \
 	--controller-namespace flux-system \
