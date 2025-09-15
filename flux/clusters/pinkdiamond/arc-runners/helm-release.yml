@@ -13,6 +13,7 @@ spec:
   values:
     githubConfigUrl: https://github.com/UnstoppableMango/lang
     githubConfigSecret: thecluster-bot
+    runnerScaleSetName: thecluster
     template:
       spec:
         containers:
@@ -35,6 +36,7 @@ spec:
   values:
     githubConfigUrl: https://github.com/UnstoppableMango/the-cluster
     githubConfigSecret: thecluster-bot
+    runnerScaleSetName: thecluster
     minRunners: 1
     template:
       spec:
@@ -58,6 +60,7 @@ spec:
   values:
     githubConfigUrl: https://github.com/UnstoppableMango/ux
     githubConfigSecret: thecluster-bot
+    runnerScaleSetName: thecluster
     template:
       spec:
         containers:
@@ -80,6 +83,7 @@ spec:
   values:
     githubConfigUrl: https://github.com/UnstoppableMango/xmage-docker
     githubConfigSecret: thecluster-bot
+    runnerScaleSetName: thecluster
     template:
       spec:
         containers:
@@ -102,6 +106,7 @@ spec:
   values:
     githubConfigUrl: https://github.com/UnstoppableMango/thecluster.io
     githubConfigSecret: thecluster-bot
+    runnerScaleSetName: thecluster
     template:
       spec:
         containers:
