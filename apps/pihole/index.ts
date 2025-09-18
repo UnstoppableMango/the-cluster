@@ -189,11 +189,11 @@ const externalDns = instances.map(({ name }) =>
 			},
 			resources: {
 				requests: {
-					cpu: '10m',
+					cpu: '100m',
 					memory: '128Mi',
 				},
 				limits: {
-					cpu: '100m',
+					cpu: '500m',
 					memory: '512Mi',
 				},
 			},

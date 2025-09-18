@@ -1,0 +1,10 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: metallb-operator
+  namespace: metallb-system
+spec:
+  interval: 1h
+  url: https://github.com/metallb/metallb-operator
+  ref:
+    tag: v0.14.2
