@@ -56,6 +56,9 @@ components ${COMPONENTS}:
 runner: containers/runner.Dockerfile
 	$(DOCKER) buildx build -f $< .
 
+runner: vendor/github.com/actions-oss/act-docker-images/docker-bake.hcl
+	cd $(<D) && $(DOCKER) buildx bake -f $(<F) ubuntu
+
 flux/%-sealed.yml: hack/secrets/%.yml | hack/sealed-secrets.pub
 	$(KUBESEAL) --format=yaml --cert=$| \
 	--secret-file $< --sealed-secret-file $@
