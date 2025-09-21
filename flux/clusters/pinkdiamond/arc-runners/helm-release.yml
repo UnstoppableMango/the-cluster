@@ -67,11 +67,11 @@ spec:
             imagePullPolicy: Always
             resources:
               limits:
-                cpu: 2
-                memory: 512
+                cpu: '2'
+                memory: 512Mi
               requests:
-                cpu: 1
-                memory: 256
+                cpu: '1'
+                memory: 512Mi
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
