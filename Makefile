@@ -14,6 +14,7 @@ GO         ?= go
 CRD2PULUMI ?= $(GO) tool crd2pulumi
 CURL       ?= curl
 DEVCTL     ?= $(GO) tool devctl
+DOCKER     ?= docker
 DPRINT     ?= dprint
 FLUX       ?= flux
 KUBECTL    ?= bin/kubectl
@@ -47,6 +48,9 @@ ${APPS} ${INFRA}: | bin/pulumi
 .PHONY: components ${COMPONENTS}
 components ${COMPONENTS}:
 	cd $@ && $(NPM) install
+
+runner: vendor/github.com/actions-oss/act-docker-images/docker-bake.hcl
+	cd $(<D) && $(DOCKER) buildx bake -f $(<F) ubuntu
 
 flux/%-sealed.yml: hack/secrets/%.yml | hack/sealed-secrets.pub
 	$(KUBESEAL) --format=yaml --cert=$| \
