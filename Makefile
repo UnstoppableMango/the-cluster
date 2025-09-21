@@ -53,6 +53,9 @@ components ${COMPONENTS}:
 runner: containers/runner/Dockerfile
 	$(DOCKER) buildx build -f $< .
 
+runner: vendor/github.com/actions-oss/act-docker-images/docker-bake.hcl
+	cd $(<D) && $(DOCKER) buildx bake -f $(<F) ubuntu
+
 .PHONY: hack/secrets/infrastructure/configs/cert-manager/ca.yml
 hack/secrets/infrastructure/configs/cert-manager/ca.yml: | bin/pulumi
 	@mkdir -p $(@D)
