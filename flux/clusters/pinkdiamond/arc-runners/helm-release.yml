@@ -71,7 +71,7 @@ spec:
                 memory: 512Mi
               requests:
                 cpu: '1'
-                memory: 512Mi
+                memory: 256Mi
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
