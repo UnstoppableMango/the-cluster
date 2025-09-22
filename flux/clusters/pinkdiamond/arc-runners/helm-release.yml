@@ -64,23 +64,34 @@ spec:
           - name: dind
             image: docker:28.4.0-dind
             restartPolicy: Always # sidecar
-            command: [ dockerd, --host, tcp://127.0.0.1:2375 ]
+            command: [ dockerd, --host=unix:///var/run/docker.sock ]
             securityContext:
               privileged: true
+            volumeMounts:
+              - name: dind-sock
+                mountPath: /var/run
         containers:
           - name: runner # default
             image: ghcr.io/unstoppablemango/the-cluster/actions-runner:sha-0eb8334
-            command: [/home/runner/run.sh] # default
+            command: [ /home/runner/run.sh ] # default
             env:
               - name: DOCKER_HOST
-                value: tcp://127.0.0.1:2375
+                value: unix:///var/run/docker.sock
+            volumeMounts:
+              - name: dind-sock
+                mountPath: /var/run
+                readOnly: true
             resources:
               limits:
-                cpu: '2'
-                memory: 512Mi
+                cpu: '8'
+                memory: 4Gi
               requests:
                 cpu: '1'
                 memory: 256Mi
+        volumes:
+          - name: dind-sock
+            emptyDir:
+              medium: Memory
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
