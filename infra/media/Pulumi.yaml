@@ -13,7 +13,7 @@ config:
         chart: 1.1.2
       copyparty:
         # renovate: datasource=docker depName=ghcr.io/9001/copyparty-ac
-        docker: 1.19.11
+        docker: 1.19.12
       tubesync:
         # renovate: datasource=docker depName=ghcr.io/meeb/tubesync
         docker: v0.15.9
