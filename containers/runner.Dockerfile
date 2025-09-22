@@ -1,6 +1,7 @@
 #syntax=docker/dockerfile:1
 # https://github.com/actions/runner/blob/v2.328.0/images/Dockerfile
-FROM ghcr.io/actions/actions-runner:2.328.0
+ARG ACTIONS_RUNNER_VERSION=2.328.0
+FROM --platform=${BUILDPLATFORM} ghcr.io/actions/actions-runner:${ACTIONS_RUNNER_VERSION}
 
 USER root
 
