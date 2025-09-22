@@ -62,7 +62,7 @@ spec:
       spec:
         initContainers:
           - name: dind
-            image: docker:28.4.0-dind-rootless
+            image: docker:28.4.0-dind
             restartPolicy: Always # sidecar
             command: [ dockerd, --host, tcp://127.0.0.1:2375 ]
             securityContext:
