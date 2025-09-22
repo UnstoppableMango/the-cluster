@@ -64,6 +64,9 @@ spec:
     # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml#L300
     template:
       spec:
+        # https://docs.github.com/en/actions/tutorials/use-actions-runner-controller/troubleshoot#error-access-to-the-path-homerunner_work_tool-is-denied
+        securityContext:
+          fsGroup: 1001
         containers:
           - name: runner # default
             image: ghcr.io/unstoppablemango/the-cluster/actions-runner:sha-0eb8334
