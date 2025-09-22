@@ -60,10 +60,18 @@ spec:
     githubConfigSecret: thecluster-bot
     template:
       spec:
+        initContainers:
+          - name: dind
+            image: docker:28.4.0-dind-rootless
+            restartPolicy: Always # sidecar
+            command: [ dockerd, --host, tcp://127.0.0.1:2375 ]
         containers:
           - name: runner # default
-            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:sha-5ca3c95
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:sha-0eb8334
             command: [/home/runner/run.sh] # default
+            env:
+              - name: DOCKER_HOST
+                value: tcp://127.0.0.1:2375
             resources:
               limits:
                 cpu: '2'
