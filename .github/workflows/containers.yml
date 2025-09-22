@@ -30,10 +30,10 @@ jobs:
             latest=auto
           # defensive tagging because I'm an idiot
           tags: |
-            type=ref,event=branch,prefix=${{ env.ACTIONS_RUNNER_VERSION }}-
-            type=ref,event=branch,prefix=v${{ env.ACTIONS_RUNNER_VERSION }}-
-            type=ref,event=branch,prefix=${{ env.ACTIONS_RUNNER_VERSION }}-,suffix=${{ github.run_number }}
-            type=ref,event=branch,prefix=v${{ env.ACTIONS_RUNNER_VERSION }}-,suffix=${{ github.run_number }}
+            type=ref,event=branch,suffix=-${{ env.ACTIONS_RUNNER_VERSION }}
+            type=ref,event=branch,suffix=-v${{ env.ACTIONS_RUNNER_VERSION }}
+            type=ref,event=branch,suffix=-${{ env.ACTIONS_RUNNER_VERSION }}-${{ github.run_number }}
+            type=ref,event=branch,suffix=-v${{ env.ACTIONS_RUNNER_VERSION }}-${{ github.run_number }}
             type=raw,value=${{ env.ACTIONS_RUNNER_VERSION }}
             type=raw,value=v${{ env.ACTIONS_RUNNER_VERSION }}
             type=sha
@@ -55,6 +55,8 @@ jobs:
       - uses: docker/build-push-action@v6
         with:
           file: containers/runner.Dockerfile
+          build-args: |
+            ACTIONS_RUNNER_VERSION=${{ env.ACTIONS_RUNNER_VERSION }}
           platforms: ${{ github.event_name == 'pull_request' && 'linux/amd64' || 'linux/arm64,linux/amd64' }}
           push: ${{ github.event_name != 'pull_request' }}
           cache-from: type=gha
