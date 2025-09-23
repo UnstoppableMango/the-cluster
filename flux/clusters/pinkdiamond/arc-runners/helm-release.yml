@@ -13,6 +13,7 @@ spec:
   values:
     githubConfigUrl: https://github.com/UnstoppableMango/lang
     githubConfigSecret: thecluster-bot
+    runnerScaleSetName: thecluster
     template:
       spec:
         containers:
@@ -70,20 +71,20 @@ spec:
         containers:
           - name: runner # default
             image: ghcr.io/unstoppablemango/the-cluster/actions-runner:sha-0eb8334
-            command: [ /home/runner/run.sh ] # default
+            command: [/home/runner/run.sh] # default
             resources:
               limits:
-                cpu: '8'
+                cpu: "8"
                 memory: 4Gi
               requests:
-                cpu: '1'
+                cpu: "1"
                 memory: 512Mi
         volumes:
           - name: work
             ephemeral:
               volumeClaimTemplate:
                 spec:
-                  accessModes: ["ReadWriteOnce"]
+                  accessModes: [ReadWriteOnce]
                   storageClassName: ssd-rbd
                   resources:
                     requests:
@@ -94,7 +95,7 @@ spec:
           - name: listener
             resources:
               limits:
-                cpu: 50m
+                cpu: 25m
                 memory: 64Mi
               requests:
                 cpu: 2m
@@ -115,6 +116,7 @@ spec:
   values:
     githubConfigUrl: https://github.com/UnstoppableMango/xmage-docker
     githubConfigSecret: thecluster-bot
+    runnerScaleSetName: thecluster
     template:
       spec:
         containers:
@@ -137,6 +139,7 @@ spec:
   values:
     githubConfigUrl: https://github.com/UnstoppableMango/thecluster.io
     githubConfigSecret: thecluster-bot
+    runnerScaleSetName: thecluster
     template:
       spec:
         containers:
