@@ -1,7 +1,7 @@
 import { Namespace, Secret } from '@pulumi/kubernetes/core/v1';
 import { Chart } from '@pulumi/kubernetes/helm/v4';
 import { Ingress } from '@pulumi/kubernetes/networking/v1';
-import { ConfigFile, ConfigGroup } from '@pulumi/kubernetes/yaml/v2';
+import { ConfigGroup } from '@pulumi/kubernetes/yaml/v2';
 import { Config, interpolate } from '@pulumi/pulumi';
 import { RandomPassword } from '@pulumi/random';
 import z from 'zod/v4';
@@ -127,6 +127,20 @@ const charts = instances.map(({ name, loadBalancerIP }) =>
 					memory: '512Mi',
 				},
 			},
+			affinity: {
+				nodeAfinity: {
+					preferredDuringSchedulingIgnoredDuringExecution: [{
+						weight: 1,
+						preference: {
+							matchExpressions: [{
+								key: 'kubernetes.io/hostname',
+								operator: 'NotIn',
+								values: ['gaea'],
+							}],
+						},
+					}],
+				},
+			},
 		},
 	})
 );
@@ -195,6 +209,20 @@ const externalDns = instances.map(({ name }) =>
 				limits: {
 					cpu: '500m',
 					memory: '512Mi',
+				},
+			},
+			affinity: {
+				nodeAfinity: {
+					preferredDuringSchedulingIgnoredDuringExecution: [{
+						weight: 1,
+						preference: {
+							matchExpressions: [{
+								key: 'kubernetes.io/hostname',
+								operator: 'NotIn',
+								values: ['gaea'],
+							}],
+						},
+					}],
 				},
 			},
 			// https://kubernetes-sigs.github.io/external-dns/latest/docs/tutorials/pihole/#arguments
