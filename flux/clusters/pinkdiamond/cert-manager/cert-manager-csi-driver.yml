@@ -24,7 +24,7 @@ spec:
       tag: v2.14.0
     livenessProbeImage:
       repository: registry.k8s.io/sig-storage/livenessprobe
-      tag: v2.16.0
+      tag: v2.17.0
     resources:
       limits:
         cpu: 100m
