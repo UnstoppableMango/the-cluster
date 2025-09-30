@@ -14,4 +14,4 @@ config:
       bun: 1.2.22
       chart: 43.15.0
       # renovate: datasource=docker depName=ghcr.io/renovatebot/renovate
-      docker: 41.131.5
+      docker: 41.132.2
