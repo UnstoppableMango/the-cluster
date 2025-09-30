@@ -56,7 +56,7 @@ spec:
       timeZone: 'America/Chicago'
       initContainers:
         - name: github-app-auth
-          image: oven/bun:1.2.22
+          image: oven/bun:1.2.23
           env:
             - name: GITHUB_APP_ID
               valueFrom:
