@@ -19,8 +19,9 @@ DPRINT     ?= dprint
 FLUX       ?= flux
 KUBECTL    ?= bin/kubectl
 KUBESEAL   ?= $(GO) tool kubeseal
-NPM        ?= npm
+NIX        ?= nix
 PULUMI     ?= bin/pulumi
+YARN       ?= yarn
 YQ         ?= $(GO) tool yq
 
 GOOS   != $(GO) env GOOS
@@ -28,7 +29,7 @@ GOARCH != $(GO) env GOARCH
 
 APPS       := $(wildcard apps/*)
 INFRA      := $(wildcard infra/*)
-COMPONENTS := $(addprefix components/,cloudflare-ingress oauth oauth2-proxy postgres-db)
+COMPONENTS := $(addprefix components/,oauth2-proxy)
 
 FLUX_SOURCE ?= flux-system
 
@@ -40,6 +41,9 @@ renovate:
 
 format fmt:
 	$(DPRINT) fmt
+	$(NIX) fmt
+
+update: flake.lock
 
 .PHONY: ${APPS} ${INFRA}
 ${APPS} ${INFRA}: | bin/pulumi
@@ -47,7 +51,7 @@ ${APPS} ${INFRA}: | bin/pulumi
 
 .PHONY: components ${COMPONENTS}
 components ${COMPONENTS}:
-	cd $@ && $(NPM) install
+	cd $@ && $(YARN) install
 
 runner: containers/runner.Dockerfile
 	$(DOCKER) buildx build -f $< .
@@ -75,6 +79,13 @@ bin/crds.yml: hack/crd-filter.yq | bin/kubectl
 	$(KUBECTL) get crds -oyaml | $(YQ) --from-file $< >$@
 crds/package.json: bin/crds.yml
 	rm -rf crds && $(CRD2PULUMI) --nodejsPath crds $<
+
+flake.lock: flake.nix
+	$(NIX) flake update
+	@touch $@
+
+yarn.lock: package.json
+	$(YARN) install
 
 .envrc: hack/example.envrc
 	cp $< $@

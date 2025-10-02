@@ -21,6 +21,7 @@ kubeconfig
 
 # User Specific
 .envrc
+.direnv/
 .kube/
 tmp/
 .make/
