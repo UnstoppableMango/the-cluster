@@ -23,3 +23,8 @@ github.com/UnstoppableMango/the-cluster
 │   └── nodejs        # Shared code for node
 └── .versions         # Ad-hoc version pinning
 ```
+
+## References and Links
+
+- <https://github.com/brenno263/nix-config>
+- <https://nixos-and-flakes.thiscute.world>
