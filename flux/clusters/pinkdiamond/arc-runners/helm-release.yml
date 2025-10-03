@@ -146,3 +146,25 @@ spec:
           - name: runner # default
             image: ghcr.io/actions/actions-runner:2.328.0
             command: [/home/runner/run.sh] # default
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: dotfiles-runners
+  namespace: arc-runners
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: gha-runner-scale-set
+    namespace: arc-system
+  interval: 10m
+  # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml
+  values:
+    githubConfigUrl: https://github.com/UnstoppableMango/dotfiles
+    githubConfigSecret: thecluster-bot
+    template:
+      spec:
+        containers:
+          - name: runner # default
+            image: ghcr.io/actions/actions-runner:2.328.0
+            command: [/home/runner/run.sh] # default
