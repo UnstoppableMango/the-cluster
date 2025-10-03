@@ -59,6 +59,7 @@ spec:
   values:
     githubConfigUrl: https://github.com/UnstoppableMango/ux
     githubConfigSecret: thecluster-bot
+    runnerScaleSetName: thecluster
     containerMode:
       type: dind
     # Will be merged with the dind containerMode spec
@@ -162,6 +163,7 @@ spec:
   values:
     githubConfigUrl: https://github.com/UnstoppableMango/dotfiles
     githubConfigSecret: thecluster-bot
+    runnerScaleSetName: thecluster
     template:
       spec:
         containers:
