@@ -173,5 +173,5 @@ spec:
       spec:
         containers:
           - name: runner # default
-            image: ghcr.io/actions/actions-runner:2.328.0
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:sha-0eb8334
             command: [/home/runner/run.sh] # default
