@@ -175,3 +175,6 @@ spec:
           - name: runner # default
             image: ghcr.io/unstoppablemango/the-cluster/actions-runner:2.328.0
             command: [/home/runner/run.sh] # default
+            env:
+              - name: USER
+                value: runner
