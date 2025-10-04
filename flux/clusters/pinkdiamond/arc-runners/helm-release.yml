@@ -73,7 +73,7 @@ spec:
           fsGroup: 1001
         containers:
           - name: runner # default
-            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:sha-0eb8334
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:2.328.0
             command: [/home/runner/run.sh] # default
             resources:
               limits:
@@ -173,5 +173,5 @@ spec:
       spec:
         containers:
           - name: runner # default
-            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:sha-0eb8334
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:2.328.0
             command: [/home/runner/run.sh] # default
