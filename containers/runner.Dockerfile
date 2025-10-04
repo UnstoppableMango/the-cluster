@@ -6,7 +6,7 @@ FROM --platform=${BUILDPLATFORM} ghcr.io/actions/actions-runner:${ACTIONS_RUNNER
 USER root
 
 RUN apt-get update \
-	&& apt-get install -y make xz \
+	&& apt-get install -y make xz-utils \
 	&& rm -rf /var/lib/apt/lists/*
 
 USER runner
