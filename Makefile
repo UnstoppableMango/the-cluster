@@ -37,7 +37,7 @@ reconcile:
 	$(FLUX) reconcile source git ${FLUX_SOURCE}
 
 renovate:
-	$(KUBECTL) create job manual --namespace renovate --from=cronjob/renovate
+	$(KUBECTL) create job manual-$$(date +%s) --namespace renovate --from=cronjob/renovate
 
 format fmt:
 	$(DPRINT) fmt
