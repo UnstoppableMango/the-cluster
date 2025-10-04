@@ -13,7 +13,8 @@ spec:
   values:
     githubConfigUrl: https://github.com/UnstoppableMango/lang
     githubConfigSecret: thecluster-bot
-    runnerScaleSetName: thecluster
+    # https://github.com/actions/actions-runner-controller/issues/3587
+    # runnerScaleSetName: thecluster
     template:
       spec:
         containers:
@@ -59,7 +60,8 @@ spec:
   values:
     githubConfigUrl: https://github.com/UnstoppableMango/ux
     githubConfigSecret: thecluster-bot
-    runnerScaleSetName: thecluster
+    # https://github.com/actions/actions-runner-controller/issues/3587
+    # runnerScaleSetName: thecluster
     containerMode:
       type: dind
     # Will be merged with the dind containerMode spec
@@ -117,7 +119,8 @@ spec:
   values:
     githubConfigUrl: https://github.com/UnstoppableMango/xmage-docker
     githubConfigSecret: thecluster-bot
-    runnerScaleSetName: thecluster
+    # https://github.com/actions/actions-runner-controller/issues/3587
+    # runnerScaleSetName: thecluster
     template:
       spec:
         containers:
@@ -140,7 +143,8 @@ spec:
   values:
     githubConfigUrl: https://github.com/UnstoppableMango/thecluster.io
     githubConfigSecret: thecluster-bot
-    runnerScaleSetName: thecluster
+    # https://github.com/actions/actions-runner-controller/issues/3587
+    # runnerScaleSetName: thecluster
     template:
       spec:
         containers:
@@ -163,7 +167,8 @@ spec:
   values:
     githubConfigUrl: https://github.com/UnstoppableMango/dotfiles
     githubConfigSecret: thecluster-bot
-    runnerScaleSetName: thecluster
+    # https://github.com/actions/actions-runner-controller/issues/3587
+    # runnerScaleSetName: thecluster
     template:
       spec:
         containers:
