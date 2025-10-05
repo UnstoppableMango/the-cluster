@@ -47,6 +47,7 @@ module.exports = {
 	autodiscoverFilter: [], // default
 	repositories: [
 		'UnstoppableMango/audio',
+		'UnstoppableMango/CliWrap.FSharp',
 		'UnstoppableMango/dotfiles',
 		'UnstoppableMango/github',
 		'UnstoppableMango/lang',
