@@ -1,10 +1,8 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": [
-		"github>UnstoppableMango/renovate-config"
-	],
-	"schedule": [
-		"before 4am on the first day of the month"
+		"github>UnstoppableMango/renovate-config",
+		"schedule:weekly"
 	],
 	"ignorePaths": [
 		"**/node_modules/**",
@@ -29,23 +27,10 @@
 	"flux": {
 		"managerFilePatterns": ["/flux/.+\\.ya?ml$/"]
 	},
-	"customManagers": [
-		{
-			"customType": "regex",
-			"managerFilePatterns": ["/(^|/)Pulumi\\.ya?ml$/"],
-			"matchStrings": [
-				"# renovate: datasource=(?<datasource>[a-zA-Z0-9-._]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[A-Za-z0-9_]+?\\s*:\\s*[\"']?(?<currentValue>.+?)[\"']?\\s"
-			]
-		}
-	],
 	"packageRules": [
 		{
 			"matchPackageNames": ["/^goharbor\\/.*/"],
 			"groupName": "harbor"
-		},
-		{
-			"matchPackageNames": ["/^@?pulumi\\/pulumi/"],
-			"groupName": "pulumi"
 		},
 		{
 			"matchPackageNames": [
