@@ -89,7 +89,7 @@ const chart = new Chart('renovate', {
 	// https://github.com/renovatebot/helm-charts/blob/main/charts/renovate/values.yaml
 	values: {
 		cronjob: {
-			schedule: '*/30 * * * *', // Every 30m, every 5m was probably too greedy
+			schedule: '*/10 * * * *', // Every 10m, got it right the first time
 			timeZone: 'America/Chicago',
 			initContainers: [{
 				name: 'github-app-auth',
