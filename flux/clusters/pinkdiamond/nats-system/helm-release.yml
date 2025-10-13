@@ -56,7 +56,7 @@ spec:
       container:
         image:
           repository: natsio/nats-box # default
-          tag: 0.18.1
+          tag: 0.19.2
     podTemplate:
       merge:
         spec:
