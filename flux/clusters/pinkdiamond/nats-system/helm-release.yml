@@ -29,7 +29,7 @@ spec:
     container:
       image:
         repository: nats # default
-        tag: 2.12.0-linux
+        tag: 2.12.1-linux
     reloader:
       image:
         repository: natsio/nats-server-config-reloader # default
