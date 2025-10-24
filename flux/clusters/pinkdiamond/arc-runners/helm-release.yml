@@ -19,7 +19,7 @@ spec:
       spec:
         containers:
           - name: runner # default
-            image: ghcr.io/actions/actions-runner:2.328.0
+            image: ghcr.io/actions/actions-runner:2.329.0
             command: [/home/runner/run.sh] # default
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -42,7 +42,7 @@ spec:
       spec:
         containers:
           - name: runner # default
-            image: ghcr.io/actions/actions-runner:2.328.0
+            image: ghcr.io/actions/actions-runner:2.329.0
             command: [/home/runner/run.sh] # default
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -125,7 +125,7 @@ spec:
       spec:
         containers:
           - name: runner # default
-            image: ghcr.io/actions/actions-runner:2.328.0
+            image: ghcr.io/actions/actions-runner:2.329.0
             command: [/home/runner/run.sh] # default
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -149,7 +149,7 @@ spec:
       spec:
         containers:
           - name: runner # default
-            image: ghcr.io/actions/actions-runner:2.328.0
+            image: ghcr.io/actions/actions-runner:2.329.0
             command: [/home/runner/run.sh] # default
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
