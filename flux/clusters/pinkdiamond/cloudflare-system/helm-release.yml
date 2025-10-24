@@ -105,7 +105,7 @@ spec:
     controller:
       image:
         repository: cloudflare/origin-ca-issuer # default
-        tag: v0.12.1
+        tag: v0.13.0
       resources:
         limits:
           cpu: '1' # default
