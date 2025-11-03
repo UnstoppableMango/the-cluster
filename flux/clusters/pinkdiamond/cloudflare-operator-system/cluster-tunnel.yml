@@ -6,7 +6,7 @@ spec:
   newTunnel:
     name: thecluster.io
   size: 1
-  image: cloudflare/cloudflared:2025.10.0
+  image: cloudflare/cloudflared:2025.10.1
   cloudflare:
     accountId: 265a046434c952eeecb9710cfd76617c
     secret: credentials
