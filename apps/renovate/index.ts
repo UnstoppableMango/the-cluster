@@ -46,6 +46,7 @@ module.exports = {
 	autodiscover: false, // default
 	autodiscoverFilter: [], // default
 	repositories: [
+		'UnstoppableMango/a2b',
 		'UnstoppableMango/audio',
 		'UnstoppableMango/CliWrap.FSharp',
 		'UnstoppableMango/dotfiles',
@@ -74,6 +75,7 @@ module.exports = {
 		'UnstoppableMango/ux',
 		'UnstoppableMango/wireguard-cni',
 		'UnstoppableMango/xmage-docker',
+		'UnstoppableMango/x12',
 	],
 	presetCachePersistence: true,
 };
