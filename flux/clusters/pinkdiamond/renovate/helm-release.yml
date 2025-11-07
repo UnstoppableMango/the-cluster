@@ -48,6 +48,7 @@ spec:
             'unmango/kubebuilder',
             'unmango/protofs',
             'unmango/thecluster-operator',
+            'unmango/wishlists',
           ],
           presetCachePersistence: true,
         };
