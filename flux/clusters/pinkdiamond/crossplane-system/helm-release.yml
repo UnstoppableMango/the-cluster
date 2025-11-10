@@ -19,7 +19,7 @@ spec:
     replicas: 2
     image:
       repository: xpkg.crossplane.io/crossplane/crossplane # default
-      tag: v2.0.2
+      tag: v2.1.1
     provider:
       packages:
         - xpkg.crossplane.io/crossplane-contrib/provider-kubernetes:v1.0.0
