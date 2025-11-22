@@ -9,7 +9,7 @@ config:
     value:
       plex:
         # renovate: datasource=docker depName=plexinc/pms-docker
-        docker: 1.42.1.10060-4e8b05daf
+        docker: 1.42.2.10156-f737b826c
         chart: 1.1.2
       copyparty:
         # renovate: datasource=docker depName=ghcr.io/9001/copyparty-ac
