@@ -1,0 +1,33 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cloudnative-pg
+  namespace: wishlists
+spec:
+  interval: 10m
+  releaseName: postgres
+  targetNamespace: wishlists
+  chart:
+    spec:
+      chart: cluster
+      version: 0.3.1
+      sourceRef:
+        kind: HelmRepository
+        name: cloudnative-pg
+  # https://github.com/cloudnative-pg/charts/blob/main/charts/cloudnative-pg/values.yaml
+  values:
+    type: postgresql
+    mode: standalone
+    cluster:
+      instances: 1
+      imageName: ghcr.io/cloudnative-pg/postgresql:18
+      storage:
+        size: 8Gi # default
+        storageClass: ssd-rbd
+      resources:
+        requests:
+          cpu: 2000m
+          memory: 8Gi
+        limits:
+          cpu: 2000m
+          memory: 8Gi
