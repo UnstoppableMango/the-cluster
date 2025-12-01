@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wishlists
+  namespace: wishlists
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wishlists
+  template:
+    metadata:
+      labels:
+        app: wishlists
+    spec:
+      containers:
+        - name: wishlists
+          image: ghcr.io/unmango/wishlists:sha-1545470
+          ports:
+            - containerPort: 8080
+          env: []
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
