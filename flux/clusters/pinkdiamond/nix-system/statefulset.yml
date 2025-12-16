@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ncps
+  namespace: nix-system
+  labels:
+    app: ncps
+    tier: proxy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ncps
+      tier: proxy
+  template:
+    metadata:
+      labels:
+        app: ncps
+        tier: proxy
+    spec:
+      initContainers:
+        - image: alpine:3.23
+          name: create-directories
+          args:
+            - /bin/sh
+            - -c
+            - "mkdir -m 0755 -p /storage/var && mkdir -m 0700 -p /storage/var/ncps && mkdir -m 0700 -p /storage/var/ncps/db"
+          volumeMounts:
+            - name: ncps-persistent-storage
+              mountPath: /storage
+        - image: kalbasit/ncps:v0.4.0
+          name: migrate-database
+          args:
+            - /bin/dbmate
+            - --url=sqlite:/storage/var/ncps/db/db.sqlite
+            - migrate
+            - up
+          volumeMounts:
+            - name: ncps-persistent-storage
+              mountPath: /storage
+      containers:
+        - image: kalbasit/ncps:v0.4.0
+          name: ncps
+          args:
+            - /bin/ncps
+            - serve
+            - --cache-hostname=ncps.thecluster.lan
+            - --cache-data-path=/storage
+            - --cache-temp-path=/nar-temp-dir
+            - --cache-database-url=sqlite:/storage/var/ncps/db/db.sqlite
+            - --upstream-cache=https://cache.nixos.org
+            - --upstream-cache=https://nix-community.cachix.org
+            - --upstream-public-key=cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+            - --upstream-public-key=nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
+          ports:
+            - containerPort: 8501
+              name: http-web
+          volumeMounts:
+            - name: ncps-persistent-storage
+              mountPath: /storage
+            - name: nar-temp-dir
+              mountPath: /nar-temp-dir
+      volumes:
+        - name: ncps-persistent-storage
+          persistentVolumeClaim:
+            claimName: ncps
+        - name: nar-temp-dir
+          emptyDir:
+            sizeLimit: 5Gi
