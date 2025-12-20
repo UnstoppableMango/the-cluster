@@ -66,6 +66,9 @@ hack/sealed-secrets.pub:
 	--controller-namespace flux-system \
 	> $@
 
+bin/image.tar:
+	$(NIX) build '.#runner' --out-link $@
+
 bin/kubectl: .versions/kubernetes
 	$(CURL) --fail -L -o $@ https://dl.k8s.io/release/v$(shell cat $<)/bin/${GOOS}/${GOARCH}/kubectl
 	@chmod +x $@
@@ -80,12 +83,13 @@ bin/crds.yml: hack/crd-filter.yq | bin/kubectl
 crds/package.json: bin/crds.yml
 	rm -rf crds && $(CRD2PULUMI) --nodejsPath crds $<
 
+.PHONY: flake.lock
 flake.lock: flake.nix
 	$(NIX) flake update
-	@touch $@
 
 yarn.lock: package.json
 	$(YARN) install
 
 .envrc: hack/example.envrc
 	cp $< $@
+
