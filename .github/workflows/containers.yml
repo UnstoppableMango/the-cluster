@@ -4,15 +4,35 @@ on:
   push:
     branches: [ main ]
     paths:
-      - .github/workflows/conttainers.yml
-      - containers/*.Dockerfile
+      - .github/workflows/containers.yml
+      - containers/*
   pull_request:
     branches: [ main ]
     paths:
-      - .github/workflows/conttainers.yml
-      - containers/*.Dockerfile
+      - .github/workflows/containers.yml
+      - containers/*
 
 jobs:
+  nix-runner:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: cachix/install-nix-action@4e002c8ec80594ecd40e759629461e26c8abed15 # v31.9.0
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/login-action@v3
+        if: github.event_name != 'pull_request'
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build runner image
+        run: |
+          nix build '.#runner'
+
   actions-runner:
     runs-on: ubuntu-latest
     env:
@@ -38,13 +58,6 @@ jobs:
             type=raw,value=v${{ env.ACTIONS_RUNNER_VERSION }}
             type=sha
 
-      # TODO: meh
-      # - uses: docker/login-action@v3
-      #   if: github.event_name != 'pull_request'
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
-
       - uses: docker/login-action@v3
         if: github.event_name != 'pull_request'
         with:
@@ -54,7 +67,7 @@ jobs:
 
       - uses: docker/build-push-action@v6
         with:
-          file: containers/runner.Dockerfile
+          file: containers/runner/Dockerfile
           build-args: |
             ACTIONS_RUNNER_VERSION=${{ env.ACTIONS_RUNNER_VERSION }}
           platforms: ${{ github.event_name == 'pull_request' && 'linux/amd64' || 'linux/arm64,linux/amd64' }}

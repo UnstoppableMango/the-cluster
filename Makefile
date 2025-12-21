@@ -53,7 +53,7 @@ ${APPS} ${INFRA}: | bin/pulumi
 components ${COMPONENTS}:
 	cd $@ && $(YARN) install
 
-runner: containers/runner.Dockerfile
+runner: containers/runner/Dockerfile
 	$(DOCKER) buildx build -f $< .
 
 flux/%-sealed.yml: hack/secrets/%.yml | hack/sealed-secrets.pub
@@ -65,6 +65,10 @@ hack/sealed-secrets.pub:
 	--controller-name sealed-secrets-controller \
 	--controller-namespace flux-system \
 	> $@
+
+bin/image.tar: containers/default.nix containers/runner/default.nix
+	$(NIX) build '.#runner' --out-link $@
+	$(DOCKER) load < $@
 
 bin/kubectl: .versions/kubernetes
 	$(CURL) --fail -L -o $@ https://dl.k8s.io/release/v$(shell cat $<)/bin/${GOOS}/${GOARCH}/kubectl
@@ -80,12 +84,13 @@ bin/crds.yml: hack/crd-filter.yq | bin/kubectl
 crds/package.json: bin/crds.yml
 	rm -rf crds && $(CRD2PULUMI) --nodejsPath crds $<
 
+.PHONY: flake.lock
 flake.lock: flake.nix
 	$(NIX) flake update
-	@touch $@
 
 yarn.lock: package.json
 	$(YARN) install
 
 .envrc: hack/example.envrc
 	cp $< $@
+
