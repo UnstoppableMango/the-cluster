@@ -128,7 +128,7 @@ const charts = instances.map(({ name, loadBalancerIP }) =>
 				},
 			},
 			affinity: {
-				nodeAfinity: {
+				nodeAffinity: {
 					preferredDuringSchedulingIgnoredDuringExecution: [{
 						weight: 1,
 						preference: {
