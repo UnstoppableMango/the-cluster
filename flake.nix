@@ -49,7 +49,7 @@
             KUBECTL = pkgs.kubectl + "/bin/kubectl";
             PULUMI = pkgs.pulumi-bin + "/bin/pulumi";
             NODE = pkgs.nodejs_24 + "/bin/node";
-            SHELLCHECK = pkgs.shellcheck + "/bin/shellsheck";
+            SHELLCHECK = pkgs.shellcheck + "/bin/shellcheck";
             YARN = pkgs.yarn + "/bin/yarn";
             YQ = pkgs.yq-go + "/bin/yq";
           };
