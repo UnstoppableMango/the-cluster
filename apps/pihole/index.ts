@@ -212,7 +212,7 @@ const externalDns = instances.map(({ name }) =>
 				},
 			},
 			affinity: {
-				nodeAfinity: {
+				nodeAffinity: {
 					preferredDuringSchedulingIgnoredDuringExecution: [{
 						weight: 1,
 						preference: {
