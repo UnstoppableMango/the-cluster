@@ -66,7 +66,7 @@ hack/sealed-secrets.pub:
 	--controller-namespace flux-system \
 	> $@
 
-bin/image.tar: containers/default.nix
+bin/image.tar: containers/default.nix containers/runner/default.nix
 	$(NIX) build '.#runner' --out-link $@
 	$(DOCKER) load < $@
 
