@@ -53,7 +53,7 @@ ${APPS} ${INFRA}: | bin/pulumi
 components ${COMPONENTS}:
 	cd $@ && $(YARN) install
 
-runner: containers/runner.Dockerfile
+runner: containers/runner/Dockerfile
 	$(DOCKER) buildx build -f $< .
 
 flux/%-sealed.yml: hack/secrets/%.yml | hack/sealed-secrets.pub
@@ -66,8 +66,9 @@ hack/sealed-secrets.pub:
 	--controller-namespace flux-system \
 	> $@
 
-bin/image.tar:
+bin/image.tar: containers/default.nix
 	$(NIX) build '.#runner' --out-link $@
+	$(DOCKER) load < $@
 
 bin/kubectl: .versions/kubernetes
 	$(CURL) --fail -L -o $@ https://dl.k8s.io/release/v$(shell cat $<)/bin/${GOOS}/${GOARCH}/kubectl

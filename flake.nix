@@ -35,7 +35,7 @@
               kubectl
               nixfmt-tree
               nodejs_24
-							nurl
+              nurl
               pulumi-bin
               shellcheck
               watchexec
