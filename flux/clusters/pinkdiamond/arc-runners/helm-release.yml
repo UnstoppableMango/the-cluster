@@ -75,14 +75,14 @@ spec:
           - name: runner # default
             image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.330.0
             command: [/home/runner/run.sh] # default
-            # Cachix action seems to need this
             env:
+              # Cachix action seems to need this
               - name: USER
                 value: runner
             resources:
               limits:
                 cpu: "8"
-                memory: 4Gi
+                memory: 8Gi
               requests:
                 cpu: "1"
                 memory: 512Mi
