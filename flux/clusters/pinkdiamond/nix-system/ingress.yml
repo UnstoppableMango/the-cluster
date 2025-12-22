@@ -3,6 +3,10 @@ kind: Ingress
 metadata:
   name: ncps
   namespace: nix-system
+  annotations:
+    cert-manager.io/issuer-group: cert-manager.io
+    cert-manager.io/issuer-kind: ClusterIssuer
+    cert-manager.io/issuer: thecluster.lan
 spec:
   ingressClassName: nginx
   rules:
