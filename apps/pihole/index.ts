@@ -123,8 +123,8 @@ const charts = instances.map(({ name, loadBalancerIP }) =>
 					memory: '64Mi',
 				},
 				limits: {
-					cpu: '200m',
-					memory: '512Mi',
+					cpu: '500m',
+					memory: '1Gi',
 				},
 			},
 			affinity: {
@@ -225,6 +225,8 @@ const externalDns = instances.map(({ name }) =>
 					}],
 				},
 			},
+			domainFilters: ['thecluster.lan'],
+			interval: '30m',
 			// https://kubernetes-sigs.github.io/external-dns/latest/docs/tutorials/pihole/#arguments
 			env: [
 				{
