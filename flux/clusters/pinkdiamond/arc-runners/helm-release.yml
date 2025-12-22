@@ -75,6 +75,10 @@ spec:
           - name: runner # default
             image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.330.0
             command: [/home/runner/run.sh] # default
+            # Cachix action seems to need this
+            env:
+              - name: USER
+                value: runner
             resources:
               limits:
                 cpu: "8"
@@ -175,6 +179,63 @@ spec:
           - name: runner # default
             image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.330.0
             command: [/home/runner/run.sh] # default
+            # Cachix action seems to need this
+            env:
+              - name: USER
+                value: runner
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nixos-runners
+  namespace: arc-runners
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: gha-runner-scale-set
+    namespace: arc-system
+  interval: 10m
+  # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml
+  values:
+    githubConfigUrl: https://github.com/UnstoppableMango/nixos
+    githubConfigSecret: thecluster-bot
+    # https://github.com/actions/actions-runner-controller/issues/3587
+    # runnerScaleSetName: thecluster
+    template:
+      spec:
+        containers:
+          - name: runner # default
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.330.0
+            command: [/home/runner/run.sh] # default
+            # Cachix action seems to need this
+            env:
+              - name: USER
+                value: runner
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nix-runners
+  namespace: arc-runners
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: gha-runner-scale-set
+    namespace: arc-system
+  interval: 10m
+  # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml
+  values:
+    githubConfigUrl: https://github.com/UnstoppableMango/nix
+    githubConfigSecret: thecluster-bot
+    # https://github.com/actions/actions-runner-controller/issues/3587
+    # runnerScaleSetName: thecluster
+    template:
+      spec:
+        containers:
+          - name: runner # default
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.330.0
+            command: [/home/runner/run.sh] # default
+            # Cachix action seems to need this
             env:
               - name: USER
                 value: runner
