@@ -382,9 +382,9 @@
     "@pulumi/pulumi" "^3.142.0"
 
 "@pulumi/cloudflare@^6.4.1":
-  version "6.11.0"
-  resolved "https://registry.yarnpkg.com/@pulumi/cloudflare/-/cloudflare-6.11.0.tgz#171c34156dd4b963c782b10c63870fe39ae2e75b"
-  integrity sha512-KrKmoi7/L9Q8z2yr8PzNfcTo8Irm//NNJ5s4khQD9+W495Wd2k5fR1bOOEQN15iFsBALyjBbeDf+6+RdZKSd6A==
+  version "6.12.0"
+  resolved "https://registry.yarnpkg.com/@pulumi/cloudflare/-/cloudflare-6.12.0.tgz#edb2c59d1b594a0c64f12ba8cf63b84ed3937fcc"
+  integrity sha512-Evhj9u+ZVCO6Cu9+xon4F3dY4RA7U4ZTWc19MJAIa5GgLeG8X0C84iyo5aruZf2nK7nfJ2d47lyRSaXPBHOzjw==
   dependencies:
     "@pulumi/pulumi" "^3.142.0"
 
