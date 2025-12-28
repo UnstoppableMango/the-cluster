@@ -1,47 +1,6 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: cloudflare-operator
-  namespace: cloudflare-system
-spec:
-  interval: 1h
-  releaseName: cloudflare-operator
-  targetNamespace: cloudflare-system
-  chart:
-    spec:
-      chart: cloudflare-operator
-      version: v0.0.1
-      sourceRef:
-        kind: HelmRepository
-        name: cloudflare-operator
-  install:
-    crds: Create
-  upgrade:
-    crds: CreateReplace
-  values:
-    cloudflare:
-      auth:
-        enabled: true
-        apiTokenRef:
-          name: credentials
-          key: CLOUDFLARE_API_TOKEN
-    controllerManager:
-      replicas: 2
-      container:
-        image:
-          repository: ghcr.io/unmango/cloudflare-operator
-          tag: v0.0.4
-        resources:
-          requests:
-            cpu: 100m
-            memory: 100Mi
-          limits:
-            cpu: 100m
-            memory: 200Mi
----
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
   name: cloudflare-tunnel-ingress-controller
   namespace: cloudflare-system
 spec:

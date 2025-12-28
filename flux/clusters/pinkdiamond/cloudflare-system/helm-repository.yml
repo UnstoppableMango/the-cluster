@@ -6,12 +6,3 @@ metadata:
 spec:
   url: https://helm.strrl.dev
   interval: 1h
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: cloudflare-operator
-  namespace: cloudflare-system
-spec:
-  url: https://unmango.github.io/cloudflare-operator
-  interval: 1h
