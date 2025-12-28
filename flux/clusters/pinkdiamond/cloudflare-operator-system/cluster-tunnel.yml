@@ -12,15 +12,15 @@ spec:
   deployPatch: |
     spec:
       replicas: 1
-        template:
-          spec:
-            containers:
-              - name: cloudflared
-                image: cloudflare/cloudflared:2025.11.1
-                resources:
-                  limits:
-                    cpu: 100m
-                    memory: 128Mi
-                  requests:
-                    cpu: 100m
-                    memory: 128Mi
+      template:
+        spec:
+          containers:
+            - name: cloudflared
+              image: cloudflare/cloudflared:2025.11.1
+              resources:
+                limits:
+                  cpu: 100m
+                  memory: 128Mi
+                requests:
+                  cpu: 100m
+                  memory: 128Mi
