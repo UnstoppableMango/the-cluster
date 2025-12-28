@@ -193,7 +193,14 @@ const tubesync = new StatefulSet('tubesync', {
 });
 
 const tubesyncIngress = new Ingress('tubesync', {
-	metadata: { namespace: ns.metadata.name },
+	metadata: {
+		namespace: ns.metadata.name,
+		annotations: {
+			'cert-manager.io/issuer-group': 'cert-manager.io',
+			'cert-manager.io/issuer-kind': 'ClusterIssuer',
+			'cert-manager.io/issuer': 'thecluster.lan',
+		},
+	},
 	spec: {
 		ingressClassName: 'nginx',
 		rules: [{
@@ -210,6 +217,10 @@ const tubesyncIngress = new Ingress('tubesync', {
 					},
 				}],
 			},
+		}],
+		tls: [{
+			secretName: 'tubesync-tls',
+			hosts: ['tubesync.thecluster.lan'],
 		}],
 	},
 });
