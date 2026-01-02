@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vpn
+  namespace: media
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vpn
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: vpn
+    spec:
+      initContainers:
+        - name: generate-config
+          image: unstoppablemango/pia-manual-connections:v0.2.0-pia2023-02-06r0
+          env:
+            - name: PIA_USER
+              valueFrom:
+                secretKeyRef:
+                  name: private-internet-access
+                  key: username
+            - name: PIA_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: private-internet-access
+                  key: password
+            - name: PIA_PF
+              value: "false"
+            - name: PIA_CONNECT
+              value: "false"
+            - name: PIA_CONF_PATH
+              value: "/out/pia0.conf"
+            - name: VPN_PROTOCOL
+              value: "wireguard"
+            - name: DISABLE_IPV6
+              value: "no"
+            - name: DIP_TOKEN
+              value: "no"
+            - name: AUTOCONNECT
+              value: "true"
+          volumeMounts:
+            - name: config
+              mountPath: /out/wg_confs
+      containers:
+        - name: wg
+          image: lscr.io/linuxserver/wireguard:1.0.20250521
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "America/Chicago"
+            - name: LOG_CONFS
+              value: "true"
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            capabilities:
+              add: [NET_ADMIN]
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 250m
+              memory: 512Mi
+          volumeMounts:
+            - name: config
+              mountPath: /config
+      # TODO:
+      # securityContext:
+      #   sysctls:
+      #     - name: net.ipv4.conf.all.src_valid_mark
+      #       value: "1"
+      volumes:
+        - name: config
+          emptyDir: {}
