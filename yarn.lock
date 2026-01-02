@@ -473,9 +473,9 @@
     upath "^1.1.0"
 
 "@pulumi/random@^4.14.0", "@pulumi/random@^4.16.2", "@pulumi/random@^4.17.0", "@pulumi/random@^4.18.3":
-  version "4.18.4"
-  resolved "https://registry.yarnpkg.com/@pulumi/random/-/random-4.18.4.tgz#b013b0b37eb20b438926f8e4e594ccc80c348e96"
-  integrity sha512-qVaz+Mo76NSxrCVd7kKZRsJLl+CzJjSUCzVLRYb89EnDMBb4Mkl56r+1lBRQ2zF/0q9GKp+rNSPSb3oKohOGVQ==
+  version "4.18.5"
+  resolved "https://registry.yarnpkg.com/@pulumi/random/-/random-4.18.5.tgz#63d4bdcf62bc233837f9084333fe54896677312d"
+  integrity sha512-7iWcnSb1jIDjB1cpS+Jl5oGc6mBo21sRgT8GohqlKQYtCKNo1KoFTN7uzDpVAem5dXyxznrT9PSpWhIf8ihqqg==
   dependencies:
     "@pulumi/pulumi" "^3.142.0"
 
