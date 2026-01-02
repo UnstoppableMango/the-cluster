@@ -32,7 +32,7 @@ spec:
             - name: PIA_CONNECT
               value: "false"
             - name: PIA_CONF_PATH
-              value: "/out/pia0.conf"
+              value: "/out/wg_confs/pia0.conf"
             - name: VPN_PROTOCOL
               value: "wireguard"
             - name: DISABLE_IPV6
@@ -43,7 +43,7 @@ spec:
               value: "true"
           volumeMounts:
             - name: config
-              mountPath: /out/wg_confs
+              mountPath: /out
       containers:
         - name: wg
           image: lscr.io/linuxserver/wireguard:1.0.20250521
@@ -57,10 +57,11 @@ spec:
             - name: LOG_CONFS
               value: "true"
           securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
             capabilities:
-              add: [NET_ADMIN]
+              add:
+                - NET_ADMIN
+                - SYS_MODULE
+            privileged: true
           resources:
             requests:
               cpu: 250m
@@ -71,11 +72,12 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /config
-      # TODO:
-      # securityContext:
-      #   sysctls:
-      #     - name: net.ipv4.conf.all.src_valid_mark
-      #       value: "1"
+            - name: modules
+              mountPath: /lib/modules
+              readOnly: true
       volumes:
         - name: config
           emptyDir: {}
+        - name: modules
+          hostPath:
+            path: /lib/modules
