@@ -48,9 +48,12 @@ This is a homelab infrastructure repository built on Kubernetes with Pulumi (Typ
 - Use `make` commands defined in the `Makefile` for common tasks
 - Format code: `make fmt` (runs dprint and nix formatters)
 - CI runs dprint formatting checks on all pull requests
-- Build and deploy Pulumi stacks with: `make <stack-directory> CMD=<up|preview|destroy> STACK=<stack-name>`
-  - Example: `make apps/deemix CMD=up STACK=pinkdiamond`
-  - Available stack directories: `apps/*`, `infra/*`
+- Build and deploy Pulumi stacks:
+  - For apps and infra: `make <stack-directory> CMD=<up|preview|destroy> STACK=<stack-name>`
+    - Example: `make apps/deemix CMD=up STACK=pinkdiamond`
+    - Available via make: `apps/*`, `infra/*`
+  - For clusters: `cd clusters/<name> && pulumi <command>`
+    - Example: `cd clusters/pinkdiamond && pulumi up`
 
 ## Dependencies
 
