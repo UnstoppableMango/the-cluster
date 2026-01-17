@@ -29,7 +29,7 @@ spec:
           volumeMounts:
             - name: ncps-persistent-storage
               mountPath: /storage
-        - image: kalbasit/ncps:v0.5.2
+        - image: kalbasit/ncps:v0.6.2
           name: migrate-database
           args:
             - /bin/dbmate
@@ -40,7 +40,7 @@ spec:
             - name: ncps-persistent-storage
               mountPath: /storage
       containers:
-        - image: kalbasit/ncps:v0.5.2
+        - image: kalbasit/ncps:v0.6.2
           name: ncps
           args:
             - /bin/ncps
