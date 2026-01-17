@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # renovate: datasource=docker depName=ghcr.io/actions/actions-runner
-      ACTIONS_RUNNER_VERSION: 2.330.0
+      ACTIONS_RUNNER_VERSION: 2.331.0
     steps:
       - uses: docker/setup-buildx-action@v3
 
