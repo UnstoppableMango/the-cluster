@@ -73,7 +73,7 @@ spec:
           fsGroup: 1001
         containers:
           - name: runner # default
-            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.330.0
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.331.0
             command: [/home/runner/run.sh] # default
             env:
               # Cachix action seems to need this
@@ -177,7 +177,7 @@ spec:
       spec:
         containers:
           - name: runner # default
-            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.330.0
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.331.0
             command: [/home/runner/run.sh] # default
             # Cachix action seems to need this
             env:
@@ -205,7 +205,7 @@ spec:
       spec:
         containers:
           - name: runner # default
-            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.330.0
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.331.0
             command: [/home/runner/run.sh] # default
             # Cachix action seems to need this
             env:
@@ -233,7 +233,7 @@ spec:
       spec:
         containers:
           - name: runner # default
-            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.330.0
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.331.0
             command: [/home/runner/run.sh] # default
             # Cachix action seems to need this
             env:
