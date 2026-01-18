@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"main": "index.ts",
 	"dependencies": {
-		"@pulumi/keycloak": "^5.2.1",
+		"@pulumi/keycloak": "^6.0.0",
 		"@pulumi/kubernetes": "^4.23.0",
 		"@pulumi/pulumi": "^3.190.0",
 		"@unstoppablemango/thecluster": "file:../../lib/nodejs",
