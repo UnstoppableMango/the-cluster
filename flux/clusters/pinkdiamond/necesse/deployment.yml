@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: necesse
+  namespace: necesse
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: necesse
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: necesse
+    spec:
+      containers:
+      - name: necesse
+        image: ghcr.io/brammys/necesse-server:1-1-1-21292486
+        env:
+          - name: PAUSE
+            value: '1'
+          - name: PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: necesse
+                name: password
+        resources:
+          limits:
+            memory: '8Gi'
+            cpu: '4'
+          requests:
+            memory: '8Gi'
+            cpu: '4'
+        ports:
+        - containerPort: 14159
+          name: http
+        volumeMounts:
+          - name: saves
+            mountPath: /necesse/saves
+      volumes:
+        - name: saves
+          persistentVolumeClaim:
+            claimName: necesse

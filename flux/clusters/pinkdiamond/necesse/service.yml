@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: necesse
+  namespace: necesse
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: necesse
+  ports:
+  - port: 14159
+    targetPort: 14159
+    protocol: UDP
