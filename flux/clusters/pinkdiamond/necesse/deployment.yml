@@ -4,6 +4,7 @@ metadata:
   name: necesse
   namespace: necesse
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: necesse
@@ -32,7 +33,7 @@ spec:
             cpu: '4'
         ports:
         - containerPort: 14159
-          name: http
+          name: game
         volumeMounts:
           - name: saves
             mountPath: /necesse/saves
