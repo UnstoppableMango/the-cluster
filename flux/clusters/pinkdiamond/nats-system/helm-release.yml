@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: nats
-      version: 2.12.3
+      version: 2.12.4
       sourceRef:
         kind: HelmRepository
         name: nats
@@ -29,7 +29,7 @@ spec:
     container:
       image:
         repository: nats # default
-        tag: 2.12.3-linux
+        tag: 2.12.4-linux
     reloader:
       image:
         repository: natsio/nats-server-config-reloader # default
