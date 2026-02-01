@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xmage
+  namespace: xmage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: xmage
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: xmage
+    spec:
+      containers:
+        - name: xmage
+          image: unstoppablemango/mage-server:v1.4.58V1r1
+          env:
+            - name: XMAGE_SERVER_NAME
+              value: THECLUSTER
+          ports:
+            - containerPort: 17171
+          resources:
+            limits:
+              cpu: 2
+              memory: 1Gi
+            requests:
+              cpu: 250m
+              memory: 256Mi
+          volumeMounts:
+            - name: db
+              mountPath: /opt/xmage/db
+            - name: saved
+              mountPath: /opt/xmage/saved
+      volumes:
+        - name: db
+          persistentVolumeClaim:
+            claimName: db
+        - name: saved
+          emptyDir: {}
