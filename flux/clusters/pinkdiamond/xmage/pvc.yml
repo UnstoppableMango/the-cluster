@@ -2,7 +2,9 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: db
+  namespace: xmage
 spec:
+  storageClassName: unsafe-rbd
   accessModes:
     - ReadWriteOnce
   resources:
