@@ -19,12 +19,18 @@ spec:
           env:
             - name: XMAGE_SERVER_NAME
               value: THECLUSTER
+            - name: XMAGE_PORT
+              value: "17171"
+            - name: MAX_MEMORY
+              value: 4Gi
+            - name: MIN_MEMORY
+              value: 256Mi
           ports:
             - containerPort: 17171
           resources:
             limits:
-              cpu: 2
-              memory: 1Gi
+              cpu: 4
+              memory: 4Gi
             requests:
               cpu: 250m
               memory: 256Mi
