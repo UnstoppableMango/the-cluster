@@ -8,6 +8,6 @@ spec:
   selector:
     app.kubernetes.io/name: necesse
   ports:
-  - port: 14159
-    targetPort: 14159
-    protocol: UDP
+    - port: 14159
+      targetPort: 14159
+      protocol: UDP
