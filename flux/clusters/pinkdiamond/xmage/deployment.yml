@@ -13,12 +13,18 @@ spec:
       labels:
         app.kubernetes.io/name: xmage
     spec:
+      hostAliases:
+        - ip: "0.0.0.0"
+          hostnames:
+            - localhost
       containers:
         - name: xmage
           image: unstoppablemango/mage-server:v1.4.58V1r1
           env:
             - name: XMAGE_SERVER_NAME
               value: THECLUSTER
+            - name: XMAGE_SERVER_ADDRESS
+              value: localhost
             - name: XMAGE_PORT
               value: "17171"
             - name: MAX_MEMORY
