@@ -22,9 +22,9 @@ spec:
             - name: XMAGE_PORT
               value: "17171"
             - name: MAX_MEMORY
-              value: 4Gi
+              value: 4g
             - name: MIN_MEMORY
-              value: 256Mi
+              value: 256m
           ports:
             - containerPort: 17171
           resources:
