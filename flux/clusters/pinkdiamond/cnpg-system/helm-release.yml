@@ -22,7 +22,7 @@ spec:
   values:
     image:
       repository: ghcr.io/cloudnative-pg/cloudnative-pg # default
-      tag: 1.28.0
+      tag: 1.28.1
     resources:
       requests:
         cpu: 100m
