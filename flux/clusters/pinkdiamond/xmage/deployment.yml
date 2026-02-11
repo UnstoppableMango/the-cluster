@@ -19,7 +19,7 @@ spec:
           env:
             - name: XMAGE_SERVER_NAME
               value: THECLUSTER
-            - name: XMAGE_SERVER_ADDRESS
+            - name: XMAGE_SERVER_ADDRESS # TODO: This is wrong, needs to match the hostname
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
@@ -33,7 +33,7 @@ spec:
             - containerPort: 17171
           resources:
             limits:
-              cpu: 4
+              cpu: "4"
               memory: 4Gi
             requests:
               cpu: 250m
