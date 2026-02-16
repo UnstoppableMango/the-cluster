@@ -50,6 +50,7 @@ module.exports = {
 		'UnstoppableMango/audio',
 		'UnstoppableMango/CliWrap.FSharp',
 		'UnstoppableMango/dotfiles',
+		'UnstoppableMango/fenced',
 		'UnstoppableMango/github',
 		'UnstoppableMango/ihfs',
 		'UnstoppableMango/lang',
