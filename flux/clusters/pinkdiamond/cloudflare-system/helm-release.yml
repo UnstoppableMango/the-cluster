@@ -33,7 +33,7 @@ spec:
     image:
       # https://github.com/STRRL/cloudflare-tunnel-ingress-controller/issues/202
       repository: ghcr.io/strrl/cloudflare-tunnel-ingress-controller
-      tag: 0.0.21
+      tag: 0.0.22
     resources:
       limits:
         cpu: 100m # default
