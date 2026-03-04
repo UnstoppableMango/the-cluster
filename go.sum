@@ -112,6 +112,7 @@ github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6r
 github.com/bitnami-labs/sealed-secrets v0.34.0 h1:t9xgVFOlmZYCuX7RNPLi4kaiydRBhDTFkKLEvvSS+a4=
 github.com/bitnami-labs/sealed-secrets v0.34.0/go.mod h1:KfrdVW5mtuTlO9DJFnjHGasoUu1G8EnF7Zv+CBmuXZE=
 github.com/bitnami-labs/sealed-secrets v0.35.0/go.mod h1:dgtog4lT48tAbthXpDMRiZOmfKT/3cj8BH6HpKKnMR4=
+github.com/bitnami-labs/sealed-secrets v0.36.0/go.mod h1:dgtog4lT48tAbthXpDMRiZOmfKT/3cj8BH6HpKKnMR4=
 github.com/blang/semver v3.5.1+incompatible h1:cQNTCjp13qL8KC3Nbxr/y2Bqb63oX6wdnnjpJbkM4JQ=
 github.com/blang/semver v3.5.1+incompatible/go.mod h1:kRBLl5iJ+tD4TcOOxsy/0fnwebNt5EWlYSAyrTnjyyk=
 github.com/blang/semver/v4 v4.0.0 h1:1PFHFE6yCCTv8C1TeyNNarDzntLi7wMI5i/pzqYIsAM=
