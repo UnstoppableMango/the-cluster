@@ -1,6 +1,6 @@
 module github.com/unstoppablemango/the-cluster
 
-go 1.25.7
+go 1.26.1
 
 tool (
 	github.com/bitnami-labs/sealed-secrets/cmd/kubeseal
@@ -30,7 +30,7 @@ require (
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/bitnami-labs/sealed-secrets v0.36.0 // indirect
+	github.com/bitnami-labs/sealed-secrets v0.36.1 // indirect
 	github.com/blang/semver v3.5.1+incompatible // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/cenkalti/backoff/v5 v5.0.2 // indirect
@@ -225,14 +225,14 @@ require (
 	gopkg.in/op/go-logging.v1 v1.0.0-20160211212156-b2cb9fa56473 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	k8s.io/api v0.35.1 // indirect
+	k8s.io/api v0.35.2 // indirect
 	k8s.io/apiextensions-apiserver v0.33.3 // indirect
-	k8s.io/apimachinery v0.35.1 // indirect
+	k8s.io/apimachinery v0.35.2 // indirect
 	k8s.io/apiserver v0.33.3 // indirect
 	k8s.io/cli-runtime v0.33.3 // indirect
-	k8s.io/client-go v0.35.1 // indirect
+	k8s.io/client-go v0.35.2 // indirect
 	k8s.io/component-base v0.33.3 // indirect
-	k8s.io/klog/v2 v2.130.1 // indirect
+	k8s.io/klog/v2 v2.140.0 // indirect
 	k8s.io/kube-openapi v0.0.0-20250910181357-589584f1c912 // indirect
 	k8s.io/kubectl v0.33.3 // indirect
 	k8s.io/utils v0.0.0-20251002143259-bc988d571ff4 // indirect
