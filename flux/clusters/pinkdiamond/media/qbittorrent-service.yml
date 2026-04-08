@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: qbittorrent
+  namespace: media
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: qbittorrent
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http-web
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qbittorrent-torrenting
+  namespace: media
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: qbittorrent
+  ports:
+    - name: bittorrent-tcp
+      port: 6881
+      targetPort: 6881
+      protocol: TCP
+    - name: bittorrent-udp
+      port: 6881
+      targetPort: 6881
+      protocol: UDP
