@@ -42,6 +42,13 @@ spec:
               value: "false"
             - name: PIA_PF
               value: "false"
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
           volumeMounts:
             - name: vpn-config
               mountPath: /vpn
@@ -57,6 +64,13 @@ spec:
               value: custom
             - name: VPN_TYPE
               value: wireguard
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi
           volumeMounts:
             - name: vpn-config
               mountPath: /gluetun/wireguard
@@ -73,6 +87,13 @@ spec:
               value: "8080"
             - name: TORRENTING_PORT
               value: "6881"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "2"
+              memory: 1Gi
           ports:
             - containerPort: 8080
               name: http-web
