@@ -38,3 +38,4 @@ generated-docs/
 
 # Absolute Garbage
 .DS_Store
+.claude/
