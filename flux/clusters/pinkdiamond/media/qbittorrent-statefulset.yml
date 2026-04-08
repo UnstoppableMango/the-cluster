@@ -14,7 +14,52 @@ spec:
       labels:
         app.kubernetes.io/name: qbittorrent
     spec:
+      initContainers:
+        - name: generate-vpn-config
+          image: ghcr.io/unstoppablemango/pia-manual-connections:v0.2.2-pia2026-01-30r0
+          env:
+            - name: PIA_USER
+              valueFrom:
+                secretKeyRef:
+                  name: private-internet-access
+                  key: username
+            - name: PIA_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: private-internet-access
+                  key: password
+            - name: VPN_PROTOCOL
+              value: wireguard
+            - name: PIA_CONNECT
+              value: "false"
+            - name: PIA_CONF_PATH
+              value: /vpn/wg0.conf
+            - name: AUTOCONNECT
+              value: "true"
+            - name: DISABLE_IPV6
+              value: "yes"
+            - name: PIA_DNS
+              value: "false"
+            - name: PIA_PF
+              value: "false"
+          volumeMounts:
+            - name: vpn-config
+              mountPath: /vpn
       containers:
+        - name: gluetun
+          image: ghcr.io/qdm12/gluetun:v3.41.1
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
+          env:
+            - name: VPN_SERVICE_PROVIDER
+              value: custom
+            - name: VPN_TYPE
+              value: wireguard
+          volumeMounts:
+            - name: vpn-config
+              mountPath: /gluetun/wireguard
         - name: qbittorrent
           image: lscr.io/linuxserver/qbittorrent:5.1.4-r2-ls448
           env:
@@ -43,6 +88,8 @@ spec:
             - name: downloads
               mountPath: /downloads
       volumes:
+        - name: vpn-config
+          emptyDir: {}
         - name: downloads
           persistentVolumeClaim:
             claimName: qbittorrent-downloads
