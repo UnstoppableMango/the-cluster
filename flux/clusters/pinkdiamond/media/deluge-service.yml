@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: deluge
+  namespace: media
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: deluge
+  ports:
+    - port: 8112
+      targetPort: 8112
+      name: http-web
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: deluge-torrenting
+  namespace: media
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: deluge
+  ports:
+    - name: bittorrent-tcp
+      port: 6881
+      targetPort: 6881
+      protocol: TCP
+    - name: bittorrent-udp
+      port: 6881
+      targetPort: 6881
+      protocol: UDP
+    - name: deluged
+      port: 58846
+      targetPort: 58846
+      protocol: TCP
