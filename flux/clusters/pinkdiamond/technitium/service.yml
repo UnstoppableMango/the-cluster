@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: technitium
+  name: technitium-a
   namespace: technitium
 spec:
   type: ClusterIP
   selector:
-    app.kubernetes.io/name: technitium
+    app.kubernetes.io/name: technitium-a
   ports:
     - port: 5380
       targetPort: 5380
@@ -15,13 +15,47 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: technitium-dns
+  name: technitium-a-dns
   namespace: technitium
 spec:
   type: LoadBalancer
   loadBalancerIP: 192.168.1.46
   selector:
-    app.kubernetes.io/name: technitium
+    app.kubernetes.io/name: technitium-a
+  ports:
+    - name: dns-tcp
+      port: 53
+      targetPort: 53
+      protocol: TCP
+    - name: dns-udp
+      port: 53
+      targetPort: 53
+      protocol: UDP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: technitium-b
+  namespace: technitium
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: technitium-b
+  ports:
+    - port: 5380
+      targetPort: 5380
+      name: http-web
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: technitium-b-dns
+  namespace: technitium
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 192.168.1.47
+  selector:
+    app.kubernetes.io/name: technitium-b
   ports:
     - name: dns-tcp
       port: 53

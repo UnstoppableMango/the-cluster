@@ -10,17 +10,28 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: technitium.thecluster.lan
+  - host: technitium-a.thecluster.lan
     http:
       paths:
       - backend:
           service:
-            name: technitium
+            name: technitium-a
+            port:
+              name: http-web
+        path: /
+        pathType: Prefix
+  - host: technitium-b.thecluster.lan
+    http:
+      paths:
+      - backend:
+          service:
+            name: technitium-b
             port:
               name: http-web
         path: /
         pathType: Prefix
   tls:
   - hosts:
-    - technitium.thecluster.lan
+    - technitium-a.thecluster.lan
+    - technitium-b.thecluster.lan
     secretName: technitium-tls
