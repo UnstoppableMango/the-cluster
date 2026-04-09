@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: technitium
+  namespace: technitium
+  annotations:
+    cert-manager.io/issuer-group: cert-manager.io
+    cert-manager.io/issuer-kind: ClusterIssuer
+    cert-manager.io/issuer: thecluster.lan
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: technitium.thecluster.lan
+    http:
+      paths:
+      - backend:
+          service:
+            name: technitium
+            port:
+              name: http-web
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - technitium.thecluster.lan
+    secretName: technitium-tls

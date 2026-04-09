@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: technitium
+  namespace: technitium
+spec:
+  serviceName: technitium
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: technitium
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: technitium
+    spec:
+      containers:
+        - name: technitium
+          image: technitium/dns-server:13.4.1
+          env:
+            - name: DNS_SERVER_DOMAIN
+              value: technitium.thecluster.lan
+            - name: DNS_SERVER_PREFER_IPV6
+              value: "false"
+            - name: DNS_SERVER_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: technitium
+                  key: adminPassword
+          ports:
+            - containerPort: 5380
+              name: http-web
+            - containerPort: 53
+              name: dns-tcp
+              protocol: TCP
+            - containerPort: 53
+              name: dns-udp
+              protocol: UDP
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: data
+              mountPath: /etc/dns
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        storageClassName: ssd-rbd
+        accessModes:
+          - ReadWriteOncePod
+        resources:
+          requests:
+            storage: 1Gi
