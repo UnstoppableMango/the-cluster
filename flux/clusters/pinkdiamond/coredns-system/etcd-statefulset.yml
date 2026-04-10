@@ -28,6 +28,9 @@ spec:
             - --initial-cluster=etcd-0=http://etcd.coredns-system.svc.cluster.local:2380
             - --initial-cluster-token=coredns-etcd
             - --initial-cluster-state=new
+            - --auto-compaction-mode=revision
+            - --auto-compaction-retention=1000
+            - --quota-backend-bytes=536870912
           ports:
             - name: client
               containerPort: 2379
