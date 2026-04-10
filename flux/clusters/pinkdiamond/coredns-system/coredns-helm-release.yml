@@ -26,10 +26,25 @@ spec:
                 - key: kubernetes.io/hostname
                   operator: NotIn
                   values: [gaea]
+    serviceType: LoadBalancer
     service:
-      type: LoadBalancer
       loadBalancerIP: 192.168.1.46
     servers:
+      - zones:
+          - zone: thecluster.lan
+        port: 53
+        plugins:
+          - name: errors
+          - name: etcd
+            parameters: thecluster.lan
+            configBlock: |-
+              stubzones
+              path /skydns
+              endpoint http://etcd.coredns-system.svc.cluster.local:2379
+          - name: cache
+            parameters: "30"
+          - name: loop
+          - name: loadbalance
       - zones:
           - zone: .
         port: 53
@@ -46,7 +61,6 @@ spec:
           - name: cache
             parameters: "30"
           - name: loop
-          - name: reload
           - name: loadbalance
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -77,10 +91,25 @@ spec:
                 - key: kubernetes.io/hostname
                   operator: NotIn
                   values: [gaea]
+    serviceType: LoadBalancer
     service:
-      type: LoadBalancer
       loadBalancerIP: 192.168.1.47
     servers:
+      - zones:
+          - zone: thecluster.lan
+        port: 53
+        plugins:
+          - name: errors
+          - name: etcd
+            parameters: thecluster.lan
+            configBlock: |-
+              stubzones
+              path /skydns
+              endpoint http://etcd.coredns-system.svc.cluster.local:2379
+          - name: cache
+            parameters: "30"
+          - name: loop
+          - name: loadbalance
       - zones:
           - zone: .
         port: 53
@@ -97,5 +126,4 @@ spec:
           - name: cache
             parameters: "30"
           - name: loop
-          - name: reload
           - name: loadbalance
