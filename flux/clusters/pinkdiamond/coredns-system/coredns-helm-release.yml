@@ -1,0 +1,129 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: coredns-a
+  namespace: coredns-system
+spec:
+  interval: 10m
+  releaseName: coredns-a
+  targetNamespace: coredns-system
+  chart:
+    spec:
+      chart: coredns
+      version: 1.36.0
+      sourceRef:
+        kind: HelmRepository
+        name: coredns
+  values:
+    isClusterService: false
+    replicaCount: 1
+    affinity:
+      nodeAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: NotIn
+                  values: [gaea]
+    serviceType: LoadBalancer
+    service:
+      loadBalancerIP: 192.168.1.46
+    servers:
+      - zones:
+          - zone: thecluster.lan
+        port: 53
+        plugins:
+          - name: errors
+          - name: etcd
+            parameters: thecluster.lan
+            configBlock: |-
+              stubzones
+              path /skydns
+              endpoint http://etcd.coredns-system.svc.cluster.local:2379
+          - name: cache
+            parameters: "30"
+          - name: loop
+          - name: loadbalance
+      - zones:
+          - zone: .
+        port: 53
+        plugins:
+          - name: errors
+          - name: health
+            configBlock: |-
+              lameduck 5s
+          - name: ready
+          - name: forward
+            parameters: . 1.1.1.1 8.8.8.8
+            configBlock: |-
+              max_concurrent 1000
+          - name: cache
+            parameters: "30"
+          - name: loop
+          - name: loadbalance
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: coredns-b
+  namespace: coredns-system
+spec:
+  interval: 10m
+  releaseName: coredns-b
+  targetNamespace: coredns-system
+  chart:
+    spec:
+      chart: coredns
+      version: 1.36.0
+      sourceRef:
+        kind: HelmRepository
+        name: coredns
+  values:
+    isClusterService: false
+    replicaCount: 1
+    affinity:
+      nodeAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: NotIn
+                  values: [gaea]
+    serviceType: LoadBalancer
+    service:
+      loadBalancerIP: 192.168.1.47
+    servers:
+      - zones:
+          - zone: thecluster.lan
+        port: 53
+        plugins:
+          - name: errors
+          - name: etcd
+            parameters: thecluster.lan
+            configBlock: |-
+              stubzones
+              path /skydns
+              endpoint http://etcd.coredns-system.svc.cluster.local:2379
+          - name: cache
+            parameters: "30"
+          - name: loop
+          - name: loadbalance
+      - zones:
+          - zone: .
+        port: 53
+        plugins:
+          - name: errors
+          - name: health
+            configBlock: |-
+              lameduck 5s
+          - name: ready
+          - name: forward
+            parameters: . 1.1.1.1 8.8.8.8
+            configBlock: |-
+              max_concurrent 1000
+          - name: cache
+            parameters: "30"
+          - name: loop
+          - name: loadbalance
