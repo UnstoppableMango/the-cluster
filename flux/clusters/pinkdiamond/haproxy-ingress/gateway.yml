@@ -11,8 +11,6 @@ spec:
       protocol: HTTPS
       tls:
         mode: Terminate
-        certificateRefs:
-          - name: thecluster-lan-wildcard-tls
       allowedRoutes:
         namespaces:
           from: All
