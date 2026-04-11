@@ -64,6 +64,11 @@ spec:
               value: custom
             - name: VPN_TYPE
               value: wireguard
+            # https://github.com/qdm12/gluetun-wiki/blob/main/setup/options/firewall.md
+            - name: FIREWALL_OUTBOUND_SUBNETS
+              value: 10.42.0.0/16,10.43.0.0/16
+            - name: FIREWALL_INPUT_PORTS
+              value: 8112,6881,58846
           resources:
             requests:
               cpu: 10m
@@ -71,6 +76,14 @@ spec:
             limits:
               cpu: 500m
               memory: 128Mi
+          # https://github.com/qdm12/gluetun-wiki/blob/main/setup/advanced/kubernetes.md
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - "/bin/sh"
+                  - "-c"
+                  - "(ip rule del table 51820 2>/dev/null; ip -6 rule del table 51820 2>/dev/null) || true"
           volumeMounts:
             - name: vpn-config
               mountPath: /gluetun/wireguard
