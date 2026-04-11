@@ -1,26 +1,19 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
 metadata:
   name: deluge
   namespace: media
-  annotations:
-    cert-manager.io/issuer-group: cert-manager.io
-    cert-manager.io/issuer-kind: ClusterIssuer
-    cert-manager.io/issuer: thecluster.lan
 spec:
-  ingressClassName: haproxy
-  rules:
-  - host: deluge.thecluster.lan
-    http:
-      paths:
-      - backend:
-          service:
-            name: deluge
-            port:
-              name: http-web
-        path: /
-        pathType: Prefix
-  tls:
-  - hosts:
+  parentRefs:
+    - name: haproxy
+      namespace: haproxy-ingress
+  hostnames:
     - deluge.thecluster.lan
-    secretName: deluge-tls
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: deluge
+          port: 8112
