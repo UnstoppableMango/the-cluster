@@ -5,8 +5,8 @@ metadata:
   namespace: nix-system
 spec:
   parentRefs:
-    - name: haproxy
-      namespace: haproxy-ingress
+    - name: nginx
+      namespace: nginx-gateway
   hostnames:
     - ncps.thecluster.lan
   rules:
