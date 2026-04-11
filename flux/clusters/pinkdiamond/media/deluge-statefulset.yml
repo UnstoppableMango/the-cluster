@@ -64,6 +64,9 @@ spec:
               value: custom
             - name: VPN_TYPE
               value: wireguard
+            # https://github.com/qdm12/gluetun-wiki/blob/main/setup/options/firewall.md
+            - name: FIREWALL_OUTBOUND_SUBNETS
+              value: 10.42.0.0/16,10.43.0.0/16
           resources:
             requests:
               cpu: 10m
