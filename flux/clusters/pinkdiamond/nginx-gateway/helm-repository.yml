@@ -1,8 +1,0 @@
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: nginx-gateway
-  namespace: nginx-gateway
-spec:
-  url: https://helm.nginx.com/stable
-  interval: 1h

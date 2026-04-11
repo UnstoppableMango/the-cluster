@@ -7,19 +7,19 @@ spec:
   interval: 10m
   releaseName: nginx-gateway-fabric
   targetNamespace: nginx-gateway
-  chart:
-    spec:
-      chart: nginx-gateway-fabric
-      version: 1.4.0
-      sourceRef:
-        kind: HelmRepository
-        name: nginx-gateway
+  chartRef:
+    kind: OCIRepository
+    name: nginx-gateway-fabric
   install:
     crds: Create
   upgrade:
     crds: CreateReplace
   # https://github.com/nginxinc/nginx-gateway-fabric/blob/main/charts/nginx-gateway-fabric/values.yaml
   values:
+    certGenerator:
+      enable: false
+      agentTLSSecretName: agent-tls
     service:
       type: LoadBalancer
+      loadBalancerIP: 192.168.1.43
       externalTrafficPolicy: Local
