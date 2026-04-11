@@ -23,7 +23,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: gateway-api
-  path: ./config/crd
+  path: ./config/crd/experimental
   interval: 1h
   prune: false
   wait: true
