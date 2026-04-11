@@ -18,6 +18,14 @@ spec:
     image:
       repository: registry.k8s.io/external-dns/external-dns
       tag: v0.21.0
+    sources:
+      - service
+      - ingress
+      - gateway-httproute
+      - gateway-grpcroute
+      - gateway-tlsroute
+      - gateway-tcproute
+      - gateway-udproute
     domainFilters:
       - thecluster.lan
     interval: 5m
