@@ -18,14 +18,18 @@ spec:
   values:
     fullnameOverride: nginx-gateway-fabric
     nginxGateway:
+      replicas: 2
       image:
         repository: ghcr.io/nginx/nginx-gateway-fabric
         tag: 2.5.1
       gwAPIExperimentalFeatures:
         enable: true
+      productTelemetry:
+        enable: false
     certGenerator:
       enable: false
     nginx:
+      kind: daemonset
       image:
         repository: ghcr.io/nginx/nginx-gateway-fabric/nginx
         tag: 2.5.1
