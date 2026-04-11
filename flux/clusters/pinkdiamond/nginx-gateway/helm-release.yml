@@ -24,6 +24,8 @@ spec:
         tag: 2.5.1
       gwAPIExperimentalFeatures:
         enable: true
+      productTelemetry:
+        enable: false
     certGenerator:
       enable: false
     nginx:
