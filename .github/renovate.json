@@ -29,6 +29,10 @@
 	},
 	"packageRules": [
 		{
+			"matchPackageNames": ["/^nginx\\/nginx-gateway-fabric.*/"],
+			"groupName": "nginx-gateway-fabric"
+		},
+		{
 			"matchPackageNames": ["/^goharbor\\/.*/"],
 			"groupName": "harbor"
 		},
