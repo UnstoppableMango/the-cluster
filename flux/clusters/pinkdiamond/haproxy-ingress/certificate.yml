@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: thecluster-lan-wildcard
+  namespace: haproxy-ingress
+spec:
+  secretName: thecluster-lan-wildcard-tls
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: thecluster.lan
+  dnsNames:
+    - "*.thecluster.lan"
