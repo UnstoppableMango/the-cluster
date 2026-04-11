@@ -83,7 +83,7 @@ spec:
                 command:
                   - "/bin/sh"
                   - "-c"
-                  - "(ip rule del table 51820; ip -6 rule del table 51820) || true"
+                  - "(ip rule del table 51820 2>/dev/null; ip -6 rule del table 51820 2>/dev/null) || true"
           volumeMounts:
             - name: vpn-config
               mountPath: /gluetun/wireguard
