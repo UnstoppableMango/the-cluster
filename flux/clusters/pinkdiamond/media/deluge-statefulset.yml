@@ -76,6 +76,14 @@ spec:
             limits:
               cpu: 500m
               memory: 128Mi
+          # https://github.com/qdm12/gluetun-wiki/blob/main/setup/advanced/kubernetes.md
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - "/bin/sh"
+                  - "-c"
+                  - "(ip rule del table 51820; ip -6 rule del table 51820) || true"
           volumeMounts:
             - name: vpn-config
               mountPath: /gluetun/wireguard
