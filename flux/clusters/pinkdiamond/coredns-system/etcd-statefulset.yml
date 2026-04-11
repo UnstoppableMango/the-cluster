@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: etcd
-          image: registry.k8s.io/etcd:3.5.17-0
+          image: registry.k8s.io/etcd:3.6.10-0
           command:
             - etcd
             - --name=etcd-0
