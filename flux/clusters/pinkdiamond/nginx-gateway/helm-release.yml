@@ -29,7 +29,7 @@ spec:
     certGenerator:
       enable: false
     nginx:
-      kind: daemonset
+      kind: daemonSet
       image:
         repository: ghcr.io/nginx/nginx-gateway-fabric/nginx
         tag: 2.5.1
