@@ -155,7 +155,7 @@ const ingress = new Ingress('pihole', {
 		},
 	},
 	spec: {
-		ingressClassName: 'nginx',
+		ingressClassName: 'haproxy',
 		rules: instances.map(({ name }) => ({
 			host: `${name}.thecluster.lan`,
 			http: {
