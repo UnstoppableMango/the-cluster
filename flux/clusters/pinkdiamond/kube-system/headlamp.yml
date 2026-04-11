@@ -82,8 +82,8 @@ metadata:
   namespace: kube-system
 spec:
   parentRefs:
-    - name: haproxy
-      namespace: haproxy-ingress
+    - name: nginx
+      namespace: nginx-gateway
   hostnames:
     - headlamp.thecluster.lan
   rules:

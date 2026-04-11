@@ -1,0 +1,50 @@
+# Control plane server cert; DNS name = <releaseName>.nginx-gateway.svc
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: nginx-gateway
+  namespace: nginx-gateway
+spec:
+  secretName: server-tls
+  usages:
+    - digital signature
+    - key encipherment
+  dnsNames:
+    - nginx-gateway-fabric.nginx-gateway.svc
+  issuerRef:
+    name: thecluster.io
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+# Agent cert for NGINX data plane
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: nginx
+  namespace: nginx-gateway
+spec:
+  secretName: agent-tls
+  usages:
+    - digital signature
+    - key encipherment
+  dnsNames:
+    - "*.cluster.local"
+  issuerRef:
+    name: thecluster.io
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+# Wildcard cert for Gateway listeners
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: thecluster-lan-wildcard
+  namespace: nginx-gateway
+spec:
+  secretName: thecluster-lan-wildcard-tls
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: thecluster.lan
+  dnsNames:
+    - "*.thecluster.lan"

@@ -1,0 +1,51 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nginx-gateway-fabric
+  namespace: nginx-gateway
+spec:
+  interval: 10m
+  releaseName: nginx-gateway-fabric
+  targetNamespace: nginx-gateway
+  chartRef:
+    kind: OCIRepository
+    name: nginx-gateway-fabric
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+  # https://github.com/nginxinc/nginx-gateway-fabric/blob/main/charts/nginx-gateway-fabric/values.yaml
+  values:
+    fullnameOverride: nginx-gateway-fabric
+    nginxGateway:
+      image:
+        repository: ghcr.io/nginx/nginx-gateway-fabric
+        tag: 2.5.1
+      gwAPIExperimentalFeatures:
+        enable: true
+    certGenerator:
+      enable: false
+    nginx:
+      image:
+        repository: ghcr.io/nginx/nginx-gateway-fabric/nginx
+        tag: 2.5.1
+      service:
+        type: LoadBalancer
+        loadBalancerIP: 192.168.1.43
+        externalTrafficPolicy: Local
+    gateways:
+      - name: nginx
+        namespace: nginx-gateway
+        spec:
+          gatewayClassName: nginx
+          listeners:
+            - name: https
+              port: 443
+              protocol: HTTPS
+              tls:
+                mode: Terminate
+                certificateRefs:
+                  - name: thecluster-lan-wildcard-tls
+              allowedRoutes:
+                namespaces:
+                  from: All

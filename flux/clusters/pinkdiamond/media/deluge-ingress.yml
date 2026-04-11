@@ -5,8 +5,8 @@ metadata:
   namespace: media
 spec:
   parentRefs:
-    - name: haproxy
-      namespace: haproxy-ingress
+    - name: nginx
+      namespace: nginx-gateway
   hostnames:
     - deluge.thecluster.lan
   rules:
