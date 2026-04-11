@@ -27,7 +27,7 @@ spec:
         cert-manager.io/issuer-group: cert-manager.io
         cert-manager.io/issuer-kind: ClusterIssuer
         cert-manager.io/issuer: thecluster.lan
-      ingressClassName: nginx
+      ingressClassName: haproxy
       hosts:
         - host: headlamp.thecluster.lan
           paths:

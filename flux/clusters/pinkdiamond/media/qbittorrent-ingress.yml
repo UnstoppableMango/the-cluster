@@ -8,7 +8,7 @@ metadata:
     cert-manager.io/issuer-kind: ClusterIssuer
     cert-manager.io/issuer: thecluster.lan
 spec:
-  ingressClassName: nginx
+  ingressClassName: haproxy
   rules:
   - host: qbittorrent.thecluster.lan
     http:
