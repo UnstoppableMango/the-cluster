@@ -10,7 +10,9 @@ spec:
     tag: v1.5.1
   ignore: |
     /*
+    !/config/
     !/config/crd
+    !/config/crd/**
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
