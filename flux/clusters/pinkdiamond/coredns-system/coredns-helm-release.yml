@@ -40,7 +40,8 @@ spec:
             configBlock: |-
               stubzones
               path /skydns
-              endpoint http://etcd.coredns-system.svc.cluster.local:2379
+              endpoint https://etcd.coredns-system.svc.cluster.local:2379
+              tls /etc/coredns/etcd-client-tls/tls.crt /etc/coredns/etcd-client-tls/tls.key /etc/coredns/etcd-client-tls/ca.crt
           - name: cache
             parameters: "30"
           - name: loop
@@ -62,6 +63,14 @@ spec:
             parameters: "30"
           - name: loop
           - name: loadbalance
+    extraVolumes:
+      - name: etcd-client-tls
+        secret:
+          secretName: etcd-client-tls
+    extraVolumeMounts:
+      - name: etcd-client-tls
+        mountPath: /etc/coredns/etcd-client-tls
+        readOnly: true
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -105,7 +114,8 @@ spec:
             configBlock: |-
               stubzones
               path /skydns
-              endpoint http://etcd.coredns-system.svc.cluster.local:2379
+              endpoint https://etcd.coredns-system.svc.cluster.local:2379
+              tls /etc/coredns/etcd-client-tls/tls.crt /etc/coredns/etcd-client-tls/tls.key /etc/coredns/etcd-client-tls/ca.crt
           - name: cache
             parameters: "30"
           - name: loop
@@ -127,3 +137,11 @@ spec:
             parameters: "30"
           - name: loop
           - name: loadbalance
+    extraVolumes:
+      - name: etcd-client-tls
+        secret:
+          secretName: etcd-client-tls
+    extraVolumeMounts:
+      - name: etcd-client-tls
+        mountPath: /etc/coredns/etcd-client-tls
+        readOnly: true

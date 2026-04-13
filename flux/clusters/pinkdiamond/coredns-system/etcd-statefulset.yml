@@ -21,8 +21,8 @@ spec:
             - etcd
             - --name=etcd-0
             - --data-dir=/var/lib/etcd
-            - --listen-client-urls=http://0.0.0.0:2379
-            - --advertise-client-urls=http://etcd.coredns-system.svc.cluster.local:2379
+            - --listen-client-urls=https://0.0.0.0:2379
+            - --advertise-client-urls=https://etcd.coredns-system.svc.cluster.local:2379
             - --listen-peer-urls=http://0.0.0.0:2380
             - --initial-advertise-peer-urls=http://etcd.coredns-system.svc.cluster.local:2380
             - --initial-cluster=etcd-0=http://etcd.coredns-system.svc.cluster.local:2380
@@ -31,21 +31,37 @@ spec:
             - --auto-compaction-mode=revision
             - --auto-compaction-retention=1000
             - --quota-backend-bytes=536870912
+            - --cert-file=/etc/etcd/tls/tls.crt
+            - --key-file=/etc/etcd/tls/tls.key
+            - --trusted-ca-file=/etc/etcd/tls/ca.crt
+            - --client-cert-auth=true
           ports:
             - name: client
               containerPort: 2379
             - name: peer
               containerPort: 2380
           livenessProbe:
-            httpGet:
-              path: /health
-              port: 2379
+            exec:
+              command:
+                - etcdctl
+                - --endpoints=https://127.0.0.1:2379
+                - --cacert=/etc/etcd/tls/ca.crt
+                - --cert=/etc/etcd/tls/tls.crt
+                - --key=/etc/etcd/tls/tls.key
+                - endpoint
+                - health
             initialDelaySeconds: 15
             periodSeconds: 20
           readinessProbe:
-            httpGet:
-              path: /health
-              port: 2379
+            exec:
+              command:
+                - etcdctl
+                - --endpoints=https://127.0.0.1:2379
+                - --cacert=/etc/etcd/tls/ca.crt
+                - --cert=/etc/etcd/tls/tls.crt
+                - --key=/etc/etcd/tls/tls.key
+                - endpoint
+                - health
             initialDelaySeconds: 5
             periodSeconds: 10
           resources:
@@ -58,6 +74,13 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /var/lib/etcd
+            - name: tls
+              mountPath: /etc/etcd/tls
+              readOnly: true
+      volumes:
+        - name: tls
+          secret:
+            secretName: etcd-server-tls
   volumeClaimTemplates:
     - metadata:
         name: data
