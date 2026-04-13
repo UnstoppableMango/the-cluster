@@ -33,7 +33,21 @@ spec:
       name: coredns
     env:
       - name: ETCD_URLS
-        value: http://etcd.coredns-system.svc.cluster.local:2379
+        value: https://etcd.coredns-system.svc.cluster.local:2379
+      - name: ETCD_CERT_FILE
+        value: /etc/external-dns/etcd-client-tls/tls.crt
+      - name: ETCD_KEY_FILE
+        value: /etc/external-dns/etcd-client-tls/tls.key
+      - name: ETCD_TRUSTED_CA_FILE
+        value: /etc/external-dns/etcd-client-tls/ca.crt
+    extraVolumes:
+      - name: etcd-client-tls
+        secret:
+          secretName: etcd-client-tls
+    extraVolumeMounts:
+      - name: etcd-client-tls
+        mountPath: /etc/external-dns/etcd-client-tls
+        readOnly: true
     resources:
       requests:
         cpu: 100m

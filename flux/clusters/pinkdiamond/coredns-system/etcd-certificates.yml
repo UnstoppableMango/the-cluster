@@ -1,0 +1,40 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: etcd-server
+  namespace: coredns-system
+spec:
+  secretName: etcd-server-tls
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
+  dnsNames:
+    - etcd
+    - etcd.coredns-system
+    - etcd.coredns-system.svc
+    - etcd.coredns-system.svc.cluster.local
+    - localhost
+  ipAddresses:
+    - 127.0.0.1
+  issuerRef:
+    name: thecluster.lan
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: etcd-client
+  namespace: coredns-system
+spec:
+  secretName: etcd-client-tls
+  usages:
+    - digital signature
+    - key encipherment
+    - client auth
+  issuerRef:
+    name: thecluster.lan
+    kind: ClusterIssuer
+    group: cert-manager.io
