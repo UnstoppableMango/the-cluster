@@ -30,6 +30,7 @@ metadata:
   namespace: coredns-system
 spec:
   secretName: etcd-client-tls
+  commonName: coredns
   usages:
     - digital signature
     - key encipherment
