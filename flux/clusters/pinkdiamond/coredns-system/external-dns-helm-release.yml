@@ -38,7 +38,7 @@ spec:
         value: /etc/external-dns/etcd-client-tls/tls.crt
       - name: ETCD_KEY_FILE
         value: /etc/external-dns/etcd-client-tls/tls.key
-      - name: ETCD_TRUSTED_CA_FILE
+      - name: ETCD_CA_FILE
         value: /etc/external-dns/ca/ca.crt
     extraVolumes:
       - name: etcd-client-tls
