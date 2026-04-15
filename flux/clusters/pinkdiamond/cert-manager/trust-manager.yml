@@ -28,3 +28,16 @@ spec:
       limits:
         cpu: 100m
         memory: 128Mi
+---
+apiVersion: trust.cert-manager.io/v1alpha1
+kind: Bundle
+metadata:
+  name: thecluster-lan-ca
+spec:
+  sources:
+    - secret:
+        name: "thecluster.lan"
+        key: tls.crt
+  target:
+    configMap:
+      key: ca.crt
