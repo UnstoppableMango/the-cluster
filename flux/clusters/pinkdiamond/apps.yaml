@@ -11,4 +11,4 @@ spec:
   interval: 10m
   prune: true
   dependsOn:
-    - name: infrastructure-configs
+    - name: infra-configs
