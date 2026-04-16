@@ -12,7 +12,6 @@ Homelab infrastructure-as-code for a Kubernetes cluster (`pinkdiamond`), built w
 
 ```sh
 make fmt        # runs dprint + nix fmt
-dprint fmt      # TypeScript/JSON/YAML/TOML formatting only
 ```
 
 CI enforces dprint formatting on all PRs.
