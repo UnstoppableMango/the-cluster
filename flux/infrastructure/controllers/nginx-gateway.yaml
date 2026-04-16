@@ -1,0 +1,15 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-nginx-gateway
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./flux/infrastructure/controllers/nginx-gateway
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    - name: infra-configs-nginx-gateway
