@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: renovate
-      version: 43.54.0
+      version: 46.115.0
       sourceRef:
         kind: HelmRepository
         name: renovate
@@ -23,7 +23,7 @@ spec:
     image:
       registry: ghcr.io # default
       repository: renovatebot/renovate # default
-      tag: 43.126.0
+      tag: 43.127.0
     renovate:
       configIsJavaScript: true
       config: |
@@ -76,7 +76,6 @@ spec:
             'UnstoppableMango/x12',
           ],
           presetCachePersistence: true,
-          redisUrl: 'redis://redis.renovate.svc.cluster.local:6379/0',
         };
     cronjob:
       schedule: '*/30 * * * *'
@@ -112,6 +111,7 @@ spec:
               mountPath: /shared
     env:
       LOG_LEVEL: debug
+      RENOVATE_REDIS_URL: redis://redis.renovate.svc.cluster.local:6379/0
     extraVolumeMounts:
       - name: shared
         mountPath: /shared
