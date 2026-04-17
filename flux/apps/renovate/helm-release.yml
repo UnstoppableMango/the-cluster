@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: renovate
-      version: 43.54.0
+      version: 46.115.0
       sourceRef:
         kind: HelmRepository
         name: renovate
@@ -23,7 +23,7 @@ spec:
     image:
       registry: ghcr.io # default
       repository: renovatebot/renovate # default
-      tag: 43.126.0
+      tag: 43.127.0
     renovate:
       configIsJavaScript: true
       config: |
@@ -49,6 +49,31 @@ spec:
             'unmango/protofs',
             'unmango/thecluster-operator',
             'unmango/wishlists',
+            'UnstoppableMango/a2b',
+            'UnstoppableMango/audio',
+            'UnstoppableMango/CliWrap.FSharp',
+            'UnstoppableMango/dotfiles',
+            'UnstoppableMango/fenced',
+            'UnstoppableMango/github',
+            'UnstoppableMango/ihfs',
+            'UnstoppableMango/lang',
+            'UnstoppableMango/openapi2go',
+            'UnstoppableMango/openapi2terraform',
+            'UnstoppableMango/ouranosis',
+            'UnstoppableMango/minecraft-manager',
+            'UnstoppableMango/nixos',
+            'UnstoppableMango/pia-manual-connections',
+            'UnstoppableMango/pulumi2crd',
+            'UnstoppableMango/pulumi-bun',
+            'UnstoppableMango/renovate-config',
+            'UnstoppableMango/resume',
+            'UnstoppableMango/thecluster.io',
+            'UnstoppableMango/the-cluster',
+            'UnstoppableMango/unstoppablemango.io',
+            'UnstoppableMango/ux',
+            'UnstoppableMango/wireguard-cni',
+            'UnstoppableMango/xmage-docker',
+            'UnstoppableMango/x12',
           ],
           presetCachePersistence: true,
         };
@@ -86,6 +111,7 @@ spec:
               mountPath: /shared
     env:
       LOG_LEVEL: debug
+      RENOVATE_REDIS_URL: redis://redis.renovate.svc.cluster.local:6379/0
     extraVolumeMounts:
       - name: shared
         mountPath: /shared
@@ -102,7 +128,3 @@ spec:
       limits:
         cpu: '2'
         memory: 4Gi
-    # TODO: Probably use a shared instance between all renovate jobs
-    # https://github.com/bitnami/charts/tree/master/bitnami/redis
-    redis:
-      enabled: true
