@@ -51,6 +51,7 @@ spec:
             'unmango/wishlists',
           ],
           presetCachePersistence: true,
+          redisUrl: 'redis://redis.renovate.svc.cluster.local:6379/0',
         };
     cronjob:
       schedule: '*/30 * * * *'
@@ -102,7 +103,3 @@ spec:
       limits:
         cpu: '2'
         memory: 4Gi
-    # TODO: Probably use a shared instance between all renovate jobs
-    # https://github.com/bitnami/charts/tree/master/bitnami/redis
-    redis:
-      enabled: true

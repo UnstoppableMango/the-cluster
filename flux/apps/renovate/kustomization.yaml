@@ -3,4 +3,5 @@ kind: Kustomization
 resources:
   - helm-release.yml
   - helm-repository.yml
+  - redis.yml
   - secret-sealed.yml
