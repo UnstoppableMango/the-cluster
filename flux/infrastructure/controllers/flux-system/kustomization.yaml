@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - gateway-api.yml
+  - headlamp.yml
+  - ingress.yml
+  - network-policy.yml
+  - receiver.yml
+  - sealed-secrets.yml
+  - vmware-tanzu.yml
+  - webhook-token-sealed.yml

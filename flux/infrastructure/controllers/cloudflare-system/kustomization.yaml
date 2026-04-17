@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - flux-kustomization.yml
+  - git-repository.yml
+  - helm-release.yml
+  - helm-repository.yml
+  - namespace.yml
+  - oci-repository.yml
+  - secret-sealed.yml

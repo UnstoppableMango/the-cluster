@@ -25,6 +25,7 @@
         {
           devShells.default = pkgs.mkShellNoCC {
             packages = with pkgs; [
+              bash # For copilot
               git
               nixfmt
               treefmt

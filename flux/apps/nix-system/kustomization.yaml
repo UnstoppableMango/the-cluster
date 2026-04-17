@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ingress.yml
+  - namespace.yml
+  - pvc.yml
+  - service.yml
+  - statefulset.yml
