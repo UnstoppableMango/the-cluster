@@ -40,7 +40,7 @@ spec:
             'unmango/aferox',
             'unmango/devctl',
             'unmango/charts',
-            'unmango/cloudlare-operator',
+            'unmango/cloudflare-operator',
             'unmango/github',
             'unmango/go',
             'unmango/go-make',
