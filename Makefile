@@ -32,6 +32,7 @@ INFRA      := $(wildcard infra/*)
 COMPONENTS := $(addprefix components/,oauth2-proxy)
 
 FLUX_SOURCE ?= flux-system
+PKI_STACK   ?= UnstoppableMango/pki/prod
 
 reconcile:
 	$(FLUX) reconcile source git ${FLUX_SOURCE}
@@ -55,6 +56,11 @@ components ${COMPONENTS}:
 
 runner: containers/runner/Dockerfile
 	$(DOCKER) buildx build -f $< .
+
+.PHONY: hack/secrets/infrastructure/configs/cert-manager/ca.yml
+hack/secrets/infrastructure/configs/cert-manager/ca.yml: | bin/pulumi
+	@mkdir -p $(@D)
+	PULUMI=$(PULUMI) PKI_STACK=$(PKI_STACK) YQ=$(YQ) hack/pki-ca-secret.sh $@
 
 flux/%-sealed.yml: hack/secrets/%.yml | hack/sealed-secrets.pub
 	$(KUBESEAL) --format=yaml --cert=$| \

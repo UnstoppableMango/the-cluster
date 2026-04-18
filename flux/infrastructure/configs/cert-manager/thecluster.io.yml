@@ -1,0 +1,7 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: thecluster.io
+spec:
+  ca:
+    secretName: thecluster-io-ca
