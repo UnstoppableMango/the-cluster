@@ -1,20 +1,6 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cloudflare-operator-crds
-  namespace: cloudflare-operator-system
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: cloudflare-operator
-  path: ./config/crd/bases
-  interval: 30m
-  prune: false
-  wait: true
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
   name: cloudflare-operator
   namespace: cloudflare-operator-system
 spec:
@@ -26,8 +12,6 @@ spec:
   prune: true
   targetNamespace: cloudflare-operator-system
   wait: true
-  dependsOn:
-    - name: cloudflare-operator-crds
   images:
     - name: controller
       newName: adyanth/cloudflare-operator
