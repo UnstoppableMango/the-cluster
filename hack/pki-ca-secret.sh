@@ -6,9 +6,18 @@ set -e
 : "${YQ:=yq}"
 
 pki=$("$PULUMI" stack output thecluster --stack "$PKI_STACK" --show-secrets --json)
-cert=$(printf '%s' "$pki" | "$YQ" '.certPem')
-key=$(printf '%s' "$pki" | "$YQ" '.privateKeyPem')
+cert=$(printf '%s' "$pki" | "$YQ" -r '.certPem')
+key=$(printf '%s' "$pki" | "$YQ" -r '.privateKeyPem')
 
-cert=$cert key=$key "$YQ" -i \
+if [ ! -f "$1" ]; then
+	cat > "$1" <<'EOF'
+apiVersion: v1
+kind: Secret
+metadata: {}
+type: kubernetes.io/tls
+stringData: {}
+EOF
+fi
+cert="$cert" key="$key" "$YQ" -i \
   '.stringData."tls.crt" = strenv(cert) | .stringData."tls.key" = strenv(key)' \
   "$1"
