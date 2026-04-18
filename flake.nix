@@ -45,16 +45,16 @@
               yq-go
             ];
 
-            DPRINT = pkgs.dprint + "/bin/dprint";
-            DOCKER = pkgs.docker + "/bin/docker";
-            FLUX = pkgs.fluxcd + "/bin/flux";
-            GO = pkgs.go + "/bin/go";
-            KUBECTL = pkgs.kubectl + "/bin/kubectl";
-            PULUMI = pkgs.pulumi-bin + "/bin/pulumi";
-            NODE = pkgs.nodejs_24 + "/bin/node";
-            SHELLCHECK = pkgs.shellcheck + "/bin/shellcheck";
-            YARN = pkgs.yarn + "/bin/yarn";
-            YQ = pkgs.yq-go + "/bin/yq";
+            DPRINT = "${pkgs.dprint}/bin/dprint";
+            DOCKER = "${pkgs.docker}/bin/docker";
+            FLUX = "${pkgs.fluxcd}/bin/flux";
+            GO = "${pkgs.go}/bin/go";
+            KUBECTL = "${pkgs.kubectl}/bin/kubectl";
+            PULUMI = "${pkgs.pulumi-bin}/bin/pulumi";
+            NODE = "${pkgs.nodejs_24}/bin/node";
+            SHELLCHECK = "${pkgs.shellcheck}/bin/shellcheck";
+            YARN = "${pkgs.yarn}/bin/yarn";
+            YQ = "${pkgs.yq-go}/bin/yq";
           };
 
           treefmt = {
