@@ -35,8 +35,6 @@ cd clusters/pinkdiamond && pulumi up
 ```sh
 make reconcile      # flux reconcile source git flux-system
 make renovate       # trigger renovate cronjob manually
-make bin/pulumi     # download pinned Pulumi binary
-make bin/kubectl    # download pinned kubectl binary
 make crds/package.json  # regenerate CRD TypeScript from cluster
 ```
 
