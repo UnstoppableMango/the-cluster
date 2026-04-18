@@ -109,9 +109,9 @@ spec:
           volumeMounts:
             - name: vpn-config
               mountPath: /vpn
-      containers:
         - name: gluetun
           image: ghcr.io/qdm12/gluetun:v3.41.1
+          restartPolicy: Always
           securityContext:
             capabilities:
               add:
@@ -133,17 +133,21 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
+          startupProbe:
+            httpGet:
+              path: /healthcheck
+              port: 8000
+            failureThreshold: 30
+            periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /healthcheck
               port: 8000
-            initialDelaySeconds: 30
             periodSeconds: 30
           readinessProbe:
             httpGet:
               path: /healthcheck
               port: 8000
-            initialDelaySeconds: 30
             periodSeconds: 10
           # https://github.com/qdm12/gluetun-wiki/blob/main/setup/advanced/kubernetes.md
           lifecycle:
@@ -156,6 +160,7 @@ spec:
           volumeMounts:
             - name: vpn-config
               mountPath: /gluetun/wireguard
+      containers:
         - name: qbittorrent
           image: lscr.io/linuxserver/qbittorrent:5.1.4-r2-ls448
           env:
@@ -180,13 +185,11 @@ spec:
             httpGet:
               path: /
               port: 8080
-            initialDelaySeconds: 60
             periodSeconds: 30
           readinessProbe:
             httpGet:
               path: /
               port: 8080
-            initialDelaySeconds: 60
             periodSeconds: 10
           ports:
             - containerPort: 8080
