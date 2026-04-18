@@ -35,13 +35,14 @@ spec:
           command: ["python3", "-c"]
           args:
             - |
+              # https://github.com/qbittorrent/qBittorrent/blob/master/src/base/utils/password.cpp
               import hashlib, os, base64, secrets, re
               from pathlib import Path
 
               password = os.environ['WEBUI_PASSWORD']
-              salt = secrets.token_bytes(32)
+              salt = secrets.token_bytes(16)  # 4x uint32
               key = hashlib.pbkdf2_hmac('sha512', password.encode(), salt, 100000, dklen=64)
-              hash_value = '@ByteArray(' + base64.b64encode(salt + key).decode() + ')'
+              hash_value = '@ByteArray(' + base64.b64encode(salt).decode() + ':' + base64.b64encode(key).decode() + ')'
               line = 'WebUI\\Password_PBKDF2="' + hash_value + '"'
 
               config_dir = Path('/config/qBittorrent')
