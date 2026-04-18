@@ -6,6 +6,7 @@ resources:
   - deluge-service.yml
   - deluge-statefulset.yml
   - private-internet-access-sealed.yml
+  - qbittorrent-sealed.yml
   - qbittorrent-downloads-pvc.yml
   - qbittorrent-ingress.yml
   - qbittorrent-service.yml
