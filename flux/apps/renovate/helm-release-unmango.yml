@@ -49,31 +49,6 @@ spec:
             'unmango/protofs',
             'unmango/thecluster-operator',
             'unmango/wishlists',
-            'UnstoppableMango/a2b',
-            'UnstoppableMango/audio',
-            'UnstoppableMango/CliWrap.FSharp',
-            'UnstoppableMango/dotfiles',
-            'UnstoppableMango/fenced',
-            'UnstoppableMango/github',
-            'UnstoppableMango/ihfs',
-            'UnstoppableMango/lang',
-            'UnstoppableMango/openapi2go',
-            'UnstoppableMango/openapi2terraform',
-            'UnstoppableMango/ouranosis',
-            'UnstoppableMango/minecraft-manager',
-            'UnstoppableMango/nixos',
-            'UnstoppableMango/pia-manual-connections',
-            'UnstoppableMango/pulumi2crd',
-            'UnstoppableMango/pulumi-bun',
-            'UnstoppableMango/renovate-config',
-            'UnstoppableMango/resume',
-            'UnstoppableMango/thecluster.io',
-            'UnstoppableMango/the-cluster',
-            'UnstoppableMango/unstoppablemango.io',
-            'UnstoppableMango/ux',
-            'UnstoppableMango/wireguard-cni',
-            'UnstoppableMango/xmage-docker',
-            'UnstoppableMango/x12',
           ],
           presetCachePersistence: true,
         };
@@ -91,9 +66,9 @@ spec:
                   key: app-id
             - name: GITHUB_INSTALLATION_ID
               valueFrom:
-                secretKeyRef:
-                  name: thecluster-app
-                  key: installation-id
+                configMapKeyRef:
+                  name: installation-ids
+                  key: unmango
           command:
             - /bin/sh
             - -c
