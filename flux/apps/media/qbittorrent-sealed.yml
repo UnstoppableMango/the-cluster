@@ -1,0 +1,14 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: qbittorrent
+  namespace: media
+spec:
+  encryptedData:
+    password: AgA2d0ppECcqoJMOWt31XbsLx9M9VIczey/Yd+vV1X32uTi3mOrFk/Ax3Pfc8zan7LzQaoqoBY30XoG7/IV+6dPo5wWPOjTHN3yyHVkt5mIk7UfM9sHWLCPv5eT79b6wR6hqEnnEoQqpKMcxy/+nEv7CjheYDJc/4GS7Awqb5u0kScdZ+3JpixFwACpnwTpuB60/MqRlf7T0H3Q2VWigEsChqhtDVuEh7V4lxSxIRofuZ4JfnvodInndUCgSwvYpqmabtoMCgHeVHZHm0/sowAeNeF81HdTnmbaCVOo7wZnoEMo87ZSrhN9nKgQh3+wJjVwUNlCY/8bLIbQs2m8VRKuQoisPfxohbuTZw4eRyrDK8e3fgXWRZxgaDn5JxuIdYvZO3i6lh8VKDl+ijcrdHq4AiXuLma1cnPc+/hSoxpJgckWtnlysQ2q6yTScRIsZD6SSpQ3i+uYo/CvlgJa+PScE/VKqPttnbzCX0LCW6ZHp9mBpCiNoPynjQrStVlYBiyDRAFqWVg9GixH5f4peJUV+x1tV5qosULWGY7Y5bEZlPhk2SG+KFy+MupHyMOQAkZP//0SVGTaal/FTbJA7hvQy7nFiwJ+r3Mq8P5LcEVs3YOL1XJ4DeECbcByLl75zg0ZkUmuFrIZoWfLuqHgGHPu/DvivDfqLZUQd7Ty8aPfixIu428ISyKGvr5u5aYh/Xc9b0/nbrTHTXkj+mjdDSQFIFGhmWjVoVaO79laEW4A/sg==
+  template:
+    metadata:
+      name: qbittorrent
+      namespace: media
+    type: Opaque
