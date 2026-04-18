@@ -21,6 +21,49 @@ spec:
           - name: ndots
             value: "1"
       initContainers:
+        - name: set-webui-password
+          image: python:3.12-alpine
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+          env:
+            - name: WEBUI_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: qbittorrent
+                  key: password
+          command: ["python3", "-c"]
+          args:
+            - |
+              import hashlib, os, base64, secrets, re
+              from pathlib import Path
+
+              password = os.environ['WEBUI_PASSWORD']
+              salt = secrets.token_bytes(32)
+              key = hashlib.pbkdf2_hmac('sha512', password.encode(), salt, 100000, dklen=64)
+              hash_value = '@ByteArray(' + base64.b64encode(salt + key).decode() + ')'
+              line = 'WebUI\\Password_PBKDF2="' + hash_value + '"'
+
+              config_dir = Path('/config/qBittorrent')
+              config_dir.mkdir(parents=True, exist_ok=True)
+              config_path = config_dir / 'qBittorrent.conf'
+
+              if config_path.exists():
+                  text = config_path.read_text()
+                  if 'Password_PBKDF2' in text:
+                      text = re.sub(r'WebUI.Password_PBKDF2=.*', line, text)
+                  elif '[Preferences]' in text:
+                      text = text.replace('[Preferences]', '[Preferences]\n' + line, 1)
+                  else:
+                      text += '\n[Preferences]\n' + line + '\n'
+              else:
+                  text = '[Preferences]\n' + line + '\n'
+
+              config_path.write_text(text)
+              print('WebUI password set')
+          volumeMounts:
+            - name: config
+              mountPath: /config
         - name: generate-vpn-config
           image: ghcr.io/unstoppablemango/pia-manual-connections:v0.2.2-pia2026-01-30r0
           env:
