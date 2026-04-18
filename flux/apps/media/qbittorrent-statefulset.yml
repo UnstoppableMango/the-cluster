@@ -136,20 +136,20 @@ spec:
           startupProbe:
             exec:
               command:
-                - /gluetun
+                - /gluetun-entrypoint
                 - healthcheck
             failureThreshold: 30
             periodSeconds: 10
           livenessProbe:
             exec:
               command:
-                - /gluetun
+                - /gluetun-entrypoint
                 - healthcheck
             periodSeconds: 30
           readinessProbe:
             exec:
               command:
-                - /gluetun
+                - /gluetun-entrypoint
                 - healthcheck
             periodSeconds: 10
           # https://github.com/qdm12/gluetun-wiki/blob/main/setup/advanced/kubernetes.md
