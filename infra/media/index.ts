@@ -251,12 +251,12 @@ const plex = new Chart('plex', {
 			configExistingClaim: plexConfig.metadata.name,
 			resources: {
 				limits: {
-					cpu: '16',
-					memory: '32Gi',
+					cpu: '8',
+					memory: '10Gi',
 				},
 				requests: {
-					cpu: '4',
-					memory: '4Gi',
+					cpu: '250m',
+					memory: '5Gi',
 				},
 			},
 		},
