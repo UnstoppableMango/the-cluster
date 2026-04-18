@@ -59,7 +59,7 @@ spec:
               if config_path.exists():
                   text = config_path.read_text()
                   if 'Password_PBKDF2' in text:
-                      text = re.sub(r'WebUI.Password_PBKDF2=.*', line, text)
+                      text = re.sub(r'WebUI.Password_PBKDF2=.*', lambda _: line, text)
                   elif '[Preferences]' in text:
                       text = text.replace('[Preferences]', '[Preferences]\n' + line, 1)
                   else:
