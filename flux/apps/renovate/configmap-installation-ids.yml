@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: installation-ids
+  namespace: renovate
+data:
+  unmango: "75607676"
+  unstoppablemango: "22901293"
