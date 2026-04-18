@@ -1,0 +1,15 @@
+apiVersion: networking.cfargotunnel.com/v1alpha1
+kind: TunnelBinding
+metadata:
+  name: api-server
+  namespace: kube-system
+subjects:
+  - name: kubernetes
+    spec:
+      fqdn: api.k8s.thecluster.io
+      protocol: https
+      noTlsVerify: true
+      target: https://kubernetes.default.svc:443
+tunnelRef:
+  kind: ClusterTunnel
+  name: thecluster.io
