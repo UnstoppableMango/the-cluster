@@ -9,5 +9,5 @@ spec:
     name: origin-ca-issuer
   path: ./deploy/crds
   interval: 1h
-  prune: true
-  targetNamespace: cloudflare-system
+  prune: false
+  wait: true
