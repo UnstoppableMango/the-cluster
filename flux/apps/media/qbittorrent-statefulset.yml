@@ -159,8 +159,8 @@ spec:
               value: "6881"
           resources:
             requests:
-              cpu: 100m
-              memory: 256Mi
+              cpu: 500m
+              memory: 384Mi
             limits:
               cpu: "2"
               memory: 1Gi

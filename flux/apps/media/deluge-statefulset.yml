@@ -104,11 +104,11 @@ spec:
               value: America/Chicago
           resources:
             requests:
-              cpu: 100m
-              memory: 256Mi
+              cpu: 256m
+              memory: 512Mi
             limits:
               cpu: "2"
-              memory: 1Gi
+              memory: 1536Mi
           ports:
             - containerPort: 8112
               name: http-web
