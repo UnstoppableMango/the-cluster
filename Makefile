@@ -12,20 +12,16 @@ endif
 
 GO         ?= go
 CRD2PULUMI ?= $(GO) tool crd2pulumi
-CURL       ?= curl
 DEVCTL     ?= $(GO) tool devctl
 DOCKER     ?= docker
 DPRINT     ?= dprint
 FLUX       ?= flux
-KUBECTL    ?= bin/kubectl
+KUBECTL    ?= kubectl
 KUBESEAL   ?= $(GO) tool kubeseal
 NIX        ?= nix
-PULUMI     ?= bin/pulumi
+PULUMI     ?= pulumi
 YARN       ?= yarn
 YQ         ?= $(GO) tool yq
-
-GOOS   != $(GO) env GOOS
-GOARCH != $(GO) env GOARCH
 
 APPS       := $(wildcard apps/*)
 INFRA      := $(wildcard infra/*)
@@ -47,7 +43,7 @@ format fmt:
 update: flake.lock
 
 .PHONY: ${APPS} ${INFRA}
-${APPS} ${INFRA}: | bin/pulumi
+${APPS} ${INFRA}:
 	$(PULUMI) --cwd $@ ${CMD} ${PULUMI_ARGS}
 
 .PHONY: components ${COMPONENTS}
@@ -76,16 +72,7 @@ bin/image.tar: containers/default.nix containers/runner/default.nix
 	$(NIX) build '.#runner' --out-link $@
 	$(DOCKER) load < $@
 
-bin/kubectl: .versions/kubernetes
-	$(CURL) --fail -L -o $@ https://dl.k8s.io/release/v$(shell cat $<)/bin/${GOOS}/${GOARCH}/kubectl
-	@chmod +x $@
-
-bin/pulumi: .versions/pulumi
-	$(CURL) -fsSL https://get.pulumi.com | \
-	sh -s -- --install-root ${CURDIR} --version $(shell cat $<) --no-edit-path
-	@touch $@
-
-bin/crds.yml: hack/crd-filter.yq | bin/kubectl
+bin/crds.yml: hack/crd-filter.yq
 	$(KUBECTL) get crds -oyaml | $(YQ) --from-file $< >$@
 crds/package.json: bin/crds.yml
 	rm -rf crds && $(CRD2PULUMI) --nodejsPath crds $<
