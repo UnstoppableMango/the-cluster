@@ -133,6 +133,18 @@ spec:
             limits:
               cpu: 500m
               memory: 128Mi
+          livenessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /healthcheck
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
           # https://github.com/qdm12/gluetun-wiki/blob/main/setup/advanced/kubernetes.md
           lifecycle:
             postStart:
