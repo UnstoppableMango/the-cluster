@@ -27,6 +27,7 @@
             packages = with pkgs; [
               bash # For copilot
               git
+              go
               nixfmt
               treefmt
               dprint
@@ -47,6 +48,7 @@
             DPRINT = pkgs.dprint + "/bin/dprint";
             DOCKER = pkgs.docker + "/bin/docker";
             FLUX = pkgs.fluxcd + "/bin/flux";
+            GO = pkgs.go + "/bin/go";
             KUBECTL = pkgs.kubectl + "/bin/kubectl";
             PULUMI = pkgs.pulumi-bin + "/bin/pulumi";
             NODE = pkgs.nodejs_24 + "/bin/node";
