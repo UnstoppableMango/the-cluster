@@ -125,7 +125,7 @@ spec:
             - name: FIREWALL_OUTBOUND_SUBNETS
               value: 10.42.0.0/16,10.43.0.0/16
             - name: FIREWALL_INPUT_PORTS
-              value: 8000,8080,6881
+              value: 8080,6881
           resources:
             requests:
               cpu: 10m
@@ -134,20 +134,23 @@ spec:
               cpu: 500m
               memory: 256Mi
           startupProbe:
-            httpGet:
-              path: /healthcheck
-              port: 8000
+            exec:
+              command:
+                - /gluetun
+                - healthcheck
             failureThreshold: 30
             periodSeconds: 10
           livenessProbe:
-            httpGet:
-              path: /healthcheck
-              port: 8000
+            exec:
+              command:
+                - /gluetun
+                - healthcheck
             periodSeconds: 30
           readinessProbe:
-            httpGet:
-              path: /healthcheck
-              port: 8000
+            exec:
+              command:
+                - /gluetun
+                - healthcheck
             periodSeconds: 10
           # https://github.com/qdm12/gluetun-wiki/blob/main/setup/advanced/kubernetes.md
           lifecycle:
