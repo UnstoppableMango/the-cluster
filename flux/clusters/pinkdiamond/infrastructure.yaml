@@ -69,6 +69,7 @@ spec:
   prune: true
   dependsOn:
     - name: infra-configs-cloudflare-operator
+    - name: infra-configs-crossplane
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

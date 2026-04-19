@@ -3,4 +3,3 @@ kind: Kustomization
 resources:
   - cloudflare-credentials-sealed.yml
   - cloudflare-provider-config.yml
-  - k8s-access.yml
