@@ -42,7 +42,7 @@ spec:
       spec:
         containers:
           - name: runner # default
-            image: ghcr.io/actions/actions-runner:2.333.1
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.333.1
             command: [/home/runner/run.sh] # default
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -75,10 +75,6 @@ spec:
           - name: runner # default
             image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.333.1
             command: [/home/runner/run.sh] # default
-            env:
-              # Cachix action seems to need this
-              - name: USER
-                value: runner
             resources:
               limits:
                 cpu: "8"
@@ -179,10 +175,6 @@ spec:
           - name: runner # default
             image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.333.1
             command: [/home/runner/run.sh] # default
-            # Cachix action seems to need this
-            env:
-              - name: USER
-                value: runner
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -207,10 +199,6 @@ spec:
           - name: runner # default
             image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.333.1
             command: [/home/runner/run.sh] # default
-            # Cachix action seems to need this
-            env:
-              - name: USER
-                value: runner
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -235,7 +223,3 @@ spec:
           - name: runner # default
             image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.333.1
             command: [/home/runner/run.sh] # default
-            # Cachix action seems to need this
-            env:
-              - name: USER
-                value: runner

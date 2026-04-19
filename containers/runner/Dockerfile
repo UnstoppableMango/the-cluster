@@ -10,3 +10,6 @@ RUN apt-get update \
 	&& rm -rf /var/lib/apt/lists/*
 
 USER runner
+
+# The Cachix action seems to need this
+ENV USER=runner
