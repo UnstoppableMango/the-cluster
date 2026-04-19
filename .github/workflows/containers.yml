@@ -16,13 +16,13 @@ jobs:
   nix-runner:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - uses: cachix/install-nix-action@616559265b40713947b9c190a8ff4b507b5df49b # v31.10.4
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: docker/login-action@v4
+      - uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4
         if: github.event_name != 'pull_request'
         with:
           registry: ghcr.io
@@ -39,10 +39,10 @@ jobs:
       # renovate: datasource=docker depName=ghcr.io/actions/actions-runner
       ACTIONS_RUNNER_VERSION: 2.333.1
     steps:
-      - uses: docker/setup-buildx-action@v4
+      - uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4
 
       - id: meta
-        uses: docker/metadata-action@v6
+        uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf # v6
         with:
           images: |
             ghcr.io/${{ github.repository }}/actions-runner
@@ -58,14 +58,14 @@ jobs:
             type=raw,value=v${{ env.ACTIONS_RUNNER_VERSION }}
             type=sha
 
-      - uses: docker/login-action@v4
+      - uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4
         if: github.event_name != 'pull_request'
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: docker/build-push-action@v7
+      - uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7
         with:
           file: containers/runner/Dockerfile
           build-args: |
