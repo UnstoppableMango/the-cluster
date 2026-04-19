@@ -86,4 +86,3 @@ yarn.lock: package.json
 
 .envrc: hack/example.envrc
 	cp $< $@
-
