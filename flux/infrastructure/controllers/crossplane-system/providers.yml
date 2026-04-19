@@ -3,4 +3,4 @@ kind: Provider
 metadata:
   name: provider-upjet-cloudflare
 spec:
-  package: xpkg.upbound.io/upbound/provider-upjet-cloudflare:v1.3.0
+  package: xpkg.crossplane.io/crossplane-contrib/provider-upjet-cloudflare:v0.1.0
