@@ -6,7 +6,7 @@ metadata:
 subjects:
   - name: kubernetes
     spec:
-      fqdn: api.k8s.thecluster.io
+      fqdn: k8s.thecluster.io
       protocol: https
       noTlsVerify: true
 tunnelRef:
