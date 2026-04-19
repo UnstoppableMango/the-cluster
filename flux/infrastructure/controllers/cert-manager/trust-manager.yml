@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: quay.io/jetstack/trust-manager
-      tag: v0.22.0
+      tag: v0.22.1
     defaultPackage:
       enabled: false
     resources:
