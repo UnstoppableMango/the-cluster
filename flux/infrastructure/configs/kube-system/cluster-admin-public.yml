@@ -23,5 +23,5 @@ metadata:
   name: cluster-admin-public-token
   namespace: kube-system
   annotations:
-    kubernetes.io/service-account-name: cluster-admin-public
+    kubernetes.io/service-account.name: cluster-admin-public
 type: kubernetes.io/service-account-token
