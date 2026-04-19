@@ -15,8 +15,8 @@
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = import inputs.systems;
 
-      imports = [
-        inputs.treefmt-nix.flakeModule
+      imports = with inputs; [
+        treefmt-nix.flakeModule
         ./containers
       ];
 
@@ -26,6 +26,7 @@
           devShells.default = pkgs.mkShellNoCC {
             packages = with pkgs; [
               bash # For copilot
+              crossplane-cli
               git
               go
               nixfmt
