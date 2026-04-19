@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: necesse
-          image: ghcr.io/brammys/necesse-server:1-1-1-21292486
+          image: ghcr.io/brammys/necesse-server:1-2-0-22728942
           env:
             - name: PAUSE
               value: "1"
