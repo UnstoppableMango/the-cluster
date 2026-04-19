@@ -31,6 +31,7 @@
           Cmd = [ "/bin/bash" ];
           WorkingDir = "/home/runner";
           User = "runner";
+          Env = [ "USER=runner" ];
         };
       };
     };
