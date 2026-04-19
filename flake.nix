@@ -62,7 +62,34 @@
           };
 
           treefmt = {
+            settings.global.excludes = [
+              "**/node_modules/**"
+              "**/.yarn/**"
+              "crds/**"
+              "yarn.lock"
+            ];
+
             programs.nixfmt.enable = true;
+
+            programs.dprint = {
+              enable = true;
+              settings = {
+                useTabs = true;
+                typescript = {
+                  semiColons = "always";
+                  quoteStyle = "preferSingle";
+                };
+                markdown.textWrap = "never";
+                plugins = pkgs.dprint-plugins.getPluginList (
+                  p: with p; [
+                    dprint-plugin-typescript
+                    dprint-plugin-json
+                    dprint-plugin-markdown
+                    dprint-plugin-toml
+                  ]
+                );
+              };
+            };
           };
         };
     };

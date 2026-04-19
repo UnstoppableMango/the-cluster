@@ -37,7 +37,6 @@ renovate:
 	$(KUBECTL) create job manual-$$(date +%s) --namespace renovate --from=cronjob/renovate
 
 format fmt:
-	$(DPRINT) fmt
 	$(NIX) fmt
 
 update: flake.lock
