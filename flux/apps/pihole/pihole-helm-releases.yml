@@ -1,0 +1,171 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pihole-a
+  namespace: pihole
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: pihole
+      version: 2.35.0
+      sourceRef:
+        kind: HelmRepository
+        name: pihole
+  # https://artifacthub.io/packages/helm/mojo2600/pihole#values
+  values:
+    replicaCount: 1
+    strategyType: Recreate
+    image:
+      repository: pihole/pihole
+      tag: 2025.08.0
+    DNS1: 1.1.1.1
+    DNS2: 1.0.0.1
+    podDnsConfig:
+      enabled: true
+      policy: None
+      nameservers:
+        - 127.0.0.1
+        - 1.1.1.1
+    admin:
+      existingSecret: pihole
+      passwordKey: password
+    ftl:
+      dhcp_active: "false"
+      dns_domain: thecluster.lan
+      webserver_domain: pihole-a.thecluster.lan
+      webserver_interface_theme: default-darker
+      misc_readonly: "true"
+      ntp_ipv4_active: "false"
+      ntp_ipv6_active: "false"
+      ntp_sync_server: pool.ntp.org
+      resolver_resolveIPv4: "true"
+      resolver_resolveIPv6: "false"
+    extraEnvVars:
+      FTLCONF_webserver_port: 80,443
+      TZ: America/Chicago
+    capabilities:
+      add:
+        - SYS_NICE
+    serviceDns:
+      mixedService: true
+      type: LoadBalancer
+      loadBalancerIP: 192.168.1.44
+    serviceDhcp:
+      enabled: false
+    persistentVolumeClaim:
+      enabled: true
+      storageClass: ssd-rbd
+      accessModes:
+        - ReadWriteOncePod
+      size: 500Mi
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: pihole
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+    affinity:
+      nodeAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: NotIn
+                  values:
+                    - gaea
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pihole-b
+  namespace: pihole
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: pihole
+      version: 2.35.0
+      sourceRef:
+        kind: HelmRepository
+        name: pihole
+  # https://artifacthub.io/packages/helm/mojo2600/pihole#values
+  values:
+    replicaCount: 1
+    strategyType: Recreate
+    image:
+      repository: pihole/pihole
+      tag: 2025.08.0
+    DNS1: 1.1.1.1
+    DNS2: 1.0.0.1
+    podDnsConfig:
+      enabled: true
+      policy: None
+      nameservers:
+        - 127.0.0.1
+        - 1.1.1.1
+    admin:
+      existingSecret: pihole
+      passwordKey: password
+    ftl:
+      dhcp_active: "false"
+      dns_domain: thecluster.lan
+      webserver_domain: pihole-b.thecluster.lan
+      webserver_interface_theme: default-darker
+      misc_readonly: "true"
+      ntp_ipv4_active: "false"
+      ntp_ipv6_active: "false"
+      ntp_sync_server: pool.ntp.org
+      resolver_resolveIPv4: "true"
+      resolver_resolveIPv6: "false"
+    extraEnvVars:
+      FTLCONF_webserver_port: 80,443
+      TZ: America/Chicago
+    capabilities:
+      add:
+        - SYS_NICE
+    serviceDns:
+      mixedService: true
+      type: LoadBalancer
+      loadBalancerIP: 192.168.1.45
+    serviceDhcp:
+      enabled: false
+    persistentVolumeClaim:
+      enabled: true
+      storageClass: ssd-rbd
+      accessModes:
+        - ReadWriteOncePod
+      size: 500Mi
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: pihole
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+    affinity:
+      nodeAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: NotIn
+                  values:
+                    - gaea

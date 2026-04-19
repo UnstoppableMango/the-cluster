@@ -1,0 +1,17 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: pihole
+  namespace: pihole
+spec:
+  url: https://mojo2600.github.io/pihole-kubernetes
+  interval: 1h
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: external-dns
+  namespace: pihole
+spec:
+  url: https://kubernetes-sigs.github.io/external-dns
+  interval: 1h
