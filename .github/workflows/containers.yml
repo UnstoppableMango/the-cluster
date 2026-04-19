@@ -5,12 +5,12 @@ on:
     branches: [ main ]
     paths:
       - .github/workflows/containers.yml
-      - containers/*
+      - containers/**
   pull_request:
     branches: [ main ]
     paths:
       - .github/workflows/containers.yml
-      - containers/*
+      - containers/**
 
 jobs:
   nix-runner:
