@@ -34,10 +34,10 @@
               dprint
               docker
               fluxcd
+              fnm
               gnumake
               kubectl
               nixfmt-tree
-              nodejs_24
               nurl
               pulumi-bin
               shellcheck
@@ -46,12 +46,15 @@
               yq-go
             ];
 
+            shellHook = ''
+              eval "$(fnm env --corepack-enabled --shell bash)"
+            '';
+
             DOCKER = "${pkgs.docker}/bin/docker";
             DPRINT = "${pkgs.dprint}/bin/dprint";
             FLUX = "${pkgs.fluxcd}/bin/flux";
             GO = "${pkgs.go}/bin/go";
             KUBECTL = "${pkgs.kubectl}/bin/kubectl";
-            NODE = "${pkgs.nodejs_24}/bin/node";
             PULUMI = "${pkgs.pulumi-bin}/bin/pulumi";
             SHELLCHECK = "${pkgs.shellcheck}/bin/shellcheck";
             YARN = "${pkgs.yarn}/bin/yarn";
