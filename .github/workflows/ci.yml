@@ -10,5 +10,23 @@ jobs:
   dprint:
     runs-on: thecluster-runners
     steps:
-      - uses: actions/checkout@v6
-      - uses: dprint/check@v2.3
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: dprint/check@9cb3a2b17a8e606d37aae341e49df3654933fc23 # v2.3
+
+  flake-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - uses: cachix/install-nix-action@616559265b40713947b9c190a8ff4b507b5df49b # v31.10.4
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: cachix/cachix-action@ad2ddac53f961de1989924296a1f236fcfbaa4fc # v15
+        with:
+          name: unstoppablemango
+          # authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - uses: DeterminateSystems/magic-nix-cache-action@6221693898146dc97e38ad0e013488a16477a4c4 # v9
+
+      - run: nix flake check
