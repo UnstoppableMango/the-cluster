@@ -42,7 +42,7 @@ spec:
       spec:
         containers:
           - name: runner # default
-            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.333.1
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:sha-7099533
             command: [/home/runner/run.sh] # default
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
