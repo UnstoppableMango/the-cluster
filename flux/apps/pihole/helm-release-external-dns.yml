@@ -13,9 +13,9 @@ spec:
         kind: HelmRepository
         name: external-dns
   install:
-    crds: Create
+    crds: Skip
   upgrade:
-    crds: CreateReplace
+    crds: Skip
   # https://github.com/kubernetes-sigs/external-dns/blob/master/charts/external-dns/values.yaml
   values:
     image:
@@ -73,9 +73,9 @@ spec:
         kind: HelmRepository
         name: external-dns
   install:
-    crds: Create
+    crds: Skip
   upgrade:
-    crds: CreateReplace
+    crds: Skip
   # https://github.com/kubernetes-sigs/external-dns/blob/master/charts/external-dns/values.yaml
   values:
     image:
