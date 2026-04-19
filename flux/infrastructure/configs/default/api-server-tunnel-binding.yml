@@ -1,4 +1,4 @@
-apiVersion: networking.cfargotunnel.com/v1alpha2
+apiVersion: networking.cfargotunnel.com/v1alpha1
 kind: TunnelBinding
 metadata:
   name: api-server
