@@ -60,6 +60,8 @@ Cross-stack references use `@unstoppablemango/thecluster` (from `lib/nodejs/`) t
 
 Flux manifests live in `flux/clusters/`. Sealed Secrets are used for sensitive data — generate with `make flux/<name>-sealed.yml`.
 
+When a Flux manifest requires a Secret, always create a stub under `hack/secrets/` mirroring the path of the sealed secret (e.g. `hack/secrets/infrastructure/configs/crossplane-system/cloudflare-credentials.yml`). Use `stringData` with empty values so the user can populate and seal it. Never commit real credentials.
+
 ### Workspaces
 
 Root `package.json` defines Yarn workspaces: `apps/*`, `clusters/*`, `components/*`, `infra/*`, `crds`, `lib/nodejs`. Run `yarn install` from the root to install all dependencies.
