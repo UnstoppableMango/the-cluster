@@ -1,10 +1,9 @@
 [Unit]
 Description=Cloudflare Access proxy for k8s.thecluster.io
-After=network-online.target
-Wants=network-online.target
 
 [Service]
 Type=simple
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
 ExecStart=cloudflared access tcp --hostname k8s.thecluster.io --url localhost:16443
 Restart=on-failure
 RestartSec=5
