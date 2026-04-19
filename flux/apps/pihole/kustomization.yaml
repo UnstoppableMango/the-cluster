@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - helm-release-external-dns.yml
+  - helm-repository.yml
+  - ingress.yml
+  - namespace.yml
+  - helm-release-pihole.yml
+  - secret-sealed.yml
