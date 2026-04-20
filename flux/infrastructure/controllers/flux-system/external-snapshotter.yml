@@ -7,7 +7,7 @@ spec:
   url: https://github.com/kubernetes-csi/external-snapshotter
   interval: 1h
   ref:
-    tag: v8.5.0 # renovate depName=kubernetes-csi/external-snapshotter
+    tag: v8.5.0
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

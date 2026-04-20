@@ -42,6 +42,24 @@
 				"/bitnami-labs\\/sealed-secrets/"
 			],
 			"groupName": "sealed-secrets"
+		},
+		{
+			"matchPackageNames": [
+				"external-dns",
+				"kubernetes-sigs/external-dns"
+			],
+			"groupName": "external-dns"
+		},
+		{
+			"matchPackageNames": [
+				"cloudflare/origin-ca-issuer"
+			],
+			"groupName": "origin-ca-issuer"
+		},
+		{
+			"matchPackageNames": ["ghcr.io/renovatebot/renovate"],
+			"matchUpdateTypes": ["patch"],
+			"enabled": false
 		}
 	]
 }
