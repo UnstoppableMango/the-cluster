@@ -17,5 +17,5 @@ spec:
       spec:
         containers:
           - name: runner
-            image: ghcr.io/actions/actions-runner:2.333.1
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.333.1@sha256:c747185a4a1279614abef606eec84bbb1e34fb9f0a6534c0ffe76e768d1b3782
             command: [/home/runner/run.sh]
