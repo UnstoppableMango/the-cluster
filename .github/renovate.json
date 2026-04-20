@@ -55,6 +55,11 @@
 				"cloudflare/origin-ca-issuer"
 			],
 			"groupName": "origin-ca-issuer"
+		},
+		{
+			"matchPackageNames": ["ghcr.io/renovatebot/renovate"],
+			"matchUpdateTypes": ["patch"],
+			"enabled": false
 		}
 	]
 }
