@@ -7,6 +7,8 @@ spec:
   interval: 10m
   releaseName: external-dns
   targetNamespace: coredns-system
+  dependsOn:
+    - name: external-dns-crds
   chart:
     spec:
       chart: external-dns
@@ -14,6 +16,10 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: external-dns
+  install:
+    crds: Skip
+  upgrade:
+    crds: Skip
   values:
     image:
       repository: registry.k8s.io/external-dns/external-dns

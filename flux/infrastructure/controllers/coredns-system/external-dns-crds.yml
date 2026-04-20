@@ -1,0 +1,24 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: external-dns-crds
+  namespace: coredns-system
+spec:
+  url: https://github.com/kubernetes-sigs/external-dns
+  interval: 1h
+  ref:
+    tag: external-dns-helm-chart-1.20.0
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: external-dns-crds
+  namespace: coredns-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: external-dns-crds
+  path: ./charts/external-dns/crds
+  interval: 1h
+  prune: false
+  wait: true
