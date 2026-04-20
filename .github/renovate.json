@@ -42,6 +42,13 @@
 				"/bitnami-labs\\/sealed-secrets/"
 			],
 			"groupName": "sealed-secrets"
+		},
+		{
+			"matchPackageNames": [
+				"external-dns",
+				"kubernetes-sigs/external-dns"
+			],
+			"groupName": "external-dns"
 		}
 	]
 }
