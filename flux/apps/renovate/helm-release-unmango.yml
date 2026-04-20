@@ -38,15 +38,18 @@ spec:
           autodiscoverFilter: [], // default
           repositories: [
             'unmango/aferox',
+            'unmango/apis',
             'unmango/devctl',
             'unmango/charts',
             'unmango/cloudflare-operator',
             'unmango/github',
             'unmango/go',
             'unmango/go-make',
+            'unmango/go-pia',
             'unmango/gnumake-go',
             'unmango/kubebuilder',
             'unmango/protofs',
+            'unmango/pulumi-baremetal',
             'unmango/thecluster-operator',
             'unmango/wishlists',
           ],
