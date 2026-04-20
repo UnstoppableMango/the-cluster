@@ -23,7 +23,7 @@
       perSystem =
         { pkgs, ... }:
         let
-          validate-flux = pkgs.callPackage ./pkgs/validate-flux.nix { };
+          validate-flux = pkgs.callPackage ./nix/validate-flux.nix { };
         in
         {
           packages.validate-flux = validate-flux;
