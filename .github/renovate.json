@@ -57,6 +57,10 @@
 			"groupName": "origin-ca-issuer"
 		},
 		{
+			"matchPackageNames": ["xpkg.crossplane.io/crossplane/crossplane", "crossplane"],
+			"groupName": "crossplane"
+		},
+		{
 			"matchPackageNames": ["ghcr.io/renovatebot/renovate"],
 			"matchUpdateTypes": ["patch"],
 			"enabled": false
