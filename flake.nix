@@ -22,9 +22,15 @@
 
       perSystem =
         { pkgs, ... }:
+        let
+          validate-flux = pkgs.callPackage ./pkgs/validate-flux.nix { };
+        in
         {
+          packages.validate-flux = validate-flux;
+
           devShells.default = pkgs.mkShellNoCC {
             packages = with pkgs; [
+              validate-flux
               bash # For copilot
               crossplane-cli
               git
