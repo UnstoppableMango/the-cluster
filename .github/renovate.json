@@ -49,6 +49,12 @@
 				"kubernetes-sigs/external-dns"
 			],
 			"groupName": "external-dns"
+		},
+		{
+			"matchPackageNames": [
+				"cloudflare/origin-ca-issuer"
+			],
+			"groupName": "origin-ca-issuer"
 		}
 	]
 }
