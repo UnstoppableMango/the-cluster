@@ -17,8 +17,7 @@ spec:
   # https://artifacthub.io/packages/helm/cert-manager/cert-manager
   values:
     crds:
-      enabled: true
-      keep: true
+      enabled: false
     podDisruptionBudget:
       enabled: true
       minAvailable: 1

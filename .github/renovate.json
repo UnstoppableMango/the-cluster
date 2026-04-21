@@ -45,6 +45,13 @@
 		},
 		{
 			"matchPackageNames": [
+				"cert-manager",
+				"cert-manager/cert-manager"
+			],
+			"groupName": "cert-manager"
+		},
+		{
+			"matchPackageNames": [
 				"external-dns",
 				"kubernetes-sigs/external-dns"
 			],
