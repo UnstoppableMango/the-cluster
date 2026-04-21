@@ -30,7 +30,9 @@
 	"customManagers": [
 		{
 			"customType": "regex",
-			"fileMatch": ["nix/.+\\.nix$"],
+			"managerFilePatterns": [
+				"/nix/.+\\.nix$/"
+			],
 			"matchStrings": [
 				"github\\.com/(?<depName>[^/]+/[^/]+)/releases/download/(?<currentValue>v[\\d.]+)/"
 			],
