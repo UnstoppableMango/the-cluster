@@ -70,7 +70,7 @@ bin/image.tar: containers/default.nix containers/runner/default.nix
 	nix build '.#runner' --out-link $@
 	$(DOCKER) load < $@
 
-flux/infrastructure/controllers/cert-manager/crds.yaml:
+flux/infrastructure/controllers/cert-manager/crds/crds.yaml: flake.lock nix/cert-manager-crds.nix
 	cp $$(nix build .#cert-manager-crds --print-out-paths --no-link) $@
 
 bin/crds.yml: hack/crd-filter.yq
