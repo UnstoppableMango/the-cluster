@@ -1,0 +1,13 @@
+apiVersion: velero.io/v1
+kind: BackupStorageLocation
+metadata:
+  name: default
+  namespace: velero-system
+spec:
+  provider: aws
+  objectStorage:
+    bucket: velero
+  config:
+    region: us-east-1
+    s3ForcePathStyle: "true"
+    s3Url: http://rook-ceph-rgw-s3.rook-ceph.svc

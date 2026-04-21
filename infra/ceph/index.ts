@@ -45,9 +45,9 @@ const rookCephMonEndpoints = new ConfigMap('rook-ceph-mon-endpoints', {
 		'csi-cluster-config-json': jsonStringify([{
 			clusterID: 'rook-ceph',
 			monitors: [
-				'10.43.98.167:6789',
 				'10.43.75.167:6789',
 				'10.43.59.5:6789',
+				'10.43.98.167:6789',
 			],
 			// Re-create what the operator seems to want
 			cephFS: {
@@ -124,43 +124,7 @@ const chart = new Chart(clusterName, {
 		operatorNamespace: ns.metadata.name,
 		cephBlockPools: [],
 		cephFileSystems: [],
-		cephObjectStores: [
-			{
-				name: 'velero-default',
-				spec: {
-					metadataPool: {
-						failureDomain: 'osd',
-						replicated: { size: 3 },
-						deviceClass: 'ssd',
-					},
-					dataPool: {
-						failureDomain: 'osd',
-						erasureCoded: {
-							dataChunks: 2,
-							codingChunks: 1,
-						},
-						deviceClass: 'hdd',
-					},
-					preservePoolsOnDelete: true,
-					gateway: {
-						port: 80,
-						instances: 1,
-						resources: {
-							limits: {
-								memory: '1024Mi',
-							},
-							requests: {
-								cpu: '500m',
-								memory: '1024Mi',
-							},
-						},
-					},
-				},
-				storageClass: {
-					enabled: false,
-				},
-			},
-		],
+		cephObjectStores: [],
 		cephClusterSpec: {
 			cephVersion: {
 				image: `quay.io/ceph/ceph:v${versions.ceph}`,

@@ -199,3 +199,5 @@ spec:
   interval: 10m
   prune: true
   wait: true
+  dependsOn:
+    - name: infra-configs-velero

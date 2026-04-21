@@ -1,0 +1,29 @@
+apiVersion: ceph.rook.io/v1
+kind: CephObjectStore
+metadata:
+  name: s3
+  namespace: rook-ceph
+spec:
+  metadataPool:
+    failureDomain: osd
+    replicated:
+      size: 3
+    deviceClass: ssd
+  dataPool:
+    failureDomain: osd
+    erasureCoded:
+      dataChunks: 2
+      codingChunks: 1
+    deviceClass: hdd
+  preservePoolsOnDelete: true
+  allowUsersInNamespaces:
+    - velero-system
+  gateway:
+    port: 80
+    instances: 1
+    resources:
+      limits:
+        memory: 1024Mi
+      requests:
+        cpu: 500m
+        memory: 1024Mi
