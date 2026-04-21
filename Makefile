@@ -71,6 +71,9 @@ bin/image.tar: containers/default.nix containers/runner/default.nix
 	$(NIX) build '.#runner' --out-link $@
 	$(DOCKER) load < $@
 
+flux/infrastructure/controllers/cert-manager/crds.yaml:
+	cp $$($(NIX) build .#cert-manager-crds --print-out-paths --no-link) $@
+
 bin/crds.yml: hack/crd-filter.yq
 	$(KUBECTL) get crds -oyaml | $(YQ) --from-file $< >$@
 crds/package.json: bin/crds.yml

@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - namespace.yml
   - helm-repository.yml
-  - cert-manager-crds.yml
+  - crds.yaml
   - helm-release.yml
   - cert-manager-csi-driver.yml
   - trust-manager.yml
