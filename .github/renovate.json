@@ -11,7 +11,9 @@
 		"charts/**",
 		"clusters/**",
 		"crds/**",
-		"lib/**"
+		"infra/crds/**",
+		"lib/**",
+		"flux/**/crds/**"
 	],
 	"ignoreDeps": [
 		"@pulumi/crds",
