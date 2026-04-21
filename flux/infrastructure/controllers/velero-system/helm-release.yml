@@ -47,18 +47,20 @@ spec:
       capabilities:
         drop: [ALL]
       readOnlyRootFilesystem: true
-    extraEnvVars:
-      AWS_ACCESS_KEY_ID:
-        valueFrom:
-          secretKeyRef:
-            name: rook-ceph-object-user-s3-velero
-            key: AccessKey
-      AWS_SECRET_ACCESS_KEY:
-        valueFrom:
-          secretKeyRef:
-            name: rook-ceph-object-user-s3-velero
-            key: SecretKey
+    credentials:
+      useSecret: false
     configuration:
       backupStorageLocation: []
       volumeSnapshotLocation: []
       defaultBackupStorageLocation: default
+      extraEnvVars:
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: rook-ceph-object-user-s3-velero
+              key: AccessKey
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: rook-ceph-object-user-s3-velero
+              key: SecretKey
