@@ -99,6 +99,6 @@ spec:
   path: ./flux/infrastructure/configs/velero-system
   interval: 10m
   prune: true
+  wait: true
   dependsOn:
-    - name: infra-velero
     - name: infra-configs-rook-ceph
