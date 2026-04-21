@@ -28,6 +28,11 @@
         {
           packages.validate-flux = validate-flux;
 
+          checks.validate-flux = pkgs.runCommand "validate-flux-check" { } ''
+            ${validate-flux}/bin/validate-flux --dir ${./flux}
+            touch $out
+          '';
+
           devShells.default = pkgs.mkShellNoCC {
             packages = with pkgs; [
               validate-flux
