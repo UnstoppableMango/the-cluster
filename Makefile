@@ -38,6 +38,9 @@ renovate:
 format fmt:
 	nix fmt
 
+check:
+	nix flake check
+
 update: flake.lock
 
 .PHONY: ${APPS} ${INFRA}
