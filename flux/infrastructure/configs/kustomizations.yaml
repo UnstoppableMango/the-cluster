@@ -73,3 +73,32 @@ spec:
   wait: true
   dependsOn:
     - name: infra-configs-cert-manager
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-configs-rook-ceph
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./flux/infrastructure/configs/rook-ceph
+  interval: 10m
+  prune: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-configs-velero
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./flux/infrastructure/configs/velero-system
+  interval: 10m
+  prune: true
+  dependsOn:
+    - name: infra-velero
+    - name: infra-configs-rook-ceph
