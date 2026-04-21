@@ -18,7 +18,6 @@ DPRINT     ?= dprint
 FLUX       ?= flux
 KUBECTL    ?= kubectl
 KUBESEAL   ?= $(GO) tool kubeseal
-NIX        ?= nix
 PULUMI     ?= pulumi
 YARN       ?= yarn
 YQ         ?= $(GO) tool yq
@@ -37,7 +36,7 @@ renovate:
 	$(KUBECTL) create job manual-$$(date +%s) --namespace renovate --from=cronjob/renovate
 
 format fmt:
-	$(NIX) fmt
+	nix fmt
 
 update: flake.lock
 
@@ -68,8 +67,11 @@ hack/sealed-secrets.pub:
 	> $@
 
 bin/image.tar: containers/default.nix containers/runner/default.nix
-	$(NIX) build '.#runner' --out-link $@
+	nix build '.#runner' --out-link $@
 	$(DOCKER) load < $@
+
+flux/infrastructure/controllers/cert-manager/crds/crds.yaml: flake.lock nix/cert-manager-crds.nix
+	cp $$(nix build .#cert-manager-crds --print-out-paths --no-link) $@
 
 bin/crds.yml: hack/crd-filter.yq
 	$(KUBECTL) get crds -oyaml | $(YQ) --from-file $< >$@
@@ -78,7 +80,7 @@ crds/package.json: bin/crds.yml
 
 .PHONY: flake.lock
 flake.lock: flake.nix
-	$(NIX) flake update
+	nix flake update
 
 yarn.lock: package.json
 	$(YARN) install

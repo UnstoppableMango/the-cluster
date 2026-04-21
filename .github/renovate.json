@@ -27,7 +27,24 @@
 	"flux": {
 		"managerFilePatterns": ["/flux/.+\\.ya?ml$/"]
 	},
+	"customManagers": [
+		{
+			"customType": "regex",
+			"fileMatch": ["nix/.+\\.nix$"],
+			"matchStrings": [
+				"github\\.com/(?<depName>[^/]+/[^/]+)/releases/download/(?<currentValue>v[\\d.]+)/"
+			],
+			"datasourceTemplate": "github-releases"
+		}
+	],
 	"packageRules": [
+		{
+			"matchPackageNames": [
+				"cert-manager",
+				"cert-manager/cert-manager"
+			],
+			"groupName": "cert-manager"
+		},
 		{
 			"matchPackageNames": ["/^nginx\\/nginx-gateway-fabric.*/"],
 			"groupName": "nginx-gateway-fabric"
@@ -42,13 +59,6 @@
 				"/bitnami-labs\\/sealed-secrets/"
 			],
 			"groupName": "sealed-secrets"
-		},
-		{
-			"matchPackageNames": [
-				"cert-manager",
-				"cert-manager/cert-manager"
-			],
-			"groupName": "cert-manager"
 		},
 		{
 			"matchPackageNames": [
