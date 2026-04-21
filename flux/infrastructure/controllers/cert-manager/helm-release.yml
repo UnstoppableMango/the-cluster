@@ -7,6 +7,10 @@ spec:
   interval: 30m
   releaseName: cert-manager
   targetNamespace: cert-manager
+  install:
+    crds: Skip
+  upgrade:
+    crds: Skip
   chart:
     spec:
       chart: cert-manager
