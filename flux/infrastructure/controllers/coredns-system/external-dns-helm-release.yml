@@ -7,8 +7,6 @@ spec:
   interval: 10m
   releaseName: external-dns
   targetNamespace: coredns-system
-  dependsOn:
-    - name: external-dns-crds
   chart:
     spec:
       chart: external-dns
