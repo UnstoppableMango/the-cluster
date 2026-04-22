@@ -8,8 +8,3 @@ sources:
 maintainers:
   - name: UnstoppableMango
     url: https://github.com/UnstoppableMango
-dependencies:
-  - name: gha-runner-scale-set
-    alias: runner
-    version: "0.14.1"
-    repository: oci://ghcr.io/actions/actions-runner-controller-charts

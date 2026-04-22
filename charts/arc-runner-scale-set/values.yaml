@@ -1,8 +1,61 @@
-runner:
+# Defaults merged into every scale set entry (scale set values take precedence)
+defaults:
   githubConfigSecret: thecluster-bot
+  # controllerServiceAccount is discovered from the cluster if not set explicitly
+  controllerServiceAccount: {}
+  #   name: gha-runner-scale-set-controller
+  #   namespace: arc-system
   template:
     spec:
       containers:
         - name: runner
           image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:a85521c9ca1ee56af55c5ccef7ef2ebfc52ad68aacdcb590f184055be9843251
           command: [/home/runner/run.sh]
+
+# Scale sets to deploy. Each entry is merged with defaults above.
+# Required per entry: name, githubConfigUrl
+scaleSets: []
+# - name: dotfiles
+#   githubConfigUrl: https://github.com/UnstoppableMango/dotfiles
+#
+# - name: the-cluster
+#   githubConfigUrl: https://github.com/UnstoppableMango/the-cluster
+#   minRunners: 1
+#
+# - name: ux
+#   githubConfigUrl: https://github.com/UnstoppableMango/ux
+#   containerMode:
+#     type: dind
+#   template:
+#     spec:
+#       securityContext:
+#         fsGroup: 1001
+#       containers:
+#         - name: runner
+#           image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:a85521c9ca1ee56af55c5ccef7ef2ebfc52ad68aacdcb590f184055be9843251
+#           command: [/home/runner/run.sh]
+#           resources:
+#             limits:
+#               cpu: "8"
+#               memory: 8Gi
+#       volumes:
+#         - name: work
+#           ephemeral:
+#             volumeClaimTemplate:
+#               spec:
+#                 accessModes: [ReadWriteOnce]
+#                 storageClassName: ssd-rbd
+#                 resources:
+#                   requests:
+#                     storage: 5Gi
+#   listenerTemplate:
+#     spec:
+#       containers:
+#         - name: listener
+#           resources:
+#             limits:
+#               cpu: 25m
+#               memory: 64Mi
+#             requests:
+#               cpu: 2m
+#               memory: 16Mi
