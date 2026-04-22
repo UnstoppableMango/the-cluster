@@ -53,14 +53,3 @@ spec:
       backupStorageLocation: []
       volumeSnapshotLocation: []
       defaultBackupStorageLocation: default
-      extraEnvVars:
-        - name: AWS_ACCESS_KEY_ID
-          valueFrom:
-            secretKeyRef:
-              name: velero
-              key: AWS_ACCESS_KEY_ID
-        - name: AWS_SECRET_ACCESS_KEY
-          valueFrom:
-            secretKeyRef:
-              name: velero
-              key: AWS_SECRET_ACCESS_KEY

@@ -7,6 +7,9 @@ spec:
   provider: aws
   objectStorage:
     bucket: velero
+  credential:
+    name: ceph-credentials
+    key: cloud
   config:
     region: us-east-1
     s3ForcePathStyle: "true"
