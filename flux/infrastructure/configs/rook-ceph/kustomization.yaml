@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - ceph-object-store.yml
   - ceph-object-store-storage-class.yml
+  - dashboard-http-route.yml

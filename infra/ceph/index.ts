@@ -197,20 +197,12 @@ const chart = new Chart(clusterName, {
 				],
 			},
 		},
+		cephDashboard: {
+			ssl: false,
+		},
 		ingress: {
 			dashboard: {
-				enabled: true,
-				annotations: {
-					'cert-manager.io/issuer-group': 'cert-manager.io',
-					'cert-manager.io/issuer-kind': 'ClusterIssuer',
-					'cert-manager.io/issuer': 'thecluster.lan',
-				},
-				host: { name: hostname },
-				tls: [{
-					hosts: [hostname],
-					secretName: 'rook-ceph-mgr-dashboard-tls',
-				}],
-				ingressClassName: 'nginx',
+				enabled: false,
 			},
 		},
 		toolbox: { enabled: true },
