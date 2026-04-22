@@ -1,0 +1,16 @@
+apiVersion: velero.io/v1
+kind: BackupStorageLocation
+metadata:
+  name: backblaze
+  namespace: velero-system
+spec:
+  provider: aws
+  objectStorage:
+    bucket: thecluster-velero
+  credential:
+    name: backblaze-credentials
+    key: cloud
+  config:
+    region: us-west-002
+    s3ForcePathStyle: "true"
+    s3Url: https://s3.us-west-002.backblazeb2.com
