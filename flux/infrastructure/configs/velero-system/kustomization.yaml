@@ -6,3 +6,4 @@ resources:
   - backup-storage-location.yml
   - backup-storage-location-backblaze.yml
   - backblaze-credentials-sealed.yml
+  - ceph-credentials-sealed.yml

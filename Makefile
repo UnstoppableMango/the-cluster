@@ -59,6 +59,11 @@ hack/secrets/infrastructure/configs/cert-manager/ca.yml: | bin/pulumi
 	@mkdir -p $(@D)
 	PULUMI=$(PULUMI) PKI_STACK=$(PKI_STACK) YQ=$(YQ) hack/pki-ca-secret.sh $@
 
+.PHONY: hack/secrets/infrastructure/configs/velero-system/ceph-credentials.yml
+hack/secrets/infrastructure/configs/velero-system/ceph-credentials.yml:
+	@mkdir -p $(@D)
+	KUBECTL=$(KUBECTL) YQ=$(YQ) hack/velero-ceph-credentials.sh $@
+
 flux/%-sealed.yml: hack/secrets/%.yml | hack/sealed-secrets.pub
 	$(KUBESEAL) --format=yaml --cert=$| \
 	--secret-file $< --sealed-secret-file $@

@@ -50,6 +50,7 @@
               fnm
               gnumake
               kubectl
+              kubeseal
               nixfmt-tree
               nurl
               pulumi-bin
@@ -69,6 +70,7 @@
             FLUX = "${pkgs.fluxcd}/bin/flux";
             GO = "${pkgs.go}/bin/go";
             KUBECTL = "${pkgs.kubectl}/bin/kubectl";
+            KUBESEAL = "${pkgs.kubeseal}/bin/kubeseal";
             PULUMI = "${pkgs.pulumi-bin}/bin/pulumi";
             SHELLCHECK = "${pkgs.shellcheck}/bin/shellcheck";
             YARN = "${pkgs.yarn}/bin/yarn";
