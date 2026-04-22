@@ -505,9 +505,9 @@
     "@pulumi/pulumi" "^3.136.0"
 
 "@pulumi/keycloak@^6.0.0":
-  version "6.10.0"
-  resolved "https://registry.yarnpkg.com/@pulumi/keycloak/-/keycloak-6.10.0.tgz#8d98f087f3be100d18271f883ae49e208421d5be"
-  integrity sha512-rVFDEmC9UNNe5PahDnEa0ywte01FPVWx5F0Xgp7u7phYAeWKUhO7RU2/uVLJrhJM1aQF0+LMP7GKrksqrV7zxQ==
+  version "6.10.1"
+  resolved "https://registry.yarnpkg.com/@pulumi/keycloak/-/keycloak-6.10.1.tgz#6348cc367520067ea48d01d19373491346021fc9"
+  integrity sha512-Mm16SjiXI1aMSa0HvH3ipRFoL+6wNNm5SQKKgBT0ZtxpDCXO1LsDtTPP4GITynwrrx/V6hgUwcWV8N2kigmgGQ==
   dependencies:
     "@pulumi/pulumi" "^3.142.0"
 
