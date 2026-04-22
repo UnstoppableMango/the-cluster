@@ -1,0 +1,8 @@
+runner:
+  githubConfigSecret: thecluster-bot
+  template:
+    spec:
+      containers:
+        - name: runner
+          image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:a85521c9ca1ee56af55c5ccef7ef2ebfc52ad68aacdcb590f184055be9843251
+          command: [/home/runner/run.sh]
