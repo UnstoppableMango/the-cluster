@@ -1,0 +1,21 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: smarter-device-manager
+  namespace: smarter-device-manager
+spec:
+  interval: 10m
+  releaseName: smarter-device-manager
+  targetNamespace: smarter-device-manager
+  chart:
+    spec:
+      chart: smarter-device-manager
+      version: 1.4.0
+      sourceRef:
+        kind: HelmRepository
+        name: smarter-device-manager
+  values:
+    config:
+      deviceplugin: |
+        - devicematch: /dev/fuse
+          nummaxdevices: 20
