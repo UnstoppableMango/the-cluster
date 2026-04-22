@@ -54,6 +54,7 @@
               nurl
               pulumi-bin
               shellcheck
+              velero
               watchexec
               yarn
               yq-go
