@@ -1,0 +1,17 @@
+{{- range .Values.scaleSets }}
+{{- $values := mergeOverwrite (deepCopy $.Values.defaults) (omit . "name") }}
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: {{ $.Values.chartRef.name }}
+    namespace: {{ $.Values.chartRef.namespace }}
+  interval: {{ $.Values.interval }}
+  values:
+    {{- toYaml $values | nindent 4 }}
+{{- end }}
