@@ -57,10 +57,10 @@ spec:
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
-              name: rook-ceph-object-user-s3-velero
-              key: AccessKey
+              name: velero
+              key: AWS_ACCESS_KEY_ID
         - name: AWS_SECRET_ACCESS_KEY
           valueFrom:
             secretKeyRef:
-              name: rook-ceph-object-user-s3-velero
-              key: SecretKey
+              name: velero
+              key: AWS_SECRET_ACCESS_KEY
