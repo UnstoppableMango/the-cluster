@@ -18,6 +18,8 @@ github.com/UnstoppableMango/the-cluster
 │   ├── apps            # Application kustomizations
 │   ├── clusters        # Cluster entry points
 │   └── infrastructure  # Infrastructure kustomizations
+│       ├── configs     # Per-controller config (certs, DNS, storage, ingress)
+│       └── controllers # Controller installs (cert-manager, CNPGs, Crossplane, etc.)
 ├── hack                # Boilerplate, scripts, development tooling
 ├── infra               # Infrastructure Pulumi stacks
 ├── lib                 # Shared code exposed as `npm` packages
