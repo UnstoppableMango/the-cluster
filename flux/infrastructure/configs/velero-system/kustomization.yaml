@@ -5,3 +5,4 @@ resources:
   - object-bucket-claim.yml
   - backup-storage-location.yml
   - backup-storage-location-backblaze.yml
+  - backblaze-credentials-sealed.yml
