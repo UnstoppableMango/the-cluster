@@ -52,4 +52,4 @@ spec:
     configuration:
       backupStorageLocation: []
       volumeSnapshotLocation: []
-      defaultBackupStorageLocation: default
+      defaultBackupStorageLocation: thecluster

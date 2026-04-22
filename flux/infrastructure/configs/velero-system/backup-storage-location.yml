@@ -1,7 +1,7 @@
 apiVersion: velero.io/v1
 kind: BackupStorageLocation
 metadata:
-  name: default
+  name: thecluster
   namespace: velero-system
 spec:
   provider: aws
