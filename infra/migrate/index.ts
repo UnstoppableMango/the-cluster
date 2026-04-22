@@ -5,7 +5,7 @@ import { clusterName, provider, versions } from './config';
 
 const ns = new Namespace('migrate', {
 	metadata: { name: 'migrate' },
-}, { provider });
+}, { provider, retainOnDelete: true });
 
 const isosClaim = new PersistentVolumeClaim('isos', {
 	metadata: {
@@ -21,7 +21,7 @@ const isosClaim = new PersistentVolumeClaim('isos', {
 			},
 		},
 	},
-}, { provider });
+}, { provider, retainOnDelete: true });
 
 const animeClaim = new PersistentVolumeClaim('anime', {
 	metadata: {
@@ -37,7 +37,7 @@ const animeClaim = new PersistentVolumeClaim('anime', {
 			},
 		},
 	},
-}, { provider });
+}, { provider, retainOnDelete: true });
 
 const moviesClaim = new PersistentVolumeClaim('movies', {
 	metadata: {
@@ -53,7 +53,7 @@ const moviesClaim = new PersistentVolumeClaim('movies', {
 			},
 		},
 	},
-}, { provider });
+}, { provider, retainOnDelete: true });
 
 const movies4kClaim = new PersistentVolumeClaim('movies4k', {
 	metadata: {
@@ -69,7 +69,7 @@ const movies4kClaim = new PersistentVolumeClaim('movies4k', {
 			},
 		},
 	},
-}, { provider });
+}, { provider, retainOnDelete: true });
 
 const tvClaim = new PersistentVolumeClaim('tv', {
 	metadata: {
@@ -85,7 +85,7 @@ const tvClaim = new PersistentVolumeClaim('tv', {
 			},
 		},
 	},
-}, { provider });
+}, { provider, retainOnDelete: true });
 
 const tv4kClaim = new PersistentVolumeClaim('tv4k', {
 	metadata: {
@@ -101,7 +101,7 @@ const tv4kClaim = new PersistentVolumeClaim('tv4k', {
 			},
 		},
 	},
-}, { provider });
+}, { provider, retainOnDelete: true });
 
 const musicClaim = new PersistentVolumeClaim('music', {
 	metadata: {
@@ -117,7 +117,7 @@ const musicClaim = new PersistentVolumeClaim('music', {
 			},
 		},
 	},
-}, { provider });
+}, { provider, retainOnDelete: true });
 
 const photosClaim = new PersistentVolumeClaim('photos', {
 	metadata: {
@@ -133,7 +133,7 @@ const photosClaim = new PersistentVolumeClaim('photos', {
 			},
 		},
 	},
-}, { provider });
+}, { provider, retainOnDelete: true });
 
 const archiveClaim = new PersistentVolumeClaim('archive', {
 	metadata: {
@@ -149,7 +149,7 @@ const archiveClaim = new PersistentVolumeClaim('archive', {
 			},
 		},
 	},
-}, { provider });
+}, { provider, retainOnDelete: true });
 
 const downloadsClaim = new PersistentVolumeClaim('downloads', {
 	metadata: {
@@ -165,7 +165,7 @@ const downloadsClaim = new PersistentVolumeClaim('downloads', {
 			},
 		},
 	},
-}, { provider });
+}, { provider, retainOnDelete: true });
 
 const backupClaim = new PersistentVolumeClaim('backup', {
 	metadata: {
@@ -181,7 +181,7 @@ const backupClaim = new PersistentVolumeClaim('backup', {
 			},
 		},
 	},
-}, { provider });
+}, { provider, retainOnDelete: true });
 
 const linuxIsosClaim = new PersistentVolumeClaim('linux-isos', {
 	metadata: {
@@ -197,7 +197,7 @@ const linuxIsosClaim = new PersistentVolumeClaim('linux-isos', {
 			},
 		},
 	},
-}, { provider });
+}, { provider, retainOnDelete: true });
 
 const test = new Pod('mounty', {
 	metadata: { namespace: ns.metadata.name },
