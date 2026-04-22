@@ -223,3 +223,27 @@ spec:
           - name: runner # default
             image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:a85521c9ca1ee56af55c5ccef7ef2ebfc52ad68aacdcb590f184055be9843251
             command: [/home/runner/run.sh] # default
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: thecluster.lan-runners
+  namespace: arc-runners
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: gha-runner-scale-set
+    namespace: arc-system
+  interval: 10m
+  # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml
+  values:
+    githubConfigUrl: https://github.com/UnstoppableMango/thecluster.lan
+    githubConfigSecret: thecluster-bot
+    # https://github.com/actions/actions-runner-controller/issues/3587
+    # runnerScaleSetName: thecluster
+    template:
+      spec:
+        containers:
+          - name: runner # default
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:a85521c9ca1ee56af55c5ccef7ef2ebfc52ad68aacdcb590f184055be9843251
+            command: [/home/runner/run.sh] # default
