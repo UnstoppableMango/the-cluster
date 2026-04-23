@@ -1,12 +1,13 @@
 {{- range $i, $scaleSet := .Values.scaleSets }}
 {{- $name := required (printf "scaleSets[%d].name is required" $i) $scaleSet.name }}
+{{- $helmReleaseName := default $name $scaleSet.helmReleaseName }}
 {{- $_ := required (printf "scaleSets[%d].githubConfigUrl is required" $i) $scaleSet.githubConfigUrl }}
-{{- $values := mergeOverwrite (deepCopy $.Values.defaults) (omit $scaleSet "name") }}
+{{- $values := mergeOverwrite (deepCopy $.Values.defaults) (omit $scaleSet "name" "helmReleaseName") }}
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: {{ $name }}
+  name: {{ $helmReleaseName }}
   namespace: {{ $.Release.Namespace }}
 spec:
   chartRef:
