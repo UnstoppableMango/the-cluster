@@ -1,0 +1,67 @@
+# OCIRepository reference for gha-runner-scale-set (created by arc-system)
+chartRef:
+  name: gha-runner-scale-set
+  namespace: arc-system
+
+# Interval applied to all generated HelmReleases
+interval: 10m
+
+# Defaults merged into every HelmRelease's values block.
+# These are gha-runner-scale-set values — anything valid there works here.
+defaults:
+  githubConfigSecret: thecluster-bot
+  template:
+    spec:
+      containers:
+        - name: runner
+          image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:a85521c9ca1ee56af55c5ccef7ef2ebfc52ad68aacdcb590f184055be9843251
+          command: [/home/runner/run.sh]
+
+# One entry per scale set. Each is merged with defaults (entry wins on conflict).
+# Required per entry: name, githubConfigUrl
+# All other gha-runner-scale-set values are valid (minRunners, containerMode, template, etc.)
+scaleSets: []
+# - name: dotfiles
+#   githubConfigUrl: https://github.com/UnstoppableMango/dotfiles
+#
+# - name: the-cluster
+#   githubConfigUrl: https://github.com/UnstoppableMango/the-cluster
+#   minRunners: 1
+#
+# - name: ux
+#   githubConfigUrl: https://github.com/UnstoppableMango/ux
+#   containerMode:
+#     type: dind
+#   template:
+#     spec:
+#       securityContext:
+#         fsGroup: 1001
+#       containers:
+#         - name: runner
+#           image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:a85521c9ca1ee56af55c5ccef7ef2ebfc52ad68aacdcb590f184055be9843251
+#           command: [/home/runner/run.sh]
+#           resources:
+#             limits:
+#               cpu: "8"
+#               memory: 8Gi
+#       volumes:
+#         - name: work
+#           ephemeral:
+#             volumeClaimTemplate:
+#               spec:
+#                 accessModes: [ReadWriteOnce]
+#                 storageClassName: ssd-rbd
+#                 resources:
+#                   requests:
+#                     storage: 5Gi
+#   listenerTemplate:
+#     spec:
+#       containers:
+#         - name: listener
+#           resources:
+#             limits:
+#               cpu: 25m
+#               memory: 64Mi
+#             requests:
+#               cpu: 2m
+#               memory: 16Mi

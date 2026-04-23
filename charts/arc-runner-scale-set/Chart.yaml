@@ -1,0 +1,12 @@
+apiVersion: v2
+name: arc-runner-scale-set
+description: Cluster-default wrapper for gha-runner-scale-set
+type: application
+version: 0.1.0
+appVersion: '0.14.1'
+kubeVersion: '>= 1.25'
+sources:
+  - https://github.com/UnstoppableMango/the-cluster/tree/main/charts/arc-runner-scale-set
+maintainers:
+  - name: UnstoppableMango
+    url: https://github.com/UnstoppableMango

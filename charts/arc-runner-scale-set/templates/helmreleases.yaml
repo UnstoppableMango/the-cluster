@@ -1,0 +1,20 @@
+{{- range $i, $scaleSet := .Values.scaleSets }}
+{{- $name := required (printf "scaleSets[%d].name is required" $i) $scaleSet.name }}
+{{- $helmReleaseName := default $name $scaleSet.helmReleaseName }}
+{{- $_ := required (printf "scaleSets[%d].githubConfigUrl is required" $i) $scaleSet.githubConfigUrl }}
+{{- $values := mergeOverwrite (deepCopy $.Values.defaults) (omit $scaleSet "name" "helmReleaseName") }}
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: {{ $helmReleaseName }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: {{ required "chartRef.name is required" $.Values.chartRef.name }}
+    namespace: {{ required "chartRef.namespace is required" $.Values.chartRef.namespace }}
+  interval: {{ required "interval is required" $.Values.interval }}
+  values:
+    {{- toYaml $values | nindent 4 }}
+{{- end }}
