@@ -12,9 +12,9 @@ metadata:
 spec:
   chartRef:
     kind: OCIRepository
-    name: {{ $.Values.chartRef.name }}
-    namespace: {{ $.Values.chartRef.namespace }}
-  interval: {{ $.Values.interval }}
+    name: {{ required "chartRef.name is required" $.Values.chartRef.name }}
+    namespace: {{ required "chartRef.namespace is required" $.Values.chartRef.namespace }}
+  interval: {{ required "interval is required" $.Values.interval }}
   values:
     {{- toYaml $values | nindent 4 }}
 {{- end }}
