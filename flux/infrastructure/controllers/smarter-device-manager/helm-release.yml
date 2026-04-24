@@ -17,7 +17,7 @@ spec:
   values:
     image:
       repository: ghcr.io/smarter-project/smarter-device-manager
-      tag: 1.20.12
+      tag: sha256-92e1a8e8d908d4ab85d4dd60cb076f6e39ff88a8c6d021478b07957bb824eefd.sig
     config:
       deviceplugin: |
         - devicematch: /dev/fuse
