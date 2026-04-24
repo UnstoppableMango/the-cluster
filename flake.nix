@@ -8,6 +8,16 @@
 
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
+
+    mynix = {
+      url = "github:UnstoppableMango/nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+        treefmt-nix.follows = "treefmt-nix";
+        systems.follows = "systems";
+      };
+    };
   };
 
   outputs =
