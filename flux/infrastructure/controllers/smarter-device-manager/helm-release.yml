@@ -10,11 +10,14 @@ spec:
   chart:
     spec:
       chart: smarter-device-manager
-      version: 1.20.12
+      version: 0.0.10
       sourceRef:
         kind: HelmRepository
         name: smarter-device-manager
   values:
+    image:
+      repository: ghcr.io/smarter-project/smarter-device-manager
+      tag: 1.20.12
     config:
       deviceplugin: |
         - devicematch: /dev/fuse
