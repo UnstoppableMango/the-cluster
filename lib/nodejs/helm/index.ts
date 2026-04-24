@@ -10,5 +10,3 @@ export type NginxIngressValues = ts.FromSchema<
 	typeof nginxIngress,
 	{ references: [typeof k8sDefinitions] }
 >;
-
-const test: NginxIngressValues = {};
