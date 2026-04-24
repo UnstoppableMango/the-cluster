@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: smarter-device-manager
-      version: 1.4.0
+      version: 1.20.12
       sourceRef:
         kind: HelmRepository
         name: smarter-device-manager
