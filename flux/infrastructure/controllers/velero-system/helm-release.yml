@@ -20,6 +20,16 @@ spec:
     image:
       repository: velero/velero # default
       tag: v1.18.0
+    deployNodeAgent: true
+    nodeAgent:
+      disableHostPath: true
+      resources:
+        limits:
+          cpu: 100m
+          memory: 256Mi
+        requests:
+          cpu: 50m
+          memory: 128Mi
     initContainers:
       - name: velero-plugin-for-aws
         image: velero/velero-plugin-for-aws:v1.14.0
