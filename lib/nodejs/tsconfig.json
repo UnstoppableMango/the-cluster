@@ -2,7 +2,8 @@
 	"exclude": [".npmrc"],
 	"compilerOptions": {
 		"target": "es2016",
-		"module": "CommonJS",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
 		"removeComments": true,
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
