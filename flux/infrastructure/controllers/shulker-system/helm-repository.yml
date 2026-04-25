@@ -1,0 +1,8 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: shulker
+  namespace: shulker-system
+spec:
+  url: https://jeremylvln.github.io/Shulker/helm-charts
+  interval: 1h

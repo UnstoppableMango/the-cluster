@@ -1,6 +1,22 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: infra-agones
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./flux/infrastructure/controllers/agones-system
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    - name: infra-configs-gaming
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: infra-arc-system
   namespace: flux-system
 spec:
@@ -185,6 +201,23 @@ spec:
   wait: true
   dependsOn:
     - name: infra-configs-nginx-gateway
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-shulker
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./flux/infrastructure/controllers/shulker-system
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    - name: infra-agones
+    - name: infra-configs-gaming
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
