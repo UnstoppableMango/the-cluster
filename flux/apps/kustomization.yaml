@@ -5,6 +5,7 @@ resources:
   - harbor-system
   - kube-system
   - media
+  - migrate
   - necesse
   - nix-system
   - pihole
