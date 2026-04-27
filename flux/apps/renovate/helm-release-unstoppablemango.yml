@@ -52,6 +52,7 @@ spec:
             'UnstoppableMango/ouranosis',
             'UnstoppableMango/minecraft-manager',
             'UnstoppableMango/multi-downloader-nx-docker',
+            'UnstoppableMango/nix',
             'UnstoppableMango/nixos',
             'UnstoppableMango/pia-manual-connections',
             'UnstoppableMango/pulumi2crd',

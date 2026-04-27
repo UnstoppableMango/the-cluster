@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - configmap-installation-ids.yml
+  - configmap.yml
   - helm-release-unmango.yml
   - helm-release-unstoppablemango.yml
   - helm-repository.yml
