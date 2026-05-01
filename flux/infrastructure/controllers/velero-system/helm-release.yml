@@ -23,6 +23,14 @@ spec:
     deployNodeAgent: true
     nodeAgent:
       disableHostPath: true
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values: [ zeus, gaea ]
       resources:
         limits:
           cpu: 100m
@@ -55,7 +63,7 @@ spec:
     containerSecurityContext:
       allowPrivilegeEscalation: false
       capabilities:
-        drop: [ALL]
+        drop: [ ALL ]
       readOnlyRootFilesystem: true
     credentials:
       useSecret: false
