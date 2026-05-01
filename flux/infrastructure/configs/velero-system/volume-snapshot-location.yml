@@ -1,0 +1,29 @@
+apiVersion: velero.io/v1
+kind: VolumeSnapshotLocation
+metadata:
+  name: backblaze
+  namespace: velero-system
+spec:
+  provider: aws
+  credential:
+    name: backblaze-credentials
+    key: cloud
+  config:
+    region: us-west-002
+    s3ForcePathStyle: "true"
+    s3Url: https://s3.us-west-002.backblazeb2.com
+---
+apiVersion: velero.io/v1
+kind: VolumeSnapshotLocation
+metadata:
+  name: thecluster
+  namespace: velero-system
+spec:
+  provider: aws
+  credential:
+    name: ceph-credentials
+    key: cloud
+  config:
+    region: us-east-1
+    s3ForcePathStyle: "true"
+    s3Url: http://rook-ceph-rgw-s3.rook-ceph.svc
