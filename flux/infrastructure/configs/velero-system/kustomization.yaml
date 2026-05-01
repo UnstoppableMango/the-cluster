@@ -7,3 +7,4 @@ resources:
   - backblaze-credentials-sealed.yml
   - ceph-credentials-sealed.yml
   - schedules.yml
+  - volume-snapshot-location.yml

@@ -127,6 +127,9 @@ kind: PersistentVolumeClaim
 metadata:
   name: music
   namespace: migrate
+  labels:
+    backup.thecluster.io/schedule: daily
+    backup.thecluster.io/thecluster: 'true'
 spec:
   storageClassName: unsafe-rbd
   accessModes:
@@ -144,6 +147,8 @@ metadata:
   namespace: migrate
   labels:
     backup.thecluster.io/schedule: daily
+    backup.thecluster.io/backblaze: 'true'
+    backup.thecluster.io/thecluster: 'true'
 spec:
   storageClassName: unsafe-rbd
   accessModes:

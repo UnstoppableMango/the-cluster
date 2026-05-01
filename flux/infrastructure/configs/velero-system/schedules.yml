@@ -14,7 +14,7 @@ spec:
     labelSelector:
       matchLabels:
         backup.thecluster.io/schedule: daily
-        backup.thecluster.io/location: backblaze
+        backup.thecluster.io/backblaze: 'true'
 ---
 apiVersion: velero.io/v1
 kind: Schedule
@@ -32,7 +32,7 @@ spec:
     labelSelector:
       matchLabels:
         backup.thecluster.io/schedule: weekly
-        backup.thecluster.io/location: backblaze
+        backup.thecluster.io/backblaze: 'true'
 ---
 apiVersion: velero.io/v1
 kind: Schedule
@@ -50,7 +50,7 @@ spec:
     labelSelector:
       matchLabels:
         backup.thecluster.io/schedule: daily
-        backup.thecluster.io/location: thecluster
+        backup.thecluster.io/thecluster: 'true'
 ---
 apiVersion: velero.io/v1
 kind: Schedule
@@ -68,4 +68,4 @@ spec:
     labelSelector:
       matchLabels:
         backup.thecluster.io/schedule: weekly
-        backup.thecluster.io/location: thecluster
+        backup.thecluster.io/thecluster: 'true'
