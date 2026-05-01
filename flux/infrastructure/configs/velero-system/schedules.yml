@@ -1,0 +1,71 @@
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: backblaze-daily
+  namespace: velero-system
+spec:
+  schedule: '0 0 * * *' # daily at 00:00
+  template:
+    storageLocation: backblaze
+    snapshotVolumes: true
+    volumeSnapshotLocations:
+      - backblaze
+    ttl: 168h0m0s # 7 days
+    labelSelector:
+      matchLabels:
+        backup.thecluster.io/schedule: daily
+        backup.thecluster.io/location: backblaze
+---
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: backblaze-weekly
+  namespace: velero-system
+spec:
+  schedule: '0 2 * * 0' # Sunday at 02:00
+  template:
+    storageLocation: backblaze
+    snapshotVolumes: true
+    volumeSnapshotLocations:
+      - backblaze
+    ttl: 672h0m0s # 4 weeks
+    labelSelector:
+      matchLabels:
+        backup.thecluster.io/schedule: weekly
+        backup.thecluster.io/location: backblaze
+---
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: thecluster-daily
+  namespace: velero-system
+spec:
+  schedule: '0 1 * * *' # daily at 01:00
+  template:
+    storageLocation: thecluster
+    snapshotVolumes: true
+    volumeSnapshotLocations:
+      - thecluster
+    ttl: 168h0m0s # 7 days
+    labelSelector:
+      matchLabels:
+        backup.thecluster.io/schedule: daily
+        backup.thecluster.io/location: thecluster
+---
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: thecluster-weekly
+  namespace: velero-system
+spec:
+  schedule: '0 3 * * 0' # Sunday at 03:00
+  template:
+    storageLocation: thecluster
+    snapshotVolumes: true
+    volumeSnapshotLocations:
+      - thecluster
+    ttl: 672h0m0s # 4 weeks
+    labelSelector:
+      matchLabels:
+        backup.thecluster.io/schedule: weekly
+        backup.thecluster.io/location: thecluster

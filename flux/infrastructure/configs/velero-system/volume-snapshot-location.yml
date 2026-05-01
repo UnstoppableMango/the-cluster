@@ -1,12 +1,10 @@
 apiVersion: velero.io/v1
-kind: BackupStorageLocation
+kind: VolumeSnapshotLocation
 metadata:
   name: backblaze
   namespace: velero-system
 spec:
   provider: aws
-  objectStorage:
-    bucket: thecluster-velero
   credential:
     name: backblaze-credentials
     key: cloud
@@ -16,14 +14,12 @@ spec:
     s3Url: https://s3.us-west-002.backblazeb2.com
 ---
 apiVersion: velero.io/v1
-kind: BackupStorageLocation
+kind: VolumeSnapshotLocation
 metadata:
   name: thecluster
   namespace: velero-system
 spec:
   provider: aws
-  objectStorage:
-    bucket: velero
   credential:
     name: ceph-credentials
     key: cloud

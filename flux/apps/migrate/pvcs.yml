@@ -1,0 +1,185 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: anime
+  namespace: migrate
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-a09d9179-f8f0-4e38-8fe3-0c008de37761
+  resources:
+    requests:
+      storage: 10Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: archive
+  namespace: migrate
+  labels:
+    backup.thecluster.io/schedule: weekly
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-d263772f-1d40-41fd-a5de-34e89c516416
+  resources:
+    requests:
+      storage: 3Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: backup
+  namespace: migrate
+  labels:
+    backup.thecluster.io/schedule: weekly
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-16067f0c-0e94-4a13-8e97-ec76a98d8d72
+  resources:
+    requests:
+      storage: 8Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: downloads
+  namespace: migrate
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-47d25420-2e28-412a-b245-74fb97c4c7d7
+  resources:
+    requests:
+      storage: 6Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: isos
+  namespace: migrate
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-ce451497-122a-4ed3-9ab7-33013e2ad5d9
+  resources:
+    requests:
+      storage: 7Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: linux-isos
+  namespace: migrate
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-b8caff98-10cc-4083-81d5-82be1ab20a05
+  resources:
+    requests:
+      storage: 1Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: movies
+  namespace: migrate
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-7bb29113-2af6-4fef-b3f5-dcfd6937cc92
+  resources:
+    requests:
+      storage: 12Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: movies4k
+  namespace: migrate
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-17a121de-e913-43dd-acfc-ccf7d5182ee0
+  resources:
+    requests:
+      storage: 4Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: music
+  namespace: migrate
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-2daaa359-708f-4be4-bc5e-36e747d0dce7
+  resources:
+    requests:
+      storage: 4Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: photos
+  namespace: migrate
+  labels:
+    backup.thecluster.io/schedule: daily
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-de9ae21b-b0fb-4ce2-8327-a81ac8557c63
+  resources:
+    requests:
+      storage: 2Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tv
+  namespace: migrate
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-c9ed1ae1-087a-450d-b040-5811ba69a0a8
+  resources:
+    requests:
+      storage: 12Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tv4k
+  namespace: migrate
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-46d4b7b3-eb21-4426-bd97-f164df7be9a9
+  resources:
+    requests:
+      storage: 10Ti
