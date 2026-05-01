@@ -4,7 +4,7 @@ metadata:
   name: backblaze
   namespace: velero-system
 spec:
-  provider: aws
+  provider: velero.io/aws
   objectStorage:
     bucket: thecluster-velero
   credential:
@@ -21,7 +21,7 @@ metadata:
   name: thecluster
   namespace: velero-system
 spec:
-  provider: aws
+  provider: velero.io/aws
   objectStorage:
     bucket: velero
   credential:
