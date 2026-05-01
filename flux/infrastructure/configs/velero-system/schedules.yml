@@ -4,13 +4,10 @@ metadata:
   name: backblaze-daily
   namespace: velero-system
 spec:
-  schedule: '0 0 * * *' # every day at midnight
+  schedule: '0 0 * * *' # daily at 00:00
   template:
     storageLocation: backblaze
     ttl: 168h0m0s # 7 days
-    includedResources:
-      - persistentvolumeclaims
-      - persistentvolumes
     labelSelector:
       matchLabels:
         backup.thecluster.io/schedule: daily
@@ -21,13 +18,10 @@ metadata:
   name: backblaze-weekly
   namespace: velero-system
 spec:
-  schedule: '0 0 * * 0' # every Sunday at midnight
+  schedule: '0 2 * * 0' # Sunday at 02:00
   template:
     storageLocation: backblaze
     ttl: 672h0m0s # 4 weeks
-    includedResources:
-      - persistentvolumeclaims
-      - persistentvolumes
     labelSelector:
       matchLabels:
         backup.thecluster.io/schedule: weekly
@@ -38,13 +32,10 @@ metadata:
   name: thecluster-daily
   namespace: velero-system
 spec:
-  schedule: '0 0 * * *' # every day at midnight
+  schedule: '0 1 * * *' # daily at 01:00
   template:
     storageLocation: thecluster
     ttl: 168h0m0s # 7 days
-    includedResources:
-      - persistentvolumeclaims
-      - persistentvolumes
     labelSelector:
       matchLabels:
         backup.thecluster.io/schedule: daily
@@ -55,13 +46,10 @@ metadata:
   name: thecluster-weekly
   namespace: velero-system
 spec:
-  schedule: '0 0 * * 0' # every Sunday at midnight
+  schedule: '0 3 * * 0' # Sunday at 03:00
   template:
     storageLocation: thecluster
     ttl: 672h0m0s # 4 weeks
-    includedResources:
-      - persistentvolumeclaims
-      - persistentvolumes
     labelSelector:
       matchLabels:
         backup.thecluster.io/schedule: weekly
