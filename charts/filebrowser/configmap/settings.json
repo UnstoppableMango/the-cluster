@@ -1,8 +1,0 @@
-{
-	"port": "{{ .Values.port }}",
-	"baseUrl": "{{ .Values.baseUrl }}",
-	"address": "{{ .Values.address }}",
-	"log": "stdout",
-	"database": "/database/filebrowser.db",
-	"root": "/srv"
-}
