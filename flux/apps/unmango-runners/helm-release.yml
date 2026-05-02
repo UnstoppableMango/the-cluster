@@ -13,8 +13,8 @@ spec:
   values:
     githubConfigUrl: https://github.com/unmango
     githubConfigSecret: thecluster-bot
-    minRunners: 2
-    maxRunners: 20
+    minRunners: 3
+    maxRunners: 30
     # 99% the dind template
     # https://github.com/actions/actions-runner-controller/blob/8c84ab2f4267ce61df1f6b2e26a3ca12b2d1e4ca/charts/gha-runner-scale-set/values.yaml#L310
     template:
