@@ -7,15 +7,14 @@
         fromImage = pkgs.dockerTools.pullImage {
           imageName = "ghcr.io/actions/actions-runner";
           imageDigest = "sha256:ee54ad8776606f29434f159196529b7b9c83c0cb9195c1ff5a7817e7e570dcfe";
-          hash = "sha256-XQFr8ppWDztVi7f6e+6KhzppqWQg+5uVvmDQNMd41CI=";
-          finalImageName = "ghcr.io/actions/actions-runner";
-          finalImageTag = "2.330.0";
+          hash = "sha256-QbELJpF/f6f3lGcxQhPyTrw4XcGpnMLTXUY3P24Q/Vk=";
         };
 
         name = "thecluster-runner";
         tag = "latest";
 
         contents = with pkgs; [
+          gh
           gnumake
           xz
         ];
