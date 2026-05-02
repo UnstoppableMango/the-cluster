@@ -2,6 +2,8 @@ apiVersion: snapshot.storage.k8s.io/v1
 kind: VolumeSnapshotClass
 metadata:
   name: ceph-rbd
+  annotations:
+    velero.io/csi-volumesnapshot-class: "true"
 driver: rook-ceph.rbd.csi.ceph.com
 deletionPolicy: Delete
 parameters:
@@ -13,6 +15,8 @@ apiVersion: snapshot.storage.k8s.io/v1
 kind: VolumeSnapshotClass
 metadata:
   name: ceph-cephfs
+  annotations:
+    velero.io/csi-volumesnapshot-class: "true"
 driver: rook-ceph.cephfs.csi.ceph.com
 deletionPolicy: Delete
 parameters:
