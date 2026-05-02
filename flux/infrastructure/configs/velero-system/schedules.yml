@@ -11,7 +11,7 @@ spec:
     volumeSnapshotLocations:
       - backblaze
     snapshotMoveData: true
-    dataMover: velero
+    datamover: velero
     ttl: 168h0m0s # 7 days
     labelSelector:
       matchLabels:
@@ -31,7 +31,7 @@ spec:
     volumeSnapshotLocations:
       - backblaze
     snapshotMoveData: true
-    dataMover: velero
+    datamover: velero
     ttl: 672h0m0s # 4 weeks
     labelSelector:
       matchLabels:
@@ -51,7 +51,7 @@ spec:
     volumeSnapshotLocations:
       - thecluster
     snapshotMoveData: true
-    dataMover: velero
+    datamover: velero
     ttl: 168h0m0s # 7 days
     labelSelector:
       matchLabels:
@@ -71,7 +71,7 @@ spec:
     volumeSnapshotLocations:
       - thecluster
     snapshotMoveData: true
-    dataMover: velero
+    datamover: velero
     ttl: 672h0m0s # 4 weeks
     labelSelector:
       matchLabels:
