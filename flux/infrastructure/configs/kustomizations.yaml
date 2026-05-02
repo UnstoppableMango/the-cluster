@@ -100,6 +100,8 @@ spec:
   path: ./flux/infrastructure/configs/rook-ceph
   interval: 10m
   prune: true
+  dependsOn:
+    - name: external-snapshotter-crds
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
