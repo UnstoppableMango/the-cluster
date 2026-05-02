@@ -1,0 +1,13 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: operator-controller
+  namespace: olmv1-system
+spec:
+  interval: 12h
+  url: https://github.com/operator-framework/operator-controller
+  ref:
+    tag: v1.8.0
+  ignore: |
+    /*
+    !/helm

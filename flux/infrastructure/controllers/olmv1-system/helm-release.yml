@@ -1,0 +1,17 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: olmv1
+  namespace: olmv1-system
+spec:
+  interval: 30m
+  releaseName: olmv1
+  targetNamespace: olmv1-system
+  chart:
+    spec:
+      chart: helm/olmv1
+      interval: 30m
+      sourceRef:
+        kind: GitRepository
+        name: operator-controller
+  # https://github.com/operator-framework/operator-controller/blob/v1.8.0/helm/olmv1/values.yaml
