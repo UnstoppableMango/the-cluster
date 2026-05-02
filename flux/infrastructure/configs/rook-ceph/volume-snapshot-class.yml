@@ -8,3 +8,14 @@ parameters:
   clusterID: rook-ceph
   csi.storage.k8s.io/snapshotter-secret-name: rook-csi-rbd-provisioner
   csi.storage.k8s.io/snapshotter-secret-namespace: rook-ceph
+---
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotClass
+metadata:
+  name: ceph-cephfs
+driver: rook-ceph.cephfs.csi.ceph.com
+deletionPolicy: Delete
+parameters:
+  clusterID: rook-ceph
+  csi.storage.k8s.io/snapshotter-secret-name: rook-csi-cephfs-provisioner
+  csi.storage.k8s.io/snapshotter-secret-namespace: rook-ceph
