@@ -7,8 +7,10 @@
     systems.url = "github:nix-systems/default";
     nix-kube-generators.url = "github:farcaller/nix-kube-generators";
 
-    treefmt-nix.url = "github:numtide/treefmt-nix";
-    treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
+    nix2container = {
+      url = "github:nlewo/nix2container";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     mynix = {
       url = "github:UnstoppableMango/nix";
@@ -18,6 +20,11 @@
         treefmt-nix.follows = "treefmt-nix";
         systems.follows = "systems";
       };
+    };
+
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
