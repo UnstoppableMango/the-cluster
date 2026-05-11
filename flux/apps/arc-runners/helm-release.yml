@@ -19,7 +19,7 @@ spec:
       spec:
         containers:
           - name: runner # default
-            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:552f106b3830d59bb8a70a39953a22cc47f889a6c5400f01ad1346eddd44e41b
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:841fa92b95cd4db1081ccb49257a57c02512722c4ff2d6a1b7f5041058a8485f
             command: [/home/runner/run.sh] # default
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -42,7 +42,7 @@ spec:
       spec:
         containers:
           - name: runner # default
-            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:552f106b3830d59bb8a70a39953a22cc47f889a6c5400f01ad1346eddd44e41b
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:841fa92b95cd4db1081ccb49257a57c02512722c4ff2d6a1b7f5041058a8485f
             command: [/home/runner/run.sh] # default
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -73,7 +73,7 @@ spec:
           fsGroup: 1001
         containers:
           - name: runner # default
-            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:552f106b3830d59bb8a70a39953a22cc47f889a6c5400f01ad1346eddd44e41b
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:841fa92b95cd4db1081ccb49257a57c02512722c4ff2d6a1b7f5041058a8485f
             command: [/home/runner/run.sh] # default
             resources:
               limits:
@@ -125,7 +125,7 @@ spec:
       spec:
         containers:
           - name: runner # default
-            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:552f106b3830d59bb8a70a39953a22cc47f889a6c5400f01ad1346eddd44e41b
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:841fa92b95cd4db1081ccb49257a57c02512722c4ff2d6a1b7f5041058a8485f
             command: [/home/runner/run.sh] # default
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -149,7 +149,7 @@ spec:
       spec:
         containers:
           - name: runner # default
-            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:552f106b3830d59bb8a70a39953a22cc47f889a6c5400f01ad1346eddd44e41b
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:841fa92b95cd4db1081ccb49257a57c02512722c4ff2d6a1b7f5041058a8485f
             command: [/home/runner/run.sh] # default
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -173,7 +173,7 @@ spec:
       spec:
         containers:
           - name: runner # default
-            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:552f106b3830d59bb8a70a39953a22cc47f889a6c5400f01ad1346eddd44e41b
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:841fa92b95cd4db1081ccb49257a57c02512722c4ff2d6a1b7f5041058a8485f
             command: [/home/runner/run.sh] # default
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -197,7 +197,7 @@ spec:
       spec:
         containers:
           - name: runner # default
-            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:552f106b3830d59bb8a70a39953a22cc47f889a6c5400f01ad1346eddd44e41b
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:841fa92b95cd4db1081ccb49257a57c02512722c4ff2d6a1b7f5041058a8485f
             command: [/home/runner/run.sh] # default
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -221,7 +221,7 @@ spec:
       spec:
         containers:
           - name: runner # default
-            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:552f106b3830d59bb8a70a39953a22cc47f889a6c5400f01ad1346eddd44e41b
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:841fa92b95cd4db1081ccb49257a57c02512722c4ff2d6a1b7f5041058a8485f
             command: [/home/runner/run.sh] # default
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -245,5 +245,5 @@ spec:
       spec:
         containers:
           - name: runner # default
-            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:552f106b3830d59bb8a70a39953a22cc47f889a6c5400f01ad1346eddd44e41b
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:841fa92b95cd4db1081ccb49257a57c02512722c4ff2d6a1b7f5041058a8485f
             command: [/home/runner/run.sh] # default
