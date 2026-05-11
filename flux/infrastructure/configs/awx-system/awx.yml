@@ -13,7 +13,7 @@ spec:
     - setting: UI_NEXT
       value: true
     - setting: TOWER_URL_BASE
-      value: "https://awx.thecluster.io"
+      value: "'https://awx.thecluster.io'"
   extra_settings_files:
     secrets:
       - name: awx-github-oauth
