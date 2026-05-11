@@ -1,0 +1,10 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: awx-operator
+  namespace: awx-system
+spec:
+  url: https://github.com/ansible/awx-operator
+  interval: 1h
+  ref:
+    tag: 2.19.1
