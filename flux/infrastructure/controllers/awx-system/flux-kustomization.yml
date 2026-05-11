@@ -12,3 +12,9 @@ spec:
   prune: true
   targetNamespace: awx-system
   wait: true
+  images:
+    - name: gcr.io/kubebuilder/kube-rbac-proxy
+      newName: quay.io/brancz/kube-rbac-proxy
+      newTag: v0.15.0
+    - name: quay.io/ansible/awx-operator
+      newTag: 2.19.1
