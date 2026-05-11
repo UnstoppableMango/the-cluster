@@ -9,6 +9,9 @@ spec:
   ingress_class_name: cloudflare-tunnel
   ingress_hosts:
     - hostname: awx.thecluster.io
+  extra_settings:
+    - setting: UI_NEXT
+      value: true
   extra_settings_files:
     secrets:
       - name: awx-github-oauth
