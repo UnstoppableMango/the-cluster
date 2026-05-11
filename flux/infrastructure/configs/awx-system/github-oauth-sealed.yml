@@ -1,0 +1,13 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: awx-github-oauth
+  namespace: awx-system
+spec:
+  encryptedData:
+    github_oauth.py: AgBV5sqbOvcG+XKfFoValo+0rgmMyIfCofwdLQTU90bMMVih29sL2YmBngjs8jP83cC0t8XLgj+B6QmVbNMYXPgip5lZbJvm9WT7p2yEUm4Na3+ErYrRLx9OII0uP0NMrgqC+DmzIqZsc18PL5BamKzJOw8wuzW1014SFIJ4p/AV3H79e7uPPSUKPwZEwMOOci6rVRu9xJrD8Veee1Dzc9ekk9nDtyBqF1058tJDpPuuYLyeRkpfpKjiiP/J6lDgVdTkGGCM+EzqLfHoEg+in7OlUYIiawsLrMC3G8G8fYmDdMxKHg5yXs9E9tbNP36j6aig6jp3jezuASFtJ9KbNZ68l7J5/SF+dcXIC//eD5MgwUSqqUuVxbnAeX/1Y0FgoUDG5ZA2sSTAwHikInTQmZfrjQ+5dUXcyHYJfMahk9n6havkYxfci4GAFBnU4SKsB+VBxtJiSqavxxZ3XJC0SJHZYr7q53rsSkR8ObnunKsC/+6PnxJbv8dkvRHkqrKLwyt7+CSK8qiGpzRdvLMZcI4M7r9yA2JRaCVzZvs2s9XVt0kE+c3Epadf3+ll7eq5Qq3GmTswRpY0tUhcqfcIoZFLRHCIzBYylck12AeqbnBaX9xOdTPN7tvDiNg9N1iF+0qAFaqXABZdhTpjHYNb/VcLnUkju5pqWANtowXLGock8IoxLJYW+GVEacveRnk5iELp0LNavuVtBsd8zw0e1D5U2DNjyA9QVQ+IKKSjcGiHS/1fSQgSSj6G7J6Rj0HDgJKdO1793KkPhlAbjwpl1IY2KieHik2ZvZ43QyXGQQw+SpepnVg35yYRsFnMrVth3glyVU4SQud5uVKcJNxE6Nv3oG0lpv4g8NjDZLUO5Fq7yFbjo+Uc5LW8cpkKqjj75JtGWofCHa5wA6juYt/GqU/hs3aPz5up5g==
+  template:
+    metadata:
+      name: awx-github-oauth
+      namespace: awx-system
