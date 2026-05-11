@@ -12,6 +12,8 @@ spec:
   prune: true
   targetNamespace: awx-system
   wait: true
+  dependsOn:
+    - name: awx-operator-crds
   images:
     - name: gcr.io/kubebuilder/kube-rbac-proxy
       newName: quay.io/brancz/kube-rbac-proxy

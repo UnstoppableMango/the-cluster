@@ -1,0 +1,11 @@
+apiVersion: awx.ansible.com/v1beta1
+kind: AWX
+metadata:
+  name: awx
+  namespace: awx-system
+spec:
+  service_type: ClusterIP
+  ingress_type: Ingress
+  ingress_class_name: cloudflare-tunnel
+  ingress_hosts:
+    - hostname: awx.thecluster.io
