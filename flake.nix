@@ -28,26 +28,14 @@
       imports = with inputs; [
         treefmt-nix.flakeModule
         ./containers
+        ./flux
       ];
 
       perSystem =
         { pkgs, ... }:
-        let
-          validate-flux = pkgs.callPackage ./nix/validate-flux.nix { };
-          cert-manager-crds = pkgs.callPackage ./nix/cert-manager-crds.nix { };
-        in
         {
-          packages.validate-flux = validate-flux;
-          packages.cert-manager-crds = cert-manager-crds;
-
-          checks.validate-flux = pkgs.runCommand "validate-flux-check" { } ''
-            ${validate-flux}/bin/validate-flux --dir ${./flux}
-            touch $out
-          '';
-
           devShells.default = pkgs.mkShellNoCC {
             packages = with pkgs; [
-              validate-flux
               bash # For copilot
               crossplane-cli
               git
