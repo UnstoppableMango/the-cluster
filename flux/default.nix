@@ -1,12 +1,19 @@
 {
   perSystem =
-    { pkgs, lib, ... }:
+    {
+      self',
+      pkgs,
+      lib,
+      ...
+    }:
     let
       callPackage = lib.callPackageWith (pkgs // packages);
+      inherit (self'.legacyPackages) kubelib;
 
       packages = {
         validate-flux = callPackage ./validate.nix { };
         cert-manager-crds = callPackage ./cert-manager-crds.nix { };
+        thecluster-crds = callPackage ./crds.nix { inherit kubelib; };
       };
     in
     {

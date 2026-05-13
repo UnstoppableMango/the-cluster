@@ -113,6 +113,21 @@
         "type": "github"
       }
     },
+    "nix-kube-generators": {
+      "locked": {
+        "lastModified": 1762437901,
+        "narHash": "sha256-5yuJODagAq+aMXQAT2c0gfXKLqapmA6eUHR33jKNHuU=",
+        "owner": "farcaller",
+        "repo": "nix-kube-generators",
+        "rev": "810dcf792081790648ba9ae705b9a2286115ace8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "farcaller",
+        "repo": "nix-kube-generators",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1777268161,
@@ -148,6 +163,7 @@
       "inputs": {
         "flake-parts": "flake-parts",
         "mynix": "mynix",
+        "nix-kube-generators": "nix-kube-generators",
         "nixpkgs": "nixpkgs",
         "systems": "systems",
         "treefmt-nix": "treefmt-nix"
