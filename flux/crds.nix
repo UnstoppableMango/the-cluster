@@ -31,7 +31,7 @@ in
 symlinkJoin {
   name = "thecluster-crds";
   paths = [
-    agones
+    (copyFile "agones" agones)
     (copyFile "cert-manager" cert-manager)
   ];
 }
