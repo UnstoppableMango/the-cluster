@@ -36,6 +36,7 @@ spec:
           platform: 'github',
           autodiscover: false, // default
           autodiscoverFilter: [], // default
+          presetCachePersistence: true,
           repositories: [
             'UnstoppableMango/a2b',
             'UnstoppableMango/audio',
@@ -69,7 +70,9 @@ spec:
             'UnstoppableMango/xmage-docker',
             'UnstoppableMango/x12',
           ],
-          presetCachePersistence: true,
+          allowedCommands: [
+            '^nix run github:UnstoppableMango/renovate-config#post-upgrade -- \\{.*\\}$',
+          ],
         };
     cronjob:
       schedule: '*/30 * * * *'
