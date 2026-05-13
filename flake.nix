@@ -33,8 +33,15 @@
       ];
 
       perSystem =
-        { pkgs, ... }:
+        { pkgs, system, ... }:
         {
+          _module.args.pkgs = import inputs.nixpkgs {
+            inherit system;
+            overlays = with inputs; [
+              mynix.overlays.default
+            ];
+          };
+
           legacyPackages.kubelib = inputs.nix-kube-generators.lib {
             inherit pkgs;
           };

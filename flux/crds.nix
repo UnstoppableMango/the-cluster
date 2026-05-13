@@ -1,5 +1,6 @@
 {
   fetchurl,
+  kubectl-slice,
   kubelib,
   symlinkJoin,
   runCommand,
@@ -21,6 +22,17 @@ let
     includeCRDs = true;
   };
 
+  sliceCRDs =
+    name: src:
+    runCommand "${name}-cds" { } ''
+      mkdir -p $out/crds
+      ${kubectl-slice}/bin/kubectl-slice \
+        --input-file ${src} \
+        --include-kind CustomResourceDefinition \
+        --skip-non-k8s \
+        --stdout >$out/crds/${name}.yml
+    '';
+
   copyFile =
     name: src:
     runCommand "${name}-crds" { } ''
@@ -31,7 +43,7 @@ in
 symlinkJoin {
   name = "thecluster-crds";
   paths = [
-    (copyFile "agones" agones)
+    (sliceCRDs "agones" agones)
     (copyFile "cert-manager" cert-manager)
   ];
 }
