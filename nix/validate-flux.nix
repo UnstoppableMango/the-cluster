@@ -1,7 +1,7 @@
 { pkgs }:
 let
   fluxOperatorSchemas = pkgs.fetchurl {
-    url = "https://github.com/controlplaneio-fluxcd/flux-operator/releases/download/v0.48.0/crd-schemas.tar.gz";
+    url = "https://github.com/controlplaneio-fluxcd/flux-operator/releases/download/v0.49.0/crd-schemas.tar.gz";
     hash = "sha256-MGaE7Ja+G9n3WVRpNOfu7n+Vk4mxKg9mNo8euKJQwBc=";
   };
   flux2Schemas = pkgs.fetchurl {
