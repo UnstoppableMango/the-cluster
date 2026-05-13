@@ -5,7 +5,7 @@ let
     hash = "sha256-MGaE7Ja+G9n3WVRpNOfu7n+Vk4mxKg9mNo8euKJQwBc=";
   };
   flux2Schemas = pkgs.fetchurl {
-    url = "https://github.com/fluxcd/flux2/releases/download/v2.8.6/crd-schemas.tar.gz";
+    url = "https://github.com/fluxcd/flux2/releases/download/v2.8.7/crd-schemas.tar.gz";
     hash = "sha256-98KFTY4EoD0bX84NaTNWVkOpLWtrhVw2O8VJMtZDdOU=";
   };
   # https://github.com/fluxcd/flux2-kustomize-helm-example/blob/main/scripts/validate.sh#L95C1-L100
