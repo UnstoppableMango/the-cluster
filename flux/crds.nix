@@ -1,4 +1,5 @@
 {
+  callPackage,
   fetchurl,
   kubectl-slice,
   kubelib,
@@ -6,17 +7,44 @@
   runCommand,
 }:
 let
+  fluxSrc = callPackage ./src.nix { };
+  fromFlux = path: kubelib.fromYAML (builtins.readFile "${fluxSrc}/${path}") |> builtins.head;
+  fromControllers = path: fromFlux "infrastructure/controllers/${path}";
+
+  downloadFluxHelmChart =
+    { chartHash, namespace }:
+    let
+      rel = fromControllers "${namespace}/helm-release.yml";
+      repo = fromControllers "${namespace}/helm-repository.yml";
+    in
+    kubelib.downloadHelmChart {
+      inherit chartHash;
+      repo = repo.spec.url;
+      chart = rel.spec.chart.spec.chart;
+      version = rel.spec.chart.spec.version;
+    };
+
   cert-manager = fetchurl {
     url = "https://github.com/cert-manager/cert-manager/releases/download/v1.20.2/cert-manager.crds.yaml";
     hash = "sha256-bam+tTJGlQN94x/qmYCZwURvbOToCfMrE6dolPTxafA=";
   };
 
+  cert-manager-helm = kubelib.buildHelmChart {
+    name = "cert-manager";
+    chart = downloadFluxHelmChart {
+      namespace = "cert-manager";
+      chartHash = "sha256-4V44v91c1wUBKDr7GbhahRWCjPtl1zCT9Bd0Hn5gCYY=";
+    };
+    includeCRDs = true;
+    values = {
+      installCRDs = true;
+    };
+  };
+
   agones = kubelib.buildHelmChart {
     name = "agones";
-    chart = kubelib.downloadHelmChart {
-      repo = "https://agones.dev/chart/stable";
-      chart = "agones";
-      version = "1.57.0";
+    chart = downloadFluxHelmChart {
+      namespace = "agones-system";
       chartHash = "sha256-8eaRT40afNFNi/YMIq14A8xODDiI2L+ZUbqpbSA8/kM=";
     };
     includeCRDs = true;
@@ -45,5 +73,7 @@ symlinkJoin {
   paths = [
     (sliceCRDs "agones" agones)
     (copyFile "cert-manager" cert-manager)
+    (sliceCRDs "cert-manager-helm" cert-manager-helm)
+    (sliceCRDs "cloudflare-operator" cloudflare-operator)
   ];
 }
