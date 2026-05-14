@@ -24,6 +24,15 @@ let
       version = rel.spec.chart.spec.version;
     };
 
+  agones = kubelib.buildHelmChart {
+    name = "agones";
+    chart = downloadFluxHelmChart {
+      namespace = "agones-system";
+      chartHash = "sha256-8eaRT40afNFNi/YMIq14A8xODDiI2L+ZUbqpbSA8/kM=";
+    };
+    includeCRDs = true;
+  };
+
   cert-manager = fetchurl {
     url = "https://github.com/cert-manager/cert-manager/releases/download/v1.20.2/cert-manager.crds.yaml";
     hash = "sha256-bam+tTJGlQN94x/qmYCZwURvbOToCfMrE6dolPTxafA=";
@@ -41,18 +50,18 @@ let
     };
   };
 
-  agones = kubelib.buildHelmChart {
-    name = "agones";
+  cloudnative-pg = kubelib.buildHelmChart {
+    name = "cloudnative-pg";
     chart = downloadFluxHelmChart {
-      namespace = "agones-system";
-      chartHash = "sha256-8eaRT40afNFNi/YMIq14A8xODDiI2L+ZUbqpbSA8/kM=";
+      namespace = "cnpg-system";
+      chartHash = "sha256-IE5HEzMotxW00cdnmgJgDedNS42iBiuiwYRo9pe/10w=";
     };
     includeCRDs = true;
   };
 
   sliceCRDs =
     name: src:
-    runCommand "${name}-cds" { } ''
+    runCommand "${name}-crds" { } ''
       mkdir -p $out/crds
       ${kubectl-slice}/bin/kubectl-slice \
         --input-file ${src} \
@@ -74,6 +83,6 @@ symlinkJoin {
     (sliceCRDs "agones" agones)
     (copyFile "cert-manager" cert-manager)
     (sliceCRDs "cert-manager-helm" cert-manager-helm)
-    (sliceCRDs "cloudflare-operator" cloudflare-operator)
+    (sliceCRDs "cloudnative-pg" cloudnative-pg)
   ];
 }

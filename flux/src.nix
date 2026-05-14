@@ -6,8 +6,5 @@ fs.toSource {
   root = ./.;
 
   # Everything except nix files
-  fileset = fs.unions [
-    (fs.gitTracked ./.)
-    ./infrastructure
-  ];
+  fileset = fs.intersection (fs.gitTracked ./.) ./infrastructure;
 }
