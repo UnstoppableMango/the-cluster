@@ -21,7 +21,7 @@ spec:
       spec:
         initContainers:
         - name: init-dind-externals
-          image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:841fa92b95cd4db1081ccb49257a57c02512722c4ff2d6a1b7f5041058a8485f
+          image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:010a124e2d831235d821b25f192ad164b7d105ea40900cd77f91ec1c592e9020
           command: ["cp", "-r", "/home/runner/externals/.", "/home/runner/tmpDir/"]
           volumeMounts:
             - name: dind-externals
@@ -55,7 +55,7 @@ spec:
               mountPath: /home/runner/externals
         containers:
         - name: runner
-          image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:841fa92b95cd4db1081ccb49257a57c02512722c4ff2d6a1b7f5041058a8485f
+          image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:010a124e2d831235d821b25f192ad164b7d105ea40900cd77f91ec1c592e9020
           command: [/home/runner/run.sh]
           env:
             - name: DOCKER_HOST
