@@ -5,6 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
     systems.url = "github:nix-systems/default";
+    nix-kube-generators.url = "github:farcaller/nix-kube-generators";
 
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
@@ -28,26 +29,25 @@
       imports = with inputs; [
         treefmt-nix.flakeModule
         ./containers
+        ./flux
       ];
 
       perSystem =
-        { pkgs, ... }:
-        let
-          validate-flux = pkgs.callPackage ./nix/validate-flux.nix { };
-          cert-manager-crds = pkgs.callPackage ./nix/cert-manager-crds.nix { };
-        in
+        { pkgs, system, ... }:
         {
-          packages.validate-flux = validate-flux;
-          packages.cert-manager-crds = cert-manager-crds;
+          _module.args.pkgs = import inputs.nixpkgs {
+            inherit system;
+            overlays = with inputs; [
+              mynix.overlays.default
+            ];
+          };
 
-          checks.validate-flux = pkgs.runCommand "validate-flux-check" { } ''
-            ${validate-flux}/bin/validate-flux --dir ${./flux}
-            touch $out
-          '';
+          legacyPackages.kubelib = inputs.nix-kube-generators.lib {
+            inherit pkgs;
+          };
 
           devShells.default = pkgs.mkShellNoCC {
             packages = with pkgs; [
-              validate-flux
               bash # For copilot
               crossplane-cli
               git
@@ -96,26 +96,6 @@
             ];
 
             programs.nixfmt.enable = true;
-
-            programs.dprint = {
-              enable = true;
-              settings = {
-                useTabs = true;
-                typescript = {
-                  semiColons = "always";
-                  quoteStyle = "preferSingle";
-                };
-                markdown.textWrap = "never";
-                plugins = pkgs.dprint-plugins.getPluginList (
-                  p: with p; [
-                    dprint-plugin-typescript
-                    dprint-plugin-json
-                    dprint-plugin-markdown
-                    dprint-plugin-toml
-                  ]
-                );
-              };
-            };
           };
         };
     };

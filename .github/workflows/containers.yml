@@ -2,12 +2,12 @@ name: Containers
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
       - .github/workflows/containers.yml
       - containers/**
   pull_request:
-    branches: [ main ]
+    branches: [main]
     paths:
       - .github/workflows/containers.yml
       - containers/**
@@ -21,6 +21,8 @@ jobs:
       - uses: cachix/install-nix-action@8aa03977d8d733052d78f4e008a241fd1dbf36b3 # v31.10.6
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
+          extra_nix_config: |
+            extra-experimental-features = nix-command flakes pipe-operators
 
       - uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4
         if: github.event_name != 'pull_request'
