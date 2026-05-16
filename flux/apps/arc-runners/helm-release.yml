@@ -6,7 +6,7 @@ metadata:
 spec:
   chart:
     spec:
-      chart: arc-runner-scale-set
+      chart: charts/arc-runner-scale-set
       sourceRef:
         kind: GitRepository
         name: flux-system
