@@ -1,37 +1,36 @@
 {
-  perSystem =
-    { pkgs, ... }:
-    {
-      packages.runner = pkgs.dockerTools.buildLayeredImage {
-        # https://github.com/actions/runner/tree/main/images/Dockerfile
-        fromImage = pkgs.dockerTools.pullImage {
-          imageName = "ghcr.io/actions/actions-runner";
-          imageDigest = "sha256:ee54ad8776606f29434f159196529b7b9c83c0cb9195c1ff5a7817e7e570dcfe";
-          hash = "sha256-QbELJpF/f6f3lGcxQhPyTrw4XcGpnMLTXUY3P24Q/Vk=";
-        };
+  gh,
+  gnumake,
+  github-runner,
+  nix2container,
+  xz,
+  ...
+}:
+nix2container.buildImage {
+  name = "thecluster-runner";
+  tag = "latest";
 
-        name = "thecluster-runner";
-        tag = "latest";
+  # https://github.com/UnstoppableMango/nix/blob/main/packages/images/github-runner.nix
+  fromImage = github-runner;
+  maxLayers = 2;
 
-        contents = with pkgs; [
-          gh
-          gnumake
-          xz
-        ];
+  copyToRoot = [
+    gh
+    gnumake
+    xz
+  ];
 
-        enableFakechroot = true;
-        # Things inside the base image seem to expect /bin/bash and /bin/sh to exist
-        fakeRootCommands = ''
-          ln -s /usr/bin/bash /bin/bash
-          ln -s /usr/bin/sh /bin/sh
-        '';
+  # enableFakechroot = true;
+  # # Things inside the base image seem to expect /bin/bash and /bin/sh to exist
+  # fakeRootCommands = ''
+  #   ln -s /usr/bin/bash /bin/bash
+  #   ln -s /usr/bin/sh /bin/sh
+  # '';
 
-        config = {
-          Cmd = [ "/bin/bash" ];
-          WorkingDir = "/home/runner";
-          User = "runner";
-          Env = [ "USER=runner" ];
-        };
-      };
-    };
+  config = {
+    Cmd = [ "/bin/bash" ];
+    WorkingDir = "/home/runner";
+    User = "runner";
+    Env = [ "USER=runner" ];
+  };
 }
