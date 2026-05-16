@@ -1,0 +1,235 @@
+# Backwards compatibility while I slowly upgrade things
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: lang-runners
+  namespace: arc-runners
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: gha-runner-scale-set
+    namespace: arc-system
+  interval: 10m
+  # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml
+  values:
+    githubConfigUrl: https://github.com/UnstoppableMango/lang
+    githubConfigSecret: thecluster-bot
+    template:
+      spec:
+        containers:
+          - name: runner # default
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:010a124e2d831235d821b25f192ad164b7d105ea40900cd77f91ec1c592e9020
+            command: [/home/runner/run.sh] # default
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: thecluster-runners
+  namespace: arc-runners
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: gha-runner-scale-set
+    namespace: arc-system
+  interval: 10m
+  # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml
+  values:
+    githubConfigUrl: https://github.com/UnstoppableMango/the-cluster
+    githubConfigSecret: thecluster-bot
+    minRunners: 1
+    template:
+      spec:
+        containers:
+          - name: runner # default
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:010a124e2d831235d821b25f192ad164b7d105ea40900cd77f91ec1c592e9020
+            command: [/home/runner/run.sh] # default
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ux-runners
+  namespace: arc-runners
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: gha-runner-scale-set
+    namespace: arc-system
+  interval: 10m
+  # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml
+  values:
+    githubConfigUrl: https://github.com/UnstoppableMango/ux
+    githubConfigSecret: thecluster-bot
+    containerMode:
+      type: dind
+    # Will be merged with the dind containerMode spec
+    # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml#L300
+    template:
+      spec:
+        # https://docs.github.com/en/actions/tutorials/use-actions-runner-controller/troubleshoot#error-access-to-the-path-homerunner_work_tool-is-denied
+        securityContext:
+          fsGroup: 1001
+        containers:
+          - name: runner # default
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:010a124e2d831235d821b25f192ad164b7d105ea40900cd77f91ec1c592e9020
+            command: [/home/runner/run.sh] # default
+            resources:
+              limits:
+                cpu: "8"
+                memory: 8Gi
+              requests:
+                cpu: "1"
+                memory: 512Mi
+        volumes:
+          - name: work
+            ephemeral:
+              volumeClaimTemplate:
+                spec:
+                  accessModes: [ReadWriteOnce]
+                  storageClassName: ssd-rbd
+                  resources:
+                    requests:
+                      storage: 5Gi
+    listenerTemplate:
+      spec:
+        containers:
+          - name: listener
+            resources:
+              limits:
+                cpu: 25m
+                memory: 64Mi
+              requests:
+                cpu: 2m
+                memory: 16Mi
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: xmage-docker-runners
+  namespace: arc-runners
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: gha-runner-scale-set
+    namespace: arc-system
+  interval: 10m
+  # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml
+  values:
+    githubConfigUrl: https://github.com/UnstoppableMango/xmage-docker
+    githubConfigSecret: thecluster-bot
+    template:
+      spec:
+        containers:
+          - name: runner # default
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:010a124e2d831235d821b25f192ad164b7d105ea40900cd77f91ec1c592e9020
+            command: [/home/runner/run.sh] # default
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: thecluster.io-runners
+  namespace: arc-runners
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: gha-runner-scale-set
+    namespace: arc-system
+  interval: 10m
+  # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml
+  values:
+    githubConfigUrl: https://github.com/UnstoppableMango/thecluster.io
+    githubConfigSecret: thecluster-bot
+    template:
+      spec:
+        containers:
+          - name: runner # default
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:010a124e2d831235d821b25f192ad164b7d105ea40900cd77f91ec1c592e9020
+            command: [/home/runner/run.sh] # default
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: dotfiles-runners
+  namespace: arc-runners
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: gha-runner-scale-set
+    namespace: arc-system
+  interval: 10m
+  # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml
+  values:
+    githubConfigUrl: https://github.com/UnstoppableMango/dotfiles
+    githubConfigSecret: thecluster-bot
+    template:
+      spec:
+        containers:
+          - name: runner # default
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:010a124e2d831235d821b25f192ad164b7d105ea40900cd77f91ec1c592e9020
+            command: [/home/runner/run.sh] # default
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nixos-runners
+  namespace: arc-runners
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: gha-runner-scale-set
+    namespace: arc-system
+  interval: 10m
+  # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml
+  values:
+    githubConfigUrl: https://github.com/UnstoppableMango/nixos
+    githubConfigSecret: thecluster-bot
+    template:
+      spec:
+        containers:
+          - name: runner # default
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:010a124e2d831235d821b25f192ad164b7d105ea40900cd77f91ec1c592e9020
+            command: [/home/runner/run.sh] # default
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nix-runners
+  namespace: arc-runners
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: gha-runner-scale-set
+    namespace: arc-system
+  interval: 10m
+  # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml
+  values:
+    githubConfigUrl: https://github.com/UnstoppableMango/nix
+    githubConfigSecret: thecluster-bot
+    template:
+      spec:
+        containers:
+          - name: runner # default
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:010a124e2d831235d821b25f192ad164b7d105ea40900cd77f91ec1c592e9020
+            command: [/home/runner/run.sh] # default
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: thecluster.lan-runners
+  namespace: arc-runners
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: gha-runner-scale-set
+    namespace: arc-system
+  interval: 10m
+  # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml
+  values:
+    githubConfigUrl: https://github.com/UnstoppableMango/thecluster.lan
+    githubConfigSecret: thecluster-bot
+    template:
+      spec:
+        containers:
+          - name: runner # default
+            image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:010a124e2d831235d821b25f192ad164b7d105ea40900cd77f91ec1c592e9020
+            command: [/home/runner/run.sh] # default
