@@ -18,7 +18,6 @@ spec:
       namespace: arc-system
     defaults:
       githubConfigSecret: thecluster-bot
-      runnerScaleSetName: thecluster
       containerMode:
         type: dind
       template:
