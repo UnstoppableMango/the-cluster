@@ -15,6 +15,16 @@ spec:
     name: {{ required "chartRef.name is required" $.Values.chartRef.name }}
     namespace: {{ required "chartRef.namespace is required" $.Values.chartRef.namespace }}
   interval: {{ required "interval is required" $.Values.interval }}
+  postRenderers:
+    - kustomize:
+        patches:
+          # TODO: consider parameterizing
+          - patch: |
+              - op: add
+                path: /spec/runnerScaleSetName
+                value: thecluster
+            target:
+              kind: AutoScalingRunnerSet
   values:
     {{- toYaml $values | nindent 4 }}
 {{- end }}
