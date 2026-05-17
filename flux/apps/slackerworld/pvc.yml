@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: slackerworld
+  namespace: slackerworld
+spec:
+  storageClassName: unsafe-rbd
+  resources:
+    requests:
+      storage: 24Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
