@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: slackerworld
+  namespace: slackerworld
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: slackerworld
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: slackerworld
+    spec:
+      containers:
+        - name: palworld
+          image: thijsvanloef/palworld-server-docker:latest
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: PORT
+              value: "8211"
+            - name: PLAYERS
+              value: "16"
+            - name: MULTITHREADING
+              value: "true"
+            - name: REST_API_ENABLED
+              value: "true"
+            - name: RCON_ENABLED
+              value: "true"
+            - name: RCON_PORT
+              value: "25575"
+            - name: TZ
+              value: UTC
+            - name: COMMUNITY
+              value: "false"
+            - name: SERVER_NAME
+              value: SLACKERWORLD
+            - name: SERVER_DESCRIPTION
+              value: The Official SLACKER PalWorld server
+            - name: CROSSPLAY_PLATFORMS
+              value: (Steam,Xbox,PS5,Mac)
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: slackerworld
+                  key: adminPassword
+            - name: BASE_CAMP_WORKER_MAX_NUM
+              value: "20"
+          ports:
+            - name: server
+              containerPort: 8211
+              protocol: UDP
+            - name: query
+              containerPort: 27015
+              protocol: UDP
+            - name: rest
+              containerPort: 8212
+              protocol: UDP
+          resources:
+            requests:
+              cpu: "4"
+              memory: 4Gi
+            limits:
+              cpu: "8"
+              memory: 16Gi
+          volumeMounts:
+            - name: data
+              mountPath: /palworld
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: slackerworld

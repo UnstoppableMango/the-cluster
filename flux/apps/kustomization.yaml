@@ -10,5 +10,6 @@ resources:
   - nix-system
   - pihole
   - renovate
+  - slackerworld
   - unmango-runners
   - xmage
