@@ -2,7 +2,7 @@ apiVersion: v2
 name: arc-runner-scale-set
 description: Cluster-default wrapper for gha-runner-scale-set
 type: application
-version: 0.1.0
+version: 0.2.0
 appVersion: '0.14.1'
 kubeVersion: '>= 1.25'
 sources:
