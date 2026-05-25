@@ -24,7 +24,7 @@ jobs:
           extra_nix_config: |
             extra-experimental-features = nix-command flakes pipe-operators
 
-      - uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4
+      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4
         if: github.event_name != 'pull_request'
         with:
           registry: ghcr.io
@@ -60,7 +60,7 @@ jobs:
             type=raw,value=v${{ env.ACTIONS_RUNNER_VERSION }}
             type=sha
 
-      - uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4
+      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4
         if: github.event_name != 'pull_request'
         with:
           registry: ghcr.io
