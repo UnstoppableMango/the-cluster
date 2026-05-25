@@ -32,7 +32,7 @@ spec:
       kind: daemonSet
       image:
         repository: ghcr.io/nginx/nginx-gateway-fabric/nginx
-        tag: 2.6.0
+        tag: 2.6.2
       service:
         type: LoadBalancer
         loadBalancerIP: 192.168.1.43
