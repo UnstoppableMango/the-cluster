@@ -21,7 +21,7 @@ spec:
       replicas: 2
       image:
         repository: ghcr.io/nginx/nginx-gateway-fabric
-        tag: 2.6.0
+        tag: 2.6.2
       gwAPIExperimentalFeatures:
         enable: true
       productTelemetry:
