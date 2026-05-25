@@ -7,4 +7,4 @@ spec:
   url: https://github.com/cloudflare/origin-ca-issuer
   interval: 1h
   ref:
-    tag: v0.14.1
+    tag: v0.14.3
