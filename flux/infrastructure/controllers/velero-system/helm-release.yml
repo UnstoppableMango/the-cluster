@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: velero/velero # default
-      tag: v1.18.0
+      tag: v1.18.1
     deployNodeAgent: true
     nodeAgent:
       disableHostPath: true
