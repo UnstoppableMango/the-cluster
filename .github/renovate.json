@@ -85,6 +85,14 @@
 			"matchPackageNames": ["ghcr.io/renovatebot/renovate"],
 			"matchUpdateTypes": ["patch"],
 			"enabled": false
+		},
+		{
+			"matchPackageNames": [
+				"ghcr.io/renovatebot/renovate",
+				"renovate"
+			],
+			"groupName": "renovate",
+			"automerge": true
 		}
 	]
 }
