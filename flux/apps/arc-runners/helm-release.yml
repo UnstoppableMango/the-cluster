@@ -26,7 +26,7 @@ spec:
             fsGroup: 1001
           containers:
             - name: runner
-              image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:010a124e2d831235d821b25f192ad164b7d105ea40900cd77f91ec1c592e9020
+              image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:19b485a04195c784226afc0291de9ac5bc6c3f7edca4ad1a2a8258f29189020b
               command: [/home/runner/run.sh]
               resources:
                 limits:
