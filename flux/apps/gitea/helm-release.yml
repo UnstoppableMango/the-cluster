@@ -44,6 +44,10 @@ spec:
       valuesKey: password
       targetPath: gitea.config.database.PASSWD
   values:
+    image:
+      registry: docker.gitea.com
+      repository: gitea
+      tag: "1.26.1"
     replicaCount: 1
     service:
       http:
