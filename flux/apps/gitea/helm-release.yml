@@ -23,6 +23,9 @@ metadata:
 spec:
   interval: 1h
   releaseName: gitea
+  dependsOn:
+    - name: redis
+      namespace: gitea
   targetNamespace: gitea
   chart:
     spec:
