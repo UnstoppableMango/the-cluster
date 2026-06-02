@@ -8,6 +8,6 @@ spec:
     kind: GitRepository
     name: origin-ca-issuer
   path: ./deploy/crds
-  interval: 1h
+  interval: 10m
   prune: false
   wait: true

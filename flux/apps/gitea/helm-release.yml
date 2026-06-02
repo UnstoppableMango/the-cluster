@@ -4,7 +4,7 @@ metadata:
   name: redis
   namespace: gitea
 spec:
-  interval: 1h
+  interval: 10m
   releaseName: redis
   targetNamespace: gitea
   chart:
@@ -21,7 +21,7 @@ metadata:
   name: gitea
   namespace: gitea
 spec:
-  interval: 1h
+  interval: 10m
   releaseName: gitea
   dependsOn:
     - name: redis

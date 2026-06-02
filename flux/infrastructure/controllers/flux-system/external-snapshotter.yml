@@ -19,7 +19,7 @@ spec:
     kind: GitRepository
     name: external-snapshotter
   path: ./client/config/crd
-  interval: 1h
+  interval: 10m
   prune: false
   wait: true
 ---
@@ -33,7 +33,7 @@ spec:
     kind: GitRepository
     name: external-snapshotter
   path: ./deploy/kubernetes/snapshot-controller
-  interval: 1h
+  interval: 10m
   prune: true
   wait: true
   dependsOn:

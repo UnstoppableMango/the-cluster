@@ -4,7 +4,7 @@ metadata:
   name: unstoppablemango-renovate
   namespace: renovate
 spec:
-  interval: 1h
+  interval: 10m
   releaseName: unstoppablemango-renovate
   targetNamespace: renovate
   chart:
