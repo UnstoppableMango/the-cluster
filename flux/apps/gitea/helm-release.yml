@@ -63,7 +63,6 @@ spec:
     gitea:
       admin:
         existingSecret: gitea
-        username: gitea-admin
         passwordKey: adminPassword
       config:
         APP_NAME: The Cluster Gitea
