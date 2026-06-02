@@ -30,7 +30,7 @@ spec:
   chart:
     spec:
       chart: gitea
-      version: 10.6.0
+      version: 12.6.0
       sourceRef:
         kind: HelmRepository
         name: gitea
@@ -63,7 +63,6 @@ spec:
     gitea:
       admin:
         existingSecret: gitea
-        passwordKey: adminPassword
       config:
         APP_NAME: The Cluster Gitea
         server:
