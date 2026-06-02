@@ -73,7 +73,7 @@ spec:
         server:
           DOMAIN: gitea.thecluster.io
           ROOT_URL: https://gitea.thecluster.io
-          SSH_DOMAIN: gitea.thecluster.io
+          SSH_DOMAIN: gitea.thecluster.lan
           SSH_PORT: 22
           SSH_LISTEN_PORT: 22
           START_SSH_SERVER: true
