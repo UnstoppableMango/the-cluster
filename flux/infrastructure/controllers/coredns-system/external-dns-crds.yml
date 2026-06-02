@@ -19,6 +19,6 @@ spec:
     kind: GitRepository
     name: external-dns-crds
   path: ./charts/external-dns/crds
-  interval: 1h
+  interval: 10m
   prune: false
   wait: true

@@ -53,7 +53,7 @@ metadata:
   name: origin-ca-issuer
   namespace: cloudflare-system
 spec:
-  interval: 1h
+  interval: 10m
   releaseName: origin-ca-issuer
   targetNamespace: cloudflare-system
   chartRef:
