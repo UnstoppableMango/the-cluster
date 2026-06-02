@@ -53,6 +53,7 @@ spec:
       http:
         type: ClusterIP
         port: 3000
+        clusterIP: ""
       ssh:
         type: ClusterIP
         port: 22
