@@ -1,0 +1,16 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres
+  namespace: gitea
+spec:
+  instances: 1
+  storage:
+    storageClass: ssd-rbd
+    size: 5Gi
+  bootstrap:
+    initdb:
+      database: gitea
+      owner: gitea
+      secret:
+        name: pg-credentials

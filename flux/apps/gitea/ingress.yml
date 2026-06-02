@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gitea
+  namespace: gitea
+spec:
+  ingressClassName: cloudflare-tunnel
+  rules:
+    - host: gitea.thecluster.io
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: gitea-http
+                port:
+                  number: 3000

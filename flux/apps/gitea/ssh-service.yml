@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ssh-lb
+  namespace: gitea
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: gitea.thecluster.io
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: gitea
+    app.kubernetes.io/instance: gitea
+  ports:
+    - name: ssh
+      protocol: TCP
+      port: 22
+      targetPort: 22
