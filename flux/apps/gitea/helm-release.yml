@@ -17,6 +17,10 @@ spec:
   valuesFrom:
     - kind: Secret
       name: pg-credentials
+      valuesKey: username
+      targetPath: gitea.config.database.USER
+    - kind: Secret
+      name: pg-credentials
       valuesKey: password
       targetPath: gitea.config.database.PASSWD
   values:
@@ -54,7 +58,6 @@ spec:
           DB_TYPE: postgres
           HOST: postgres-rw.gitea.svc.cluster.local:5432
           NAME: gitea
-          USER: gitea
           SSL_MODE: disable
       oauth:
         - name: GitHub

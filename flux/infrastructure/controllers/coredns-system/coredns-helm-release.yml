@@ -32,11 +32,12 @@ spec:
     servers:
       - zones:
           - zone: thecluster.lan
+          - zone: thecluster.io
         port: 53
         plugins:
           - name: errors
           - name: etcd
-            parameters: thecluster.lan
+            parameters: thecluster.lan thecluster.io
             configBlock: |-
               stubzones
               path /skydns
@@ -112,11 +113,12 @@ spec:
     servers:
       - zones:
           - zone: thecluster.lan
+          - zone: thecluster.io
         port: 53
         plugins:
           - name: errors
           - name: etcd
-            parameters: thecluster.lan
+            parameters: thecluster.lan thecluster.io
             configBlock: |-
               stubzones
               path /skydns

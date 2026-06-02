@@ -3,6 +3,8 @@ kind: Service
 metadata:
   name: ssh-lb
   namespace: gitea
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: gitea.thecluster.io
 spec:
   type: LoadBalancer
   selector:
