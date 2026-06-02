@@ -1,0 +1,12 @@
+apiVersion: v2
+name: redis
+description: Lightweight Redis deployment for cluster workloads
+type: application
+version: 0.1.0
+appVersion: "8"
+kubeVersion: ">= 1.25"
+sources:
+  - https://github.com/UnstoppableMango/the-cluster/tree/main/charts/redis
+maintainers:
+  - name: UnstoppableMango
+    url: https://github.com/UnstoppableMango
