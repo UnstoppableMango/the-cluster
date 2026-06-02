@@ -28,3 +28,5 @@ github.com/UnstoppableMango/the-cluster
 │   └── nodejs          # Shared code for node
 └── .versions           # Ad-hoc version pinning
 ```
+
+See [`charts/README.md`](charts/README.md) for the chart index.
