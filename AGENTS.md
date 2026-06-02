@@ -4,7 +4,7 @@ This file provides guidance to AI agents when working with code in this reposito
 
 ## Overview
 
-Homelab infrastructure-as-code for a Kubernetes cluster (`pinkdiamond`), built with Pulumi (TypeScript) and Flux CD for GitOps.
+Homelab infrastructure-as-code for a Kubernetes cluster (`pinkdiamond`). Flux CD is the preferred deployment method. Pulumi stacks are deprecated — avoid adding new Pulumi stacks; use Flux manifests instead.
 
 ## Commands
 
@@ -16,7 +16,9 @@ make fmt        # runs dprint + nix fmt
 
 CI enforces dprint formatting on all PRs.
 
-### Deploying Pulumi Stacks
+### Deploying Pulumi Stacks (Deprecated)
+
+> **Deprecated:** Pulumi stacks are being phased out. Prefer Flux manifests for new work.
 
 ```sh
 # Apps and infra stacks
@@ -40,7 +42,9 @@ make crds/package.json  # regenerate CRD TypeScript from cluster
 
 ## Architecture
 
-### Stack Layers
+### Stack Layers (Deprecated)
+
+> **Deprecated:** These Pulumi stacks are being replaced by Flux manifests. Do not add new stacks.
 
 1. **`clusters/`** — Cluster bootstrapping (kubeconfig, k8s version pinning)
 2. **`infra/`** — Infrastructure stacks (Ceph/Rook storage, identity, networking)
