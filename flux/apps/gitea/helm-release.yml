@@ -63,8 +63,6 @@ spec:
         - name: GitHub
           provider: github
           existingSecret: gitea
-          clientID: githubClientID
-          clientSecret: githubClientSecret
     postgresql:
       enabled: false
     postgresql-ha:
