@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yml
+  - secret-sealed.yml
+  - pg-credentials-sealed.yml
+  - helm-repository.yml
+  - postgres-cluster.yml
+  - helm-release.yml
+  - httproute.yml
+  - ingress.yml
+  - ssh-service.yml

@@ -1,0 +1,72 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: gitea
+  namespace: gitea
+spec:
+  interval: 1h
+  releaseName: gitea
+  targetNamespace: gitea
+  chart:
+    spec:
+      chart: gitea
+      version: 10.6.0
+      sourceRef:
+        kind: HelmRepository
+        name: gitea
+  valuesFrom:
+    - kind: Secret
+      name: pg-credentials
+      valuesKey: password
+      targetPath: gitea.config.database.PASSWD
+  values:
+    replicaCount: 1
+    service:
+      http:
+        type: ClusterIP
+        port: 3000
+      ssh:
+        type: ClusterIP
+        port: 22
+    ingress:
+      enabled: false
+    persistence:
+      enabled: true
+      storageClass: unsafe-rbd
+      size: 20Gi
+      accessModes:
+        - ReadWriteOnce
+    gitea:
+      admin:
+        existingSecret: gitea
+        username: gitea-admin
+        passwordKey: adminPassword
+      config:
+        APP_NAME: The Cluster Gitea
+        server:
+          DOMAIN: gitea.thecluster.io
+          ROOT_URL: https://gitea.thecluster.io
+          SSH_DOMAIN: gitea.thecluster.io
+          SSH_PORT: 22
+          SSH_LISTEN_PORT: 22
+          START_SSH_SERVER: true
+        database:
+          DB_TYPE: postgres
+          HOST: postgres-rw.gitea.svc.cluster.local:5432
+          NAME: gitea
+          USER: gitea
+          SSL_MODE: disable
+      oauth:
+        - name: GitHub
+          provider: github
+          existingSecret: gitea
+          clientID: githubClientID
+          clientSecret: githubClientSecret
+    postgresql:
+      enabled: false
+    postgresql-ha:
+      enabled: false
+    redis-cluster:
+      enabled: false
+    redis:
+      enabled: true
