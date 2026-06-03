@@ -4,3 +4,4 @@ resources:
   - namespace.yml
   - helm-repository.yml
   - helm-release.yml
+  - grafana-ingress.yml
