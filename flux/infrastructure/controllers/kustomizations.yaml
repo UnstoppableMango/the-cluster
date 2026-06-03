@@ -258,7 +258,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/monitoring-system
+  path: ./flux/infrastructure/controllers/monitoring
   interval: 10m
   prune: true
   wait: true
