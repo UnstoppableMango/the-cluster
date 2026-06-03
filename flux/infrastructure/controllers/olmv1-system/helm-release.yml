@@ -15,3 +15,10 @@ spec:
         kind: GitRepository
         name: operator-controller
   # https://github.com/operator-framework/operator-controller/blob/v1.8.0/helm/olmv1/values.yaml
+  values:
+    deployments:
+      templateSpec:
+        # k3s sets node-role.kubernetes.io/control-plane=true; chart default expects empty string
+        nodeSelector:
+          kubernetes.io/os: linux
+          node-role.kubernetes.io/control-plane: "true"
