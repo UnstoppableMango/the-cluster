@@ -68,6 +68,14 @@ flux/%-sealed.yml: hack/secrets/%.yml | hack/sealed-secrets.pub
 	$(KUBESEAL) --format=yaml --cert=$| \
 	--secret-file $< --sealed-secret-file $@
 
+.PHONY: flux/%-unseal
+flux/%-unseal: flux/%-sealed.yml
+	@mkdir -p hack/secrets/$$(dirname $*)
+	$(KUBECTL) get secret \
+	$$($(YQ) '.metadata.name' $<) \
+	-n $$($(YQ) '.metadata.namespace' $<) \
+	-o yaml > hack/secrets/$*.yml
+
 hack/sealed-secrets.pub:
 	$(KUBESEAL) --fetch-cert \
 	--controller-name sealed-secrets-controller \
