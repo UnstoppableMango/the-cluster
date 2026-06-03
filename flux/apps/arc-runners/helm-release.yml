@@ -170,3 +170,6 @@ spec:
 
     - name: ihfs
       githubConfigUrl: https://github.com/UnstoppableMango/ihfs
+
+    - name: docker2nix
+      githubConfigUrl: https://github.com/UnstoppableMango/docker2nix
