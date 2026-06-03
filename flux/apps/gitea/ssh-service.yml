@@ -9,6 +9,7 @@ metadata:
     metallb.io/allow-shared-ip: lan-gateway
 spec:
   type: LoadBalancer
+  externalTrafficPolicy: Cluster # https://metallb.io/usage/#ip-address-sharing
   selector:
     app.kubernetes.io/name: gitea
     app.kubernetes.io/instance: gitea
