@@ -1,0 +1,53 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+  namespace: monitoring
+spec:
+  interval: 10m
+  releaseName: kube-prometheus-stack
+  targetNamespace: monitoring
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: 86.1.0
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+  values:
+    grafana:
+      enabled: true
+      persistence:
+        enabled: true
+        storageClassName: ssd-rbd
+        size: 10Gi
+    prometheus:
+      prometheusSpec:
+        retention: 15d
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 1000m
+            memory: 4Gi
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: unsafe-rbd
+              resources:
+                requests:
+                  storage: 50Gi
+    alertmanager:
+      alertmanagerSpec:
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: unsafe-rbd
+              resources:
+                requests:
+                  storage: 10Gi
