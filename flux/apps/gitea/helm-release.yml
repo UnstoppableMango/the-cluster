@@ -49,6 +49,8 @@ spec:
       repository: gitea
       tag: "1.26.2"
     replicaCount: 1
+    strategy:
+      type: Recreate
     service:
       http:
         type: ClusterIP
