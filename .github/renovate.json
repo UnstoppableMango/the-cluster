@@ -156,6 +156,14 @@
 				"ghcr.io/actions/gha-runner-scale-set-controller"
 			],
 			"groupName": "arc"
+		},
+		{
+			"matchPackageNames": [
+				"operator-framework/operator-controller",
+				"quay.io/operator-framework/operator-controller",
+				"quay.io/operator-framework/catalogd"
+			],
+			"groupName": "olmv1"
 		}
 	]
 }
