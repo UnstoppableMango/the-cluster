@@ -34,24 +34,13 @@ spec:
         module.exports = {
           token,
           platform: 'github',
-          autodiscover: false, // default
-          autodiscoverFilter: [], // default
-          repositories: [
-            'unmango/aferox',
-            'unmango/apis',
-            'unmango/devctl',
-            'unmango/charts',
-            'unmango/cloudflare-operator',
-            'unmango/github',
-            'unmango/go',
-            'unmango/go-make',
-            'unmango/go-pia',
-            'unmango/gnumake-go',
-            'unmango/kubebuilder',
-            'unmango/protofs',
-            'unmango/pulumi-baremetal',
-            'unmango/thecluster-operator',
-            'unmango/wishlists',
+          autodiscover: true,
+          autodiscoverFilter: [
+            '!unmango/safir',
+            '!unmango/game',
+            '!unmango/pulumi-pihole',
+            '!unmango/thecluster',
+            '!unmango/pulumi-commandx',
           ],
           presetCachePersistence: true,
         };
