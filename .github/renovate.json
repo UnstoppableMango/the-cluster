@@ -50,11 +50,18 @@
 			"groupName": "cert-manager"
 		},
 		{
-			"matchPackageNames": ["/^nginx\\/nginx-gateway-fabric.*/"],
+			"matchPackageNames": [
+				"ghcr.io/nginx/charts/nginx-gateway-fabric",
+				"ghcr.io/nginx/nginx-gateway-fabric",
+				"ghcr.io/nginx/nginx-gateway-fabric/nginx"
+			],
 			"groupName": "nginx-gateway-fabric"
 		},
 		{
-			"matchPackageNames": ["/^goharbor\\/.*/"],
+			"matchPackageNames": [
+				"harbor",
+				"/^goharbor\\/.*/"
+			],
 			"groupName": "harbor"
 		},
 		{
@@ -67,7 +74,8 @@
 		{
 			"matchPackageNames": [
 				"external-dns",
-				"kubernetes-sigs/external-dns"
+				"kubernetes-sigs/external-dns",
+				"registry.k8s.io/external-dns/external-dns"
 			],
 			"groupName": "external-dns"
 		},
@@ -93,6 +101,61 @@
 			],
 			"groupName": "renovate",
 			"automerge": true
+		},
+		{
+			"matchPackageNames": [
+				"gitea",
+				"docker.gitea.com/gitea"
+			],
+			"groupName": "gitea"
+		},
+		{
+			"matchPackageNames": [
+				"pihole",
+				"pihole/pihole"
+			],
+			"groupName": "pihole"
+		},
+		{
+			"matchPackageNames": [
+				"cloudflare-tunnel-ingress-controller",
+				"ghcr.io/strrl/cloudflare-tunnel-ingress-controller"
+			],
+			"groupName": "cloudflare-tunnel-ingress-controller"
+		},
+		{
+			"matchPackageNames": [
+				"cloudnative-pg",
+				"ghcr.io/cloudnative-pg/cloudnative-pg"
+			],
+			"groupName": "cnpg"
+		},
+		{
+			"matchPackageNames": [
+				"metrics-server",
+				"registry.k8s.io/metrics-server/metrics-server"
+			],
+			"groupName": "metrics-server"
+		},
+		{
+			"matchPackageNames": [
+				"nats"
+			],
+			"groupName": "nats"
+		},
+		{
+			"matchPackageNames": [
+				"velero",
+				"velero/velero"
+			],
+			"groupName": "velero"
+		},
+		{
+			"matchPackageNames": [
+				"ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller",
+				"ghcr.io/actions/gha-runner-scale-set-controller"
+			],
+			"groupName": "arc"
 		}
 	]
 }
