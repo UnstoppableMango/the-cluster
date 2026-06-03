@@ -33,17 +33,15 @@ spec:
       image:
         repository: ghcr.io/nginx/nginx-gateway-fabric/nginx
         tag: 2.6.3
-      service:
-        type: LoadBalancer
-        externalTrafficPolicy: Cluster
-        annotations:
-          metallb.io/loadBalancerIPs: 192.168.1.43
-          metallb.io/allow-shared-ip: lan-gateway
     gateways:
       - name: nginx
         namespace: nginx-gateway
         spec:
           gatewayClassName: nginx
+          infrastructure:
+            annotations:
+              metallb.io/loadBalancerIPs: 192.168.1.43
+              metallb.io/allow-shared-ip: lan-gateway
           listeners:
             - name: https
               port: 443
