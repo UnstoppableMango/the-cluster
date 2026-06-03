@@ -68,7 +68,6 @@ flux/%-sealed.yml: hack/secrets/%.yml | hack/sealed-secrets.pub
 	$(KUBESEAL) --format=yaml --cert=$| \
 	--secret-file $< --sealed-secret-file $@
 
-.PHONY: flux/%-unseal
 flux/%-unseal: flux/%-sealed.yml
 	@mkdir -p hack/secrets/$$(dirname $*)
 	@umask 0177; \
