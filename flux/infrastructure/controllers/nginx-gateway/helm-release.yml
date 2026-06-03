@@ -35,10 +35,9 @@ spec:
         tag: 2.6.3
       service:
         type: LoadBalancer
-        loadBalancerIP: 192.168.1.43
         externalTrafficPolicy: Cluster
         annotations:
-          metallb.universe.tf/allow-shared-ip: lan-gateway
+          metallb.universe.tf/loadBalancerIPs: 192.168.1.43
     gateways:
       - name: nginx
         namespace: nginx-gateway
