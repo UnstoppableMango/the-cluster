@@ -16,6 +16,13 @@ spec:
         name: operator-controller
   # https://github.com/operator-framework/operator-controller/blob/v1.8.0/helm/olmv1/values.yaml
   values:
+    options:
+      operatorController:
+        deployment:
+          image: quay.io/operator-framework/operator-controller:v1.8.0
+      catalogd:
+        deployment:
+          image: quay.io/operator-framework/catalogd:v1.8.0
     deployments:
       templateSpec:
         # k3s sets node-role.kubernetes.io/control-plane=true; chart default expects empty string
