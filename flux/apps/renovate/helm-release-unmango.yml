@@ -45,7 +45,7 @@ spec:
           presetCachePersistence: true,
         };
     cronjob:
-      schedule: '*/30 * * * *'
+      schedule: '*/15 * * * *'
       timeZone: 'America/Chicago'
       initContainers:
         - name: github-app-auth
