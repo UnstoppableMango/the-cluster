@@ -71,10 +71,11 @@ flux/%-sealed.yml: hack/secrets/%.yml | hack/sealed-secrets.pub
 .PHONY: flux/%-unseal
 flux/%-unseal: flux/%-sealed.yml
 	@mkdir -p hack/secrets/$$(dirname $*)
+	@umask 0177; \
 	$(KUBECTL) get secret \
-	$$($(YQ) '.metadata.name' $<) \
-	-n $$($(YQ) '.metadata.namespace' $<) \
-	-o yaml > hack/secrets/$*.yml
+	"$$($(YQ) -r '.spec.template.metadata.name // .metadata.name' $<)" \
+	-n "$$($(YQ) -r '.spec.template.metadata.namespace // .metadata.namespace' $<)" \
+	-o yaml > hack/secrets/$*.yml; chmod 0600 hack/secrets/$*.yml
 
 hack/sealed-secrets.pub:
 	$(KUBESEAL) --fetch-cert \
