@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: renovate
-      version: 46.176.2
+      version: 46.178.0
       sourceRef:
         kind: HelmRepository
         name: renovate
@@ -23,7 +23,7 @@ spec:
     image:
       registry: ghcr.io # default
       repository: renovatebot/renovate # default
-      tag: 43.207.4
+      tag: 43.209.1
     renovate:
       configIsJavaScript: true
       config: |
