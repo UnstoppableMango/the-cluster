@@ -5,10 +5,10 @@ metadata:
   namespace: gitea
   annotations:
     external-dns.alpha.kubernetes.io/hostname: gitea.thecluster.lan
-    metallb.universe.tf/allow-shared-ip: lan-gateway
+    metallb.io/loadBalancerIPs: 192.168.1.43
+    metallb.io/allow-shared-ip: lan-gateway
 spec:
   type: LoadBalancer
-  loadBalancerIP: 192.168.1.43
   selector:
     app.kubernetes.io/name: gitea
     app.kubernetes.io/instance: gitea
