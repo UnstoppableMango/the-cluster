@@ -32,7 +32,6 @@ spec:
       - gateway-udproute
     domainFilters:
       - thecluster.lan
-      - thecluster.io
     interval: 5m
     provider:
       name: coredns
