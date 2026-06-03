@@ -33,6 +33,8 @@ spec:
       image:
         repository: ghcr.io/nginx/nginx-gateway-fabric/nginx
         tag: 2.6.3
+      service:
+        externalTrafficPolicy: Cluster # https://metallb.io/usage/#ip-address-sharing
     gateways:
       - name: nginx
         namespace: nginx-gateway
