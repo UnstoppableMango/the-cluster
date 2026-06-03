@@ -17,6 +17,8 @@ spec:
   # https://github.com/operator-framework/operator-controller/blob/v1.8.0/helm/olmv1/values.yaml
   values:
     options:
+      certManager:
+        enabled: true
       operatorController:
         deployment:
           image: quay.io/operator-framework/operator-controller:v1.8.0
