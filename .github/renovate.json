@@ -164,6 +164,13 @@
 				"quay.io/operator-framework/catalogd"
 			],
 			"groupName": "olmv1"
+		},
+		{
+			"matchPackageNames": [
+				"quay.io/operator-framework/catalogd"
+			],
+			"description": "v1.18.0 is ~2 years old and likely a maintainer typo",
+			"ignoreVersions": ["1.18.0"]
 		}
 	]
 }
