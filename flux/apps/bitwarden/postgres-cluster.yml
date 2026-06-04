@@ -8,6 +8,9 @@ spec:
   storage:
     storageClass: ssd-rbd
     size: 5Gi
+  postgresql:
+    pg_hba:
+      - hostssl bitwarden bitwarden all cert
   bootstrap:
     initdb:
       database: bitwarden

@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: postgres-client
+  namespace: bitwarden
+spec:
+  secretName: postgres-client-cert
+  duration: 2160h
+  renewBefore: 360h
+  commonName: bitwarden
+  usages:
+    - client auth
+    - digital signature
+    - key encipherment
+  issuerRef:
+    name: postgres-ca
+    kind: Issuer
