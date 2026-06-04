@@ -98,6 +98,15 @@
 		},
 		{
 			"matchPackageNames": [
+				"xpkg.crossplane.io/crossplane-contrib/provider-family-aws",
+				"xpkg.crossplane.io/crossplane-contrib/provider-aws-s3",
+				"xpkg.crossplane.io/crossplane-contrib/provider-aws-ses",
+				"xpkg.crossplane.io/crossplane-contrib/provider-aws-iam"
+			],
+			"groupName": "provider-family-aws"
+		},
+		{
+			"matchPackageNames": [
 				"ghcr.io/renovatebot/renovate"
 			],
 			"matchUpdateTypes": [
