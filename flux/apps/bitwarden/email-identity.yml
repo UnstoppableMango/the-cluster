@@ -1,0 +1,10 @@
+apiVersion: ses.aws.upbound.io/v1beta1
+kind: EmailIdentity
+metadata:
+  name: bitwarden-thecluster-io
+spec:
+  forProvider:
+    emailIdentity: bitwarden@thecluster.io
+    region: us-east-2
+  providerConfigRef:
+    name: default

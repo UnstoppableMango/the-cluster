@@ -24,10 +24,14 @@
 		"dependencyDashboardApproval": true
 	},
 	"kubernetes": {
-		"managerFilePatterns": ["/flux/.+\\.ya?ml$/"]
+		"managerFilePatterns": [
+			"/flux/.+\\.ya?ml$/"
+		]
 	},
 	"flux": {
-		"managerFilePatterns": ["/flux/.+\\.ya?ml$/"]
+		"managerFilePatterns": [
+			"/flux/.+\\.ya?ml$/"
+		]
 	},
 	"customManagers": [
 		{
@@ -86,12 +90,19 @@
 			"groupName": "origin-ca-issuer"
 		},
 		{
-			"matchPackageNames": ["xpkg.crossplane.io/crossplane/crossplane", "crossplane"],
+			"matchPackageNames": [
+				"xpkg.crossplane.io/crossplane/crossplane",
+				"crossplane"
+			],
 			"groupName": "crossplane"
 		},
 		{
-			"matchPackageNames": ["ghcr.io/renovatebot/renovate"],
-			"matchUpdateTypes": ["patch"],
+			"matchPackageNames": [
+				"ghcr.io/renovatebot/renovate"
+			],
+			"matchUpdateTypes": [
+				"patch"
+			],
 			"enabled": false
 		},
 		{
@@ -170,7 +181,16 @@
 				"quay.io/operator-framework/catalogd"
 			],
 			"description": "v1.18.0 is ~2 years old and likely a maintainer typo",
-			"ignoreVersions": ["1.18.0"]
+			"ignoreVersions": [
+				"1.18.0"
+			]
+		},
+		{
+			"matchPackageNames": [
+				"self-host",
+				"/^ghcr\\.io\\/bitwarden\\//"
+			],
+			"groupName": "bitwarden"
 		}
 	]
 }

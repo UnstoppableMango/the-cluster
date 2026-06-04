@@ -1,0 +1,16 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres
+  namespace: bitwarden
+spec:
+  instances: 1
+  storage:
+    storageClass: ssd-rbd
+    size: 5Gi
+  bootstrap:
+    initdb:
+      database: bitwarden
+      owner: bitwarden
+      secret:
+        name: pg-credentials
