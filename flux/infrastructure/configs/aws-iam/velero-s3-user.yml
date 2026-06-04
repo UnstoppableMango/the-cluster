@@ -1,0 +1,27 @@
+apiVersion: iam.aws.upbound.io/v1beta1
+kind: User
+metadata:
+  name: velero-s3
+spec:
+  forProvider:
+    path: /the-cluster/
+    tags:
+      managed-by: crossplane
+      cluster: pinkdiamond
+      purpose: velero-backups
+  providerConfigRef:
+    name: default
+---
+apiVersion: iam.aws.upbound.io/v1beta1
+kind: AccessKey
+metadata:
+  name: velero-s3
+spec:
+  forProvider:
+    userRef:
+      name: velero-s3
+  writeConnectionSecretToRef:
+    namespace: aws-iam
+    name: velero-s3-access-key
+  providerConfigRef:
+    name: default

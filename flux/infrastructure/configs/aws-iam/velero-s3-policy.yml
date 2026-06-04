@@ -1,0 +1,45 @@
+apiVersion: iam.aws.upbound.io/v1beta1
+kind: Policy
+metadata:
+  name: velero-s3
+spec:
+  forProvider:
+    name: velero-s3
+    description: Least-privilege S3 access for Velero backups
+    policy: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+              "s3:GetObject",
+              "s3:PutObject",
+              "s3:DeleteObject",
+              "s3:ListBucket",
+              "s3:GetBucketLocation",
+              "s3:AbortMultipartUpload",
+              "s3:ListMultipartUploadParts"
+            ],
+            "Resource": [
+              "arn:aws:s3:::thecluster-velero",
+              "arn:aws:s3:::thecluster-velero/*"
+            ]
+          }
+        ]
+      }
+  providerConfigRef:
+    name: default
+---
+apiVersion: iam.aws.upbound.io/v1beta1
+kind: UserPolicyAttachment
+metadata:
+  name: velero-s3
+spec:
+  forProvider:
+    policyArnRef:
+      name: velero-s3
+    userRef:
+      name: velero-s3
+  providerConfigRef:
+    name: default
