@@ -26,7 +26,7 @@ spec:
       volumeAccessMode: ReadWriteMany
       email:
         replyToEmail: bitwarden@thecluster.io
-        smtpHost: REPLACE
+        smtpHost: email-smtp.us-east-2.amazonaws.com
         smtpPort: "587"
         smtpSsl: "false"
     sharedStorageClassName: default-cephfs
