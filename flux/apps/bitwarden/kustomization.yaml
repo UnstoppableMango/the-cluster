@@ -6,6 +6,9 @@ resources:
   - secret-sealed.yml
   - helm-repository.yml
   - postgres-cluster.yml
+  - pg-issuer.yml
+  - pg-client-cert.yml
+  - pg-db-config.yml
   - helm-release.yml
   - ingress.yml
   - email-identity.yml

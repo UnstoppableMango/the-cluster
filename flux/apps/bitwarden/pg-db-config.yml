@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bitwarden-db-config
+  namespace: bitwarden
+data:
+  globalSettings__postgreSql__connectionString: "Host=postgres-rw;Database=bitwarden;Username=bitwarden;SSL Mode=VerifyCA;SSL Certificate=/etc/ssl/pg-client/tls.crt;SSL Key=/etc/ssl/pg-client/tls.key;Root Certificate=/etc/ssl/pg-client/ca.crt"

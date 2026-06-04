@@ -34,3 +34,109 @@ spec:
       secretName: bitwarden-secret
     database:
       enabled: false
+    component:
+      admin:
+        extraEnv:
+          - name: globalSettings__postgreSql__connectionString
+            valueFrom:
+              configMapKeyRef:
+                name: bitwarden-db-config
+                key: globalSettings__postgreSql__connectionString
+        extraVolumeMounts:
+          - name: pg-client-cert
+            mountPath: /etc/ssl/pg-client
+            readOnly: true
+        extraVolumes:
+          - name: pg-client-cert
+            secret:
+              secretName: postgres-client-cert
+      api:
+        extraEnv:
+          - name: globalSettings__postgreSql__connectionString
+            valueFrom:
+              configMapKeyRef:
+                name: bitwarden-db-config
+                key: globalSettings__postgreSql__connectionString
+        extraVolumeMounts:
+          - name: pg-client-cert
+            mountPath: /etc/ssl/pg-client
+            readOnly: true
+        extraVolumes:
+          - name: pg-client-cert
+            secret:
+              secretName: postgres-client-cert
+      identity:
+        extraEnv:
+          - name: globalSettings__postgreSql__connectionString
+            valueFrom:
+              configMapKeyRef:
+                name: bitwarden-db-config
+                key: globalSettings__postgreSql__connectionString
+        extraVolumeMounts:
+          - name: pg-client-cert
+            mountPath: /etc/ssl/pg-client
+            readOnly: true
+        extraVolumes:
+          - name: pg-client-cert
+            secret:
+              secretName: postgres-client-cert
+      events:
+        extraEnv:
+          - name: globalSettings__postgreSql__connectionString
+            valueFrom:
+              configMapKeyRef:
+                name: bitwarden-db-config
+                key: globalSettings__postgreSql__connectionString
+        extraVolumeMounts:
+          - name: pg-client-cert
+            mountPath: /etc/ssl/pg-client
+            readOnly: true
+        extraVolumes:
+          - name: pg-client-cert
+            secret:
+              secretName: postgres-client-cert
+      notifications:
+        extraEnv:
+          - name: globalSettings__postgreSql__connectionString
+            valueFrom:
+              configMapKeyRef:
+                name: bitwarden-db-config
+                key: globalSettings__postgreSql__connectionString
+        extraVolumeMounts:
+          - name: pg-client-cert
+            mountPath: /etc/ssl/pg-client
+            readOnly: true
+        extraVolumes:
+          - name: pg-client-cert
+            secret:
+              secretName: postgres-client-cert
+      sso:
+        extraEnv:
+          - name: globalSettings__postgreSql__connectionString
+            valueFrom:
+              configMapKeyRef:
+                name: bitwarden-db-config
+                key: globalSettings__postgreSql__connectionString
+        extraVolumeMounts:
+          - name: pg-client-cert
+            mountPath: /etc/ssl/pg-client
+            readOnly: true
+        extraVolumes:
+          - name: pg-client-cert
+            secret:
+              secretName: postgres-client-cert
+      scim:
+        extraEnv:
+          - name: globalSettings__postgreSql__connectionString
+            valueFrom:
+              configMapKeyRef:
+                name: bitwarden-db-config
+                key: globalSettings__postgreSql__connectionString
+        extraVolumeMounts:
+          - name: pg-client-cert
+            mountPath: /etc/ssl/pg-client
+            readOnly: true
+        extraVolumes:
+          - name: pg-client-cert
+            secret:
+              secretName: postgres-client-cert
