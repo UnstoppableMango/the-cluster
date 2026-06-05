@@ -5,6 +5,7 @@ metadata:
   namespace: bitwarden
 spec:
   interval: 10m
+  timeout: 15m
   releaseName: bitwarden
   targetNamespace: bitwarden
   chart:
