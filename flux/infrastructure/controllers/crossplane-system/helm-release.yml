@@ -5,6 +5,7 @@ metadata:
   namespace: crossplane-system
 spec:
   interval: 10m
+  timeout: 15m
   releaseName: crossplane
   targetNamespace: crossplane-system
   chart:
