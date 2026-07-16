@@ -1,0 +1,97 @@
+# Ported from the deprecated infra/ceph Pulumi stack (infra/ceph/index.ts),
+# which deployed this via the rook-ceph-cluster Helm chart. Written here as a
+# raw CephCluster CR instead, to match the existing raw-CR style already used
+# in this directory (see ceph-object-store.yml).
+#
+# IMPORTANT — recovery-specific: this must NOT be applied until the
+# rook-ceph-mon Secret (rook-ceph-mon-sealed.yml, not yet generated — see
+# hack/dr/rook-ceph-mon-secret.sh) is seeded with the ORIGINAL cluster's
+# fsid/mon-secret/ceph-secret/ceph-username. Applying this CephCluster with a
+# fresh/mismatched identity will cause rook to initialize a brand new cluster
+# instead of adopting the surviving OSDs on zeus/gaea/castor/pollux.
+#
+# Also verify the CephCluster name below against the original cluster's
+# actual resource name (`kubectl get cephcluster -n rook-ceph -o name` from
+# the recovered etcd dump) before applying — the Pulumi chart set
+# `clusterName: pinkdiamond`, but confirm the chart mapped that to
+# metadata.name rather than just a label.
+apiVersion: ceph.rook.io/v1
+kind: CephCluster
+metadata:
+  name: pinkdiamond
+  namespace: rook-ceph
+spec:
+  cephVersion:
+    image: quay.io/ceph/ceph:v18.2.4
+  dataDirHostPath: /var/lib/rook
+  mon:
+    count: 3
+    allowMultiplePerNode: true
+  mgr:
+    count: 2
+    allowMultiplePerNode: true
+  dashboard:
+    enabled: true
+    ssl: false
+  storage:
+    useAllDevices: false
+    useAllNodes: false
+    nodes:
+      - name: gaea
+        devices:
+          - name: sda1
+          - name: sdb1
+          - name: sdc1
+          - name: sdd1
+          - name: sde1
+          - name: sdf1
+          - name: sdg1
+          - name: sdh1
+          - name: sdi1
+          - name: sdj1
+          - name: sdk1
+          - name: sdl1
+          - name: sdm1
+          - name: sdn1
+          - name: sdo1
+          - name: sdp1
+          - name: sdq1
+          - name: sds1
+          - name: sdu1
+      - name: zeus
+        devices:
+          - name: sdb1
+          - name: sdc1
+          - name: sdd1
+          - name: sde1
+          - name: sdf1
+          - name: sdg1
+          - name: sdh1
+          - name: sdi1
+          - name: sdj1
+          - name: sdk1
+          - name: sdl1
+          - name: sdm1
+          - name: sdn1
+          - name: sdo1
+      # castor and pollux had no explicit device list in the old Pulumi
+      # config either — confirm during recovery whether they host OSDs at
+      # all or are mon/mgr-only nodes.
+      - name: castor
+      - name: pollux
+---
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: mgr
+  namespace: rook-ceph
+spec:
+  name: .mgr
+  deviceClass: hdd
+  failureDomain: osd
+  replicated:
+    size: 3
+  parameters:
+    compression_mode: none
+  mirroring:
+    enabled: false

@@ -1,0 +1,64 @@
+# Ported from infra/ceph/index.ts (deprecated Pulumi stack).
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: bulk
+  namespace: rook-ceph
+spec:
+  deviceClass: hdd
+  failureDomain: osd
+  replicated:
+    size: 1
+    requireSafeReplicaSize: false
+  parameters:
+    bulk: "true"
+---
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: unsafe-data
+  namespace: rook-ceph
+spec:
+  deviceClass: hdd
+  failureDomain: osd
+  erasureCoded:
+    dataChunks: 2
+    codingChunks: 1
+  parameters:
+    bulk: "true"
+---
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: unsafe-metadata
+  namespace: rook-ceph
+spec:
+  deviceClass: hdd
+  failureDomain: osd
+  replicated:
+    size: 2
+---
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: default
+  namespace: rook-ceph
+spec:
+  deviceClass: hdd
+  failureDomain: host
+  replicated:
+    size: 2
+  parameters:
+    bulk: "true"
+---
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: default-ssd
+  namespace: rook-ceph
+spec:
+  deviceClass: ssd
+  failureDomain: host
+  replicated:
+    size: 1
+    requireSafeReplicaSize: false

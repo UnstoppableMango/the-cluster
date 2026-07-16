@@ -64,6 +64,11 @@ hack/secrets/infrastructure/configs/velero-system/ceph-credentials.yml:
 	@mkdir -p $(@D)
 	KUBECTL=$(KUBECTL) YQ=$(YQ) hack/velero-ceph-credentials.sh $@
 
+.PHONY: hack/secrets/infrastructure/configs/rook-ceph/rook-ceph-mon.yml
+hack/secrets/infrastructure/configs/rook-ceph/rook-ceph-mon.yml: | bin/pulumi
+	@mkdir -p $(@D)
+	PULUMI=$(PULUMI) YQ=$(YQ) hack/dr/rook-ceph-mon-secret.sh $@
+
 flux/%-sealed.yml: hack/secrets/%.yml | hack/sealed-secrets.pub
 	$(KUBESEAL) --format=yaml --cert=$| \
 	--secret-file $< --sealed-secret-file $@

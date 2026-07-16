@@ -1,0 +1,45 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: rook-ceph
+  namespace: rook-ceph
+spec:
+  url: https://charts.rook.io/release
+  interval: 1h0m0s
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: rook-ceph
+  namespace: rook-ceph
+spec:
+  interval: 10m
+  releaseName: rook
+  targetNamespace: rook-ceph
+  chart:
+    spec:
+      chart: rook-ceph
+      # Ported from the deprecated apps/rook Pulumi stack (apps/rook/Pulumi.yaml).
+      version: 1.16.8
+      sourceRef:
+        kind: HelmRepository
+        name: rook-ceph
+        namespace: rook-ceph
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+  values:
+    crds:
+      enabled: true
+    csi:
+      nfs:
+        enabled: false
+    # Disabled for memory reasons on the smaller nodes (matches prior Pulumi values).
+    enableDiscoveryDaemon: false
+    resources:
+      limits:
+        memory: 512Mi
+      requests:
+        cpu: 200m
+        memory: 128Mi

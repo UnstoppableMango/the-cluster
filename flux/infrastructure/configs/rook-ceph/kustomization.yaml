@@ -1,7 +1,16 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  - ceph-block-pools.yml
+  - ceph-cluster.yml
+  - ceph-filesystems.yml
   - ceph-object-store.yml
   - ceph-object-store-storage-class.yml
   - dashboard-http-route.yml
+  - storage-classes.yml
   - volume-snapshot-class.yml
+  # rook-ceph-mon-sealed.yml intentionally not listed yet — generate it with
+  # `make flux/infrastructure/configs/rook-ceph/rook-ceph-mon-sealed.yml`
+  # once hack/secrets/infrastructure/configs/rook-ceph/rook-ceph-mon.yml is
+  # populated with the recovered cluster identity (see hack/dr/), then add
+  # it to this list.

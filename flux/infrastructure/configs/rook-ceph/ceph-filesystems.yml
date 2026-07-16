@@ -1,0 +1,50 @@
+# Ported from infra/ceph/index.ts (deprecated Pulumi stack).
+apiVersion: ceph.rook.io/v1
+kind: CephFilesystem
+metadata:
+  name: replicated
+  namespace: rook-ceph
+spec:
+  metadataPool:
+    deviceClass: hdd
+    replicated:
+      size: 2
+  dataPools:
+    - name: data
+      deviceClass: hdd
+      failureDomain: osd
+      replicated:
+        size: 2
+      parameters:
+        bulk: "true"
+  preserveFilesystemOnDelete: true
+  metadataServer:
+    activeCount: 1
+    activeStandby: true
+---
+apiVersion: ceph.rook.io/v1
+kind: CephFilesystem
+metadata:
+  name: erasure-coded
+  namespace: rook-ceph
+spec:
+  metadataPool:
+    deviceClass: ssd
+    replicated:
+      size: 2
+  dataPools:
+    - name: default
+      deviceClass: hdd
+      failureDomain: osd
+      replicated:
+        size: 2
+    - name: data
+      deviceClass: hdd
+      failureDomain: osd
+      erasureCoded:
+        dataChunks: 2
+        codingChunks: 1
+  preserveFilesystemOnDelete: true
+  metadataServer:
+    activeCount: 1
+    activeStandby: true
