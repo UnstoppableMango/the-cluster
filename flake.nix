@@ -56,11 +56,13 @@
               treefmt
               dprint
               docker
+              etcd
               fluxcd
               fnm
               gnumake
               kubectl
               kubeseal
+              k3s_1_36
               nixfmt-tree
               nurl
               pulumi-bin
