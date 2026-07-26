@@ -40,3 +40,5 @@ generated-docs/
 .DS_Store
 .claude/
 result
+frozen/
+osd-inspect/
