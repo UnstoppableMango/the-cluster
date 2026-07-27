@@ -42,3 +42,4 @@ generated-docs/
 result
 frozen/
 osd-inspect/
+etcd-dump/

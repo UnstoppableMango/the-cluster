@@ -13,10 +13,10 @@ fi
 : "${STACK:=pinkdiamond}"
 : "${CEPH_DIR:=infra/ceph}"
 
-fsid=$("$PULUMI" config get fsid --cwd "$CEPH_DIR" --stack "$STACK" --show-secrets)
-mon_secret=$("$PULUMI" config get mon-secret --cwd "$CEPH_DIR" --stack "$STACK" --show-secrets)
-ceph_secret=$("$PULUMI" config get ceph-secret --cwd "$CEPH_DIR" --stack "$STACK" --show-secrets)
-ceph_username=$("$PULUMI" config get ceph-username --cwd "$CEPH_DIR" --stack "$STACK" --show-secrets)
+fsid=$("$PULUMI" config get fsid --cwd "$CEPH_DIR" --stack "$STACK")
+mon_secret=$("$PULUMI" config get mon-secret --cwd "$CEPH_DIR" --stack "$STACK")
+ceph_secret=$("$PULUMI" config get ceph-secret --cwd "$CEPH_DIR" --stack "$STACK")
+ceph_username=$("$PULUMI" config get ceph-username --cwd "$CEPH_DIR" --stack "$STACK")
 
 if [ ! -f "$1" ]; then
 	umask 0177
