@@ -10,12 +10,16 @@ let
   fluxSrc = callPackage ./src.nix { };
   fromFlux = path: kubelib.fromYAML (builtins.readFile "${fluxSrc}/${path}") |> builtins.head;
   fromControllers = path: fromFlux "infrastructure/controllers/${path}";
+  fromSources = path: fromFlux "infrastructure/sources/${path}";
 
   downloadFluxHelmChart =
-    { chartHash, namespace }:
+    {
+      chartHash,
+      releaseNamespace,
+      repo,
+    }:
     let
-      rel = fromControllers "${namespace}/helm-release.yml";
-      repo = fromControllers "${namespace}/helm-repository.yml";
+      rel = fromControllers "${releaseNamespace}/helm-release.yml";
     in
     kubelib.downloadHelmChart {
       inherit chartHash;
@@ -27,7 +31,8 @@ let
   agones = kubelib.buildHelmChart {
     name = "agones";
     chart = downloadFluxHelmChart {
-      namespace = "agones-system";
+      releaseNamespace = "agones-system";
+      repo = fromSources "agones-system-helm-repository.yml";
       chartHash = "sha256-8eaRT40afNFNi/YMIq14A8xODDiI2L+ZUbqpbSA8/kM=";
     };
     includeCRDs = true;
@@ -41,7 +46,8 @@ let
   cert-manager-helm = kubelib.buildHelmChart {
     name = "cert-manager";
     chart = downloadFluxHelmChart {
-      namespace = "cert-manager-system";
+      releaseNamespace = "cert-manager-system";
+      repo = fromControllers "cert-manager-system/helm-repository.yml";
       chartHash = "sha256-4V44v91c1wUBKDr7GbhahRWCjPtl1zCT9Bd0Hn5gCYY=";
     };
     includeCRDs = true;
@@ -53,7 +59,8 @@ let
   cloudnative-pg = kubelib.buildHelmChart {
     name = "cloudnative-pg";
     chart = downloadFluxHelmChart {
-      namespace = "cnpg-system";
+      releaseNamespace = "cnpg-system";
+      repo = fromSources "cnpg-system-helm-repository.yml";
       chartHash = "sha256-IE5HEzMotxW00cdnmgJgDedNS42iBiuiwYRo9pe/10w=";
     };
     includeCRDs = true;
