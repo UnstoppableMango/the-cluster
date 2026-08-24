@@ -67,7 +67,8 @@ const instanceChart = new Chart('flux', {
 				kind: 'GitRepository',
 				provider: 'github',
 				url: 'https://github.com/UnstoppableMango/the-cluster.git',
-				ref: 'refs/heads/main',
+				// Frozen at the commit on main before the flux refactor (aab07d3a).
+				ref: '9f008efc3cd90c491d4bb559dbb09a7bdfda4024',
 				path: 'flux/clusters/pinkdiamond',
 				pullSecret: githubSecret.metadata.name,
 			},
