@@ -1,0 +1,93 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: keycloak
+  namespace: keycloak
+spec:
+  interval: 10m
+  releaseName: keycloak
+  targetNamespace: keycloak
+  chart:
+    spec:
+      chart: keycloak
+      version: 22.2.4
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami-keycloak
+  values:
+    # https://github.com/bitnami/charts/tree/main/bitnami/keycloak/#parameters
+    image:
+      registry: docker.io
+      repository: bitnami/keycloak
+      tag: 23.0.7-debian-12-r5
+    auth:
+      adminUser: admin
+      existingSecret: keycloak
+      passwordSecretKey: adminPassword
+    production: true
+    proxy: edge
+    containerPorts:
+      http: 8080
+      https: 8443
+      infinispan: 7800
+    podSecurityContext:
+      enabled: true
+    containerSecurityContext:
+      enabled: true
+    priorityClassName: system-cluster-critical
+    resources:
+      limits:
+        # Initial startup needs a bit of heft
+        cpu: "4"
+        memory: 4Gi
+      requests:
+        cpu: 20m
+        memory: 512Mi
+    extraVolumes:
+      - name: postgres-cert
+        defaultMode: 0o600
+        secret:
+          secretName: postgres-cert
+    extraVolumeMounts:
+      - name: postgres-cert
+        mountPath: /opt/unmango/postgres/certs
+        readonly: true
+    service:
+      type: ClusterIP
+      http:
+        enabled: true
+      ports:
+        http: 80
+        https: 443
+    ingress:
+      enabled: true
+      ingressClassName: cloudflare-tunnel
+      pathType: Prefix
+      hostname: auth.thecluster.io
+      extraHosts:
+        - name: identity.thecluster.io
+          path: /
+          pathType: Prefix
+        - name: keycloak.thecluster.io
+          path: /
+          pathType: Prefix
+      annotations:
+        cloudflare-tunnel-ingress-controller.strrl.dev/backend-protocol: http
+        # Still adding support for this annotation in the controller
+        cloudflare-tunnel-ingress-controller.strrl.dev/origin-capool: /todo/keycloak/ca-certificates.crt
+    pdb:
+      create: true
+    autoscaling:
+      enabled: true
+      maxReplicas: 3
+    metrics:
+      enabled: true
+    postgresql:
+      enabled: false
+    externalDatabase:
+      existingSecret: keycloak
+      existingSecretHostKey: dbHost
+      existingSecretPortKey: dbPort
+      existingSecretUserKey: dbUser
+      existingSecretDatabaseKey: database
+      existingSecretPasswordKey: dbPassword

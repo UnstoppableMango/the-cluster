@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: palworld
+  namespace: palworld
+  labels:
+    app.kubernetes.io/name: palworld
+spec:
+  selector:
+    app.kubernetes.io/name: palworld
+  type: LoadBalancer
+  ports:
+    - name: server
+      port: 8211
+      protocol: UDP
+    - name: query
+      port: 27015
+      protocol: UDP
+    - name: rest
+      port: 8212
+      protocol: UDP

@@ -9,11 +9,9 @@
 		"**/vendor/**",
 		"**/testdata/**",
 		"charts/**",
-		"clusters/**",
 		"crds/**",
-		"infra/crds/**",
 		"lib/**",
-		"flux/**/crds/**"
+		"**/crds/**"
 	],
 	"ignoreDeps": [
 		"@pulumi/crds",
@@ -25,12 +23,12 @@
 	},
 	"kubernetes": {
 		"managerFilePatterns": [
-			"/flux/.+\\.ya?ml$/"
+			"/^(apps|clusters|infrastructure)/.+\\.ya?ml$/"
 		]
 	},
 	"flux": {
 		"managerFilePatterns": [
-			"/flux/.+\\.ya?ml$/"
+			"/^(apps|clusters|infrastructure)/.+\\.ya?ml$/"
 		]
 	},
 	"customManagers": [
@@ -198,6 +196,40 @@
 				"/^ghcr\\.io\\/bitwarden\\//"
 			],
 			"groupName": "bitwarden"
+		},
+		{
+			"matchPackageNames": [
+				"rook-ceph",
+				"rook-ceph-cluster",
+				"quay.io/ceph/ceph"
+			],
+			"groupName": "rook-ceph"
+		},
+		{
+			"matchPackageNames": [
+				"plex-media-server",
+				"plexinc/pms-docker"
+			],
+			"groupName": "plex"
+		},
+		{
+			"matchPackageNames": [
+				"ghcr.io/meeb/tubesync"
+			],
+			"groupName": "tubesync"
+		},
+		{
+			"matchPackageNames": [
+				"ghcr.io/9001/copyparty-ac"
+			],
+			"groupName": "copyparty"
+		},
+		{
+			"matchPackageNames": [
+				"oci://registry-1.docker.io/bitnamicharts/keycloak",
+				"bitnami/keycloak"
+			],
+			"groupName": "keycloak"
 		}
 	]
 }

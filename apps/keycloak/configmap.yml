@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak
+  namespace: keycloak
+data:
+  # https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNECT-SSLCERT
+  # https://jdbc.postgresql.org/documentation/use/#connection-parameters/
+  KEYCLOAK_JDBC_PARAMS: "ssl=true&sslmode=verify-full&sslcertmode=require&sslrootcert=/opt/unmango/postgres/certs/ca.crt&sslcert=/opt/unmango/postgres/certs/tls.crt&sslkey=/opt/unmango/postgres/certs/tls.key"

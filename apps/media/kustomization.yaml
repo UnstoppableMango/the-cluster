@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - deluge-downloads-pvc.yml
+  - deluge-ingress.yml
+  - deluge-service.yml
+  - deluge-statefulset.yml
+  - private-internet-access-sealed.yml
+  - qbittorrent-sealed.yml
+  - qbittorrent-downloads-pvc.yml
+  - qbittorrent-ingress.yml
+  - qbittorrent-service.yml
+  - qbittorrent-statefulset.yml
+  - pvcs.yml
+  - plex-config-pvc.yml
+  - plex-helm-repository.yml
+  - plex-helm-release.yml
+  - tubesync-service.yml
+  - tubesync-statefulset.yml
+  - tubesync-httproute.yml
+  - copyparty-configmap.yml
+  - copyparty-deployment.yml
+  - copyparty-service.yml
+  - copyparty-httproute.yml

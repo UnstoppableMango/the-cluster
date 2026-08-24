@@ -1,0 +1,15 @@
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: mgr
+  namespace: rook-ceph
+spec:
+  name: .mgr
+  deviceClass: hdd
+  failureDomain: osd
+  replicated:
+    size: 3
+  parameters:
+    compression_mode: none
+  mirroring:
+    enabled: false

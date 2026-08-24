@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tubesync
+  namespace: media
+spec:
+  serviceName: tubesync
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: tubesync
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: tubesync
+    spec:
+      containers:
+        - name: tubesync
+          image: ghcr.io/meeb/tubesync:v0.15.10
+          env:
+            - name: TZ
+              value: America/Chicago
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: youtube
+              mountPath: /downloads
+          resources:
+            requests:
+              cpu: 10m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 2Gi
+      volumes:
+        - name: youtube
+          persistentVolumeClaim:
+            claimName: youtube
+  volumeClaimTemplates:
+    - metadata:
+        name: config
+      spec:
+        storageClassName: ssd-rbd
+        accessModes:
+          - ReadWriteOncePod
+        resources:
+          requests:
+            storage: 10Gi

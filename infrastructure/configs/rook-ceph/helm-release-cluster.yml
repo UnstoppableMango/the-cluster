@@ -1,0 +1,88 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pinkdiamond
+  namespace: rook-ceph
+spec:
+  interval: 10m
+  releaseName: pinkdiamond
+  targetNamespace: rook-ceph
+  chart:
+    spec:
+      chart: rook-ceph-cluster
+      version: 1.17.6
+      sourceRef:
+        kind: HelmRepository
+        name: rook-ceph
+        namespace: rook-ceph
+  dependsOn:
+    - name: rook-ceph
+      namespace: rook-ceph
+  values:
+    clusterName: pinkdiamond
+    operatorNamespace: rook-ceph
+    cephBlockPools: []
+    cephFileSystems: []
+    cephObjectStores: []
+    cephClusterSpec:
+      cephVersion:
+        image: quay.io/ceph/ceph:v18.2.4
+      dataDirHostPath: /var/lib/rook # default value
+      mon:
+        # https://github.com/rook/rook/blob/0a1dd5e9e619481432cc66347a45072178ca0b48/deploy/examples/cluster.yaml#L51-L52
+        count: 3
+        allowMultiplePerNode: true
+      mgr:
+        # https://github.com/rook/rook/blob/0a1dd5e9e619481432cc66347a45072178ca0b48/deploy/examples/cluster.yaml#L58-L60
+        count: 2
+        allowMultiplePerNode: true
+      storage:
+        useAllDevices: false
+        useAllNodes: false
+        nodes:
+          - name: gaea
+            devices:
+              - name: sda1
+              - name: sdb1
+              - name: sdc1
+              - name: sdd1
+              - name: sde1
+              - name: sdf1
+              - name: sdg1
+              - name: sdh1
+              - name: sdi1
+              - name: sdj1
+              - name: sdk1
+              - name: sdl1
+              - name: sdm1
+              - name: sdn1
+              - name: sdo1
+              - name: sdp1
+              - name: sdq1
+              - name: sds1
+              - name: sdu1
+          - name: zeus
+            devices:
+              - name: sdb1
+              - name: sdc1
+              - name: sdd1
+              - name: sde1
+              - name: sdf1
+              - name: sdg1
+              - name: sdh1
+              - name: sdi1
+              - name: sdj1
+              - name: sdk1
+              - name: sdl1
+              - name: sdm1
+              - name: sdn1
+              - name: sdo1
+          - name: castor
+          - name: pollux
+    cephDashboard:
+      ssl: false
+    ingress:
+      dashboard:
+        enabled: false
+    toolbox:
+      enabled: true

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mods
+  namespace: slackpack
+spec:
+  accessModes:
+    - ReadWriteOncePod
+  storageClassName: default-cephfs
+  resources:
+    requests:
+      storage: 5Gi

@@ -469,47 +469,12 @@
   resolved "https://registry.npmjs.org/@protobufjs/utf8/-/utf8-1.1.0.tgz"
   integrity sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==
 
-"@pulumi/cloudflare@^5.33.1":
-  version "5.49.1"
-  resolved "https://registry.npmjs.org/@pulumi/cloudflare/-/cloudflare-5.49.1.tgz"
-  integrity sha512-sc4j3XgKId9g9hIB5ZS4QXCLStZzYwzIAgbeAfW4+O78Nd3/tkNsuEWmUnPTpsw5Ezpc5zIwZxBCwhPX5qg+sA==
-  dependencies:
-    "@pulumi/pulumi" "^3.142.0"
-
-"@pulumi/cloudflare@^6.4.1":
-  version "6.17.0"
-  resolved "https://registry.yarnpkg.com/@pulumi/cloudflare/-/cloudflare-6.17.0.tgz#79cd97b8c771d46e3fc70174063d6b8bea025821"
-  integrity sha512-sIL1rfjNavy+yZQ/OjyFHD4owe2E/TpHLFCVsogQJOC+Y6Bj7JxrhoTfsJdxVEXEFBGlNCu68T+g9im8iEZM9A==
-  dependencies:
-    "@pulumi/pulumi" "^3.142.0"
-
-"@pulumi/command@^0.11.1":
-  version "0.11.1"
-  resolved "https://registry.npmjs.org/@pulumi/command/-/command-0.11.1.tgz"
-  integrity sha512-rKo0fJ+nHP2xPwILZ92Rzpj1fHMXj+AENgSyJ0V0LGjxYCI1WRiJaYmQuFjLbk1YVccHOVR8jcnidMorSdxgeg==
-  dependencies:
-    "@pulumi/pulumi" "^3.0.0"
-
-"@pulumi/command@^1.0.0":
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/@pulumi/command/-/command-1.1.0.tgz"
-  integrity sha512-ovVec+gXeqpcm76xwYYZvfJym8bG9NRvlBGQWbn0+c0fKQziZIjiv5V+AxTKfb+dLWKe7Otyt206L1IWq41hyw==
-  dependencies:
-    "@pulumi/pulumi" "^3.142.0"
-
 "@pulumi/keycloak@^5.2.1":
   version "5.4.0"
   resolved "https://registry.npmjs.org/@pulumi/keycloak/-/keycloak-5.4.0.tgz"
   integrity sha512-citmmdj5O3Vvs6EQSgzIhG35dc+omxBPBDJk4TP57jMP12fY51P9+Z40G5gX1plhHHbe13KK9IA2nhaLwu5gog==
   dependencies:
     "@pulumi/pulumi" "^3.136.0"
-
-"@pulumi/keycloak@^6.0.0":
-  version "6.11.0"
-  resolved "https://registry.yarnpkg.com/@pulumi/keycloak/-/keycloak-6.11.0.tgz#428c01b7ea1cfd44a56b3d1df035caa93545eda5"
-  integrity sha512-sGP0GGpMCO2/PitSs7ShMLeUfRrpXnPd3eiHf3vb3wD+y1d/UaJfskXj/7JAx14Cuz8orZ1vE16PwUAw0ejWxQ==
-  dependencies:
-    "@pulumi/pulumi" "^3.142.0"
 
 "@pulumi/kubernetes@4.18.0":
   version "4.18.0"
@@ -524,7 +489,7 @@
     shell-quote "^1.6.1"
     tmp "^0.0.33"
 
-"@pulumi/kubernetes@^4.14.0", "@pulumi/kubernetes@^4.18.2", "@pulumi/kubernetes@^4.18.3", "@pulumi/kubernetes@^4.19.0", "@pulumi/kubernetes@^4.21.1", "@pulumi/kubernetes@^4.23.0", "@pulumi/kubernetes@^4.5.4":
+"@pulumi/kubernetes@^4.18.3", "@pulumi/kubernetes@^4.19.0":
   version "4.31.1"
   resolved "https://registry.yarnpkg.com/@pulumi/kubernetes/-/kubernetes-4.31.1.tgz#349830d5d4fcd6f4785dd62809745158df7484ea"
   integrity sha512-EaDBJBKXrvBVvsuN1UbN8WMXyKy4K3g7VfiSb5eCTq2sgql8wWIMZw6vIYyh9tc9b5UONq/LgoNINGJT0uvX9w==
@@ -540,7 +505,7 @@
   dependencies:
     "@pulumi/pulumi" "^3.142.0"
 
-"@pulumi/pulumi@^3.0.0", "@pulumi/pulumi@^3.122.0", "@pulumi/pulumi@^3.136.0", "@pulumi/pulumi@^3.142.0", "@pulumi/pulumi@^3.190.0", "@pulumi/pulumi@^3.25.0", "@pulumi/pulumi@^3.42.0", "@pulumi/pulumi@^3.94.2":
+"@pulumi/pulumi@^3.0.0", "@pulumi/pulumi@^3.136.0", "@pulumi/pulumi@^3.142.0", "@pulumi/pulumi@^3.190.0", "@pulumi/pulumi@^3.25.0":
   version "3.245.0"
   resolved "https://registry.yarnpkg.com/@pulumi/pulumi/-/pulumi-3.245.0.tgz#c3804ec4d7fb56d916d1c09690bc8b36f3da6453"
   integrity sha512-cRfyKlaoKThewFTRFdvLFSo33FLHhViYQG1xI1WBTS4mrjhJegWl28HmZupVEIQh8aqvBN0Cy0fFNbxbZnOzmA==
@@ -572,20 +537,6 @@
     source-map-support "^0.5.6"
     tmp "^0.2.4"
     upath "^1.1.0"
-
-"@pulumi/random@^4.14.0", "@pulumi/random@^4.16.2", "@pulumi/random@^4.17.0":
-  version "4.21.0"
-  resolved "https://registry.yarnpkg.com/@pulumi/random/-/random-4.21.0.tgz#f0f648f81c43afd948f0910b15b20d6a78e7fb7d"
-  integrity sha512-k4JHqQFOKXWkbSLZtX37xBlRsurfgZbLd1Zib0cLSDP4Dt3uTllR3CBWfMLSnXJGAoTr9MlwyHCer/5tmSaF0Q==
-  dependencies:
-    "@pulumi/pulumi" "^3.142.0"
-
-"@pulumi/tls@^5.0.2", "@pulumi/tls@^5.0.4":
-  version "5.2.0"
-  resolved "https://registry.npmjs.org/@pulumi/tls/-/tls-5.2.0.tgz"
-  integrity sha512-wnhjCa3pz0eEv1DS5msN7yo5Ew1HrsbkMVZEiGve8fApIPKEIzfWnK11NlLlJyJNn2ffTuGao6hbAD4RKPiuuA==
-  dependencies:
-    "@pulumi/pulumi" "^3.142.0"
 
 "@sigstore/bundle@^4.0.0":
   version "4.0.0"
@@ -671,13 +622,6 @@
   dependencies:
     undici-types "~7.8.0"
 
-"@types/node@^20.9.0":
-  version "20.19.4"
-  resolved "https://registry.npmjs.org/@types/node/-/node-20.19.4.tgz"
-  integrity sha512-OP+We5WV8Xnbuvw0zC2m4qfB/BJvjyCwtNjhHdJxV1639SGSKrLmJkc3fMnp2Qy8nJyHp8RO6umxELN/dS1/EA==
-  dependencies:
-    undici-types "~6.21.0"
-
 "@types/node@^22.9.3":
   version "22.18.13"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-22.18.13.tgz#a037c4f474b860be660e05dbe92a9ef945472e28"
@@ -717,33 +661,6 @@
   resolved "https://registry.npmjs.org/@types/tmp/-/tmp-0.2.6.tgz"
   integrity sha512-chhaNf2oKHlRkDGt+tiKE2Z5aJ6qalm7Z9rlLdBwmOiAAf09YQvvoLXjWK4HWPF1xU/fqvMgfNfpVoBscA/tKA==
 
-"@unmango/baremetal@^0.0.40":
-  version "0.0.40"
-  resolved "https://registry.npmjs.org/@unmango/baremetal/-/baremetal-0.0.40.tgz"
-  integrity sha512-5LVnSW1Pf7Ks1gHt076T3QCgt23viX+k69Ja+qTNQV+qyrikZduRFbFRSzmgIusxsJSaXQdWpE770By9yLzXhA==
-  dependencies:
-    "@pulumi/command" "^1.0.0"
-    "@pulumi/pulumi" "^3.42.0"
-
-"@unmango/pulumi-commandx@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.npmjs.org/@unmango/pulumi-commandx/-/pulumi-commandx-0.1.2.tgz"
-  integrity sha512-cbefmz/18QfcPvRLOB1BYNiYCGyChAFqoIX5qURvC2F3fh+S2JBm7ZbtxZlHrELCFvm/cfVm0nloJzLxSaEEPQ==
-  dependencies:
-    "@pulumi/command" "^0.11.1"
-    "@pulumi/pulumi" "^3.0.0"
-
-"@unmango/pulumi-kubernetes-the-hard-way@^0.0.33":
-  version "0.0.33"
-  resolved "https://registry.yarnpkg.com/@unmango/pulumi-kubernetes-the-hard-way/-/pulumi-kubernetes-the-hard-way-0.0.33.tgz#bf911e7a92f13c6541c2f090282776b147567563"
-  integrity sha512-Zqjs4GyDJ3PhjNfixpv9mcQE3FmYjOiD3ZS/DjEX89GiBK6mdffx6lUG54YdVvw890weME3D7kgdzTQ1z01Nfg==
-  dependencies:
-    "@pulumi/command" "^1.0.0"
-    "@pulumi/kubernetes" "^4.14.0"
-    "@pulumi/pulumi" "^3.0.0"
-    "@pulumi/random" "^4.16.2"
-    "@pulumi/tls" "^5.0.2"
-
 "@unmango/pulumi-pihole@^0.1.3":
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@unmango/pulumi-pihole/-/pulumi-pihole-0.1.3.tgz#33a22225c632fa7c518dbeb7d04f9a2970102924"
@@ -756,20 +673,6 @@
   dependencies:
     "@pulumi/kubernetes" "^4.19.0"
     "@pulumi/pulumi" "^3.190.0"
-
-"@unstoppablemango/thecluster@file:lib/nodejs":
-  version "1.0.0"
-  dependencies:
-    "@pulumi/keycloak" "^5.2.1"
-    "@pulumi/kubernetes" "^4.18.3"
-    "@pulumi/postgresql" "^3.10.0"
-    "@pulumi/pulumi" "^3.190.0"
-    "@unmango/pulumi-pihole" "^0.1.3"
-    "@unstoppablemango/thecluster-crds" "file:lib/crds/nodejs"
-    fp-ts "^2.16.1"
-    json-schema-to-ts "^3.0.0"
-    typescript "^6.0.3"
-    yaml "^2.3.4"
 
 abbrev@^4.0.0:
   version "4.0.0"
@@ -1121,7 +1024,7 @@ form-data@^4.0.0:
     hasown "^2.0.2"
     mime-types "^2.1.12"
 
-fp-ts@^2.16.1, fp-ts@^2.16.7:
+fp-ts@^2.16.1:
   version "2.16.10"
   resolved "https://registry.npmjs.org/fp-ts/-/fp-ts-2.16.10.tgz"
   integrity sha512-vuROzbNVfCmUkZSUbnWSltR1sbheyQbTzug7LB/46fEa1c0EucLeBaCEUE0gF3ZGUGBt9lVUiziGOhhj6K1ORA==
@@ -2379,7 +2282,7 @@ yallist@^5.0.0:
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-5.0.0.tgz#00e2de443639ed0d78fd87de0d27469fbcffb533"
   integrity sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw==
 
-yaml@^2.3.4, yaml@^2.4.5:
+yaml@^2.3.4:
   version "2.8.1"
   resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.8.1.tgz#1870aa02b631f7e8328b93f8bc574fac5d6c4d79"
   integrity sha512-lcYcMxX2PO9XMGvAJkJ3OsNMw+/7FKes7/hgerGUYWIoWu5j/+YQqcZr5JnPZWzOsEBgMbSbiSTn/dv/69Mkpw==
@@ -2401,13 +2304,3 @@ yargs@^17.7.2:
     string-width "^4.2.3"
     y18n "^5.0.5"
     yargs-parser "^21.1.1"
-
-zod@^3.23.8:
-  version "3.25.74"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-3.25.74.tgz#9368a3986fe756bd94b9a5baad9919660ff3f250"
-  integrity sha512-J8poo92VuhKjNknViHRAIuuN6li/EwFbAC8OedzI8uxpEPGiXHGQu9wemIAioIpqgfB4SySaJhdk0mH5Y4ICBg==
-
-zod@^4.0.17, zod@^4.1.5, zod@^4.1.9:
-  version "4.1.9"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-4.1.9.tgz#c03a0ddb10f5578f13f8f70f1959f89fd09c1c06"
-  integrity sha512-HI32jTq0AUAC125z30E8bQNz0RQ+9Uc+4J7V97gLYjZVKRjeydPgGt6dvQzFrav7MYOUGFqqOGiHpA/fdbd0cQ==

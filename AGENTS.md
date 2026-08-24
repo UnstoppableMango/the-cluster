@@ -62,7 +62,7 @@ Cross-stack references use `@unstoppablemango/thecluster` (from `lib/nodejs/`) t
 
 ### GitOps
 
-Flux manifests live in `flux/clusters/`. Sealed Secrets are used for sensitive data — generate with `make flux/<name>-sealed.yml`.
+Flux manifests live in `clusters/`. Sealed Secrets are used for sensitive data — generate with `make <name>-sealed.yml`.
 
 When a Flux manifest deploys a Helm chart with a companion container image (e.g. a chart version and an app image version that must stay in sync), group them in `renovate.json` so Renovate bumps both in a single PR. Use a `packageRules` entry with `groupName` targeting the relevant `HelmRelease` chart dep and the container image dep together.
 
