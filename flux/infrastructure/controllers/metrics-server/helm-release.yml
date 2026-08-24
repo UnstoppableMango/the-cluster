@@ -18,3 +18,13 @@ spec:
     image:
       repository: registry.k8s.io/metrics-server/metrics-server
       tag: v0.8.1
+    args:
+      - --kubelet-certificate-authority=/etc/ssl/kube-root-ca/ca.crt
+    extraVolumes:
+      - name: kube-root-ca
+        configMap:
+          name: kube-root-ca.crt
+    extraVolumeMounts:
+      - name: kube-root-ca
+        mountPath: /etc/ssl/kube-root-ca
+        readOnly: true
