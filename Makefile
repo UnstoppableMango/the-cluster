@@ -54,8 +54,8 @@ components ${COMPONENTS}:
 runner: containers/runner/Dockerfile
 	$(DOCKER) buildx build -f $< .
 
-.PHONY: hack/secrets/infrastructure/configs/cert-manager/ca.yml
-hack/secrets/infrastructure/configs/cert-manager/ca.yml: | bin/pulumi
+.PHONY: hack/secrets/infrastructure/configs/cert-manager-system/ca.yml
+hack/secrets/infrastructure/configs/cert-manager-system/ca.yml: | bin/pulumi
 	@mkdir -p $(@D)
 	PULUMI=$(PULUMI) PKI_STACK=$(PKI_STACK) YQ=$(YQ) hack/pki-ca-secret.sh $@
 
@@ -86,7 +86,7 @@ bin/image.tar: containers/default.nix containers/runner/default.nix
 	nix build '.#runner' --out-link $@
 	$(DOCKER) load < $@
 
-infrastructure/controllers/cert-manager/crds/crds.yaml: flake.lock nix/cert-manager-crds.nix
+infrastructure/controllers/cert-manager-system/crds/crds.yaml: flake.lock nix/cert-manager-crds.nix
 	cp $$(nix build .#cert-manager-crds --print-out-paths --no-link) $@
 
 bin/crds.yml: hack/crd-filter.yq
