@@ -41,7 +41,7 @@ let
   cert-manager-helm = kubelib.buildHelmChart {
     name = "cert-manager";
     chart = downloadFluxHelmChart {
-      namespace = "cert-manager";
+      namespace = "cert-manager-system";
       chartHash = "sha256-4V44v91c1wUBKDr7GbhahRWCjPtl1zCT9Bd0Hn5gCYY=";
     };
     includeCRDs = true;
