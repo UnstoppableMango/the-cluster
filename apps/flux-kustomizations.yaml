@@ -1,13 +1,13 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-sources
+  name: apps-arc-runners
   namespace: flux-system
 spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/sources
+  path: ./apps/arc-runners
   interval: 10m
   prune: true
   wait: true
@@ -15,156 +15,73 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-agones
+  name: apps-archive
   namespace: flux-system
 spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/agones-system
+  path: ./apps/archive
   interval: 10m
   prune: true
   wait: true
-  dependsOn:
-    - name: infra-sources
-    - name: infra-configs-gaming
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-arc-system
+  name: apps-bitwarden
   namespace: flux-system
 spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/arc-system
+  path: ./apps/bitwarden
   interval: 10m
   prune: true
   wait: true
   dependsOn:
-    - name: infra-sources
+    - name: infra-cnpg
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-cert-manager-crds
+  name: apps-deemix
   namespace: flux-system
 spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/cert-manager-system/crds
+  path: ./apps/deemix
   interval: 10m
-  prune: false
+  prune: true
   wait: true
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-cert-manager
+  name: apps-gitea
   namespace: flux-system
 spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/cert-manager-system
+  path: ./apps/gitea
   interval: 10m
   prune: true
   wait: true
   dependsOn:
-    - name: infra-cert-manager-crds
+    - name: infra-cnpg
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-cloudflare-operator
+  name: apps-harbor-system
   namespace: flux-system
 spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/cloudflare-operator-system
-  interval: 10m
-  prune: true
-  wait: true
-  dependsOn:
-    - name: infra-sources
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: infra-cloudflare
-  namespace: flux-system
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  path: ./flux/infrastructure/controllers/cloudflare-system
-  interval: 10m
-  prune: true
-  wait: true
-  dependsOn:
-    - name: infra-sources
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: infra-cnpg
-  namespace: flux-system
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  path: ./flux/infrastructure/controllers/cnpg-system
-  interval: 10m
-  prune: true
-  wait: true
-  dependsOn:
-    - name: infra-sources
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: infra-coredns
-  namespace: flux-system
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  path: ./flux/infrastructure/controllers/coredns-system
-  interval: 10m
-  prune: true
-  wait: true
-  dependsOn:
-    - name: infra-configs-coredns
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: infra-crossplane
-  namespace: flux-system
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  path: ./flux/infrastructure/controllers/crossplane-system
-  interval: 10m
-  prune: true
-  wait: true
-  dependsOn:
-    - name: infra-sources
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: infra-flux
-  namespace: flux-system
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  path: ./flux/infrastructure/controllers/flux-system
+  path: ./apps/harbor-system
   interval: 10m
   prune: true
   wait: true
@@ -172,13 +89,13 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-metallb
+  name: apps-keycloak
   namespace: flux-system
 spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/metallb-system
+  path: ./apps/keycloak
   interval: 10m
   prune: true
   wait: true
@@ -186,13 +103,13 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-metrics-server
+  name: apps-kube-system
   namespace: flux-system
 spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/metrics-server-system
+  path: ./apps/kube-system
   interval: 10m
   prune: true
   wait: true
@@ -200,131 +117,153 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-nats
+  name: apps-media
   namespace: flux-system
 spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/nats-system
+  path: ./apps/media
   interval: 10m
   prune: true
   wait: true
-  dependsOn:
-    - name: infra-sources
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-nginx-gateway
+  name: apps-migrate
   namespace: flux-system
 spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/nginx-gateway-system
+  path: ./apps/migrate
   interval: 10m
   prune: true
   wait: true
-  dependsOn:
-    - name: infra-sources
-    - name: infra-configs-nginx-gateway
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-shulker
+  name: apps-necesse
   namespace: flux-system
 spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/shulker-system
+  path: ./apps/necesse
   interval: 10m
   prune: true
   wait: true
-  dependsOn:
-    - name: infra-sources
-    - name: infra-agones
-    - name: infra-configs-gaming
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-velero
+  name: apps-nix-system
   namespace: flux-system
 spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/velero-system
+  path: ./apps/nix-system
   interval: 10m
   prune: true
   wait: true
-  dependsOn:
-    - name: infra-configs-velero
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-awx
+  name: apps-palworld
   namespace: flux-system
 spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/awx-system
+  path: ./apps/palworld
   interval: 10m
   prune: true
   wait: true
-  dependsOn:
-    - name: infra-sources
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-monitoring
+  name: apps-pihole
   namespace: flux-system
 spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/monitoring-system
+  path: ./apps/pihole
   interval: 10m
   prune: true
   wait: true
-  dependsOn:
-    - name: infra-sources
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-rook-ceph
+  name: apps-renovate
   namespace: flux-system
 spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/rook-ceph
+  path: ./apps/renovate
   interval: 10m
   prune: true
   wait: true
-  dependsOn:
-    - name: infra-sources
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-olmv1
+  name: apps-slackerworld
   namespace: flux-system
 spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/olmv1-system
+  path: ./apps/slackerworld
   interval: 10m
   prune: true
   wait: true
-  dependsOn:
-    - name: infra-sources
-    - name: infra-cert-manager
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-slackpack
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/slackpack
+  interval: 10m
+  prune: true
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-unmango-runners
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/unmango-runners
+  interval: 10m
+  prune: true
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-xmage
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/xmage
+  interval: 10m
+  prune: true
+  wait: true

@@ -20,7 +20,7 @@
       inherit packages;
 
       checks.validate-flux = pkgs.runCommand "validate-flux-check" { } ''
-        ${packages.validate-flux}/bin/validate-flux --dir ${./.}
+        ${packages.validate-flux}/bin/validate-flux --dir ${../.}
         touch $out
       '';
     };

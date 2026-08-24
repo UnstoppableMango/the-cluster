@@ -29,7 +29,7 @@
       imports = with inputs; [
         treefmt-nix.flakeModule
         ./containers
-        ./flux
+        ./nix
       ];
 
       perSystem =

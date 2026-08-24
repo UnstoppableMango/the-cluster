@@ -6,11 +6,9 @@ This is a homelab infrastructure repository built on Kubernetes with Pulumi (Typ
 
 ## Repository Structure
 
-- `apps/` - Pulumi stacks for application deployments
-- `clusters/` - Cluster bootstrapping Pulumi stacks
-- `components/` - Reusable Pulumi component packages
-- `infra/` - Infrastructure Pulumi stacks
-- `flux/` - Flux GitOps manifests
+- `apps/` - Flux GitOps manifests for application deployments
+- `clusters/` - Flux cluster bootstrap Kustomizations
+- `infrastructure/` - Flux GitOps manifests for infrastructure (controllers/configs)
 - `lib/nodejs/` - Shared TypeScript/Node.js libraries
 - `crds/` - Generated CRD code (do not edit manually)
 - `hack/` - Development scripts and tooling
@@ -39,7 +37,7 @@ This is a homelab infrastructure repository built on Kubernetes with Pulumi (Typ
 
 ## Kubernetes & Flux
 
-- Flux manifests are in `flux/clusters/`
+- Flux manifests are in `clusters/`, `apps/`, and `infrastructure/`
 - Use Kubernetes best practices for manifests
 - Follow existing patterns for Flux Kustomizations and HelmReleases
 

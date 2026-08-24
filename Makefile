@@ -64,11 +64,11 @@ hack/secrets/infrastructure/configs/velero-system/ceph-credentials.yml:
 	@mkdir -p $(@D)
 	KUBECTL=$(KUBECTL) YQ=$(YQ) hack/velero-ceph-credentials.sh $@
 
-flux/%-sealed.yml: hack/secrets/%.yml | hack/sealed-secrets.pub
+%-sealed.yml: hack/secrets/%.yml | hack/sealed-secrets.pub
 	$(KUBESEAL) --format=yaml --cert=$| \
 	--secret-file $< --sealed-secret-file $@
 
-flux/%-unseal: flux/%-sealed.yml
+%-unseal: %-sealed.yml
 	@mkdir -p hack/secrets/$$(dirname $*)
 	@umask 0177; \
 	$(KUBECTL) get secret \
@@ -86,7 +86,7 @@ bin/image.tar: containers/default.nix containers/runner/default.nix
 	nix build '.#runner' --out-link $@
 	$(DOCKER) load < $@
 
-flux/infrastructure/controllers/cert-manager/crds/crds.yaml: flake.lock nix/cert-manager-crds.nix
+infrastructure/controllers/cert-manager/crds/crds.yaml: flake.lock nix/cert-manager-crds.nix
 	cp $$(nix build .#cert-manager-crds --print-out-paths --no-link) $@
 
 bin/crds.yml: hack/crd-filter.yq

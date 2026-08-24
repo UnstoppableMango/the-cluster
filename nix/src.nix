@@ -3,8 +3,8 @@ let
   fs = lib.fileset;
 in
 fs.toSource {
-  root = ./.;
+  root = ../.;
 
   # Everything except nix files
-  fileset = fs.intersection (fs.gitTracked ./.) ./infrastructure;
+  fileset = fs.intersection (fs.gitTracked ../.) ../infrastructure;
 }

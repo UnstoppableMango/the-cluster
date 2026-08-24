@@ -9,11 +9,9 @@
 		"**/vendor/**",
 		"**/testdata/**",
 		"charts/**",
-		"clusters/**",
 		"crds/**",
-		"infra/crds/**",
 		"lib/**",
-		"flux/**/crds/**"
+		"**/crds/**"
 	],
 	"ignoreDeps": [
 		"@pulumi/crds",
@@ -25,12 +23,12 @@
 	},
 	"kubernetes": {
 		"managerFilePatterns": [
-			"/flux/.+\\.ya?ml$/"
+			"/^(apps|clusters|infrastructure)/.+\\.ya?ml$/"
 		]
 	},
 	"flux": {
 		"managerFilePatterns": [
-			"/flux/.+\\.ya?ml$/"
+			"/^(apps|clusters|infrastructure)/.+\\.ya?ml$/"
 		]
 	},
 	"customManagers": [

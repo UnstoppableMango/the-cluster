@@ -7,7 +7,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/cert-manager-system/crds
+  path: ./infrastructure/controllers/cert-manager-system/crds
   interval: 10m
   prune: false
   wait: true
@@ -21,7 +21,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/cert-manager-system
+  path: ./infrastructure/controllers/cert-manager-system
   interval: 10m
   prune: true
   wait: true
@@ -37,7 +37,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/metallb-system
+  path: ./infrastructure/controllers/metallb-system
   interval: 10m
   prune: true
   wait: true
@@ -51,7 +51,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/configs/metallb-system/rosequartz
+  path: ./infrastructure/configs/metallb-system/rosequartz
   interval: 10m
   prune: true
   wait: true
@@ -67,7 +67,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/metrics-server-system
+  path: ./infrastructure/controllers/metrics-server-system
   interval: 10m
   prune: true
   wait: true
@@ -81,7 +81,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers/sealed-secrets-system
+  path: ./infrastructure/controllers/sealed-secrets-system
   interval: 10m
   prune: true
   wait: true

@@ -7,7 +7,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/apps
+  path: ./apps
   interval: 10m
   prune: true
   dependsOn:

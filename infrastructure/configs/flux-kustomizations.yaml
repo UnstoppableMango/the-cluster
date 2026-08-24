@@ -7,7 +7,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/configs/awx-system
+  path: ./infrastructure/configs/awx-system
   interval: 10m
   prune: true
   wait: true
@@ -23,7 +23,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/configs/cert-manager-system
+  path: ./infrastructure/configs/cert-manager-system
   interval: 10m
   prune: true
   wait: true
@@ -39,7 +39,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/configs/coredns-system
+  path: ./infrastructure/configs/coredns-system
   interval: 10m
   prune: true
   wait: true
@@ -55,7 +55,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/configs/metallb-system
+  path: ./infrastructure/configs/metallb-system
   interval: 10m
   prune: true
   dependsOn:
@@ -70,7 +70,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/configs/gaming
+  path: ./infrastructure/configs/gaming
   interval: 10m
   prune: true
   wait: true
@@ -84,7 +84,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/configs/kube-system
+  path: ./infrastructure/configs/kube-system
   interval: 10m
   prune: true
 ---
@@ -97,7 +97,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/configs/nginx-gateway-system
+  path: ./infrastructure/configs/nginx-gateway-system
   interval: 10m
   prune: true
   wait: true
@@ -113,7 +113,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/configs/rook-ceph
+  path: ./infrastructure/configs/rook-ceph
   interval: 10m
   prune: true
   dependsOn:
@@ -129,7 +129,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/configs/cloudflare-operator-system
+  path: ./infrastructure/configs/cloudflare-operator-system
   interval: 10m
   prune: true
   dependsOn:
@@ -144,7 +144,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/configs/cloudflare-system
+  path: ./infrastructure/configs/cloudflare-system
   interval: 10m
   prune: true
   dependsOn:
@@ -159,7 +159,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/configs/default
+  path: ./infrastructure/configs/default
   interval: 10m
   prune: true
   dependsOn:
@@ -174,7 +174,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/configs/crossplane-system
+  path: ./infrastructure/configs/crossplane-system
   interval: 10m
   prune: true
   wait: true
@@ -190,7 +190,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/configs/velero-system
+  path: ./infrastructure/configs/velero-system
   interval: 10m
   prune: true
   wait: true
@@ -206,7 +206,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/configs/aws-iam
+  path: ./infrastructure/configs/aws-iam
   interval: 10m
   prune: true
   wait: true

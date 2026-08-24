@@ -7,7 +7,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/controllers
+  path: ./infrastructure/controllers
   interval: 10m
   prune: true
 ---
@@ -20,7 +20,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./flux/infrastructure/configs
+  path: ./infrastructure/configs
   interval: 10m
   prune: true
   wait: true
