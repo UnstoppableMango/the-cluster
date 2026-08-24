@@ -1,6 +1,0 @@
-name: thecluster-deemix
-description: Deemix Keycloak client for THECLUSTER
-runtime:
-  name: nodejs
-  options:
-    packagemanager: yarn
