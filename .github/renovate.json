@@ -5,18 +5,10 @@
 		"schedule:weekly"
 	],
 	"ignorePaths": [
-		"**/node_modules/**",
 		"**/vendor/**",
 		"**/testdata/**",
 		"charts/**",
-		"crds/**",
-		"lib/**",
 		"**/crds/**"
-	],
-	"ignoreDeps": [
-		"@pulumi/crds",
-		"@unstoppablemango/thecluster",
-		"@unstoppablemango/thecluster-crds"
 	],
 	"major": {
 		"dependencyDashboardApproval": true
