@@ -3,4 +3,3 @@ kind: Kustomization
 resources:
   - helm-release.yml
   - namespace.yml
-  - oci-repository.yml
