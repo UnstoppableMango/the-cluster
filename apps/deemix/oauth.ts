@@ -1,11 +1,18 @@
+import * as keycloak from '@pulumi/keycloak';
 import { Group, GroupRoles, Role } from '@pulumi/keycloak';
 import { AudienceProtocolMapper, Client, ClientOptionalScopes } from '@pulumi/keycloak/openid';
-import { interpolate } from '@pulumi/pulumi';
+import { Config, interpolate } from '@pulumi/pulumi';
 import { redirectUris } from '@unstoppablemango/thecluster/apps/keycloak';
-import { apps, realms } from '@unstoppablemango/thecluster/cluster/from-stack';
+import { realms } from '@unstoppablemango/thecluster/cluster/from-stack';
 import { hosts } from './config';
 
-const { provider } = apps.keycloak;
+const keycloakConfig = new Config('keycloak');
+const provider = new keycloak.Provider('keycloak', {
+	url: keycloakConfig.require('url'),
+	username: keycloakConfig.get('username') ?? 'admin',
+	password: keycloakConfig.requireSecret('adminPassword'),
+	clientId: 'admin-cli',
+});
 
 export const client = new Client('deemix', {
 	realmId: realms.external.id,
@@ -53,3 +60,6 @@ const optionalScopes = new ClientOptionalScopes('deemix', {
 	clientId: client.id,
 	optionalScopes: [realms.groupsScopeName],
 }, { provider });
+
+// Sealed into flux/apps/deemix/secret-sealed.yml for the oauth2-proxy chart
+export const clientSecret = client.clientSecret;

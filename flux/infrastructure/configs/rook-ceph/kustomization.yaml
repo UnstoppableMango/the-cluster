@@ -5,3 +5,12 @@ resources:
   - ceph-object-store-storage-class.yml
   - dashboard-http-route.yml
   - volume-snapshot-class.yml
+  - mon-secret-sealed.yml
+  - mon-endpoints-configmap.yml
+  - mgr-pool.yml
+  - helm-release-cluster.yml
+  - bulk.yml
+  - unsafe.yml
+  - default.yml
+  - default-ssd.yml
+  - cephfs.yml

@@ -1,0 +1,8 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: unmango-charts
+  namespace: deemix
+spec:
+  url: https://unmango.github.io/charts
+  interval: 1h

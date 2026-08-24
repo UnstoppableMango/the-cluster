@@ -1,4 +1,5 @@
 config:
+  keycloak:url: https://auth.thecluster.io
   thecluster-identity:github:
     clientId: d1f065d7f2d33f3cfbd6
     clientSecret:

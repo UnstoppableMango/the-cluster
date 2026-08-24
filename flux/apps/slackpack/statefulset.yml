@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: slackpack
+  namespace: slackpack
+spec:
+  serviceName: server-e29672fa
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: slackpack
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: slackpack
+    spec:
+      containers:
+        - name: server
+          image: itzg/minecraft-server:stable
+          imagePullPolicy: Always
+          ports:
+            - name: minecraft
+              containerPort: 25565
+          env:
+            - name: EULA
+              value: "true"
+            - name: VERSION
+              value: "1.21.1"
+            - name: INIT_MEMORY
+              value: 4G
+            - name: MAX_MEMORY
+              value: 24G
+            - name: USE_MEOWICE_FLAGS
+              value: "true"
+            - name: MAX_TICK_TIME
+              value: "-1"
+            - name: ALLOW_FLIGHT
+              value: "true"
+            - name: MODPACK_PLATFORM
+              value: AUTO_CURSEFORGE
+            - name: CF_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: slackpack
+                  key: CF_API_KEY
+            - name: CF_PAGE_URL
+              value: https://www.curseforge.com/minecraft/modpacks/all-the-mods-10/files/6826503
+          volumeMounts:
+            - name: mods
+              mountPath: /modpacks
+              readOnly: true
+            - name: data
+              mountPath: /data
+            - name: config
+              mountPath: /data/config/minecolonies-server.toml
+              subPath: minecolonies-server.toml
+              readOnly: true
+          resources:
+            requests:
+              cpu: "4"
+              memory: 8Gi
+            limits:
+              cpu: "16"
+              memory: 32Gi
+          livenessProbe:
+            exec:
+              command: ["mc-health"]
+            periodSeconds: 5
+            initialDelaySeconds: 300
+            failureThreshold: 20
+            timeoutSeconds: 5
+      volumes:
+        - name: mods
+          persistentVolumeClaim:
+            claimName: mods
+            readOnly: true
+        - name: config
+          configMap:
+            name: slackpack
+      nodeSelector:
+        kubernetes.io/hostname: zeus
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ssd-rbd
+        resources:
+          requests:
+            storage: 100Gi

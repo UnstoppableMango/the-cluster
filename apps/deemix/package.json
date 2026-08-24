@@ -4,10 +4,8 @@
 	"main": "index.ts",
 	"dependencies": {
 		"@pulumi/keycloak": "^6.0.0",
-		"@pulumi/kubernetes": "^4.23.0",
 		"@pulumi/pulumi": "^3.190.0",
-		"@unstoppablemango/thecluster": "file:../../lib/nodejs",
-		"@unstoppablemango/thecluster-crds": "file:../../lib/crds/nodejs"
+		"@unstoppablemango/thecluster": "file:../../lib/nodejs"
 	},
 	"devDependencies": {
 		"@types/node": "^24.0.0"

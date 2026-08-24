@@ -1,10 +1,6 @@
 name: thecluster-deemix
-description: Deemix install for THECLUSTER
+description: Deemix Keycloak client for THECLUSTER
 runtime:
   name: nodejs
   options:
     packagemanager: yarn
-config:
-  versions:
-    value:
-      deemix: 2022.12.14-r222.5d447b6035

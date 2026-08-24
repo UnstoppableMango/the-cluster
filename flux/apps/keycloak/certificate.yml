@@ -1,0 +1,63 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: keycloak
+  namespace: keycloak
+spec:
+  secretName: keycloak-tls
+  # NOTE: verify against the live PKI stack's ClusterIssuer objects before applying
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: keycloak
+  duration: 2160h0m0s # 90d
+  renewBefore: 360h0m0s # 15d
+  commonName: kc.thecluster.io
+  subject:
+    organizations:
+      - unmango
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+    - auth.thecluster.io
+    - identity.thecluster.io
+    - keycloak.thecluster.io
+    - keycloak.lan.thecluster.io
+    - auth.lan.thecluster.io
+    - idp.lan.thecluster.io
+    - identity.lan.thecluster.io
+    - kc.lan.thecluster.io
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: postgres
+  namespace: keycloak
+spec:
+  secretName: postgres-cert
+  # NOTE: verify against the live PKI stack's ClusterIssuer objects before applying
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: postgres
+  duration: 2160h0m0s # 90d
+  renewBefore: 360h0m0s # 15d
+  commonName: keycloak
+  usages:
+    - client auth
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 2048
+    rotationPolicy: Always
+  keystores:
+    pkcs12:
+      create: true
+      passwordSecretRef:
+        name: keycloak
+        key: certPassword

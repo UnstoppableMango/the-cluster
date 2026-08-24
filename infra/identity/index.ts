@@ -1,9 +1,15 @@
 import * as keycloak from '@pulumi/keycloak';
 import * as pulumi from '@pulumi/pulumi';
-import { apps } from '@unstoppablemango/thecluster/cluster/from-stack';
+import { Config } from '@pulumi/pulumi';
 import { github, google, me, microsoft, stackExchange, twitter } from './config';
 
-const provider = apps.keycloak.provider;
+const keycloakConfig = new Config('keycloak');
+const provider = new keycloak.Provider('keycloak', {
+	url: keycloakConfig.require('url'),
+	username: keycloakConfig.get('username') ?? 'admin',
+	password: keycloakConfig.requireSecret('adminPassword'),
+	clientId: 'admin-cli',
+});
 
 const externalRealm = new keycloak.Realm('external', {
 	realm: 'external',

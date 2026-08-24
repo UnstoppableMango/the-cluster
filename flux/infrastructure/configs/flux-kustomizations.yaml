@@ -118,6 +118,7 @@ spec:
   prune: true
   dependsOn:
     - name: external-snapshotter-crds
+    - name: infra-rook-ceph
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

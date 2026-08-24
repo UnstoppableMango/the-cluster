@@ -1,0 +1,2 @@
+config:
+  keycloak:url: https://auth.thecluster.io

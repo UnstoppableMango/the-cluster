@@ -299,6 +299,22 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: infra-rook-ceph
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./flux/infrastructure/controllers/rook-ceph
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    - name: infra-sources
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: infra-olmv1
   namespace: flux-system
 spec:

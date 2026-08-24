@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: movies
+  namespace: media
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  storageClassName: ec-cephfs
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: movies4k
+  namespace: media
+spec:
+  storageClassName: ec-cephfs
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tv
+  namespace: media
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  storageClassName: ec-cephfs
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: tv4k
+  namespace: media
+spec:
+  storageClassName: ec-cephfs
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: anime
+  namespace: media
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  storageClassName: default-cephfs
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: music
+  namespace: media
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  storageClassName: default-cephfs
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: youtube
+  namespace: media
+spec:
+  storageClassName: ec-cephfs
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Ti

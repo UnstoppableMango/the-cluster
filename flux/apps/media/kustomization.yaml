@@ -11,3 +11,14 @@ resources:
   - qbittorrent-ingress.yml
   - qbittorrent-service.yml
   - qbittorrent-statefulset.yml
+  - pvcs.yml
+  - plex-config-pvc.yml
+  - plex-helm-repository.yml
+  - plex-helm-release.yml
+  - tubesync-service.yml
+  - tubesync-statefulset.yml
+  - tubesync-httproute.yml
+  - copyparty-configmap.yml
+  - copyparty-deployment.yml
+  - copyparty-service.yml
+  - copyparty-httproute.yml
