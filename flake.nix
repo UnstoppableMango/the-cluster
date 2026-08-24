@@ -57,7 +57,6 @@
               dprint
               docker
               fluxcd
-              fnm
               gnumake
               kubectl
               kubeseal
@@ -67,13 +66,8 @@
               shellcheck
               velero
               watchexec
-              yarn
               yq-go
             ];
-
-            shellHook = ''
-              eval "$(fnm env --corepack-enabled --shell bash)"
-            '';
 
             DOCKER = "${pkgs.docker}/bin/docker";
             DPRINT = "${pkgs.dprint}/bin/dprint";
@@ -83,18 +77,10 @@
             KUBESEAL = "${pkgs.kubeseal}/bin/kubeseal";
             PULUMI = "${pkgs.pulumi-bin}/bin/pulumi";
             SHELLCHECK = "${pkgs.shellcheck}/bin/shellcheck";
-            YARN = "${pkgs.yarn}/bin/yarn";
             YQ = "${pkgs.yq-go}/bin/yq";
           };
 
           treefmt = {
-            settings.global.excludes = [
-              "**/node_modules/**"
-              "**/.yarn/**"
-              "crds/**"
-              "yarn.lock"
-            ];
-
             programs.nixfmt.enable = true;
           };
         };

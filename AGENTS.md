@@ -4,7 +4,7 @@ This file provides guidance to AI agents when working with code in this reposito
 
 ## Overview
 
-Homelab infrastructure-as-code for a Kubernetes cluster (`pinkdiamond`). Flux CD is the preferred deployment method. Pulumi stacks are deprecated — avoid adding new Pulumi stacks; use Flux manifests instead.
+Homelab infrastructure-as-code for a Kubernetes cluster, deployed entirely via Flux CD. There is no Pulumi in this repository anymore — all stacks were migrated to Flux manifests.
 
 ## Commands
 
@@ -16,68 +16,34 @@ make fmt        # runs dprint + nix fmt
 
 CI enforces dprint formatting on all PRs.
 
-### Deploying Pulumi Stacks (Deprecated)
-
-> **Deprecated:** Pulumi stacks are being phased out. Prefer Flux manifests for new work.
-
-```sh
-# Apps and infra stacks
-make apps/<name> CMD=preview STACK=pinkdiamond
-make apps/<name> CMD=up STACK=pinkdiamond
-make infra/<name> CMD=up STACK=pinkdiamond
-
-# Cluster stacks (no Make target)
-cd clusters/pinkdiamond && pulumi up
-```
-
-`CMD` defaults to `up`, `STACK` defaults to `pinkdiamond`.
-
 ### Other
 
 ```sh
 make reconcile      # flux reconcile source git flux-system
 make renovate       # trigger renovate cronjob manually
-make crds/package.json  # regenerate CRD TypeScript from cluster
 ```
 
 ## Architecture
 
-### Stack Layers (Deprecated)
+### Layout
 
-> **Deprecated:** These Pulumi stacks are being replaced by Flux manifests. Do not add new stacks.
-
-1. **`clusters/`** — Cluster bootstrapping (kubeconfig, k8s version pinning)
-2. **`infra/`** — Infrastructure stacks (Ceph/Rook storage, identity, networking)
-3. **`apps/`** — Application stacks (cert-manager, flux, keycloak, metallb, pihole, etc.)
-4. **`components/`** — Reusable Pulumi component packages (oauth2-proxy)
-
-Each stack is an independent Pulumi program with `index.ts`, `config.ts`, `Pulumi.yaml`, and `package.json`.
-
-### Shared Libraries
-
-- **`lib/nodejs/`** — Shared TypeScript utilities exposed as npm packages; includes helpers for cluster StackReferences, Helm chart patterns, and database setup
-- **`crds/`** — Auto-generated TypeScript from cluster CRDs via `crd2pulumi`; **do not edit manually**
-
-Cross-stack references use `@unstoppablemango/thecluster` (from `lib/nodejs/`) to access cluster outputs like kubeconfig and provider.
+1. **`clusters/`** — Flux cluster bootstrap Kustomizations (per-cluster `apps.yaml`/`infrastructure.yaml`)
+2. **`infrastructure/`** — Infrastructure manifests, split into `controllers/` (operator installs) and `configs/` (CRs against an installed controller)
+3. **`apps/`** — Application manifests
 
 ### GitOps
 
-Flux manifests live in `clusters/`. Sealed Secrets are used for sensitive data — generate with `make <name>-sealed.yml`.
+Flux manifests live in `clusters/`, `apps/`, and `infrastructure/`. Sealed Secrets are used for sensitive data — generate with `make <name>-sealed.yml`.
 
 When a Flux manifest deploys a Helm chart with a companion container image (e.g. a chart version and an app image version that must stay in sync), group them in `renovate.json` so Renovate bumps both in a single PR. Use a `packageRules` entry with `groupName` targeting the relevant `HelmRelease` chart dep and the container image dep together.
 
 When a Flux manifest requires a Secret, always create a stub under `hack/secrets/` mirroring the path of the sealed secret (e.g. `hack/secrets/infrastructure/configs/crossplane-system/cloudflare-credentials.yml`). Use `stringData` with empty values so the user can populate and seal it. Never commit real credentials. Apply `umask 0177` before creating any file under `hack/secrets/` so it is written with mode 0600 (owner read/write only).
 
-### Workspaces
-
-Root `package.json` defines Yarn workspaces: `apps/*`, `clusters/*`, `components/*`, `infra/*`, `crds`, `lib/nodejs`. Run `yarn install` from the root to install all dependencies.
-
 ## Code Style
 
-- **Indentation:** tabs in TypeScript/JavaScript; 2 spaces in YAML and Nix
-- **Quotes:** single quotes in TypeScript
+- **Indentation:** 2 spaces in YAML and Nix
 - **Versions:** pinned in `.versions/` directory; check existing patterns before bumping
 
 ## Development Environment
 
-Nix flake (`flake.nix`) provides a reproducible devshell. Go tooling (`go.mod`) manages `kubeseal`, `crd2pulumi`, `yq`, and `devctl`. Copy `hack/example.envrc` to `.envrc` for direnv setup.
+Nix flake (`flake.nix`) provides a reproducible devshell. Go tooling (`go.mod`) manages `kubeseal`, `yq`, and `devctl`. Copy `hack/example.envrc` to `.envrc` for direnv setup.
