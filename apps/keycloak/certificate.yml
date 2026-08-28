@@ -1,53 +1,94 @@
+# A CA scoped to this database. Chaining it off thecluster.io would put the root
+# in ca.crt, and Postgres would then accept any cluster-issued cert as a client.
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: postgres-selfsigned
+  namespace: keycloak
+spec:
+  selfSigned: {}
+---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: keycloak
+  name: postgres-ca
   namespace: keycloak
 spec:
-  secretName: keycloak-tls
-  # NOTE: verify against the live PKI stack's ClusterIssuer objects before applying
+  isCA: true
+  commonName: keycloak-postgres-ca
+  secretName: postgres-ca
+  duration: 43800h0m0s # 5y
+  renewBefore: 8760h0m0s # 1y
   issuerRef:
     group: cert-manager.io
-    kind: ClusterIssuer
-    name: keycloak
-  duration: 2160h0m0s # 90d
-  renewBefore: 360h0m0s # 15d
-  commonName: kc.thecluster.io
+    kind: Issuer
+    name: postgres-selfsigned
   subject:
     organizations:
       - unmango
   privateKey:
     algorithm: ECDSA
     size: 256
-    rotationPolicy: Always
-  usages:
-    - server auth
-    - client auth
-  dnsNames:
-    - auth.thecluster.io
-    - identity.thecluster.io
-    - keycloak.thecluster.io
-    - keycloak.lan.thecluster.io
-    - auth.lan.thecluster.io
-    - idp.lan.thecluster.io
-    - identity.lan.thecluster.io
-    - kc.lan.thecluster.io
 ---
 apiVersion: cert-manager.io/v1
-kind: Certificate
+kind: Issuer
 metadata:
   name: postgres
   namespace: keycloak
 spec:
-  secretName: postgres-cert
-  # NOTE: verify against the live PKI stack's ClusterIssuer objects before applying
+  ca:
+    secretName: postgres-ca
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: postgres-server
+  namespace: keycloak
+spec:
+  secretName: postgres-server
   issuerRef:
     group: cert-manager.io
-    kind: ClusterIssuer
+    kind: Issuer
     name: postgres
   duration: 2160h0m0s # 90d
   renewBefore: 360h0m0s # 15d
-  commonName: keycloak
+  commonName: postgres-rw
+  usages:
+    - server auth
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 2048
+    rotationPolicy: Always
+  dnsNames:
+    - postgres-rw
+    - postgres-rw.keycloak
+    - postgres-rw.keycloak.svc
+    - postgres-rw.keycloak.svc.cluster.local
+    - postgres-ro
+    - postgres-ro.keycloak
+    - postgres-ro.keycloak.svc
+    - postgres-ro.keycloak.svc.cluster.local
+    - postgres-r
+    - postgres-r.keycloak
+    - postgres-r.keycloak.svc
+    - postgres-r.keycloak.svc.cluster.local
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: postgres-replication
+  namespace: keycloak
+spec:
+  secretName: postgres-replication
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: postgres
+  duration: 2160h0m0s # 90d
+  renewBefore: 360h0m0s # 15d
+  # CNPG requires the replication client certificate to be issued to this exact user
+  commonName: streaming_replica
   usages:
     - client auth
   privateKey:
@@ -55,9 +96,27 @@ spec:
     encoding: PKCS8
     size: 2048
     rotationPolicy: Always
-  keystores:
-    pkcs12:
-      create: true
-      passwordSecretRef:
-        name: keycloak
-        key: certPassword
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: keycloak-postgres
+  namespace: keycloak
+spec:
+  secretName: keycloak-postgres-cert
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: postgres
+  duration: 2160h0m0s # 90d
+  renewBefore: 360h0m0s # 15d
+  # The CN is the Postgres role Keycloak authenticates as
+  commonName: keycloak
+  usages:
+    - client auth
+  privateKey:
+    # PKCS#8 PEM is the only private key encoding pgjdbc accepts for sslkey
+    algorithm: RSA
+    encoding: PKCS8
+    size: 2048
+    rotationPolicy: Always

@@ -1,0 +1,81 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: dex
+  namespace: dex
+spec:
+  interval: 10m
+  releaseName: dex
+  targetNamespace: dex
+  chart:
+    spec:
+      chart: dex
+      version: 0.24.1
+      sourceRef:
+        kind: HelmRepository
+        name: dex
+  values:
+    # https://github.com/dexidp/helm-charts/tree/master/charts/dex#values
+    image:
+      repository: ghcr.io/dexidp/dex
+      tag: v2.44.0
+    replicaCount: 2
+    priorityClassName: system-cluster-critical
+    resources:
+      limits:
+        cpu: "1"
+        memory: 256Mi
+      requests:
+        cpu: 10m
+        memory: 64Mi
+    podDisruptionBudget:
+      enabled: true
+      maxUnavailable: 1
+    podSecurityContext:
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop:
+          - ALL
+    envFrom:
+      - secretRef:
+          name: dex-credentials
+    # Dex expands $VAR references in its config from the container environment
+    # https://dexidp.io/docs/getting-started/#configuration
+    config:
+      issuer: https://dex.thecluster.io
+      storage:
+        type: kubernetes
+        config:
+          inCluster: true
+      logger:
+        level: info
+        format: json
+      expiry:
+        signingKeys: 6h
+        idTokens: 24h
+      oauth2:
+        skipApprovalScreen: true
+        responseTypes:
+          - code
+      enablePasswordDB: false
+      connectors:
+        - type: github
+          id: github
+          name: GitHub
+          config:
+            clientID: $GITHUB_CLIENT_ID
+            clientSecret: $GITHUB_CLIENT_SECRET
+            redirectURI: https://dex.thecluster.io/callback
+            loadAllGroups: true
+      staticClients:
+        - id: kubernetes
+          name: Kubernetes
+          secret: $KUBERNETES_CLIENT_SECRET
+          redirectURIs:
+            - http://localhost:8000
+            - http://localhost:18000
