@@ -18,6 +18,13 @@ spec:
   dependsOn:
     - name: rook-ceph
       namespace: rook-ceph
+  # A CephCluster reports Progressing for as long as any OSD is not ok-to-stop,
+  # which covers every rebalance and backfill. Waiting on it fails the release
+  # for reasons that have nothing to do with whether the release applied.
+  install:
+    disableWait: true
+  upgrade:
+    disableWait: true
   values:
     clusterName: pinkdiamond
     operatorNamespace: rook-ceph
