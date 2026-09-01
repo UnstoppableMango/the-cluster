@@ -132,3 +132,34 @@ spec:
   wait: true
   dependsOn:
     - name: infra-configs-rook-ceph
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-external-snapshotter
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/controllers/external-snapshotter
+  interval: 10m
+  prune: true
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-configs-rook-ceph-snapshots
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/configs/rook-ceph/snapshots
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    - name: infra-external-snapshotter
+    - name: infra-configs-rook-ceph-storage
