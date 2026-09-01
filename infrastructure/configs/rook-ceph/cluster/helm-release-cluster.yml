@@ -29,17 +29,20 @@ spec:
         image: quay.io/ceph/ceph:v18.2.4
       dataDirHostPath: /var/lib/rook # default value
       mon:
+        # Single mon holding the restored mon store. Expand the quorum once the
+        # OSDs are back up and the data is readable.
         # https://github.com/rook/rook/blob/0a1dd5e9e619481432cc66347a45072178ca0b48/deploy/examples/cluster.yaml#L51-L52
-        count: 3
+        count: 1
         allowMultiplePerNode: true
       mgr:
         # https://github.com/rook/rook/blob/0a1dd5e9e619481432cc66347a45072178ca0b48/deploy/examples/cluster.yaml#L58-L60
-        count: 2
+        count: 1
         allowMultiplePerNode: true
       storage:
         useAllDevices: false
         useAllNodes: false
         nodes:
+          # gaea: sds1 is a zfs_member and sdu is 0B, both excluded
           - name: gaea
             devices:
               - name: sda1
@@ -59,8 +62,9 @@ spec:
               - name: sdo1
               - name: sdp1
               - name: sdq1
-              - name: sds1
-              - name: sdu1
+              - name: sdr1
+              - name: sdt1
+          # zeus: sda is the boot disk
           - name: zeus
             devices:
               - name: sdb1
@@ -77,8 +81,6 @@ spec:
               - name: sdm1
               - name: sdn1
               - name: sdo1
-          - name: castor
-          - name: pollux
     cephDashboard:
       ssl: false
     ingress:
