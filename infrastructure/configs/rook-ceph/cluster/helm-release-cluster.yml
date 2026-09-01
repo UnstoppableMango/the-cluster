@@ -49,11 +49,16 @@ spec:
         # https://github.com/rook/rook/blob/0a1dd5e9e619481432cc66347a45072178ca0b48/deploy/examples/cluster.yaml#L58-L60
         count: 1
         allowMultiplePerNode: true
+      # Rook removes an OSD once it is marked out and the data has drained.
+      removeOSDsIfOutAndSafeToRemove: true
       storage:
         useAllDevices: false
         useAllNodes: false
         nodes:
-          # gaea: sds1 is a zfs_member and sdu is 0B, both excluded
+          # gaea: sds1 is a zfs_member and sdu is 0B, both excluded.
+          # sdt1 is excluded as well: the drive behind it reports uncorrected
+          # read errors that leave PGs inconsistent and hold the cluster in
+          # HEALTH_ERR, which stops rook reconciling the filesystems and pools.
           - name: gaea
             devices:
               - name: sda1
@@ -74,7 +79,6 @@ spec:
               - name: sdp1
               - name: sdq1
               - name: sdr1
-              - name: sdt1
           # zeus: sda is the boot disk
           - name: zeus
             devices:
