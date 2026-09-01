@@ -163,3 +163,25 @@ spec:
   dependsOn:
     - name: infra-external-snapshotter
     - name: infra-configs-rook-ceph-storage
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-configs-cert-manager
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/configs/cert-manager-system/issuers
+  interval: 10m
+  prune: true
+  wait: true
+  # The CRDs and sealed-secrets are what the issuers need. Depending on
+  # infra-cert-manager instead would block on the csi-driver release, which is
+  # unrelated to issuing. The trust-manager Bundle is deliberately not here: it
+  # needs a CRD that only the trust-manager release installs, and nothing on
+  # rosequartz consumes the bundle yet.
+  dependsOn:
+    - name: infra-cert-manager-crds
+    - name: infra-sealed-secrets
