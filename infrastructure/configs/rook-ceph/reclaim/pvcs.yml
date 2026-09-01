@@ -1,0 +1,254 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-b0e74a14-f994-4d74-98a8-c8ae4d2afb42
+  namespace: ceph-reclaim
+  labels:
+    thecluster.io/origin-namespace: bitwarden
+spec:
+  storageClassName: ssd-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-b0e74a14-f994-4d74-98a8-c8ae4d2afb42
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-b01c34ec-268a-40f0-b1e4-27562fd9b972
+  namespace: ceph-reclaim
+  labels:
+    thecluster.io/origin-namespace: flux-system
+spec:
+  storageClassName: ssd-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-b01c34ec-268a-40f0-b1e4-27562fd9b972
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-5132f9ef-8c31-412e-8862-ded4976b7619
+  namespace: ceph-reclaim
+  labels:
+    thecluster.io/origin-namespace: kube-prometheus-stack
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-5132f9ef-8c31-412e-8862-ded4976b7619
+  resources:
+    requests:
+      storage: 100Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-6803a463-1ac9-4384-b9a7-92673a9a6831
+  namespace: ceph-reclaim
+  labels:
+    thecluster.io/origin-namespace: kube-prometheus-stack
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-6803a463-1ac9-4384-b9a7-92673a9a6831
+  resources:
+    requests:
+      storage: 100Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-1cb93334-df44-4e0b-b54e-7aca80c47cc5
+  namespace: ceph-reclaim
+  labels:
+    thecluster.io/origin-namespace: monitoring
+spec:
+  storageClassName: ssd-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-1cb93334-df44-4e0b-b54e-7aca80c47cc5
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-47c5ca43-724a-4dea-8fea-33e3f81c131b
+  namespace: ceph-reclaim
+  labels:
+    thecluster.io/origin-namespace: monitoring
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-47c5ca43-724a-4dea-8fea-33e3f81c131b
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-d742e693-ef74-41b6-92c3-df86a6dcebb1
+  namespace: ceph-reclaim
+  labels:
+    thecluster.io/origin-namespace: monitoring
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-d742e693-ef74-41b6-92c3-df86a6dcebb1
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-7084d3a5-1e06-4b87-aef5-b0c0b71062c2
+  namespace: ceph-reclaim
+  labels:
+    thecluster.io/origin-namespace: nextcloud
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-7084d3a5-1e06-4b87-aef5-b0c0b71062c2
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-8fa259f7-9d7a-47a4-9a0d-1916a11885ea
+  namespace: ceph-reclaim
+  labels:
+    thecluster.io/origin-namespace: nextcloud
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-8fa259f7-9d7a-47a4-9a0d-1916a11885ea
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-58896da3-bc87-4211-9fcb-87989f7c8755
+  namespace: ceph-reclaim
+  labels:
+    thecluster.io/origin-namespace: nix-system
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-58896da3-bc87-4211-9fcb-87989f7c8755
+  resources:
+    requests:
+      storage: 250Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-026add83-352e-44b7-9719-58834b5b88f6
+  namespace: ceph-reclaim
+  labels:
+    thecluster.io/origin-namespace: postgres-system
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-026add83-352e-44b7-9719-58834b5b88f6
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-61d96710-b654-483e-af63-1ef050c13071
+  namespace: ceph-reclaim
+  labels:
+    thecluster.io/origin-namespace: postgres-system
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-61d96710-b654-483e-af63-1ef050c13071
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-6d043f66-9fad-4e7a-bb96-5fbd2e9a1669
+  namespace: ceph-reclaim
+  labels:
+    thecluster.io/origin-namespace: postgres-system
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-6d043f66-9fad-4e7a-bb96-5fbd2e9a1669
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-7d665a76-1853-43a9-8c17-0c9ac1fc7e03
+  namespace: ceph-reclaim
+  labels:
+    thecluster.io/origin-namespace: postgres-system
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-7d665a76-1853-43a9-8c17-0c9ac1fc7e03
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-592c1f6d-22a6-4ede-8f25-a39a1c522df8
+  namespace: ceph-reclaim
+  labels:
+    thecluster.io/origin-namespace: xmage
+spec:
+  storageClassName: unsafe-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-592c1f6d-22a6-4ede-8f25-a39a1c522df8
+  resources:
+    requests:
+      storage: 10Gi
