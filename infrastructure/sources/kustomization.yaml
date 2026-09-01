@@ -12,6 +12,5 @@ resources:
   - crossplane-system-helm-repository.yml
   - monitoring-system-helm-repository.yml
   - nats-system-helm-repository.yml
-  - nginx-gateway-system-oci-repository.yml
   - olmv1-system-git-repository.yml
   - shulker-system-helm-repository.yml
