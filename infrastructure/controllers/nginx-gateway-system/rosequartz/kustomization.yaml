@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../base
+patches:
+  # rosequartz sits on 10.0.69.0/24, so the pinkdiamond gateway address is
+  # outside the metallb pool. See configs/metallb-system/rosequartz.
+  - target:
+      kind: HelmRelease
+      name: nginx-gateway-fabric
+    patch: |-
+      - op: replace
+        path: /spec/values/gateways/0/spec/infrastructure/annotations/metallb.io~1loadBalancerIPs
+        value: 10.0.69.200
