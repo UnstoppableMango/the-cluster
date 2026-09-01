@@ -3,8 +3,9 @@ kind: Kustomization
 resources:
   - namespace.yml
   # - secret-sealed.yml # add once sealed: see hack/secrets/apps/keycloak/keycloak.yml
-  - configmap.yml
   - certificate.yml
+  - postgres-cluster.yml
   - helm-repository.yml
   - helm-release.yml
-  - internal-ingress.yml
+  - ingress.yml
+  - httproute.yml
