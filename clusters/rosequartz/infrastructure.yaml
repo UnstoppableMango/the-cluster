@@ -173,13 +173,15 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./infrastructure/configs/cert-manager-system
+  path: ./infrastructure/configs/cert-manager-system/issuers
   interval: 10m
   prune: true
   wait: true
-  # The cert-manager controller and the CRDs are what these need. Depending on
+  # The CRDs and sealed-secrets are what the issuers need. Depending on
   # infra-cert-manager instead would block on the csi-driver release, which is
-  # unrelated to issuing.
+  # unrelated to issuing. The trust-manager Bundle is deliberately not here: it
+  # needs a CRD that only the trust-manager release installs, and nothing on
+  # rosequartz consumes the bundle yet.
   dependsOn:
     - name: infra-cert-manager-crds
     - name: infra-sealed-secrets
