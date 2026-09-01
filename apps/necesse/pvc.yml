@@ -5,6 +5,7 @@ metadata:
   namespace: necesse
 spec:
   storageClassName: ssd-rbd
+  volumeName: pvc-a4cc82d3-b2c8-46a7-84b0-13f01787d45b
   resources:
     requests:
       storage: 10Gi

@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-c8aa7fd7-102a-490b-9e9c-7354571ed41b
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ssd-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: data-etcd-0
+    namespace: coredns-system
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000014-74497aba-c8a3-43dc-b91a-a35796ceae12
+    fsType: ext4
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: default-ssd
+      journalPool: default-ssd
+      imageName: csi-vol-74497aba-c8a3-43dc-b91a-a35796ceae12
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph

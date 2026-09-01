@@ -4,3 +4,5 @@ resources:
   - harbor.yml
   - helm-release.yml
   - namespace.yml
+  - pvs.yml
+  - legacy-pvcs.yml

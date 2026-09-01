@@ -9,3 +9,4 @@ resources:
   - external-dns-helm-release.yml
   - external-dns-helm-repository.yml
   - namespace.yml
+  - pvs.yml

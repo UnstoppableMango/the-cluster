@@ -10,6 +10,7 @@ spec:
   storageClassName: unsafe-rbd
   accessModes:
     - ReadWriteOnce
+  volumeName: pvc-45251306-071e-4cf8-a43c-89112cb0c192
   resources:
     requests:
       storage: 250Gi

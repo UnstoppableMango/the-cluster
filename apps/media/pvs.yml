@@ -1,0 +1,536 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-3b213930-e834-4fdc-9d6e-9e02f051c49d
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ec-cephfs
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: legacy-2bc6b513
+    namespace: media
+  csi:
+    driver: rook-ceph.cephfs.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000005-2bc6b513-a475-4e6c-8f08-41458d085e66
+    volumeAttributes:
+      clusterID: rook-ceph
+      fsName: erasure-coded
+      pool: erasure-coded-data
+      subvolumeName: csi-vol-2bc6b513-a475-4e6c-8f08-41458d085e66
+      subvolumeGroup: csi
+    nodeStageSecretRef:
+      name: rook-csi-cephfs-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-cephfs-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-639475fc-49aa-4368-8a97-b41f3dc818a3
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ec-cephfs
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: legacy-48d51b52
+    namespace: media
+  csi:
+    driver: rook-ceph.cephfs.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000005-48d51b52-1cf6-48f8-a9ac-a30393d62557
+    volumeAttributes:
+      clusterID: rook-ceph
+      fsName: erasure-coded
+      pool: erasure-coded-data
+      subvolumeName: csi-vol-48d51b52-1cf6-48f8-a9ac-a30393d62557
+      subvolumeGroup: csi
+    nodeStageSecretRef:
+      name: rook-csi-cephfs-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-cephfs-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-77c91c0c-50e5-4957-a3e6-4ce91846deba
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ec-cephfs
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: legacy-546ee57b
+    namespace: media
+  csi:
+    driver: rook-ceph.cephfs.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000005-546ee57b-2173-43d8-9473-6dbc15aed300
+    volumeAttributes:
+      clusterID: rook-ceph
+      fsName: erasure-coded
+      pool: erasure-coded-data
+      subvolumeName: csi-vol-546ee57b-2173-43d8-9473-6dbc15aed300
+      subvolumeGroup: csi
+    nodeStageSecretRef:
+      name: rook-csi-cephfs-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-cephfs-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-1700e5ee-c43b-4dd8-be95-cfef2c281b5b
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: default-cephfs
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: legacy-5e2658d2
+    namespace: media
+  csi:
+    driver: rook-ceph.cephfs.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-5e2658d2-1f8d-4b9b-83fb-5f0775851a96
+    volumeAttributes:
+      clusterID: rook-ceph
+      fsName: replicated
+      pool: replicated-data
+      subvolumeName: csi-vol-5e2658d2-1f8d-4b9b-83fb-5f0775851a96
+      subvolumeGroup: csi
+    nodeStageSecretRef:
+      name: rook-csi-cephfs-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-cephfs-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-b9225bcb-6e04-4b28-9e91-75b5940b58cd
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ssd-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: legacy-60362a50
+    namespace: media
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000014-60362a50-1afe-4d0f-9ba2-4f8b2907ef2e
+    fsType: ext4
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: default-ssd
+      journalPool: default-ssd
+      imageName: csi-vol-60362a50-1afe-4d0f-9ba2-4f8b2907ef2e
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-6a7587dc-d3b6-4ffe-a82b-df6ccffcb124
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: default-cephfs
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: legacy-7e86bc67
+    namespace: media
+  csi:
+    driver: rook-ceph.cephfs.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-7e86bc67-5736-4de0-88d3-5767f95c1a24
+    volumeAttributes:
+      clusterID: rook-ceph
+      fsName: replicated
+      pool: replicated-data
+      subvolumeName: csi-vol-7e86bc67-5736-4de0-88d3-5767f95c1a24
+      subvolumeGroup: csi
+    nodeStageSecretRef:
+      name: rook-csi-cephfs-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-cephfs-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-c23b427c-1ef6-42c6-a5e3-1a742cb99b38
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ssd-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: legacy-82263ac8
+    namespace: media
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000014-82263ac8-d630-44a2-bb6e-3a3ae1f0d30b
+    fsType: ext4
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: default-ssd
+      journalPool: default-ssd
+      imageName: csi-vol-82263ac8-d630-44a2-bb6e-3a3ae1f0d30b
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-c9b0205b-7a20-4d50-ba1b-d7945f45b151
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 128Mi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ssd-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: legacy-91211654
+    namespace: media
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000014-91211654-704a-4c4e-8b37-89d297177185
+    fsType: ext4
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: default-ssd
+      journalPool: default-ssd
+      imageName: csi-vol-91211654-704a-4c4e-8b37-89d297177185
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-7b37a458-cd1f-47b5-81be-229019fc1a9d
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ec-cephfs
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: legacy-960fb57d
+    namespace: media
+  csi:
+    driver: rook-ceph.cephfs.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000005-960fb57d-1bab-4b79-81d5-0829c1378265
+    volumeAttributes:
+      clusterID: rook-ceph
+      fsName: erasure-coded
+      pool: erasure-coded-data
+      subvolumeName: csi-vol-960fb57d-1bab-4b79-81d5-0829c1378265
+      subvolumeGroup: csi
+    nodeStageSecretRef:
+      name: rook-csi-cephfs-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-cephfs-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-c47d47f3-f830-4fef-83c2-975b71d1ad0c
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ssd-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: legacy-9ed6b73d
+    namespace: media
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000014-9ed6b73d-a256-483e-abd6-ddafa6eb1a11
+    fsType: ext4
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: default-ssd
+      journalPool: default-ssd
+      imageName: csi-vol-9ed6b73d-a256-483e-abd6-ddafa6eb1a11
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-fb0dda39-d1a0-4301-933c-781c15957ff3
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ec-cephfs
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: legacy-df48d152
+    namespace: media
+  csi:
+    driver: rook-ceph.cephfs.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000005-df48d152-3c42-4041-bb12-91397e2e8375
+    volumeAttributes:
+      clusterID: rook-ceph
+      fsName: erasure-coded
+      pool: erasure-coded-data
+      subvolumeName: csi-vol-df48d152-3c42-4041-bb12-91397e2e8375
+      subvolumeGroup: csi
+    nodeStageSecretRef:
+      name: rook-csi-cephfs-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-cephfs-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-c83917ed-3605-4952-91ee-7136781b5d1a
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ec-cephfs
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: legacy-f29db30d
+    namespace: media
+  csi:
+    driver: rook-ceph.cephfs.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000005-f29db30d-4718-4576-8465-fdd3744716dd
+    volumeAttributes:
+      clusterID: rook-ceph
+      fsName: erasure-coded
+      pool: erasure-coded-data
+      subvolumeName: csi-vol-f29db30d-4718-4576-8465-fdd3744716dd
+      subvolumeGroup: csi
+    nodeStageSecretRef:
+      name: rook-csi-cephfs-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-cephfs-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-1c238199-5d8e-489a-9e0b-e396fa8a533d
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ssd-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: config-tubesync-0
+    namespace: media
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000014-fe4d8aa1-95b0-44f7-82a5-8063b297dd0c
+    fsType: ext4
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: default-ssd
+      journalPool: default-ssd
+      imageName: csi-vol-fe4d8aa1-95b0-44f7-82a5-8063b297dd0c
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-2dc9b8dd-62f8-4eb8-a7ec-8ec19b89da44
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 500Gi
+  accessModes:
+    - ReadWriteOncePod
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ssd-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: plex-config
+    namespace: media
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000014-3ce9b0d9-1faa-4061-8926-49e630845475
+    fsType: ext4
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: default-ssd
+      journalPool: default-ssd
+      imageName: csi-vol-3ce9b0d9-1faa-4061-8926-49e630845475
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-27168545-2568-4b99-9f1f-338fde4132da
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 20Ti
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ec-cephfs
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: youtube
+    namespace: media
+  csi:
+    driver: rook-ceph.cephfs.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000005-36775030-2857-48e3-941a-e4a4056fe594
+    volumeAttributes:
+      clusterID: rook-ceph
+      fsName: erasure-coded
+      pool: erasure-coded-data
+      subvolumeName: csi-vol-36775030-2857-48e3-941a-e4a4056fe594
+      subvolumeGroup: csi
+    nodeStageSecretRef:
+      name: rook-csi-cephfs-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-cephfs-provisioner
+      namespace: rook-ceph

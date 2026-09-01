@@ -93,6 +93,7 @@ spec:
   storageClassName: ec-cephfs
   accessModes:
     - ReadWriteMany
+  volumeName: pvc-27168545-2568-4b99-9f1f-338fde4132da
   resources:
     requests:
       storage: 20Ti

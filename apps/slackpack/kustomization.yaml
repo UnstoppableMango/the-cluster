@@ -7,3 +7,5 @@ resources:
   - mods-pvc.yml
   - service.yml
   - statefulset.yml
+  - pvs.yml
+  - legacy-pvcs.yml

@@ -1,0 +1,46 @@
+# Claims reserving imported ceph volumes whose original PVC name is unknown.
+# Rename once the volume contents identify the workload it belonged to.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: legacy-0dcc73da
+  namespace: harbor-system
+spec:
+  storageClassName: ec-cephfs
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  volumeName: pvc-61ab31d5-bc3f-404a-97a5-366d8a07c3ec
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: legacy-aa5e92d5
+  namespace: harbor-system
+spec:
+  storageClassName: ec-cephfs
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  volumeName: pvc-acd9c770-eeb7-437d-b315-1c6e741c1ae9
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: legacy-e5ee631b
+  namespace: harbor-system
+spec:
+  storageClassName: ec-cephfs
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  volumeName: pvc-673858a6-d549-4c11-8d7b-6a30157d435a
+  resources:
+    requests:
+      storage: 1Gi

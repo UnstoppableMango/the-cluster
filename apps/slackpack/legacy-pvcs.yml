@@ -1,0 +1,76 @@
+# Claims reserving imported ceph volumes whose original PVC name is unknown.
+# Rename once the volume contents identify the workload it belonged to.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: legacy-3b270e0c
+  namespace: slackpack
+spec:
+  storageClassName: ssd-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-392471b2-a129-48c0-9705-b1cecd085901
+  resources:
+    requests:
+      storage: 100Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: legacy-3c7cdd9a
+  namespace: slackpack
+spec:
+  storageClassName: default-cephfs
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  volumeName: pvc-56cea397-48a2-4e2c-9b36-4885039702f6
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: legacy-953e6c76
+  namespace: slackpack
+spec:
+  storageClassName: default-cephfs
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  volumeName: pvc-311889f5-4a81-4ba1-8ffb-5f9680529434
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: legacy-98c1b0f4
+  namespace: slackpack
+spec:
+  storageClassName: default-cephfs
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  volumeName: pvc-6980a274-7637-4396-b1aa-2ff4a8d0f8ad
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: legacy-e608556d
+  namespace: slackpack
+spec:
+  storageClassName: default-cephfs
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  volumeName: pvc-2dcf0dcb-e58e-4c73-b7e1-5380a775fe92
+  resources:
+    requests:
+      storage: 1Gi
