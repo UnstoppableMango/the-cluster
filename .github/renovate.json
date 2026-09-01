@@ -222,6 +222,13 @@
 				"bitnami/keycloak"
 			],
 			"groupName": "keycloak"
+		},
+		{
+			"matchPackageNames": [
+				"dex",
+				"ghcr.io/dexidp/dex"
+			],
+			"groupName": "dex"
 		}
 	]
 }
