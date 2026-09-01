@@ -259,8 +259,8 @@
 		},
 		{
 			"matchPackageNames": [
-				"oci://registry-1.docker.io/bitnamicharts/keycloak",
-				"bitnami/keycloak"
+				"keycloakx",
+				"quay.io/keycloak/keycloak"
 			],
 			"groupName": "keycloak"
 		},

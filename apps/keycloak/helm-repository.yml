@@ -1,9 +1,8 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: bitnami-keycloak
+  name: codecentric
   namespace: keycloak
 spec:
-  type: oci
-  url: oci://registry-1.docker.io/bitnamicharts
+  url: https://codecentric.github.io/helm-charts
   interval: 30m
