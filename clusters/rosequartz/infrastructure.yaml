@@ -116,3 +116,19 @@ spec:
   dependsOn:
     - name: infra-rook-ceph
     - name: infra-sealed-secrets
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-configs-rook-ceph-storage
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/configs/rook-ceph/storage
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    - name: infra-configs-rook-ceph
