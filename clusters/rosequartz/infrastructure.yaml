@@ -232,4 +232,5 @@ spec:
   dependsOn:
     - name: infra-gateway-api
     - name: infra-configs-nginx-gateway
-    - name: infra-metallb
+    # The gateway asks for a specific address, so the pool has to exist first.
+    - name: infra-configs-metallb
