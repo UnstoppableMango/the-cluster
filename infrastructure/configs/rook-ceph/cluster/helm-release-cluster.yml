@@ -53,7 +53,9 @@ spec:
         useAllDevices: false
         useAllNodes: false
         nodes:
-          # gaea: sds1 is a zfs_member and sdu is 0B, both excluded
+          # gaea: sds1 is a zfs_member and sdu is 0B, both excluded.
+          # sdt1 is excluded: the drive has 64 grown defects and uncorrected
+          # read errors, and osd.4 was drained off it.
           - name: gaea
             devices:
               - name: sda1
@@ -74,7 +76,6 @@ spec:
               - name: sdp1
               - name: sdq1
               - name: sdr1
-              - name: sdt1
           # zeus: sda is the boot disk
           - name: zeus
             devices:
