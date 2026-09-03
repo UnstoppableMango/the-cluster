@@ -1,0 +1,566 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-b0e74a14-f994-4d74-98a8-c8ae4d2afb42
+  labels:
+    thecluster.io/origin-namespace: bitwarden
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: ssd-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: pvc-b0e74a14-f994-4d74-98a8-c8ae4d2afb42
+    namespace: ceph-reclaim
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: 0001-0009-rook-ceph-0000000000000014-1d737185-906c-49fb-b42f-f52843011731
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: default-ssd
+      journalPool: default-ssd
+      imageName: csi-vol-1d737185-906c-49fb-b42f-f52843011731
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-b01c34ec-268a-40f0-b1e4-27562fd9b972
+  labels:
+    thecluster.io/origin-namespace: flux-system
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: ssd-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: pvc-b01c34ec-268a-40f0-b1e4-27562fd9b972
+    namespace: ceph-reclaim
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: 0001-0009-rook-ceph-0000000000000014-71228313-8d7c-4ee0-a215-513c7d3dde64
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: default-ssd
+      journalPool: default-ssd
+      imageName: csi-vol-71228313-8d7c-4ee0-a215-513c7d3dde64
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-5132f9ef-8c31-412e-8862-ded4976b7619
+  labels:
+    thecluster.io/origin-namespace: kube-prometheus-stack
+spec:
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: pvc-5132f9ef-8c31-412e-8862-ded4976b7619
+    namespace: ceph-reclaim
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-74c7442d-8c22-4e34-bb1e-2e2f80330913
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-74c7442d-8c22-4e34-bb1e-2e2f80330913
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-6803a463-1ac9-4384-b9a7-92673a9a6831
+  labels:
+    thecluster.io/origin-namespace: kube-prometheus-stack
+spec:
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: pvc-6803a463-1ac9-4384-b9a7-92673a9a6831
+    namespace: ceph-reclaim
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-17fb2be2-23b8-4e24-80ae-19454e4e2d42
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-17fb2be2-23b8-4e24-80ae-19454e4e2d42
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-1cb93334-df44-4e0b-b54e-7aca80c47cc5
+  labels:
+    thecluster.io/origin-namespace: monitoring
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: ssd-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: pvc-1cb93334-df44-4e0b-b54e-7aca80c47cc5
+    namespace: ceph-reclaim
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: 0001-0009-rook-ceph-0000000000000014-d839c126-b147-4139-a226-31e896f53675
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: default-ssd
+      journalPool: default-ssd
+      imageName: csi-vol-d839c126-b147-4139-a226-31e896f53675
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-47c5ca43-724a-4dea-8fea-33e3f81c131b
+  labels:
+    thecluster.io/origin-namespace: monitoring
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: pvc-47c5ca43-724a-4dea-8fea-33e3f81c131b
+    namespace: ceph-reclaim
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-668982dd-8221-4e3c-ba75-626be6d8ea33
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-668982dd-8221-4e3c-ba75-626be6d8ea33
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-d742e693-ef74-41b6-92c3-df86a6dcebb1
+  labels:
+    thecluster.io/origin-namespace: monitoring
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: pvc-d742e693-ef74-41b6-92c3-df86a6dcebb1
+    namespace: ceph-reclaim
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-fe870ac3-025e-46de-8932-75440f5b33ac
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-fe870ac3-025e-46de-8932-75440f5b33ac
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-7084d3a5-1e06-4b87-aef5-b0c0b71062c2
+  labels:
+    thecluster.io/origin-namespace: nextcloud
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: pvc-7084d3a5-1e06-4b87-aef5-b0c0b71062c2
+    namespace: ceph-reclaim
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-2088635f-a9b7-4d38-9d92-d0ef8c59011a
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-2088635f-a9b7-4d38-9d92-d0ef8c59011a
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-8fa259f7-9d7a-47a4-9a0d-1916a11885ea
+  labels:
+    thecluster.io/origin-namespace: nextcloud
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: pvc-8fa259f7-9d7a-47a4-9a0d-1916a11885ea
+    namespace: ceph-reclaim
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-91b9e4c1-e626-41e4-9166-6ab45e3eb65d
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-91b9e4c1-e626-41e4-9166-6ab45e3eb65d
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-58896da3-bc87-4211-9fcb-87989f7c8755
+  labels:
+    thecluster.io/origin-namespace: nix-system
+spec:
+  capacity:
+    storage: 250Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: pvc-58896da3-bc87-4211-9fcb-87989f7c8755
+    namespace: ceph-reclaim
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-f7ff2121-4eb8-4500-9f28-b9f6e308024d
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-f7ff2121-4eb8-4500-9f28-b9f6e308024d
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-026add83-352e-44b7-9719-58834b5b88f6
+  labels:
+    thecluster.io/origin-namespace: postgres-system
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: pvc-026add83-352e-44b7-9719-58834b5b88f6
+    namespace: ceph-reclaim
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-abfcc8ba-bd67-4dac-9941-fb5f127241a6
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-abfcc8ba-bd67-4dac-9941-fb5f127241a6
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-61d96710-b654-483e-af63-1ef050c13071
+  labels:
+    thecluster.io/origin-namespace: postgres-system
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: pvc-61d96710-b654-483e-af63-1ef050c13071
+    namespace: ceph-reclaim
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-575284a5-21c5-4a20-88b6-1a90a7143a90
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-575284a5-21c5-4a20-88b6-1a90a7143a90
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-6d043f66-9fad-4e7a-bb96-5fbd2e9a1669
+  labels:
+    thecluster.io/origin-namespace: postgres-system
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: pvc-6d043f66-9fad-4e7a-bb96-5fbd2e9a1669
+    namespace: ceph-reclaim
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-d4b22265-5c9e-4916-ac48-866c24d4b83a
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-d4b22265-5c9e-4916-ac48-866c24d4b83a
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-7d665a76-1853-43a9-8c17-0c9ac1fc7e03
+  labels:
+    thecluster.io/origin-namespace: postgres-system
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: pvc-7d665a76-1853-43a9-8c17-0c9ac1fc7e03
+    namespace: ceph-reclaim
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-8ed3fcba-7f76-470e-89d5-b86637adbebc
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-8ed3fcba-7f76-470e-89d5-b86637adbebc
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-592c1f6d-22a6-4ede-8f25-a39a1c522df8
+  labels:
+    thecluster.io/origin-namespace: xmage
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: pvc-592c1f6d-22a6-4ede-8f25-a39a1c522df8
+    namespace: ceph-reclaim
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-ae0049de-ce7e-4f7c-aa36-9dd3cb3c340a
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-ae0049de-ce7e-4f7c-aa36-9dd3cb3c340a
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
