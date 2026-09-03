@@ -6,5 +6,5 @@ resources:
   - ingress.yml
   - network-policy.yml
   - receiver.yml
-  - sealed-secrets.yml
+  - sealed-secrets-httproute.yml
   - webhook-token-sealed.yml
