@@ -3,10 +3,8 @@ kind: Kustomization
 resources:
   - ../external-snapshotter
   - ../gateway-api
-  - headlamp.yml
   - ingress.yml
   - network-policy.yml
   - receiver.yml
   - sealed-secrets.yml
-  - vmware-tanzu.yml
   - webhook-token-sealed.yml
