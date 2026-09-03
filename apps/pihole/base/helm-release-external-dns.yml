@@ -40,6 +40,12 @@ spec:
                     - gaea
     domainFilters:
       - thecluster.lan
+    # The chart defaults to service+ingress. Clusters that expose apps through
+    # the Gateway API need gateway-httproute or those hostnames never publish.
+    sources:
+      - service
+      - ingress
+      - gateway-httproute
     interval: 30m
     # https://kubernetes-sigs.github.io/external-dns/latest/docs/tutorials/pihole/#arguments
     env:
@@ -100,6 +106,12 @@ spec:
                     - gaea
     domainFilters:
       - thecluster.lan
+    # The chart defaults to service+ingress. Clusters that expose apps through
+    # the Gateway API need gateway-httproute or those hostnames never publish.
+    sources:
+      - service
+      - ingress
+      - gateway-httproute
     interval: 30m
     # https://kubernetes-sigs.github.io/external-dns/latest/docs/tutorials/pihole/#arguments
     env:

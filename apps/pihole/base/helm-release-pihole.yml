@@ -35,7 +35,9 @@ spec:
       dns_domain: thecluster.lan
       webserver_domain: pihole-a.thecluster.lan
       webserver_interface_theme: default-darker
-      misc_readonly: "true"
+      # external-dns writes records through the FTL config API, which a
+      # read-only FTL rejects outright.
+      misc_readonly: "false"
       ntp_ipv4_active: "false"
       ntp_ipv6_active: "false"
       ntp_sync_server: pool.ntp.org
@@ -50,7 +52,6 @@ spec:
     serviceDns:
       mixedService: true
       type: LoadBalancer
-      loadBalancerIP: 192.168.1.44
     serviceDhcp:
       enabled: false
     persistentVolumeClaim:
@@ -121,7 +122,9 @@ spec:
       dns_domain: thecluster.lan
       webserver_domain: pihole-b.thecluster.lan
       webserver_interface_theme: default-darker
-      misc_readonly: "true"
+      # external-dns writes records through the FTL config API, which a
+      # read-only FTL rejects outright.
+      misc_readonly: "false"
       ntp_ipv4_active: "false"
       ntp_ipv6_active: "false"
       ntp_sync_server: pool.ntp.org
@@ -136,7 +139,6 @@ spec:
     serviceDns:
       mixedService: true
       type: LoadBalancer
-      loadBalancerIP: 192.168.1.45
     serviceDhcp:
       enabled: false
     persistentVolumeClaim:
