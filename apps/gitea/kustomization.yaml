@@ -10,3 +10,4 @@ resources:
   - httproute.yml
   - ingress.yml
   - ssh-service.yml
+  - pvs.yml

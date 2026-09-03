@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-4d30eb08-d978-4c4c-97ea-72c0c1d62713
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: db
+    namespace: xmage
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-8b0e5984-1f36-4194-8b80-ae7a39a176ba
+    fsType: ext4
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-8b0e5984-1f36-4194-8b80-ae7a39a176ba
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph

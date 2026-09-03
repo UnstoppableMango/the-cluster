@@ -5,3 +5,4 @@ resources:
   # - secret-sealed.yml # add once sealed: see hack/secrets/apps/palworld/palworld.yml
   - service.yml
   - statefulset.yml
+  - pvs.yml

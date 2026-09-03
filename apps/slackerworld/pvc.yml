@@ -5,6 +5,7 @@ metadata:
   namespace: slackerworld
 spec:
   storageClassName: unsafe-rbd
+  volumeName: pvc-5f4277c3-1cbe-4152-a94b-fce965d8902d
   resources:
     requests:
       storage: 24Gi

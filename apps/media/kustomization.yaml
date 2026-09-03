@@ -22,3 +22,5 @@ resources:
   - copyparty-deployment.yml
   - copyparty-service.yml
   - copyparty-httproute.yml
+  - pvs.yml
+  - legacy-pvcs.yml

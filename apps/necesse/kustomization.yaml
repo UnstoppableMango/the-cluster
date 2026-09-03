@@ -6,3 +6,4 @@ resources:
   - pvc.yml
   - secret-sealed.yml
   - service.yml
+  - pvs.yml

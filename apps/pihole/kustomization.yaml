@@ -7,3 +7,4 @@ resources:
   - namespace.yml
   - helm-release-pihole.yml
   - secret-sealed.yml
+  - pvs.yml

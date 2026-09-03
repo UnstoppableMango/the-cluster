@@ -7,6 +7,7 @@ spec:
   accessModes:
     - ReadWriteOncePod
   storageClassName: default-cephfs
+  volumeName: pvc-9d72eb8c-24d0-46b7-b0f8-9e166931cd7e
   resources:
     requests:
       storage: 5Gi

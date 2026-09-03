@@ -1,0 +1,181 @@
+# Claims reserving imported ceph volumes whose original PVC name is unknown.
+# Rename once the volume contents identify the workload it belonged to.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: legacy-2bc6b513
+  namespace: media
+spec:
+  storageClassName: ec-cephfs
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  volumeName: pvc-3b213930-e834-4fdc-9d6e-9e02f051c49d
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: legacy-48d51b52
+  namespace: media
+spec:
+  storageClassName: ec-cephfs
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  volumeName: pvc-639475fc-49aa-4368-8a97-b41f3dc818a3
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: legacy-546ee57b
+  namespace: media
+spec:
+  storageClassName: ec-cephfs
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  volumeName: pvc-77c91c0c-50e5-4957-a3e6-4ce91846deba
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: legacy-5e2658d2
+  namespace: media
+spec:
+  storageClassName: default-cephfs
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  volumeName: pvc-1700e5ee-c43b-4dd8-be95-cfef2c281b5b
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: legacy-60362a50
+  namespace: media
+spec:
+  storageClassName: ssd-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-b9225bcb-6e04-4b28-9e91-75b5940b58cd
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: legacy-7e86bc67
+  namespace: media
+spec:
+  storageClassName: default-cephfs
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  volumeName: pvc-6a7587dc-d3b6-4ffe-a82b-df6ccffcb124
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: legacy-82263ac8
+  namespace: media
+spec:
+  storageClassName: ssd-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-c23b427c-1ef6-42c6-a5e3-1a742cb99b38
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: legacy-91211654
+  namespace: media
+spec:
+  storageClassName: ssd-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-c9b0205b-7a20-4d50-ba1b-d7945f45b151
+  resources:
+    requests:
+      storage: 128Mi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: legacy-960fb57d
+  namespace: media
+spec:
+  storageClassName: ec-cephfs
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  volumeName: pvc-7b37a458-cd1f-47b5-81be-229019fc1a9d
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: legacy-9ed6b73d
+  namespace: media
+spec:
+  storageClassName: ssd-rbd
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: pvc-c47d47f3-f830-4fef-83c2-975b71d1ad0c
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: legacy-df48d152
+  namespace: media
+spec:
+  storageClassName: ec-cephfs
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  volumeName: pvc-fb0dda39-d1a0-4301-933c-781c15957ff3
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: legacy-f29db30d
+  namespace: media
+spec:
+  storageClassName: ec-cephfs
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  volumeName: pvc-c83917ed-3605-4952-91ee-7136781b5d1a
+  resources:
+    requests:
+      storage: 1Gi

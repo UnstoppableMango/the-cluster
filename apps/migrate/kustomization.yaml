@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - namespace.yml
   - pvcs.yml
+  - pvs.yml

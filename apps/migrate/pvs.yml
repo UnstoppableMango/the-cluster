@@ -1,0 +1,455 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-a09d9179-f8f0-4e38-8fe3-0c008de37761
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 10Ti
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: anime
+    namespace: migrate
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-50007acf-e23a-4474-bb1f-dfb0e9edd900
+    fsType: ext4
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-50007acf-e23a-4474-bb1f-dfb0e9edd900
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-d263772f-1d40-41fd-a5de-34e89c516416
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 3Ti
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: archive
+    namespace: migrate
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-3ee90e4c-cb93-4715-b88b-b6b751e73948
+    fsType: ext4
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-3ee90e4c-cb93-4715-b88b-b6b751e73948
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-16067f0c-0e94-4a13-8e97-ec76a98d8d72
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 8Ti
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: backup
+    namespace: migrate
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-39ee4b43-39c0-4d20-97ae-be23aa1abd12
+    fsType: ext4
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-39ee4b43-39c0-4d20-97ae-be23aa1abd12
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-47d25420-2e28-412a-b245-74fb97c4c7d7
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 6Ti
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: downloads
+    namespace: migrate
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-d5ab2f9f-5c43-4fb9-966e-dca6c339c9a2
+    fsType: ext4
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-d5ab2f9f-5c43-4fb9-966e-dca6c339c9a2
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-ce451497-122a-4ed3-9ab7-33013e2ad5d9
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 7Ti
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: isos
+    namespace: migrate
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-a33971c9-6727-4206-8590-5d2d92bfd664
+    fsType: ext4
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-a33971c9-6727-4206-8590-5d2d92bfd664
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-b8caff98-10cc-4083-81d5-82be1ab20a05
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 1Ti
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: linux-isos
+    namespace: migrate
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-d728530e-8286-4636-8004-e64ea2aade39
+    fsType: ext4
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-d728530e-8286-4636-8004-e64ea2aade39
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-7bb29113-2af6-4fef-b3f5-dcfd6937cc92
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 12Ti
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: movies
+    namespace: migrate
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-0550831f-67a8-486e-99c6-00706d837bf3
+    fsType: ext4
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-0550831f-67a8-486e-99c6-00706d837bf3
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-17a121de-e913-43dd-acfc-ccf7d5182ee0
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 4Ti
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: movies4k
+    namespace: migrate
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-37bc7a0f-b014-4427-838d-be42302fbae4
+    fsType: ext4
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-37bc7a0f-b014-4427-838d-be42302fbae4
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-2daaa359-708f-4be4-bc5e-36e747d0dce7
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 4Ti
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: music
+    namespace: migrate
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-255e1b9e-247b-4ba4-a205-4f2437116f5e
+    fsType: ext4
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-255e1b9e-247b-4ba4-a205-4f2437116f5e
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-de9ae21b-b0fb-4ce2-8327-a81ac8557c63
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 2Ti
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: photos
+    namespace: migrate
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-bab352fe-1e36-435d-a62b-7b30f2319a41
+    fsType: ext4
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-bab352fe-1e36-435d-a62b-7b30f2319a41
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-c9ed1ae1-087a-450d-b040-5811ba69a0a8
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 12Ti
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: tv
+    namespace: migrate
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-83bcec13-01ab-48ad-8c70-55c67c40a371
+    fsType: ext4
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-83bcec13-01ab-48ad-8c70-55c67c40a371
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pvc-46d4b7b3-eb21-4426-bd97-f164df7be9a9
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+spec:
+  capacity:
+    storage: 10Ti
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: unsafe-rbd
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: tv4k
+    namespace: migrate
+  csi:
+    driver: rook-ceph.rbd.csi.ceph.com
+    volumeHandle: 0001-0009-rook-ceph-0000000000000003-7051859c-5471-4ff6-adac-23644acaf178
+    fsType: ext4
+    volumeAttributes:
+      clusterID: rook-ceph
+      pool: unsafe-metadata
+      dataPool: unsafe-data
+      journalPool: unsafe-metadata
+      imageName: csi-vol-7051859c-5471-4ff6-adac-23644acaf178
+      imageFeatures: layering
+      imageFormat: "2"
+    nodeStageSecretRef:
+      name: rook-csi-rbd-node
+      namespace: rook-ceph
+    controllerExpandSecretRef:
+      name: rook-csi-rbd-provisioner
+      namespace: rook-ceph

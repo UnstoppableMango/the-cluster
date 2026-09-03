@@ -9,6 +9,7 @@ spec:
   storageClassName: ssd-rbd
   accessModes:
     - ReadWriteOncePod
+  volumeName: pvc-2dc9b8dd-62f8-4eb8-a7ec-8ec19b89da44
   resources:
     requests:
       storage: 500Gi
