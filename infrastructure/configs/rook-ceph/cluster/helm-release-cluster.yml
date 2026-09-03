@@ -59,6 +59,8 @@ spec:
           # sdt1 is excluded as well: the drive behind it reports uncorrected
           # read errors that leave PGs inconsistent and hold the cluster in
           # HEALTH_ERR, which stops rook reconciling the filesystems and pools.
+          # The drive to pull from gaea is /dev/sdt, a SEAGATE DKS2C-H2R0SS
+          # with serial 9WM6BY870000C146002X.
           - name: gaea
             devices:
               - name: sda1
