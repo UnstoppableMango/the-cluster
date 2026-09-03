@@ -5,7 +5,7 @@ resources:
   - httproute.yml
 patches:
   # rosequartz sits on 10.0.69.0/24, so the pinkdiamond DNS addresses are
-  # outside the metallb pool. See configs/metallb-system/rosequartz.
+  # outside the metallb pool. See infrastructure/configs/metallb-system/rosequartz.
   - target:
       kind: HelmRelease
       name: pihole-a
