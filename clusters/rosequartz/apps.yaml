@@ -1,0 +1,59 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-nix-system
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/nix-system
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # pvc.yml and pvs.yml bind through storageClassName: unsafe-rbd.
+    - name: infra-configs-rook-ceph-storage
+    # ingress.yml is an HTTPRoute against the nginx Gateway in nginx-gateway.
+    - name: infra-nginx-gateway
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-arc-runners
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/arc-runners
+  interval: 10m
+  prune: true
+  wait: true
+  # The runners substitute from ncps (apps-nix-system) via NIX_CONFIG, but that
+  # is deliberately not a dependsOn edge. An unreachable substituter is a
+  # warning nix falls through, while ncps waits on a static PV, and a PV that
+  # fails to bind must not take every runner down with it.
+  dependsOn:
+    # The runner HelmReleases reference OCIRepository/gha-runner-scale-set in
+    # arc-system, which that controller directory creates.
+    - name: infra-arc-system
+    # thecluster-bot-sealed.yml needs the SealedSecret CRD.
+    - name: infra-sealed-secrets
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-unmango-runners
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/unmango-runners
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    - name: infra-arc-system
+    - name: infra-sealed-secrets

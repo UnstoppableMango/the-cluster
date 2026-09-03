@@ -28,6 +28,15 @@ spec:
             - name: runner
               image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:5c4288f08305f8e8574c8f00c779426fc4731e322917659cbc337a1178fcae3c
               command: [/home/runner/run.sh]
+              env:
+                # ncps binary cache, reachable in-cluster only. Honored because
+                # cachix/install-nix-action writes `trusted-users = root $USER` and
+                # the runner image sets USER=runner.
+                # extra-trusted-public-keys is intentionally absent: a stale key is
+                # a hard signature failure, so it lands once ncps /pubkey is read.
+                - name: NIX_CONFIG
+                  value: |
+                    extra-substituters = http://ncps.nix-system.svc.cluster.local:8501
               resources:
                 limits:
                   cpu: "8"
