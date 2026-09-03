@@ -7,9 +7,9 @@ DOCKER     ?= docker
 DPRINT     ?= dprint
 FLUX       ?= flux
 KUBECTL    ?= kubectl
-KUBESEAL   ?= $(GO) tool kubeseal
+KUBESEAL   ?= kubeseal
 PULUMI     ?= pulumi
-YQ         ?= $(GO) tool yq
+YQ         ?= yq
 
 FLUX_SOURCE ?= flux-system
 PKI_STACK   ?= UnstoppableMango/pki/prod
@@ -41,23 +41,19 @@ hack/secrets/infrastructure/configs/velero-system/ceph-credentials.yml:
 	@mkdir -p $(@D)
 	KUBECTL=$(KUBECTL) YQ=$(YQ) hack/velero-ceph-credentials.sh $@
 
-%-sealed.yml: hack/secrets/%.yml | hack/sealed-secrets.pub
-	$(KUBESEAL) --format=yaml --cert=$| \
-	--secret-file $< --sealed-secret-file $@
+.PHONY: new-secret seal unseal secrets
+new-secret seal unseal:
+	@test -n "$(SECRET)" || { \
+	echo 'usage: make $@ SECRET=<path> (e.g. SECRET=apps/dex/dex-credentials)' >&2; \
+	exit 1; }
+	@KUBECTL=$(KUBECTL) KUBESEAL=$(KUBESEAL) YQ=$(YQ) \
+	hack/secrets.sh $(subst new-secret,new,$@) $(SECRET) $(SECRET_ARGS)
 
-%-unseal: %-sealed.yml
-	@mkdir -p hack/secrets/$$(dirname $*)
-	@umask 0177; \
-	$(KUBECTL) get secret \
-	"$$($(YQ) -r '.spec.template.metadata.name // .metadata.name' $<)" \
-	-n "$$($(YQ) -r '.spec.template.metadata.namespace // .metadata.namespace' $<)" \
-	-o yaml > hack/secrets/$*.yml; chmod 0600 hack/secrets/$*.yml
+secrets:
+	@KUBECTL=$(KUBECTL) KUBESEAL=$(KUBESEAL) YQ=$(YQ) hack/secrets.sh list
 
 hack/sealed-secrets.pub:
-	$(KUBESEAL) --fetch-cert \
-	--controller-name sealed-secrets-controller \
-	--controller-namespace flux-system \
-	> $@
+	@KUBESEAL=$(KUBESEAL) hack/secrets.sh cert
 
 bin/image.tar: containers/default.nix containers/runner/default.nix
 	nix build '.#runner' --out-link $@

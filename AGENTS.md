@@ -33,11 +33,31 @@ make renovate       # trigger renovate cronjob manually
 
 ### GitOps
 
-Flux manifests live in `clusters/`, `apps/`, and `infrastructure/`. Sealed Secrets are used for sensitive data — generate with `make <name>-sealed.yml`.
+Flux manifests live in `clusters/`, `apps/`, and `infrastructure/`. Sealed Secrets are used for sensitive data.
 
 When a Flux manifest deploys a Helm chart with a companion container image (e.g. a chart version and an app image version that must stay in sync), group them in `renovate.json` so Renovate bumps both in a single PR. Use a `packageRules` entry with `groupName` targeting the relevant `HelmRelease` chart dep and the container image dep together.
 
-When a Flux manifest requires a Secret, always create a stub under `hack/secrets/` mirroring the path of the sealed secret (e.g. `hack/secrets/infrastructure/configs/crossplane-system/cloudflare-credentials.yml`). Use `stringData` with empty values so the user can populate and seal it. Never commit real credentials. Apply `umask 0177` before creating any file under `hack/secrets/` so it is written with mode 0600 (owner read/write only).
+#### Secrets
+
+Plaintext stubs live under `hack/secrets/` (gitignored) and mirror the path of the sealed manifest they produce:
+
+```
+hack/secrets/apps/dex/dex-credentials.yml  ->  apps/dex/dex-credentials-sealed.yml
+```
+
+`hack/secrets.sh` owns the whole workflow. It writes stubs with mode 0600, refuses to seal a stub with empty values, and warns when sealing would rename the secret out from under the workload that mounts it.
+
+```sh
+make new-secret SECRET=apps/dex/dex-credentials SECRET_ARGS='-n dex -k CLIENT_SECRET'
+make seal SECRET=apps/dex/dex-credentials     # stub -> sealed manifest
+make unseal SECRET=apps/dex/dex-credentials   # live cluster secret -> stub
+make secrets                                  # what exists, what needs sealing
+```
+
+When a Flux manifest requires a Secret, always create the stub as part of the same change, and add the sealed manifest to the directory's `kustomization.yaml`.
+Sealing is nondeterministic, so seal only the secret you changed; never bulk re-seal.
+`hack/secrets/` is gitignored, so existing stubs hold real values, leave them in place.
+Never commit real credentials outside `hack/secrets/`.
 
 ## Code Style
 
@@ -46,4 +66,6 @@ When a Flux manifest requires a Secret, always create a stub under `hack/secrets
 
 ## Development Environment
 
-Nix flake (`flake.nix`) provides a reproducible devshell. Go tooling (`go.mod`) manages `kubeseal`, `yq`, and `devctl`. Copy `hack/example.envrc` to `.envrc` for direnv setup.
+Nix flake (`flake.nix`) provides a reproducible devshell, which supplies `kubeseal`, `yq`, `kubectl`, `flux`, and `shellcheck` and exports each as an uppercase env var the Makefile and `hack/` scripts pick up. Copy `hack/example.envrc` to `.envrc` for direnv setup.
+
+Scripts under `hack/` are bash, `set -euo pipefail`, tab-indented, and must pass `shellcheck`.
