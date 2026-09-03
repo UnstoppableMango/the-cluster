@@ -1,20 +1,6 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-sources
-  namespace: flux-system
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  path: ./infrastructure/sources
-  interval: 10m
-  prune: true
-  wait: true
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
   name: infra-agones
   namespace: flux-system
 spec:
@@ -26,7 +12,6 @@ spec:
   prune: true
   wait: true
   dependsOn:
-    - name: infra-sources
     - name: infra-configs-gaming
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -42,8 +27,6 @@ spec:
   interval: 10m
   prune: true
   wait: true
-  dependsOn:
-    - name: infra-sources
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -88,8 +71,6 @@ spec:
   interval: 10m
   prune: true
   wait: true
-  dependsOn:
-    - name: infra-sources
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -104,8 +85,6 @@ spec:
   interval: 10m
   prune: true
   wait: true
-  dependsOn:
-    - name: infra-sources
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -120,8 +99,6 @@ spec:
   interval: 10m
   prune: true
   wait: true
-  dependsOn:
-    - name: infra-sources
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -152,8 +129,6 @@ spec:
   interval: 10m
   prune: true
   wait: true
-  dependsOn:
-    - name: infra-sources
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -210,8 +185,6 @@ spec:
   interval: 10m
   prune: true
   wait: true
-  dependsOn:
-    - name: infra-sources
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -227,7 +200,6 @@ spec:
   prune: true
   wait: true
   dependsOn:
-    - name: infra-sources
     - name: infra-configs-nginx-gateway
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -244,7 +216,6 @@ spec:
   prune: true
   wait: true
   dependsOn:
-    - name: infra-sources
     - name: infra-agones
     - name: infra-configs-gaming
 ---
@@ -277,8 +248,6 @@ spec:
   interval: 10m
   prune: true
   wait: true
-  dependsOn:
-    - name: infra-sources
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -293,8 +262,6 @@ spec:
   interval: 10m
   prune: true
   wait: true
-  dependsOn:
-    - name: infra-sources
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -309,8 +276,6 @@ spec:
   interval: 10m
   prune: true
   wait: true
-  dependsOn:
-    - name: infra-sources
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -326,5 +291,4 @@ spec:
   prune: true
   wait: true
   dependsOn:
-    - name: infra-sources
     - name: infra-cert-manager
