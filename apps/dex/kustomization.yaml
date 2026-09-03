@@ -2,7 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - namespace.yml
-  # - dex-credentials-sealed.yml # add once sealed: see hack/secrets/apps/dex/dex-credentials.yml
+  - dex-credentials-sealed.yml
   - helm-repository.yml
   - helm-release.yml
   - ingress.yml
