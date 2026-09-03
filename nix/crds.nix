@@ -10,7 +10,6 @@ let
   fluxSrc = callPackage ./src.nix { };
   fromFlux = path: kubelib.fromYAML (builtins.readFile "${fluxSrc}/${path}") |> builtins.head;
   fromControllers = path: fromFlux "infrastructure/controllers/${path}";
-  fromSources = path: fromFlux "infrastructure/sources/${path}";
 
   downloadFluxHelmChart =
     {
@@ -32,7 +31,7 @@ let
     name = "agones";
     chart = downloadFluxHelmChart {
       releaseNamespace = "agones-system";
-      repo = fromSources "agones-system-helm-repository.yml";
+      repo = fromControllers "agones-system/helm-repository.yml";
       chartHash = "sha256-8eaRT40afNFNi/YMIq14A8xODDiI2L+ZUbqpbSA8/kM=";
     };
     includeCRDs = true;
@@ -60,7 +59,7 @@ let
     name = "cloudnative-pg";
     chart = downloadFluxHelmChart {
       releaseNamespace = "cnpg-system";
-      repo = fromSources "cnpg-system-helm-repository.yml";
+      repo = fromControllers "cnpg-system/helm-repository.yml";
       chartHash = "sha256-IE5HEzMotxW00cdnmgJgDedNS42iBiuiwYRo9pe/10w=";
     };
     includeCRDs = true;
