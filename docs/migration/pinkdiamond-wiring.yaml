@@ -281,6 +281,20 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: infra-external-snapshotter
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/controllers/external-snapshotter
+  interval: 10m
+  prune: true
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: infra-olmv1
   namespace: flux-system
 spec:
@@ -355,6 +369,7 @@ spec:
   path: ./infrastructure/configs/metallb-system
   interval: 10m
   prune: true
+  wait: true
   dependsOn:
     - name: infra-metallb
 ---
@@ -384,6 +399,7 @@ spec:
   path: ./infrastructure/configs/kube-system
   interval: 10m
   prune: true
+  wait: true
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -413,8 +429,13 @@ spec:
   path: ./infrastructure/configs/rook-ceph
   interval: 10m
   prune: true
+  wait: true
   dependsOn:
-    - name: external-snapshotter-crds
+    # This named external-snapshotter-crds, which is defined inside
+    # controllers/external-snapshotter and so only exists once something
+    # applies that path. Nothing here did, so this never became ready and took
+    # infra-configs-velero and infra-velero down with it.
+    - name: infra-external-snapshotter
     - name: infra-rook-ceph
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -429,6 +450,8 @@ spec:
   path: ./infrastructure/configs/cloudflare-operator-system
   interval: 10m
   prune: true
+  # No wait: the ClusterTunnel takes a while to come up. infra-configs-default
+  # hangs off this one, so gating on tunnel health would delay it for no reason.
   dependsOn:
     - name: infra-cloudflare-operator
 ---
@@ -444,6 +467,7 @@ spec:
   path: ./infrastructure/configs/cloudflare-system
   interval: 10m
   prune: true
+  wait: true
   dependsOn:
     - name: infra-cloudflare
 ---
@@ -459,6 +483,7 @@ spec:
   path: ./infrastructure/configs/default
   interval: 10m
   prune: true
+  wait: true
   dependsOn:
     - name: infra-configs-cloudflare-operator
 ---
@@ -524,6 +549,10 @@ spec:
   interval: 10m
   prune: true
   wait: true
+  dependsOn:
+    # The runner HelmReleases reference OCIRepository/gha-runner-scale-set in
+    # arc-system, which that controller directory creates.
+    - name: infra-arc-system
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -766,6 +795,8 @@ spec:
   interval: 10m
   prune: true
   wait: true
+  dependsOn:
+    - name: infra-arc-system
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
