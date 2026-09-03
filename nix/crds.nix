@@ -32,7 +32,7 @@ let
     chart = downloadFluxHelmChart {
       releaseNamespace = "agones-system";
       repo = fromControllers "agones-system/helm-repository.yml";
-      chartHash = "sha256-8eaRT40afNFNi/YMIq14A8xODDiI2L+ZUbqpbSA8/kM=";
+      chartHash = "sha256-AAqQIoK4Tg2oU6vTYo6lveJonx+55exNUdBa8mSfd0A=";
     };
     includeCRDs = true;
   };
@@ -60,7 +60,7 @@ let
     chart = downloadFluxHelmChart {
       releaseNamespace = "cnpg-system";
       repo = fromControllers "cnpg-system/helm-repository.yml";
-      chartHash = "sha256-IE5HEzMotxW00cdnmgJgDedNS42iBiuiwYRo9pe/10w=";
+      chartHash = "sha256-72JIAEZ9bc2z/qYhugF5RkhP0O8wkAAUgduxxMbdZUY=";
     };
     includeCRDs = true;
   };
