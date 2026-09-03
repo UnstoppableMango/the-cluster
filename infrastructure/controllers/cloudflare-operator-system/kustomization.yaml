@@ -2,5 +2,11 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - flux-kustomization.yml
+  # The GitRepository lands in this directory's Namespace, so it belongs in the
+  # same Kustomization: kustomize-controller establishes Namespaces before the
+  # objects inside them. Keeping it in a separate path would mean ordering one
+  # against the other, and the source cannot be applied until the namespace it
+  # targets exists.
+  - git-repository.yml
   - namespace.yml
   - secret-sealed.yml

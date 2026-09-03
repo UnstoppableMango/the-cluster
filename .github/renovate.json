@@ -81,6 +81,12 @@
 		},
 		{
 			"matchPackageNames": [
+				"adyanth/cloudflare-operator"
+			],
+			"groupName": "cloudflare-operator"
+		},
+		{
+			"matchPackageNames": [
 				"xpkg.crossplane.io/crossplane/crossplane",
 				"crossplane"
 			],

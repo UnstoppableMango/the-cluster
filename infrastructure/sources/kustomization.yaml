@@ -4,7 +4,6 @@ resources:
   - agones-system-helm-repository.yml
   - arc-system-oci-repository.yml
   - awx-system-git-repository.yml
-  - cloudflare-operator-system-git-repository.yml
   - cloudflare-system-git-repository.yml
   - cloudflare-system-helm-repository.yml
   - cloudflare-system-oci-repository.yml

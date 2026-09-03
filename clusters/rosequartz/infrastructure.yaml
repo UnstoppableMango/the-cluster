@@ -251,3 +251,38 @@ spec:
   dependsOn:
     - name: infra-nginx-gateway
     - name: infra-configs-rook-ceph
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-cloudflare-operator
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/controllers/cloudflare-operator-system
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # The controller directory ships the operator's credentials SealedSecret, so
+    # the CRD has to exist or nothing on this path applies.
+    - name: infra-sealed-secrets
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-configs-cloudflare-operator
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/configs/cloudflare-operator-system
+  interval: 10m
+  prune: true
+  # No wait: the ClusterTunnel takes a while to come up and nothing here gates
+  # on it.
+  dependsOn:
+    - name: infra-cloudflare-operator
