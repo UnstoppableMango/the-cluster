@@ -169,6 +169,7 @@
 		{
 			"matchPackageNames": [
 				"ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller",
+				"ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set",
 				"ghcr.io/actions/gha-runner-scale-set-controller"
 			],
 			"groupName": "arc"

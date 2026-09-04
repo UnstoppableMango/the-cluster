@@ -14,12 +14,25 @@ defaults:
     spec:
       containers:
         - name: runner
-          image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:a85521c9ca1ee56af55c5ccef7ef2ebfc52ad68aacdcb590f184055be9843251
+          image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:5c4288f08305f8e8574c8f00c779426fc4731e322917659cbc337a1178fcae3c
           command: [/home/runner/run.sh]
+          env:
+            # ncps binary cache, reachable in-cluster only. Honored because
+            # cachix/install-nix-action writes `trusted-users = root $USER` and
+            # the runner image sets USER=runner.
+            # extra-trusted-public-keys is intentionally absent: a stale key is
+            # a hard signature failure, so it lands once ncps /pubkey is read.
+            - name: NIX_CONFIG
+              value: |
+                extra-substituters = http://ncps.nix-system.svc.cluster.local:8501
 
 # One entry per scale set. Each is merged with defaults (entry wins on conflict).
 # Required per entry: name, githubConfigUrl
 # All other gha-runner-scale-set values are valid (minRunners, containerMode, template, etc.)
+#
+# Careful: mergeOverwrite replaces lists wholesale, so an entry that supplies its
+# own template.spec.containers drops the defaults above, including command and
+# the NIX_CONFIG substituter. Repeat both if you override that list.
 scaleSets: []
 # - name: dotfiles
 #   githubConfigUrl: https://github.com/UnstoppableMango/dotfiles
@@ -38,7 +51,7 @@ scaleSets: []
 #         fsGroup: 1001
 #       containers:
 #         - name: runner
-#           image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:a85521c9ca1ee56af55c5ccef7ef2ebfc52ad68aacdcb590f184055be9843251
+#           image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:5c4288f08305f8e8574c8f00c779426fc4731e322917659cbc337a1178fcae3c
 #           command: [/home/runner/run.sh]
 #           resources:
 #             limits:

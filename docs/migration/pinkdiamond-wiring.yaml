@@ -18,20 +18,6 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-arc-system
-  namespace: flux-system
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  path: ./infrastructure/controllers/arc-system
-  interval: 10m
-  prune: true
-  wait: true
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
   name: infra-cert-manager-crds
   namespace: flux-system
 spec:
@@ -535,25 +521,6 @@ spec:
   dependsOn:
     - name: infra-configs-crossplane
 ---
-# Apps, from apps/flux-kustomizations.yaml
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: apps-arc-runners
-  namespace: flux-system
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  path: ./apps/arc-runners
-  interval: 10m
-  prune: true
-  wait: true
-  dependsOn:
-    # The runner HelmReleases reference OCIRepository/gha-runner-scale-set in
-    # arc-system, which that controller directory creates.
-    - name: infra-arc-system
----
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -701,20 +668,6 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: apps-nix-system
-  namespace: flux-system
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  path: ./apps/nix-system
-  interval: 10m
-  prune: true
-  wait: true
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
   name: apps-palworld
   namespace: flux-system
 spec:
@@ -781,22 +734,6 @@ spec:
   interval: 10m
   prune: true
   wait: true
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: apps-unmango-runners
-  namespace: flux-system
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  path: ./apps/unmango-runners
-  interval: 10m
-  prune: true
-  wait: true
-  dependsOn:
-    - name: infra-arc-system
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
