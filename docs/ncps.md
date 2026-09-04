@@ -22,7 +22,12 @@ kubectl -n nix-system port-forward statefulset/ncps 8501:8501 &
 curl -sS http://127.0.0.1:8501/pubkey; echo
 ```
 
-Anything consuming ncps as a substituter needs that value in `extra-trusted-public-keys`.
+The current value is `ncps.thecluster.lan:pAJGNVSRmG7gCDSOAaiHDxLFUSdys5Pk0XvcJ5803Dw=`.
+Anything consuming ncps as a substituter needs it in `extra-trusted-public-keys`.
+
+Note that this is not the key an older, commented-out entry in `UnstoppableMango/nixos` records.
+The volume survived the migration, but the key material did not, and the name is derived from `--cache-hostname` so both spell `ncps.thecluster.lan:`.
+That is the trap this section exists to describe: read `/pubkey`, do not trust a written-down value.
 A key that is stale but well-formed is worse than no key: nix treats the signature as untrusted and fails the substitution outright rather than falling back.
 So read `/pubkey` before writing the value anywhere, and never copy it forward on faith.
 

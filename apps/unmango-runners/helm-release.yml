@@ -65,11 +65,10 @@ spec:
             # ncps binary cache, reachable in-cluster only. Honored because
             # cachix/install-nix-action writes `trusted-users = root $USER` and
             # the runner image sets USER=runner.
-            # extra-trusted-public-keys is intentionally absent: a stale key is
-            # a hard signature failure, so it lands once ncps /pubkey is read.
             - name: NIX_CONFIG
               value: |
                 extra-substituters = http://ncps.nix-system.svc.cluster.local:8501
+                extra-trusted-public-keys = ncps.thecluster.lan:pAJGNVSRmG7gCDSOAaiHDxLFUSdys5Pk0XvcJ5803Dw=
           volumeMounts:
             - name: work
               mountPath: /home/runner/_work
