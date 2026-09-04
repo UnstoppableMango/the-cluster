@@ -3,4 +3,5 @@ kind: Kustomization
 resources:
   - crds-flux-kustomization.yml
   - flux-kustomization.yml
+  - git-repository.yml
   - namespace.yml

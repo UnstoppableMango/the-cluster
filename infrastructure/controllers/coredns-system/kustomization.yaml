@@ -1,5 +1,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+# The coredns-system Namespace comes from configs/coredns-system, which this
+# directory's Kustomization already orders itself behind, because the configs
+# certificates land in that namespace too. Applying it from both puts the same
+# object in two Flux inventories, where a prune on either deletes it out from
+# under the other. The sources here are fine to keep: they resolve once the
+# namespace their owner created exists.
 resources:
   - external-dns-crds.yml
   - coredns-helm-release.yml
@@ -8,5 +14,4 @@ resources:
   - etcd-statefulset.yml
   - external-dns-helm-release.yml
   - external-dns-helm-repository.yml
-  - namespace.yml
   - pvs.yml
