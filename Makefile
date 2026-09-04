@@ -52,19 +52,6 @@ $(KUBESEAL) --format=yaml --cert=$| \
 --secret-file $< --sealed-secret-file $@
 endef
 
-# $* drops the top-level directory, which differs per rule, so the stub path is
-# derived from the sealed file instead: hack/secrets/ mirrors the manifest tree.
-STUB = hack/secrets/$(patsubst %-sealed.yml,%.yml,$<)
-
-define unseal
-@mkdir -p $(dir $(STUB))
-@umask 0177; \
-$(KUBECTL) get secret \
-"$$($(YQ) -r '.spec.template.metadata.name // .metadata.name' $<)" \
--n "$$($(YQ) -r '.spec.template.metadata.namespace // .metadata.namespace' $<)" \
--o yaml > $(STUB); chmod 0600 $(STUB)
-endef
-
 # Without this a sealed secret built on the way to a -unseal target counts as an
 # intermediate file, and make deletes it afterwards.
 .PRECIOUS: apps/%-sealed.yml infrastructure/%-sealed.yml
@@ -75,11 +62,15 @@ apps/%-sealed.yml: hack/secrets/apps/%.yml | hack/sealed-secrets.pub
 infrastructure/%-sealed.yml: hack/secrets/infrastructure/%.yml | hack/sealed-secrets.pub
 	$(seal)
 
-apps/%-unseal: apps/%-sealed.yml
-	$(unseal)
-
-infrastructure/%-unseal: infrastructure/%-sealed.yml
-	$(unseal)
+# The bare pattern is right here: the prerequisite carries no directory of its
+# own, so make matches the whole target and $* is the full path.
+%-unseal: %-sealed.yml
+	@mkdir -p hack/secrets/$$(dirname $*)
+	@umask 0177; \
+	$(KUBECTL) get secret \
+	"$$($(YQ) -r '.spec.template.metadata.name // .metadata.name' $<)" \
+	-n "$$($(YQ) -r '.spec.template.metadata.namespace // .metadata.namespace' $<)" \
+	-o yaml > hack/secrets/$*.yml; chmod 0600 hack/secrets/$*.yml
 
 hack/sealed-secrets.pub:
 	$(KUBESEAL) --fetch-cert \
