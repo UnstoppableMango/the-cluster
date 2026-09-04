@@ -17,6 +17,10 @@ spec:
       name: gha-runner-scale-set
       namespace: arc-system
     defaults:
+      # Set through values, not a postRenderer: the chart derives the
+      # actions.github.com/scale-set-name label from this, and patching only
+      # spec.runnerScaleSetName leaves the label disagreeing with the spec.
+      runnerScaleSetName: thecluster
       githubConfigSecret: thecluster-bot
       containerMode:
         type: dind
