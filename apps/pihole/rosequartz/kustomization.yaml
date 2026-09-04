@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../base
+  - httproute.yml
+patches:
+  # rosequartz sits on 10.0.69.0/24, so the pinkdiamond DNS addresses are
+  # outside the metallb pool. See infrastructure/configs/metallb-system/rosequartz.
+  - target:
+      kind: HelmRelease
+      name: pihole-a
+    patch: |-
+      - op: add
+        path: /spec/values/serviceDns/loadBalancerIP
+        value: 10.0.69.201
+  - target:
+      kind: HelmRelease
+      name: pihole-b
+    patch: |-
+      - op: add
+        path: /spec/values/serviceDns/loadBalancerIP
+        value: 10.0.69.202

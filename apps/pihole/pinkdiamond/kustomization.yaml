@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../base
+  - ingress.yml
+  - pvs.yml
+patches:
+  - target:
+      kind: HelmRelease
+      name: pihole-a
+    patch: |-
+      - op: add
+        path: /spec/values/serviceDns/loadBalancerIP
+        value: 192.168.1.44
+  - target:
+      kind: HelmRelease
+      name: pihole-b
+    patch: |-
+      - op: add
+        path: /spec/values/serviceDns/loadBalancerIP
+        value: 192.168.1.45
