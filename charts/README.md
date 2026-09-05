@@ -5,7 +5,7 @@ They are not intended to be general purpose charts, but this may change in the f
 
 ## Charts
 
-| Chart | Description |
-|---|---|
-| [arc-runner-scale-set](arc-runner-scale-set/) | Cluster-default wrapper for gha-runner-scale-set |
-| [redis](redis/) | Lightweight Redis deployment for cluster workloads |
+| Chart                                         | Description                                        |
+| --------------------------------------------- | -------------------------------------------------- |
+| [arc-runner-scale-set](arc-runner-scale-set/) | Cluster-default wrapper for gha-runner-scale-set   |
+| [redis](redis/)                               | Lightweight Redis deployment for cluster workloads |
