@@ -53,8 +53,14 @@ spec:
             - --cache-database-url=sqlite:/storage/var/ncps/db/db.sqlite
             - --cache-upstream-url=https://cache.nixos.org
             - --cache-upstream-url=https://nix-community.cachix.org
+            - --cache-upstream-url=https://unstoppablemango.cachix.org
+            - --cache-upstream-url=https://mangopkgs.cachix.org
+            - --cache-upstream-url=https://unmango.cachix.org
             - --cache-upstream-public-key=cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
             - --cache-upstream-public-key=nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
+            - --cache-upstream-public-key=unstoppablemango.cachix.org-1:m7uEI6X1Ov8DyFWJQX4WsRFRWFuzRW5c/Xms8ZaP74U=
+            - --cache-upstream-public-key=mangopkgs.cachix.org-1:uJ5FgSbOg1uiXLcL0gBh1lO+y3KVuthy6UeOFYR1fLk=
+            - --cache-upstream-public-key=unmango.cachix.org-1:Psb+0nALJfIcYiZLc9JYri4FJGNnzM6goZX7iLErXCI=
           ports:
             - containerPort: 8501
               name: http-web

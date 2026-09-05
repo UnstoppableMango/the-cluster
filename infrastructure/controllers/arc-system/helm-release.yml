@@ -24,10 +24,12 @@ spec:
       readOnlyRootFilesystem: true
       runAsNonRoot: true
       runAsUser: 1000
+    # No CPU limit: throttling delays the 5s leader-election lease renewal, and a
+    # lost lease makes the controller exit and re-register every runner scale set
+    # with GitHub, which strands EphemeralRunnerSets on a stale runnerScaleSetId.
     resources:
       limits:
-        cpu: 100m
-        memory: 128Mi
+        memory: 512Mi
       requests:
         cpu: 100m
-        memory: 128Mi
+        memory: 256Mi

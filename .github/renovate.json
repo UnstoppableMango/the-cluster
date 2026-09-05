@@ -33,6 +33,18 @@
 				"github\\.com/(?<depName>[^/]+/[^/]+)/releases/download/(?<currentValue>v[\\d.]+)/"
 			],
 			"datasourceTemplate": "github-releases"
+		},
+		{
+			"customType": "regex",
+			"description": "dockerTools.pullImage base images, tracked by the tag in `finalImageTag`. `imageDigest` holds a per-architecture manifest digest and the docker datasource resolves a tag to the multi-arch index digest, so `currentDigest` is deliberately not captured; digests and nix hashes are refreshed by hand on the PR.",
+			"managerFilePatterns": [
+				"/^containers/.+\\.nix$/"
+			],
+			"matchStrings": [
+				"imageName = \"(?<depName>[^\"]+)\";[\\s\\S]*?finalImageTag = \"(?<currentValue>[^\"]+)\";"
+			],
+			"datasourceTemplate": "docker",
+			"versioningTemplate": "docker"
 		}
 	],
 	"packageRules": [
@@ -181,6 +193,21 @@
 				"ghcr.io/actions/gha-runner-scale-set-controller"
 			],
 			"groupName": "arc"
+		},
+		{
+			"matchPackageNames": [
+				"ghcr.io/actions/actions-runner"
+			],
+			"groupName": "actions-runner"
+		},
+		{
+			"matchFileNames": [
+				"containers/runner/default.nix"
+			],
+			"matchPackageNames": [
+				"ghcr.io/actions/actions-runner"
+			],
+			"description": "Renovate updates only `finalImageTag` in containers/runner/default.nix. Refresh every `baseImages` entry by hand on this PR, both x86_64-linux and aarch64-linux: each `imageDigest`, from `docker buildx imagetools inspect ghcr.io/actions/actions-runner:<new tag> --raw` (take the per-architecture manifest digest matching that system, not the index digest), and each `hash`, from the `got:` line of the mismatch error that system's build prints once its digest is in place. A wrong value surfaces only on the architecture it belongs to, so both hashes come from the Containers workflow, which builds each system on a native runner."
 		},
 		{
 			"matchPackageNames": [
