@@ -76,3 +76,20 @@ spec:
     - name: infra-configs-metallb
     - name: infra-configs-rook-ceph-storage
     - name: infra-nginx-gateway
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-renovate
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/renovate
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # secret-sealed.yml needs the SealedSecret CRD.
+    - name: infra-sealed-secrets

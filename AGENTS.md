@@ -25,7 +25,7 @@ Run it before pushing manifest changes.
 
 ```sh
 make reconcile      # flux reconcile source git flux-system
-make renovate       # trigger renovate cronjob manually
+make renovate       # trigger a renovate cronjob manually; RENOVATE_RELEASE selects the account
 make runner         # docker buildx build containers/runner/Dockerfile
 nix build '.#runner'  # build the nix runner image derivation
 ```
