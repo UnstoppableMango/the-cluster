@@ -33,6 +33,18 @@
 				"github\\.com/(?<depName>[^/]+/[^/]+)/releases/download/(?<currentValue>v[\\d.]+)/"
 			],
 			"datasourceTemplate": "github-releases"
+		},
+		{
+			"customType": "regex",
+			"description": "dockerTools.pullImage base images, pinned by tag and digest. The sibling `hash` is a nix content hash of the pulled tarball that Renovate cannot derive from registry metadata, so it is refreshed by hand on the PR; `nix build '.#runner'` in the Containers workflow reports the expected value.",
+			"managerFilePatterns": [
+				"/^containers/.+\\.nix$/"
+			],
+			"matchStrings": [
+				"imageName = \"(?<depName>[^\"]+)\";\\s*imageDigest = \"(?<currentDigest>sha256:[a-f0-9]+)\";[\\s\\S]*?finalImageTag = \"(?<currentValue>[^\"]+)\";"
+			],
+			"datasourceTemplate": "docker",
+			"versioningTemplate": "docker"
 		}
 	],
 	"packageRules": [
@@ -180,6 +192,21 @@
 				"ghcr.io/actions/gha-runner-scale-set-controller"
 			],
 			"groupName": "arc"
+		},
+		{
+			"matchPackageNames": [
+				"ghcr.io/actions/actions-runner"
+			],
+			"groupName": "actions-runner"
+		},
+		{
+			"matchFileNames": [
+				"containers/runner/default.nix"
+			],
+			"matchPackageNames": [
+				"ghcr.io/actions/actions-runner"
+			],
+			"description": "The `hash` next to `imageDigest` in containers/runner/default.nix is a nix content hash that Renovate leaves untouched. Refresh it on this PR: run `nix build '.#runner'` and copy the `got:` value from the hash mismatch error into `hash`."
 		},
 		{
 			"matchPackageNames": [
