@@ -87,7 +87,7 @@ defaults:
                 storageClassName: ssd-rbd
                 resources:
                   requests:
-                    storage: 30Gi
+                    storage: 75Gi
 
 # One entry per scale set. Each is merged with defaults (entry wins on conflict).
 # Required per entry: name, githubConfigUrl
