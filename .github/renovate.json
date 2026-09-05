@@ -206,7 +206,7 @@
 			"matchPackageNames": [
 				"ghcr.io/actions/actions-runner"
 			],
-			"description": "Renovate updates only `finalImageTag` in containers/runner/default.nix. Refresh the rest by hand on this PR: every `imageDigest`, from `docker buildx imagetools inspect ghcr.io/actions/actions-runner:<new tag> --raw` (take the per-architecture manifest digest matching each system, not the index digest), and every `hash`, from the `got:` value in the mismatch error that `nix build '.#runner'` prints once the digests are in place."
+			"description": "Renovate updates only `finalImageTag` in containers/runner/default.nix. Refresh the rest by hand on this PR: `imageDigest`, from `docker buildx imagetools inspect ghcr.io/actions/actions-runner:<new tag> --raw` (take the linux/amd64 manifest digest, not the index digest), and `hash`, from the `got:` value in the mismatch error that `nix build '.#packages.x86_64-linux.runner'` prints once the digest is in place. Both values are architecture specific and only x86_64-linux is built in CI."
 		},
 		{
 			"matchPackageNames": [
