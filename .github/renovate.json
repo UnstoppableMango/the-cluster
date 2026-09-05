@@ -80,6 +80,13 @@
 			"groupName": "origin-ca-issuer"
 		},
 		{
+			"description": "ncps is pinned to a v0.10.0 release candidate, see docs/ncps.md",
+			"matchPackageNames": [
+				"kalbasit/ncps"
+			],
+			"ignoreUnstable": false
+		},
+		{
 			"matchPackageNames": [
 				"adyanth/cloudflare-operator"
 			],
