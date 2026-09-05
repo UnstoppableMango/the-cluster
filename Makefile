@@ -15,11 +15,14 @@ YQ         ?= $(GO) tool yq
 FLUX_SOURCE ?= flux-system
 PKI_STACK   ?= UnstoppableMango/pki/prod
 
+# The renovate chart names each CronJob after its release, one per GitHub account.
+RENOVATE_RELEASE ?= unstoppablemango-renovate
+
 reconcile:
 	$(FLUX) reconcile source git ${FLUX_SOURCE}
 
 renovate:
-	$(KUBECTL) create job manual-$$(date +%s) --namespace renovate --from=cronjob/renovate
+	$(KUBECTL) create job manual-$$(date +%s) --namespace renovate --from=cronjob/$(RENOVATE_RELEASE)
 
 format fmt:
 	nix fmt
