@@ -6,6 +6,7 @@ DEVCTL     ?= $(GO) tool devctl
 DOCKER     ?= docker
 DPRINT     ?= dprint
 FLUX       ?= flux
+HELM       ?= helm
 KUBECTL    ?= kubectl
 KUBESEAL   ?= $(GO) tool kubeseal
 PULUMI     ?= pulumi
@@ -47,14 +48,8 @@ hack/secrets/infrastructure/configs/velero-system/ceph-credentials.yml:
 # pattern looks for infrastructure/<ns>/hack/secrets/secret.yml and never fires.
 # A slash in the pattern makes it match the whole path, which is what the
 # `flux/%-sealed.yml` shape used to get for free.
-
-# Override per invocation to widen a secret's scope, e.g.
-# `make apps/foo/bar-sealed.yml KUBESEAL_SCOPE=cluster-wide` for a secret that
-# has to be reusable from more than one namespace.
-KUBESEAL_SCOPE ?= strict
-
 define seal
-$(KUBESEAL) --format=yaml --cert=$| --scope $(KUBESEAL_SCOPE) \
+$(KUBESEAL) --format=yaml --cert=$| \
 --secret-file $< --sealed-secret-file $@
 endef
 
@@ -74,6 +69,19 @@ endef
 # Without this a sealed secret built on the way to a -unseal target counts as an
 # intermediate file, and make deletes it afterwards.
 .PRECIOUS: apps/%-sealed.yml infrastructure/%-sealed.yml
+
+# Overrides the pattern rule below: one scale set per namespace means the runner
+# credentials have to land in every one of them, so this secret is fanned out
+# rather than sealed once. More specific rules win in make, so listing it here is
+# enough to take over.
+ARC_RUNNER_CHART := charts/arc-runner-scale-set
+
+apps/arc-runners/thecluster-bot-sealed.yml: hack/secrets/apps/arc-runners/thecluster-bot.yml \
+		apps/arc-runners/helm-release.yml \
+		$(wildcard $(ARC_RUNNER_CHART)/templates/*) $(ARC_RUNNER_CHART)/values.yaml \
+		| hack/sealed-secrets.pub
+	HELM=$(HELM) KUBESEAL=$(KUBESEAL) YQ=$(YQ) SEALED_SECRETS_CERT=$| \
+	hack/arc-fanout-secret.sh $< $(ARC_RUNNER_CHART) apps/arc-runners/helm-release.yml $@
 
 apps/%-sealed.yml: hack/secrets/apps/%.yml | hack/sealed-secrets.pub
 	$(seal)

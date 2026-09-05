@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# Seal a secret once with cluster-wide scope and emit one SealedSecret per
+# namespace the arc-runner-scale-set chart renders.
+#
+# The AutoscalingRunnerSet CRD takes githubConfigSecret as a bare name, so the
+# secret has to exist in the same namespace as every scale set. The chart gives
+# each scale set its own namespace, so the namespace list is read back out of
+# `helm template` rather than restated here.
+#
+# Cluster-wide scope is what makes one ciphertext valid in all of them; a
+# strict-scoped ciphertext only unseals in the namespace it was sealed against.
+set -euo pipefail
+
+if [ "$#" -ne 4 ]; then
+	echo "Usage: $0 <secret-file> <chart-dir> <release-file> <output-file>" >&2
+	exit 1
+fi
+
+secret_file=$1
+chart_dir=$2
+release_file=$3
+output_file=$4
+
+: "${HELM:=helm}"
+: "${KUBESEAL:=kubeseal}"
+: "${YQ:=yq}"
+: "${SEALED_SECRETS_CERT:=hack/sealed-secrets.pub}"
+
+workdir=$(mktemp -d)
+trap 'rm -rf "$workdir"' EXIT
+
+release_name=$("$YQ" -r '.metadata.name' "$release_file")
+release_namespace=$("$YQ" -r '.metadata.namespace' "$release_file")
+"$YQ" -r '.spec.values' "$release_file" > "$workdir/values.yml"
+
+namespaces=$("$HELM" template "$release_name" "$chart_dir" \
+	--namespace "$release_namespace" \
+	--values "$workdir/values.yml" |
+	"$YQ" -r --no-doc 'select(.kind == "Namespace") | .metadata.name' |
+	sort -u)
+
+if [ -z "$namespaces" ]; then
+	echo "$0: chart rendered no namespaces" >&2
+	exit 1
+fi
+
+# Sealing is randomized, so seal once and reuse the ciphertext. Sealing per
+# namespace would churn every key in this file on every regeneration.
+"$KUBESEAL" --format=yaml --cert="$SEALED_SECRETS_CERT" --scope cluster-wide \
+	--secret-file "$secret_file" --sealed-secret-file "$workdir/sealed.yml"
+
+: > "$output_file"
+while read -r namespace; do
+	namespace="$namespace" "$YQ" \
+		'.metadata.namespace = strenv(namespace)
+		 | .spec.template.metadata.namespace = strenv(namespace)' \
+		"$workdir/sealed.yml" >> "$output_file"
+done <<< "$namespaces"

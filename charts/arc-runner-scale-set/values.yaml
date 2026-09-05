@@ -12,19 +12,16 @@ interval: 10m
 # namespace — see templates/_helpers.tpl.
 runnerScaleSetName: thecluster
 
-# GitHub App credentials, rendered as one SealedSecret per scale set namespace.
-# encryptedData must be sealed cluster-wide, otherwise it only unseals in the
-# namespace it was sealed against:
-#   make apps/arc-runners/thecluster-bot-sealed.yml KUBESEAL_SCOPE=cluster-wide
-githubConfigSecret:
-  name: thecluster-bot
-  encryptedData: {}
-
 # Defaults merged into every HelmRelease's values block.
 # These are gha-runner-scale-set values — anything valid there works here.
-# githubConfigSecret, namespaceOverride, and runnerScaleSetName are set from the
-# keys above and cannot be overridden per entry.
+# namespaceOverride and runnerScaleSetName are set by the chart and cannot be
+# overridden per entry.
+#
+# githubConfigSecret names a Secret this chart does not create. It has to exist
+# in every namespace the chart renders, which is what
+# `make apps/arc-runners/thecluster-bot-sealed.yml` produces.
 defaults:
+  githubConfigSecret: thecluster-bot
   template:
     spec:
       containers:
