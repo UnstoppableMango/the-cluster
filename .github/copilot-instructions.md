@@ -2,20 +2,23 @@
 
 ## Repository Overview
 
-This is a homelab infrastructure repository deployed entirely via Kubernetes and Flux CD. There is no Pulumi/TypeScript in this repository anymore — all stacks were migrated to Flux manifests.
+This is a homelab infrastructure repository for a single cluster, `rosequartz`, deployed entirely via Kubernetes and Flux CD. No stacks are defined in Pulumi/TypeScript here; the only remaining use of Pulumi is `hack/pki-ca-secret.sh`, which reads an external stack.
 
 ## Repository Structure
 
 - `apps/` - Flux GitOps manifests for application deployments
 - `clusters/` - Flux cluster bootstrap Kustomizations
 - `infrastructure/` - Flux GitOps manifests for infrastructure (controllers/configs)
-- `hack/` - Development scripts and tooling
+- `hack/` - Development scripts, the sealed-secrets cert, and the `hack/secrets/` stub tree
 - `charts/` - Custom Helm charts
+- `containers/` - Nix and Dockerfile definitions for images built here
+- `nix/` - Flake packages and checks (manifest validation, CRD generation)
 
 ## Code Style & Formatting
 
-- Use **spaces** (2 spaces) for YAML files and Nix files
-- Run `dprint fmt` or `make fmt` to format code before committing
+- Use **spaces** (2 spaces) for YAML files and Nix files; tabs elsewhere
+- Run `make fmt` (`nix fmt`, which runs nixfmt) before committing
+- `dprint fmt` covers JSON, Markdown, and TOML only, and is not wired into `make fmt` or CI
 - Follow `.editorconfig` settings: insert final newline, trim trailing whitespace
 
 ## Kubernetes & Flux
@@ -27,8 +30,8 @@ This is a homelab infrastructure repository deployed entirely via Kubernetes and
 ## Building & Testing
 
 - Use `make` commands defined in the `Makefile` for common tasks
-- Format code: `make fmt` (runs dprint and nix formatters)
-- CI runs dprint formatting checks on all pull requests
+- Format code: `make fmt` (`nix fmt`)
+- Check before pushing: `make check` (`nix flake check`). This is the only CI job: it runs the treefmt formatting check plus `validate-flux`, which is kubeconform in strict mode against pinned Flux CRD schemas.
 
 ## Dependencies
 
@@ -37,5 +40,6 @@ This is a homelab infrastructure repository deployed entirely via Kubernetes and
 
 ## Version Pinning
 
-- Version constraints may be in `.versions/` directory
+- Chart and image versions are pinned inline in the HelmRelease or manifest and bumped by Renovate (`.github/renovate.json`)
+- `.versions/` is vestigial and unread by any tooling; do not add to it
 - Check existing patterns before adding new dependencies
