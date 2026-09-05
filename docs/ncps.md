@@ -10,6 +10,25 @@ Reached two ways:
 
 Runner pods use the in-cluster Service. The Gateway has an HTTPS-443 listener only, and its certificate comes from the private `thecluster.lan` ClusterIssuer that pods do not trust, so the LAN hostname is not usable from inside.
 
+## Version
+
+`apps/nix-system/statefulset.yml` pins `kalbasit/ncps:v0.10.0-rc16`, a release candidate, on purpose.
+
+`nix-community.cachix.org` serves NARs under opaque object keys (`nar/<uuid>.nar.zst`) rather than the hash-named URLs `cache.nixos.org` uses.
+The narinfo `URL:` field is an opaque path by spec, so this is valid upstream behavior, but ncps through v0.9.4 parses that filename as a nix hash and reuses it as its own storage key.
+Every cachix-backed narinfo therefore fails with `invalid nar hash` and returns HTTP 500, and nix treats a 500 as a hard error instead of falling through to the next substituter, so runner builds fail outright.
+See [kalbasit/ncps#1329](https://github.com/kalbasit/ncps/issues/1329).
+
+The fix landed in `v0.10.0-rc10`.
+There is no v0.9 backport and no stable v0.10.0, so the RC is the only release that serves cachix paths.
+
+If the RC misbehaves, the mitigation that does not require downgrading is dropping `--cache-upstream-url=https://nix-community.cachix.org` and its `--cache-upstream-public-key`.
+ncps then answers those paths from `cache.nixos.org` or 404s, and nix falls through to its own substituters.
+
+v0.10 renamed the serve flags (`--cache-data-path` to `--cache-storage-local`, `--upstream-cache` to `--cache-upstream-url`, `--upstream-public-key` to `--cache-upstream-public-key`) and replaced dbmate with an in-binary migration runner, so the `migrate-database` init container invokes `ncps migrate up`.
+The image carries no `/bin/dbmate`, so the image and the init container command have to move together.
+Migrations adopt a dbmate-shape `schema_migrations` table automatically for sqlite, and the on-disk layout under the storage path is unchanged, so the cache and the signing key survive the upgrade.
+
 ## Signing key
 
 ncps signs the narinfos it serves. The key name derives from `--cache-hostname`, so it is always `ncps.thecluster.lan:...`, but the material lives in the sqlite database at `/storage/var/ncps/db/db.sqlite` on the PVC.
