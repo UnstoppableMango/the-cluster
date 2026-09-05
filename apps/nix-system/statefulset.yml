@@ -43,8 +43,9 @@ spec:
       containers:
         - image: kalbasit/ncps:v0.10.0-rc16
           name: ncps
-          args:
+          command:
             - /bin/ncps
+          args:
             - serve
             - --cache-hostname=ncps.thecluster.lan
             - --cache-storage-local=/storage
