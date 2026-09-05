@@ -40,6 +40,19 @@ spec:
                 limits:
                   cpu: "8"
                   memory: 8Gi
+              volumeMounts:
+                # cachix/install-nix-action does a single-user install, so the
+                # store and nix's build directory both land in /nix. Left
+                # unmounted that is the container's overlayfs layer, where nix
+                # fails to tear down a build directory it just emptied:
+                #
+                #   error: cannot unlink ".../project/.git": Directory not empty
+                #
+                # It bites the derivations that write many small files, treefmt's
+                # `git init && git add .` check being the reliable one. The chart
+                # keeps user-supplied volumeMounts and appends the dind ones.
+                - name: nix
+                  mountPath: /nix
           volumes:
             - name: work
               ephemeral:
@@ -50,6 +63,19 @@ spec:
                     resources:
                       requests:
                         storage: 5Gi
+            # An emptyDir does not work here. Kubelet creates one mode 0777, and
+            # nix refuses a build directory with a world-writable ancestor. A CSI
+            # volume comes up 0775 root:fsGroup, which the runner can write
+            # through the fsGroup above.
+            - name: nix
+              ephemeral:
+                volumeClaimTemplate:
+                  spec:
+                    accessModes: [ReadWriteOnce]
+                    storageClassName: ssd-rbd
+                    resources:
+                      requests:
+                        storage: 30Gi
       listenerTemplate:
         spec:
           containers:
