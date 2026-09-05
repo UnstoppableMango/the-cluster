@@ -65,8 +65,8 @@ spec:
                         storage: 5Gi
             # An emptyDir does not work here. Kubelet creates one mode 0777, and
             # nix refuses a build directory with a world-writable ancestor. A CSI
-            # volume comes up 0775 root:fsGroup, which uid 1001 can write through
-            # the fsGroup above.
+            # volume comes up 0775 root:fsGroup, which the runner can write
+            # through the fsGroup above.
             - name: nix
               ephemeral:
                 volumeClaimTemplate:

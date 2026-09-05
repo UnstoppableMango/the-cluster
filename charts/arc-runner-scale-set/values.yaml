@@ -24,7 +24,8 @@ defaults:
   githubConfigSecret: thecluster-bot
   template:
     spec:
-      # Gives uid 1001 group ownership of the nix volume below.
+      # Makes gid 1001 the group owner of the nix volume below and adds it to
+      # the runner process's supplementary groups.
       securityContext:
         fsGroup: 1001
       containers:
@@ -54,7 +55,7 @@ defaults:
       volumes:
         # An emptyDir does not work here. Kubelet creates one mode 0777, and nix
         # refuses a build directory with a world-writable ancestor. A CSI volume
-        # comes up 0775 root:fsGroup, which uid 1001 can write through the
+        # comes up 0775 root:fsGroup, which the runner can write through the
         # fsGroup above.
         - name: nix
           ephemeral:
