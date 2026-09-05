@@ -15,8 +15,7 @@ github.com/UnstoppableMango/the-cluster
 ├── infrastructure      # Infrastructure manifests
 │   ├── configs         # Per-controller config (certs, DNS, storage, ingress)
 │   └── controllers     # Controller installs (cert-manager, CNPGs, Crossplane, etc.)
-├── nix                 # Nix build/validation packages for this flake
-└── .versions           # Ad-hoc version pinning
+└── nix                 # Nix build/validation packages for this flake
 ```
 
 See [`charts/README.md`](charts/README.md) for the chart index.

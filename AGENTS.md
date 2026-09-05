@@ -66,7 +66,7 @@ There is one pattern rule per top-level manifest directory rather than a bare `%
 ## Code Style
 
 - **Indentation:** 2 spaces in YAML and Nix; tabs elsewhere, per `.editorconfig` and `.dprint.json`
-- **Versions:** chart and image versions are pinned inline in the HelmRelease or manifest and bumped by Renovate. `.versions/` is vestigial and unread by any tooling; do not add to it.
+- **Versions:** chart and image versions are pinned inline in the HelmRelease or manifest and bumped by Renovate.
 
 ## Development Environment
 

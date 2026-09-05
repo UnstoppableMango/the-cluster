@@ -41,5 +41,4 @@ This is a homelab infrastructure repository for a single cluster, `rosequartz`, 
 ## Version Pinning
 
 - Chart and image versions are pinned inline in the HelmRelease or manifest and bumped by Renovate (`.github/renovate.json`)
-- `.versions/` is vestigial and unread by any tooling; do not add to it
 - Check existing patterns before adding new dependencies
