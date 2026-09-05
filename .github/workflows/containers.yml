@@ -16,6 +16,10 @@ on:
       - flake.lock
       - flake.nix
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   nix-runner:
     # Both architectures build natively on hosted runners. The base image pin in
@@ -54,7 +58,7 @@ jobs:
           REGISTRY_USERNAME: ${{ github.repository_owner }}
           REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          nix run nixpkgs#skopeo -- copy \
+          nix run --inputs-from . nixpkgs#skopeo -- copy \
             --dest-creds "${REGISTRY_USERNAME}:${REGISTRY_PASSWORD}" \
             "docker-archive:image" \
             "docker://${IMAGE}:${GITHUB_SHA}-${{ matrix.arch }}"
