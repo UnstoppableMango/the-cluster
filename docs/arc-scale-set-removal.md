@@ -109,12 +109,16 @@ so stop job acquisition and wait for the queue to empty first.
    make apps/arc-runners/thecluster-bot-sealed.yml
    ```
 
-5. Confirm the namespace terminates, then resume the parent:
+5. Wait for the namespace to go, then resume the parent:
 
    ```sh
-   kubectl get namespace arc-thecluster-lan
+   kubectl wait --for=delete namespace/arc-thecluster-lan --timeout=5m
    flux resume helmrelease unstoppablemango-runners -n arc-runners
    ```
+
+   A plain `kubectl get` returns successfully for a namespace stuck in `Terminating`,
+   which is the state this procedure exists to avoid, so wait on the deletion instead.
+   If the wait times out, go to the recovery section below before resuming the parent.
 
 ## Recovering from a stuck deletion
 
@@ -176,17 +180,37 @@ namespace, so the finalizer can never succeed and the deadlock has to be broken 
    kubectl get autoscalinglisteners,ephemeralrunnersets,ephemeralrunners -n arc-thecluster-lan
    ```
 
-   Older ARC versions also put `actions.github.com/cleanup-protection` on the namespace's
-   `Role`, `RoleBinding`, `ServiceAccount`, and `Secret`.
-   0.14.2 only removes that finalizer and never adds it, so it should not appear on anything new.
-
-2. Confirm the namespace finalizes:
+2. Clear any `actions.github.com/cleanup-protection` finalizer left behind.
+   Older ARC versions put it on the namespace's `Role`, `RoleBinding`, `ServiceAccount`, and `Secret`.
+   0.14.2 only removes that finalizer and never adds it, so it should not appear on anything new,
+   but a namespace that has been through an upgrade can still be holding one.
 
    ```sh
-   kubectl get namespace arc-thecluster-lan
+   kubectl get role,rolebinding,serviceaccount,secret -n arc-thecluster-lan \
+     -o custom-columns=KIND:.kind,NAME:.metadata.name,FINALIZERS:.metadata.finalizers
    ```
 
-3. Deregister the scale set in GitHub, which step 1 skipped.
+   For each row that lists it:
+
+   ```sh
+   kubectl patch <kind>/<name> -n arc-thecluster-lan --type=json -p '[
+     {"op": "test", "path": "/metadata/finalizers/0",
+      "value": "actions.github.com/cleanup-protection"},
+     {"op": "remove", "path": "/metadata/finalizers/0"}
+   ]'
+   ```
+
+   The `test` op makes the patch fail rather than remove a finalizer belonging to something else.
+   ARC only ever sets this one, so it is at index 0; if the row shows others ahead of it,
+   adjust the index to match.
+
+3. Wait for the namespace to finalize:
+
+   ```sh
+   kubectl wait --for=delete namespace/arc-thecluster-lan --timeout=5m
+   ```
+
+4. Deregister the scale set in GitHub, which step 1 skipped.
    The listener also holds a registration that no longer has a Kubernetes object behind it.
    Under the repository or organization the entry's `githubConfigUrl` points at, open
    Settings, Actions, Runners, and remove the `thecluster` runner scale set.
