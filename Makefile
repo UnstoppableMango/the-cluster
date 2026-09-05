@@ -57,12 +57,15 @@ endef
 # derived from the sealed file instead: hack/secrets/ mirrors the manifest tree.
 STUB = hack/secrets/$(patsubst %-sealed.yml,%.yml,$<)
 
+# head -1 because a sealed file may hold one document per namespace, as
+# apps/arc-runners/thecluster-bot-sealed.yml does. They all carry the same
+# secret, so the first one is as good as any.
 define unseal
 @mkdir -p $(dir $(STUB))
 @umask 0177; \
 $(KUBECTL) get secret \
-"$$($(YQ) -r '.spec.template.metadata.name // .metadata.name' $<)" \
--n "$$($(YQ) -r '.spec.template.metadata.namespace // .metadata.namespace' $<)" \
+"$$($(YQ) -r '.spec.template.metadata.name // .metadata.name' $< | head -1)" \
+-n "$$($(YQ) -r '.spec.template.metadata.namespace // .metadata.namespace' $< | head -1)" \
 -o yaml > $(STUB); chmod 0600 $(STUB)
 endef
 
