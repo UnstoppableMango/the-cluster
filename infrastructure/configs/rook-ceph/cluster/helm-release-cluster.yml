@@ -41,7 +41,7 @@ spec:
         ssl: false
       mon:
         # Three mons so the quorum survives the loss of any single host.
-        # allowMultiplePerNode stays false to stop rook colocating the quorum on
+        # allowMultiplePerNode is false to stop rook colocating the quorum on
         # one node, which would leave the mon store on a single disk.
         # https://github.com/rook/rook/blob/0a1dd5e9e619481432cc66347a45072178ca0b48/deploy/examples/cluster.yaml#L51-L52
         count: 3
