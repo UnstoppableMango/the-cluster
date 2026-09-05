@@ -1,7 +1,20 @@
 # ncps
 
 `apps/nix-system/` runs [ncps](https://github.com/kalbasit/ncps), a Nix binary cache proxy.
-It fronts `cache.nixos.org` and `nix-community.cachix.org` so builds on the cluster substitute over the LAN instead of the internet.
+It fronts `cache.nixos.org` and four cachix caches so builds on the cluster substitute over the LAN instead of the internet.
+
+Upstreams, in the order `--cache-upstream-url` lists them:
+
+| Upstream                      | Purpose                |
+| ----------------------------- | ---------------------- |
+| `cache.nixos.org`             | nixpkgs                |
+| `nix-community.cachix.org`    | nix-community projects |
+| `unstoppablemango.cachix.org` | own builds             |
+| `mangopkgs.cachix.org`        | own builds             |
+| `unmango.cachix.org`          | own builds             |
+
+Each needs its `--cache-upstream-public-key` alongside it.
+Read a cachix cache's key from `https://app.cachix.org/api/v1/cache/<name>` rather than copying it from another repo.
 
 Reached two ways:
 
@@ -14,7 +27,7 @@ Runner pods use the in-cluster Service. The Gateway has an HTTPS-443 listener on
 
 `apps/nix-system/statefulset.yml` pins `kalbasit/ncps:v0.10.0-rc16`, a release candidate, on purpose.
 
-`nix-community.cachix.org` serves NARs under opaque object keys (`nar/<uuid>.nar.zst`) rather than the hash-named URLs `cache.nixos.org` uses.
+Cachix serves NARs under opaque object keys (`nar/<uuid>.nar.zst`) rather than the hash-named URLs `cache.nixos.org` uses.
 The narinfo `URL:` field is an opaque path by spec, so this is valid upstream behavior, but ncps through v0.9.4 parses that filename as a nix hash and reuses it as its own storage key.
 Every cachix-backed narinfo therefore fails with `invalid nar hash` and returns HTTP 500, and nix treats a 500 as a hard error instead of falling through to the next substituter, so runner builds fail outright.
 See [kalbasit/ncps#1329](https://github.com/kalbasit/ncps/issues/1329).
@@ -22,7 +35,7 @@ See [kalbasit/ncps#1329](https://github.com/kalbasit/ncps/issues/1329).
 The fix landed in `v0.10.0-rc10`.
 There is no v0.9 backport and no stable v0.10.0, so the RC is the only release that serves cachix paths.
 
-If the RC misbehaves, the mitigation that does not require downgrading is dropping `--cache-upstream-url=https://nix-community.cachix.org` and its `--cache-upstream-public-key`.
+If the RC misbehaves, the mitigation that does not require downgrading is dropping the cachix upstreams and their `--cache-upstream-public-key` entries, leaving `cache.nixos.org` alone.
 ncps then answers those paths from `cache.nixos.org` or 404s, and nix falls through to its own substituters.
 
 v0.10 renamed the serve flags (`--cache-data-path` to `--cache-storage-local`, `--upstream-cache` to `--cache-upstream-url`, `--upstream-public-key` to `--cache-upstream-public-key`) and replaced dbmate with an in-binary migration runner, so the `migrate-database` init container invokes `ncps migrate up`.
