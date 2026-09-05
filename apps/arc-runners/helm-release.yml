@@ -24,6 +24,21 @@ spec:
         spec:
           securityContext:
             fsGroup: 1001
+          initContainers:
+            # A single-user nix install expects to own /nix. Kubelet leaves a CSI
+            # volume root:fsGroup 2775, and the setgid bit propagates into every
+            # directory nix creates under it, store paths and build directories
+            # alike. install-nix-action only chowns /nix when it creates it, so
+            # the mount stays root-owned. Hand it to the runner instead, mode
+            # 0755, so the tree matches what the installer would have produced.
+            - name: init-nix
+              image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.337.0@sha256:312849bf4b980e64596cdd23216d7cc6f7f220192d1de7e69bbac826a852e4dc
+              command: [sh, -c, 'chown runner:runner /nix && chmod 0755 /nix']
+              securityContext:
+                runAsUser: 0
+              volumeMounts:
+                - name: nix
+                  mountPath: /nix
           containers:
             - name: runner
               image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.337.0@sha256:312849bf4b980e64596cdd23216d7cc6f7f220192d1de7e69bbac826a852e4dc
@@ -65,8 +80,8 @@ spec:
                         storage: 5Gi
             # An emptyDir does not work here. Kubelet creates one mode 0777, and
             # nix refuses a build directory with a world-writable ancestor. A CSI
-            # volume comes up 0775 root:fsGroup, which the runner can write
-            # through the fsGroup above.
+            # volume comes up 0775 root:fsGroup, which init-nix then narrows to
+            # 0755 runner:runner.
             - name: nix
               ephemeral:
                 volumeClaimTemplate:

@@ -22,8 +22,9 @@ spec:
     # https://github.com/actions/actions-runner-controller/blob/8c84ab2f4267ce61df1f6b2e26a3ca12b2d1e4ca/charts/gha-runner-scale-set/values.yaml#L310
     template:
       spec:
-        # Makes gid 1001 the group owner of the nix volume below and adds it to
-        # the runner process's supplementary groups.
+        # Makes gid 1001 the group owner of the volumes below and adds it to the
+        # runner process's supplementary groups. The nix volume is handed to the
+        # runner outright by init-nix.
         securityContext:
           fsGroup: 1001
         initContainers:
@@ -60,6 +61,20 @@ spec:
               mountPath: /var/run
             - name: dind-externals
               mountPath: /home/runner/externals
+        # A single-user nix install expects to own /nix. Kubelet leaves a CSI
+        # volume root:fsGroup 2775, and the setgid bit propagates into every
+        # directory nix creates under it, store paths and build directories
+        # alike. install-nix-action only chowns /nix when it creates it, so the
+        # mount stays root-owned. Hand it to the runner instead, mode 0755, so
+        # the tree matches what the installer would have produced.
+        - name: init-nix
+          image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.337.0@sha256:312849bf4b980e64596cdd23216d7cc6f7f220192d1de7e69bbac826a852e4dc
+          command: [sh, -c, 'chown runner:runner /nix && chmod 0755 /nix']
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: nix
+              mountPath: /nix
         containers:
         - name: runner
           image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.337.0@sha256:312849bf4b980e64596cdd23216d7cc6f7f220192d1de7e69bbac826a852e4dc
@@ -101,8 +116,8 @@ spec:
           emptyDir: {}
         # An emptyDir does not work here. Kubelet creates one mode 0777, and nix
         # refuses a build directory with a world-writable ancestor. A CSI volume
-        # comes up 0775 root:fsGroup, which the runner can write through the
-        # fsGroup above.
+        # comes up 0775 root:fsGroup, which init-nix then narrows to 0755
+        # runner:runner.
         - name: nix
           ephemeral:
             volumeClaimTemplate:
