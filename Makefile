@@ -6,6 +6,7 @@ DEVCTL     ?= $(GO) tool devctl
 DOCKER     ?= docker
 DPRINT     ?= dprint
 FLUX       ?= flux
+FZF        ?= fzf
 KUBECTL    ?= kubectl
 KUBESEAL   ?= $(GO) tool kubeseal
 PULUMI     ?= pulumi
@@ -61,6 +62,17 @@ apps/%-sealed.yml: hack/secrets/apps/%.yml | hack/sealed-secrets.pub
 
 infrastructure/%-sealed.yml: hack/secrets/infrastructure/%.yml | hack/sealed-secrets.pub
 	$(seal)
+
+# The sealed secret paths are long and there are two dozen of them, so this
+# picks one rather than making you type it. fzf exits 130 when interrupted and
+# 1 when nothing matched; neither is a failure. Anything else is, including the
+# 127 of an fzf that is not on PATH.
+.PHONY: unseal
+unseal:
+	@t="$$(git ls-files '*-sealed.yml' | sed 's/-sealed\.yml$$/-unseal/' | $(FZF))"; s=$$?; \
+	case $$s in 0) ;; 1|130) exit 0 ;; *) exit $$s ;; esac; \
+	[ -n "$$t" ] || exit 0; \
+	$(MAKE) "$$t"
 
 # The bare pattern is right here: the prerequisite carries no directory of its
 # own, so make matches the whole target and $* is the full path.

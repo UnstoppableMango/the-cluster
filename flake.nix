@@ -57,6 +57,7 @@
               dprint
               docker
               fluxcd
+              fzf
               gnumake
               kubectl
               kubeseal
@@ -72,6 +73,7 @@
             DOCKER = "${pkgs.docker}/bin/docker";
             DPRINT = "${pkgs.dprint}/bin/dprint";
             FLUX = "${pkgs.fluxcd}/bin/flux";
+            FZF = "${pkgs.fzf}/bin/fzf";
             GO = "${pkgs.go}/bin/go";
             KUBECTL = "${pkgs.kubectl}/bin/kubectl";
             KUBESEAL = "${pkgs.kubeseal}/bin/kubeseal";
