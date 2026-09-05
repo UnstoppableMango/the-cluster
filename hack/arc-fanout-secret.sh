@@ -26,17 +26,23 @@ output_file=$4
 : "${YQ:=yq}"
 : "${SEALED_SECRETS_CERT:=hack/sealed-secrets.pub}"
 
+# The Makefile hands these over as whole command lines, not bare paths, so they
+# have to be split before they can be run.
+read -r -a helm <<< "$HELM"
+read -r -a kubeseal <<< "$KUBESEAL"
+read -r -a yq <<< "$YQ"
+
 workdir=$(mktemp -d)
 trap 'rm -rf "$workdir"' EXIT
 
-release_name=$("$YQ" -r '.metadata.name' "$release_file")
-release_namespace=$("$YQ" -r '.metadata.namespace' "$release_file")
-"$YQ" -r '.spec.values' "$release_file" > "$workdir/values.yml"
+release_name=$("${yq[@]}" -r '.metadata.name' "$release_file")
+release_namespace=$("${yq[@]}" -r '.metadata.namespace' "$release_file")
+"${yq[@]}" -r '.spec.values' "$release_file" > "$workdir/values.yml"
 
-namespaces=$("$HELM" template "$release_name" "$chart_dir" \
+namespaces=$("${helm[@]}" template "$release_name" "$chart_dir" \
 	--namespace "$release_namespace" \
 	--values "$workdir/values.yml" |
-	"$YQ" -r --no-doc 'select(.kind == "Namespace") | .metadata.name' |
+	"${yq[@]}" -r --no-doc 'select(.kind == "Namespace") | .metadata.name' |
 	sort -u)
 
 if [ -z "$namespaces" ]; then
@@ -46,7 +52,7 @@ fi
 
 # Sealing is randomized, so seal once and reuse the ciphertext. Sealing per
 # namespace would churn every key in this file on every regeneration.
-"$KUBESEAL" --format=yaml --cert="$SEALED_SECRETS_CERT" --scope cluster-wide \
+"${kubeseal[@]}" --format=yaml --cert="$SEALED_SECRETS_CERT" --scope cluster-wide \
 	--secret-file "$secret_file" --sealed-secret-file "$workdir/sealed.yml"
 
 cat > "$output_file" <<EOF
@@ -60,7 +66,7 @@ cat > "$output_file" <<EOF
 EOF
 
 while read -r namespace; do
-	namespace="$namespace" "$YQ" \
+	namespace="$namespace" "${yq[@]}" \
 		'.metadata.namespace = strenv(namespace)
 		 | .spec.template.metadata.namespace = strenv(namespace)' \
 		"$workdir/sealed.yml" >> "$output_file"

@@ -1,9 +1,21 @@
 {{- $scaleSetName := required "runnerScaleSetName is required" .Values.runnerScaleSetName }}
+{{- $claimed := dict }}
 {{- range $i, $scaleSet := .Values.scaleSets }}
 {{- $name := required (printf "scaleSets[%d].name is required" $i) $scaleSet.name }}
 {{- $helmReleaseName := default $name $scaleSet.helmReleaseName }}
 {{- $namespace := default (include "arc-runner-scale-set.namespace" $name) $scaleSet.namespace }}
 {{- $_ := required (printf "scaleSets[%d].githubConfigUrl is required" $i) $scaleSet.githubConfigUrl }}
+{{- /*
+  Two names can land on one namespace: `a.b` and `a_b` both normalize to
+  arc-a-b, and names diverging only past 59 characters both survive trunc 63.
+  Sharing a namespace means sharing an AutoscalingRunnerSet, since every scale
+  set names it runnerScaleSetName, so one silently overwrites the other. Refuse
+  instead, and say which entry to give an explicit namespace.
+*/}}
+{{- if hasKey $claimed $namespace }}
+{{- fail (printf "scaleSets[%d].name %q resolves to namespace %q, already claimed by %q. Set an explicit namespace on one of them." $i $name $namespace (get $claimed $namespace)) }}
+{{- end }}
+{{- $_ := set $claimed $namespace $name }}
 {{- $values := mergeOverwrite (deepCopy $.Values.defaults) (omit $scaleSet "name" "helmReleaseName" "namespace") }}
 {{- $_ := set $values "namespaceOverride" $namespace }}
 {{- $_ := set $values "runnerScaleSetName" $scaleSetName }}
