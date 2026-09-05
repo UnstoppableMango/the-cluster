@@ -58,6 +58,7 @@
               docker
               fluxcd
               gnumake
+              kubernetes-helm
               kubectl
               kubeseal
               nixfmt-tree
@@ -73,6 +74,7 @@
             DPRINT = "${pkgs.dprint}/bin/dprint";
             FLUX = "${pkgs.fluxcd}/bin/flux";
             GO = "${pkgs.go}/bin/go";
+            HELM = "${pkgs.kubernetes-helm}/bin/helm";
             KUBECTL = "${pkgs.kubectl}/bin/kubectl";
             KUBESEAL = "${pkgs.kubeseal}/bin/kubeseal";
             PULUMI = "${pkgs.pulumi-bin}/bin/pulumi";

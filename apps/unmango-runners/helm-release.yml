@@ -13,6 +13,9 @@ spec:
   values:
     githubConfigUrl: https://github.com/unmango
     githubConfigSecret: thecluster-bot
+    # Same `runs-on` label the UnstoppableMango repo-level scale sets use. unmango
+    # is an organization, so one org-level scale set covers every repo under it.
+    runnerScaleSetName: thecluster
     minRunners: 3
     maxRunners: 30
     # 99% the dind template

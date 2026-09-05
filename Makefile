@@ -6,6 +6,7 @@ DEVCTL     ?= $(GO) tool devctl
 DOCKER     ?= docker
 DPRINT     ?= dprint
 FLUX       ?= flux
+HELM       ?= helm
 KUBECTL    ?= kubectl
 KUBESEAL   ?= $(GO) tool kubeseal
 PULUMI     ?= pulumi
@@ -56,18 +57,34 @@ endef
 # derived from the sealed file instead: hack/secrets/ mirrors the manifest tree.
 STUB = hack/secrets/$(patsubst %-sealed.yml,%.yml,$<)
 
+# head -1 because a sealed file may hold one document per namespace, as
+# apps/arc-runners/thecluster-bot-sealed.yml does. They all carry the same
+# secret, so the first one is as good as any.
 define unseal
 @mkdir -p $(dir $(STUB))
 @umask 0177; \
 $(KUBECTL) get secret \
-"$$($(YQ) -r '.spec.template.metadata.name // .metadata.name' $<)" \
--n "$$($(YQ) -r '.spec.template.metadata.namespace // .metadata.namespace' $<)" \
+"$$($(YQ) -r '.spec.template.metadata.name // .metadata.name' $< | head -1)" \
+-n "$$($(YQ) -r '.spec.template.metadata.namespace // .metadata.namespace' $< | head -1)" \
 -o yaml > $(STUB); chmod 0600 $(STUB)
 endef
 
 # Without this a sealed secret built on the way to a -unseal target counts as an
 # intermediate file, and make deletes it afterwards.
 .PRECIOUS: apps/%-sealed.yml infrastructure/%-sealed.yml
+
+# Overrides the pattern rule below: one scale set per namespace means the runner
+# credentials have to land in every one of them, so this secret is fanned out
+# rather than sealed once. More specific rules win in make, so listing it here is
+# enough to take over.
+ARC_RUNNER_CHART := charts/arc-runner-scale-set
+
+apps/arc-runners/thecluster-bot-sealed.yml: hack/secrets/apps/arc-runners/thecluster-bot.yml \
+		apps/arc-runners/helm-release.yml \
+		$(wildcard $(ARC_RUNNER_CHART)/templates/*) $(ARC_RUNNER_CHART)/values.yaml \
+		| hack/sealed-secrets.pub
+	HELM=$(HELM) KUBESEAL=$(KUBESEAL) YQ=$(YQ) SEALED_SECRETS_CERT=$| \
+	hack/arc-fanout-secret.sh $< $(ARC_RUNNER_CHART) apps/arc-runners/helm-release.yml $@
 
 apps/%-sealed.yml: hack/secrets/apps/%.yml | hack/sealed-secrets.pub
 	$(seal)
