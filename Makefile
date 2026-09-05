@@ -9,8 +9,12 @@ FLUX       ?= flux
 HELM       ?= helm
 KUBECTL    ?= kubectl
 KUBESEAL   ?= $(GO) tool kubeseal
+NIX        ?= nix
 PULUMI     ?= pulumi
 YQ         ?= $(GO) tool yq
+
+# nix/crds.nix uses the `|>` pipe operator, which is still experimental.
+NIX_FLAGS ?= --extra-experimental-features pipe-operators
 
 FLUX_SOURCE ?= flux-system
 PKI_STACK   ?= UnstoppableMango/pki/prod
@@ -25,10 +29,10 @@ renovate:
 	$(KUBECTL) create job manual-$$(date +%s) --namespace renovate --from=cronjob/$(RENOVATE_RELEASE)
 
 format fmt:
-	nix fmt
+	$(NIX) $(NIX_FLAGS) fmt
 
 check:
-	nix flake check
+	$(NIX) $(NIX_FLAGS) flake check
 
 update: flake.lock
 
