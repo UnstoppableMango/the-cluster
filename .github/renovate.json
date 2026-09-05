@@ -36,12 +36,12 @@
 		},
 		{
 			"customType": "regex",
-			"description": "dockerTools.pullImage base images, pinned by tag and digest. The sibling `hash` is a nix content hash of the pulled tarball that Renovate cannot derive from registry metadata, so it is refreshed by hand on the PR; `nix build '.#runner'` in the Containers workflow reports the expected value.",
+			"description": "dockerTools.pullImage base images, tracked by the tag in `finalImageTag`. `imageDigest` holds a per-architecture manifest digest and the docker datasource resolves a tag to the multi-arch index digest, so `currentDigest` is deliberately not captured; digests and nix hashes are refreshed by hand on the PR.",
 			"managerFilePatterns": [
 				"/^containers/.+\\.nix$/"
 			],
 			"matchStrings": [
-				"imageName = \"(?<depName>[^\"]+)\";\\s*imageDigest = \"(?<currentDigest>sha256:[a-f0-9]+)\";[\\s\\S]*?finalImageTag = \"(?<currentValue>[^\"]+)\";"
+				"imageName = \"(?<depName>[^\"]+)\";[\\s\\S]*?finalImageTag = \"(?<currentValue>[^\"]+)\";"
 			],
 			"datasourceTemplate": "docker",
 			"versioningTemplate": "docker"
@@ -206,7 +206,7 @@
 			"matchPackageNames": [
 				"ghcr.io/actions/actions-runner"
 			],
-			"description": "The `hash` next to `imageDigest` in containers/runner/default.nix is a nix content hash that Renovate leaves untouched. Refresh it on this PR: run `nix build '.#runner'` and copy the `got:` value from the hash mismatch error into `hash`."
+			"description": "Renovate updates only `finalImageTag` in containers/runner/default.nix. Refresh the rest by hand on this PR: every `imageDigest`, from `docker buildx imagetools inspect ghcr.io/actions/actions-runner:<new tag> --raw` (take the per-architecture manifest digest matching each system, not the index digest), and every `hash`, from the `got:` value in the mismatch error that `nix build '.#runner'` prints once the digests are in place."
 		},
 		{
 			"matchPackageNames": [
