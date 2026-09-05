@@ -47,8 +47,14 @@ hack/secrets/infrastructure/configs/velero-system/ceph-credentials.yml:
 # pattern looks for infrastructure/<ns>/hack/secrets/secret.yml and never fires.
 # A slash in the pattern makes it match the whole path, which is what the
 # `flux/%-sealed.yml` shape used to get for free.
+
+# Override per invocation to widen a secret's scope, e.g.
+# `make apps/foo/bar-sealed.yml KUBESEAL_SCOPE=cluster-wide` for a secret that
+# has to be reusable from more than one namespace.
+KUBESEAL_SCOPE ?= strict
+
 define seal
-$(KUBESEAL) --format=yaml --cert=$| \
+$(KUBESEAL) --format=yaml --cert=$| --scope $(KUBESEAL_SCOPE) \
 --secret-file $< --sealed-secret-file $@
 endef
 

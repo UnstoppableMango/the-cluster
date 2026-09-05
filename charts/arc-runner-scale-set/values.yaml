@@ -6,10 +6,25 @@ chartRef:
 # Interval applied to all generated HelmReleases
 interval: 10m
 
+# GitHub name every scale set registers under, i.e. the `runs-on` label. The
+# upstream chart derives the AutoscalingRunnerSet object name from this value,
+# so sharing it across scale sets is only safe because each one gets its own
+# namespace — see templates/_helpers.tpl.
+runnerScaleSetName: thecluster
+
+# GitHub App credentials, rendered as one SealedSecret per scale set namespace.
+# encryptedData must be sealed cluster-wide, otherwise it only unseals in the
+# namespace it was sealed against:
+#   make apps/arc-runners/thecluster-bot-sealed.yml KUBESEAL_SCOPE=cluster-wide
+githubConfigSecret:
+  name: thecluster-bot
+  encryptedData: {}
+
 # Defaults merged into every HelmRelease's values block.
 # These are gha-runner-scale-set values — anything valid there works here.
+# githubConfigSecret, namespaceOverride, and runnerScaleSetName are set from the
+# keys above and cannot be overridden per entry.
 defaults:
-  githubConfigSecret: thecluster-bot
   template:
     spec:
       containers:
@@ -27,6 +42,8 @@ defaults:
 
 # One entry per scale set. Each is merged with defaults (entry wins on conflict).
 # Required per entry: name, githubConfigUrl
+# Optional per entry: helmReleaseName (defaults to name), namespace (defaults to
+# arc-<name>, dots and underscores replaced with dashes)
 # All other gha-runner-scale-set values are valid (minRunners, containerMode, template, etc.)
 #
 # Careful: mergeOverwrite replaces lists wholesale, so an entry that supplies its

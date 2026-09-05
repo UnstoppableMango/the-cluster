@@ -1,8 +1,39 @@
+{{- $secret := required "githubConfigSecret is required" .Values.githubConfigSecret }}
+{{- $secretName := required "githubConfigSecret.name is required" $secret.name }}
+{{- $scaleSetName := required "runnerScaleSetName is required" .Values.runnerScaleSetName }}
 {{- range $i, $scaleSet := .Values.scaleSets }}
 {{- $name := required (printf "scaleSets[%d].name is required" $i) $scaleSet.name }}
 {{- $helmReleaseName := default $name $scaleSet.helmReleaseName }}
+{{- $namespace := default (include "arc-runner-scale-set.namespace" $name) $scaleSet.namespace }}
 {{- $_ := required (printf "scaleSets[%d].githubConfigUrl is required" $i) $scaleSet.githubConfigUrl }}
-{{- $values := mergeOverwrite (deepCopy $.Values.defaults) (omit $scaleSet "name" "helmReleaseName") }}
+{{- $values := mergeOverwrite (deepCopy $.Values.defaults) (omit $scaleSet "name" "helmReleaseName" "namespace") }}
+{{- $_ := set $values "namespaceOverride" $namespace }}
+{{- $_ := set $values "runnerScaleSetName" $scaleSetName }}
+{{- $_ := set $values "githubConfigSecret" $secretName }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ $namespace }}
+---
+# Sealed cluster-wide so a single ciphertext unseals in every scale set namespace.
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: {{ $secretName }}
+  namespace: {{ $namespace }}
+  annotations:
+    sealedsecrets.bitnami.com/cluster-wide: "true"
+spec:
+  encryptedData:
+    {{- toYaml (required "githubConfigSecret.encryptedData is required" $secret.encryptedData) | nindent 4 }}
+  template:
+    metadata:
+      name: {{ $secretName }}
+      namespace: {{ $namespace }}
+      annotations:
+        sealedsecrets.bitnami.com/cluster-wide: "true"
+    type: Opaque
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -15,16 +46,6 @@ spec:
     name: {{ required "chartRef.name is required" $.Values.chartRef.name }}
     namespace: {{ required "chartRef.namespace is required" $.Values.chartRef.namespace }}
   interval: {{ required "interval is required" $.Values.interval }}
-  postRenderers:
-    - kustomize:
-        patches:
-          # TODO: consider parameterizing
-          - patch: |
-              - op: add
-                path: /spec/runnerScaleSetName
-                value: thecluster
-            target:
-              kind: AutoscalingRunnerSet
   values:
     {{- toYaml $values | nindent 4 }}
 {{- end }}
