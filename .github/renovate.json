@@ -100,7 +100,8 @@
 		},
 		{
 			"matchPackageNames": [
-				"adyanth/cloudflare-operator"
+				"unmango/cloudflare-operator",
+				"ghcr.io/unmango/cloudflare-operator"
 			],
 			"groupName": "cloudflare-operator"
 		},
