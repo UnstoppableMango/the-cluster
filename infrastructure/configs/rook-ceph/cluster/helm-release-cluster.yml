@@ -40,11 +40,12 @@ spec:
         # The gateway terminates TLS, so the mgr serves plain HTTP on 7000.
         ssl: false
       mon:
-        # Single mon holding the restored mon store. Expand the quorum once the
-        # OSDs are back up and the data is readable.
+        # Three mons so the quorum survives the loss of any single host.
+        # allowMultiplePerNode is false to stop rook colocating the quorum on
+        # one node, which would leave the mon store on a single disk.
         # https://github.com/rook/rook/blob/0a1dd5e9e619481432cc66347a45072178ca0b48/deploy/examples/cluster.yaml#L51-L52
-        count: 1
-        allowMultiplePerNode: true
+        count: 3
+        allowMultiplePerNode: false
       mgr:
         # https://github.com/rook/rook/blob/0a1dd5e9e619481432cc66347a45072178ca0b48/deploy/examples/cluster.yaml#L58-L60
         count: 1
