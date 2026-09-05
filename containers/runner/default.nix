@@ -9,6 +9,9 @@
       # digest and the hash of what it produces are per system.
       # Resolve digests with:
       #   docker buildx imagetools inspect ghcr.io/actions/actions-runner:2.337.0 --raw
+      # A wrong hash shows up only on the architecture it belongs to, so the
+      # Containers workflow builds this on a native runner per system. Recover
+      # the expected value from the `got:` line of that build's mismatch error.
       baseImages = {
         x86_64-linux = {
           imageDigest = "sha256:5036480998280bb21e32ade9fe1b02b493861ac314b62ba1aea320b94f56ec97";
