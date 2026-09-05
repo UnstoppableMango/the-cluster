@@ -31,9 +31,13 @@ spec:
             # alike. install-nix-action only chowns /nix when it creates it, so
             # the mount stays root-owned. Hand it to the runner instead, mode
             # 0755, so the tree matches what the installer would have produced.
+            #
+            # The mode is five digits because a numeric chmod of four digits or
+            # fewer preserves a directory's setuid and setgid bits; 00755 is
+            # what actually clears the setgid.
             - name: init-nix
               image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.337.0@sha256:312849bf4b980e64596cdd23216d7cc6f7f220192d1de7e69bbac826a852e4dc
-              command: [sh, -c, 'chown runner:runner /nix && chmod 0755 /nix']
+              command: [sh, -c, 'chown runner:runner /nix && chmod 00755 /nix']
               securityContext:
                 runAsUser: 0
               volumeMounts:
