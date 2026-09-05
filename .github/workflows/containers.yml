@@ -6,11 +6,15 @@ on:
     paths:
       - .github/workflows/containers.yml
       - containers/**
+      - flake.lock
+      - flake.nix
   pull_request:
     branches: [main]
     paths:
       - .github/workflows/containers.yml
       - containers/**
+      - flake.lock
+      - flake.nix
 
 jobs:
   nix-runner:
@@ -27,6 +31,8 @@ jobs:
           - arch: arm64
             runs-on: ubuntu-24.04-arm
     runs-on: ${{ matrix.runs-on }}
+    env:
+      IMAGE: ghcr.io/${{ github.repository }}/nix-runner
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
 
@@ -36,16 +42,78 @@ jobs:
           extra_nix_config: |
             extra-experimental-features = nix-command flakes pipe-operators
 
-      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4
+      - name: Build ${{ matrix.arch }} runner image
+        run: |
+          nix build '.#runner' --out-link image
+
+      # The flake output is a docker-archive tarball, so skopeo copies it straight
+      # into the registry without a container runtime in the middle.
+      - name: Push ${{ matrix.arch }} image
         if: github.event_name != 'pull_request'
+        env:
+          REGISTRY_USERNAME: ${{ github.repository_owner }}
+          REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          nix run nixpkgs#skopeo -- copy \
+            --dest-creds "${REGISTRY_USERNAME}:${REGISTRY_PASSWORD}" \
+            "docker-archive:image" \
+            "docker://${IMAGE}:${GITHUB_SHA}-${{ matrix.arch }}"
+
+  nix-runner-manifest:
+    needs: [nix-runner]
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      IMAGE: ghcr.io/${{ github.repository }}/nix-runner
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+
+      # The version of this image is the actions-runner base image pinned in the flake.
+      - name: Resolve runner version
+        run: |
+          version="$(grep -oP 'finalImageTag\s*=\s*"\K[^"]+' containers/runner/default.nix)"
+          if [ -z "$version" ]; then
+            echo "::error::could not read finalImageTag from containers/runner/default.nix"
+            exit 1
+          fi
+          echo "NIX_RUNNER_VERSION=$version" >>"$GITHUB_ENV"
+
+      - uses: docker/setup-buildx-action@d7f5e7f509e45cec5c76c4d5afdd7de93d0b3df5 # v4
+
+      - id: meta
+        uses: docker/metadata-action@80c7e94dd9b9319bd5eb7a0e0fe9291e23a2a2e9 # v6
+        with:
+          images: |
+            ${{ env.IMAGE }}
+          flavor: |
+            latest=auto
+          # defensive tagging because I'm an idiot
+          tags: |
+            type=ref,event=branch,suffix=-${{ env.NIX_RUNNER_VERSION }}
+            type=ref,event=branch,suffix=-v${{ env.NIX_RUNNER_VERSION }}
+            type=ref,event=branch,suffix=-${{ env.NIX_RUNNER_VERSION }}-${{ github.run_number }}
+            type=ref,event=branch,suffix=-v${{ env.NIX_RUNNER_VERSION }}-${{ github.run_number }}
+            type=raw,value=${{ env.NIX_RUNNER_VERSION }}
+            type=raw,value=v${{ env.NIX_RUNNER_VERSION }}
+            type=sha
+
+      - uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build ${{ matrix.arch }} runner image
+      - name: Combine per-arch images into a manifest list
+        env:
+          TAGS: ${{ steps.meta.outputs.tags }}
         run: |
-          nix build '.#runner'
+          args=()
+          while IFS= read -r tag; do
+            [ -n "$tag" ] && args+=(--tag "$tag")
+          done <<<"$TAGS"
+          docker buildx imagetools create "${args[@]}" \
+            "${IMAGE}:${GITHUB_SHA}-amd64" \
+            "${IMAGE}:${GITHUB_SHA}-arm64"
 
   actions-runner:
     runs-on: ubuntu-latest
