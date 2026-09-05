@@ -116,7 +116,7 @@ spec:
           emptyDir: {}
         # An emptyDir does not work here. Kubelet creates one mode 0777, and nix
         # refuses a build directory with a world-writable ancestor. A CSI volume
-        # comes up 0775 root:fsGroup, which init-nix then narrows to 0755
+        # comes up 2775 root:fsGroup, which init-nix then narrows to 0755
         # runner:runner.
         - name: nix
           ephemeral:
