@@ -26,7 +26,7 @@ defaults:
     spec:
       containers:
         - name: runner
-          image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:5c4288f08305f8e8574c8f00c779426fc4731e322917659cbc337a1178fcae3c
+          image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.337.0@sha256:312849bf4b980e64596cdd23216d7cc6f7f220192d1de7e69bbac826a852e4dc
           command: [/home/runner/run.sh]
           env:
             # ncps binary cache, reachable in-cluster only. Honored because
@@ -64,7 +64,7 @@ scaleSets: []
 #         fsGroup: 1001
 #       containers:
 #         - name: runner
-#           image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.334.0@sha256:5c4288f08305f8e8574c8f00c779426fc4731e322917659cbc337a1178fcae3c
+#           image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.337.0@sha256:312849bf4b980e64596cdd23216d7cc6f7f220192d1de7e69bbac826a852e4dc
 #           command: [/home/runner/run.sh]
 #           resources:
 #             limits:
