@@ -64,10 +64,13 @@ infrastructure/%-sealed.yml: hack/secrets/infrastructure/%.yml | hack/sealed-sec
 	$(seal)
 
 # The sealed secret paths are long and there are two dozen of them, so this
-# picks one rather than making you type it. Cancelling fzf is not an error.
+# picks one rather than making you type it. fzf exits 130 when interrupted and
+# 1 when nothing matched; neither is a failure. Anything else is, including the
+# 127 of an fzf that is not on PATH.
 .PHONY: unseal
 unseal:
-	@t="$$(git ls-files '*-sealed.yml' | sed 's/-sealed\.yml$$/-unseal/' | $(FZF))" || exit 0; \
+	@t="$$(git ls-files '*-sealed.yml' | sed 's/-sealed\.yml$$/-unseal/' | $(FZF))"; s=$$?; \
+	case $$s in 0) ;; 1|130) exit 0 ;; *) exit $$s ;; esac; \
 	[ -n "$$t" ] || exit 0; \
 	$(MAKE) "$$t"
 
