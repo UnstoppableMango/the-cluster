@@ -39,11 +39,17 @@ release_name=$("${yq[@]}" -r '.metadata.name' "$release_file")
 release_namespace=$("${yq[@]}" -r '.metadata.namespace' "$release_file")
 "${yq[@]}" -r '.spec.values' "$release_file" > "$workdir/values.yml"
 
-namespaces=$("${helm[@]}" template "$release_name" "$chart_dir" \
-	--namespace "$release_namespace" \
-	--values "$workdir/values.yml" |
-	"${yq[@]}" -r --no-doc 'select(.kind == "Namespace") | .metadata.name' |
-	sort -u)
+# The release namespace is included alongside the rendered ones. It holds no
+# scale set of its own, but an AutoscalingRunnerSet left there by an earlier
+# layout needs this secret to deregister from GitHub on the way out. Without it
+# the finalizer fails, requeues forever, and starves the controller.
+namespaces=$( (
+	echo "$release_namespace"
+	"${helm[@]}" template "$release_name" "$chart_dir" \
+		--namespace "$release_namespace" \
+		--values "$workdir/values.yml" |
+		"${yq[@]}" -r --no-doc 'select(.kind == "Namespace") | .metadata.name'
+) | sort -u)
 
 if [ -z "$namespaces" ]; then
 	echo "$0: chart rendered no namespaces" >&2
