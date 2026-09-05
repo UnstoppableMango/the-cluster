@@ -11,8 +11,9 @@ This is a homelab infrastructure repository for a single cluster, `rosequartz`, 
 - `infrastructure/` - Flux GitOps manifests for infrastructure (controllers/configs)
 - `hack/` - Development scripts, the sealed-secrets cert, and the `hack/secrets/` stub tree
 - `charts/` - Custom Helm charts
-- `containers/` - Nix and Dockerfile definitions for images built here
 - `nix/` - Flake packages and checks (manifest validation, CRD generation)
+
+No container images are built here; the non-upstream images this repo deploys come from `github.com/unmango/containers`.
 
 ## Code Style & Formatting
 
