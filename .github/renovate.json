@@ -94,6 +94,13 @@
 		},
 		{
 			"matchPackageNames": [
+				"unmango/cloudflare-operator",
+				"ghcr.io/unmango/cloudflare-operator"
+			],
+			"groupName": "unmango-cloudflare-operator"
+		},
+		{
+			"matchPackageNames": [
 				"xpkg.crossplane.io/crossplane/crossplane",
 				"crossplane"
 			],

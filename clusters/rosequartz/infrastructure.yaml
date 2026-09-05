@@ -300,3 +300,21 @@ spec:
   interval: 10m
   prune: true
   wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-unmango-cloudflare-operator
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/controllers/cloudflare-system/cloudflare-operator
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # This path ships the operator's API token as a SealedSecret, so the CRD has
+    # to exist or nothing on it applies.
+    - name: infra-sealed-secrets
