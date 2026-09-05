@@ -35,10 +35,21 @@
         paths = with pkgs; [
           gnumake
           xz
+          nix
         ];
         pathsToLink = [ "/bin" ];
         extraPrefix = "/usr/local";
       };
+
+      # Settings every job wants, so no workflow has to pass them. Anything
+      # cluster-specific, the ncps substituter above all, arrives as NIX_CONFIG
+      # from the runner manifests, which nix merges on top of this file.
+      nixConf = pkgs.writeTextDir "etc/nix/nix.conf" ''
+        experimental-features = nix-command flakes pipe-operators
+        # Nothing here runs as root and there is no daemon, so builds run as the
+        # invoking user and the sandbox is unavailable.
+        sandbox = false
+      '';
     in
     {
       packages.runner = pkgs.dockerTools.buildLayeredImage {
@@ -53,13 +64,34 @@
         name = "thecluster-runner";
         tag = "latest";
 
-        contents = [ tools ];
+        contents = [
+          tools
+          nixConf
+        ];
+
+        # Registers the store paths this image ships in /nix/var/nix/db, which is
+        # what makes the baked nix usable instead of a pile of files nix does not
+        # know about. Workflows can then skip cachix/install-nix-action.
+        includeNixDB = true;
+
+        # includeNixDB writes db.sqlite, big-lock and reserved with the modes
+        # nix uses for a store it owns, which is 0600 root here. The runner pods
+        # seed their /nix volume by copying this tree as the runner user, so
+        # every file in it has to be readable.
+        extraCommands = ''
+          chmod -R a+rX nix/var/nix/db
+        '';
 
         config = {
           Cmd = [ "/bin/bash" ];
           WorkingDir = "/home/runner";
           User = "runner";
-          Env = [ "USER=runner" ];
+          Env = [
+            "USER=runner"
+            # The base image is Ubuntu, so nix reaches substituters through its
+            # CA bundle rather than a store path of its own.
+            "NIX_SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt"
+          ];
         };
       };
     };
