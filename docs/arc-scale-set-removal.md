@@ -1,8 +1,17 @@
 # Removing an ARC runner scale set
 
 Removing an entry from `.spec.values.scaleSets` in `apps/arc-runners/helm-release.yml` can deadlock the
-`AutoscalingRunnerSet` finalizer and stall the ARC controller cluster-wide.
+`AutoscalingRunnerSet` finalizer and leave the namespace `Terminating` forever.
 Follow the drain procedure below rather than deleting the entry and pushing.
+
+The worked example throughout is the `thecluster.lan` entry.
+Three names come out of it and none of them match:
+
+| Object                 | Name                 | Namespace            | Source                                                      |
+| ---------------------- | -------------------- | -------------------- | ----------------------------------------------------------- |
+| Child `HelmRelease`    | `thecluster.lan`     | `arc-runners`        | `helmReleaseName`, defaulting to the entry's `name`         |
+| `Namespace`            | `arc-thecluster-lan` | n/a                  | `arc-runner-scale-set.namespace`, `.` and `_` folded to `-` |
+| `AutoscalingRunnerSet` | `thecluster`         | `arc-thecluster-lan` | `runnerScaleSetName`, shared by every scale set             |
 
 ## The finalizer dependency
 
@@ -13,7 +22,7 @@ Resolution reads a `Secret` in the same namespace as the `AutoscalingRunnerSet`.
 
 If that `Secret` is gone, the finalizer fails:
 
-```
+```text
 failed to resolve app config: failed to get kubernetes secret: "<namespace>/thecluster-bot"
 ```
 
@@ -21,12 +30,21 @@ A failed finalizer requeues, and the object retries forever.
 
 ## Why the retry is not harmless
 
-`gha-rs-controller` runs with `--runner-max-concurrent-reconciles=2`, the chart default.
-The `AutoscalingRunnerSet` and `AutoscalingListener` controllers share those two slots.
-A handful of permanently failing finalizers is enough to occupy both slots continuously,
-which starves the listener controller and causes listener pods to be recreated across every scale set.
-The symptom is cluster-wide: every listener pod under a minute old, zero restarts, a steady pod count.
-Only the log lines above identify the namespace actually at fault.
+The retry itself is rate limited, so it is not a busy loop and it does not starve other scale sets.
+Each modern controller runs with its own worker count, and only `EphemeralRunner` reads
+`--runner-max-concurrent-reconciles`; `AutoscalingRunnerSet` and `AutoscalingListener` get one worker each.
+What breaks is downstream of the retry:
+
+- The `AutoscalingRunnerSet` never loses its finalizer, so the object stays.
+- Its `Namespace` cannot finalize while the object is there, so the namespace sits in `Terminating`.
+- Flux stalls behind that namespace, so unrelated changes in `apps/arc-runners` stop applying.
+- The scale set stays registered with GitHub, and its name is still claimed.
+
+Only the log line above identifies the namespace actually at fault.
+
+Do not attribute cluster-wide listener churn to this.
+Every listener pod being under a minute old across every scale set is the leader-election symptom
+fixed in #4212, and it has a different cause and a different fix.
 
 ## Why removal triggers it
 
@@ -56,53 +74,131 @@ The credentials are needed strictly longer than the scale set is, and nothing in
 ## Draining a scale set safely
 
 Take the scale set down before removing its manifests, so the finalizer runs while its `Secret` still exists.
+Deleting an `AutoscalingRunnerSet` is not a graceful drain and will interrupt running jobs,
+so stop job acquisition and wait for the queue to empty first.
 
-1. Delete the child `HelmRelease` and wait for the `AutoscalingRunnerSet` to disappear:
+1. Suspend the parent so Flux does not re-render the child mid-procedure:
 
    ```sh
-   kubectl delete helmrelease <name> -n arc-runners
-   kubectl wait --for=delete autoscalingrunnerset/thecluster -n arc-<name> --timeout=5m
+   flux suspend helmrelease unstoppablemango-runners -n arc-runners
    ```
 
-   Flux recreates the `HelmRelease` on its next reconcile, so run step 2 promptly.
+2. Stop the scale set acquiring work, and wait for in-flight jobs to finish:
 
-2. Remove the entry from `.spec.values.scaleSets`, regenerate the fanout file, and push:
+   ```sh
+   kubectl patch helmrelease thecluster.lan -n arc-runners --type=merge \
+     -p '{"spec":{"values":{"minRunners":0,"maxRunners":0}}}'
+   flux reconcile helmrelease thecluster.lan -n arc-runners
+   kubectl get ephemeralrunners -n arc-thecluster-lan -w
+   ```
+
+   Wait until no `EphemeralRunner` objects remain.
+
+3. Delete the child `HelmRelease` and wait for the `AutoscalingRunnerSet` to disappear:
+
+   ```sh
+   kubectl delete helmrelease thecluster.lan -n arc-runners
+   kubectl wait --for=delete autoscalingrunnerset/thecluster -n arc-thecluster-lan --timeout=5m
+   ```
+
+   The parent is suspended, so nothing recreates the child while this runs.
+
+4. Remove the entry from `.spec.values.scaleSets`, regenerate the fanout file, and push:
 
    ```sh
    make apps/arc-runners/thecluster-bot-sealed.yml
    ```
 
-3. Confirm the namespace terminates and does not hang.
+5. Confirm the namespace terminates, then resume the parent:
+
+   ```sh
+   kubectl get namespace arc-thecluster-lan
+   flux resume helmrelease unstoppablemango-runners -n arc-runners
+   ```
 
 ## Recovering from a stuck deletion
 
-Recreate the `Secret` in the affected namespace directly, without waiting for Flux.
-The finalizers cannot drain until it exists, and Flux may itself be blocked behind `wait: true`.
-
-`make apps/arc-runners/thecluster-bot-unseal` writes a live dump, so the stub carries an `ownerReference`
-pointing at the `SealedSecret` it came from, along with a namespace and the usual server-set fields.
-Applying it unedited into another namespace produces a `Secret` owned by a uid that does not exist there,
-which the garbage collector deletes within seconds.
-Strip that metadata:
+Check the namespace phase first, because the two cases have different exits:
 
 ```sh
+kubectl get namespace arc-thecluster-lan -o jsonpath='{.status.phase}{"\n"}'
+```
+
+### The namespace is still `Active`
+
+Recreate the `Secret` directly, without waiting for Flux.
+The finalizer cannot drain until it exists, and Flux may itself be blocked behind `wait: true`.
+
+Copy it from any namespace that still has it.
+The fanout writes the same credentials into every scale-set namespace, so a healthy sibling is as good
+as the sealed source, and nothing is written to disk in plaintext:
+
+```sh
+kubectl get secret thecluster-bot -n arc-the-cluster -o yaml |
+  yq 'del(.metadata.namespace, .metadata.ownerReferences, .metadata.creationTimestamp,
+          .metadata.resourceVersion, .metadata.uid)' |
+  kubectl apply -n arc-thecluster-lan -f -
+```
+
+The `ownerReference` points at the `SealedSecret` the sibling came from.
+Applied unedited into another namespace it names a uid that does not exist there,
+and the garbage collector deletes the `Secret` within seconds, which is why it is stripped.
+
+The terminating objects then deregister and disappear, and the namespace finalizes.
+Delete the `Secret` afterwards if the namespace survives, so it does not linger unmanaged by Flux.
+
+If no sibling namespace has the `Secret`, unseal it instead, and remove the plaintext dump when done:
+
+```sh
+make apps/arc-runners/thecluster-bot-unseal
 yq 'del(.metadata.namespace, .metadata.ownerReferences, .metadata.creationTimestamp,
         .metadata.resourceVersion, .metadata.uid)' \
   hack/secrets/apps/arc-runners/thecluster-bot.yml |
-  kubectl apply -n arc-<name> -f -
+  kubectl apply -n arc-thecluster-lan -f -
+shred -u hack/secrets/apps/arc-runners/thecluster-bot.yml
 ```
 
-Delete the `Secret` once the namespace has drained, so it does not linger unmanaged by Flux.
+### The namespace is `Terminating`
 
-The terminating objects then deregister and disappear, the reconcile slots free up, and the listeners settle.
+Recreating the `Secret` is not an option: the API server rejects creating any object in a terminating
+namespace, so the finalizer can never succeed and the deadlock has to be broken by hand.
+
+1. Drop the finalizer so the object can be collected:
+
+   ```sh
+   kubectl patch autoscalingrunnerset thecluster -n arc-thecluster-lan \
+     --type=merge -p '{"metadata":{"finalizers":[]}}'
+   ```
+
+   Repeat for any `AutoscalingListener`, `EphemeralRunnerSet`, or `EphemeralRunner` left holding one:
+
+   ```sh
+   kubectl get autoscalinglisteners,ephemeralrunnersets,ephemeralrunners -n arc-thecluster-lan
+   ```
+
+   Older ARC versions also put `actions.github.com/cleanup-protection` on the namespace's
+   `Role`, `RoleBinding`, `ServiceAccount`, and `Secret`.
+   0.14.2 only removes that finalizer and never adds it, so it should not appear on anything new.
+
+2. Confirm the namespace finalizes:
+
+   ```sh
+   kubectl get namespace arc-thecluster-lan
+   ```
+
+3. Deregister the scale set in GitHub, which step 1 skipped.
+   The listener also holds a registration that no longer has a Kubernetes object behind it.
+   Under the repository or organization the entry's `githubConfigUrl` points at, open
+   Settings, Actions, Runners, and remove the `thecluster` runner scale set.
+
+Reusing the same scale-set name before deregistering it produces a duplicate registration in GitHub.
 
 ## Hardening options
 
 Not implemented, listed in rough order of cost:
 
-- Raise `--runner-max-concurrent-reconciles` so one stuck namespace cannot occupy every slot.
-  This widens the margin without removing the deadlock.
 - Keep the `SealedSecret` documents for removed namespaces until the namespace is gone,
   accepting drift between the fanout file and the rendered namespace list.
+- Wrap the drain above in a Makefile target, so the ordering is not a thing to remember.
 - Give the `Secret` its own lifecycle rather than deriving it from the scale set list,
   so credentials outlive the scale set by construction.
