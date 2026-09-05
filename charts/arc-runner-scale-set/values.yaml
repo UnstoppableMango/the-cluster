@@ -24,6 +24,9 @@ defaults:
   githubConfigSecret: thecluster-bot
   template:
     spec:
+      # Gives uid 1001 group ownership of the nix volume below.
+      securityContext:
+        fsGroup: 1001
       containers:
         - name: runner
           image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.337.0@sha256:312849bf4b980e64596cdd23216d7cc6f7f220192d1de7e69bbac826a852e4dc
@@ -36,6 +39,32 @@ defaults:
               value: |
                 extra-substituters = http://ncps.nix-system.svc.cluster.local:8501
                 extra-trusted-public-keys = ncps.thecluster.lan:pAJGNVSRmG7gCDSOAaiHDxLFUSdys5Pk0XvcJ5803Dw=
+          volumeMounts:
+            # cachix/install-nix-action does a single-user install, so the store
+            # and nix's build directory both land in /nix. Left unmounted that is
+            # the container's overlayfs layer, where nix fails to tear down a
+            # build directory it just emptied:
+            #
+            #   error: cannot unlink ".../project/.git": Directory not empty
+            #
+            # It bites the derivations that write many small files, treefmt's
+            # `git init && git add .` check being the reliable one.
+            - name: nix
+              mountPath: /nix
+      volumes:
+        # An emptyDir does not work here. Kubelet creates one mode 0777, and nix
+        # refuses a build directory with a world-writable ancestor. A CSI volume
+        # comes up 0775 root:fsGroup, which uid 1001 can write through the
+        # fsGroup above.
+        - name: nix
+          ephemeral:
+            volumeClaimTemplate:
+              spec:
+                accessModes: [ReadWriteOnce]
+                storageClassName: ssd-rbd
+                resources:
+                  requests:
+                    storage: 30Gi
 
 # One entry per scale set. Each is merged with defaults (entry wins on conflict).
 # Required per entry: name, githubConfigUrl
@@ -44,8 +73,10 @@ defaults:
 # All other gha-runner-scale-set values are valid (minRunners, containerMode, template, etc.)
 #
 # Careful: mergeOverwrite replaces lists wholesale, so an entry that supplies its
-# own template.spec.containers drops the defaults above, including command and
-# the NIX_CONFIG substituter. Repeat both if you override that list.
+# own template.spec.containers drops the defaults above, including command, the
+# NIX_CONFIG substituter, and the /nix volumeMount; one that supplies its own
+# template.spec.volumes drops the nix volume that mount refers to. Repeat
+# whichever list you override.
 scaleSets: []
 # - name: dotfiles
 #   githubConfigUrl: https://github.com/UnstoppableMango/dotfiles

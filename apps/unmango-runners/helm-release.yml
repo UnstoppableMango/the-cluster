@@ -22,6 +22,9 @@ spec:
     # https://github.com/actions/actions-runner-controller/blob/8c84ab2f4267ce61df1f6b2e26a3ca12b2d1e4ca/charts/gha-runner-scale-set/values.yaml#L310
     template:
       spec:
+        # Gives uid 1001 group ownership of the nix volume below.
+        securityContext:
+          fsGroup: 1001
         initContainers:
         - name: init-dind-externals
           image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.337.0@sha256:312849bf4b980e64596cdd23216d7cc6f7f220192d1de7e69bbac826a852e4dc
@@ -77,6 +80,17 @@ spec:
               mountPath: /home/runner/_work
             - name: dind-sock
               mountPath: /var/run
+            # cachix/install-nix-action does a single-user install, so the store
+            # and nix's build directory both land in /nix. Left unmounted that is
+            # the container's overlayfs layer, where nix fails to tear down a
+            # build directory it just emptied:
+            #
+            #   error: cannot unlink ".../project/.git": Directory not empty
+            #
+            # It bites the derivations that write many small files, treefmt's
+            # `git init && git add .` check being the reliable one.
+            - name: nix
+              mountPath: /nix
         volumes:
         - name: work
           emptyDir: {}
@@ -84,3 +98,16 @@ spec:
           emptyDir: {}
         - name: dind-externals
           emptyDir: {}
+        # An emptyDir does not work here. Kubelet creates one mode 0777, and nix
+        # refuses a build directory with a world-writable ancestor. A CSI volume
+        # comes up 0775 root:fsGroup, which uid 1001 can write through the
+        # fsGroup above.
+        - name: nix
+          ephemeral:
+            volumeClaimTemplate:
+              spec:
+                accessModes: [ReadWriteOnce]
+                storageClassName: ssd-rbd
+                resources:
+                  requests:
+                    storage: 30Gi
