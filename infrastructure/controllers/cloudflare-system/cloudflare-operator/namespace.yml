@@ -1,0 +1,8 @@
+# This path owns the Namespace. When infra-cloudflare is ported out of
+# docs/migration/pinkdiamond-wiring.yaml it has to drop the namespace.yml
+# beside it rather than apply the same object from a second Kustomization,
+# where a prune on either deletes it out from under the other.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cloudflare-system

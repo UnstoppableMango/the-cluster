@@ -1,0 +1,38 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cloudflare-operator
+  namespace: cloudflare-system
+spec:
+  interval: 10m
+  releaseName: cloudflare-operator
+  targetNamespace: cloudflare-system
+  # The chart is not published anywhere, so it is built from dist/chart in the
+  # checkout the GitRepository pins.
+  chart:
+    spec:
+      chart: ./dist/chart
+      sourceRef:
+        kind: GitRepository
+        name: cloudflare-operator
+  # https://github.com/unmango/cloudflare-operator/blob/main/dist/chart/values.yaml
+  values:
+    cloudflare:
+      auth:
+        # Without this the chart drops the CLOUDFLARE_API_TOKEN env var and the
+        # SealedSecret beside this file goes unread.
+        enabled: true
+        apiTokenRef:
+          name: cloudflare-operator-credentials
+          key: CLOUDFLARE_API_TOKEN
+    controllerManager:
+      container:
+        image:
+          repository: ghcr.io/unmango/cloudflare-operator
+          # The repository publishes no semver image tags, only sha-<commit>.
+          # This is the commit the v0.0.4 tag points at.
+          tag: sha-c81989b
+    ingressClass:
+      enable: true
+      name: cloudflare
+      defaultClass: false
