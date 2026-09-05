@@ -90,9 +90,10 @@ jobs:
           images: |
             ${{ env.IMAGE }}
           flavor: |
-            latest=auto
+            latest=false
           # defensive tagging because I'm an idiot
           tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
             type=ref,event=branch,suffix=-${{ env.NIX_RUNNER_VERSION }}
             type=ref,event=branch,suffix=-v${{ env.NIX_RUNNER_VERSION }}
             type=ref,event=branch,suffix=-${{ env.NIX_RUNNER_VERSION }}-${{ github.run_number }}
