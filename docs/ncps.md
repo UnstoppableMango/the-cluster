@@ -158,7 +158,9 @@ Nothing bounds the cache below the size of the volume; `--cache-max-size` is ava
 2. The signing key comes from the sealed secret, not the volume, so it is unchanged and no consumer needs re-keying.
 3. The cache itself is regenerable, so there is nothing to restore. It refills from upstream on demand.
 
-To sidestep the key entirely, `--cache-sign-narinfo=false` passes upstream signatures through untouched, which nix already trusts. The cost is that ncps can no longer serve locally-built paths.
+Regenerable holds only because `--cache-allow-put-verb` is unset, so nothing can push a locally-built path in and every path ncps holds is re-fetchable from one of the five upstreams. Enabling PUT would make the volume the only copy of whatever was uploaded, and this section would stop being true.
+
+`--cache-sign-narinfo=false` sidesteps the key by passing upstream signatures through untouched, but check what the clients trust before reaching for it. Passthrough means a narinfo arrives carrying only its origin's signature, so every client needs all five upstream keys, not just `cache.nixos.org-1`, which is the only one nix trusts by default. The runners are configured with the ncps key alone, so they would reject every cachix-sourced path. The other cost is that ncps can no longer serve locally-built paths.
 
 ## Unsigned narinfos
 

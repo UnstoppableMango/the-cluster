@@ -60,7 +60,8 @@ spec:
             # Already the default, spelled out because the flag reads as a bare
             # bool in `ncps serve --help` and the alternative, passing upstream
             # narinfos through unsigned, is indistinguishable from the failure
-            # this cache had: nix ignores an unsigned substitute in silence.
+            # this cache had. nix warns and moves on rather than failing, so the
+            # cache goes quiet and the build still succeeds, just slowly.
             - --cache-sign-narinfo
             - --cache-upstream-url=https://cache.nixos.org
             - --cache-upstream-url=https://nix-community.cachix.org
