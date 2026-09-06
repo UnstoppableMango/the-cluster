@@ -1,0 +1,14 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: hercules-ci-agent
+  namespace: hercules-ci
+spec:
+  encryptedData:
+    cluster-join-token.key: AgBh4YkHljXJWJHa3AkLSP50A2NGwBmB/YHHp5QXHVGgKR3bT1EzYn5mBGb9nPJPazuFV4xxvN3ijZvAoh/aKGJdalUEWWRnHY8CBqnW3PIVHp00zuhgdo6h07IXDV77eKfs9sZZPiAf0OuOAUFKlUke2weT4JS0BqpJtL0R+nuUB2qNF7t8KDf3oGJ6a4Pd3Lyvb5iylVoSVWIFuQOUeQqjS//hO46aJU5EShsvcFfsr1c+GFMQcMxkh1c/5rmzlfi2VA089s+tHClmkV9pvOC058M/G23uE/RztGFnwpWz2ZSVvEUDjYgOemWbpxKmk+FZ4KF6w+Ti4U2IaTLVjwDkRB6uZ01vTlEPXfsO5XKIbgJZn+KWpkoofvuL853yI/iH2Gyy0eKiyUSFskaz8Ubf1g0DrBZx/IYBhpPNMh5EvWp+49EKZUGpr1g8sRsVdZ4jUIX9uu4y5WRcNUjeVAqXiK1iTovsnE8WFO06nOQ0/F2B35ii2+BVA9aLKHLn8jAwIDbhIaTlnVcPePQlk9pDI/42t0ttu2ZJWL1IeanOcjTXyEOdTxGf9PL+WlYKNy4LSiF88otG9tcelTYmpK30YSgG9ayTscT/cnqQ68m98elD2YU12ftM9w0Fno+rVG4kt1xlT9372B/YUZr7kLjcJVs3XfYcEgQHz5wJHvta1BZ12jvddT9txyGwXvtdT+jlgKGH6of0n+LI9xQTxURQv9exc/kbV073boSSz7ZwS3SdL5WVdJSaaTihlHh2SgEsk+mnJZEWYeSpXVNfO8osdzuJCeyhC8qpCs8zip0vL5nAYuni5VTAmT+vThJerRuAmjUEo9BRDbLIutHqWysRvr7/gAHM9ox0FRd4wgboWOFiMxOGIuMtR8GSQl5mGmUgRGj/xkVbIwUfSsitlkTO6BpWfGyW54JASBgpjQCZxCVHPg035DVjwzLGM0cGAPxN75pDkgU0GdJptmKMmf+QK/+wTuTLNVOBlWtibzWXEgE80KIkMy5NPYGR
+  template:
+    metadata:
+      name: hercules-ci-agent
+      namespace: hercules-ci
+    type: Opaque
