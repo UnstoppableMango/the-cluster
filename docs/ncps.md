@@ -110,8 +110,11 @@ Verify a restore by reading `/pubkey` and requesting a narinfo that is known to 
 
 ## Signing key
 
-ncps signs the narinfos it serves. The key name derives from `--cache-hostname`, so it is always `ncps.thecluster.lan:...`, but the material lives in the sqlite database at `/storage/var/ncps/db/db.sqlite` on the PVC.
-No `--cache-secret-key-path` is set, so **key survival is exactly PV survival**.
+ncps signs the narinfos it serves. The key name derives from `--cache-hostname`, so it is always `ncps.thecluster.lan:...`.
+
+`--cache-secret-key-path=/etc/ncps/cache.key` points at `apps/nix-system/signing-key-sealed.yml`, so **git holds the key and a rebuilt volume keeps the same identity**.
+Without that flag ncps generates a key on first start and stores it in the `config` table of the sqlite database under key `secret_key`, in nix `name:base64` format, which makes the identity every consumer trusts depend on the PV surviving.
+The sealed secret carries exactly the key that database held, so adopting the flag changed no consumer.
 
 Read the current public key:
 
@@ -123,8 +126,8 @@ curl -sS http://127.0.0.1:8501/pubkey; echo
 The current value is `ncps.thecluster.lan:pAJGNVSRmG7gCDSOAaiHDxLFUSdys5Pk0XvcJ5803Dw=`.
 Anything consuming ncps as a substituter needs it in `extra-trusted-public-keys`.
 
-Note that this is not the key an older, commented-out entry in `UnstoppableMango/nixos` records.
-The volume survived the migration, but the key material did not, and the name is derived from `--cache-hostname` so both spell `ncps.thecluster.lan:`.
+The volume survived the pinkdiamond to rosequartz migration but the key material did not, and because the name derives from `--cache-hostname` the superseded key spells `ncps.thecluster.lan:` too.
+`UnstoppableMango/nixos` carried that superseded value live for a while, so every machine on the LAN skipped the cache without saying so.
 That is the trap this section exists to describe: read `/pubkey`, do not trust a written-down value.
 A key that is stale but well-formed is worse than no key: nix treats the signature as untrusted and fails the substitution outright rather than falling back.
 So read `/pubkey` before writing the value anywhere, and never copy it forward on faith.
@@ -152,7 +155,43 @@ Nothing bounds the cache below the size of the volume; `--cache-max-size` is ava
 ## If the volume is lost
 
 1. Delete `apps/nix-system/pvs.yml`, drop it from `kustomization.yaml`, and drop `volumeName` from `pvc.yml` so rook provisions a fresh one.
-2. ncps mints a new signing key under the same name. Every `extra-trusted-public-keys` entry listed above is now wrong and must be replaced from `/pubkey`.
+2. The signing key comes from the sealed secret, not the volume, so it is unchanged and no consumer needs re-keying.
 3. The cache itself is regenerable, so there is nothing to restore. It refills from upstream on demand.
 
 To sidestep the key entirely, `--cache-sign-narinfo=false` passes upstream signatures through untouched, which nix already trusts. The cost is that ncps can no longer serve locally-built paths.
+
+## Unsigned narinfos
+
+Narinfos are rows in the sqlite database, not files: `narinfos` holds the fields, with `narinfo_signatures`, `narinfo_references` and `narinfo_nar_files` hanging off it. Only the NAR bodies are files, under `/storage/store/nar`.
+
+The upgrade to `v0.10.0-rc16` gutted every row that predated it, dropping its signatures, its references and its link to a NAR file, leaving hash and store path behind.
+A gutted row still answers a request, which is why it never heals: ncps prefers its own copy and never re-asks upstream.
+nix then discards the substitute with `warning: ignoring substitute for '/nix/store/...', as it's not signed by any of the keys in 'trusted-public-keys'`, which reads like a key mismatch and is not one.
+The empty `References` is the more dangerous half; the missing signature is what stops nix acting on it.
+
+Count them, with the statefulset scaled to 0 and a throwaway pod mounting the PVC:
+
+```sh
+sqlite3 -readonly /storage/var/ncps/db/db.sqlite \
+  "select count(*) from narinfos n
+   where not exists (select 1 from narinfo_signatures s where s.narinfo_id = n.id);"
+```
+
+The repair is to delete them so the next request refetches from upstream. Back the database up first, as above:
+
+```sh
+sqlite3 /storage/var/ncps/db/db.sqlite "
+PRAGMA foreign_keys=ON;
+DELETE FROM narinfos WHERE id IN (
+  SELECT n.id FROM narinfos n
+  WHERE NOT EXISTS (SELECT 1 FROM narinfo_signatures s WHERE s.narinfo_id = n.id)
+    AND NOT EXISTS (SELECT 1 FROM narinfo_references r WHERE r.narinfo_id = n.id)
+    AND NOT EXISTS (SELECT 1 FROM narinfo_nar_files f WHERE f.narinfo_id = n.id)
+);"
+```
+
+All three conditions together, so the delete cannot touch a row that is merely reference-free: a path with no dependencies is ordinary, and 628 of the surviving rows are exactly that.
+
+Re-signing in place is not an option, however tempting it looks with the key in hand. The fingerprint nix signs covers the references, and those are gone; a signature computed over the gutted row would be a valid signature on a wrong closure.
+
+Deleting the rows orphans their NAR files, which nothing reclaims on its own. Setting `--cache-max-size` would put the LRU cron in charge of that.

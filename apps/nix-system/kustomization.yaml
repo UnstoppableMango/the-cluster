@@ -5,5 +5,6 @@ resources:
   - namespace.yml
   - pvc.yml
   - service.yml
+  - signing-key-sealed.yml
   - statefulset.yml
   - pvs.yml
