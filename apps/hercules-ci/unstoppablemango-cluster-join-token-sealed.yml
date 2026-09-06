@@ -1,0 +1,14 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: unstoppablemango-hercules-ci-agent
+  namespace: hercules-ci
+spec:
+  encryptedData:
+    cluster-join-token.key: AgAciUph5xSeCViN/GuW/wl0JppYp68Ofe3hfPeK7DN24mvqg2IWbOeWtH0pPtFxZncwHF8Ex/kj8n+Qj43kkSdXM/YZ0IEMR+pTQkhrO9ga2DBMa4BG/hikxPDZASldwI3Go1ywe/ybotNwfbExW3Vlsks2bqCGsyCyMHMlvx+XMNO3skkanGLNbAuA8Tj5n6mAxEZTCGgmO82AAiC5G77KGSm7b7NcoLm62qumjvhtwFvbaVwARBHLC122KWIdDOr19Mvor/39qdJTASXqCOxvCZwGXAuIvfSsI5oGQksEpQtVk04Z/+C/CE78LKWN6uBvh3WWzh/3Ed1QqHWLIBG/rzoVDYTh6Y9S1ko3iEAXvUeMPgElpY/85mI/VYKYAdP0BanrWbOJy+3DvEMsKpIhQ3AmG43GF8uucJpUArkGNrquiaFEjlSIMkTeExLQieFbr2vc97Ohi8QZCLyrzAyhqMbDvFfYI0vibICSI93SDmeT9+j6jabw6XrZLjML6kHRkHA5BaElr93lGzWMvLiud3ZTGau8kfv9ArUXUlz4EOY3jzxzsXGaHgEWuoLmMKMJ/UpYnlftwZEs183Cj43Ci8Gn+y7K8IMtS40+a73R0KtUl260un1QcZ7IxXxn+LRlJ0QgidbRPlmOoqamE9/wdqsMvUfk/cKdB9vw62JiFth7Q3/C+RWdu01jwr/SwOg=
+  template:
+    metadata:
+      name: unstoppablemango-hercules-ci-agent
+      namespace: hercules-ci
+    type: Opaque

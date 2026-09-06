@@ -117,7 +117,7 @@ spec:
   prune: true
   wait: true
   dependsOn:
-    # cluster-join-token-sealed.yml needs the SealedSecret CRD.
+    # The per-account cluster join tokens need the SealedSecret CRD.
     - name: infra-sealed-secrets
-    # The agent's state volumeClaimTemplate binds through storageClassName: ssd-rbd.
+    # The agents' state volumeClaimTemplates bind through storageClassName: ssd-rbd.
     - name: infra-configs-rook-ceph-storage

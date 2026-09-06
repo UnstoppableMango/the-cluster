@@ -1,0 +1,14 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: unmango-hercules-ci-agent
+  namespace: hercules-ci
+spec:
+  encryptedData:
+    cluster-join-token.key: AgAYr2ZYU3sV4q84PbCDe3dgwk/MeqNu+ECwV1v/pQzXuxHssxTY2/5oFQB7sXJZn/ZpiQbkfssZfNr+Cb40tVOmJR4B0JQh3rcVlDADdlNfpdaxjrR9PhxvZr1OKTw651ubGjhA4Nzzqg40VN7t0aVJgcfaXzx/mHbAMdNNfi/zCGM0rR94b8Zj+S3tXRmEEU3S4TsDB3RZQVjkPfoBFasa0ykkFNQ4jVjRLi0b9z0+SGW5iX5CIEm9G1OjVNn0pFWhQ1N5RWsWTdUTKHihv7fsZjk1aDUH6Wutz3NCSu36hGk4pv38LOYA0clXZuy/ReUd5QXjRoqN6dPx7BImDt1mrwo+Yv948YMgKYEGjOOsv52f2M5TJUa0oMpCBD/8XPyjw/iAR3HYLcJPkjNq61bLI6KxPEGKgBRcnR0OzE5W3ONIzvGbss25mvKXTjeBEGvLklFI9PbI+SUN0CMUCrFid4Mz1BmDECpFCyij0ap0Bs83zoMDGXgFbC/VfbnZwDNGuu87MxDJakiTTgEhfr/INTkiHWB2Dw2cabEkUHkSHgsHbCT3t0vTY9K4py+M+6Nkk7LR+6BloJTJQvGZ5sHjFnWeedyrnIP+SsWdI3Wgk6wK5fM9YHI+r4hPj8e6uWi7tytTR19dTDtScsQ1GN86G2CqkK9lyeejRVfrEQ/NSHcjxDK7Lhth0+8R+JtUEOaoeDA4sg+zkKAMPyTMrwskHs+OJ7zd02u1vql6OMj0Hb1aVgUVGfJm9Dk7nzR/mVDPM0+bpxOzQW7c9SNZ8dxsPqpEOQKZNCwZb686M51Qqcx3PM7y5nZf/wp5pwBlMnJ+N3U479KMVT2XhM2dqlEMJ8ZoQG/KLoTZSLzhxw2CNnB+uGSH0IHbHSkBtEZ3dRUoqERTSwuqnZwA5p4TjcjRTj/PqeCOOyf/lfBPUmg0j5z4yeWZznR/qtQTeP7LJ4PFh+8SqQI9oy/PMJma3919v+hNZj0cNrlFtrhFyGIaHZNy+Jtj3VTH3T89
+  template:
+    metadata:
+      name: unmango-hercules-ci-agent
+      namespace: hercules-ci
+    type: Opaque
