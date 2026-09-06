@@ -93,3 +93,22 @@ spec:
   dependsOn:
     # secret-sealed.yml needs the SealedSecret CRD.
     - name: infra-sealed-secrets
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-hercules-ci
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/hercules-ci
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # cluster-join-token-sealed.yml needs the SealedSecret CRD.
+    - name: infra-sealed-secrets
+    # The agent's state volumeClaimTemplate binds through storageClassName: ssd-rbd.
+    - name: infra-configs-rook-ceph-storage
