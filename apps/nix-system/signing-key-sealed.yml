@@ -1,0 +1,14 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: signing-key
+  namespace: nix-system
+spec:
+  encryptedData:
+    cache.key: AgBEA+BCkJr02YstI6hxlFJUx5JotReZKABn5QzrVcSck3kZVBitD/wj3HjqOsFRFKjii10/eqLG4rwGcD04Upw3+Y0gUcjMswGuHLJvdHI2lBFeqJUalgAZoEbYhLk8NHxsVMrN0PXJbQTjOds6XfFTg+IJ4Y8TKTbe3VKeQHh6Z0aZoVivnJ1AVOcaLAH+CYekxQThWHL76LkpPZgQegHYbW6fYFlHn0tnBkUd9lnVNoXpp6p7SeFOXL/KN4dxKEurC048JSwTANvKGUc4ggiQiORFnKYz3qQzRgCikL8voe43CQMrAaTZmd6E6SUQuHY7WqK5i6QLjkFXycZ66O6NqrvR7odiVWduq6OPedD6kO6tJGbWYdDsDr5H7QF38m3Ebm6/sK/ucWQJaHF29WajBAPgANrNixU/3ebt9Vi5N88+LlBkYgEPhveMfCddmO7Z8YsFfWmMScjlwWcnB+C/61YKjEnV+v7W7ncBbbaCIqJmylQUOyY9MY3/iuAXgLrQuWJ4EqcowA7l09WsfrqVzI/WXm1w/xDHG3AZW5zx/6fLYwTAQqGi0RYeFaxxhecPZ5Xq9nJ6mY+mnDB0ejcI0MNIfeUed4F8A1XpP5OFbeAw6VB3fxD9taeuD69PI13m/WxLlw1mSpQabMu70W+aZ0oAqY6waBWXgROIyjy/hfg7R9RWeMHdq87IUetXzao5C2Aii2VtB3fHw97AfIgJHqjiU6modPd+nptlkmQU0nr+UwSykPmo5HUfiG+Ri1DaBk6RrZI8yhqY7g9KxK1l6K6xBBid+UxB5TbgUSu+LyYHRJ85Dznnr4aPvrQeKTAs9ISzaz50Hdx16/k=
+  template:
+    metadata:
+      name: signing-key
+      namespace: nix-system
+    type: Opaque
