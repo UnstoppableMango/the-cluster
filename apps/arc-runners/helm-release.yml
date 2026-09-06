@@ -22,35 +22,18 @@ spec:
         type: dind
       template:
         spec:
+          # Makes gid 1001 the group owner of the work volume below and adds it
+          # to the runner process's supplementary groups.
           securityContext:
             fsGroup: 1001
-          initContainers:
-            # A single-user nix install expects to own /nix. Kubelet leaves a CSI
-            # volume root:fsGroup 2775, and the setgid bit propagates into every
-            # directory nix creates under it, store paths and build directories
-            # alike. install-nix-action only chowns /nix when it creates it, so
-            # the mount stays root-owned. Hand it to the runner instead, mode
-            # 0755, so the tree matches what the installer would have produced.
-            #
-            # The mode is five digits because a numeric chmod of four digits or
-            # fewer preserves a directory's setuid and setgid bits; 00755 is
-            # what actually clears the setgid.
-            - name: init-nix
-              image: ghcr.io/unmango/actions-runner:2.337.0@sha256:33817cc04bafe459029f48c2e84524ece811215a1b8bac069c1fade53f66f236
-              command: [sh, -c, 'chown runner:runner /nix && chmod 00755 /nix']
-              securityContext:
-                runAsUser: 0
-              volumeMounts:
-                - name: nix
-                  mountPath: /nix
           containers:
             - name: runner
-              image: ghcr.io/unmango/actions-runner:2.337.0@sha256:33817cc04bafe459029f48c2e84524ece811215a1b8bac069c1fade53f66f236
+              image: ghcr.io/unmango/actions-runner:2.337.0@sha256:4e9792606dbc6ff357de98666529147fa620d879c6d29c746bfb0893d9a041c5
               command: [/home/runner/run.sh]
               env:
-                # ncps binary cache, reachable in-cluster only. Honored because
-                # cachix/install-nix-action writes `trusted-users = root $USER` and
-                # the runner image sets USER=runner.
+                # ncps binary cache, reachable in-cluster only. The image's nix
+                # is daemonless, so there is no daemon to gate these against a
+                # trusted-users list and every setting here applies as written.
                 - name: NIX_CONFIG
                   value: |
                     extra-substituters = http://ncps.nix-system.svc.cluster.local:8501
@@ -59,19 +42,6 @@ spec:
                 limits:
                   cpu: "8"
                   memory: 8Gi
-              volumeMounts:
-                # cachix/install-nix-action does a single-user install, so the
-                # store and nix's build directory both land in /nix. Left
-                # unmounted that is the container's overlayfs layer, where nix
-                # fails to tear down a build directory it just emptied:
-                #
-                #   error: cannot unlink ".../project/.git": Directory not empty
-                #
-                # It bites the derivations that write many small files, treefmt's
-                # `git init && git add .` check being the reliable one. The chart
-                # keeps user-supplied volumeMounts and appends the dind ones.
-                - name: nix
-                  mountPath: /nix
           volumes:
             - name: work
               ephemeral:
@@ -82,19 +52,6 @@ spec:
                     resources:
                       requests:
                         storage: 5Gi
-            # An emptyDir does not work here. Kubelet creates one mode 0777, and
-            # nix refuses a build directory with a world-writable ancestor. A CSI
-            # volume comes up 2775 root:fsGroup, which init-nix then narrows to
-            # 0755 runner:runner.
-            - name: nix
-              ephemeral:
-                volumeClaimTemplate:
-                  spec:
-                    accessModes: [ReadWriteOnce]
-                    storageClassName: ssd-rbd
-                    resources:
-                      requests:
-                        storage: 75Gi
       listenerTemplate:
         spec:
           containers:
