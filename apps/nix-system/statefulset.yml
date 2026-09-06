@@ -63,6 +63,15 @@ spec:
             # this cache had. nix warns and moves on rather than failing, so the
             # cache goes quiet and the build still succeeds, just slowly.
             - --cache-sign-narinfo
+            # These two are a pair. A max size on its own is inert, because the
+            # schedule is what registers the cron that enforces it, and a
+            # schedule on its own refuses to start. 180G against the ~237GiB the
+            # 250GiB volume leaves after the ext4 reserve gives the hourly run
+            # room to overshoot between passes. Under the ceiling a run costs a
+            # lock and a sum over nar_files; only real evictions are slow, and
+            # those hold the cache exclusively for as long as they take.
+            - --cache-max-size=180G
+            - --cache-lru-schedule=@every 1h
             - --cache-upstream-url=https://cache.nixos.org
             - --cache-upstream-url=https://nix-community.cachix.org
             - --cache-upstream-url=https://unstoppablemango.cachix.org

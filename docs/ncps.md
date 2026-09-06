@@ -150,7 +150,11 @@ kubectl -n rook-ceph exec deploy/rook-ceph-tools -- \
   rbd -p unsafe-metadata info csi-vol-86764a85-c8d5-428e-8658-882d6a1d361d
 ```
 
-Nothing bounds the cache below the size of the volume; `--cache-max-size` is available but not set.
+`--cache-max-size=180G` bounds the cache below the size of the volume, against the roughly 237 GiB the 250 GiB volume leaves after the ext4 reserve.
+
+It only works paired with `--cache-lru-schedule`, which registers the cron that enforces it. A max size alone is inert and says nothing about it; a schedule alone fails to start with `ErrCacheMaxSizeRequired`. Removing one silently disables the other, so treat them as a single setting.
+
+A run under the ceiling costs a lock and a sum of `file_size` over `nar_files`. A run that has to evict holds the cache exclusively for as long as it takes, ordered by `last_accessed_at`, deleting the NAR and its narinfo together.
 
 ## If the volume is lost
 
