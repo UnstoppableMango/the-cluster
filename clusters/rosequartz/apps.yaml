@@ -121,3 +121,22 @@ spec:
     - name: infra-sealed-secrets
     # The agents' state volumeClaimTemplates bind through storageClassName: ssd-rbd.
     - name: infra-configs-rook-ceph-storage
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-wishlists
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/wishlists
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # postgres-cluster.yml is a postgresql.cnpg.io Cluster.
+    - name: infra-cnpg-system
+    # postgres-cluster.yml provisions through storageClassName: ssd-rbd.
+    - name: infra-configs-rook-ceph-storage
