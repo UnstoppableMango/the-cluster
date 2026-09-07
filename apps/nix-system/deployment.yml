@@ -61,12 +61,13 @@ spec:
             - serve
             - --cache-hostname=ncps.thecluster.lan
             # Every replica reads and writes one bucket, claimed by
-            # object-bucket-claim.yml. The endpoint is the in-cluster RGW
-            # Service of CephObjectStore/s3 in rook-ceph, and path-style
-            # addressing is what RGW answers to. The region is a formality for
-            # request signing; RGW does not enforce it.
+            # object-bucket-claim.yml. The endpoint is the secure listener of
+            # the in-cluster RGW Service of CephObjectStore/s3 in rook-ceph,
+            # whose certificate the CA mounted at /etc/ncps/ca vouches for,
+            # and path-style addressing is what RGW answers to. The region is
+            # a formality for request signing; RGW does not enforce it.
             - --cache-storage-s3-bucket=ncps-cache
-            - --cache-storage-s3-endpoint=http://rook-ceph-rgw-s3.rook-ceph.svc:80
+            - --cache-storage-s3-endpoint=https://rook-ceph-rgw-s3.rook-ceph.svc:443
             - --cache-storage-s3-region=us-east-1
             - --cache-storage-s3-force-path-style
             # NARs stream from upstream into this emptyDir before the upload
@@ -134,6 +135,14 @@ spec:
                 secretKeyRef:
                   name: ncps-cache
                   key: AWS_SECRET_ACCESS_KEY
+            # Go reads roots from a default list of files and directories.
+            # SSL_CERT_DIR replaces only the directory list, so the image's
+            # public roots in /etc/ssl/certs/ca-certificates.crt still load and
+            # the upstream caches keep verifying, while the thecluster.lan CA
+            # in the mounted ConfigMap is added for RGW. SSL_CERT_FILE would
+            # replace the file list and drop the public roots.
+            - name: SSL_CERT_DIR
+              value: /etc/ncps/ca
             # Lets the Go runtime collect ahead of the cgroup limit instead of
             # getting OOM-killed mid-NAR.
             - name: GOMEMLIMIT
@@ -166,6 +175,9 @@ spec:
             - name: signing-key
               mountPath: /etc/ncps
               readOnly: true
+            - name: ca
+              mountPath: /etc/ncps/ca
+              readOnly: true
       volumes:
         - name: nar-temp-dir
           emptyDir:
@@ -175,3 +187,8 @@ spec:
           secret:
             secretName: signing-key
             defaultMode: 0400
+        # The thecluster.lan CA, written to every namespace by the
+        # trust-manager Bundle that infra-configs-trust-bundle reconciles.
+        - name: ca
+          configMap:
+            name: thecluster-lan-ca

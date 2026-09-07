@@ -17,6 +17,9 @@ spec:
     - name: infra-configs-rook-ceph-storage
     # postgres-cluster.yml is a postgresql.cnpg.io Cluster.
     - name: infra-cnpg-system
+    # deployment.yml mounts ConfigMap thecluster-lan-ca to trust the RGW
+    # certificate, and a pod cannot start on a ConfigMap that is not there.
+    - name: infra-configs-trust-bundle
     # signing-key-sealed.yml needs the SealedSecret CRD.
     - name: infra-sealed-secrets
     # ingress.yml is an HTTPRoute against the nginx Gateway in nginx-gateway.
