@@ -36,7 +36,7 @@ spec:
             # fewer preserves a directory's setuid and setgid bits; 00755 is
             # what actually clears the setgid.
             - name: init-nix
-              image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.337.0@sha256:312849bf4b980e64596cdd23216d7cc6f7f220192d1de7e69bbac826a852e4dc
+              image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.337.0@sha256:fc43c6e3f69d752793cb622fda2a6a2a01fda5da01bbd50d2f8eb6a921068b22
               command: [sh, -c, 'chown runner:runner /nix && chmod 00755 /nix']
               securityContext:
                 runAsUser: 0
@@ -45,7 +45,7 @@ spec:
                   mountPath: /nix
           containers:
             - name: runner
-              image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.337.0@sha256:312849bf4b980e64596cdd23216d7cc6f7f220192d1de7e69bbac826a852e4dc
+              image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.337.0@sha256:fc43c6e3f69d752793cb622fda2a6a2a01fda5da01bbd50d2f8eb6a921068b22
               command: [/home/runner/run.sh]
               env:
                 # ncps binary cache, reachable in-cluster only. Honored because
