@@ -26,8 +26,6 @@ Run it before pushing manifest changes.
 ```sh
 make reconcile      # flux reconcile source git flux-system
 make renovate       # trigger a renovate cronjob manually; RENOVATE_RELEASE selects the account
-make runner         # docker buildx build containers/runner/Dockerfile
-nix build '.#runner'  # build the nix runner image derivation
 ```
 
 ## Architecture
@@ -38,9 +36,11 @@ nix build '.#runner'  # build the nix runner image derivation
 2. **`infrastructure/`**: Infrastructure manifests, split into `controllers/` (operator installs) and `configs/` (CRs against an installed controller)
 3. **`apps/`**: Application manifests
 4. **`charts/`**: Local Helm charts (`arc-runner-scale-set`, `redis`) referenced by HelmReleases in this repo
-5. **`containers/`**: Nix and Dockerfile definitions for images built from this repo
-6. **`nix/`**: Flake packages and checks for manifest validation, cert-manager CRDs, and CRD generation
-7. **`hack/`**: Scripts, the sealed-secrets public cert, and the `hack/secrets/` stub tree
+5. **`nix/`**: Flake packages and checks for manifest validation, cert-manager CRDs, and CRD generation
+6. **`hack/`**: Scripts, the sealed-secrets public cert, and the `hack/secrets/` stub tree
+
+No container images are built here.
+The images this repo deploys that are not upstream come from `github.com/unmango/containers`, for example `ghcr.io/unmango/actions-runner` used by the ARC scale sets.
 
 ### GitOps
 

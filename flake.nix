@@ -28,7 +28,6 @@
 
       imports = with inputs; [
         treefmt-nix.flakeModule
-        ./containers
         ./nix
       ];
 

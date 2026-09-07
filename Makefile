@@ -24,9 +24,6 @@ check:
 
 update: flake.lock
 
-runner: containers/runner/Dockerfile
-	docker buildx build -f $< .
-
 .PHONY: hack/secrets/infrastructure/configs/cert-manager-system/ca.yml
 hack/secrets/infrastructure/configs/cert-manager-system/ca.yml:
 	@mkdir -p $(@D)
@@ -98,10 +95,6 @@ hack/sealed-secrets.pub:
 	--controller-name sealed-secrets-controller \
 	--controller-namespace flux-system \
 	> $@
-
-bin/image.tar: containers/default.nix containers/runner/default.nix
-	nix $(NIX_FLAGS) build '.#runner' --out-link $@
-	docker load < $@
 
 infrastructure/controllers/cert-manager-system/crds/crds.yaml: flake.lock nix/cert-manager-crds.nix
 	cp $$(nix $(NIX_FLAGS) build .#cert-manager-crds --print-out-paths --no-link) $@

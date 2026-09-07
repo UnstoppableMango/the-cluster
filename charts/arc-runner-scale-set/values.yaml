@@ -24,70 +24,26 @@ defaults:
   githubConfigSecret: thecluster-bot
   template:
     spec:
-      # Makes gid 1001 the group owner of the volumes below and adds it to the
-      # runner process's supplementary groups. The work volume relies on it; the
-      # nix volume is handed to the runner outright by init-nix.
-      securityContext:
-        fsGroup: 1001
-      initContainers:
-        # A single-user nix install expects to own /nix. Kubelet leaves a CSI
-        # volume root:fsGroup 2775, and the setgid bit propagates into every
-        # directory nix creates under it, store paths and build directories
-        # alike. install-nix-action only chowns /nix when it creates it, so the
-        # mount stays root-owned. Hand it to the runner instead, mode 0755, so
-        # the tree matches what the installer would have produced. Not
-        # recursive: the volume is ephemeral and holds only lost+found here. The
-        # upstream chart appends these after the dind ones.
-        #
-        # The mode is five digits because a numeric chmod of four digits or
-        # fewer preserves a directory's setuid and setgid bits; 00755 is what
-        # actually clears the setgid.
-        - name: init-nix
-          image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.337.0@sha256:312849bf4b980e64596cdd23216d7cc6f7f220192d1de7e69bbac826a852e4dc
-          command: [sh, -c, 'chown runner:runner /nix && chmod 00755 /nix']
-          securityContext:
-            runAsUser: 0
-          volumeMounts:
-            - name: nix
-              mountPath: /nix
       containers:
+        # The image bakes nix, its store, and a registered /nix/var/nix/db, so
+        # workflows can skip cachix/install-nix-action. The store lives on the
+        # container's overlayfs; nothing is mounted at /nix, because a volume
+        # there would hide everything the image ships.
+        #
+        # https://github.com/unmango/containers/issues/18 tracks a seed helper
+        # for restoring a writable /nix volume without an inline cp in these
+        # manifests.
         - name: runner
-          image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.337.0@sha256:312849bf4b980e64596cdd23216d7cc6f7f220192d1de7e69bbac826a852e4dc
+          image: ghcr.io/unmango/actions-runner:2.337.0@sha256:4e9792606dbc6ff357de98666529147fa620d879c6d29c746bfb0893d9a041c5
           command: [/home/runner/run.sh]
           env:
-            # ncps binary cache, reachable in-cluster only. Honored because
-            # cachix/install-nix-action writes `trusted-users = root $USER` and
-            # the runner image sets USER=runner.
+            # ncps binary cache, reachable in-cluster only. The image's nix is
+            # daemonless, so there is no daemon to gate these against a
+            # trusted-users list and every setting here applies as written.
             - name: NIX_CONFIG
               value: |
                 extra-substituters = http://ncps.nix-system.svc.cluster.local:8501
                 extra-trusted-public-keys = ncps.thecluster.lan:pAJGNVSRmG7gCDSOAaiHDxLFUSdys5Pk0XvcJ5803Dw=
-          volumeMounts:
-            # cachix/install-nix-action does a single-user install, so the store
-            # and nix's build directory both land in /nix. Left unmounted that is
-            # the container's overlayfs layer, where nix fails to tear down a
-            # build directory it just emptied:
-            #
-            #   error: cannot unlink ".../project/.git": Directory not empty
-            #
-            # It bites the derivations that write many small files, treefmt's
-            # `git init && git add .` check being the reliable one.
-            - name: nix
-              mountPath: /nix
-      volumes:
-        # An emptyDir does not work here. Kubelet creates one mode 0777, and nix
-        # refuses a build directory with a world-writable ancestor. A CSI volume
-        # comes up 2775 root:fsGroup, which init-nix then narrows to 0755
-        # runner:runner.
-        - name: nix
-          ephemeral:
-            volumeClaimTemplate:
-              spec:
-                accessModes: [ReadWriteOnce]
-                storageClassName: ssd-rbd
-                resources:
-                  requests:
-                    storage: 75Gi
 
 # One entry per scale set. Each is merged with defaults (entry wins on conflict).
 # Required per entry: name, githubConfigUrl
@@ -96,11 +52,8 @@ defaults:
 # All other gha-runner-scale-set values are valid (minRunners, containerMode, template, etc.)
 #
 # Careful: mergeOverwrite replaces lists wholesale, so an entry that supplies its
-# own template.spec.containers drops the defaults above, including command, the
-# NIX_CONFIG substituter, and the /nix volumeMount; one that supplies its own
-# template.spec.volumes drops the nix volume that mount refers to; one that
-# supplies its own template.spec.initContainers drops init-nix. Repeat whichever
-# list you override.
+# own template.spec.containers drops the defaults above, including command and
+# the NIX_CONFIG substituter. Repeat whichever list you override.
 scaleSets: []
 # - name: dotfiles
 #   githubConfigUrl: https://github.com/UnstoppableMango/dotfiles
@@ -119,7 +72,7 @@ scaleSets: []
 #         fsGroup: 1001
 #       containers:
 #         - name: runner
-#           image: ghcr.io/unstoppablemango/the-cluster/actions-runner:v2.337.0@sha256:312849bf4b980e64596cdd23216d7cc6f7f220192d1de7e69bbac826a852e4dc
+#           image: ghcr.io/unmango/actions-runner:2.337.0@sha256:4e9792606dbc6ff357de98666529147fa620d879c6d29c746bfb0893d9a041c5
 #           command: [/home/runner/run.sh]
 #           resources:
 #             limits:
