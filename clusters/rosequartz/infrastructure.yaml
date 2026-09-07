@@ -132,6 +132,9 @@ spec:
   wait: true
   dependsOn:
     - name: infra-configs-rook-ceph
+    # certificate.yml is issued by ClusterIssuer thecluster.lan, and the
+    # object store cannot come up on its secure port without the Secret.
+    - name: infra-configs-cert-manager
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -180,8 +183,8 @@ spec:
   # The CRDs and sealed-secrets are what the issuers need. Depending on
   # infra-cert-manager instead would block on the csi-driver release, which is
   # unrelated to issuing. The trust-manager Bundle is deliberately not here: it
-  # needs a CRD that only the trust-manager release installs, and nothing on
-  # rosequartz consumes the bundle yet.
+  # needs a CRD that only the trust-manager release installs, so it reconciles
+  # as infra-configs-trust-bundle below.
   dependsOn:
     - name: infra-cert-manager-crds
     - name: infra-sealed-secrets
@@ -314,3 +317,24 @@ spec:
   interval: 10m
   prune: true
   wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-configs-trust-bundle
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/configs/cert-manager-system/bundle
+  interval: 10m
+  prune: true
+  wait: true
+  # Fans the thecluster.lan CA out to every namespace as ConfigMap
+  # thecluster-lan-ca. ncps mounts it to trust the RGW certificate.
+  dependsOn:
+    # The Bundle CRD comes from the trust-manager release in this directory.
+    - name: infra-cert-manager
+    # The source Secret is the CA the issuers Kustomization creates.
+    - name: infra-configs-cert-manager
