@@ -1,0 +1,177 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ncps
+  namespace: nix-system
+  labels:
+    app: ncps
+    tier: proxy
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: ncps
+      tier: proxy
+  template:
+    metadata:
+      labels:
+        app: ncps
+        tier: proxy
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    app: ncps
+                    tier: proxy
+      initContainers:
+        # Migrations are forward-only and idempotent, so every pod runs them
+        # and the ones that find nothing pending exit immediately. During a
+        # rollout the surge pod migrates while its siblings keep serving,
+        # which is why a schema change has to stay backward compatible with
+        # the previous image for the length of the rollout.
+        - image: kalbasit/ncps:v0.10.0-rc16
+          name: migrate-database
+          command:
+            - /bin/ncps
+          args:
+            - migrate
+            - up
+          env:
+            - name: CACHE_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-app
+                  key: uri
+      containers:
+        - image: kalbasit/ncps:v0.10.0-rc16
+          name: ncps
+          command:
+            - /bin/ncps
+          args:
+            - serve
+            - --cache-hostname=ncps.thecluster.lan
+            # Every replica reads and writes one bucket, claimed by
+            # object-bucket-claim.yml. The endpoint is the in-cluster RGW
+            # Service of CephObjectStore/s3 in rook-ceph, and path-style
+            # addressing is what RGW answers to. The region is a formality for
+            # request signing; RGW does not enforce it.
+            - --cache-storage-s3-bucket=ncps-cache
+            - --cache-storage-s3-endpoint=http://rook-ceph-rgw-s3.rook-ceph.svc:80
+            - --cache-storage-s3-region=us-east-1
+            - --cache-storage-s3-force-path-style
+            # NARs stream from upstream into this emptyDir before the upload
+            # to the bucket, so it needs room for the largest closure a runner
+            # pulls in one go.
+            - --cache-temp-path=/nar-temp-dir
+            # Replicas coordinate through redis.yml: a per-hash lock so one
+            # replica fetches a NAR while the others wait, and a global lock
+            # so only one runs the LRU pass. In-flight staging is what lets
+            # the waiting replicas serve a NAR the fetching one has not
+            # finished: it is staged into the bucket in parts as it arrives.
+            # Staging only activates on the redis lock backend, and a second
+            # replica without it hands nix truncated NARs.
+            - --cache-lock-backend=redis
+            - --cache-redis-addrs=redis.nix-system.svc.cluster.local:6379
+            - --cache-inflight-staging-enabled
+            # Without a key path ncps generates a key on first start and keeps
+            # it in the `config` table of the database, so the identity every
+            # consumer trusts would live or die with the database. Mounting it
+            # from signing-key-sealed.yml makes git the source of truth
+            # instead, and every replica signs with the same key.
+            - --cache-secret-key-path=/etc/ncps/cache.key
+            # Already the default, spelled out because the flag reads as a bare
+            # bool in `ncps serve --help` and the alternative, passing upstream
+            # narinfos through unsigned, is indistinguishable from the failure
+            # this cache had. nix warns and moves on rather than failing, so the
+            # cache goes quiet and the build still succeeds, just slowly.
+            - --cache-sign-narinfo
+            # These two are a pair. A max size on its own is inert, because the
+            # schedule is what registers the cron that enforces it, and a
+            # schedule on its own refuses to start. The bucket has no quota, so
+            # this is the only bound on how much of the erasure-coded HDD pool
+            # the cache takes. Under the ceiling a run costs the LRU lock and a
+            # sum over nar_files; only real evictions are slow, and those hold
+            # the LRU lock, not the whole cache, so the other replicas keep
+            # serving.
+            - --cache-max-size=180G
+            - --cache-lru-schedule=@every 1h
+            - --cache-upstream-url=https://cache.nixos.org
+            - --cache-upstream-url=https://nix-community.cachix.org
+            - --cache-upstream-url=https://unstoppablemango.cachix.org
+            - --cache-upstream-url=https://mangopkgs.cachix.org
+            - --cache-upstream-url=https://unmango.cachix.org
+            - --cache-upstream-public-key=cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+            - --cache-upstream-public-key=nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
+            - --cache-upstream-public-key=unstoppablemango.cachix.org-1:m7uEI6X1Ov8DyFWJQX4WsRFRWFuzRW5c/Xms8ZaP74U=
+            - --cache-upstream-public-key=mangopkgs.cachix.org-1:uJ5FgSbOg1uiXLcL0gBh1lO+y3KVuthy6UeOFYR1fLk=
+            - --cache-upstream-public-key=unmango.cachix.org-1:Psb+0nALJfIcYiZLc9JYri4FJGNnzM6goZX7iLErXCI=
+          env:
+            # Each env var is the flag of the same name, minus the leading
+            # dashes, upper-cased. Credentials stay out of args so they do not
+            # show in `kubectl describe`.
+            - name: CACHE_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-app
+                  key: uri
+            - name: CACHE_STORAGE_S3_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: ncps-cache
+                  key: AWS_ACCESS_KEY_ID
+            - name: CACHE_STORAGE_S3_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ncps-cache
+                  key: AWS_SECRET_ACCESS_KEY
+            # Lets the Go runtime collect ahead of the cgroup limit instead of
+            # getting OOM-killed mid-NAR.
+            - name: GOMEMLIMIT
+              valueFrom:
+                resourceFieldRef:
+                  resource: limits.memory
+          ports:
+            - containerPort: 8501
+              name: http-web
+          readinessProbe:
+            httpGet:
+              path: /nix-cache-info
+              port: http-web
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /nix-cache-info
+              port: http-web
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+          volumeMounts:
+            - name: nar-temp-dir
+              mountPath: /nar-temp-dir
+            - name: signing-key
+              mountPath: /etc/ncps
+              readOnly: true
+      volumes:
+        - name: nar-temp-dir
+          emptyDir:
+            sizeLimit: 5Gi
+        # ncps runs as root, so 0400 is readable.
+        - name: signing-key
+          secret:
+            secretName: signing-key
+            defaultMode: 0400

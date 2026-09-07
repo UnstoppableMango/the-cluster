@@ -1,0 +1,14 @@
+# Rook answers this claim with a Secret and a ConfigMap both named ncps-cache
+# in this namespace. The Secret carries AWS_ACCESS_KEY_ID and
+# AWS_SECRET_ACCESS_KEY and is what deployment.yml reads. The ConfigMap
+# carries BUCKET_HOST and BUCKET_PORT, which ncps cannot use directly because
+# it wants a single endpoint URL with a scheme, so the endpoint is spelled
+# out in the deployment instead.
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: ncps-cache
+  namespace: nix-system
+spec:
+  bucketName: ncps-cache
+  storageClassName: ceph-bucket

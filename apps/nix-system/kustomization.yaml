@@ -1,10 +1,12 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  - deployment.yml
   - ingress.yml
   - namespace.yml
-  - pvc.yml
+  - object-bucket-claim.yml
+  - pdb.yml
+  - postgres-cluster.yml
+  - redis.yml
   - service.yml
   - signing-key-sealed.yml
-  - statefulset.yml
-  - pvs.yml

@@ -3,6 +3,9 @@
 `apps/nix-system/` runs [ncps](https://github.com/kalbasit/ncps), a Nix binary cache proxy.
 It fronts `cache.nixos.org` and four cachix caches so builds on the cluster substitute over the LAN instead of the internet.
 
+It runs as three replicas in ncps's high-availability shape: NAR bodies in a Ceph S3 bucket, narinfos in a CloudNativePG Postgres cluster, and a Redis for the locks that keep the replicas from fetching the same NAR twice or running the LRU pass at once.
+See [Storage](#storage) for what lives where.
+
 Upstreams, in the order `--cache-upstream-url` lists them:
 
 | Upstream                      | Purpose                |
@@ -25,7 +28,7 @@ Runner pods use the in-cluster Service. The Gateway has an HTTPS-443 listener on
 
 ## Version
 
-`apps/nix-system/statefulset.yml` pins `kalbasit/ncps:v0.10.0-rc16`, a release candidate, on purpose.
+`apps/nix-system/deployment.yml` pins `kalbasit/ncps:v0.10.0-rc16`, a release candidate, on purpose.
 
 Cachix serves NARs under opaque object keys (`nar/<uuid>.nar.zst`) rather than the hash-named URLs `cache.nixos.org` uses.
 The narinfo `URL:` field is an opaque path by spec, so this is valid upstream behavior, but ncps through v0.9.4 parses that filename as a nix hash and reuses it as its own storage key.
@@ -40,86 +43,48 @@ ncps then answers those paths from `cache.nixos.org` or 404s, and nix falls thro
 
 v0.10 renamed the serve flags (`--cache-data-path` to `--cache-storage-local`, `--upstream-cache` to `--cache-upstream-url`, `--upstream-public-key` to `--cache-upstream-public-key`) and replaced dbmate with an in-binary migration runner, so the `migrate-database` init container invokes `ncps migrate up`.
 The image carries no `/bin/dbmate`, so the image and the init container command have to move together.
-Migrations adopt a dbmate-shape `schema_migrations` table automatically for sqlite, and the on-disk layout under the storage path is unchanged, so the cache and the signing key survive the upgrade.
 
 ## Database backup and restore
 
 ncps migrations are forward-only: `ncps migrate down` exits with an error, and the migration set is sealed by an `atlas.sum` integrity file.
-A version bump that carries new migrations is therefore not reversible in place, and the PVC's `Retain` policy is not a rollback point because the migration mutates the volume it protects.
-Take a backup before any bump that changes the schema, including the v0.9.4 to v0.10.0-rc16 upgrade, which converts the dbmate-shape `schema_migrations` table to goose shape.
+A version bump that carries new migrations is therefore not reversible in place.
+Take a backup before any bump that changes the schema.
 
-The ncps image is distroless and carries no shell, so the copy runs from a throwaway pod that mounts the same PVC.
-The PVC is RWO, so scale ncps down first, which also stops writes and gives a consistent copy:
+Every replica runs `ncps migrate up` as an init container, so during a rollout the new pod migrates while the old ones keep serving.
+A schema change therefore has to stay readable by the previous image for the length of the rollout, which is upstream's expand-contract policy.
 
-```sh
-kubectl -n nix-system scale statefulset ncps --replicas=0
-kubectl -n nix-system wait --for=delete pod/ncps-0 --timeout=2m
-
-kubectl -n nix-system apply -f - <<'EOF'
-apiVersion: v1
-kind: Pod
-metadata:
-  name: ncps-backup
-  namespace: nix-system
-spec:
-  restartPolicy: Never
-  containers:
-    - name: backup
-      image: alpine:3.23
-      command: [/bin/sh, -c]
-      args:
-        - |
-          cd /storage/var/ncps/db
-          for f in db.sqlite db.sqlite-wal db.sqlite-shm; do
-            [ -e "$f" ] && cp -a "$f" "$f.bak"
-          done
-          ls -la
-          sleep 3600
-      volumeMounts:
-        - name: storage
-          mountPath: /storage
-  volumes:
-    - name: storage
-      persistentVolumeClaim:
-        claimName: ncps
-EOF
-
-kubectl -n nix-system logs -f ncps-backup
-```
-
-The pod sleeps after copying so the files can be pulled off-cluster; delete it and scale ncps back up when done:
+The database is the CNPG cluster `postgres` in `nix-system`. A logical dump from the primary is the backup:
 
 ```sh
-kubectl -n nix-system cp ncps-backup:/storage/var/ncps/db/db.sqlite.bak ./ncps-db.sqlite
-kubectl -n nix-system delete pod ncps-backup
-kubectl -n nix-system scale statefulset ncps --replicas=1
+kubectl -n nix-system exec postgres-1 -c postgres -- pg_dump -Fc ncps > ncps-$(date +%F).dump
 ```
 
-The `-wal` and `-shm` files are copied when present because a checkpoint is not guaranteed on shutdown, and a `db.sqlite` restored without its matching WAL is missing the tail of its writes.
+`postgres-1` is whichever instance is primary; check with `kubectl -n nix-system get cluster postgres` if it has failed over.
 
-The `.bak` copies land on the same volume, which covers a bad migration but not volume loss, so the `kubectl cp` above is what protects against the second case.
+Restore is the same shape in reverse, with ncps stopped so nothing writes mid-restore, and the manifest has to go back with it if the dump predates a schema change:
 
-Restore is the same shape in reverse, and the manifest has to go back with it: a database rolled back to the dbmate-shape schema will not serve under the v0.10 image.
-
-1. `kubectl -n nix-system scale statefulset ncps --replicas=0`.
-2. Run the same throwaway pod and copy each `.bak` file back over its original.
-3. Revert `apps/nix-system/statefulset.yml` to the previous image, flags, and dbmate init container.
-4. Let Flux reconcile, then scale back to 1.
+1. `kubectl -n nix-system scale deployment ncps --replicas=0`.
+2. `kubectl -n nix-system exec -i postgres-1 -c postgres -- pg_restore --clean --if-exists -d ncps < ncps-<date>.dump`.
+3. Revert `apps/nix-system/deployment.yml` to the image the dump was taken under, if it differs.
+4. Let Flux reconcile, then scale back to 3.
 
 Verify a restore by reading `/pubkey` and requesting a narinfo that is known to be cached, as described below.
+
+A dump covers narinfos and the NAR index, not the NAR bodies, which stay in the bucket.
+A restored database that references a NAR the bucket no longer holds presents as a cache miss on that path, and ncps refetches it.
 
 ## Signing key
 
 ncps signs the narinfos it serves. The key name derives from `--cache-hostname`, so it is always `ncps.thecluster.lan:...`.
 
-`--cache-secret-key-path=/etc/ncps/cache.key` points at `apps/nix-system/signing-key-sealed.yml`, so **git holds the key and a rebuilt volume keeps the same identity**.
-Without that flag ncps generates a key on first start and stores it in the `config` table of the sqlite database under key `secret_key`, in nix `name:base64` format, which makes the identity every consumer trusts depend on the PV surviving.
-The sealed secret carries exactly the key that database held, so adopting the flag changed no consumer.
+`--cache-secret-key-path=/etc/ncps/cache.key` points at `apps/nix-system/signing-key-sealed.yml`, so **git holds the key, every replica signs with it, and a rebuilt database keeps the same identity**.
+Without that flag ncps generates a key on first start and stores it in the `config` table of the database under key `secret_key`, in nix `name:base64` format, which makes the identity every consumer trusts depend on the database surviving.
+The sealed secret carries exactly the key the original sqlite database held, so adopting the flag changed no consumer.
 
 Read the current public key:
 
 ```sh
-kubectl -n nix-system port-forward statefulset/ncps 8501:8501 &
+kubectl -n nix-system port-forward svc/ncps 8501:8501 &
 curl -sS http://127.0.0.1:8501/pubkey; echo
 ```
 
@@ -140,45 +105,66 @@ Consumers today:
 
 ## Storage
 
-The PVC binds statically to PV `pvc-45251306-071e-4cf8-a43c-89112cb0c192`, RBD image `csi-vol-86764a85-c8d5-428e-8658-882d6a1d361d` in pool `unsafe-metadata` (data in `unsafe-data`), 250 GiB, `persistentVolumeReclaimPolicy: Retain`.
-The volume predates the pinkdiamond to rosequartz migration and carried over, because both clusters use the same ceph.
+Three pieces, none of them a volume ncps mounts:
 
-Confirm the image is still there before assuming the cache or its key survived:
+| Piece    | Where                                                                                      | Holds                                                   |
+| -------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| Bucket   | `ObjectBucketClaim/ncps-cache`, bucket `ncps-cache` on `CephObjectStore/s3` in `rook-ceph` | NAR bodies and in-flight staging parts                  |
+| Postgres | `Cluster/postgres` (CNPG, 2 instances, `ssd-rbd`) in `nix-system`                          | narinfos, the NAR index, `last_accessed_at` for the LRU |
+| Redis    | `Deployment/redis` in `nix-system`, no persistence                                         | per-hash download locks and the global LRU lock         |
+
+The bucket's data pool is erasure-coded on HDD, which is why serve-during-download uses in-flight staging (`--cache-inflight-staging-enabled`) rather than CDC: CDC serves a NAR as many small chunk reads, and upstream advises against it on high-latency storage.
+
+The claim's credentials are Secret `ncps-cache`, written by rook, and the endpoint is the RGW Service `rook-ceph-rgw-s3.rook-ceph.svc:80`.
+Inspect the bucket from the toolbox:
+
+```sh
+kubectl -n rook-ceph exec deploy/rook-ceph-tools -- radosgw-admin bucket stats --bucket ncps-cache
+```
+
+`--cache-max-size=180G` is the only bound on the cache; the bucket has no quota.
+
+It only works paired with `--cache-lru-schedule`, which registers the cron that enforces it. A max size alone is inert and says nothing about it; a schedule alone fails to start with `ErrCacheMaxSizeRequired`. Removing one silently disables the other, so treat them as a single setting.
+
+A run under the ceiling costs the LRU lock and a sum of `file_size` over `nar_files`. A run that has to evict holds the LRU lock for as long as it takes, ordered by `last_accessed_at`, deleting the NAR and its narinfo together. Only one replica runs it, and the others keep serving.
+
+### The retained RBD volume
+
+The single-replica shape that preceded this one kept everything on PV `pvc-45251306-071e-4cf8-a43c-89112cb0c192`, RBD image `csi-vol-86764a85-c8d5-428e-8658-882d6a1d361d` in pool `unsafe-metadata` (data in `unsafe-data`), 250 GiB, `persistentVolumeReclaimPolicy: Retain`.
+The PV is no longer in git and nothing claims it, but the reclaim policy keeps the image in ceph with the old sqlite database and NARs on it.
+The signing key it holds in its `config` table is the same key `signing-key-sealed.yml` carries.
+
+Confirm it is still there before counting on it:
 
 ```sh
 kubectl -n rook-ceph exec deploy/rook-ceph-tools -- \
   rbd -p unsafe-metadata info csi-vol-86764a85-c8d5-428e-8658-882d6a1d361d
 ```
 
-`--cache-max-size=180G` bounds the cache below the size of the volume, against the roughly 237 GiB the 250 GiB volume leaves after the ext4 reserve.
+To fall back to it, restore `apps/nix-system/statefulset.yml`, `pvc.yml`, and `pvs.yml` from git history at the commit before the HA change, clear the PV's `claimRef.uid` so the recreated PVC can bind, and swap them for `deployment.yml` and the bucket, postgres, and redis manifests in `kustomization.yaml`.
 
-It only works paired with `--cache-lru-schedule`, which registers the cron that enforces it. A max size alone is inert and says nothing about it; a schedule alone fails to start with `ErrCacheMaxSizeRequired`. Removing one silently disables the other, so treat them as a single setting.
+## If the bucket or the database is lost
 
-A run under the ceiling costs a lock and a sum of `file_size` over `nar_files`. A run that has to evict holds the cache exclusively for as long as it takes, ordered by `last_accessed_at`, deleting the NAR and its narinfo together.
+1. The signing key comes from the sealed secret, so it is unchanged and no consumer needs re-keying.
+2. The cache itself is regenerable, so there is nothing to restore. It refills from upstream on demand. A lost bucket with a surviving database presents as cache misses that ncps refetches; a lost database with a surviving bucket leaves orphaned NARs that nothing reclaims, so delete and recreate the claim alongside it.
 
-## If the volume is lost
-
-1. Delete `apps/nix-system/pvs.yml`, drop it from `kustomization.yaml`, and drop `volumeName` from `pvc.yml` so rook provisions a fresh one.
-2. The signing key comes from the sealed secret, not the volume, so it is unchanged and no consumer needs re-keying.
-3. The cache itself is regenerable, so there is nothing to restore. It refills from upstream on demand.
-
-Regenerable holds only because `--cache-allow-put-verb` is unset, so nothing can push a locally-built path in and every path ncps holds is re-fetchable from one of the five upstreams. Enabling PUT would make the volume the only copy of whatever was uploaded, and this section would stop being true.
+Regenerable holds only because `--cache-allow-put-verb` is unset, so nothing can push a locally-built path in and every path ncps holds is re-fetchable from one of the five upstreams. Enabling PUT would make the bucket the only copy of whatever was uploaded, and this section would stop being true.
 
 `--cache-sign-narinfo=false` sidesteps the key by passing upstream signatures through untouched, but check what the clients trust before reaching for it. Passthrough means a narinfo arrives carrying only its origin's signature, so every client needs all five upstream keys, not just `cache.nixos.org-1`, which is the only one nix trusts by default. The runners are configured with the ncps key alone, so they would reject every cachix-sourced path. The other cost is that ncps can no longer serve locally-built paths.
 
 ## Unsigned narinfos
 
-Narinfos are rows in the sqlite database, not files: `narinfos` holds the fields, with `narinfo_signatures`, `narinfo_references` and `narinfo_nar_files` hanging off it. Only the NAR bodies are files, under `/storage/store/nar`.
+Narinfos are rows in the database, not objects: `narinfos` holds the fields, with `narinfo_signatures`, `narinfo_references` and `narinfo_nar_files` hanging off it. Only the NAR bodies are objects in the bucket.
 
-The upgrade to `v0.10.0-rc16` gutted every row that predated it, dropping its signatures, its references and its link to a NAR file, leaving hash and store path behind.
-A gutted row still answers a request, which is why it never heals: ncps prefers its own copy and never re-asks upstream.
+A migration that drops a row's signatures, its references and its link to a NAR file while leaving hash and store path behind produces a row that still answers a request and never heals: ncps prefers its own copy and never re-asks upstream.
+The upgrade from v0.9.4 to `v0.10.0-rc16` did exactly that to every sqlite row that predated it.
 nix then discards the substitute with `warning: ignoring substitute for '/nix/store/...', as it's not signed by any of the keys in 'trusted-public-keys'`, which reads like a key mismatch and is not one.
 The empty `References` is the more dangerous half; the missing signature is what stops nix acting on it.
 
-Count them, with the statefulset scaled to 0 and a throwaway pod mounting the PVC:
+Count them from the primary:
 
 ```sh
-sqlite3 -readonly /storage/var/ncps/db/db.sqlite \
+kubectl -n nix-system exec postgres-1 -c postgres -- psql ncps -c \
   "select count(*) from narinfos n
    where not exists (select 1 from narinfo_signatures s where s.narinfo_id = n.id);"
 ```
@@ -186,8 +172,7 @@ sqlite3 -readonly /storage/var/ncps/db/db.sqlite \
 The repair is to delete them so the next request refetches from upstream. Back the database up first, as above:
 
 ```sh
-sqlite3 /storage/var/ncps/db/db.sqlite "
-PRAGMA foreign_keys=ON;
+kubectl -n nix-system exec postgres-1 -c postgres -- psql ncps -c "
 DELETE FROM narinfos WHERE id IN (
   SELECT n.id FROM narinfos n
   WHERE NOT EXISTS (SELECT 1 FROM narinfo_signatures s WHERE s.narinfo_id = n.id)
@@ -196,8 +181,8 @@ DELETE FROM narinfos WHERE id IN (
 );"
 ```
 
-All three conditions together, so the delete cannot touch a row that is merely reference-free: a path with no dependencies is ordinary, and 628 of the surviving rows are exactly that.
+All three conditions together, so the delete cannot touch a row that is merely reference-free: a path with no dependencies is ordinary.
 
 Re-signing in place is not an option, however tempting it looks with the key in hand. The fingerprint nix signs covers the references, and those are gone; a signature computed over the gutted row would be a valid signature on a wrong closure.
 
-Deleting the rows orphans their NAR files, which nothing reclaims on its own. Setting `--cache-max-size` would put the LRU cron in charge of that.
+Deleting the rows orphans their NAR objects, which the LRU cron reclaims once the cache approaches `--cache-max-size`.
