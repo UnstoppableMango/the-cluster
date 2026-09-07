@@ -5,3 +5,4 @@ resources:
   - postgres-cluster.yml
   - deployment.yml
   - service.yml
+  - ingress.yml

@@ -140,3 +140,5 @@ spec:
     - name: infra-cnpg-system
     # postgres-cluster.yml provisions through storageClassName: ssd-rbd.
     - name: infra-configs-rook-ceph-storage
+    # ingress.yml is an HTTPRoute against the nginx Gateway in nginx-gateway.
+    - name: infra-nginx-gateway
