@@ -38,7 +38,7 @@ let
   };
 
   cert-manager = fetchurl {
-    url = "https://github.com/cert-manager/cert-manager/releases/download/v1.20.2/cert-manager.crds.yaml";
+    url = "https://github.com/cert-manager/cert-manager/releases/download/v1.21.1/cert-manager.crds.yaml";
     hash = "sha256-bam+tTJGlQN94x/qmYCZwURvbOToCfMrE6dolPTxafA=";
   };
 
