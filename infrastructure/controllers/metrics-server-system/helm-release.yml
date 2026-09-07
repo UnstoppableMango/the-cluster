@@ -10,14 +10,14 @@ spec:
   chart:
     spec:
       chart: metrics-server
-      version: 3.13.0
+      version: 3.14.0
       sourceRef:
         kind: HelmRepository
         name: metrics-server
   values:
     image:
       repository: registry.k8s.io/metrics-server/metrics-server
-      tag: v0.8.1
+      tag: v0.9.0
     args:
       - --kubelet-certificate-authority=/etc/ssl/kube-root-ca/ca.crt
     extraVolumes:
