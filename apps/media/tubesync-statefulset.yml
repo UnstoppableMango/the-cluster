@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: tubesync
-          image: ghcr.io/meeb/tubesync:v0.15.10
+          image: ghcr.io/meeb/tubesync:v0.18.4
           env:
             - name: TZ
               value: America/Chicago
