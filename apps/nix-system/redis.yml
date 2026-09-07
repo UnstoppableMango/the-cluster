@@ -1,0 +1,74 @@
+# Distributed locks for the ncps replicas: per-hash download locks and the
+# global LRU lock. Nothing is persisted on purpose, and the args below turn
+# off the RDB snapshots the image would otherwise write to the container
+# filesystem. Every lock carries a TTL (5m download, 30m LRU), so a Redis
+# restart costs at most one expired lock window, and a lock that outlived
+# its holder would be worse than a lost one.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: nix-system
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: redis
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:8.8.0-alpine
+          args:
+            - --save
+            - ""
+            - --appendonly
+            - "no"
+          ports:
+            - containerPort: 6379
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: nix-system
+spec:
+  selector:
+    app.kubernetes.io/name: redis
+  ports:
+    - port: 6379
+      targetPort: 6379
+---
+# The image ships without a password and with protected mode off, so this is
+# what keeps the lock keys reachable from the ncps replicas alone.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: redis
+  namespace: nix-system
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: redis
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: ncps
+              tier: proxy
+      ports:
+        - port: 6379

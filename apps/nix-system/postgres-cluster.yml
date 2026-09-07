@@ -1,0 +1,21 @@
+# ncps keeps narinfos and the NAR index in this database; only NAR bodies go
+# to the bucket. CNPG generates the ncps role's password and publishes the
+# connection string as Secret postgres-app, key uri, which deployment.yml
+# reads, so there is no credential to seal.
+#
+# Two instances so a node loss fails over instead of waiting on the RBD
+# image to reattach. The data is small: metadata for at most 180G of NARs.
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres
+  namespace: nix-system
+spec:
+  instances: 2
+  storage:
+    storageClass: ssd-rbd
+    size: 10Gi
+  bootstrap:
+    initdb:
+      database: ncps
+      owner: ncps
