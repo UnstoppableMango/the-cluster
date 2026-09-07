@@ -3,8 +3,6 @@ kind: CephBlockPool
 metadata:
   name: default
   namespace: rook-ceph
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   deviceClass: hdd
   failureDomain: host
@@ -17,8 +15,6 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: rbd
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 provisioner: rook-ceph.rbd.csi.ceph.com
 parameters:
   clusterID: rook-ceph

@@ -4,7 +4,6 @@ resources:
   - mgr-pool.yml
   - default.yml
   - default-ssd.yml
-  - bulk.yml
   - unsafe.yml
   - cephfs.yml
   - certificate.yml
