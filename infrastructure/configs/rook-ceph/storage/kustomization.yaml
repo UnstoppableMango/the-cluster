@@ -7,5 +7,6 @@ resources:
   - bulk.yml
   - unsafe.yml
   - cephfs.yml
+  - certificate.yml
   - ceph-object-store.yml
   - ceph-object-store-storage-class.yml

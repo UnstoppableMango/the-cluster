@@ -1,0 +1,22 @@
+# Serving certificate for the RGW gateway of CephObjectStore/s3, referenced
+# by gateway.sslCertificateRef in ceph-object-store.yml. Rook reads tls.crt
+# and tls.key from the kubernetes.io/tls Secret cert-manager writes. Clients
+# on the cluster trust it through the thecluster-lan-ca ConfigMap that the
+# trust-manager Bundle fans out to every namespace.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: rgw-s3
+  namespace: rook-ceph
+spec:
+  secretName: rgw-s3-tls
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: thecluster.lan
+  # Path-style S3 only, so the names are the Service and nothing per bucket.
+  dnsNames:
+    - rook-ceph-rgw-s3
+    - rook-ceph-rgw-s3.rook-ceph
+    - rook-ceph-rgw-s3.rook-ceph.svc
+    - rook-ceph-rgw-s3.rook-ceph.svc.cluster.local
