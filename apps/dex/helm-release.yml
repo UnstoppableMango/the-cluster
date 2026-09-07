@@ -18,7 +18,7 @@ spec:
     # https://github.com/dexidp/helm-charts/tree/master/charts/dex#values
     image:
       repository: ghcr.io/dexidp/dex
-      tag: v2.44.0
+      tag: v2.45.1
     replicaCount: 2
     priorityClassName: system-cluster-critical
     resources:
