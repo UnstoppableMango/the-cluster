@@ -53,20 +53,29 @@ Take a backup before any bump that changes the schema.
 Every replica runs `ncps migrate up` as an init container, so during a rollout the new pod migrates while the old ones keep serving.
 A schema change therefore has to stay readable by the previous image for the length of the rollout, which is upstream's expand-contract policy.
 
-The database is the CNPG cluster `postgres` in `nix-system`. A logical dump from the primary is the backup:
+The database is the CNPG cluster `postgres` in `nix-system`.
+The two instances have fixed pod names and either can be primary after a failover, so resolve the primary from the Cluster status rather than guessing an ordinal:
 
 ```sh
-kubectl -n nix-system exec postgres-1 -c postgres -- pg_dump -Fc ncps > ncps-$(date +%F).dump
+PRIMARY=$(kubectl -n nix-system get cluster postgres -o jsonpath='{.status.currentPrimary}')
 ```
 
-`postgres-1` is whichever instance is primary; check with `kubectl -n nix-system get cluster postgres` if it has failed over.
+Every command below runs against `$PRIMARY`; the standby is read-only and refuses the writes.
 
-Restore is the same shape in reverse, with ncps stopped so nothing writes mid-restore, and the manifest has to go back with it if the dump predates a schema change:
+A logical dump from the primary is the backup:
 
-1. `kubectl -n nix-system scale deployment ncps --replicas=0`.
-2. `kubectl -n nix-system exec -i postgres-1 -c postgres -- pg_restore --clean --if-exists -d ncps < ncps-<date>.dump`.
-3. Revert `apps/nix-system/deployment.yml` to the image the dump was taken under, if it differs.
-4. Let Flux reconcile, then scale back to 3.
+```sh
+kubectl -n nix-system exec "$PRIMARY" -c postgres -- pg_dump -Fc ncps > ncps-$(date +%F).dump
+```
+
+Restore is the same shape in reverse, with ncps stopped so nothing writes mid-restore, and the manifest has to go back with it if the dump predates a schema change.
+Flux reconciles `replicas: 3` back within its 10m interval, so suspend the Kustomization before scaling down or the pods return mid-restore:
+
+1. `flux suspend kustomization apps-nix-system`.
+2. `kubectl -n nix-system scale deployment ncps --replicas=0`.
+3. `kubectl -n nix-system exec -i "$PRIMARY" -c postgres -- pg_restore --clean --if-exists -d ncps < ncps-<date>.dump`.
+4. Revert `apps/nix-system/deployment.yml` to the image the dump was taken under, if it differs.
+5. `flux resume kustomization apps-nix-system`, which reconciles the manifest and brings the replicas back.
 
 Verify a restore by reading `/pubkey` and requesting a narinfo that is known to be cached, as described below.
 
@@ -111,7 +120,7 @@ Three pieces, none of them a volume ncps mounts:
 | -------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------- |
 | Bucket   | `ObjectBucketClaim/ncps-cache`, bucket `ncps-cache` on `CephObjectStore/s3` in `rook-ceph` | NAR bodies and in-flight staging parts                  |
 | Postgres | `Cluster/postgres` (CNPG, 2 instances, `ssd-rbd`) in `nix-system`                          | narinfos, the NAR index, `last_accessed_at` for the LRU |
-| Redis    | `Deployment/redis` in `nix-system`, no persistence                                         | per-hash download locks and the global LRU lock         |
+| Redis    | `Deployment/redis` in `nix-system`, snapshots off, reachable from ncps pods only           | per-hash download locks and the global LRU lock         |
 
 The bucket's data pool is erasure-coded on HDD, which is why serve-during-download uses in-flight staging (`--cache-inflight-staging-enabled`) rather than CDC: CDC serves a NAR as many small chunk reads, and upstream advises against it on high-latency storage.
 
@@ -161,10 +170,10 @@ The upgrade from v0.9.4 to `v0.10.0-rc16` did exactly that to every sqlite row t
 nix then discards the substitute with `warning: ignoring substitute for '/nix/store/...', as it's not signed by any of the keys in 'trusted-public-keys'`, which reads like a key mismatch and is not one.
 The empty `References` is the more dangerous half; the missing signature is what stops nix acting on it.
 
-Count them from the primary:
+Count them from the primary, with `$PRIMARY` resolved as in [Database backup and restore](#database-backup-and-restore):
 
 ```sh
-kubectl -n nix-system exec postgres-1 -c postgres -- psql ncps -c \
+kubectl -n nix-system exec "$PRIMARY" -c postgres -- psql ncps -c \
   "select count(*) from narinfos n
    where not exists (select 1 from narinfo_signatures s where s.narinfo_id = n.id);"
 ```
@@ -172,7 +181,7 @@ kubectl -n nix-system exec postgres-1 -c postgres -- psql ncps -c \
 The repair is to delete them so the next request refetches from upstream. Back the database up first, as above:
 
 ```sh
-kubectl -n nix-system exec postgres-1 -c postgres -- psql ncps -c "
+kubectl -n nix-system exec "$PRIMARY" -c postgres -- psql ncps -c "
 DELETE FROM narinfos WHERE id IN (
   SELECT n.id FROM narinfos n
   WHERE NOT EXISTS (SELECT 1 FROM narinfo_signatures s WHERE s.narinfo_id = n.id)
