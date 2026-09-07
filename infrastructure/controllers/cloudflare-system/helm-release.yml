@@ -44,7 +44,7 @@ spec:
     cloudflared:
       image:
         repository: cloudflare/cloudflared # default
-        tag: 2026.5.2
+        tag: 2026.8.3
       replicaCount: 3
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
