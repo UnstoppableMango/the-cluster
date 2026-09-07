@@ -30,7 +30,7 @@ spec:
   chart:
     spec:
       chart: gitea
-      version: 12.6.0
+      version: 12.7.0
       sourceRef:
         kind: HelmRepository
         name: gitea
@@ -47,7 +47,7 @@ spec:
     image:
       registry: docker.gitea.com
       repository: gitea
-      tag: "1.26.2"
+      tag: "1.27.3"
     replicaCount: 1
     strategy:
       type: Recreate
