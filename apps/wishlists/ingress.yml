@@ -1,0 +1,19 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: wishlists
+  namespace: wishlists
+spec:
+  parentRefs:
+    - name: nginx
+      namespace: nginx-gateway
+  hostnames:
+    - wishlists.thecluster.io
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: wishlists
+          port: 80

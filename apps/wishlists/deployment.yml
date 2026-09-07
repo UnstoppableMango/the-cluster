@@ -18,7 +18,14 @@ spec:
           image: ghcr.io/unmango/wishlists:sha-1545470
           ports:
             - containerPort: 8080
-          env: []
+          env:
+            # CNPG generates the role's password and publishes the connection
+            # string as Secret postgres-app, so there is no credential to seal.
+            - name: ConnectionStrings__Default
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-app
+                  key: uri
           resources:
             requests:
               memory: "128Mi"
