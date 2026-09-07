@@ -194,6 +194,14 @@
 			"groupName": "arc"
 		},
 		{
+			"description": "Both hercules-ci agents pin the same chart, one per account.",
+			"matchPackageNames": [
+				"hercules-ci-agent",
+				"ghcr.io/unmango/hercules-ci-agent"
+			],
+			"groupName": "hercules-ci-agent"
+		},
+		{
 			"matchPackageNames": [
 				"ghcr.io/actions/actions-runner"
 			],

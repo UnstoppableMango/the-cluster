@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yml
+  - unmango-cluster-join-token-sealed.yml
+  - unstoppablemango-cluster-join-token-sealed.yml
+  - helm-repository.yml
+  - helm-release-unmango.yml
+  - helm-release-unstoppablemango.yml
