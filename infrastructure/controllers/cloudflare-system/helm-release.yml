@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: cloudflare-tunnel-ingress-controller
-      version: 0.0.23
+      version: 0.1.0
       sourceRef:
         kind: HelmRepository
         name: strll.dev
@@ -33,7 +33,7 @@ spec:
     image:
       # https://github.com/STRRL/cloudflare-tunnel-ingress-controller/issues/202
       repository: ghcr.io/strrl/cloudflare-tunnel-ingress-controller
-      tag: 0.0.23
+      tag: 0.1.0
     resources:
       limits:
         cpu: 100m # default
