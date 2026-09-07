@@ -1,0 +1,24 @@
+# CNPG generates the wishlists role's password and publishes the connection
+# string as Secret postgres-app, key uri.
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres
+  namespace: wishlists
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:18
+  storage:
+    storageClass: ssd-rbd
+    size: 8Gi
+  bootstrap:
+    initdb:
+      database: wishlists
+      owner: wishlists
+  resources:
+    requests:
+      cpu: 2000m
+      memory: 8Gi
+    limits:
+      cpu: 2000m
+      memory: 8Gi
