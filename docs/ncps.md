@@ -124,7 +124,8 @@ Three pieces, none of them a volume ncps mounts:
 
 The bucket's data pool is erasure-coded on HDD, which is why serve-during-download uses in-flight staging (`--cache-inflight-staging-enabled`) rather than CDC: CDC serves a NAR as many small chunk reads, and upstream advises against it on high-latency storage.
 
-The claim's credentials are Secret `ncps-cache`, written by rook, and the endpoint is the RGW Service `rook-ceph-rgw-s3.rook-ceph.svc:80`.
+The claim's credentials are Secret `ncps-cache`, written by rook, and the endpoint is the secure listener of the RGW Service, `https://rook-ceph-rgw-s3.rook-ceph.svc:443`.
+Its certificate comes from ClusterIssuer `thecluster.lan` (`infrastructure/configs/rook-ceph/storage/certificate.yml`), and ncps trusts it through ConfigMap `thecluster-lan-ca`, which the trust-manager Bundle writes into every namespace and the Deployment mounts at `/etc/ncps/ca` with `SSL_CERT_DIR` pointing there.
 Inspect the bucket from the toolbox:
 
 ```sh
