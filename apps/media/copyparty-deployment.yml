@@ -15,7 +15,7 @@ spec:
       containers:
         # https://github.com/9001/copyparty/tree/hovudstraum/scripts/docker
         - name: copyparty
-          image: ghcr.io/9001/copyparty-ac:1.19.15
+          image: ghcr.io/9001/copyparty-ac:1.20.23
           ports:
             - name: http
               containerPort: 3923
