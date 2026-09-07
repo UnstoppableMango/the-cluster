@@ -1,3 +1,6 @@
+# The replicated filesystem is being folded into erasure-coded, which
+# carries both a replicated (standard) and an erasure-coded (data) pool.
+# It stays until every subvolume has been copied across. See docs/storage.md.
 apiVersion: ceph.rook.io/v1
 kind: CephFilesystem
 metadata:
@@ -24,6 +27,8 @@ spec:
     activeCount: 1
     activeStandby: true
 ---
+# Deprecated: use standard-rwx. Bound claims keep this name because a PVC's
+# storageClassName is immutable.
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
@@ -52,14 +57,31 @@ metadata:
 spec:
   metadataPool:
     deviceClass: hdd
+    failureDomain: host
     replicated:
       size: 2
   dataPools:
+    # Ceph requires a replicated default data pool when an erasure-coded
+    # pool is attached. Nothing provisions against it.
     - name: default
       deviceClass: hdd
       failureDomain: osd
       replicated:
         size: 2
+    # standard-rwx: survives a host.
+    - name: standard
+      deviceClass: hdd
+      failureDomain: host
+      enableCrushUpdates: true
+      replicated:
+        size: 2
+      parameters:
+        target_size_ratio: "0.2"
+        bulk: "true"
+    # bulk-rwx. failureDomain stays osd here even after the pool moves to a
+    # host-domain CRUSH rule: Rook re-applies the erasure code profile on every
+    # reconcile and Ceph refuses a changed profile. The rule is swapped in Ceph
+    # instead; see docs/storage.md.
     - name: data
       deviceClass: hdd
       failureDomain: osd
@@ -67,12 +89,60 @@ spec:
         dataChunks: 2
         codingChunks: 1
       parameters:
+        target_size_ratio: "0.5"
         bulk: "true"
   preserveFilesystemOnDelete: true
   metadataServer:
     activeCount: 1
     activeStandby: true
+    placement:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: rook-ceph-mds
+                  rook_file_system: erasure-coded
 ---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: standard-rwx
+provisioner: rook-ceph.cephfs.csi.ceph.com
+parameters:
+  clusterID: rook-ceph
+  fsName: erasure-coded
+  pool: erasure-coded-standard
+  csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+  csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: bulk-rwx
+provisioner: rook-ceph.cephfs.csi.ceph.com
+parameters:
+  clusterID: rook-ceph
+  fsName: erasure-coded
+  pool: erasure-coded-data
+  csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+  csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+---
+# Deprecated: use bulk-rwx. Same pool; kept while claims reference it.
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
