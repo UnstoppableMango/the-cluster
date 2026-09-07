@@ -24,6 +24,33 @@ spec:
     csi:
       nfs:
         enabled: false
+      # NixOS keeps kernel modules under the booted system's store path, so the
+      # plugins' default /lib/modules hostPath lands on nothing and modprobe
+      # fails. Repointing the lib-modules volume replaces the default by name,
+      # leaving the mount at /lib/modules. host-nix covers module trees that are
+      # symlink farms into the store, which is what extraModulePackages builds.
+      csiRBDPluginVolume:
+        - name: lib-modules
+          hostPath:
+            path: /run/booted-system/kernel-modules/lib/modules/
+        - name: host-nix
+          hostPath:
+            path: /nix
+      csiRBDPluginVolumeMount:
+        - name: host-nix
+          mountPath: /nix
+          readOnly: true
+      csiCephFSPluginVolume:
+        - name: lib-modules
+          hostPath:
+            path: /run/booted-system/kernel-modules/lib/modules/
+        - name: host-nix
+          hostPath:
+            path: /nix
+      csiCephFSPluginVolumeMount:
+        - name: host-nix
+          mountPath: /nix
+          readOnly: true
     # Disabling for memory reasons on the smaller nodes
     enableDiscoveryDaemon: false
     env: {}
