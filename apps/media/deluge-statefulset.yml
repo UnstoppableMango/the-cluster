@@ -59,7 +59,7 @@ spec:
             - name: vpn-config
               mountPath: /vpn
         - name: gluetun
-          image: ghcr.io/qdm12/gluetun:v3.41.1
+          image: ghcr.io/qdm12/gluetun:v3.41.3
           restartPolicy: Always
           securityContext:
             capabilities:
