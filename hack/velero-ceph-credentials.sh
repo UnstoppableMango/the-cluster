@@ -6,14 +6,11 @@ if [ "$#" -ne 1 ] || [ -z "$1" ]; then
 	exit 1
 fi
 
-: "${KUBECTL:=kubectl}"
-: "${YQ:=yq}"
-
-key_id=$("$KUBECTL" get secret velero \
+key_id=$(kubectl get secret velero \
   --namespace velero-system \
   --output jsonpath='{.data.AWS_ACCESS_KEY_ID}' | base64 -d)
 
-secret_key=$("$KUBECTL" get secret velero \
+secret_key=$(kubectl get secret velero \
   --namespace velero-system \
   --output jsonpath='{.data.AWS_SECRET_ACCESS_KEY}' | base64 -d)
 
@@ -34,5 +31,5 @@ cloud="[default]
 aws_access_key_id=${key_id}
 aws_secret_access_key=${secret_key}"
 
-cloud="$cloud" "$YQ" -i '.stringData.cloud = strenv(cloud) | .stringData.cloud style="literal"' "$1"
+cloud="$cloud" yq -i '.stringData.cloud = strenv(cloud) | .stringData.cloud style="literal"' "$1"
 chmod 0600 "$1"

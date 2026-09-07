@@ -51,7 +51,6 @@
               bash # For copilot
               crossplane-cli
               git
-              go
               nixfmt
               treefmt
               dprint
@@ -69,17 +68,6 @@
               watchexec
               yq-go
             ];
-
-            DOCKER = "${pkgs.docker}/bin/docker";
-            DPRINT = "${pkgs.dprint}/bin/dprint";
-            FLUX = "${pkgs.fluxcd}/bin/flux";
-            GO = "${pkgs.go}/bin/go";
-            HELM = "${pkgs.kubernetes-helm}/bin/helm";
-            KUBECTL = "${pkgs.kubectl}/bin/kubectl";
-            KUBESEAL = "${pkgs.kubeseal}/bin/kubeseal";
-            PULUMI = "${pkgs.pulumi-bin}/bin/pulumi";
-            SHELLCHECK = "${pkgs.shellcheck}/bin/shellcheck";
-            YQ = "${pkgs.yq-go}/bin/yq";
           };
 
           treefmt = {

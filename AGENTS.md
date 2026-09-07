@@ -70,4 +70,6 @@ There is one pattern rule per top-level manifest directory rather than a bare `%
 
 ## Development Environment
 
-Nix flake (`flake.nix`) provides a reproducible devshell. Go tooling (`go.mod`) manages `kubeseal`, `yq`, and `devctl`. Copy `hack/example.envrc` to `.envrc` for direnv setup.
+Nix flake (`flake.nix`) provides a reproducible devshell, and every tool the Makefile and `hack/` scripts shell out to comes from it.
+They are called by their plain names and resolved off `PATH`, so `make` targets that seal secrets or render charts only work inside the devshell.
+Copy `hack/example.envrc` to `.envrc` for direnv setup, or prefix one-off commands with `nix develop -c`.

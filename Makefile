@@ -1,18 +1,6 @@
 REPOSITORY  := github.com/unstoppablemango/the-cluster
 DOMAIN      := thecluster.io
 
-GO         ?= go
-DEVCTL     ?= $(GO) tool devctl
-DOCKER     ?= docker
-DPRINT     ?= dprint
-FLUX       ?= flux
-HELM       ?= helm
-KUBECTL    ?= kubectl
-KUBESEAL   ?= $(GO) tool kubeseal
-NIX        ?= nix
-PULUMI     ?= pulumi
-YQ         ?= $(GO) tool yq
-
 # nix/crds.nix uses the `|>` pipe operator, which is still experimental.
 NIX_FLAGS ?= --extra-experimental-features pipe-operators
 
@@ -23,31 +11,31 @@ PKI_STACK   ?= UnstoppableMango/pki/prod
 RENOVATE_RELEASE ?= unstoppablemango-renovate
 
 reconcile:
-	$(FLUX) reconcile source git ${FLUX_SOURCE}
+	flux reconcile source git ${FLUX_SOURCE}
 
 renovate:
-	$(KUBECTL) create job manual-$$(date +%s) --namespace renovate --from=cronjob/$(RENOVATE_RELEASE)
+	kubectl create job manual-$$(date +%s) --namespace renovate --from=cronjob/$(RENOVATE_RELEASE)
 
 format fmt:
-	$(NIX) $(NIX_FLAGS) fmt
+	nix $(NIX_FLAGS) fmt
 
 check:
-	$(NIX) $(NIX_FLAGS) flake check
+	nix $(NIX_FLAGS) flake check
 
 update: flake.lock
 
 runner: containers/runner/Dockerfile
-	$(DOCKER) buildx build -f $< .
+	docker buildx build -f $< .
 
 .PHONY: hack/secrets/infrastructure/configs/cert-manager-system/ca.yml
-hack/secrets/infrastructure/configs/cert-manager-system/ca.yml: | bin/pulumi
+hack/secrets/infrastructure/configs/cert-manager-system/ca.yml:
 	@mkdir -p $(@D)
-	PULUMI=$(PULUMI) PKI_STACK=$(PKI_STACK) YQ=$(YQ) hack/pki-ca-secret.sh $@
+	PKI_STACK=$(PKI_STACK) hack/pki-ca-secret.sh $@
 
 .PHONY: hack/secrets/infrastructure/configs/velero-system/ceph-credentials.yml
 hack/secrets/infrastructure/configs/velero-system/ceph-credentials.yml:
 	@mkdir -p $(@D)
-	KUBECTL=$(KUBECTL) YQ=$(YQ) hack/velero-ceph-credentials.sh $@
+	hack/velero-ceph-credentials.sh $@
 
 # One rule per top-level manifest directory rather than a bare `%-sealed.yml`.
 # GNU make matches a target pattern containing no slash against the file name
@@ -56,7 +44,7 @@ hack/secrets/infrastructure/configs/velero-system/ceph-credentials.yml:
 # A slash in the pattern makes it match the whole path, which is what the
 # `flux/%-sealed.yml` shape used to get for free.
 define seal
-$(KUBESEAL) --format=yaml --cert=$| \
+kubeseal --format=yaml --cert=$| \
 --secret-file $< --sealed-secret-file $@
 endef
 
@@ -70,9 +58,9 @@ STUB = hack/secrets/$(patsubst %-sealed.yml,%.yml,$<)
 define unseal
 @mkdir -p $(dir $(STUB))
 @umask 0177; \
-$(KUBECTL) get secret \
-"$$($(YQ) -r '.spec.template.metadata.name // .metadata.name' $< | head -1)" \
--n "$$($(YQ) -r '.spec.template.metadata.namespace // .metadata.namespace' $< | head -1)" \
+kubectl get secret \
+"$$(yq -r '.spec.template.metadata.name // .metadata.name' $< | head -1)" \
+-n "$$(yq -r '.spec.template.metadata.namespace // .metadata.namespace' $< | head -1)" \
 -o yaml > $(STUB); chmod 0600 $(STUB)
 endef
 
@@ -90,7 +78,7 @@ apps/arc-runners/thecluster-bot-sealed.yml: hack/secrets/apps/arc-runners/theclu
 		apps/arc-runners/helm-release.yml \
 		$(wildcard $(ARC_RUNNER_CHART)/templates/*) $(ARC_RUNNER_CHART)/values.yaml \
 		| hack/sealed-secrets.pub
-	HELM=$(HELM) KUBESEAL=$(KUBESEAL) YQ=$(YQ) SEALED_SECRETS_CERT=$| \
+	SEALED_SECRETS_CERT=$| \
 	hack/arc-fanout-secret.sh $< $(ARC_RUNNER_CHART) apps/arc-runners/helm-release.yml $@
 
 apps/%-sealed.yml: hack/secrets/apps/%.yml | hack/sealed-secrets.pub
@@ -106,21 +94,21 @@ infrastructure/%-unseal: infrastructure/%-sealed.yml
 	$(unseal)
 
 hack/sealed-secrets.pub:
-	$(KUBESEAL) --fetch-cert \
+	kubeseal --fetch-cert \
 	--controller-name sealed-secrets-controller \
 	--controller-namespace flux-system \
 	> $@
 
 bin/image.tar: containers/default.nix containers/runner/default.nix
-	nix build '.#runner' --out-link $@
-	$(DOCKER) load < $@
+	nix $(NIX_FLAGS) build '.#runner' --out-link $@
+	docker load < $@
 
 infrastructure/controllers/cert-manager-system/crds/crds.yaml: flake.lock nix/cert-manager-crds.nix
-	cp $$(nix build .#cert-manager-crds --print-out-paths --no-link) $@
+	cp $$(nix $(NIX_FLAGS) build .#cert-manager-crds --print-out-paths --no-link) $@
 
 .PHONY: flake.lock
 flake.lock: flake.nix
-	nix flake update
+	nix $(NIX_FLAGS) flake update
 
 .envrc: hack/example.envrc
 	cp $< $@
