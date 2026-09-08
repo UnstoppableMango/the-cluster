@@ -31,10 +31,19 @@ spec:
     extraNixConf: |
       extra-substituters = http://ncps.nix-system.svc.cluster.local:8501
       extra-trusted-public-keys = ncps.thecluster.lan:pAJGNVSRmG7gCDSOAaiHDxLFUSdys5Pk0XvcJ5803Dw=
+      # Nix sees the node's core count, not the pod's CPU quota. Pin builders to
+      # the per-task share of the CPU limit: limits.cpu / agent.concurrentTasks.
+      cores = 4
+      # The store lives on the state PVC and nothing else prunes it.
+      min-free = 21474836480
+      max-free = 53687091200
     resources:
       limits:
+        cpu: "32"
+        memory: 64Gi
+      requests:
         cpu: "8"
         memory: 16Gi
-      requests:
-        cpu: "1"
-        memory: 4Gi
+    # gaea is the only node that can serve this budget; the pi nodes cannot.
+    nodeSelector:
+      kubernetes.io/hostname: gaea
