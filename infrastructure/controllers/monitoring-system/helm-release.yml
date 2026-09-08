@@ -19,12 +19,65 @@ spec:
         kind: HelmRepository
         name: prometheus-community
   values:
+    # Only prometheus carries the chart's sizing; every other component in the
+    # stack defaults to none. No CPU limits: a scrape or an evaluation cycle
+    # that gets throttled shows up as gaps in the series rather than as load.
     grafana:
       enabled: true
       persistence:
         enabled: true
         storageClassName: ssd-rbd
         size: 10Gi
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          memory: 512Mi
+      initChownData:
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            memory: 64Mi
+      # Covers both dashboard and datasource sidecars.
+      sidecar:
+        resources:
+          requests:
+            cpu: 25m
+            memory: 64Mi
+          limits:
+            memory: 128Mi
+    prometheus-node-exporter:
+      resources:
+        requests:
+          cpu: 25m
+          memory: 32Mi
+        limits:
+          memory: 64Mi
+    kube-state-metrics:
+      resources:
+        requests:
+          cpu: 25m
+          memory: 64Mi
+        limits:
+          memory: 256Mi
+    prometheusOperator:
+      resources:
+        requests:
+          cpu: 25m
+          memory: 64Mi
+        limits:
+          memory: 256Mi
+      admissionWebhooks:
+        patch:
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
     prometheus:
       prometheusSpec:
         retention: 15d
@@ -44,6 +97,12 @@ spec:
                   storage: 50Gi
     alertmanager:
       alertmanagerSpec:
+        resources:
+          requests:
+            cpu: 25m
+            memory: 64Mi
+          limits:
+            memory: 256Mi
         storage:
           volumeClaimTemplate:
             spec:

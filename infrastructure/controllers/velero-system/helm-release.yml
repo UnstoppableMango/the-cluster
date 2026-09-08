@@ -41,6 +41,12 @@ spec:
     initContainers:
       - name: velero-plugin-for-aws
         image: velero/velero-plugin-for-aws:v1.14.2
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            memory: 128Mi
         volumeMounts:
           - mountPath: /target
             name: plugins

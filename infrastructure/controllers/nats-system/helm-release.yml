@@ -26,14 +26,30 @@ spec:
           enabled: true
           hosts: [nats.thecluster.lan]
           className: nginx
+    # The chart patches the rendered containers through `merge`, so resources go
+    # there rather than at the top of each section.
     container:
       image:
         repository: nats # default
         tag: 2.14.6-linux
+      merge:
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            memory: 1Gi
     reloader:
       image:
         repository: natsio/nats-server-config-reloader # default
         tag: 0.24.0
+      merge:
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            memory: 64Mi
     service:
       ports:
         nats:
@@ -57,6 +73,13 @@ spec:
         image:
           repository: natsio/nats-box # default
           tag: 0.19.7
+        merge:
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
     podTemplate:
       merge:
         spec:

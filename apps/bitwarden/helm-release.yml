@@ -34,3 +34,39 @@ spec:
       secretName: bitwarden-secret
     database:
       enabled: false
+    # Every long-running Deployment is sized by the chart; the setup job's
+    # containers are the ones it leaves empty.
+    jobs:
+      setup:
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            memory: 128Mi
+  # jobs.setup.resources above reaches the job's kubectl container only. Its
+  # generate-identity-cert init container has no values key, so it takes a patch.
+  # The target is a selector, which means a chart bump that renames the job
+  # leaves this a no-op rather than a reconcile failure.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Job
+              name: bitwarden-setup
+            patch: |-
+              apiVersion: batch/v1
+              kind: Job
+              metadata:
+                name: bitwarden-setup
+              spec:
+                template:
+                  spec:
+                    initContainers:
+                      - name: generate-identity-cert
+                        resources:
+                          requests:
+                            cpu: 50m
+                            memory: 64Mi
+                          limits:
+                            memory: 128Mi
