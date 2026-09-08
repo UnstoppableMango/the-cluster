@@ -58,6 +58,7 @@ spec:
   metadataPool:
     deviceClass: hdd
     failureDomain: host
+    enableCrushUpdates: true
     replicated:
       size: 2
   dataPools:
