@@ -51,6 +51,109 @@ spec:
         - name: host-nix
           mountPath: /nix
           readOnly: true
+      # The operator matches these entries to CSI containers by name, and a
+      # container the list does not name runs unsized. The chart's defaults omit
+      # log-collector entirely, which is a logrotate loop measuring 0, and give
+      # the provisioner's csi-rbdplugin memory but no CPU. These four lists are
+      # the chart defaults with those gaps filled; re-diff them against
+      # `helm show values rook-ceph` when bumping the chart, since a list
+      # replaces the default wholesale rather than merging into it.
+      csiRBDProvisionerResource: |
+        - name: csi-provisioner
+          resource:
+            requests: {memory: 128Mi, cpu: 100m}
+            limits: {memory: 256Mi}
+        - name: csi-resizer
+          resource:
+            requests: {memory: 128Mi, cpu: 100m}
+            limits: {memory: 256Mi}
+        - name: csi-attacher
+          resource:
+            requests: {memory: 128Mi, cpu: 100m}
+            limits: {memory: 256Mi}
+        - name: csi-snapshotter
+          resource:
+            requests: {memory: 128Mi, cpu: 100m}
+            limits: {memory: 256Mi}
+        - name: csi-rbdplugin
+          resource:
+            requests: {memory: 512Mi, cpu: 100m}
+            limits: {memory: 1Gi}
+        - name: csi-omap-generator
+          resource:
+            requests: {memory: 512Mi, cpu: 250m}
+            limits: {memory: 1Gi}
+        - name: liveness-prometheus
+          resource:
+            requests: {memory: 128Mi, cpu: 50m}
+            limits: {memory: 256Mi}
+        - name: log-collector
+          resource:
+            requests: {memory: 32Mi, cpu: 10m}
+            limits: {memory: 128Mi}
+      csiRBDPluginResource: |
+        - name: driver-registrar
+          resource:
+            requests: {memory: 128Mi, cpu: 50m}
+            limits: {memory: 256Mi}
+        - name: csi-rbdplugin
+          resource:
+            requests: {memory: 512Mi, cpu: 250m}
+            limits: {memory: 1Gi}
+        - name: liveness-prometheus
+          resource:
+            requests: {memory: 128Mi, cpu: 50m}
+            limits: {memory: 256Mi}
+        - name: log-collector
+          resource:
+            requests: {memory: 32Mi, cpu: 10m}
+            limits: {memory: 128Mi}
+      csiCephFSProvisionerResource: |
+        - name: csi-provisioner
+          resource:
+            requests: {memory: 128Mi, cpu: 100m}
+            limits: {memory: 256Mi}
+        - name: csi-resizer
+          resource:
+            requests: {memory: 128Mi, cpu: 100m}
+            limits: {memory: 256Mi}
+        - name: csi-attacher
+          resource:
+            requests: {memory: 128Mi, cpu: 100m}
+            limits: {memory: 256Mi}
+        - name: csi-snapshotter
+          resource:
+            requests: {memory: 128Mi, cpu: 100m}
+            limits: {memory: 256Mi}
+        - name: csi-cephfsplugin
+          resource:
+            requests: {memory: 512Mi, cpu: 250m}
+            limits: {memory: 1Gi}
+        - name: liveness-prometheus
+          resource:
+            requests: {memory: 128Mi, cpu: 50m}
+            limits: {memory: 256Mi}
+        - name: log-collector
+          resource:
+            requests: {memory: 32Mi, cpu: 10m}
+            limits: {memory: 128Mi}
+      csiCephFSPluginResource: |
+        - name: driver-registrar
+          resource:
+            requests: {memory: 128Mi, cpu: 50m}
+            limits: {memory: 256Mi}
+        - name: csi-cephfsplugin
+          resource:
+            requests: {memory: 512Mi, cpu: 250m}
+            limits: {memory: 1Gi}
+        - name: liveness-prometheus
+          resource:
+            requests: {memory: 128Mi, cpu: 50m}
+            limits: {memory: 256Mi}
+        - name: log-collector
+          resource:
+            requests: {memory: 32Mi, cpu: 10m}
+            limits: {memory: 128Mi}
     # Disabling for memory reasons on the smaller nodes
     enableDiscoveryDaemon: false
     env: {}

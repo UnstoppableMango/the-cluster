@@ -52,6 +52,21 @@ spec:
         allowMultiplePerNode: true
       # Rook removes an OSD once it is marked out and the data has drained.
       removeOSDsIfOutAndSafeToRemove: true
+      # Only the log collector is overridden; helm merges maps, so mon, mgr,
+      # osd, exporter, and crashcollector keep the chart's defaults. Those look
+      # oversized against an idle cluster, but an OSD wants its core during
+      # recovery and backfill, which is exactly when the reservation matters.
+      #
+      # The log collector is a logrotate loop measuring 0 on every ceph pod, so
+      # the chart's 100m and 100Mi reserved roughly four cores and 3Gi across
+      # the 33 OSDs and the mons, mgr, mds, and rgw.
+      resources:
+        logcollector:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            memory: 128Mi
       storage:
         useAllDevices: false
         useAllNodes: false

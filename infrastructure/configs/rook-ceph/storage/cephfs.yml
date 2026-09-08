@@ -26,6 +26,15 @@ spec:
   metadataServer:
     activeCount: 1
     activeStandby: true
+    # An MDS caches dentries in memory and grows with the working set; the
+    # active one here was measured at 644Mi. Nothing defaults these, so without
+    # the block the MDS pods run BestEffort.
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        memory: 2Gi
 ---
 # Deprecated: use standard-rwx. Bound claims keep this name because a PVC's
 # storageClassName is immutable.
@@ -96,6 +105,12 @@ spec:
   metadataServer:
     activeCount: 1
     activeStandby: true
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        memory: 2Gi
     placement:
       podAntiAffinity:
         preferredDuringSchedulingIgnoredDuringExecution:
