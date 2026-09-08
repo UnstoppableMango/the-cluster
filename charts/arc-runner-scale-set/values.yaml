@@ -53,7 +53,12 @@ defaults:
 #
 # Careful: mergeOverwrite replaces lists wholesale, so an entry that supplies its
 # own template.spec.containers drops the defaults above, including command and
-# the NIX_CONFIG substituter. Repeat whichever list you override.
+# the NIX_CONFIG substituter. Repeat whichever list you override, resources
+# included, or the entry runs unsized.
+#
+# containerMode: dind renders its own init-dind-externals and dind containers
+# and discards any the values supply, which leaves those two with no resources.
+# Spell the dind wiring out under template.spec instead, as the defaults above do.
 scaleSets: []
 # - name: dotfiles
 #   githubConfigUrl: https://github.com/UnstoppableMango/dotfiles
@@ -64,8 +69,6 @@ scaleSets: []
 #
 # - name: ux
 #   githubConfigUrl: https://github.com/UnstoppableMango/ux
-#   containerMode:
-#     type: dind
 #   template:
 #     spec:
 #       securityContext:
@@ -75,6 +78,9 @@ scaleSets: []
 #           image: ghcr.io/unmango/actions-runner:2.337.0@sha256:4e9792606dbc6ff357de98666529147fa620d879c6d29c746bfb0893d9a041c5
 #           command: [/home/runner/run.sh]
 #           resources:
+#             requests:
+#               cpu: "1"
+#               memory: 2Gi
 #             limits:
 #               cpu: "8"
 #               memory: 8Gi

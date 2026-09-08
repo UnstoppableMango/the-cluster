@@ -18,14 +18,63 @@ spec:
       namespace: arc-system
     defaults:
       githubConfigSecret: thecluster-bot
-      containerMode:
-        type: dind
+      # The dind wiring below is spelled out rather than left to
+      # `containerMode: dind`. That mode renders its own init-dind-externals and
+      # dind containers and drops any the values supply, so it is the one shape
+      # in which those two cannot be given resources. Rendering both ways
+      # produces the same pod otherwise. The cost is that a chart upgrade no
+      # longer updates this block; compare it against the chart's
+      # _helpers.tpl when bumping gha-runner-scale-set.
       template:
         spec:
           # Makes gid 1001 the group owner of the work volume below and adds it
           # to the runner process's supplementary groups.
           securityContext:
             fsGroup: 1001
+          initContainers:
+            - name: init-dind-externals
+              image: ghcr.io/unmango/actions-runner:2.337.0@sha256:6e1bf722f44dea1e3485a68d0ec7c96de6a068e1b6a5b20407adfad7d26370ab
+              command: [cp, -r, /home/runner/externals/., /home/runner/tmpDir/]
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  memory: 64Mi
+              volumeMounts:
+                - name: dind-externals
+                  mountPath: /home/runner/tmpDir
+            - name: dind
+              image: docker:dind
+              args:
+                - dockerd
+                - --host=unix:///var/run/docker.sock
+                - --group=$(DOCKER_GROUP_GID)
+              env:
+                - name: DOCKER_GROUP_GID
+                  value: "123"
+              securityContext:
+                privileged: true
+              restartPolicy: Always
+              startupProbe:
+                exec:
+                  command: [docker, info]
+                initialDelaySeconds: 0
+                failureThreshold: 24
+                periodSeconds: 5
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 256Mi
+                limits:
+                  memory: 4Gi
+              volumeMounts:
+                - name: work
+                  mountPath: /home/runner/_work
+                - name: dind-sock
+                  mountPath: /var/run
+                - name: dind-externals
+                  mountPath: /home/runner/externals
           containers:
             - name: runner
               image: ghcr.io/unmango/actions-runner:2.337.0@sha256:6e1bf722f44dea1e3485a68d0ec7c96de6a068e1b6a5b20407adfad7d26370ab
@@ -38,11 +87,33 @@ spec:
                   value: |
                     extra-substituters = http://ncps.nix-system.svc.cluster.local:8501
                     extra-trusted-public-keys = ncps.thecluster.lan:pAJGNVSRmG7gCDSOAaiHDxLFUSdys5Pk0XvcJ5803Dw=
+                - name: DOCKER_HOST
+                  value: unix:///var/run/docker.sock
+                - name: RUNNER_WAIT_FOR_DOCKER_IN_SECONDS
+                  value: "120"
+              # An idle runner measures ~1m CPU and ~60Mi, so requesting the
+              # limit reserved 8 cores per replica and filled gaea with runners
+              # doing nothing. Requests now cover the idle floor and a build
+              # still bursts to the limit. The tradeoff is that requests no
+              # longer cap how many runners land on one node, so a burst of
+              # concurrent builds oversubscribes it rather than queueing.
               resources:
+                requests:
+                  cpu: "1"
+                  memory: 2Gi
                 limits:
                   cpu: "8"
                   memory: 8Gi
+              volumeMounts:
+                - name: work
+                  mountPath: /home/runner/_work
+                - name: dind-sock
+                  mountPath: /var/run
           volumes:
+            - name: dind-sock
+              emptyDir: {}
+            - name: dind-externals
+              emptyDir: {}
             - name: work
               ephemeral:
                 volumeClaimTemplate:
