@@ -91,6 +91,12 @@ spec:
                 configMapKeyRef:
                   name: installation-ids
                   key: unstoppablemango
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
           command:
             - /bin/sh
             - -c
