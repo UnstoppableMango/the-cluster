@@ -22,7 +22,29 @@ spec:
   values:
     crds:
       enabled: true
+    # The chart ships frr-k8s as the default BGP backend: a five-container
+    # DaemonSet on every node plus a statuscleaner Deployment. Every address
+    # here is announced over L2 (see infrastructure/configs/metallb-system,
+    # which holds an L2Advertisement and no BGPPeer), so none of that is
+    # reached. Re-enable this to speak BGP.
+    frrk8s:
+      enabled: false
     controller:
       priorityClassName: system-cluster-critical
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 128Mi
     speaker:
       priorityClassName: system-cluster-critical
+      # No CPU limit: the speaker answers ARP for every service address, and it
+      # was measured at 132m during a burst against a 2m idle baseline.
+      # Throttling it drops replies and the address goes dark.
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          memory: 128Mi
