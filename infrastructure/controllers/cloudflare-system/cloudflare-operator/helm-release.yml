@@ -30,8 +30,10 @@ spec:
         image:
           repository: ghcr.io/unmango/cloudflare-operator
           # The repository publishes no semver image tags, only sha-<commit>.
-          # This is the commit the v0.0.4 tag points at.
-          tag: sha-c81989b
+          # This is the commit the v0.0.4 tag points at. The chart renders
+          # repository:tag verbatim, so the digest rides along on the tag to
+          # make the reference immutable.
+          tag: sha-c81989b@sha256:c782f31ee4167d69108ebdafbc67e0e7097a8875e9a9f90d49d236d39b98571e
     ingressClass:
       enable: true
       name: cloudflare
