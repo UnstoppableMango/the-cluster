@@ -21,3 +21,9 @@ spec:
           # remotely configured tunnel. Revisit once the operator passes
           # spec.template volumes through.
           noTlsVerify: true
+          # A +ptional typo in the operator's api types leaves caPool without an
+          # +optional marker, so controller-gen emits it as required and the CRD
+          # rejects any originRequest that omits it. cloudflared never reads a CA
+          # path when noTlsVerify is set, so the empty string is inert. Drop this
+          # line once unmango/cloudflare-operator#198 ships in a pinned tag.
+          caPool: ""
