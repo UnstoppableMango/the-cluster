@@ -43,10 +43,10 @@ spec:
     extraNixConf: |
       substituters = http://ncps.nix-system.svc.cluster.local:8501
       extra-trusted-public-keys = ncps.thecluster.lan:pAJGNVSRmG7gCDSOAaiHDxLFUSdys5Pk0XvcJ5803Dw=
-      # The chart hardcodes narinfo-cache-negative-ttl = 0 ahead of this block
-      # and a later assignment wins. At 0 nix re-queries every miss on every
-      # pass. 60s trades briefly stale misses for far fewer requests.
-      narinfo-cache-negative-ttl = 60
+      # narinfo-cache-negative-ttl is deliberately absent. The chart emits it as
+      # 0 ahead of this block and a later assignment would win, but the agent
+      # reads the effective value at startup and exits with a fatal error on
+      # anything else: a cached miss would hide a path another agent just built.
       # Narinfo lookups are latency-bound, not bandwidth-bound. Default is 25.
       http-connections = 128
       # Nix sees the node's core count, not the pod's CPU quota. Pin builders to
