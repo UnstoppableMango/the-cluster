@@ -26,3 +26,34 @@ spec:
       enabled: true
       minAvailable: 1
     enableCertificateOwnerRef: true
+    # Each of the four components defaults to no resources, which leaves the
+    # whole of cert-manager BestEffort and first in line for eviction. All four
+    # idle at 1m CPU and 12-44Mi. No CPU limits: the controller and cainjector
+    # renew a leader lease, and throttling one costs the lease.
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 256Mi
+    cainjector:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 256Mi
+    webhook:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
+    startupapicheck:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          memory: 128Mi

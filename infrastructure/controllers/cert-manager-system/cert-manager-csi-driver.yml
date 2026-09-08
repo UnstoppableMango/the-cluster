@@ -56,3 +56,33 @@ spec:
       - key: unschedulable
         operator: Exists
         effect: NoSchedule
+  # The chart's `resources` above covers only the driver container; the two
+  # sidecars it renders have no values key at all and would run unsized. The
+  # patch is a strategic merge rather than JSON6902 so it keys off the container
+  # name, which a chart bump cannot reorder out from under it.
+  postRenderers:
+    - kustomize:
+        patches:
+          - patch: |-
+              apiVersion: apps/v1
+              kind: DaemonSet
+              metadata:
+                name: cert-manager-csi-driver
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: node-driver-registrar
+                        resources:
+                          requests:
+                            cpu: 10m
+                            memory: 32Mi
+                          limits:
+                            memory: 64Mi
+                      - name: liveness-probe
+                        resources:
+                          requests:
+                            cpu: 10m
+                            memory: 32Mi
+                          limits:
+                            memory: 64Mi

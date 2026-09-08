@@ -26,6 +26,14 @@ spec:
         enable: true
       productTelemetry:
         enable: false
+      # Idles at 7m and 68Mi. No CPU limit: the two replicas hold a leader
+      # election for Gateway API status writes.
+      resources:
+        requests:
+          cpu: 25m
+          memory: 64Mi
+        limits:
+          memory: 256Mi
     certGenerator:
       enable: false
     nginx:
@@ -35,6 +43,15 @@ spec:
         tag: 2.7.0
       service:
         externalTrafficPolicy: Cluster # https://metallb.io/usage/#ip-address-sharing
+      # Measured at 27m and 150Mi serving the cluster's ingress. No CPU limit:
+      # this is the dataplane and throttling it shows up as request latency.
+      container:
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            memory: 512Mi
     gateways:
       - name: nginx
         namespace: nginx-gateway
