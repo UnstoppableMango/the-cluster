@@ -51,6 +51,15 @@ spec:
     replicaCount: 1
     strategy:
       type: Recreate
+    # The chart sizes its init containers and leaves the gitea container empty.
+    # No CPU limit: a clone or a `git gc` is bursty and throttling it stalls the
+    # push that triggered it.
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 1Gi
     service:
       http:
         type: ClusterIP

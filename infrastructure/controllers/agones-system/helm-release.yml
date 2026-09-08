@@ -31,7 +31,44 @@ spec:
           limits:
             cpu: 100m
             memory: 256Mi
+      ping:
+        resources:
+          requests:
+            cpu: 25m
+            memory: 64Mi
+          limits:
+            memory: 128Mi
       allocator:
         install: true
         service:
           serviceType: ClusterIP
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            memory: 256Mi
+  # The pre-delete hook job has no values key. The target is a selector, so a
+  # chart bump that renames the job leaves this a no-op rather than a failure.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Job
+              name: agones-delete-agones-resources
+            patch: |-
+              apiVersion: batch/v1
+              kind: Job
+              metadata:
+                name: agones-delete-agones-resources
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: pre-delete-delete-agones-resources
+                        resources:
+                          requests:
+                            cpu: 10m
+                            memory: 32Mi
+                          limits:
+                            memory: 64Mi

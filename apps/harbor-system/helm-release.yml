@@ -131,6 +131,16 @@ spec:
           requests:
             cpu: 100m
             memory: 256Mi
+        # The chart's `resources` above covers the database container only; this
+        # chowns the data directory before it starts and is otherwise unsized.
+        initContainer:
+          permissions:
+            resources:
+              requests:
+                cpu: 10m
+                memory: 32Mi
+              limits:
+                memory: 64Mi
     redis:
       type: internal # default
       internal:
