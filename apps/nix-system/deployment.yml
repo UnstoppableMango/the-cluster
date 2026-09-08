@@ -106,6 +106,20 @@ spec:
             # serving.
             - --cache-max-size=180G
             - --cache-lru-schedule=@every 1h
+            # /metrics 404s without this, so there is no hit/miss ratio and no
+            # upstream request count to tune against. Nothing scrapes it yet:
+            # infrastructure/controllers/monitoring-system is not wired into
+            # clusters/rosequartz/infrastructure.yaml, so reads are by hand
+            # through the API server proxy until it is.
+            - --prometheus-enabled
+            # A narinfo miss is fanned out to every healthy upstream in
+            # parallel and answered by the first hit, so a stalled upstream
+            # costs the whole miss its timeout and holds the per-hash lock that
+            # every other waiter is blocked on. Both default to 3s. 2s bounds
+            # that without being tight enough to turn a slow-but-working cachix
+            # into a false miss, which would rebuild a path that was cached.
+            - --cache-upstream-dialer-timeout=2s
+            - --cache-upstream-response-header-timeout=2s
             - --cache-upstream-url=https://cache.nixos.org
             - --cache-upstream-url=https://nix-community.cachix.org
             - --cache-upstream-url=https://unstoppablemango.cachix.org
