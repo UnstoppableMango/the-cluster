@@ -38,3 +38,25 @@ spec:
   wait: true
   dependsOn:
     - name: external-snapshotter-crds
+  # Upstream ships the Deployment with no resources, and the path is theirs, so
+  # a patch here is the only place to add them. It idles at 1m and 17Mi.
+  patches:
+    - target:
+        kind: Deployment
+        name: snapshot-controller
+      patch: |-
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: snapshot-controller
+        spec:
+          template:
+            spec:
+              containers:
+                - name: snapshot-controller
+                  resources:
+                    requests:
+                      cpu: 10m
+                      memory: 32Mi
+                    limits:
+                      memory: 128Mi

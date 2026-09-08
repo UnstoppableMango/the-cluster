@@ -20,6 +20,16 @@ spec:
       tag: v0.9.0
     args:
       - --kubelet-certificate-authority=/etc/ssl/kube-root-ca/ca.crt
+    # The chart's default requests, spelled out, plus the memory limit it omits.
+    # Scrape cost grows with the pod count, so the limit has room over the 45Mi
+    # measured. No CPU limit: throttling the scrape loop stalls every HPA and
+    # `kubectl top` reading at once.
+    resources:
+      requests:
+        cpu: 100m
+        memory: 200Mi
+      limits:
+        memory: 256Mi
     extraVolumes:
       - name: kube-root-ca
         configMap:
