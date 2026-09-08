@@ -1,0 +1,11 @@
+apiVersion: cloudflare.unmango.dev/v1alpha1
+kind: Cloudflared
+metadata:
+  name: thecluster-io
+  namespace: cloudflare-system
+spec:
+  kind: Deployment
+  replicas: 1
+  config:
+    tunnelRef:
+      name: thecluster-io

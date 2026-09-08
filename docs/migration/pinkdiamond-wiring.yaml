@@ -48,20 +48,6 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-cloudflare-operator
-  namespace: flux-system
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  path: ./infrastructure/controllers/cloudflare-operator-system
-  interval: 10m
-  prune: true
-  wait: true
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
   name: infra-cloudflare
   namespace: flux-system
 spec:
@@ -427,23 +413,6 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-configs-cloudflare-operator
-  namespace: flux-system
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  path: ./infrastructure/configs/cloudflare-operator-system
-  interval: 10m
-  prune: true
-  # No wait: the ClusterTunnel takes a while to come up. infra-configs-default
-  # hangs off this one, so gating on tunnel health would delay it for no reason.
-  dependsOn:
-    - name: infra-cloudflare-operator
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
   name: infra-configs-cloudflare
   namespace: flux-system
 spec:
@@ -456,22 +425,6 @@ spec:
   wait: true
   dependsOn:
     - name: infra-cloudflare
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: infra-configs-default
-  namespace: flux-system
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  path: ./infrastructure/configs/default
-  interval: 10m
-  prune: true
-  wait: true
-  dependsOn:
-    - name: infra-configs-cloudflare-operator
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

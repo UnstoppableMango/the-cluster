@@ -1,0 +1,23 @@
+apiVersion: cloudflare.unmango.dev/v1alpha1
+kind: CloudflareTunnel
+metadata:
+  name: thecluster-io
+  namespace: cloudflare-system
+spec:
+  accountId: 265a046434c952eeecb9710cfd76617c
+  # Remotely managed, so the ingress rules below are pushed to the Zero Trust
+  # dashboard rather than written to a config file on the origin.
+  configSource: cloudflare
+  config:
+    ingress:
+      - hostname: k8s.thecluster.io
+        service: https://kubernetes.default.svc
+        originRequest:
+          # Verifying instead would mean originServerName: kubernetes.default.svc
+          # (which the api-server certificate does carry as a SAN) plus caPool
+          # pointing at the cluster CA in kube-root-ca.crt. cloudflare-operator
+          # cannot mount that file: the only volumeMount it gives the cloudflared
+          # container is /etc/cloudflared for a local config.yml, and this is a
+          # remotely configured tunnel. Revisit once the operator passes
+          # spec.template volumes through.
+          noTlsVerify: true
