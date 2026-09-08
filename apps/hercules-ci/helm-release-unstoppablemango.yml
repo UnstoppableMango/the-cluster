@@ -7,6 +7,17 @@ metadata:
   namespace: hercules-ci
 spec:
   interval: 10m
+  # The agent pulls a large image and attaches a 100Gi RBD volume on a single
+  # pinned node, which takes over eight minutes whenever the pod moves. The 5m
+  # default fails the upgrade while the rollout is still healthy, and a failure
+  # with no retries stalls the release until someone resets it by hand.
+  timeout: 15m
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
   releaseName: unstoppablemango-hercules-ci-agent
   targetNamespace: hercules-ci
   chart:
