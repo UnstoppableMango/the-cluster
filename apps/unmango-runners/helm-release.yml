@@ -24,7 +24,7 @@ spec:
       spec:
         initContainers:
         - name: init-dind-externals
-          image: ghcr.io/unmango/actions-runner:2.337.0@sha256:4e9792606dbc6ff357de98666529147fa620d879c6d29c746bfb0893d9a041c5
+          image: ghcr.io/unmango/actions-runner:2.337.0@sha256:6e1bf722f44dea1e3485a68d0ec7c96de6a068e1b6a5b20407adfad7d26370ab
           command: ["cp", "-r", "/home/runner/externals/.", "/home/runner/tmpDir/"]
           volumeMounts:
             - name: dind-externals
@@ -58,7 +58,7 @@ spec:
               mountPath: /home/runner/externals
         containers:
         - name: runner
-          image: ghcr.io/unmango/actions-runner:2.337.0@sha256:4e9792606dbc6ff357de98666529147fa620d879c6d29c746bfb0893d9a041c5
+          image: ghcr.io/unmango/actions-runner:2.337.0@sha256:6e1bf722f44dea1e3485a68d0ec7c96de6a068e1b6a5b20407adfad7d26370ab
           command: [/home/runner/run.sh]
           env:
             - name: DOCKER_HOST
