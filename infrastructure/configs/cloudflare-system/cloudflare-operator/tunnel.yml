@@ -13,6 +13,11 @@ spec:
       - hostname: k8s.thecluster.io
         service: https://kubernetes.default.svc
         originRequest:
-          # The api-server certificate is issued for its in-cluster names, not
-          # for k8s.thecluster.io.
+          # Verifying instead would mean originServerName: kubernetes.default.svc
+          # (which the api-server certificate does carry as a SAN) plus caPool
+          # pointing at the cluster CA in kube-root-ca.crt. cloudflare-operator
+          # cannot mount that file: the only volumeMount it gives the cloudflared
+          # container is /etc/cloudflared for a local config.yml, and this is a
+          # remotely configured tunnel. Revisit once the operator passes
+          # spec.template volumes through.
           noTlsVerify: true
