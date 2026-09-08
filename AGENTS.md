@@ -67,6 +67,24 @@ There is one pattern rule per top-level manifest directory rather than a bare `%
 
 - **Indentation:** 2 spaces in YAML and Nix; tabs elsewhere, per `.editorconfig` and `.dprint.json`
 - **Versions:** chart and image versions are pinned inline in the HelmRelease or manifest and bumped by Renovate.
+- **Resources:** every container declares a CPU request, a memory request, and a memory limit.
+  Requests track measured steady-state usage rounded up, floored at 10m CPU and 32Mi; memory limits sit at two to three times the observed peak.
+  Add a CPU limit only where throttling is acceptable, and omit it on anything holding a leader lease or serving a dataplane.
+  Setting a limit without a request is a trap: Kubernetes copies the limit into the request, and the workload reserves its ceiling.
+
+Container resources deserve their own note, because a chart is not evidence that they are set.
+Most charts size their main workload and leave a sidecar, an init container, a hook job, or an enabled subchart empty, and a `resources:` key in a values file says nothing about the containers it does not name.
+Render the chart and read every container:
+
+```sh
+nix develop -c bash -c 'yq eval ".spec.values" <helm-release.yml> > /tmp/v.yaml
+  helm template t <chart> --repo <url> --version <v> -f /tmp/v.yaml' \
+  | yq eval 'select(.kind == "Deployment" or .kind == "DaemonSet" or .kind == "StatefulSet")
+             | .metadata.name, (.spec.template.spec.containers[] | .name + " " + (.resources | tostring))' -
+```
+
+Where a container has no values key at all, reach it with `spec.postRenderers` on the HelmRelease, or `spec.patches` on the Flux Kustomization when the manifests come from an upstream path.
+Give the patch an explicit `target`, so a chart bump that renames the object is a no-op rather than a reconcile failure.
 
 ## Development Environment
 
