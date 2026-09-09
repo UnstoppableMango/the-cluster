@@ -7,7 +7,7 @@
 	"ignorePaths": [
 		"**/vendor/**",
 		"**/testdata/**",
-		"charts/**",
+		"charts/**/templates/**",
 		"**/crds/**"
 	],
 	"major": {
@@ -33,6 +33,17 @@
 				"github\\.com/(?<depName>[^/]+/[^/]+)/releases/download/(?<currentValue>v[\\d.]+)/"
 			],
 			"datasourceTemplate": "github-releases"
+		},
+		{
+			"description": "charts/*/values.yaml pins images as bare `image: repo:tag@digest` strings. The kubernetes manager cannot read them: it extracts nothing unless the file contains both `apiVersion:` and `kind:`, and a values file has neither. Matches commented lines too, which keeps the example block in sync.",
+			"customType": "regex",
+			"managerFilePatterns": [
+				"/^charts/[^/]+/values\\.ya?ml$/"
+			],
+			"matchStrings": [
+				"image:\\s*(?<depName>[^\\s:@]+):(?<currentValue>[^\\s@]+)@(?<currentDigest>sha256:[a-f0-9]{64})"
+			],
+			"datasourceTemplate": "docker"
 		}
 	],
 	"packageRules": [
