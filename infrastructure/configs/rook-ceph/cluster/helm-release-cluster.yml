@@ -36,7 +36,7 @@ spec:
     # The toolbox image follows it unless toolbox.image overrides.
     cephImage:
       repository: quay.io/ceph/ceph
-      tag: v18.2.8
+      tag: v21.1.0
     cephClusterSpec:
       dataDirHostPath: /var/lib/rook # default value
       dashboard:
