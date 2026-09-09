@@ -228,6 +228,14 @@
 		},
 		{
 			"matchPackageNames": [
+				"rook-ceph",
+				"rook-ceph-cluster"
+			],
+			"description": "Rook must be upgraded one minor at a time, and 1.18 requires Ceph Squid. Raise this ceiling by one minor as each step lands.",
+			"allowedVersions": "<1.18"
+		},
+		{
+			"matchPackageNames": [
 				"plex-media-server",
 				"plexinc/pms-docker"
 			],
