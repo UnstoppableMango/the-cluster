@@ -22,6 +22,12 @@ spec:
     # https://github.com/actions/actions-runner-controller/blob/8c84ab2f4267ce61df1f6b2e26a3ca12b2d1e4ca/charts/gha-runner-scale-set/values.yaml#L310
     template:
       spec:
+        # Makes gid 1001 the group owner of the volumes below and adds it to the
+        # runner process's supplementary groups. The nix volume is then handed to
+        # the runner outright by init-nix; the emptyDirs do not need it, but
+        # fsGroup is pod-scoped and cannot be applied to one volume.
+        securityContext:
+          fsGroup: 1001
         initContainers:
         - name: init-dind-externals
           image: ghcr.io/unmango/actions-runner:2.337.0@sha256:6e1bf722f44dea1e3485a68d0ec7c96de6a068e1b6a5b20407adfad7d26370ab
@@ -35,8 +41,37 @@ spec:
           volumeMounts:
             - name: dind-externals
               mountPath: /home/runner/tmpDir
+        # The image ships /nix as an empty directory owned by the runner, but a
+        # volume mounted over it brings its own ownership. Kubelet leaves a CSI
+        # volume root:fsGroup 2775, and the setgid bit propagates into every
+        # directory nix creates under it, store paths and build directories
+        # alike. Hand the mount to the runner instead, mode 0755, so it matches
+        # the empty /nix the image ships. Not recursive: the volume is ephemeral
+        # and holds only lost+found here.
+        #
+        # The mode is five digits because a numeric chmod of four digits or
+        # fewer preserves a directory's setuid and setgid bits; 00755 is what
+        # actually clears the setgid.
+        #
+        # Ordered ahead of dind, whose restartPolicy: Always makes it a native
+        # sidecar that kubelet waits on before running any later init container.
+        # This one has no reason to wait for dockerd.
+        - name: init-nix
+          image: ghcr.io/unmango/actions-runner:2.337.0@sha256:6e1bf722f44dea1e3485a68d0ec7c96de6a068e1b6a5b20407adfad7d26370ab
+          command: [sh, -c, 'chown runner:runner /nix && chmod 00755 /nix']
+          securityContext:
+            runAsUser: 0
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
+          volumeMounts:
+            - name: nix
+              mountPath: /nix
         - name: dind
-          image: docker:dind
+          image: docker:29.8.0-dind@sha256:5efed980cba3fc126cf54e21a5a6ff8849d05b6e0623d6e7612f48e9cd6cd17e
           args:
             - dockerd
             - --host=unix:///var/run/docker.sock
@@ -99,6 +134,20 @@ spec:
               mountPath: /home/runner/_work
             - name: dind-sock
               mountPath: /var/run
+            # The image ships /nix empty and its nix.conf sets `store = local`,
+            # so the store, its database, and nix's build directory all land
+            # here. Left unmounted that is the container's overlayfs layer,
+            # where nix fails to tear down a build directory it just emptied:
+            #
+            #   error: cannot unlink ".../project/.git": Directory not empty
+            #
+            # It bites the derivations that write many small files, treefmt's
+            # `git init && git add .` check being the reliable one. The image's
+            # nix, gnumake and xz are static copies in /usr/local/bin with their
+            # store references nuked, so they keep working with a volume over
+            # /nix.
+            - name: nix
+              mountPath: /nix
         volumes:
         - name: work
           emptyDir: {}
@@ -106,3 +155,16 @@ spec:
           emptyDir: {}
         - name: dind-externals
           emptyDir: {}
+        # An emptyDir does not work here. Kubelet creates one mode 0777, and nix
+        # refuses a build directory with a world-writable ancestor. A CSI volume
+        # comes up 2775 root:fsGroup, which init-nix then narrows to 0755
+        # runner:runner.
+        - name: nix
+          ephemeral:
+            volumeClaimTemplate:
+              spec:
+                accessModes: [ReadWriteOnce]
+                storageClassName: fast-rwo
+                resources:
+                  requests:
+                    storage: 30Gi
