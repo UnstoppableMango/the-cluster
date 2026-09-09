@@ -164,7 +164,7 @@ spec:
             volumeClaimTemplate:
               spec:
                 accessModes: [ReadWriteOnce]
-                storageClassName: ssd-rbd
+                storageClassName: fast-rwo
                 resources:
                   requests:
                     storage: 30Gi

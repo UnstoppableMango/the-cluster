@@ -24,9 +24,10 @@ defaults:
   githubConfigSecret: thecluster-bot
   template:
     spec:
-      # Makes gid 1001 the group owner of the volumes below and adds it to the
-      # runner process's supplementary groups. The work volume relies on it; the
-      # nix volume is handed to the runner outright by init-nix.
+      # Makes gid 1001 the group owner of the nix volume below and adds it to
+      # the runner process's supplementary groups. init-nix then hands that
+      # volume to the runner outright; an entry that brings CSI volumes of its
+      # own, as apps/arc-runners does with work, relies on the same setting.
       securityContext:
         fsGroup: 1001
       initContainers:
@@ -94,7 +95,7 @@ defaults:
             volumeClaimTemplate:
               spec:
                 accessModes: [ReadWriteOnce]
-                storageClassName: ssd-rbd
+                storageClassName: fast-rwo
                 resources:
                   requests:
                     storage: 75Gi
@@ -147,7 +148,7 @@ scaleSets: []
 #             volumeClaimTemplate:
 #               spec:
 #                 accessModes: [ReadWriteOnce]
-#                 storageClassName: ssd-rbd
+#                 storageClassName: fast-rwo
 #                 resources:
 #                   requests:
 #                     storage: 5Gi
