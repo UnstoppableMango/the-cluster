@@ -75,6 +75,8 @@ defaults:
                 extra-substituters = http://ncps.nix-system.svc.cluster.local:8501
                 extra-trusted-public-keys = ncps.thecluster.lan:pAJGNVSRmG7gCDSOAaiHDxLFUSdys5Pk0XvcJ5803Dw=
           volumeMounts:
+            - name: work
+              mountPath: /home/runner/_work
             # Left unmounted, nix's build directory is the container's overlayfs
             # layer, where nix fails to tear down a build directory it just
             # emptied:
@@ -86,6 +88,24 @@ defaults:
             - name: nix
               mountPath: /nix
       volumes:
+        # Left unmounted, /home/runner/_work is the container's writable overlay
+        # layer, so a checkout, its build outputs and any docker context land on
+        # the node's root disk unbounded.
+        #
+        # Both halves have to be spelled out because nothing here sets
+        # containerMode. Upstream only falls back to an emptyDir work volume
+        # under containerMode dind or kubernetes, and only its dind runner
+        # container appends the /home/runner/_work mount to a runner that omits
+        # one; the default-mode container passes volumeMounts through as given.
+        - name: work
+          ephemeral:
+            volumeClaimTemplate:
+              spec:
+                accessModes: [ReadWriteOnce]
+                storageClassName: fast-rwo
+                resources:
+                  requests:
+                    storage: 5Gi
         # An emptyDir does not work here. Kubelet creates one mode 0777, and nix
         # refuses a build directory with a world-writable ancestor. A CSI volume
         # comes up 2775 root:fsGroup, which init-nix then narrows to 0755
@@ -109,7 +129,8 @@ defaults:
 # Careful: mergeOverwrite replaces lists wholesale, so an entry that supplies its
 # own template.spec.containers drops the defaults above, including command, the
 # NIX_CONFIG substituter and the /nix volumeMount; one that supplies its own
-# template.spec.volumes drops the nix volume that mount refers to; one that
+# template.spec.volumes drops the work volume and the nix volume that mount
+# refers to, leaving _work on the container's overlay layer; one that
 # supplies its own template.spec.initContainers drops init-nix. Repeat whichever
 # list you override, resources included, or the entry runs unsized.
 #
