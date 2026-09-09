@@ -224,14 +224,17 @@
 				"rook-ceph-cluster",
 				"quay.io/ceph/ceph"
 			],
-			"groupName": "rook-ceph"
+			"description": "Rook supports no skipping of minor releases and Ceph no skipping of majors, so each stream gets its own PR rather than one bundled jump to the newest.",
+			"groupName": "rook-ceph",
+			"separateMultipleMinor": true,
+			"separateMultipleMajor": true
 		},
 		{
 			"matchPackageNames": [
 				"rook-ceph",
 				"rook-ceph-cluster"
 			],
-			"description": "Rook must be upgraded one minor at a time, and 1.18 requires Ceph Squid. Raise this ceiling by one minor as each step lands.",
+			"description": "Rook 1.18 dropped Ceph Reef. Delete this rule once the daemons run Squid; separateMultipleMinor above then paces the rest.",
 			"allowedVersions": "<1.18"
 		},
 		{
