@@ -12,10 +12,18 @@ spec:
   # default fails the upgrade while the rollout is still healthy, and a failure
   # with no retries stalls the release until someone resets it by hand.
   timeout: 15m
+  # Waiting on the StatefulSet makes a config fix unlandable. The agent exits on
+  # a bad nix.conf, so the pod is already crashlooping when the fix arrives;
+  # Helm reads that as a stalled resource, fails within seconds, and remediates
+  # back to the values that caused the crash, before the pod can restart onto
+  # the new ones. The rollout is the thing that would repair the pod, so its
+  # health is not a signal about whether the release applied.
   install:
+    disableWait: true
     remediation:
       retries: 3
   upgrade:
+    disableWait: true
     remediation:
       retries: 3
   releaseName: unstoppablemango-hercules-ci-agent
