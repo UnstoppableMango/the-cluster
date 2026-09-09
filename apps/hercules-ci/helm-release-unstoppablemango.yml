@@ -37,6 +37,14 @@ spec:
     persistence:
       storageClassName: ssd-rbd
       size: 100Gi
+    # The state volume holds a Nix store, which reaches millions of files. The
+    # default fsGroup policy of Always recursively chowns every one of them on
+    # each pod start, which takes over an hour and blows the upgrade timeout,
+    # so the release is remediated back to its previous values before the agent
+    # ever starts. OnRootMismatch checks only the volume root and skips the walk.
+    podSecurityContext:
+      fsGroup: 1000
+      fsGroupChangePolicy: OnRootMismatch
     # ncps proxies cache.nixos.org, so it is the only substituter. Listing both
     # costs two narinfo round trips per path. The tradeoff is that ncps being
     # down stalls builds rather than slowing them.
