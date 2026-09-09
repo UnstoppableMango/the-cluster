@@ -31,9 +31,13 @@ spec:
     cephBlockPools: []
     cephFileSystems: []
     cephObjectStores: []
+    # The chart renders spec.cephVersion from this key; setting
+    # cephClusterSpec.cephVersion instead emits the field twice.
+    # The toolbox image follows it unless toolbox.image overrides.
+    cephImage:
+      repository: quay.io/ceph/ceph
+      tag: v18.2.8
     cephClusterSpec:
-      cephVersion:
-        image: quay.io/ceph/ceph:v18.2.8
       dataDirHostPath: /var/lib/rook # default value
       dashboard:
         enabled: true
