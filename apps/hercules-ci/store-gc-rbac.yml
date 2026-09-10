@@ -1,0 +1,46 @@
+# Shared by both accounts' store-gc CronJobs. The job scales its agent down so
+# the store is quiescent while it is wiped, which is the only safe window: the
+# agent registers no GC roots for a task in flight, so anything that reclaims
+# space next to a running agent takes derivations out from under it.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hercules-ci-store-gc
+  namespace: hercules-ci
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: hercules-ci-store-gc
+  namespace: hercules-ci
+rules:
+  # kubectl scale reads the StatefulSet before it patches the scale subresource.
+  # Named, so a job can only move the agent it belongs to.
+  - apiGroups: [apps]
+    resources: [statefulsets]
+    resourceNames: [unmango-hercules-ci-agent, unstoppablemango-hercules-ci-agent]
+    verbs: [get]
+  - apiGroups: [apps]
+    resources: [statefulsets/scale]
+    resourceNames: [unmango-hercules-ci-agent, unstoppablemango-hercules-ci-agent]
+    verbs: [get, patch]
+  # kubectl wait --for=delete watches the pod until it is gone, and the script's
+  # concurrency guard lists pods by label. resourceNames cannot narrow these:
+  # list and watch are collection verbs and ignore it.
+  - apiGroups: [""]
+    resources: [pods]
+    verbs: [get, list, watch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: hercules-ci-store-gc
+  namespace: hercules-ci
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: hercules-ci-store-gc
+subjects:
+  - kind: ServiceAccount
+    name: hercules-ci-store-gc
+    namespace: hercules-ci
