@@ -155,14 +155,14 @@ spec:
                 secretKeyRef:
                   name: ncps-cache
                   key: AWS_SECRET_ACCESS_KEY
-            # Go reads roots from a default list of files and directories.
-            # SSL_CERT_DIR replaces only the directory list, so the image's
-            # public roots in /etc/ssl/certs/ca-certificates.crt still load and
-            # the upstream caches keep verifying, while the thecluster.lan CA
-            # in the mounted ConfigMap is added for RGW. SSL_CERT_FILE would
-            # replace the file list and drop the public roots.
+            # Adds the thecluster.lan CA for RGW. The image ships its public
+            # roots at /etc/ssl/certs/ca-bundle.crt, a path Go does not check
+            # by name, so it finds them only by scanning /etc/ssl/certs.
+            # SSL_CERT_DIR replaces that directory list outright, so
+            # /etc/ssl/certs has to stay in it or the upstream caches fail to
+            # verify.
             - name: SSL_CERT_DIR
-              value: /etc/ncps/ca
+              value: /etc/ncps/ca:/etc/ssl/certs
             # Lets the Go runtime collect ahead of the cgroup limit instead of
             # getting OOM-killed mid-NAR.
             - name: GOMEMLIMIT
