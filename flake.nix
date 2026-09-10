@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    systems.url = "github:nix-systems/default";
+    systems.url = "github:UnstoppableMango/nix-systems";
     nix-kube-generators.url = "github:farcaller/nix-kube-generators";
 
     treefmt-nix.url = "github:numtide/treefmt-nix";
@@ -27,6 +27,8 @@
       systems = import inputs.systems;
 
       imports = with inputs; [
+        systems.flakeModule
+
         treefmt-nix.flakeModule
         ./nix
       ];
