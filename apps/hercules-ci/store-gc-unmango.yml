@@ -1,0 +1,87 @@
+# One reclaim job per Hercules CI account; keep in sync with its sibling
+# store-gc-*.yml, in particular the script and the threshold. The two are
+# staggered because both agents sit on gaea and a cold store is expensive.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: unmango-hercules-ci-store-gc
+  namespace: hercules-ci
+spec:
+  schedule: 0 6 * * 0
+  timeZone: America/Chicago
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: 5400
+      template:
+        spec:
+          restartPolicy: Never
+          serviceAccountName: hercules-ci-store-gc
+          # RWO is per node, so this pod can hold the same volume as the agent.
+          # It has to: the scale-down runs from inside the pod, which means the
+          # volume must already be mounted when the agent lets go of it.
+          nodeSelector:
+            kubernetes.io/hostname: gaea
+          # Everything under the state volume is owned by 1000:1000. The volume
+          # root is root:1000, which matches the fsGroup, so OnRootMismatch
+          # skips the recursive chown of a store holding millions of files.
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+          containers:
+            - name: store-gc
+              image: alpine/kubectl:1.34.1
+              command:
+                - sh
+                - -c
+                - |
+                  set -eu
+
+                  sts=unmango-hercules-ci-agent
+                  nix_state=/state/.local/share/nix
+                  threshold_kb=$((150 * 1024 * 1024))
+
+                  # Sweep what an interrupted run left behind before measuring,
+                  # or its bytes count against this run's threshold.
+                  rm -rf "$nix_state"/.trash-* || true
+
+                  used_kb=$(df -P /state | awk 'NR == 2 { print $3 }')
+                  if [ "$used_kb" -lt "$threshold_kb" ]; then
+                    echo "store at ${used_kb}K, under ${threshold_kb}K; nothing to reclaim"
+                    exit 0
+                  fi
+
+                  # Bring the agent back whatever happens from here on.
+                  trap 'kubectl scale statefulset "$sts" --replicas=1' EXIT
+
+                  kubectl scale statefulset "$sts" --replicas=0
+                  kubectl wait --for=delete "pod/$sts-0" --timeout=15m
+
+                  # Rename rather than delete, so the agent is down for a rename
+                  # instead of the unlink of several million files. Nix rebuilds
+                  # the store root on next start.
+                  trash="$nix_state/.trash-$(date +%s)"
+                  mv "$nix_state/root" "$trash"
+
+                  kubectl scale statefulset "$sts" --replicas=1
+                  trap - EXIT
+
+                  rm -rf "$trash"
+              volumeMounts:
+                - name: state
+                  mountPath: /state
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  memory: 128Mi
+          volumes:
+            - name: state
+              persistentVolumeClaim:
+                claimName: state-unmango-hercules-ci-agent-0

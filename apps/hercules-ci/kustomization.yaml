@@ -7,3 +7,6 @@ resources:
   - helm-repository.yml
   - helm-release-unmango.yml
   - helm-release-unstoppablemango.yml
+  - store-gc-rbac.yml
+  - store-gc-unmango.yml
+  - store-gc-unstoppablemango.yml
