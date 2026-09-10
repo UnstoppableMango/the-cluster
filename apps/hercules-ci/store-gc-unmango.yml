@@ -17,6 +17,10 @@ spec:
       backoffLimit: 0
       activeDeadlineSeconds: 5400
       template:
+        metadata:
+          # The concurrency guard in the script selects on this.
+          labels:
+            app: unmango-hercules-ci-agent-store-gc
         spec:
           restartPolicy: Never
           serviceAccountName: hercules-ci-store-gc
@@ -46,9 +50,33 @@ spec:
                   nix_state=/state/.local/share/nix
                   threshold_kb=$((150 * 1024 * 1024))
 
+                  # concurrencyPolicy: Forbid only serializes the Jobs this
+                  # CronJob creates. The runbook's `kubectl create job --from`
+                  # makes an independent one, which could otherwise scale the
+                  # agent back up while this run is still renaming its store.
+                  # This pod is Running too, so it counts itself.
+                  running=$(kubectl get pods -l "app=$sts-store-gc" \
+                    --field-selector=status.phase=Running -o name | wc -l)
+                  if [ "$running" -gt 1 ]; then
+                    echo "another reclaim is already running; leaving it alone"
+                    exit 0
+                  fi
+
+                  # Installed before the threshold check, not after, so that
+                  # every exit path puts the agent back. A run killed between
+                  # the scale-down and the scale-up leaves the StatefulSet at
+                  # zero; the next run then frees the trash below, measures
+                  # under the threshold, and would otherwise exit while the
+                  # agent stayed down for good. The replica count is 1 in Git,
+                  # so restoring 1 is the reconciliation, and a scale to the
+                  # value it already holds is a no-op.
+                  trap 'kubectl scale statefulset "$sts" --replicas=1' EXIT
+
                   # Sweep what an interrupted run left behind before measuring,
-                  # or its bytes count against this run's threshold.
-                  rm -rf "$nix_state"/.trash-* || true
+                  # or its bytes count against this run's threshold. A failure
+                  # here has to stop the run: carrying on would rename a second
+                  # root aside and reclaim nothing.
+                  rm -rf "$nix_state"/.trash-*
 
                   used_kb=$(df -P /state | awk 'NR == 2 { print $3 }')
                   if [ "$used_kb" -lt "$threshold_kb" ]; then
@@ -56,10 +84,9 @@ spec:
                     exit 0
                   fi
 
-                  # Bring the agent back whatever happens from here on.
-                  trap 'kubectl scale statefulset "$sts" --replicas=1' EXIT
-
                   kubectl scale statefulset "$sts" --replicas=0
+                  # Exits 0 when the pod is already gone, which is the case
+                  # when this run is healing a StatefulSet left at zero.
                   kubectl wait --for=delete "pod/$sts-0" --timeout=15m
 
                   # Rename rather than delete, so the agent is down for a rename
@@ -72,6 +99,10 @@ spec:
                   trap - EXIT
 
                   rm -rf "$trash"
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop: [ALL]
               volumeMounts:
                 - name: state
                   mountPath: /state

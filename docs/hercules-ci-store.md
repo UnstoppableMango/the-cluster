@@ -53,11 +53,23 @@ With no GC roots, `nix store gc` would walk the whole store and delete it anyway
 The job pod mounts the same PVC as the agent and is pinned to `gaea`.
 `ReadWriteOnce` is a per-node restriction, so both pods can hold the volume; they have to, since the scale-down runs from inside the job and the mount has to exist before the agent lets go.
 
-Run one on demand with:
+The agent is always restored to one replica, on every exit path, including the one where the volume is under the mark and there is nothing to do.
+That is deliberate: a run killed between the scale-down and the scale-up leaves the StatefulSet at zero, and without it the next run would free the trash, measure under the mark, and exit while the agent stayed down for good.
+One replica is what Git says, so restoring it is the reconciliation.
+An agent deliberately scaled to zero by hand comes back at the next run.
+
+Reclaim is per account, so a manual run has to be repeated per account:
 
 ```sh
-kubectl create job manual-$(date +%s) --namespace hercules-ci --from=cronjob/unstoppablemango-hercules-ci-store-gc
+for account in unmango unstoppablemango; do
+  kubectl create job "manual-$account-$(date +%s)" \
+    --namespace hercules-ci \
+    --from="cronjob/$account-hercules-ci-store-gc"
+done
 ```
+
+`concurrencyPolicy: Forbid` only serializes the Jobs the CronJob creates, so a manual run and a scheduled run are not serialized against each other.
+The script closes that itself: it counts running pods carrying its own account's label and exits when it is not the only one.
 
 Do not enable `driftDetection` on the agent `HelmRelease`.
 It would revert the job's scale-down mid-run.

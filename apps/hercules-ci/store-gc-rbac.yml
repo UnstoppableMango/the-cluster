@@ -15,13 +15,18 @@ metadata:
   namespace: hercules-ci
 rules:
   # kubectl scale reads the StatefulSet before it patches the scale subresource.
+  # Named, so a job can only move the agent it belongs to.
   - apiGroups: [apps]
     resources: [statefulsets]
+    resourceNames: [unmango-hercules-ci-agent, unstoppablemango-hercules-ci-agent]
     verbs: [get]
   - apiGroups: [apps]
     resources: [statefulsets/scale]
+    resourceNames: [unmango-hercules-ci-agent, unstoppablemango-hercules-ci-agent]
     verbs: [get, patch]
-  # kubectl wait --for=delete watches the pod until it is gone.
+  # kubectl wait --for=delete watches the pod until it is gone, and the script's
+  # concurrency guard lists pods by label. resourceNames cannot narrow these:
+  # list and watch are collection verbs and ignore it.
   - apiGroups: [""]
     resources: [pods]
     verbs: [get, list, watch]
