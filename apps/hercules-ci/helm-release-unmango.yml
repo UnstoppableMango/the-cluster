@@ -44,12 +44,17 @@ spec:
         account: unmango
     # Nix auto-GC (min-free/max-free) must stay off. The agent holds no GC root
     # while a task is in flight, so a collection between evaluation and build
-    # deletes derivations the task still needs, and every task then dies on a
-    # missing .drv. See hercules-ci/hercules-ci-agent#105. The store is bounded
-    # by the gc CronJob instead, which runs with the agent scaled to zero.
+    # can delete derivations the task still needs. See
+    # hercules-ci/hercules-ci-agent#105. The store is bounded by the gc CronJob
+    # instead, which runs with the agent scaled to zero.
     persistence:
       storageClassName: ssd-rbd
       size: 200Gi
+    # Mounted at /nix, where cachix expects the store. This is the chroot store's
+    # path, so the store already on the volume carries over. See
+    # docs/hercules-ci-store.md.
+    nixStore:
+      subPath: .local/share/nix/root/nix
     # The state volume holds a Nix store, which reaches millions of files. The
     # default fsGroup policy of Always recursively chowns every one of them on
     # each pod start, which takes over an hour and blows the upgrade timeout,

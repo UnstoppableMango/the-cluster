@@ -1,10 +1,10 @@
 # The Hercules CI agent store
 
-Each agent keeps a Nix chroot store on its state PVC.
+Each agent keeps its Nix store on its state PVC, mounted at `/nix`.
 `agent.json` sets `baseDirectory` to `/var/lib/hercules-ci-agent`, which is the mount point of the `state` volume, and `HOME` points at the same directory.
-Nix cannot write `/nix/store` in the image, so it falls back to a chroot store under `$HOME`:
+The chart's `nixStore.subPath` mounts the volume's `.local/share/nix/root/nix` at `/nix`, and its `seed-store` init container copies the image's store into it on every start:
 
-| Path                                          | Holds                                             |
+| Path on the volume                            | Holds                                             |
 | --------------------------------------------- | ------------------------------------------------- |
 | `.local/share/nix/root/nix/store`             | the store, several million files                  |
 | `.local/share/nix/root/nix/var/nix/gcroots`   | `per-user` and a `profiles` symlink, nothing else |
@@ -16,6 +16,24 @@ Nix cannot write `/nix/store` in the image, so it falls back to a chroot store u
 The store is the only part that grows.
 `work`, `.cache`, and `secretState` together stay under 100MB.
 
+## Why /nix is a mount
+
+The store has to exist at `/nix/store` on the container's filesystem.
+The agent pushes every derivation it evaluates to the cachix caches in `binary-caches.json`, and cachix builds each NAR by reading `/nix/store/<path>` directly rather than asking Nix where the store is.
+With no `/nix` mount, Nix falls back to a chroot store under `$HOME`.
+Nix resolves that store and cachix does not, so every push fails:
+
+```text
+/nix/store/03charld061b2a1lvm8fb2w96l90d5ig-hedgehog-1.5.tar.gz.drv: pathIsSymbolicLink:getSymbolicLinkStatus: does not exist (No such file or directory)
+```
+
+Only `.drv` paths appear, because the push happens during evaluation, before any output exists.
+The subdirectory is the one Nix uses for a chroot store, so a volume that already holds one keeps its contents.
+
+A failed task can take the agent down with it.
+The worker's pipe closes, the agent throws `hGetBufSome: illegal operation (handle is closed)`, and the process exits 139.
+Each restart leaves its temproots behind: 296MB of stale entries accumulated across roughly 100 restarts in one day.
+
 ## Why auto-GC is off
 
 `min-free` and `max-free` must not be set in `extraNixConf`.
@@ -24,20 +42,7 @@ The agent registers no GC root for a task in flight.
 It evaluates, hands the resulting `.drv` paths to the queue, and builds them later, with nothing rooting them in between.
 `gcroots` above shows the consequence directly: it holds only the default `per-user` directory and a `profiles` symlink, no matter how many tasks are running.
 This is [hercules-ci/hercules-ci-agent#105](https://github.com/hercules-ci/hercules-ci-agent/issues/105), open since 2019.
-
-With auto-GC enabled, a collection triggered by any build lands between evaluation and build and takes those derivations.
-Every task then dies the same way:
-
-```text
-multiQuery: input "dccbw9ailj4svfjwq8mw7hf1anzsn8dw-gnutar-1.35.drv" was not saved to cache
-/nix/store/616pql5q68d2asywgw3z8nhza5iycs40-flux-crd-schemas.drv: getSymbolicLinkStatus: does not exist
-```
-
-Only `.drv` paths appear, never outputs, which is what distinguishes this from a corrupt volume.
-
-The failure compounds.
-A dead task closes the worker's pipe, the agent throws `hGetBufSome: illegal operation (handle is closed)`, and the process exits 139.
-The restarted agent re-evaluates, triggers GC again, and leaves its temproots behind: 296MB of stale entries accumulated across roughly 100 restarts in one day.
+A collection triggered by any build can land between evaluation and build and delete those derivations.
 
 ## Reclaim
 
