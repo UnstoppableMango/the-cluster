@@ -25,7 +25,9 @@ spec:
     port: 80
     securePort: 443
     sslCertificateRef: rgw-s3-tls
-    instances: 1
+    # ncps serves every NAR from this gateway and Velero backs up through it,
+    # so a single instance restarting takes both offline.
+    instances: 2
     resources:
       limits:
         memory: 1024Mi
