@@ -36,7 +36,7 @@ spec:
       # The 1.17 chart has no top-level cephImage key, so the image belongs
       # here. It moves to cephImage on the bump to 1.19 or later.
       cephVersion:
-        image: quay.io/ceph/ceph:v18.2.4
+        image: quay.io/ceph/ceph:v19.2.6
       dataDirHostPath: /var/lib/rook # default value
       dashboard:
         enabled: true
