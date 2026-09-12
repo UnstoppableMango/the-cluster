@@ -69,10 +69,7 @@ spec:
     extraNixConf: |
       substituters = http://ncps.nix-system.svc.cluster.local:8501
       extra-trusted-public-keys = ncps.thecluster.lan:pAJGNVSRmG7gCDSOAaiHDxLFUSdys5Pk0XvcJ5803Dw=
-      # anything else: a cached miss would hide a path another agent just built.
       # Narinfo lookups are latency-bound, not bandwidth-bound. Default is 25.
-      # MUST be 0 for hercules-ci
-      narinfo-cache-negative-ttl = 0
       http-connections = 128
       # Nix sees the node's core count, not the pod's CPU quota. Pin builders to
       # the per-task share of the CPU limit: limits.cpu / agent.concurrentTasks.
