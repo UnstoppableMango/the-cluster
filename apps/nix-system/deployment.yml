@@ -33,6 +33,13 @@ spec:
                   matchLabels:
                     app: ncps
                     tier: proxy
+      # The store is the ncps-cache bucket and the only writable volume is the
+      # nar-temp-dir emptyDir, so no file on disk predates this user.
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
       initContainers:
         # Migrations are forward-only and idempotent, so every pod runs them
         # and the ones that find nothing pending exit immediately. During a
@@ -52,6 +59,10 @@ spec:
               memory: 64Mi
             limits:
               memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
           env:
             - name: CACHE_DATABASE_URL
               valueFrom:
@@ -189,6 +200,11 @@ spec:
               memory: 256Mi
             limits:
               memory: 1Gi
+          # 8501 is unprivileged, so ncps needs no capabilities.
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
           volumeMounts:
             - name: nar-temp-dir
               mountPath: /nar-temp-dir
@@ -202,11 +218,12 @@ spec:
         - name: nar-temp-dir
           emptyDir:
             sizeLimit: 5Gi
-        # ncps runs as root, so 0400 is readable.
+        # Kubelet group-owns the key by fsGroup, which is how the non-root
+        # ncps user reads it.
         - name: signing-key
           secret:
             secretName: signing-key
-            defaultMode: 0400
+            defaultMode: 0440
         # The thecluster.lan CA, written to every namespace by the
         # trust-manager Bundle that infra-configs-trust-bundle reconciles.
         - name: ca
