@@ -121,3 +121,24 @@ spec:
     - name: infra-sealed-secrets
     # The agents' state volumeClaimTemplates bind through storageClassName: ssd-rbd.
     - name: infra-configs-rook-ceph-storage
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-claude
+  namespace: flux-system
+spec:
+  # Suspended until ghcr.io/unstoppablemango/dotfiles/container is published.
+  suspend: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/claude
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # secret-sealed.yml needs the SealedSecret CRD.
+    - name: infra-sealed-secrets
+    # pvc.yml binds through storageClassName: fast-rwo.
+    - name: infra-configs-rook-ceph-storage

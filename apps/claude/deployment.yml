@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: claude
+  namespace: claude
+spec:
+  replicas: 1
+  # One RWO home volume, and one registered remote-control environment.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: claude
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: claude
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: claude
+          image: ghcr.io/unstoppablemango/dotfiles/container:latest
+          command: ["claude", "remote-control"]
+          workingDir: /home/erik
+          # remote-control exits when stdin closes.
+          stdin: true
+          tty: true
+          env:
+            - name: CLAUDE_CODE_OAUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: claude
+                  key: oauth-token
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 8Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: home
+              mountPath: /home/erik
+      volumes:
+        - name: home
+          persistentVolumeClaim:
+            claimName: home
