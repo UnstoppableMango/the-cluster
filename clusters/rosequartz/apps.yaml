@@ -119,8 +119,6 @@ spec:
   dependsOn:
     # The per-account cluster join tokens need the SealedSecret CRD.
     - name: infra-sealed-secrets
-    # The agents' state volumeClaimTemplates bind through storageClassName: ssd-rbd.
-    - name: infra-configs-rook-ceph-storage
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
