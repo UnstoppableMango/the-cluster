@@ -7,10 +7,9 @@ metadata:
   namespace: hercules-ci
 spec:
   interval: 10m
-  # The agent pulls a large image and attaches a 200Gi RBD volume on a single
-  # pinned node, which takes over eight minutes whenever the pod moves. The 5m
-  # default fails the upgrade while the rollout is still healthy, and a failure
-  # with no retries stalls the release until someone resets it by hand.
+  # The agent pulls a large image and seeds an empty store on every start. The
+  # 5m default fails the upgrade while the rollout is still healthy, and a
+  # failure with no retries stalls the release until someone resets it by hand.
   timeout: 15m
   # Waiting on the StatefulSet makes a config fix unlandable. The agent exits on
   # a bad nix.conf, so the pod is already crashlooping when the fix arrives;
@@ -45,21 +44,17 @@ spec:
     # Nix auto-GC (min-free/max-free) must stay off. The agent holds no GC root
     # while a task is in flight, so a collection between evaluation and build
     # can delete derivations the task still needs. See
-    # hercules-ci/hercules-ci-agent#105. The store is bounded by the gc CronJob
-    # instead, which runs with the agent scaled to zero.
+    # hercules-ci/hercules-ci-agent#105. The state emptyDir's sizeLimit bounds
+    # the store instead: past it the kubelet evicts the pod and the StatefulSet
+    # recreates it with an empty store. See docs/hercules-ci-store.md.
     persistence:
-      storageClassName: ssd-rbd
-      size: 200Gi
-    # Mounted at /nix, where cachix expects the store. This is the chroot store's
-    # path, so the store already on the volume carries over. See
+      enabled: false
+    # Mounted at /nix, where cachix expects the store. See
     # docs/hercules-ci-store.md.
     nixStore:
       subPath: .local/share/nix/root/nix
-    # The state volume holds a Nix store, which reaches millions of files. The
-    # default fsGroup policy of Always recursively chowns every one of them on
-    # each pod start, which takes over an hour and blows the upgrade timeout,
-    # so the release is remediated back to its previous values before the agent
-    # ever starts. OnRootMismatch checks only the volume root and skips the walk.
+    # OnRootMismatch skips a recursive chown of the store when the kubelet sets
+    # up the volume.
     podSecurityContext:
       fsGroup: 1000
       fsGroupChangePolicy: OnRootMismatch
@@ -81,6 +76,28 @@ spec:
       requests:
         cpu: "8"
         memory: 16Gi
+        # Reserves the state emptyDir's sizeLimit on gaea's disk. No limit: a
+        # container ephemeral-storage limit also counts the emptyDirs.
+        ephemeral-storage: 100Gi
     # gaea is the only node that can serve this budget; the pi nodes cannot.
     nodeSelector:
       kubernetes.io/hostname: gaea
+  # The chart has no value for the state emptyDir's sizeLimit.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: StatefulSet
+              name: unstoppablemango-hercules-ci-agent
+            patch: |-
+              apiVersion: apps/v1
+              kind: StatefulSet
+              metadata:
+                name: unstoppablemango-hercules-ci-agent
+              spec:
+                template:
+                  spec:
+                    volumes:
+                      - name: state
+                        emptyDir:
+                          sizeLimit: 100Gi
