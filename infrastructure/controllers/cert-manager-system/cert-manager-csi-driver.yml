@@ -63,7 +63,10 @@ spec:
   postRenderers:
     - kustomize:
         patches:
-          - patch: |-
+          - target:
+              kind: DaemonSet
+              name: cert-manager-csi-driver
+            patch: |-
               apiVersion: apps/v1
               kind: DaemonSet
               metadata:
