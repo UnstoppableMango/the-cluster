@@ -1,53 +1,56 @@
 {
   callPackage,
   fetchurl,
-  kubectl-slice,
   kubelib,
+  lib,
   symlinkJoin,
   runCommand,
+  yq-go,
 }:
 let
   fluxSrc = callPackage ./src.nix { };
-  fromFlux = path: kubelib.fromYAML (builtins.readFile "${fluxSrc}/${path}") |> builtins.head;
-  fromControllers = path: fromFlux "infrastructure/controllers/${path}";
+
+  # kubelib.fromYAML parses in a derivation, which is import-from-derivation.
+  # These manifests hold each key once, so the first `key: value` line is it.
+  readField =
+    path: key:
+    let
+      lines = lib.splitString "\n" (builtins.readFile "${fluxSrc}/infrastructure/controllers/${path}");
+      matches = map (builtins.match "[[:space:]]*${key}: ([^[:space:]#]+).*") lines;
+    in
+    lib.findFirst (m: m != null) (throw "no ${key} in ${path}") matches |> builtins.head;
 
   downloadFluxHelmChart =
-    {
-      chartHash,
-      releaseNamespace,
-      repo,
-    }:
+    { chartHash, releaseNamespace }:
     let
-      rel = fromControllers "${releaseNamespace}/helm-release.yml";
+      field = file: readField "${releaseNamespace}/${file}.yml";
     in
     kubelib.downloadHelmChart {
       inherit chartHash;
-      repo = repo.spec.url;
-      chart = rel.spec.chart.spec.chart;
-      version = rel.spec.chart.spec.version;
+      repo = field "helm-repository" "url";
+      chart = field "helm-release" "chart";
+      version = field "helm-release" "version";
     };
 
   agones = kubelib.buildHelmChart {
     name = "agones";
     chart = downloadFluxHelmChart {
       releaseNamespace = "agones-system";
-      repo = fromControllers "agones-system/helm-repository.yml";
-      chartHash = "sha256-AAqQIoK4Tg2oU6vTYo6lveJonx+55exNUdBa8mSfd0A=";
+      chartHash = "sha256-zcrJiggq4fNjrvNMfD+eTsBffpUlOKMD/nc68drw2lE=";
     };
     includeCRDs = true;
   };
 
   cert-manager = fetchurl {
     url = "https://github.com/cert-manager/cert-manager/releases/download/v1.21.2/cert-manager.crds.yaml";
-    hash = "sha256-bam+tTJGlQN94x/qmYCZwURvbOToCfMrE6dolPTxafA=";
+    hash = "sha256-Ji/veEeEks01tzobInEGt4AvnAVjYdH1YdBLMtdRM38=";
   };
 
   cert-manager-helm = kubelib.buildHelmChart {
     name = "cert-manager";
     chart = downloadFluxHelmChart {
       releaseNamespace = "cert-manager-system";
-      repo = fromControllers "cert-manager-system/helm-repository.yml";
-      chartHash = "sha256-4V44v91c1wUBKDr7GbhahRWCjPtl1zCT9Bd0Hn5gCYY=";
+      chartHash = "sha256-AsbUc4Q9aVfTmENGPPmjOwC6V6v3MpTN1cKIl8csi10=";
     };
     includeCRDs = true;
     values = {
@@ -59,8 +62,7 @@ let
     name = "cloudnative-pg";
     chart = downloadFluxHelmChart {
       releaseNamespace = "cnpg-system";
-      repo = fromControllers "cnpg-system/helm-repository.yml";
-      chartHash = "sha256-72JIAEZ9bc2z/qYhugF5RkhP0O8wkAAUgduxxMbdZUY=";
+      chartHash = "sha256-kEFuvG5CsJ/iloIbBKcrDj1Ta0ZRxJ+KJ5LODMjbY8A=";
     };
     includeCRDs = true;
   };
@@ -69,11 +71,7 @@ let
     name: src:
     runCommand "${name}-crds" { } ''
       mkdir -p $out/crds
-      ${kubectl-slice}/bin/kubectl-slice \
-        --input-file ${src} \
-        --include-kind CustomResourceDefinition \
-        --skip-non-k8s \
-        --stdout >$out/crds/${name}.yml
+      ${lib.getExe yq-go} 'select(.kind == "CustomResourceDefinition")' ${src} >$out/crds/${name}.yml
     '';
 
   copyFile =

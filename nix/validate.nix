@@ -38,5 +38,7 @@ pkgs.writeShellApplication {
     kustomize
     yq-go
   ];
-  text = builtins.readFile "${patchedScript}";
+  text = ''
+    exec ${pkgs.runtimeShell} ${patchedScript} "$@"
+  '';
 }
