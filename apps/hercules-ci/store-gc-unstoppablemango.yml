@@ -50,6 +50,13 @@ spec:
                   nix_state=/state/.local/share/nix
                   threshold_kb=$((150 * 1024 * 1024))
 
+                  # Store directories are read-only, so rm needs write
+                  # permission back before it can unlink their entries.
+                  reclaim() {
+                    chmod -R u+w "$1"
+                    rm -rf "$1"
+                  }
+
                   # concurrencyPolicy: Forbid only serializes the Jobs this
                   # CronJob creates. The runbook's `kubectl create job --from`
                   # makes an independent one, which could otherwise scale the
@@ -76,7 +83,9 @@ spec:
                   # or its bytes count against this run's threshold. A failure
                   # here has to stop the run: carrying on would rename a second
                   # root aside and reclaim nothing.
-                  rm -rf "$nix_state"/.trash-*
+                  for t in "$nix_state"/.trash-*; do
+                    if [ -e "$t" ]; then reclaim "$t"; fi
+                  done
 
                   used_kb=$(df -P /state | awk 'NR == 2 { print $3 }')
                   if [ "$used_kb" -lt "$threshold_kb" ]; then
@@ -98,7 +107,7 @@ spec:
                   kubectl scale statefulset "$sts" --replicas=1
                   trap - EXIT
 
-                  rm -rf "$trash"
+                  reclaim "$trash"
               securityContext:
                 allowPrivilegeEscalation: false
                 capabilities:
@@ -111,7 +120,7 @@ spec:
                   cpu: 10m
                   memory: 32Mi
                 limits:
-                  memory: 128Mi
+                  memory: 512Mi
           volumes:
             - name: state
               persistentVolumeClaim:
