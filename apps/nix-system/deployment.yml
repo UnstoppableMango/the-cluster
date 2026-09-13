@@ -35,11 +35,13 @@ spec:
                     tier: proxy
       # The store is the ncps-cache bucket and the only writable volume is the
       # nar-temp-dir emptyDir, so no file on disk predates this user.
+      # 1000 is the ncps user in the image's /etc/passwd. ncps resolves its
+      # process owner at startup and exits on a uid the image does not define.
       securityContext:
         runAsNonRoot: true
-        runAsUser: 65532
-        runAsGroup: 65532
-        fsGroup: 65532
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       initContainers:
         # Migrations are forward-only and idempotent, so every pod runs them
         # and the ones that find nothing pending exit immediately. During a
