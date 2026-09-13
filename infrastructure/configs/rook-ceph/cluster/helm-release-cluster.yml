@@ -122,6 +122,11 @@ spec:
               - name: /dev/disk/by-id/ata-WDC_WD100EMAZ-00WJTA0_JEGVXK2N-part1
               - name: /dev/disk/by-id/ata-WDC_WD100EMAZ-00WJTA0_1EGG3UXZ-part1
               - name: /dev/disk/by-id/ata-WDC_WD100EMAZ-00WJTA0_2YK17ZXD-part1
+          # apollo excludes its boot disk, a Samsung SSD 970 EVO.
+          - name: apollo
+            devices:
+              - name: /dev/disk/by-id/nvme-Samsung_SSD_960_EVO_500GB_S3X4NB0K324732Y
+              - name: /dev/disk/by-id/nvme-Samsung_SSD_960_EVO_500GB_S3X4NB0K329644B
     ingress:
       dashboard:
         enabled: false
