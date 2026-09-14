@@ -74,49 +74,59 @@ spec:
         useAllDevices: false
         useAllNodes: false
         nodes:
-          # gaea: sds1 is a zfs_member and sdu is 0B, both excluded.
-          # sdt1 is excluded as well: the drive behind it reports uncorrected
-          # read errors that leave PGs inconsistent and hold the cluster in
-          # HEALTH_ERR, which stops rook reconciling the filesystems and pools.
-          # The drive to pull from gaea is /dev/sdt, a SEAGATE DKS2C-H2R0SS
-          # with serial 9WM6BY870000C146002X.
+          # Devices are listed by udev path because the sdX names on these
+          # hosts are reassigned across reboots.
+          #
+          # gaea excludes three drives:
+          # - SEAGATE DKS2C-H2R0SS 9WM6BY870000C146002X
+          #   (wwn-0x5000c50034622c9b) reports uncorrected read errors that
+          #   leave PGs inconsistent and hold the cluster in HEALTH_ERR, which
+          #   stops rook reconciling the filesystems and pools. It is the drive
+          #   to pull from gaea.
+          # - SEAGATE DKS2C-H2R0SS 9WM7JRGL0000913705M8 reports 0B.
+          # - WDC WD120EDBZ 5QG6HVLF is a zfs_member.
           - name: gaea
             devices:
-              - name: sda1
-              - name: sdb1
-              - name: sdc1
-              - name: sdd1
-              - name: sde1
-              - name: sdf1
-              - name: sdg1
-              - name: sdh1
-              - name: sdi1
-              - name: sdj1
-              - name: sdk1
-              - name: sdl1
-              - name: sdm1
-              - name: sdn1
-              - name: sdo1
-              - name: sdp1
-              - name: sdq1
-              - name: sdr1
-          # zeus: sda is the boot disk
+              - name: /dev/disk/by-id/ata-WDC_WD140EDGZ-11B1PA0_9MJ3HJZU-part1
+              - name: /dev/disk/by-id/ata-WDC_WD140EDGZ-11B1PA0_9MH07NGK-part1
+              - name: /dev/disk/by-id/ata-WDC_WD140EDGZ-11B1PA0_9MJ404TU-part1
+              - name: /dev/disk/by-id/ata-WDC_WD120EDBZ-11B1HA0_5QG6P5NF-part1
+              - name: /dev/disk/by-id/ata-WDC_WD140EDGZ-11B1PA0_9MJ3HKZU-part1
+              - name: /dev/disk/by-id/ata-WDC_WD140EDGZ-11B1PA0_9LK7MVXG-part1
+              - name: /dev/disk/by-id/ata-WDC_WD120EDBZ-11B1HA0_5QG81AEF-part1
+              - name: /dev/disk/by-id/ata-WDC_WD140EDGZ-11B1PA0_9MJ32XAT-part1
+              - name: /dev/disk/by-id/ata-WDC_WD120EDBZ-11B1HA0_5QG649DB-part1
+              - name: /dev/disk/by-id/ata-WDC_WD120EDBZ-11B1HA0_5QG6MW2F-part1
+              - name: /dev/disk/by-id/ata-WDC_WD140EDGZ-11B1PA0_9LK4R8PG-part1
+              - name: /dev/disk/by-id/ata-ST1000NM0033-9ZM173_Z1W42MHB-part1
+              - name: /dev/disk/by-id/ata-ST1000NM0033-9ZM173_Z1W42K98-part1
+              - name: /dev/disk/by-id/ata-WDC_WD140EDGZ-11B1PA0_9LK4P5UG-part1
+              - name: /dev/disk/by-id/ata-WDC_WD6002FFWX-68TZ4N0_K1JXV0SD-part1
+              - name: /dev/disk/by-id/ata-WDC_WD8001FFWX-68J1UN0_R6GYNKEY-part1
+              - name: /dev/disk/by-id/ata-WDC_WD10EZEX-08WN4A0_WD-WCC6Y5RH37JH-part1
+              - name: /dev/disk/by-id/ata-WDC_WD10EZEX-08WN4A0_WD-WCC6Y7ZAP2TP-part1
+          # zeus excludes its boot disk, a Samsung SSD 850 EVO.
           - name: zeus
             devices:
-              - name: sdb1
-              - name: sdc1
-              - name: sdd1
-              - name: sde1
-              - name: sdf1
-              - name: sdg1
-              - name: sdh1
-              - name: sdi1
-              - name: sdj1
-              - name: sdk1
-              - name: sdl1
-              - name: sdm1
-              - name: sdn1
-              - name: sdo1
+              - name: /dev/disk/by-id/ata-WDC_WDS500G2B0A-00SM50_200403802695-part1
+              - name: /dev/disk/by-id/ata-WDC_WDS500G2B0A-00SM50_200403802069-part1
+              - name: /dev/disk/by-id/ata-WDC_WDS500G2B0A-00SM50_20039C803027-part1
+              - name: /dev/disk/by-id/ata-WDC_WDS500G2B0A-00SM50_20037A804298-part1
+              - name: /dev/disk/by-id/ata-WDC_WDS500G2B0A-00SM50_200403802586-part1
+              - name: /dev/disk/by-id/ata-WDC_WDS500G2B0A-00SM50_20039C803025-part1
+              - name: /dev/disk/by-id/ata-WDC_WDS500G2B0A-00SM50_20036F805874-part1
+              - name: /dev/disk/by-id/ata-WDC_WDS500G2B0A-00SM50_20037A804297-part1
+              - name: /dev/disk/by-id/ata-WDC_WD100EMAZ-00WJTA0_JEGW1P6N-part1
+              - name: /dev/disk/by-id/ata-WDC_WD100EMAZ-00WJTA0_JEGUJN4N-part1
+              - name: /dev/disk/by-id/ata-WDC_WD100EMAZ-00WJTA0_JEGW15JN-part1
+              - name: /dev/disk/by-id/ata-WDC_WD100EMAZ-00WJTA0_JEGVXK2N-part1
+              - name: /dev/disk/by-id/ata-WDC_WD100EMAZ-00WJTA0_1EGG3UXZ-part1
+              - name: /dev/disk/by-id/ata-WDC_WD100EMAZ-00WJTA0_2YK17ZXD-part1
+          # apollo excludes its boot disk, a Samsung SSD 970 EVO.
+          - name: apollo
+            devices:
+              - name: /dev/disk/by-id/nvme-Samsung_SSD_960_EVO_500GB_S3X4NB0K324732Y
+              - name: /dev/disk/by-id/nvme-Samsung_SSD_960_EVO_500GB_S3X4NB0K329644B
     ingress:
       dashboard:
         enabled: false
