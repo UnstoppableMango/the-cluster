@@ -5,6 +5,8 @@ metadata:
   namespace: slackerworld
   labels:
     app.kubernetes.io/name: slackerworld
+  annotations:
+    metallb.io/loadBalancerIPs: 10.0.69.204
 spec:
   type: LoadBalancer
   selector:
