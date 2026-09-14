@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: slackerworld
   namespace: slackerworld
@@ -8,6 +8,7 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: slackerworld
+  serviceName: slackerworld
   template:
     metadata:
       labels:
@@ -62,17 +63,24 @@ spec:
             - name: rest
               containerPort: 8212
               protocol: UDP
+          # No CPU limit: throttling drops server ticks, and
+          # WORKER_THREADS_SERVER already bounds the thread count.
           resources:
             requests:
               cpu: "4"
               memory: 4Gi
             limits:
-              cpu: "8"
               memory: 16Gi
           volumeMounts:
             - name: data
               mountPath: /palworld
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: slackerworld
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        storageClassName: unsafe-rbd
+        accessModes:
+          - ReadWriteOncePod
+        resources:
+          requests:
+            storage: 24Gi

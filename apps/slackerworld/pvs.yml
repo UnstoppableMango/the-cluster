@@ -8,14 +8,14 @@ spec:
   capacity:
     storage: 24Gi
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteOncePod
   volumeMode: Filesystem
   persistentVolumeReclaimPolicy: Retain
   storageClassName: unsafe-rbd
   claimRef:
     apiVersion: v1
     kind: PersistentVolumeClaim
-    name: slackerworld
+    name: data-slackerworld-0
     namespace: slackerworld
   csi:
     driver: rook-ceph.rbd.csi.ceph.com
