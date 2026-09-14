@@ -23,4 +23,4 @@ spec:
     - name: rest
       port: 8212
       targetPort: 8212
-      protocol: UDP
+      protocol: TCP

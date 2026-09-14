@@ -62,7 +62,7 @@ spec:
               protocol: UDP
             - name: rest
               containerPort: 8212
-              protocol: UDP
+              protocol: TCP
           # No CPU limit: throttling drops server ticks, and
           # WORKER_THREADS_SERVER already bounds the thread count.
           resources:

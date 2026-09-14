@@ -25,7 +25,7 @@ spec:
               protocol: UDP
             - name: rest
               containerPort: 8212
-              protocol: UDP
+              protocol: TCP
           env:
             - name: PUID
               value: "1000"

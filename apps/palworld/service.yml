@@ -20,4 +20,4 @@ spec:
       protocol: UDP
     - name: rest
       port: 8212
-      protocol: UDP
+      protocol: TCP
