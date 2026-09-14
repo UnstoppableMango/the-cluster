@@ -1,0 +1,17 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: prometheus-operator-crds
+  namespace: monitoring
+spec:
+  interval: 10m
+  releaseName: prometheus-operator-crds
+  targetNamespace: monitoring
+  chart:
+    spec:
+      chart: prometheus-operator-crds
+      # Matches the operator version kube-prometheus-stack ships.
+      version: 32.0.0
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community

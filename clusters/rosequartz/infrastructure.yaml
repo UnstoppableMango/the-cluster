@@ -342,6 +342,20 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: infra-monitoring-crds
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/controllers/monitoring-system/prometheus-operator-crds
+  interval: 10m
+  prune: false
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: infra-monitoring
   namespace: flux-system
 spec:
@@ -353,5 +367,6 @@ spec:
   prune: true
   wait: true
   dependsOn:
+    - name: infra-monitoring-crds
     # Grafana is published through an HTTPRoute.
     - name: infra-gateway-api
