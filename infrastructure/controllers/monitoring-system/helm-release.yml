@@ -70,6 +70,15 @@ spec:
           memory: 64Mi
         limits:
           memory: 256Mi
+      # The operator injects this sidecar into the Prometheus and Alertmanager
+      # pods; it has no key under prometheus or alertmanager.
+      prometheusConfigReloader:
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            memory: 64Mi
       admissionWebhooks:
         patch:
           resources:
@@ -78,8 +87,23 @@ spec:
               memory: 32Mi
             limits:
               memory: 64Mi
+    # etcd, the scheduler, the controller-manager, and kube-proxy run as NixOS
+    # services rather than pods, so these targets would only ever be down.
+    kubeEtcd:
+      enabled: false
+    kubeControllerManager:
+      enabled: false
+    kubeScheduler:
+      enabled: false
+    kubeProxy:
+      enabled: false
     prometheus:
       prometheusSpec:
+        # Select monitors and rules from every namespace, not only those
+        # labelled with this release.
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
+        ruleSelectorNilUsesHelmValues: false
         retention: 15d
         resources:
           requests:
