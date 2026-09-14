@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - tunnel.yml
   - cloudflared.yml
+  - dns-record.yml
