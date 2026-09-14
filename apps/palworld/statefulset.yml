@@ -35,8 +35,10 @@ spec:
               value: "8211"
             - name: PLAYERS
               value: "16"
-            - name: MULTITHREADING
+            - name: ENABLE_PERF_THREADING_ARGS
               value: "true"
+            - name: WORKER_THREADS_SERVER
+              value: "8"
             - name: REST_API_ENABLED
               value: "true" # Is this different than RCON?
             - name: RCON_ENABLED
