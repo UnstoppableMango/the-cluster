@@ -10,14 +10,11 @@
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
 
-    mynix = {
-      url = "github:UnstoppableMango/nix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-        treefmt-nix.follows = "treefmt-nix";
-        systems.follows = "systems";
-      };
+    mangopkgs = {
+      url = "github:unmango/pkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.systems.follows = "systems";
     };
   };
 
@@ -28,7 +25,6 @@
 
       imports = with inputs; [
         systems.flakeModule
-
         treefmt-nix.flakeModule
         ./nix
       ];
@@ -39,7 +35,7 @@
           _module.args.pkgs = import inputs.nixpkgs {
             inherit system;
             overlays = with inputs; [
-              mynix.overlays.default
+              mangopkgs.overlays.default
             ];
           };
 
