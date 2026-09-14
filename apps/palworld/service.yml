@@ -5,6 +5,8 @@ metadata:
   namespace: palworld
   labels:
     app.kubernetes.io/name: palworld
+  annotations:
+    metallb.io/loadBalancerIPs: 10.0.69.203
 spec:
   selector:
     app.kubernetes.io/name: palworld

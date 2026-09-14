@@ -142,3 +142,24 @@ spec:
     - name: infra-sealed-secrets
     # pvc.yml binds through storageClassName: fast-rwo.
     - name: infra-configs-rook-ceph-storage
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-palworld
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/palworld
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # secret-sealed.yml needs the SealedSecret CRD.
+    - name: infra-sealed-secrets
+    # service.yml is a LoadBalancer pinned to an address in the MetalLB pool.
+    - name: infra-configs-metallb
+    # pvs.yml mounts through unsafe-rbd and the rook-csi secrets in rook-ceph.
+    - name: infra-configs-rook-ceph-storage
