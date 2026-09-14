@@ -67,12 +67,13 @@ spec:
                   key: adminPassword
             - name: BASE_CAMP_WORKER_MAX_NUM
               value: "20"
+          # No CPU limit: throttling drops server ticks, and
+          # WORKER_THREADS_SERVER bounds the thread count.
           resources:
             requests:
               cpu: "4"
               memory: 4Gi
             limits:
-              cpu: "8"
               memory: 16Gi
           volumeMounts:
             - name: data
