@@ -14,3 +14,20 @@ spec:
       content: 35910fbf-dfeb-4af7-b491-d53c20df9f09.cfargotunnel.com
       proxied: true
       ttl: 1
+---
+apiVersion: cloudflare.unmango.dev/v1alpha1
+kind: DnsRecord
+metadata:
+  name: prom-thecluster-io
+  namespace: cloudflare-system
+spec:
+  # thecluster.io
+  zoneId: 22f1d42ba0fbe4f924905e1c6597055c
+  record:
+    cnameRecord:
+      type: CNAME
+      name: prom.thecluster.io
+      # status.id of the thecluster-io CloudflareTunnel in tunnel.yml
+      content: 35910fbf-dfeb-4af7-b491-d53c20df9f09.cfargotunnel.com
+      proxied: true
+      ttl: 1
