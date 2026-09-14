@@ -245,8 +245,8 @@
 				"rook-ceph",
 				"rook-ceph-cluster"
 			],
-			"description": "Rook 1.18 dropped Ceph Reef. Delete this rule once the daemons run Squid; separateMultipleMinor above then paces the rest.",
-			"allowedVersions": "<1.18"
+			"description": "Rook 1.19 dropped Ceph Reef (its minimum is 19.2.0); 1.18 still supports it. Delete this rule once the daemons run Squid; separateMultipleMinor above then paces the rest.",
+			"allowedVersions": "<1.19"
 		},
 		{
 			"matchPackageNames": [
