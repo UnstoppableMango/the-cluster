@@ -173,6 +173,14 @@
 			"groupName": "metrics-server"
 		},
 		{
+			"description": "prometheus-operator-crds must carry the CRDs for the operator version kube-prometheus-stack ships.",
+			"matchPackageNames": [
+				"kube-prometheus-stack",
+				"prometheus-operator-crds"
+			],
+			"groupName": "kube-prometheus-stack"
+		},
+		{
 			"matchPackageNames": [
 				"nats"
 			],

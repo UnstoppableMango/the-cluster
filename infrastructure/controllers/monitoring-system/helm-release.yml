@@ -7,10 +7,13 @@ spec:
   interval: 10m
   releaseName: kube-prometheus-stack
   targetNamespace: monitoring
+  # The CRDs come from the prometheus-operator-crds release in prometheus-operator-crds/, so that
+  # ServiceMonitors elsewhere can depend on them without waiting on this
+  # release and its Ceph-backed volumes.
   install:
-    crds: Create
+    crds: Skip
   upgrade:
-    crds: CreateReplace
+    crds: Skip
   chart:
     spec:
       chart: kube-prometheus-stack
@@ -19,6 +22,8 @@ spec:
         kind: HelmRepository
         name: prometheus-community
   values:
+    crds:
+      enabled: false
     # Only prometheus carries the chart's sizing; every other component in the
     # stack defaults to none. No CPU limits: a scrape or an evaluation cycle
     # that gets throttled shows up as gaps in the series rather than as load.
@@ -70,6 +75,15 @@ spec:
           memory: 64Mi
         limits:
           memory: 256Mi
+      # The operator injects this sidecar into the Prometheus and Alertmanager
+      # pods; it has no key under prometheus or alertmanager.
+      prometheusConfigReloader:
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            memory: 64Mi
       admissionWebhooks:
         patch:
           resources:
@@ -78,8 +92,23 @@ spec:
               memory: 32Mi
             limits:
               memory: 64Mi
+    # etcd, the scheduler, the controller-manager, and kube-proxy run as NixOS
+    # services rather than pods, so these targets would only ever be down.
+    kubeEtcd:
+      enabled: false
+    kubeControllerManager:
+      enabled: false
+    kubeScheduler:
+      enabled: false
+    kubeProxy:
+      enabled: false
     prometheus:
       prometheusSpec:
+        # Select monitors and rules from every namespace, not only those
+        # labelled with this release.
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
+        ruleSelectorNilUsesHelmValues: false
         retention: 15d
         resources:
           requests:
