@@ -157,6 +157,10 @@ spec:
           resource:
             requests: {memory: 32Mi, cpu: 10m}
             limits: {memory: 128Mi}
+    # Lets the operator create the mgr and exporter ServiceMonitors that
+    # monitoring.enabled on the pinkdiamond release asks for.
+    monitoring:
+      enabled: true
     # Disabling for memory reasons on the smaller nodes
     enableDiscoveryDaemon: false
     env: {}
