@@ -27,6 +27,8 @@ spec:
           # path when noTlsVerify is set, so the empty string is inert. Drop this
           # line once unmango/cloudflare-operator#198 ships in a pinned tag.
           caPool: ""
+      - hostname: prom.thecluster.io
+        service: http://kube-prometheus-stack-grafana.monitoring.svc:80
       # Cloudflare rejects a remote config whose last rule is not a catch-all.
       # The CRD requires hostname, and cloudflared treats "*" as matching all.
       - hostname: "*"
