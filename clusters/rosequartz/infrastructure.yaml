@@ -116,6 +116,8 @@ spec:
   dependsOn:
     - name: infra-rook-ceph
     - name: infra-sealed-secrets
+    # The pinkdiamond release renders a PrometheusRule.
+    - name: infra-monitoring-crds
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

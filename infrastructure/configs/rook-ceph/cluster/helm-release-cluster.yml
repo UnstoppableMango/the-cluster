@@ -29,6 +29,9 @@ spec:
   values:
     clusterName: pinkdiamond
     operatorNamespace: rook-ceph
+    monitoring:
+      enabled: true
+      createPrometheusRules: true
     cephBlockPools: []
     cephFileSystems: []
     cephObjectStores: []
