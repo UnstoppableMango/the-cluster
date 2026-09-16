@@ -258,6 +258,17 @@
 		},
 		{
 			"matchPackageNames": [
+				"quay.io/ceph/ceph"
+			],
+			"matchUpdateTypes": [
+				"minor",
+				"patch"
+			],
+			"description": "The daemons are headed from Reef to Squid, and a Reef patch in the rook-ceph group PR edits the same image line as the major PR. Delete this rule once the daemons run Squid.",
+			"enabled": false
+		},
+		{
+			"matchPackageNames": [
 				"plex-media-server",
 				"plexinc/pms-docker"
 			],
