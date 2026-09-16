@@ -126,8 +126,8 @@ spec:
             - --cache-max-size=180G
             - --cache-lru-schedule=@every 1h
             # /metrics 404s without this, so there is no hit/miss ratio and no
-            # upstream request count to tune against. No ServiceMonitor selects
-            # it, so Prometheus does not scrape it.
+            # upstream request count to tune against. service-monitor.yml
+            # scrapes it.
             - --prometheus-enabled
             # A narinfo miss is fanned out to every healthy upstream in
             # parallel and answered by the first hit, so a stalled upstream

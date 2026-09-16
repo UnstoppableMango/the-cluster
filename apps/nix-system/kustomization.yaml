@@ -9,4 +9,5 @@ resources:
   - postgres-cluster.yml
   - redis.yml
   - service.yml
+  - service-monitor.yml
   - signing-key-sealed.yml

@@ -24,6 +24,8 @@ spec:
     - name: infra-sealed-secrets
     # ingress.yml is an HTTPRoute against the nginx Gateway in nginx-gateway.
     - name: infra-nginx-gateway
+    # service-monitor.yml needs the ServiceMonitor CRD.
+    - name: infra-monitoring-crds
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
