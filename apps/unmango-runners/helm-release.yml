@@ -112,6 +112,11 @@ spec:
               value: unix:///var/run/docker.sock
             - name: RUNNER_WAIT_FOR_DOCKER_IN_SECONDS
               value: "120"
+            # actions/setup-dotnet installs to /usr/share/dotnet unless this is
+            # set, and the runner user cannot write there. The image has no
+            # sudo, so point the install at a path the runner owns.
+            - name: DOTNET_INSTALL_DIR
+              value: /home/runner/.dotnet
             # ncps binary cache, reachable in-cluster only. The image's nix is
             # daemonless, so there is no daemon to gate these against a
             # trusted-users list and every setting here applies as written.
