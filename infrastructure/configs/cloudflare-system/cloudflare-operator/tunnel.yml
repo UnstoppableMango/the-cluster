@@ -29,6 +29,8 @@ spec:
           caPool: ""
       - hostname: prom.thecluster.io
         service: http://kube-prometheus-stack-grafana.monitoring.svc:80
+      - hostname: dex.thecluster.io
+        service: http://dex.dex.svc:5556
       # Cloudflare rejects a remote config whose last rule is not a catch-all.
       # The CRD requires hostname, and cloudflared treats "*" as matching all.
       - hostname: "*"

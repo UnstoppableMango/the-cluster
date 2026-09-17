@@ -186,3 +186,20 @@ spec:
     - name: infra-configs-metallb
     # pvs.yml mounts through unsafe-rbd and the rook-csi secrets in rook-ceph.
     - name: infra-configs-rook-ceph-storage
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-dex
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/dex
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # dex-credentials-sealed.yml needs the SealedSecret CRD.
+    - name: infra-sealed-secrets
