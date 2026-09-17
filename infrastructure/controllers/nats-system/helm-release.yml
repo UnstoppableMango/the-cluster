@@ -31,7 +31,7 @@ spec:
     container:
       image:
         repository: nats # default
-        tag: 2.14.6-linux
+        tag: 2.14.7-linux
       merge:
         resources:
           requests:
