@@ -53,6 +53,16 @@ spec:
       capabilities:
         drop:
           - ALL
+    # The entrypoint renders the config template into /tmp before starting
+    # dex, and the root filesystem is read-only.
+    volumes:
+      - name: tmp
+        emptyDir:
+          medium: Memory
+          sizeLimit: 16Mi
+    volumeMounts:
+      - name: tmp
+        mountPath: /tmp
     envFrom:
       - secretRef:
           name: dex-credentials
