@@ -21,7 +21,7 @@ spec:
       replicas: 2
       image:
         repository: ghcr.io/nginx/nginx-gateway-fabric
-        tag: 2.7.0
+        tag: 2.7.2
       gwAPIExperimentalFeatures:
         enable: true
       productTelemetry:
@@ -40,7 +40,7 @@ spec:
       kind: daemonSet
       image:
         repository: ghcr.io/nginx/nginx-gateway-fabric/nginx
-        tag: 2.7.0
+        tag: 2.7.2
       service:
         externalTrafficPolicy: Cluster # https://metallb.io/usage/#ip-address-sharing
       # Measured at 27m and 150Mi serving the cluster's ingress. No CPU limit:
