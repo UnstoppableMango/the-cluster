@@ -106,3 +106,8 @@ spec:
           redirectURIs:
             - http://localhost:8000
             - http://localhost:18000
+        - id: grafana
+          name: Grafana
+          secret: $GRAFANA_CLIENT_SECRET
+          redirectURIs:
+            - https://prom.thecluster.io/login/generic_oauth

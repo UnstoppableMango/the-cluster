@@ -372,3 +372,5 @@ spec:
     - name: infra-monitoring-crds
     # Grafana is published through an HTTPRoute.
     - name: infra-gateway-api
+    # grafana-oidc-sealed.yml needs the SealedSecret CRD.
+    - name: infra-sealed-secrets
