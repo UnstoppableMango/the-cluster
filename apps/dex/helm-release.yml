@@ -41,6 +41,10 @@ spec:
             app.kubernetes.io/instance: dex
     podSecurityContext:
       runAsNonRoot: true
+      # The image sets USER dex by name, and the kubelet can only verify
+      # runAsNonRoot against a numeric uid. 1001 is dex in the image's passwd.
+      runAsUser: 1001
+      runAsGroup: 1001
       seccompProfile:
         type: RuntimeDefault
     securityContext:
