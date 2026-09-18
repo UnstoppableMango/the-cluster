@@ -27,6 +27,13 @@ spec:
     csi:
       nfs:
         enabled: false
+      # The controller plugins request roughly a gigabyte each and land wherever
+      # the scheduler puts them, which on a 3.6Gi node that already holds a mon
+      # leaves no room for the per-node daemonsets. Pin them to the three hosts
+      # that carry OSDs, the only ones with headroom to spare. The node plugins
+      # are deliberately left unconstrained: every node that mounts a volume
+      # needs one.
+      provisionerNodeAffinity: kubernetes.io/hostname=gaea,zeus,apollo
       # NixOS keeps kernel modules under the booted system's store path, so the
       # plugins' default /lib/modules hostPath lands on nothing and modprobe
       # fails. Repointing the lib-modules volume replaces the default by name,
