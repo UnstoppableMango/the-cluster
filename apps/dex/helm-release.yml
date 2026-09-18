@@ -98,7 +98,7 @@ spec:
             # App needs "Members: read" and "Email addresses: read", and has to be
             # installed on the org.
             orgs:
-              - name: UnstoppableMango
+              - name: unmango
       staticClients:
         - id: kubernetes
           name: Kubernetes
