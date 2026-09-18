@@ -12,6 +12,12 @@ spec:
         name: flux-system
         namespace: flux-system
   interval: 10m
+  # The chart renders a HelmRelease per scale set, and Helm waits on all of
+  # them. A rollout that restarts every child runs well past the 5m default.
+  install:
+    timeout: 30m
+  upgrade:
+    timeout: 30m
   values:
     chartRef:
       name: gha-runner-scale-set
