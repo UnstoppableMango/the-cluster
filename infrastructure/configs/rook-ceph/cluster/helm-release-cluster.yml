@@ -36,10 +36,13 @@ spec:
     cephFileSystems: []
     cephObjectStores: []
     cephClusterSpec:
-      # The 1.17 chart has no top-level cephImage key, so the image belongs
+      # The 1.18 chart has no top-level cephImage key, so the image belongs
       # here. It moves to cephImage on the bump to 1.19 or later.
+      #
+      # Squid stops at v19.2.5: Rook 1.18 and older reject v19.2.6 and newer.
+      # https://github.com/rook/rook/issues/18203
       cephVersion:
-        image: quay.io/ceph/ceph:v18.2.4
+        image: quay.io/ceph/ceph:v19.2.5
       dataDirHostPath: /var/lib/rook # default value
       dashboard:
         enabled: true
