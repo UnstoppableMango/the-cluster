@@ -269,6 +269,13 @@
 		},
 		{
 			"matchPackageNames": [
+				"quay.io/ceph/ceph"
+			],
+			"description": "Rook 1.17 and 1.18 reject Ceph v19.2.6 and newer (rook#18203), so Squid stops at v19.2.5 until the operator is on 1.19. Delete this rule with the <1.19 rule above.",
+			"allowedVersions": "<19.2.6"
+		},
+		{
+			"matchPackageNames": [
 				"plex-media-server",
 				"plexinc/pms-docker"
 			],
