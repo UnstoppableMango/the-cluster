@@ -24,6 +24,18 @@ spec:
       namespace: arc-system
     defaults:
       githubConfigSecret: thecluster-bot
+      # Unset, a scale set starts a runner per queued job. A burst of workflow
+      # runs put 39 of them on one node, and each one mounts an emptyDir at
+      # /var/run plus two CSI volumes. runc resolves a mount target with
+      # openat2, which returns EAGAIN while the mount table is changing and is
+      # given a 2ms retry deadline, so dind failed to start at all:
+      #
+      #   securejoin.OpenInRoot /var/run: resource temporarily unavailable
+      #
+      # Every pod then sat in CrashLoopBackOff without registering a runner, so
+      # the queue never drained. Cap the fan-out; a scale set that needs more
+      # can raise it on its own entry.
+      maxRunners: 6
       # The dind wiring below is spelled out rather than left to
       # `containerMode: dind`. That mode renders its own init-dind-externals and
       # dind containers and drops any the values supply, so it is the one shape
@@ -98,6 +110,12 @@ spec:
                 initialDelaySeconds: 0
                 failureThreshold: 24
                 periodSeconds: 5
+                # `docker info` round-trips to a dockerd that is still starting,
+                # on a node running every other runner's dind at the same time.
+                # The 1s default counts that as a probe failure, and enough of
+                # them restart the container and add to the load that caused the
+                # timeout. 5s is the whole period between probes.
+                timeoutSeconds: 5
               resources:
                 requests:
                   cpu: 100m
