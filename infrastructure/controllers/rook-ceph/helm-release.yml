@@ -10,9 +10,9 @@ spec:
   chart:
     spec:
       chart: rook-ceph
-      # Rook 1.18 dropped Ceph Reef; 1.17 is the last release that supports the
-      # Reef daemons this cluster runs. Raise this only in lockstep with the
-      # Ceph version, one Rook minor at a time.
+      # Rook 1.19 dropped Ceph Reef; 1.18 is the last release that supports the
+      # Reef daemons this cluster runs, and it caps Squid at v19.2.5. Raise this
+      # only in lockstep with the Ceph version, one Rook minor at a time.
       version: v1.18.11
       sourceRef:
         kind: HelmRepository
