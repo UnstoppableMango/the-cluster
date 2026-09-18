@@ -43,7 +43,7 @@ spec:
           token_url: https://dex.thecluster.io/token
           api_url: https://dex.thecluster.io/userinfo
           use_pkce: true
-          # Dex refuses anyone outside the UnstoppableMango org, so every
+          # Dex refuses anyone outside the unmango org, so every
           # account that reaches Grafana is an org member.
           role_attribute_path: "'Admin'"
       envValueFrom:
