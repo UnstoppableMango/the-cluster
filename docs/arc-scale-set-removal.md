@@ -120,6 +120,10 @@ so stop job acquisition and wait for the queue to empty first.
    which is the state this procedure exists to avoid, so wait on the deletion instead.
    If the wait times out, go to the recovery section below before resuming the parent.
 
+Removal reclaims nothing on the nodes.
+The scale set's runners shared `/var/lib/arc/nix` with every other scale set on their node, and that store stays as it is.
+`docs/arc-nix-store.md` has the reset procedure for a node, which is only worth running when the store itself is the problem.
+
 ## Recovering from a stuck deletion
 
 Check the namespace phase first, because the two cases have different exits:
