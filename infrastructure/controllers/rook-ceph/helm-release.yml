@@ -61,13 +61,22 @@ spec:
         - name: host-nix
           mountPath: /nix
           readOnly: true
-      # The operator matches these entries to CSI containers by name, and a
-      # container the list does not name runs unsized. The chart's defaults omit
-      # log-collector entirely, which is a logrotate loop measuring 0, and give
-      # the provisioner's csi-rbdplugin memory but no CPU. These four lists are
-      # the chart defaults with those gaps filled; re-diff them against
-      # `helm show values rook-ceph` when bumping the chart, since a list
-      # replaces the default wholesale rather than merging into it.
+      # Rook 1.18 hands CSI to the ceph-csi-operator, so the chart no longer
+      # renders a deployment from these lists. It copies them into the Driver
+      # CRs' controllerPlugin.resources and nodePlugin.resources, translating
+      # container names to CR keys: csi-rbdplugin and csi-cephfsplugin to
+      # plugin, driver-registrar to registrar, csi-omap-generator to
+      # omapGenerator. A name with no corresponding key sizes nothing, so each
+      # list holds exactly the containers the operator deploys. A list also
+      # replaces the chart default wholesale rather than merging into it.
+      #
+      # On a chart bump, check the live container set rather than
+      # `helm show values rook-ceph`, and re-check at 1.19:
+      #
+      #   kubectl -n rook-ceph get pods \
+      #     -o custom-columns='NAME:.metadata.name,C:.spec.containers[*].name' \
+      #     | grep csi
+      #   kubectl -n rook-ceph get drivers.csi.ceph.io -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{.spec.controllerPlugin.resources}{"\n"}{.spec.nodePlugin.resources}{"\n"}{end}'
       csiRBDProvisionerResource: |
         - name: csi-provisioner
           resource:
@@ -93,14 +102,6 @@ spec:
           resource:
             requests: {memory: 512Mi, cpu: 250m}
             limits: {memory: 1Gi}
-        - name: liveness-prometheus
-          resource:
-            requests: {memory: 128Mi, cpu: 50m}
-            limits: {memory: 256Mi}
-        - name: log-collector
-          resource:
-            requests: {memory: 32Mi, cpu: 10m}
-            limits: {memory: 128Mi}
       csiRBDPluginResource: |
         - name: driver-registrar
           resource:
@@ -110,14 +111,6 @@ spec:
           resource:
             requests: {memory: 512Mi, cpu: 250m}
             limits: {memory: 1Gi}
-        - name: liveness-prometheus
-          resource:
-            requests: {memory: 128Mi, cpu: 50m}
-            limits: {memory: 256Mi}
-        - name: log-collector
-          resource:
-            requests: {memory: 32Mi, cpu: 10m}
-            limits: {memory: 128Mi}
       csiCephFSProvisionerResource: |
         - name: csi-provisioner
           resource:
@@ -139,14 +132,6 @@ spec:
           resource:
             requests: {memory: 512Mi, cpu: 250m}
             limits: {memory: 1Gi}
-        - name: liveness-prometheus
-          resource:
-            requests: {memory: 128Mi, cpu: 50m}
-            limits: {memory: 256Mi}
-        - name: log-collector
-          resource:
-            requests: {memory: 32Mi, cpu: 10m}
-            limits: {memory: 128Mi}
       csiCephFSPluginResource: |
         - name: driver-registrar
           resource:
@@ -156,14 +141,6 @@ spec:
           resource:
             requests: {memory: 512Mi, cpu: 250m}
             limits: {memory: 1Gi}
-        - name: liveness-prometheus
-          resource:
-            requests: {memory: 128Mi, cpu: 50m}
-            limits: {memory: 256Mi}
-        - name: log-collector
-          resource:
-            requests: {memory: 32Mi, cpu: 10m}
-            limits: {memory: 128Mi}
     # Lets the operator create the mgr and exporter ServiceMonitors that
     # monitoring.enabled on the pinkdiamond release asks for.
     monitoring:
