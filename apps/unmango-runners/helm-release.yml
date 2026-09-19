@@ -176,9 +176,9 @@ spec:
         # comes up 2775 root:fsGroup, which init-nix then narrows to 0755
         # runner:runner.
         #
-        # 10Gi against a measured peak of 4.2Gi and 6537 store paths on a busy
-        # runner; an idle one holds 20K. Matches apps/arc-runners, which shares
-        # these nodes.
+        # 20Gi against a measured 8.7Gi for one full realisation of a devShell;
+        # an idle runner holds 20K. Matches apps/arc-runners, which shares these
+        # nodes.
         - name: nix
           ephemeral:
             volumeClaimTemplate:
@@ -187,4 +187,4 @@ spec:
                 storageClassName: fast-rwo
                 resources:
                   requests:
-                    storage: 10Gi
+                    storage: 20Gi
