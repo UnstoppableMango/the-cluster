@@ -5,6 +5,15 @@ metadata:
   namespace: keycloak
 spec:
   instances: 2
+  # CNPG applies nothing by default, so without this the postgres pods run
+  # BestEffort. No CPU limit: throttling the primary stalls both Keycloak
+  # replicas behind it.
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 512Mi
   storage:
     storageClass: ssd-rbd
     size: 10Gi

@@ -184,3 +184,34 @@ spec:
   dependsOn:
     # dex-credentials-sealed.yml needs the SealedSecret CRD.
     - name: infra-sealed-secrets
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-keycloak
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/keycloak
+  interval: 10m
+  prune: true
+  wait: true
+  # auth.thecluster.io reaches this through a rule on the thecluster-io
+  # CloudflareTunnel, not an Ingress here. That is deliberately not a dependsOn
+  # edge: infra-configs-cloudflare-operator does not wait, and the tunnel rule
+  # applies whether or not Keycloak has reconciled yet.
+  dependsOn:
+    # keycloak-sealed.yml needs the SealedSecret CRD.
+    - name: infra-sealed-secrets
+    # certificate.yml is namespace-local Issuer and Certificate objects. The
+    # issuers are scoped to this namespace, so the ClusterIssuers that
+    # infra-configs-cert-manager ships are not in the path.
+    - name: infra-cert-manager
+    # postgres-cluster.yml is a postgresql.cnpg.io Cluster.
+    - name: infra-cnpg-system
+    # That Cluster provisions through storageClassName: ssd-rbd.
+    - name: infra-configs-rook-ceph-storage
+    # httproute.yml is an HTTPRoute against the nginx Gateway in nginx-gateway.
+    - name: infra-nginx-gateway

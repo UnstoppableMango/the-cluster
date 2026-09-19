@@ -31,6 +31,11 @@ spec:
         service: http://kube-prometheus-stack-grafana.monitoring.svc:80
       - hostname: dex.thecluster.io
         service: http://dex.dex.svc:5556
+      # Plain HTTP to the origin: the keycloakx release runs with
+      # proxy.mode xforwarded, so Keycloak takes the scheme from the
+      # X-Forwarded-Proto the tunnel sets rather than from the connection.
+      - hostname: auth.thecluster.io
+        service: http://keycloak-http.keycloak.svc:80
       # Cloudflare rejects a remote config whose last rule is not a catch-all.
       # The CRD requires hostname, and cloudflared treats "*" as matching all.
       - hostname: "*"
