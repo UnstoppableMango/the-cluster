@@ -1,0 +1,23 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres
+  namespace: keycloak
+spec:
+  instances: 2
+  storage:
+    storageClass: ssd-rbd
+    size: 10Gi
+  certificates:
+    serverCASecret: postgres-ca
+    serverTLSSecret: postgres-server
+    clientCASecret: postgres-ca
+    replicationTLSSecret: postgres-replication
+  postgresql:
+    pg_hba:
+      # Keycloak authenticates with a client certificate whose CN is its role name
+      - hostssl keycloak keycloak all cert
+  bootstrap:
+    initdb:
+      database: keycloak
+      owner: keycloak
