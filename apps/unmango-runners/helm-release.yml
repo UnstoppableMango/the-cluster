@@ -17,7 +17,12 @@ spec:
     # is an organization, so one org-level scale set covers every repo under it.
     runnerScaleSetName: thecluster
     minRunners: 3
-    maxRunners: 30
+    # Shares the runner nodes with the 37 repo-level scale sets in
+    # apps/arc-runners, which cap at 6 each for the reasons in #4436. Every
+    # runner mounts two CSI volumes plus an emptyDir at /var/run, and it is the
+    # cluster-wide count of those mounts that broke dind, not the count within
+    # one scale set. 30 here alone reproduces the conditions.
+    maxRunners: 6
     # 99% the dind template
     # https://github.com/actions/actions-runner-controller/blob/8c84ab2f4267ce61df1f6b2e26a3ca12b2d1e4ca/charts/gha-runner-scale-set/values.yaml#L310
     template:
@@ -90,6 +95,12 @@ spec:
             initialDelaySeconds: 0
             failureThreshold: 24
             periodSeconds: 5
+            # `docker info` round-trips to a dockerd that is still starting, on
+            # a node running every other runner's dind at the same time. The 1s
+            # default counts that as a probe failure, and enough of them restart
+            # the container and add to the load that caused the timeout. 5s is
+            # the whole period between probes.
+            timeoutSeconds: 5
           resources:
             requests:
               cpu: 100m
@@ -164,6 +175,10 @@ spec:
         # refuses a build directory with a world-writable ancestor. A CSI volume
         # comes up 2775 root:fsGroup, which init-nix then narrows to 0755
         # runner:runner.
+        #
+        # 20Gi against a measured 8.7Gi for one full realisation of a devShell;
+        # an idle runner holds 20K. Matches apps/arc-runners, which shares these
+        # nodes.
         - name: nix
           ephemeral:
             volumeClaimTemplate:
@@ -172,4 +187,4 @@ spec:
                 storageClassName: fast-rwo
                 resources:
                   requests:
-                    storage: 30Gi
+                    storage: 20Gi

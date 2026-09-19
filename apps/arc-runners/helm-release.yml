@@ -201,6 +201,16 @@ spec:
             # nix refuses a build directory with a world-writable ancestor. A CSI
             # volume comes up 2775 root:fsGroup, which init-nix then narrows to
             # 0755 runner:runner.
+            #
+            # 20Gi against a measured 8.7Gi and 3712 paths for one full
+            # realisation of this repo's own devShell; an idle runner holds 20K
+            # and a tdl runner mid-job held 4.2Gi. 10Gi is not enough: pulumi
+            # and its provider plugins run a devShell out of space partway.
+            #
+            # fast-rwo is thin-provisioned, so the request is a ceiling rather
+            # than an allocation, but the ceiling is what a burst multiplies:
+            # #4436 put 39 of these on one node, and 39 of the old 75Gi
+            # overcommits the whole default-ssd pool.
             - name: nix
               ephemeral:
                 volumeClaimTemplate:
@@ -209,7 +219,7 @@ spec:
                     storageClassName: fast-rwo
                     resources:
                       requests:
-                        storage: 75Gi
+                        storage: 20Gi
       listenerTemplate:
         spec:
           containers:
