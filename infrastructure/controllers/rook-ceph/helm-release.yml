@@ -66,9 +66,13 @@ spec:
       # CRs' controllerPlugin.resources and nodePlugin.resources, translating
       # container names to CR keys: csi-rbdplugin and csi-cephfsplugin to
       # plugin, driver-registrar to registrar, csi-omap-generator to
-      # omapGenerator. A name with no corresponding key sizes nothing, so each
-      # list holds exactly the containers the operator deploys. A list also
-      # replaces the chart default wholesale rather than merging into it.
+      # omapGenerator. A name with no corresponding key sizes nothing, which is
+      # what liveness-prometheus and log-collector did here. A key whose
+      # container is disabled sizes nothing either: csi-omap-generator is the
+      # one entry below with no running container, since enableOMAPGenerator
+      # defaults false, and it stays so the sizing is already right if that
+      # changes. A list also replaces the chart default wholesale rather than
+      # merging into it.
       #
       # On a chart bump, check the live container set rather than
       # `helm show values rook-ceph`, and re-check at 1.19:
