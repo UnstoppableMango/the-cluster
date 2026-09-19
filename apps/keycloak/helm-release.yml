@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: keycloakx
-      version: 7.3.0
+      version: 7.3.2
       sourceRef:
         kind: HelmRepository
         name: codecentric
@@ -19,7 +19,7 @@ spec:
     fullnameOverride: keycloak
     image:
       repository: quay.io/keycloak/keycloak
-      tag: "26.7.2"
+      tag: "26.7.4"
     replicas: 2
     priorityClassName: system-cluster-critical
     command:
