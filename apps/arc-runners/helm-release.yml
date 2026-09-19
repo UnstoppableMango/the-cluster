@@ -78,9 +78,24 @@ spec:
             # Ordered ahead of dind, whose restartPolicy: Always makes it a
             # native sidecar that kubelet waits on before running any later init
             # container. This one has no reason to wait for dockerd.
+            #
+            # The guard is for the entries that mount a node-local hostPath
+            # here. This container is root with a node path under it, and the
+            # runner nodes are NixOS, so a path typo would hand the booted
+            # system's store to uid 1001. Against a CSI volume it never fires.
             - name: init-nix
               image: ghcr.io/unmango/actions-runner:2.337.0@sha256:7871210f6be2fd471a21b199922b9067c0f5da15e31987dd84f29d97690a2a90
-              command: [sh, -c, 'chown runner:runner /nix && chmod 00755 /nix']
+              command:
+                - sh
+                - -c
+                - |
+                  set -eu
+                  if [ -e /nix/var/nix/profiles/system ]; then
+                    echo 'refusing: /nix looks like a NixOS system store' >&2
+                    exit 1
+                  fi
+                  chown runner:runner /nix
+                  chmod 00755 /nix
               securityContext:
                 runAsUser: 0
               resources:
@@ -223,9 +238,75 @@ spec:
                   memory: 16Mi
 
     scaleSets:
+    # Canary for the node-local nix store. Measured on agreus against the same
+    # closure (3712 paths, 8.7 GB), the ephemeral fast-rwo volume every other
+    # entry uses populates at 10.4 MB/s and a hostPath at 36.6 MB/s, because
+    # every SSD in the cluster is in zeus and runners land elsewhere, so the CSI
+    # volume is a network write replicated 2x for tens of thousands of small
+    # files. Cold 848s against 241s, and a new pod on a node that already has
+    # the store enters the same devShell in 4s.
+    #
+    # Not the node's own /nix: these are NixOS hosts and that is the booted
+    # system's store, which is why infrastructure/controllers/rook-ceph mounts
+    # it readOnly. DirectoryOrCreate leaves the root 0755 root:root on first
+    # use, which init-nix hands to the runner; on later pods it is already
+    # correct and the chown is two syscalls. Non-recursive, and now for a
+    # stronger reason than before: the directory holds a real store.
+    #
+    # The store is unaccounted node state. Nothing sizes it, no scheduler sees
+    # it, and nothing reclaims it yet, so this stays on one low-traffic entry
+    # until the gc CronJobs land.
+    #
+    # The hazard to watch during the soak is nix's temproots, which are keyed by
+    # pid while each pod has its own PID namespace, so two pods can collide on
+    # one temproots file. It shows up as a job that hangs before its first store
+    # operation, or `path '/nix/store/...' is not valid` mid-job.
     - name: dotfiles
       githubConfigUrl: https://github.com/UnstoppableMango/dotfiles
       minRunners: 1
+      template:
+        spec:
+          securityContext:
+            fsGroup: 1001
+            # hostPath volumes are exempt from kubelet's fsGroup ownership
+            # management, so the recursive chown that costs hercules-ci an hour
+            # on a populated store cannot happen on the nix volume. fsGroup is
+            # still needed for the work volume, which is CSI; this policy keeps
+            # a future move of nix back onto CSI from reintroducing the walk.
+            fsGroupChangePolicy: OnRootMismatch
+          # A node-local store is only warm on a node that has one, and only
+          # viable on a node with room for it. gaea and agreus are the two with
+          # memory headroom, so runners already land there; this writes that
+          # down. zeus is excluded deliberately: it holds every SSD in the
+          # cluster behind 8Gi of root disk.
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: kubernetes.io/hostname
+                        operator: In
+                        values: [gaea, agreus]
+          # mergeOverwrite replaces a list wholesale, so overriding nix means
+          # repeating all four volumes. Keep in sync with defaults above.
+          volumes:
+            - name: dind-sock
+              emptyDir: {}
+            - name: dind-externals
+              emptyDir: {}
+            - name: work
+              ephemeral:
+                volumeClaimTemplate:
+                  spec:
+                    accessModes: [ReadWriteOnce]
+                    storageClassName: fast-rwo
+                    resources:
+                      requests:
+                        storage: 5Gi
+            - name: nix
+              hostPath:
+                path: /var/lib/arc-nix
+                type: DirectoryOrCreate
 
     - name: the-cluster
       githubConfigUrl: https://github.com/UnstoppableMango/the-cluster

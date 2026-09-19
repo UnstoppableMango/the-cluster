@@ -43,9 +43,24 @@ defaults:
         # The mode is five digits because a numeric chmod of four digits or
         # fewer preserves a directory's setuid and setgid bits; 00755 is what
         # actually clears the setgid.
+        #
+        # The guard is for the entries that mount a node-local hostPath here.
+        # This container is root with a node path under it, and the runner nodes
+        # are NixOS, so a path typo would hand the booted system's store to uid
+        # 1001. Against a CSI volume the test never fires.
         - name: init-nix
           image: ghcr.io/unmango/actions-runner:2.337.0@sha256:7871210f6be2fd471a21b199922b9067c0f5da15e31987dd84f29d97690a2a90
-          command: [sh, -c, 'chown runner:runner /nix && chmod 00755 /nix']
+          command:
+            - sh
+            - -c
+            - |
+              set -eu
+              if [ -e /nix/var/nix/profiles/system ]; then
+                echo 'refusing: /nix looks like a NixOS system store' >&2
+                exit 1
+              fi
+              chown runner:runner /nix
+              chmod 00755 /nix
           securityContext:
             runAsUser: 0
           resources:
