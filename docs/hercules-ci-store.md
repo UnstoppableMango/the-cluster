@@ -44,6 +44,10 @@ It evaluates, hands the resulting `.drv` paths to the queue, and builds them lat
 This is [hercules-ci/hercules-ci-agent#105](https://github.com/hercules-ci/hercules-ci-agent/issues/105), open since 2019.
 A collection triggered by any build can land between evaluation and build and delete those derivations.
 
+The ARC runners do set both, and the difference is the roots.
+A runner's work happens under `nix develop -c` or `nix build`, which hold temproots for their whole lifetime, so a collection cannot take a closure out from under a job.
+See `docs/arc-nix-store.md`.
+
 ## Reclaim
 
 `apps/hercules-ci/store-gc-*.yml` runs weekly per account, staggered, because both agents sit on `gaea` and two cold stores at once is expensive.

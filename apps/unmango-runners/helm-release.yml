@@ -22,12 +22,29 @@ spec:
     # https://github.com/actions/actions-runner-controller/blob/8c84ab2f4267ce61df1f6b2e26a3ca12b2d1e4ca/charts/gha-runner-scale-set/values.yaml#L310
     template:
       spec:
-        # Makes gid 1001 the group owner of the volumes below and adds it to the
-        # runner process's supplementary groups. The nix volume is then handed to
-        # the runner outright by init-nix; the emptyDirs do not need it, but
-        # fsGroup is pod-scoped and cannot be applied to one volume.
+        # Makes gid 1001 a supplementary group of the runner process. Nothing in
+        # this pod needs it: the emptyDirs never did, and /nix is a hostPath,
+        # which kubelet leaves alone because ownership is only applied to
+        # volumes whose mounter reports itself managed. It is kept so this pod
+        # matches the shape charts/arc-runner-scale-set renders, where the work
+        # volume is a CSI volume that does need it. init-nix is what makes the
+        # store writable here.
         securityContext:
           fsGroup: 1001
+        # The nix store is per node, so runners spread over five nodes mean five
+        # copies of it and a cold one wherever traffic is thin. Prefer the two
+        # large nodes to keep it warm; preferred rather than required so a burst
+        # spills instead of queueing. The runner's cpu limit of 8 already rules
+        # out castor and pollux.
+        affinity:
+          nodeAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                preference:
+                  matchExpressions:
+                    - key: kubernetes.io/hostname
+                      operator: In
+                      values: [gaea, zeus]
         initContainers:
         - name: init-dind-externals
           image: ghcr.io/unmango/actions-runner:2.337.0@sha256:7871210f6be2fd471a21b199922b9067c0f5da15e31987dd84f29d97690a2a90
@@ -42,16 +59,23 @@ spec:
             - name: dind-externals
               mountPath: /home/runner/tmpDir
         # The image ships /nix as an empty directory owned by the runner, but a
-        # volume mounted over it brings its own ownership. Kubelet leaves a CSI
-        # volume root:fsGroup 2775, and the setgid bit propagates into every
-        # directory nix creates under it, store paths and build directories
-        # alike. Hand the mount to the runner instead, mode 0755, so it matches
-        # the empty /nix the image ships. Not recursive: the volume is ephemeral
-        # and holds only lost+found here.
+        # volume mounted over it brings its own ownership. Kubelet creates the
+        # hostPath below root:root 0755 and applies no fsGroup to it, so the
+        # runner cannot write there until this container hands it over. Every
+        # later pod finds it runner:runner 0755 and both commands are no-ops.
+        #
+        # Not recursive, and it has to stay that way: the store persists on the
+        # node and holds millions of files, so a recursive chown is the mistake
+        # apps/hercules-ci documents under fsGroupChangePolicy, and this
+        # container starts while jobs in other pods build in the same directory.
+        # One chown of the mount root is enough because every pod writing there
+        # runs as uid 1000 from the same image; an image that changes the runner
+        # uid needs the node directory reset rather than a recursive chown. See
+        # docs/arc-nix-store.md.
         #
         # The mode is five digits because a numeric chmod of four digits or
         # fewer preserves a directory's setuid and setgid bits; 00755 is what
-        # actually clears the setgid.
+        # actually clears a setgid the node directory may carry.
         #
         # Ordered ahead of dind, whose restartPolicy: Always makes it a native
         # sidecar that kubelet waits on before running any later init container.
@@ -124,6 +148,22 @@ spec:
               value: |
                 extra-substituters = http://ncps.nix-system.svc.cluster.local:8501
                 extra-trusted-public-keys = ncps.thecluster.lan:pAJGNVSRmG7gCDSOAaiHDxLFUSdys5Pk0XvcJ5803Dw=
+                # The store is the node's, on the node root filesystem, and
+                # nothing else bounds it: a hostPath is invisible to the
+                # scheduler's ephemeral-storage accounting. Nix statvfs's that
+                # filesystem and collects when free space falls below min-free,
+                # stopping at max-free. Both live in libstore rather than the
+                # daemon protocol, so they apply in this daemonless client.
+                #
+                # 64 GiB, because kubelet evicts at nodefs.available < 10% and
+                # gaea's 500GB root puts that at 46.6 GiB: anything smaller
+                # lets kubelet evict pods before nix ever collects. max-free
+                # bounds the damage. Left unset it is effectively unbounded,
+                # and by nix's reckoning the warm store is all garbage the
+                # moment a job's nix develop exits, so one trigger would delete
+                # the cache this volume exists to keep.
+                min-free = 68719476736
+                max-free = 103079215104
           # An idle runner measures ~1m CPU and ~60Mi. Requests cover the idle
           # floor and a build bursts to the limit; the tradeoff is that requests
           # no longer cap how many runners land on one node.
@@ -160,16 +200,21 @@ spec:
           emptyDir: {}
         - name: dind-externals
           emptyDir: {}
-        # An emptyDir does not work here. Kubelet creates one mode 0777, and nix
-        # refuses a build directory with a world-writable ancestor. A CSI volume
-        # comes up 2775 root:fsGroup, which init-nix then narrows to 0755
-        # runner:runner.
+        # A node-local store, shared by every runner pod on the node and warm
+        # after the first one. An ephemeral PVC here handed every job an empty
+        # store: 1516 MB of closure realised from ncps in 112.3s against 8.2s
+        # for the second nix develop in the same job, and fast-rwo lands on the
+        # SSD pool in zeus, so a runner on gaea wrote its whole store over the
+        # network, replicated twice.
+        #
+        # Still not an emptyDir: kubelet creates one mode 0777 and nix refuses a
+        # build directory with a world-writable ancestor. Kubelet creates this
+        # path 0755 and init-nix takes ownership of it.
+        #
+        # docs/arc-nix-store.md covers what concurrent pods sharing one store
+        # can and cannot do to each other, what auto-GC takes with it, and how
+        # to reset the node directory.
         - name: nix
-          ephemeral:
-            volumeClaimTemplate:
-              spec:
-                accessModes: [ReadWriteOnce]
-                storageClassName: fast-rwo
-                resources:
-                  requests:
-                    storage: 30Gi
+          hostPath:
+            path: /var/lib/arc/nix
+            type: DirectoryOrCreate

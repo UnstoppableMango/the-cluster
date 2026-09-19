@@ -112,6 +112,9 @@ Consumers today:
 - `apps/unmango-runners/helm-release.yml`, same mechanism
 - `UnstoppableMango/nixos` machine configs, via `nix.settings.extra-substituters`
 
+The runners keep their store on the node rather than on a per-pod volume, so cache load from them is roughly the first job on each node rather than every job.
+`docs/arc-nix-store.md` covers that store.
+
 ## Storage
 
 Three pieces, none of them a volume ncps mounts:
