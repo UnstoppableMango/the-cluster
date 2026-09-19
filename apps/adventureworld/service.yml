@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: adventureworld
   annotations:
-    metallb.io/loadBalancerIPs: 10.0.69.205
+    metallb.io/loadBalancerIPs: 10.0.69.207
 spec:
   type: LoadBalancer
   selector:
