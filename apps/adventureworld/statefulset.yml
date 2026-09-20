@@ -70,10 +70,13 @@ spec:
               protocol: TCP
           # No CPU limit: throttling drops server ticks, and
           # WORKER_THREADS_SERVER already bounds the thread count.
+          # Two players sit at ~3.2 CPU median, peaking past 4, on a flat 1.9Gi
+          # resident. The memory limit carries headroom for a full 16-player
+          # session, which runs far above the measured two-player baseline.
           resources:
             requests:
-              cpu: "4"
-              memory: 4Gi
+              cpu: "5"
+              memory: 3Gi
             limits:
               memory: 16Gi
           volumeMounts:
