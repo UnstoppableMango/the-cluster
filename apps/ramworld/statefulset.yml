@@ -1,0 +1,179 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ramworld
+  namespace: ramworld
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ramworld
+  serviceName: ramworld
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ramworld
+    spec:
+      # The save directory is a tmpfs, so the pod cannot move without losing
+      # whatever has not reached the backup claim yet, and the 24Gi memory
+      # limit only fits on gaea. The pi nodes cannot come close.
+      nodeSelector:
+        kubernetes.io/hostname: gaea
+      # The game saves on rcon shutdown and the sync sidecar mirrors that save
+      # afterwards. The default 30s does not reliably cover both.
+      terminationGracePeriodSeconds: 120
+      initContainers:
+        # Seeds the ramdisk from the last mirrored world. A first-ever start
+        # finds /backup/palworld empty and the game generates a new one.
+        - name: restore
+          image: docker.io/instrumentisto/rsync-ssh:alpine3.23-r3
+          command:
+            - sh
+            - -c
+            # The mirror lives in a subdirectory so ext4's lost+found on the
+            # claim root never lands in the ramdisk. rsync restores ownership
+            # from the claim, which is root-owned before the first sync, so
+            # chown afterwards or the game cannot write as PUID 1000.
+            - |
+              set -eu
+              mkdir -p /backup/palworld
+              rsync -a --delete /backup/palworld/ /palworld/
+              chown -R 1000:1000 /palworld
+          securityContext:
+            runAsUser: 0
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          volumeMounts:
+            - name: save
+              mountPath: /palworld
+            - name: backup
+              mountPath: /backup
+        # A native sidecar, not an ordinary container: kubelet stops ordinary
+        # containers first and sidecars after, so the SIGTERM handler below
+        # runs once the game has already written its shutdown save.
+        - name: sync
+          image: docker.io/instrumentisto/rsync-ssh:alpine3.23-r3
+          restartPolicy: Always
+          command:
+            - sh
+            - -c
+            # sleep runs in the background and is waited on so a SIGTERM
+            # arriving mid-interval flushes immediately instead of sitting out
+            # the remaining five minutes.
+            - |
+              set -eu
+              mirror() { rsync -a --delete /palworld/ /backup/palworld/; }
+              trap 'mirror; exit 0' INT TERM
+              mkdir -p /backup/palworld
+              while true; do
+                sleep 300 &
+                wait $!
+                mirror
+              done
+          securityContext:
+            runAsUser: 0
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          volumeMounts:
+            - name: save
+              mountPath: /palworld
+            - name: backup
+              mountPath: /backup
+      containers:
+        - name: palworld
+          image: thijsvanloef/palworld-server-docker:latest
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: PORT
+              value: "8211"
+            - name: PLAYERS
+              value: "16"
+            - name: ENABLE_PERF_THREADING_ARGS
+              value: "true"
+            - name: WORKER_THREADS_SERVER
+              value: "8"
+            - name: REST_API_ENABLED
+              value: "true"
+            - name: RCON_ENABLED
+              value: "true"
+            - name: RCON_PORT
+              value: "25575"
+            - name: TZ
+              value: UTC
+            - name: COMMUNITY
+              value: "false"
+            - name: SERVER_NAME
+              value: RAMWORLD
+            - name: SERVER_DESCRIPTION
+              value: THECLUSTER RAMWORLD PalWorld server
+            - name: CROSSPLAY_PLATFORMS
+              value: (Steam,Xbox,PS5,Mac)
+            - name: SERVER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ramworld
+                  key: serverPassword
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ramworld
+                  key: adminPassword
+            - name: BASE_CAMP_WORKER_MAX_NUM
+              value: "20"
+          ports:
+            - name: server
+              containerPort: 8211
+              protocol: UDP
+            - name: query
+              containerPort: 27015
+              protocol: UDP
+            - name: rest
+              containerPort: 8212
+              protocol: TCP
+          # No CPU limit: throttling drops server ticks, and
+          # WORKER_THREADS_SERVER already bounds the thread count.
+          # Requests carry over from adventureworld, whose two-player baseline
+          # measured ~3.2 CPU median peaking past 4 on a flat 1.9Gi resident.
+          # The limit is adventureworld's 16Gi plus the 8Gi ramdisk: a
+          # medium: Memory emptyDir is charged to the pod, so a save directory
+          # that grows toward its sizeLimit would otherwise OOM-kill the game.
+          resources:
+            requests:
+              cpu: "5"
+              memory: 3Gi
+            limits:
+              memory: 24Gi
+          volumeMounts:
+            - name: save
+              mountPath: /palworld
+      volumes:
+        # The live save directory. The whole point of this server: the game
+        # stalls its tick while it autosaves, and a tmpfs write does not wait
+        # on Ceph. 8Gi is many times any realistic PalWorld save.
+        - name: save
+          emptyDir:
+            medium: Memory
+            sizeLimit: 8Gi
+  volumeClaimTemplates:
+    # Durable mirror of the ramdisk. Only the restore and sync containers
+    # mount it; the game never touches Ceph while it is running.
+    - metadata:
+        name: backup
+      spec:
+        storageClassName: standard-rwo
+        accessModes:
+          - ReadWriteOncePod
+        resources:
+          requests:
+            storage: 24Gi
