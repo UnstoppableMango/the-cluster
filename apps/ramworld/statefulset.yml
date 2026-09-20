@@ -39,12 +39,17 @@ spec:
               chown -R 1000:1000 /save
           securityContext:
             runAsUser: 0
+          # Pages written into a tmpfs are charged to the cgroup that writes
+          # them, so this limit has to cover the whole ramdisk, not just
+          # rsync's file list. A limit below sizeLimit makes restore OOM part
+          # way through seeding. It costs nothing in scheduling: a plain init
+          # container is max()'d against the running containers, not summed.
           resources:
             requests:
               cpu: 10m
               memory: 64Mi
             limits:
-              memory: 256Mi
+              memory: 2304Mi
           volumeMounts:
             - name: save
               mountPath: /save
@@ -74,6 +79,10 @@ spec:
               done
           securityContext:
             runAsUser: 0
+          # Only reads the ramdisk, whose pages restore already paid for, and
+          # writes to the claim, where page cache is reclaimable. So unlike
+          # restore this does not need to cover sizeLimit. It is a sidecar, so
+          # this limit is summed into the pod.
           resources:
             requests:
               cpu: 10m
