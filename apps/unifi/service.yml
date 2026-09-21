@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: unifi
+  namespace: unifi
+  labels:
+    app.kubernetes.io/name: unifi
+  annotations:
+    metallb.io/loadBalancerIPs: 10.0.69.209
+spec:
+  selector:
+    app.kubernetes.io/name: unifi
+  type: LoadBalancer
+  # The web UI serves its own self-signed TLS on 8443, so it is exposed here
+  # directly rather than behind the nginx Gateway. UniFi devices sit on
+  # VLAN 1 and reach 8080 and 3478 through pfSense.
+  ports:
+    - name: https
+      port: 8443
+      protocol: TCP
+    - name: inform
+      port: 8080
+      protocol: TCP
+    - name: stun
+      port: 3478
+      protocol: UDP
+    - name: discovery
+      port: 10001
+      protocol: UDP

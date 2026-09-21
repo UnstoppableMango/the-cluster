@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  namespace: unifi
+  labels:
+    app.kubernetes.io/name: mongo
+spec:
+  selector:
+    app.kubernetes.io/name: mongo
+  clusterIP: None
+  ports:
+    - name: mongo
+      port: 27017
+      protocol: TCP
