@@ -43,9 +43,39 @@ defaults:
         # The mode is five digits because a numeric chmod of four digits or
         # fewer preserves a directory's setuid and setgid bits; 00755 is what
         # actually clears the setgid.
+        #
+        # The two guards are for the entries that will mount a node-local
+        # hostPath here. This container runs as root with whatever is mounted
+        # at /nix beneath it, and the runner nodes are NixOS, so a wrong path
+        # would hand the booted system's store to the runner; the same reason
+        # rook-ceph mounts /lib/modules readOnly. Against an ephemeral CSI
+        # volume neither test can fire, so they cost a fresh pod two syscalls.
+        #
+        # The uid is read from the image rather than written here, so the test
+        # tracks the image instead of drifting from it. A populated store owned
+        # by someone else means the image's runner uid changed: the fix is to
+        # reset the node's store, never to chown a real store recursively.
         - name: init-nix
           image: ghcr.io/unmango/actions-runner:2.337.0@sha256:7871210f6be2fd471a21b199922b9067c0f5da15e31987dd84f29d97690a2a90
-          command: [sh, -c, 'chown runner:runner /nix && chmod 00755 /nix']
+          command:
+            - sh
+            - -c
+            - |
+              set -eu
+              if [ -e /nix/var/nix/profiles/system ]; then
+                echo 'init-nix: refusing, /nix holds a NixOS system profile' >&2
+                exit 1
+              fi
+              uid="$(id -u runner)"
+              if [ -d /nix/store ]; then
+                owner="$(stat -c %u /nix/store)"
+                if [ "$owner" != "$uid" ]; then
+                  echo "init-nix: refusing, /nix/store is owned by uid $owner but the runner is uid $uid" >&2
+                  exit 1
+                fi
+              fi
+              chown runner:runner /nix
+              chmod 00755 /nix
           securityContext:
             runAsUser: 0
           resources:
