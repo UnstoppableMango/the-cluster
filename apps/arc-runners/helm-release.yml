@@ -260,6 +260,47 @@ spec:
     - name: nixos
       githubConfigUrl: https://github.com/UnstoppableMango/nixos
       minRunners: 1
+      # This repo builds a full NixOS system closure,
+      # `nixosConfigurations.hades.config.system.build.toplevel`, a GNOME
+      # desktop. The 20Gi the defaults carry is sized against the-cluster's
+      # devShell (8.7Gi, 3712 paths) and the toplevel does not fit it:
+      #
+      #   error: write of 65536 bytes: No space left on device
+      #
+      # 75Gi is what this scale set ran on before #4441 lowered the shared
+      # default, and every run since has failed. The ceiling is multiplied by
+      # maxRunners rather than by the whole fleet, so restoring it for one
+      # entry does not recreate the pool overcommit that #4441 addressed.
+      #
+      # mergeOverwrite replaces lists wholesale, so this block has to repeat
+      # every volume the defaults declare, not just the one it changes.
+      # Omitting dind-sock, dind-externals or work would leave their
+      # volumeMounts dangling and the pod unschedulable.
+      template:
+        spec:
+          volumes:
+            - name: dind-sock
+              emptyDir: {}
+            - name: dind-externals
+              emptyDir: {}
+            - name: work
+              ephemeral:
+                volumeClaimTemplate:
+                  spec:
+                    accessModes: [ReadWriteOnce]
+                    storageClassName: fast-rwo
+                    resources:
+                      requests:
+                        storage: 5Gi
+            - name: nix
+              ephemeral:
+                volumeClaimTemplate:
+                  spec:
+                    accessModes: [ReadWriteOnce]
+                    storageClassName: fast-rwo
+                    resources:
+                      requests:
+                        storage: 75Gi
 
     - name: nix
       githubConfigUrl: https://github.com/UnstoppableMango/nix
