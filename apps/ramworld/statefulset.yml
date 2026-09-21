@@ -15,43 +15,47 @@ spec:
         app.kubernetes.io/name: ramworld
     spec:
       # The save directory is a tmpfs, so the pod cannot move without losing
-      # whatever has not reached the backup claim yet, and the 24Gi memory
-      # limit only fits on gaea. The pi nodes cannot come close.
+      # whatever has not reached the claim yet, and the 18Gi memory limit is
+      # more than the pi nodes have in total.
       nodeSelector:
         kubernetes.io/hostname: gaea
       # The game saves on rcon shutdown and the sync sidecar mirrors that save
       # afterwards. The default 30s does not reliably cover both.
       terminationGracePeriodSeconds: 120
       initContainers:
-        # Seeds the ramdisk from the last mirrored world. A first-ever start
-        # finds /backup/palworld empty and the game generates a new one.
+        # Seeds the ramdisk from the durable copy of Pal/Saved. A first-ever
+        # start finds it empty and the game generates a new world.
         - name: restore
           image: docker.io/instrumentisto/rsync-ssh:alpine3.23-r3
           command:
             - sh
             - -c
-            # The mirror lives in a subdirectory so ext4's lost+found on the
-            # claim root never lands in the ramdisk. rsync restores ownership
-            # from the claim, which is root-owned before the first sync, so
-            # chown afterwards or the game cannot write as PUID 1000.
+            # rsync restores ownership from the claim, which is root-owned
+            # before the first sync, so chown afterwards or the game cannot
+            # write as PUID 1000.
             - |
               set -eu
-              mkdir -p /backup/palworld
-              rsync -a --delete /backup/palworld/ /palworld/
-              chown -R 1000:1000 /palworld
+              rsync -a --delete /mirror/ /save/
+              chown -R 1000:1000 /save
           securityContext:
             runAsUser: 0
+          # Pages written into a tmpfs are charged to the cgroup that writes
+          # them, so this limit has to cover the whole ramdisk, not just
+          # rsync's file list. A limit below sizeLimit makes restore OOM part
+          # way through seeding. It costs nothing in scheduling: a plain init
+          # container is max()'d against the running containers, not summed.
           resources:
             requests:
               cpu: 10m
               memory: 64Mi
             limits:
-              memory: 256Mi
+              memory: 2304Mi
           volumeMounts:
             - name: save
-              mountPath: /palworld
-            - name: backup
-              mountPath: /backup
+              mountPath: /save
+            - name: data
+              mountPath: /mirror
+              subPath: palworld/Pal/Saved
         # A native sidecar, not an ordinary container: kubelet stops ordinary
         # containers first and sidecars after, so the SIGTERM handler below
         # runs once the game has already written its shutdown save.
@@ -66,9 +70,8 @@ spec:
             # the remaining five minutes.
             - |
               set -eu
-              mirror() { rsync -a --delete /palworld/ /backup/palworld/; }
+              mirror() { rsync -a --delete /save/ /mirror/; }
               trap 'mirror; exit 0' INT TERM
-              mkdir -p /backup/palworld
               while true; do
                 sleep 300 &
                 wait $!
@@ -76,6 +79,10 @@ spec:
               done
           securityContext:
             runAsUser: 0
+          # Only reads the ramdisk, whose pages restore already paid for, and
+          # writes to the claim, where page cache is reclaimable. So unlike
+          # restore this does not need to cover sizeLimit. It is a sidecar, so
+          # this limit is summed into the pod.
           resources:
             requests:
               cpu: 10m
@@ -84,9 +91,10 @@ spec:
               memory: 256Mi
           volumeMounts:
             - name: save
-              mountPath: /palworld
-            - name: backup
-              mountPath: /backup
+              mountPath: /save
+            - name: data
+              mountPath: /mirror
+              subPath: palworld/Pal/Saved
       containers:
         - name: palworld
           image: thijsvanloef/palworld-server-docker:latest
@@ -145,7 +153,7 @@ spec:
           # WORKER_THREADS_SERVER already bounds the thread count.
           # Requests carry over from adventureworld, whose two-player baseline
           # measured ~3.2 CPU median peaking past 4 on a flat 1.9Gi resident.
-          # The limit is adventureworld's 16Gi plus the 8Gi ramdisk: a
+          # The limit is adventureworld's 16Gi plus the ramdisk: a
           # medium: Memory emptyDir is charged to the pod, so a save directory
           # that grows toward its sizeLimit would otherwise OOM-kill the game.
           resources:
@@ -153,23 +161,32 @@ spec:
               cpu: "5"
               memory: 3Gi
             limits:
-              memory: 24Gi
+              memory: 18Gi
           volumeMounts:
-            - name: save
+            # The 4.6Gi game install, which steamcmd writes on first boot and
+            # updates in place. It is read-mostly and gains nothing from RAM.
+            - name: data
               mountPath: /palworld
+              subPath: palworld
+            # Mounted inside the install and shadowing the copy on the claim.
+            # Only this subtree is hot, so only this subtree is a ramdisk.
+            - name: save
+              mountPath: /palworld/Pal/Saved
       volumes:
-        # The live save directory. The whole point of this server: the game
-        # stalls its tick while it autosaves, and a tmpfs write does not wait
-        # on Ceph. 8Gi is many times any realistic PalWorld save.
+        # The live save directory: the game stalls its tick while it autosaves,
+        # and a tmpfs write does not wait on Ceph. The world is 6Mi today, so
+        # 2Gi is headroom for a session's worth of growth and the rolling
+        # backup subdirectory the game keeps beside it.
         - name: save
           emptyDir:
             medium: Memory
-            sizeLimit: 8Gi
+            sizeLimit: 2Gi
   volumeClaimTemplates:
-    # Durable mirror of the ramdisk. Only the restore and sync containers
-    # mount it; the game never touches Ceph while it is running.
+    # Durable storage for both halves: the game install under palworld/, and
+    # the mirror of the ramdisk under palworld/Pal/Saved, which the game
+    # container never sees because the ramdisk is mounted over it.
     - metadata:
-        name: backup
+        name: data
       spec:
         storageClassName: standard-rwo
         accessModes:
