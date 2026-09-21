@@ -2,7 +2,7 @@
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": [
 		"github>UnstoppableMango/renovate-config",
-		"schedule:weekly"
+		":approveMajorUpdates"
 	],
 	"ignorePaths": [
 		"**/vendor/**",
@@ -10,9 +10,6 @@
 		"charts/**/templates/**",
 		"**/crds/**"
 	],
-	"major": {
-		"dependencyDashboardApproval": true
-	},
 	"kubernetes": {
 		"managerFilePatterns": [
 			"/^(apps|clusters|infrastructure)/.+\\.ya?ml$/"
