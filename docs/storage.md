@@ -65,8 +65,8 @@ A deprecated class is deleted once `git grep` finds no reference and `kubectl ge
 
 ## Failure domains
 
-Two nodes carry OSDs: gaea (164 TiB HDD across 19 OSDs) and zeus (55 TiB HDD, 3.6 TiB SSD).
-apollo is the third OSD host and is offline for maintenance.
+Two nodes carry OSDs: gaea (163.7 TiB HDD across 20 OSDs) and zeus (54.6 TiB HDD, 3.6 TiB SSD).
+apollo is the third OSD host; it is listed in the CephCluster but carries no OSDs, because it is cordoned and Rook has never run a prepare job there.
 
 A host failure domain with two hosts works for replicated size 2 and caps usable capacity at the smaller host.
 Erasure coding 2+1 needs three failure domains, so `bulk-rwx` uses an osd failure domain until apollo is back.
@@ -98,23 +98,13 @@ Without that field Rook leaves the rule alone.
 
 ### apollo cut-over
 
-1. Add apollo and its devices to `cephClusterSpec.storage.nodes` in `infrastructure/configs/rook-ceph/cluster/helm-release-cluster.yml`, and remove any device that moved out of gaea.
-2. Wait for `ceph osd tree` to show apollo's OSDs `up` and `in`, and `ceph -s` to reach `HEALTH_OK`.
-3. `default-ssd.yml`: `failureDomain: host`.
-4. `standard.yml` and the `standard` data pool in `cephfs.yml`: `replicated.size: 3`. The metadata pool in `cephfs.yml` too.
-5. In the toolbox, swap the `erasure-coded-data` rule.
-   `osd_max_backfills` is cluster configuration and stays set until removed, so the last line runs after `ceph -s` is clean again.
+apollo has no capacity of its own, so the cut-over moves six 14 TB drives out of gaea before any failure domain changes.
+`docs/apollo-cutover.md` is the procedure, including the bay map naming which physical drives to pull.
 
-```sh
-ceph osd erasure-code-profile set erasure-coded-data_ecprofile_host k=2 m=1 plugin=jerasure technique=reed_sol_van crush-failure-domain=host crush-device-class=hdd
-ceph osd crush rule create-erasure erasure-coded-data_host erasure-coded-data_ecprofile_host
-ceph config set osd osd_max_backfills 1
-ceph osd pool set erasure-coded-data crush_rule erasure-coded-data_host
-# after recovery completes:
-ceph config rm osd osd_max_backfills
-```
+`default-ssd` keeps `failureDomain: osd` through the cut-over.
+apollo contributes 1 TB of NVMe against zeus's 4 TB of SATA SSD, so a host failure domain would cap `fast-rwo` at 1 TB usable rather than the 2 TB an osd domain gives.
 
-Rollback for the rule swap is `ceph osd pool set erasure-coded-data crush_rule erasure-coded-data`; the original rule stays in the CRUSH map.
+zeus is the smallest OSD host at 54.6 TiB and stays that way, so it caps every host-domain pool: `bulk-rwx` at twice that, and the replicated tiers at that figure.
 
 ## PG autoscaler
 
@@ -132,9 +122,14 @@ The autoscaler divides each pool's ratio by the sum of ratios in the CRUSH root,
 
 ## CephFS on the nodes
 
-gaea and zeus run kernels without the `ceph` module, so the kernel mounter fails on them with `modprobe ceph` errors.
-castor, agreus, and pollux have the module.
-A CephFS volume that must mount on gaea or zeus sets `mounter: fuse` in its StorageClass parameters or PV `volumeAttributes`, or the host kernel gains the module.
+Every OSD node ships `ceph.ko` and `rbd.ko` in the stock nixpkgs kernel.
+The module autoloads on the first `mount -t ceph`, so its absence from `lsmod` means only that no kernel mount has happened on that host yet.
+
+The failure mode that looks like a missing module is a path problem.
+The CSI plugins bind-mount `/lib/modules`, which NixOS does not populate, so `modprobe` inside the plugin container fails.
+The fix is the Rook operator values `csi.csiRBDPluginVolume` and `csi.csiCephFSPluginVolume` pointing `lib-modules` at `/run/booted-system/kernel-modules/lib/modules/`, as `infrastructure/controllers/rook-ceph/helm-release.yml` does.
+Rook matches these by volume name, so reusing `lib-modules` replaces the default and the mount stays at `/lib/modules`.
+Neither `mounter: fuse` nor `boot.kernelModules = [ "ceph" ]` is a fix.
 
 ## Subvolume inventory
 
