@@ -133,7 +133,17 @@ defaults:
 # One entry per scale set. Each is merged with defaults (entry wins on conflict).
 # Required per entry: name, githubConfigUrl
 # Optional per entry: helmReleaseName (defaults to name), namespace (defaults to
-# arc-<name>, dots and underscores replaced with dashes)
+# arc-<name>, dots and underscores replaced with dashes), nixStorageSize
+#
+# nixStorageSize resizes the nix volume alone, e.g. `nixStorageSize: 75Gi` for a
+# repo whose closure does not fit the default above. It exists because the merge
+# below replaces lists wholesale: without it, an entry wanting a bigger store has
+# to repeat every volume the defaults declare, and omitting one leaves its
+# volumeMount dangling and the pod unschedulable. It is consumed by the template
+# and never reaches the rendered values.
+#
+# Transitional: the store is moving off this per-pod PVC onto a node-local
+# directory, and this option goes with it.
 # All other gha-runner-scale-set values are valid (minRunners, containerMode, template, etc.)
 #
 # Careful: mergeOverwrite replaces lists wholesale, so an entry that supplies its
