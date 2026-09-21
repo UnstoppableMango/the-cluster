@@ -12,6 +12,28 @@ interval: 10m
 # namespace — see templates/_helpers.tpl.
 runnerScaleSetName: thecluster
 
+# Where a runner's /nix lives, for every entry that does not say otherwise.
+#
+#   ephemeral  a per-pod CSI volume, empty at the start of every job, sized by
+#              nixStorageSize
+#   node       the directory nodeStore.path names, shared by every runner on
+#              the node and outliving all of them
+#
+# The node store is what makes a closure another job already realised cost
+# nothing; against the per-pod volume the same build refetches all of it from
+# ncps.
+nixStore: ephemeral
+
+# Read only by entries with `nixStore: node`.
+nodeStore:
+  # Declared by systemd.tmpfiles on the nodes below, in UnstoppableMango/nixos
+  # (modules/arc-runner-store). Not /nix, which is the node's own store.
+  path: /var/lib/arc-nix
+  # Applied as a nodeSelector, so a runner only lands where the store exists.
+  # Set in that same repo, on the machines that enable arcRunnerStore.
+  selector:
+    thecluster.lan/ci-runner: "true"
+
 # Defaults merged into every HelmRelease's values block.
 # These are gha-runner-scale-set values — anything valid there works here.
 # namespaceOverride and runnerScaleSetName are set by the chart and cannot be
@@ -133,12 +155,18 @@ defaults:
 # One entry per scale set. Each is merged with defaults (entry wins on conflict).
 # Required per entry: name, githubConfigUrl
 # Optional per entry: helmReleaseName (defaults to name), namespace (defaults to
-# arc-<name>, dots and underscores replaced with dashes), nixStorageSize
+# arc-<name>, dots and underscores replaced with dashes), nixStore,
+# nixStorageSize
 # All other gha-runner-scale-set values are valid (minRunners, containerMode, template, etc.)
 #
-# nixStorageSize sizes the nix volume alone. The merge replaces lists wholesale,
-# so without it an entry needing a different store size restates every volume the
-# defaults declare. The template consumes it; it does not reach rendered values.
+# nixStore and nixStorageSize edit the nix volume alone. The merge replaces
+# lists wholesale, so without them an entry changing anything about the store
+# restates every volume the defaults declare. The template consumes both; they
+# do not reach rendered values.
+#
+# nixStore: node also drops init-nix, which exists to take ownership of a fresh
+# CSI volume, and pins the entry to the nodes carrying the store. It is
+# incompatible with nixStorageSize, which sizes a volume it no longer has.
 #
 # Careful: mergeOverwrite replaces lists wholesale, so an entry that supplies its
 # own template.spec.containers drops the defaults above, including command, the

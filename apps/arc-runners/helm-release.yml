@@ -236,6 +236,10 @@ spec:
     - name: dotfiles
       githubConfigUrl: https://github.com/UnstoppableMango/dotfiles
       minRunners: 1
+      # First entry on the node-local store. Low traffic, and its jobs realise
+      # the same devShell closure the other nix repos do, so a warm store shows
+      # up here before it matters anywhere else.
+      nixStore: node
 
     - name: the-cluster
       githubConfigUrl: https://github.com/UnstoppableMango/the-cluster
