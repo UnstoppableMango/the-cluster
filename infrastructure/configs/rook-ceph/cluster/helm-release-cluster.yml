@@ -140,7 +140,30 @@ spec:
           # Rook applies crushDeviceClass when it creates an OSD and never
           # reclasses an existing one, so an OSD already created under the nvme
           # class needs `ceph osd crush set-device-class` from the toolbox.
+          #
+          # apollo holds 31.2 GiB of RAM against gaea's 504 and zeus's 126, and
+          # takes eight OSDs: six 14 TB drives plus these two. The chart's
+          # default osd request is 4Gi, which the scheduler reserves whether or
+          # not the OSD uses it, so eight ask for 33 GiB on a 31.2 GiB host and
+          # the third one never schedules.
+          #
+          # 3Gi fits: 24 GiB of requests against the ~25.3 GiB left after the
+          # csi plugins and the other daemons. osd_memory_target has to stay
+          # under the limit or the OSD is OOM killed at it, and it is set per
+          # host so gaea and zeus keep the 4 GiB default:
+          #
+          #   ceph config set osd/host:apollo osd_memory_target 2147483648
+          #
+          # This depends on UnstoppableMango/nixos#377 dropping apollo's CI
+          # role. Without it only 11.2 GiB of the host is allocatable and no
+          # request size is small enough.
           - name: apollo
+            resources:
+              requests:
+                cpu: "1"
+                memory: 3Gi
+              limits:
+                memory: 3Gi
             devices:
               - name: /dev/disk/by-id/nvme-Samsung_SSD_960_EVO_500GB_S3X4NB0K324732Y
                 config:
