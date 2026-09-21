@@ -272,35 +272,7 @@ spec:
       # maxRunners rather than by the whole fleet, so restoring it for one
       # entry does not recreate the pool overcommit that #4441 addressed.
       #
-      # mergeOverwrite replaces lists wholesale, so this block has to repeat
-      # every volume the defaults declare, not just the one it changes.
-      # Omitting dind-sock, dind-externals or work would leave their
-      # volumeMounts dangling and the pod unschedulable.
-      template:
-        spec:
-          volumes:
-            - name: dind-sock
-              emptyDir: {}
-            - name: dind-externals
-              emptyDir: {}
-            - name: work
-              ephemeral:
-                volumeClaimTemplate:
-                  spec:
-                    accessModes: [ReadWriteOnce]
-                    storageClassName: fast-rwo
-                    resources:
-                      requests:
-                        storage: 5Gi
-            - name: nix
-              ephemeral:
-                volumeClaimTemplate:
-                  spec:
-                    accessModes: [ReadWriteOnce]
-                    storageClassName: fast-rwo
-                    resources:
-                      requests:
-                        storage: 75Gi
+      nixStorageSize: 75Gi
 
     - name: nix
       githubConfigUrl: https://github.com/UnstoppableMango/nix
