@@ -3,8 +3,5 @@ kind: Kustomization
 resources:
   - namespace.yml
   - mongo-credentials-sealed.yml
-  - mongo-init.yml
-  - mongo-service.yml
-  - mongo-statefulset.yml
-  - service.yml
-  - statefulset.yml
+  - helm-repository.yml
+  - helm-release.yml

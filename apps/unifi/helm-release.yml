@@ -1,0 +1,45 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: unifi
+  namespace: unifi
+spec:
+  interval: 10m
+  releaseName: unifi
+  targetNamespace: unifi
+  chart:
+    spec:
+      chart: unifi
+      version: 0.1.0
+      sourceRef:
+        kind: HelmRepository
+        name: unmango-charts
+  values:
+    database:
+      existingSecret: mongo-credentials
+    persistence:
+      storageClassName: standard-rwo
+      accessModes: [ReadWriteOncePod]
+    resources:
+      requests:
+        cpu: 200m
+        memory: 1Gi
+      limits:
+        memory: 3Gi
+    mongodb:
+      persistence:
+        storageClassName: standard-rwo
+        accessModes: [ReadWriteOncePod]
+      resources:
+        requests:
+          cpu: 100m
+          memory: 512Mi
+        limits:
+          memory: 2Gi
+    # The web UI serves its own self-signed TLS on 8443, so it is exposed here
+    # directly rather than behind the nginx Gateway. UniFi devices sit on
+    # VLAN 1 and reach 8080 and 3478 through pfSense.
+    service:
+      type: LoadBalancer
+      annotations:
+        metallb.io/loadBalancerIPs: 10.0.69.209

@@ -274,7 +274,8 @@ spec:
   dependsOn:
     # mongo-credentials-sealed.yml needs the SealedSecret CRD.
     - name: infra-sealed-secrets
-    # service.yml is a LoadBalancer pinned to an address in the MetalLB pool.
+    # helm-release.yml renders a LoadBalancer pinned to an address in the
+    # MetalLB pool.
     - name: infra-configs-metallb
-    # Both StatefulSets claim their volumes through standard-rwo.
+    # The chart's StatefulSets claim their volumes through standard-rwo.
     - name: infra-configs-rook-ceph-storage

@@ -273,13 +273,6 @@
 		},
 		{
 			"matchPackageNames": [
-				"mongo"
-			],
-			"description": "apps/unifi: the UniFi Network Application supports MongoDB up to 8.0. Raise this once linuxserver/unifi-network-application documents a newer release.",
-			"allowedVersions": "<8.1"
-		},
-		{
-			"matchPackageNames": [
 				"plex-media-server",
 				"plexinc/pms-docker"
 			],
