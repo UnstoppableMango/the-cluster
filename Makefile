@@ -71,19 +71,11 @@ endef
 # enough to take over.
 ARC_RUNNER_CHART := charts/arc-runner-scale-set
 
-# Prerequisites are the inputs that determine the rendered Namespace list, and
-# only those. Sealing is randomized, so regenerating rewrites the ciphertext of
-# all 37 documents whether or not the list changed; a prerequisite that cannot
-# move a namespace only produces that churn.
-#
-# values.yaml is not one: its `scaleSets` is empty and the -f file above always
-# supplies its own, so the chart default is always overridden and no edit to it
-# can add, remove or rename a namespace. Nothing else in it reaches the
-# Namespace block. Give it a `scaleSets` default that renders and this stops
-# being true.
-#
-# The two templates are named rather than globbed, so a new template file has
-# to be considered here rather than silently invalidating the secret.
+# Prerequisites are only the inputs that determine the rendered Namespace list.
+# Sealing is randomized, so anything else here rewrites the ciphertext of all 37
+# documents for no change. values.yaml is excluded because its `scaleSets` is
+# empty and the release file always supplies its own. Templates are named rather
+# than globbed so a new one is a deliberate choice here.
 apps/arc-runners/thecluster-bot-sealed.yml: hack/secrets/apps/arc-runners/thecluster-bot.yml \
 		apps/arc-runners/helm-release.yml \
 		$(ARC_RUNNER_CHART)/templates/helmreleases.yaml \
