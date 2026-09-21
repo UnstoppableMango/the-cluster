@@ -1,0 +1,48 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: adventureworld
+  namespace: adventureworld
+spec:
+  interval: 10m
+  releaseName: adventureworld
+  targetNamespace: adventureworld
+  chart:
+    spec:
+      chart: palworld
+      version: 0.1.0
+      sourceRef:
+        kind: HelmRepository
+        name: unmango-charts
+  # The first install can race Flux pruning the StatefulSet and Service it
+  # replaces, which Helm refuses to adopt, so let it retry.
+  install:
+    remediation:
+      retries: 3
+  values:
+    server:
+      name: ADVENTUREWORLD
+      description: THECLUSTER ADVENTUREWORLD PalWorld server
+      settings:
+        enablePerfThreadingArgs: true
+        workerThreadsServer: 8
+        baseCampWorkerMaxNum: 20
+    auth:
+      existingSecret: adventureworld
+      adminPasswordKey: adminPassword
+      serverPasswordKey: serverPassword
+    persistence:
+      storageClassName: standard-rwo
+      accessModes: [ReadWriteOncePod]
+    # No CPU limit: throttling drops server ticks, and workerThreadsServer
+    # already bounds the thread count.
+    resources:
+      requests:
+        cpu: "5"
+        memory: 3Gi
+      limits:
+        memory: 16Gi
+    service:
+      type: LoadBalancer
+      annotations:
+        metallb.io/loadBalancerIPs: 10.0.69.207

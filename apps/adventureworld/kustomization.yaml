@@ -3,5 +3,5 @@ kind: Kustomization
 resources:
   - namespace.yml
   - secret-sealed.yml
-  - service.yml
-  - statefulset.yml
+  - helm-repository.yml
+  - helm-release.yml

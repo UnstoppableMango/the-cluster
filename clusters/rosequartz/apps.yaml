@@ -188,9 +188,10 @@ spec:
   dependsOn:
     # secret-sealed.yml needs the SealedSecret CRD.
     - name: infra-sealed-secrets
-    # service.yml is a LoadBalancer pinned to an address in the MetalLB pool.
+    # helm-release.yml renders a LoadBalancer pinned to an address in the
+    # MetalLB pool.
     - name: infra-configs-metallb
-    # The volumeClaimTemplate provisions from standard-rwo.
+    # The chart's volumeClaimTemplate provisions from standard-rwo.
     - name: infra-configs-rook-ceph-storage
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
