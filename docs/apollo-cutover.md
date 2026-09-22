@@ -218,10 +218,51 @@ Success is `ceph osd tree` showing `osd.5` `up` and `in` beneath `host apollo` w
 Failure is `osd.5` not coming back, and it costs a 12.7 TiB backfill to recover: purge the id, wipe the device, and let Rook create a fresh OSD.
 Decide on the fallback before starting, because the answer changes whether the remaining five are worth moving the same way.
 
+The OSD takes around twenty minutes to become ready, spent replaying and compacting its RocksDB before `load_pgs`.
+The pod sits at `1/2` for all of it, which is startup rather than a fault.
+`ceph osd tree` showing the OSD `up` at full weight, and `ceph osd df` showing it still holding its data, is the confirmation.
+
+### Degraded is not misplaced
+
+The drive carries its data, so nothing is reconstructed.
+Watch the two figures separately:
+
+| Figure      | Means                                                 | Caused by               |
+| ----------- | ----------------------------------------------------- | ----------------------- |
+| `degraded`  | a copy is missing and must be rebuilt from the others | the OSD being down      |
+| `misplaced` | every copy exists, just not where CRUSH wants it      | the OSD's host changing |
+
+`degraded` returns to zero the moment the OSD boots, because the copies were never lost.
+`misplaced` climbs instead, because moving an OSD between host buckets changes the CRUSH tree and a share of the placement groups now map elsewhere.
+
+That shuffle is the real cost of the cut-over, not the drive moves.
+Moving one drive put 15% of objects misplaced, about 10 TiB, which is a day or two on its own.
+
 ### 4. Move the remaining five
 
-Repeat step 3 for phys 13 through 17, one drive at a time.
-Batching them is faster in wall-clock terms and gives up the ability to tell which drive caused a failure.
+Every drive moved changes the CRUSH map again.
+Taken one at a time with a `HEALTH_OK` gate between each, the same shuffle is paid six times over and the cut-over runs into weeks.
+
+Suppress it until the topology is final:
+
+```sh
+ceph osd set norebalance
+```
+
+`norebalance` stops misplaced placement groups from moving.
+It does not stop recovery of degraded ones, so a drive that is out is still covered while it is out.
+
+Repeat step 3 for phys 13 through 17 with the flag set, one drive at a time.
+Batching the pulls is a different thing from batching the rebalance and is not safe: five OSDs missing from gaea at once can leave an erasure-coded 2+1 placement group with two or three chunks gone, and those placement groups go unavailable.
+One drive out at a time, each back within the hour, never risks that.
+
+Release it once `ceph osd tree` shows all six beneath `host apollo`:
+
+```sh
+ceph osd unset norebalance
+```
+
+One rebalance, against the final map, instead of six against intermediate ones.
 
 ### 5. Retire the 1 TB drives
 
@@ -232,6 +273,9 @@ for id in 0 1 3 8; do ceph osd out $id; done
 Wait for the data to drain, which is about 1.8 TiB total, then purge and pull them from phys 26, 27, 28, and 33.
 
 ### 6. Rebalance and clear the reweights
+
+`noout` stays set for the whole of steps 3 to 5, across every drive.
+Clearing it between drives only invites Ceph to start rebuilding during the next swap.
 
 ```sh
 ceph osd unset noout
