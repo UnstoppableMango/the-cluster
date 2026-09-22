@@ -34,6 +34,11 @@ spec:
         securityContext:
           fsGroup: 1001
         initContainers:
+        # The copy is about 600 MB of node runtimes. cp itself stays under a
+        # few MB, but the dirty page cache it writes is charged to the
+        # container, and a limit below the copy size turns writeback lag into
+        # an OOM kill of cp and a failed pod. Sized above the copy so the whole
+        # thing can sit dirty.
         - name: init-dind-externals
           image: ghcr.io/unmango/actions-runner:2.337.0@sha256:7871210f6be2fd471a21b199922b9067c0f5da15e31987dd84f29d97690a2a90
           command: ["cp", "-r", "/home/runner/externals/.", "/home/runner/tmpDir/"]
@@ -42,7 +47,7 @@ spec:
               cpu: 10m
               memory: 32Mi
             limits:
-              memory: 64Mi
+              memory: 1Gi
           volumeMounts:
             - name: dind-externals
               mountPath: /home/runner/tmpDir
