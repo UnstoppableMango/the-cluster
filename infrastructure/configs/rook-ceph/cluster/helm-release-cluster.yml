@@ -59,6 +59,9 @@ spec:
         # https://github.com/rook/rook/blob/0a1dd5e9e619481432cc66347a45072178ca0b48/deploy/examples/cluster.yaml#L58-L60
         count: 1
         allowMultiplePerNode: true
+        modules:
+          - name: rook
+            enabled: true
       # Rook removes an OSD once it is marked out and the data has drained.
       removeOSDsIfOutAndSafeToRemove: true
       # Only the log collector is overridden; helm merges maps, so mon, mgr,
