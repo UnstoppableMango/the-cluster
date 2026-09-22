@@ -1,0 +1,26 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: unifi-mongodb
+  namespace: unifi
+spec:
+  secretName: unifi-mongodb-tls
+  # mongod takes the certificate and its key as one file, which is what
+  # CombinedPEM writes to tls-combined.pem beside the usual tls.crt and
+  # tls.key.
+  additionalOutputFormats:
+    - type: CombinedPEM
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+  dnsNames:
+    - unifi-mongodb
+    - unifi-mongodb.unifi
+    - unifi-mongodb.unifi.svc
+    - unifi-mongodb.unifi.svc.cluster.local
+    - unifi-mongodb-0.unifi-mongodb.unifi.svc.cluster.local
+  issuerRef:
+    name: thecluster.lan
+    kind: ClusterIssuer
+    group: cert-manager.io

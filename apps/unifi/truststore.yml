@@ -1,0 +1,31 @@
+apiVersion: trust.cert-manager.io/v1alpha1
+kind: Bundle
+metadata:
+  name: unifi-truststore
+spec:
+  # The controller validates MongoDB's certificate against the JVM truststore,
+  # and the flags that name one replace the JVM's own rather than adding to
+  # it, so the public CAs have to come along or the controller loses its
+  # outbound HTTPS.
+  sources:
+    - useDefaultCAs: true
+    - secret:
+        name: "thecluster.lan"
+        key: tls.crt
+  target:
+    configMap:
+      key: ca-bundle.pem
+    additionalFormats:
+      pkcs12:
+        key: truststore.p12
+        # A truststore holds no secrets, so the password is a formality; it is
+        # set rather than left empty because a password-less PKCS12 store is
+        # the less travelled path through JSSE.
+        password: changeit
+        # LegacyRC2, the default, is an algorithm current JDKs reject
+        profile: Modern2023
+    # The thecluster-lan-ca Bundle already fans the CA out everywhere. This
+    # one exists for the truststore format, which only unifi wants.
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: unifi

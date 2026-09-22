@@ -19,8 +19,12 @@ spec:
     image:
       repository: quay.io/jetstack/trust-manager
       tag: v0.25.0
+    # An init container carrying Debian's CA certificates, which is what
+    # useDefaultCAs on a Bundle source reads. The unifi truststore needs the
+    # public CAs beside thecluster.lan, since it replaces the JVM's own. The
+    # image version rides along with the chart.
     defaultPackage:
-      enabled: false
+      enabled: true
     resources:
       requests:
         cpu: 25m

@@ -257,3 +257,32 @@ spec:
     - name: infra-configs-rook-ceph-storage
     # httproute.yml is an HTTPRoute against the nginx Gateway in nginx-gateway.
     - name: infra-nginx-gateway
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-unifi
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/unifi
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # mongo-credentials-sealed.yml needs the SealedSecret CRD.
+    - name: infra-sealed-secrets
+    # helm-release.yml renders a LoadBalancer pinned to an address in the
+    # MetalLB pool.
+    - name: infra-configs-metallb
+    # The chart's StatefulSets claim their volumes through standard-rwo.
+    - name: infra-configs-rook-ceph-storage
+    # truststore.yml is a trust.cert-manager.io Bundle, whose CRD and
+    # controller come with the cert-manager directory.
+    - name: infra-cert-manager
+    # Both mongo-certificate.yml and truststore.yml read the thecluster.lan
+    # CA the issuers Kustomization creates, one to issue from and one to
+    # publish.
+    - name: infra-configs-cert-manager
