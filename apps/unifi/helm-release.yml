@@ -17,6 +17,12 @@ spec:
   values:
     database:
       existingSecret: mongo-credentials
+      tls: true
+    # truststore.yml renders this, the public CAs plus thecluster.lan, which
+    # issued the MongoDB certificate the controller has to validate.
+    truststore:
+      existingConfigMap: unifi-truststore
+      password: changeit
     persistence:
       storageClassName: standard-rwo
       accessModes: [ReadWriteOncePod]
@@ -27,6 +33,11 @@ spec:
       limits:
         memory: 3Gi
     mongodb:
+      # mongo-certificate.yml issues the certificate, and its CombinedPEM
+      # output format lands beside the others in the same secret.
+      tls:
+        enabled: true
+        existingSecret: unifi-mongodb-tls
       persistence:
         storageClassName: standard-rwo
         accessModes: [ReadWriteOncePod]

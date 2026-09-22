@@ -3,5 +3,7 @@ kind: Kustomization
 resources:
   - namespace.yml
   - mongo-credentials-sealed.yml
+  - mongo-certificate.yml
+  - truststore.yml
   - helm-repository.yml
   - helm-release.yml

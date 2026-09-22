@@ -279,3 +279,10 @@ spec:
     - name: infra-configs-metallb
     # The chart's StatefulSets claim their volumes through standard-rwo.
     - name: infra-configs-rook-ceph-storage
+    # truststore.yml is a trust.cert-manager.io Bundle, whose CRD and
+    # controller come with the cert-manager directory.
+    - name: infra-cert-manager
+    # Both mongo-certificate.yml and truststore.yml read the thecluster.lan
+    # CA the issuers Kustomization creates, one to issue from and one to
+    # publish.
+    - name: infra-configs-cert-manager
