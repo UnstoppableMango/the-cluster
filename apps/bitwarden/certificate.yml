@@ -24,6 +24,13 @@ spec:
   isCA: true
   commonName: bitwarden-postgres-ca
   secretName: postgres-pki-ca
+  # CNPG watches a Secret it owns, but cert-manager owns this one, so the
+  # operator only reloads the instances on renewal if this label is present.
+  # Without it a renewed certificate sits in the Secret unread until someone
+  # runs `kubectl cnpg reload`, and the instances keep serving the old one.
+  secretTemplate:
+    labels:
+      cnpg.io/reload: "true"
   duration: 43800h0m0s # 5y
   renewBefore: 8760h0m0s # 1y
   issuerRef:
@@ -53,6 +60,11 @@ metadata:
   namespace: bitwarden
 spec:
   secretName: postgres-server-cert
+  # See the CA above. This is the one that matters most: it renews every
+  # 75 days, and an unreloaded expiry breaks every verify-full client.
+  secretTemplate:
+    labels:
+      cnpg.io/reload: "true"
   issuerRef:
     group: cert-manager.io
     kind: Issuer
@@ -88,6 +100,10 @@ metadata:
   namespace: bitwarden
 spec:
   secretName: postgres-replication-cert
+  # See the CA above.
+  secretTemplate:
+    labels:
+      cnpg.io/reload: "true"
   issuerRef:
     group: cert-manager.io
     kind: Issuer
@@ -111,6 +127,9 @@ metadata:
   namespace: bitwarden
 spec:
   secretName: bitwarden-postgres-cert
+  # No cnpg.io/reload here, unlike the three above: this one is mounted
+  # into the bitwarden pods and CNPG never reads it, so there is nothing for
+  # the operator to reload.
   issuerRef:
     group: cert-manager.io
     kind: Issuer
