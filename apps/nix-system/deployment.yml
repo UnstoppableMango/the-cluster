@@ -65,12 +65,27 @@ spec:
             allowPrivilegeEscalation: false
             capabilities:
               drop: [ALL]
+          volumeMounts:
+            - name: postgres-cert
+              mountPath: /etc/ncps/postgres
+              readOnly: true
           env:
+            # No password in the DSN: the ncps role authenticates with the
+            # client certificate mounted at /etc/ncps/postgres, whose CN is the
+            # role name. The host has to be a SAN on postgres-server-cert,
+            # because verify-full matches the certificate against the DSN host.
             - name: CACHE_DATABASE_URL
+              value: >-
+                postgres://ncps@postgres-rw.nix-system.svc.cluster.local:5432/ncps?sslmode=verify-full&sslrootcert=/etc/ncps/postgres/ca.crt&sslcert=/etc/ncps/postgres/tls.crt&sslkey=/etc/ncps/postgres/tls.key
+            # Temporary, until the pg_hba rule requires the certificate. pgx
+            # lets a DSN setting win over the environment, so the connection
+            # presents the certificate either way; this only keeps the password
+            # working while pg_hba still asks for one.
+            - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres-app
-                  key: uri
+                  key: password
       containers:
         - image: kalbasit/ncps:v0.10.0-rc16
           name: ncps
@@ -151,11 +166,16 @@ spec:
             # Each env var is the flag of the same name, minus the leading
             # dashes, upper-cased. Credentials stay out of args so they do not
             # show in `kubectl describe`.
+            # See the init container for why this carries no password.
             - name: CACHE_DATABASE_URL
+              value: >-
+                postgres://ncps@postgres-rw.nix-system.svc.cluster.local:5432/ncps?sslmode=verify-full&sslrootcert=/etc/ncps/postgres/ca.crt&sslcert=/etc/ncps/postgres/tls.crt&sslkey=/etc/ncps/postgres/tls.key
+            # Temporary, dropped with the init container's copy.
+            - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres-app
-                  key: uri
+                  key: password
             - name: CACHE_STORAGE_S3_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
@@ -214,6 +234,9 @@ spec:
             - name: ca
               mountPath: /etc/ncps/ca
               readOnly: true
+            - name: postgres-cert
+              mountPath: /etc/ncps/postgres
+              readOnly: true
       volumes:
         - name: nar-temp-dir
           emptyDir:
@@ -229,3 +252,9 @@ spec:
         - name: ca
           configMap:
             name: thecluster-lan-ca
+        # Group-owned by fsGroup like signing-key. pgx reads sslkey with a
+        # plain os.ReadFile and checks no permissions, so group-read is enough.
+        - name: postgres-cert
+          secret:
+            secretName: ncps-postgres-cert
+            defaultMode: 0440
