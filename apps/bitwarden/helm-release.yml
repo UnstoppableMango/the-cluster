@@ -34,6 +34,76 @@ spec:
       secretName: bitwarden-secret
     database:
       enabled: false
+    # Anchors, aliased into every component that talks to Postgres. The chart
+    # has no value for these keys, so it passes over them.
+    #
+    # No password: the bitwarden role authenticates with the client certificate
+    # certificate.yml issues, whose CN is the role name. The host is a SAN on
+    # postgres-server-cert, which VerifyFull matches the certificate against.
+    #
+    # This arrives as a container env entry, which overrides the same key
+    # delivered by envFrom out of bitwarden-secret, so that sealed secret does
+    # not have to be resealed. Its connectionString value is dead weight after
+    # this; the other keys in it (installation id and key, SMTP credentials)
+    # exist only as ciphertext, so rewriting it would mean re-sourcing them.
+    _postgresConnection: &postgresConnection
+      name: globalSettings__postgreSql__connectionString
+      value: >-
+        Host=postgres-rw.bitwarden.svc.cluster.local;Port=5432;Database=bitwarden;Username=bitwarden;SSL Mode=VerifyFull;Root Certificate=/etc/bitwarden/postgres/ca.crt;SSL Certificate=/etc/bitwarden/postgres/tls.crt;SSL Key=/etc/bitwarden/postgres/tls.key
+    _postgresVolume: &postgresVolume
+      name: postgres-cert
+      secret:
+        secretName: bitwarden-postgres-cert
+        defaultMode: 0440
+    _postgresMount: &postgresMount
+      name: postgres-cert
+      mountPath: /etc/bitwarden/postgres
+      readOnly: true
+    # 0440 leaves the file root-owned and group-readable, and the chart sets no
+    # pod security context, so without an fsGroup the group stays root and a
+    # non-root container cannot read the key. Npgsql itself checks no
+    # permissions.
+    _postgresSecurityContext: &postgresSecurityContext
+      fsGroup: 1000
+    component:
+      # Runs the EF migrations: for databaseProvider postgres the chart renders
+      # both db-migrator Jobs empty and leaves the schema to this component.
+      admin:
+        extraEnv: [*postgresConnection]
+        extraVolumes: [*postgresVolume]
+        extraVolumeMounts: [*postgresMount]
+        podSecurityContext: *postgresSecurityContext
+      api:
+        extraEnv: [*postgresConnection]
+        extraVolumes: [*postgresVolume]
+        extraVolumeMounts: [*postgresMount]
+        podSecurityContext: *postgresSecurityContext
+      events:
+        extraEnv: [*postgresConnection]
+        extraVolumes: [*postgresVolume]
+        extraVolumeMounts: [*postgresMount]
+        podSecurityContext: *postgresSecurityContext
+      identity:
+        extraEnv: [*postgresConnection]
+        extraVolumes: [*postgresVolume]
+        extraVolumeMounts: [*postgresMount]
+        podSecurityContext: *postgresSecurityContext
+      notifications:
+        extraEnv: [*postgresConnection]
+        extraVolumes: [*postgresVolume]
+        extraVolumeMounts: [*postgresMount]
+        podSecurityContext: *postgresSecurityContext
+      scim:
+        extraEnv: [*postgresConnection]
+        extraVolumes: [*postgresVolume]
+        extraVolumeMounts: [*postgresMount]
+        podSecurityContext: *postgresSecurityContext
+      sso:
+        extraEnv: [*postgresConnection]
+        extraVolumes: [*postgresVolume]
+        extraVolumeMounts: [*postgresMount]
+        podSecurityContext: *postgresSecurityContext
+      # attachments, icons, and web do not reach Postgres.
     # Every long-running Deployment is sized by the chart; the setup job's
     # containers are the ones it leaves empty.
     jobs:
