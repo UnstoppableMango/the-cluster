@@ -1,0 +1,147 @@
+# A CA scoped to this database. Chaining it off thecluster.io would put the root
+# in ca.crt, and Postgres would then accept any cluster-issued cert as a client.
+#
+# The secret names carry a suffix rather than matching apps/keycloak, which uses
+# postgres-ca, postgres-server, and postgres-replication. Those are the names
+# CNPG generates for a Cluster named postgres, and it takes them whenever it
+# reconciles a cluster that does not already point elsewhere. Its postgres-ca is
+# type Opaque, a type cert-manager cannot write over, and Secret.type is
+# immutable.
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: postgres-selfsigned
+  namespace: gitea
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: postgres-pki-ca
+  namespace: gitea
+spec:
+  isCA: true
+  commonName: gitea-postgres-ca
+  secretName: postgres-pki-ca
+  # CNPG watches a Secret it owns, but cert-manager owns this one, so the
+  # operator only reloads the instances on renewal if this label is present.
+  # Without it a renewed certificate sits in the Secret unread until someone
+  # runs `kubectl cnpg reload`, and the instances keep serving the old one.
+  secretTemplate:
+    labels:
+      cnpg.io/reload: "true"
+  duration: 43800h0m0s # 5y
+  renewBefore: 8760h0m0s # 1y
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: postgres-selfsigned
+  subject:
+    organizations:
+      - unmango
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: postgres
+  namespace: gitea
+spec:
+  ca:
+    secretName: postgres-pki-ca
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: postgres-server-cert
+  namespace: gitea
+spec:
+  secretName: postgres-server-cert
+  # See the CA above. This is the one that matters most: it renews every
+  # 75 days, and an unreloaded expiry breaks every verify-full client.
+  secretTemplate:
+    labels:
+      cnpg.io/reload: "true"
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: postgres
+  duration: 2160h0m0s # 90d
+  renewBefore: 360h0m0s # 15d
+  commonName: postgres-rw
+  usages:
+    - server auth
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 2048
+    rotationPolicy: Always
+  dnsNames:
+    - postgres-rw
+    - postgres-rw.gitea
+    - postgres-rw.gitea.svc
+    - postgres-rw.gitea.svc.cluster.local
+    - postgres-ro
+    - postgres-ro.gitea
+    - postgres-ro.gitea.svc
+    - postgres-ro.gitea.svc.cluster.local
+    - postgres-r
+    - postgres-r.gitea
+    - postgres-r.gitea.svc
+    - postgres-r.gitea.svc.cluster.local
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: postgres-replication-cert
+  namespace: gitea
+spec:
+  secretName: postgres-replication-cert
+  # See the CA above.
+  secretTemplate:
+    labels:
+      cnpg.io/reload: "true"
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: postgres
+  duration: 2160h0m0s # 90d
+  renewBefore: 360h0m0s # 15d
+  # CNPG requires the replication client certificate to be issued to this exact user
+  commonName: streaming_replica
+  usages:
+    - client auth
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 2048
+    rotationPolicy: Always
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: gitea-postgres
+  namespace: gitea
+spec:
+  secretName: gitea-postgres-cert
+  # No cnpg.io/reload here, unlike the three above: this one is mounted
+  # into the gitea pods and CNPG never reads it, so there is nothing for
+  # the operator to reload.
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: postgres
+  duration: 2160h0m0s # 90d
+  renewBefore: 360h0m0s # 15d
+  # The CN is the Postgres role Gitea authenticates as
+  commonName: gitea
+  usages:
+    - client auth
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 2048
+    rotationPolicy: Always

@@ -5,6 +5,21 @@ metadata:
   namespace: gitea
 spec:
   instances: 1
+  # certificate.yml issues all four. Serving and client verification share one
+  # CA because the client certificates chain to it, and CNPG reads the chain
+  # out of the ca.crt cert-manager writes beside the certificate.
+  certificates:
+    serverCASecret: postgres-pki-ca
+    serverTLSSecret: postgres-server-cert
+    clientCASecret: postgres-pki-ca
+    replicationTLSSecret: postgres-replication-cert
+  postgresql:
+    # CNPG appends `host all all all scram-sha-256` after this, and the first
+    # match wins, so an SSL connection as gitea can no longer fall back to the
+    # password below. The appended line still answers a non-SSL connection,
+    # which is what keeps pg-credentials useful as a break-glass login.
+    pg_hba:
+      - hostssl gitea gitea all cert
   storage:
     storageClass: ssd-rbd
     size: 5Gi

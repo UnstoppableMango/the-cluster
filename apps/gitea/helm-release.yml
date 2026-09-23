@@ -34,15 +34,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: gitea
-  valuesFrom:
-    - kind: Secret
-      name: pg-credentials
-      valuesKey: username
-      targetPath: gitea.config.database.USER
-    - kind: Secret
-      name: pg-credentials
-      valuesKey: password
-      targetPath: gitea.config.database.PASSWD
   values:
     image:
       registry: docker.gitea.com
@@ -51,6 +42,37 @@ spec:
     replicaCount: 1
     strategy:
       type: Recreate
+    deployment:
+      # Gitea's [database] section has no SSLCERT/SSLKEY keys, but it reaches
+      # Postgres through lib/pq, whose connector reads these three off the
+      # environment. This list lands on the init containers as well as the
+      # gitea container, which it has to: configure-gitea connects to the
+      # database too.
+      env:
+        - name: PGSSLROOTCERT
+          value: /etc/gitea/postgres/ca.crt
+        - name: PGSSLCERT
+          value: /etc/gitea/postgres/tls.crt
+        - name: PGSSLKEY
+          value: /etc/gitea/postgres/tls.key
+    extraVolumes:
+      # 0440 is load-bearing. lib/pq rejects an sslkey more permissive than
+      # 0640 when it is root-owned, which is what a secret volume under
+      # fsGroup 1000 gives; the chart's 0644 default trips
+      # ErrSSLKeyHasWorldPermissions.
+      - name: postgres-cert
+        secret:
+          secretName: gitea-postgres-cert
+          defaultMode: 0440
+    # Split rather than the deprecated extraVolumeMounts.
+    extraContainerVolumeMounts:
+      - name: postgres-cert
+        mountPath: /etc/gitea/postgres
+        readOnly: true
+    extraInitVolumeMounts:
+      - name: postgres-cert
+        mountPath: /etc/gitea/postgres
+        readOnly: true
     # The chart sizes its init containers and leaves the gitea container empty.
     # No CPU limit: a clone or a `git gc` is bursty and throttling it stalls the
     # push that triggered it.
@@ -90,9 +112,14 @@ spec:
           START_SSH_SERVER: true
         database:
           DB_TYPE: postgres
+          # A SAN on postgres-server-cert; verify-full matches the certificate
+          # against this host.
           HOST: postgres-rw.gitea.svc.cluster.local:5432
           NAME: gitea
-          SSL_MODE: disable
+          # No PASSWD: the role authenticates with the client certificate
+          # mounted at /etc/gitea/postgres, whose CN is this user.
+          USER: gitea
+          SSL_MODE: verify-full
         cache:
           ADAPTER: redis
           HOST: redis://redis.gitea.svc.cluster.local:6379/0
