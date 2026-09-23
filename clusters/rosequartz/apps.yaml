@@ -17,6 +17,10 @@ spec:
     - name: infra-configs-rook-ceph-storage
     # postgres-cluster.yml is a postgresql.cnpg.io Cluster.
     - name: infra-cnpg-system
+    # certificate.yml is namespace-local Issuer and Certificate objects. The
+    # issuers are scoped to this namespace, so the ClusterIssuers that
+    # infra-configs-cert-manager ships are not in the path.
+    - name: infra-cert-manager
     # deployment.yml mounts ConfigMap thecluster-lan-ca to trust the RGW
     # certificate, and a pod cannot start on a ConfigMap that is not there.
     - name: infra-configs-trust-bundle
