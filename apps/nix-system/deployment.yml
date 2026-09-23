@@ -77,15 +77,6 @@ spec:
             - name: CACHE_DATABASE_URL
               value: >-
                 postgres://ncps@postgres-rw.nix-system.svc.cluster.local:5432/ncps?sslmode=verify-full&sslrootcert=/etc/ncps/postgres/ca.crt&sslcert=/etc/ncps/postgres/tls.crt&sslkey=/etc/ncps/postgres/tls.key
-            # Temporary, until the pg_hba rule requires the certificate. pgx
-            # lets a DSN setting win over the environment, so the connection
-            # presents the certificate either way; this only keeps the password
-            # working while pg_hba still asks for one.
-            - name: PGPASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-app
-                  key: password
       containers:
         - image: kalbasit/ncps:v0.10.0-rc16
           name: ncps
@@ -170,12 +161,6 @@ spec:
             - name: CACHE_DATABASE_URL
               value: >-
                 postgres://ncps@postgres-rw.nix-system.svc.cluster.local:5432/ncps?sslmode=verify-full&sslrootcert=/etc/ncps/postgres/ca.crt&sslcert=/etc/ncps/postgres/tls.crt&sslkey=/etc/ncps/postgres/tls.key
-            # Temporary, dropped with the init container's copy.
-            - name: PGPASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-app
-                  key: password
             - name: CACHE_STORAGE_S3_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:

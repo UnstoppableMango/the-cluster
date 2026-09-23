@@ -1,7 +1,8 @@
 # ncps keeps narinfos and the NAR index in this database; only NAR bodies go
-# to the bucket. CNPG generates the ncps role's password and publishes the
-# connection string as Secret postgres-app, key uri, which deployment.yml
-# reads, so there is no credential to seal.
+# to the bucket. It authenticates with the client certificate certificate.yml
+# issues, so there is no credential to seal. CNPG still generates the role's
+# password and publishes it as Secret postgres-app; nothing reads it, and it
+# survives as the break-glass login over a non-SSL connection.
 #
 # Two instances so a node loss fails over instead of waiting on the RBD
 # image to reattach. The data is small: metadata for at most 180G of NARs.
