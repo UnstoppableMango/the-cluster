@@ -29,6 +29,13 @@ spec:
     serverTLSSecret: postgres-server-cert
     clientCASecret: postgres-pki-ca
     replicationTLSSecret: postgres-replication-cert
+  postgresql:
+    # CNPG appends `host all all all scram-sha-256` after this, and the first
+    # match wins, so an SSL connection as ncps can no longer fall back to the
+    # password. The appended line still answers a non-SSL connection, which is
+    # the break-glass path for psql.
+    pg_hba:
+      - hostssl ncps ncps all cert
   storage:
     storageClass: ssd-rbd
     size: 10Gi
