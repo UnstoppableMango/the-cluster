@@ -1,5 +1,7 @@
 # THECLUSTER
 
+[![Hercules CI](https://hercules-ci.com/api/v1/site/github/account/UnstoppableMango/project/the-cluster/badge)](https://hercules-ci.com/github/UnstoppableMango/the-cluster)
+
 UnstoppableMango's homelab infrastructure.
 Built on [Kubernetes](https://kubernetes.io) and deployed with [Flux](https://fluxcd.io).
 
