@@ -115,8 +115,6 @@ metadata:
   name: apps-claude
   namespace: flux-system
 spec:
-  # Suspended until ghcr.io/unstoppablemango/dotfiles/container is published.
-  suspend: true
   sourceRef:
     kind: GitRepository
     name: flux-system

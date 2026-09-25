@@ -24,7 +24,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: claude
-          image: ghcr.io/unstoppablemango/dotfiles:7b2e39b
+          image: ghcr.io/unstoppablemango/dotfiles:4b49f76
           command: ["claude", "remote-control"]
           workingDir: /home/erik
           # remote-control exits when stdin closes.
