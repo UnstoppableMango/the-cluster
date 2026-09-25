@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: unmango/actions/setup-nix@3ec4ed5a6af9c00f6a39e079df488573c77ebda6 # v1.0.1
+      - uses: unmango/actions/setup-nix@c984cd3bb34111da20c9366bc2beb72674960f64 # v1.1.0
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
           extra_nix_config: |
