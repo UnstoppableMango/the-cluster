@@ -57,7 +57,7 @@ spec:
             # into an OOM kill of cp and a failed pod. Sized above the copy so
             # the whole thing can sit dirty.
             - name: init-dind-externals
-              image: ghcr.io/unmango/actions-runner:2.337.0@sha256:7871210f6be2fd471a21b199922b9067c0f5da15e31987dd84f29d97690a2a90
+              image: ghcr.io/unmango/actions-runner:2.337.0@sha256:3971e7dcdb0d06146bb83e7860f8c33243c88f576c77b1753bf7b564ebdedbbe
               command: [cp, -r, /home/runner/externals/., /home/runner/tmpDir/]
               resources:
                 requests:
@@ -84,7 +84,7 @@ spec:
             # native sidecar that kubelet waits on before running any later init
             # container. This one has no reason to wait for dockerd.
             - name: init-nix
-              image: ghcr.io/unmango/actions-runner:2.337.0@sha256:7871210f6be2fd471a21b199922b9067c0f5da15e31987dd84f29d97690a2a90
+              image: ghcr.io/unmango/actions-runner:2.337.0@sha256:3971e7dcdb0d06146bb83e7860f8c33243c88f576c77b1753bf7b564ebdedbbe
               command: [sh, -c, 'chown runner:runner /nix && chmod 00755 /nix']
               securityContext:
                 runAsUser: 0
@@ -136,7 +136,7 @@ spec:
                   mountPath: /home/runner/externals
           containers:
             - name: runner
-              image: ghcr.io/unmango/actions-runner:2.337.0@sha256:7871210f6be2fd471a21b199922b9067c0f5da15e31987dd84f29d97690a2a90
+              image: ghcr.io/unmango/actions-runner:2.337.0@sha256:3971e7dcdb0d06146bb83e7860f8c33243c88f576c77b1753bf7b564ebdedbbe
               command: [/home/runner/run.sh]
               env:
                 # ncps binary cache, reachable in-cluster only. The image's nix
