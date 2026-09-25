@@ -1,0 +1,14 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: knot-master-key
+  namespace: knot
+spec:
+  encryptedData:
+    master-key: AgDRob2TBzAGwNcpNHCAcsBOT2ECtY1a6WI8bYZhIjA9RSyRC7nHqsNpYUHH+U6wK2xKGRzGN3gTR9Z9b83apBx1q0xKKQ74Owb70FpRcRa9+q/4We1ipOD7YVlwD+BhWJYD0CrqofUCUgkZ2YajtLtaNSz+QUnqYJih/NCFVtcotfKGudr4+oBSJ+GSx338ZmaHMtwJNmFVtwrGXUnMb9MkcDMucTOkLXe21+E1NDNxAVjFF8KQTPco7buoY/0g4lN3sFdpxFBRobDm3GOoCyImrWV1nlr2s+tFC0Sr6gk20PEINyztATHEq2GVcmnC7Zy21LVRGD1dpraQHtex0NYD7LnyC7UsTqm7p22LPkDZdF6SKMFnH7EogF0vm/bUcDb+fhn6fiag0wzPtPf2oNxt76GiDzSY+ABk8FYiapEOt9HuT0DsxoPPLd0sWIs5uRtItyrAqNUAuSsNksOS+9f7JQJ++mEP/XyUXZpdYGsyctOHryUlGnXKkRoPiby3/OWK+iH6WA87WH3F/DZN/u75ATQ8Vt04O6gHMJU7Gjekp+6IvMgq8XaJ6XMlB4DzEkCYzJQY6v/0r3pLEIi/lxX5oqKjkTi3kECxVXHsDUy1oMMqL3rcsYudkwPfTKSwcvW3SLYH8TzDeO5vVX4M8QavXk/bHvcvUuBlM5jF5MzuOiJeYbZu6ktLDSqoHGwtivSGaSkdJ3eOe9NIYsvgFYZFQG0xgX7Q42sRmjfOGnBqJKCmiDqtSLpLv9sYVg==
+  template:
+    metadata:
+      name: knot-master-key
+      namespace: knot
+    type: Opaque

@@ -1,0 +1,53 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: knot
+  namespace: knot
+spec:
+  interval: 10m
+  releaseName: knot
+  targetNamespace: knot
+  chart:
+    spec:
+      chart: knot
+      version: 0.1.0
+      sourceRef:
+        kind: HelmRepository
+        name: unmango-charts
+  values:
+    # The knot's identity is did:web:<hostname>, so this cannot change once
+    # the knot is registered on the appview.
+    hostname: knot.thecluster.io
+    admins:
+      - did:plc:npefy3bubltqewdfhah5i5ef
+    # Back the key up outside the cluster: without it the sealed key store
+    # on the state volume is unreadable.
+    masterKey:
+      existingSecret: knot-master-key
+    # Set by the Cloudflare tunnel. The HTTP Service is ClusterIP, so only
+    # in-cluster peers could forge it.
+    trustedProxyHeader: cf-connecting-ip
+    persistence:
+      repos:
+        storageClassName: standard-rwo
+        accessModes: [ReadWriteOncePod]
+      state:
+        storageClassName: standard-rwo
+        accessModes: [ReadWriteOncePod]
+    # The tunnel only carries HTTP, so SSH gets its own address. It is
+    # LAN-only until port 22 is forwarded to it.
+    ssh:
+      service:
+        type: LoadBalancer
+        annotations:
+          metallb.io/loadBalancerIPs: 10.0.69.210
+    # The tunnel controller creates the DNS record and terminates TLS.
+    ingress:
+      enabled: true
+      ingressClassName: cloudflare-tunnel
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
