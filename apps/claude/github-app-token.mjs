@@ -3,6 +3,13 @@
 // Installation tokens expire after an hour, so this mints a fresh one ahead
 // of each expiry and writes it where gh reads its login.
 //
+// An installation token covers one account, and the App is installed on
+// several. gh holds the primary installation's token, the one the secret
+// names. Every installation's token is also written to a file named for its
+// account, and git reads each other account's file through a credential entry
+// scoped to https://github.com/<account>. For gh against another account, run
+// it with GH_TOKEN set from that file.
+//
 // Node rather than a shell script because the image has no openssl or curl,
 // and node:crypto can sign the RS256 JWT the App authenticates with.
 import { execFileSync } from "node:child_process";
@@ -16,6 +23,7 @@ const home = process.env.HOME;
 const hostsFile = join(home, ".config/gh/hosts.yml");
 // The seam dotfiles' git module includes for machine-local config.
 const gitLocalConfig = join(home, ".config/git/config.local");
+const tokenDir = join(home, ".local/state/github-app");
 
 const refreshBefore = 15 * 60 * 1000;
 const retryAfter = 60 * 1000;
@@ -73,14 +81,31 @@ function writeHosts(login, token) {
 	].join("\n"));
 }
 
+const gitConfig = (...args) => execFileSync("git", ["config", "--file", gitLocalConfig, ...args]);
+
+// The empty helper clears the list git has built so far, so gh's token for the
+// primary account is never offered to this one.
+const credentialsWritten = new Set();
+function writeCredential(account, tokenFile) {
+	if (credentialsWritten.has(account)) return;
+	const key = `credential.https://github.com/${account}.helper`;
+	try {
+		gitConfig("--unset-all", key);
+	} catch {
+		// Not set yet.
+	}
+	gitConfig("--add", key, "");
+	gitConfig("--add", key, `!f() { echo username=x-access-token; echo "password=$(cat ${tokenFile})"; }; f`);
+	credentialsWritten.add(account);
+}
+
 // The noreply address is what links a commit to the bot account on GitHub,
 // and its numeric prefix is the bot user's id, not the App's.
 async function writeIdentity(login, token) {
 	const user = await github("GET", `/users/${encodeURIComponent(login)}`, token);
 	mkdirSync(dirname(gitLocalConfig), { recursive: true });
-	const set = (key, value) => execFileSync("git", ["config", "--file", gitLocalConfig, key, value]);
-	set("user.name", "Claude");
-	set("user.email", `${user.id}+${login}@users.noreply.github.com`);
+	gitConfig("user.name", "Claude");
+	gitConfig("user.email", `${user.id}+${login}@users.noreply.github.com`);
 	console.log(`git identity: Claude <${user.id}+${login}@users.noreply.github.com>`);
 }
 
@@ -90,18 +115,26 @@ for (;;) {
 	try {
 		const jwt = appJwt();
 		login ??= `${(await github("GET", "/app", jwt)).slug}[bot]`;
-		const { token, expires_at } = await github(
-			"POST",
-			`/app/installations/${installationId}/access_tokens`,
-			jwt,
-		);
-		writeHosts(login, token);
-		if (!identityWritten) {
-			await writeIdentity(login, token);
-			identityWritten = true;
+		// Listed every round, so an account the App is newly installed on is
+		// picked up within the hour.
+		const installations = await github("GET", "/app/installations?per_page=100", jwt);
+		let expiry = Infinity;
+		for (const { id, account } of installations) {
+			const { token, expires_at } = await github("POST", `/app/installations/${id}/access_tokens`, jwt);
+			const tokenFile = join(tokenDir, account.login);
+			writeAtomic(tokenFile, `${token}\n`);
+			if (String(id) === installationId) {
+				writeHosts(login, token);
+				if (!identityWritten) {
+					await writeIdentity(login, token);
+					identityWritten = true;
+				}
+			} else {
+				writeCredential(account.login, tokenFile);
+			}
+			expiry = Math.min(expiry, Date.parse(expires_at));
+			console.log(`token for ${account.login} expires ${expires_at}`);
 		}
-		const expiry = Date.parse(expires_at);
-		console.log(`token for ${login} expires ${expires_at}`);
 		await sleep(Math.max(expiry - Date.now() - refreshBefore, retryAfter));
 	} catch (err) {
 		console.error(err.message);
