@@ -127,6 +127,8 @@ spec:
     - name: infra-sealed-secrets
     # pvc.yml binds through storageClassName: fast-rwo.
     - name: infra-configs-rook-ceph-storage
+    # deployment.yml runs dind under runtimeClassName: nested-containers.
+    - name: infra-configs-nested-containers
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

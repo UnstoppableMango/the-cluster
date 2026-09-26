@@ -22,6 +22,8 @@ spec:
       # Pod uids map to an unprivileged host range, so root in any container
       # here, including the build daemons, is not root on gaea.
       hostUsers: false
+      # dind needs a writable /sys/fs/cgroup; see docs/nested-containers.md.
+      runtimeClassName: nested-containers
       automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
@@ -38,8 +40,7 @@ spec:
         # It runs as root with every capability and no seccomp or AppArmor
         # filter, which is what dind needs, but hostUsers: false makes all of
         # it namespaced: root here is an unprivileged uid on gaea, and the
-        # capabilities reach only this pod's namespaces. privileged would
-        # expose the host's devices, so it stays off.
+        # capabilities reach only this pod's namespaces.
         - name: dind
           image: docker:29.8.1-dind@sha256:3f3c01aaaebf7cce837356b688b7c059a4749f10bd7660dec7c58fc454a283f0
           args:
