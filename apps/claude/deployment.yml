@@ -16,6 +16,12 @@ spec:
       labels:
         app.kubernetes.io/name: claude
     spec:
+      # Builds and nix evaluations need the memory headroom only gaea has.
+      nodeSelector:
+        kubernetes.io/hostname: gaea
+      # Pod uids map to an unprivileged host range, so root in any container
+      # here, including the build daemons, is not root on gaea.
+      hostUsers: false
       automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
