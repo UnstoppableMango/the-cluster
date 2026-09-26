@@ -71,6 +71,8 @@ There is one pattern rule per top-level manifest directory rather than a bare `%
   Never `unsafe-rbd`, `ssd-rbd`, `ec-cephfs`, `default-cephfs`, or `ceph-bucket`: those are deprecated aliases kept only because a bound claim's `storageClassName` is immutable.
   Copying an existing manifest carries a deprecated name along with it, so check the class before reusing one.
   The tier says how much loss the claim tolerates and whether the mount is shared; `docs/storage.md` has the pool behind each class and the replacement for each deprecated one.
+- **Nested containers:** a pod that runs its own container runtime (dind, podman, buildkitd, kind) sets `runtimeClassName: nested-containers` and `hostUsers: false` rather than `privileged: true`.
+  An admission policy enforces both; `docs/nested-containers.md` has the dind recipe.
 - **Resources:** every container declares a CPU request, a memory request, and a memory limit.
   Requests track measured steady-state usage rounded up, floored at 10m CPU and 32Mi; memory limits sit at two to three times the observed peak.
   Add a CPU limit only where throttling is acceptable, and omit it on anything holding a leader lease or serving a dataplane.
