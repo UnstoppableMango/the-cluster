@@ -16,28 +16,65 @@
 {{- fail (printf "scaleSets[%d].name %q resolves to namespace %q, already claimed by %q. Set an explicit namespace on one of them." $i $name $namespace (get $claimed $namespace)) }}
 {{- end }}
 {{- $_ := set $claimed $namespace $name }}
-{{- $values := mergeOverwrite (deepCopy $.Values.defaults) (omit $scaleSet "name" "helmReleaseName" "namespace" "nixStorageSize") }}
+{{- $values := mergeOverwrite (deepCopy $.Values.defaults) (omit $scaleSet "name" "helmReleaseName" "namespace" "nixStorageSize" "nixStore") }}
 {{- $_ := set $values "namespaceOverride" $namespace }}
 {{- $_ := set $values "runnerScaleSetName" $scaleSetName }}
+{{- $spec := dig "template" "spec" dict $values }}
 {{- /*
-  nixStorageSize resizes the nix volume without restating the whole volumes
-  list. mergeOverwrite replaces lists wholesale, so an entry that wanted a
-  bigger store otherwise had to repeat every volume the defaults declare, and
-  dropping one leaves its volumeMount dangling and the pod unschedulable.
-
-  Transitional. The store is moving off this per-pod PVC onto a node-local
-  directory, and this option goes with it.
+  Both options below edit the nix volume in place rather than making an entry
+  restate template.spec. mergeOverwrite replaces lists wholesale, so an entry
+  supplying its own volumes drops the other three and leaves their volumeMounts
+  dangling, and one supplying its own initContainers drops dind.
 */}}
-{{- if $scaleSet.nixStorageSize }}
+{{- $nixStore := default (default "ephemeral" $.Values.nixStore) $scaleSet.nixStore }}
+{{- if not (has $nixStore (list "ephemeral" "node")) }}
+{{- fail (printf "scaleSets[%d] (%s) sets nixStore %q; it is either \"ephemeral\" or \"node\"." $i $name $nixStore) }}
+{{- end }}
 {{- $nixVolume := "" }}
-{{- range $volume := (dig "template" "spec" "volumes" list $values) }}
+{{- range $volume := (dig "volumes" list $spec) }}
 {{- if eq (dig "name" "" $volume) "nix" }}
 {{- $nixVolume = $volume }}
 {{- end }}
 {{- end }}
-{{- if not $nixVolume }}
-{{- fail (printf "scaleSets[%d] (%s) sets nixStorageSize, but no volume named \"nix\" survived the merge into template.spec.volumes. An entry supplying its own volumes list replaces the defaults wholesale; either include a nix volume there or drop nixStorageSize." $i $name) }}
+{{- if and (ne $nixStore "ephemeral") (not $nixVolume) }}
+{{- fail (printf "scaleSets[%d] (%s) sets nixStore, but no volume named \"nix\" survived the merge into template.spec.volumes." $i $name) }}
 {{- end }}
+
+{{- if eq $nixStore "node" }}
+{{- if $scaleSet.nixStorageSize }}
+{{- fail (printf "scaleSets[%d] (%s) sets both nixStore: node and nixStorageSize. The node store is a directory the node declares, and nothing here sizes it." $i $name) }}
+{{- end }}
+{{- /*
+  The directory the node prepares, shared by every runner on it, so a closure
+  another pod already realised is there rather than refetched from ncps.
+
+  `type: Directory` rather than DirectoryOrCreate: kubelet would create a
+  missing path as root, which the runner cannot write to. Failing the mount
+  says the node has not been built with the store instead.
+*/}}
+{{- $_ := set $nixVolume "hostPath" (dict "path" $.Values.nodeStore.path "type" "Directory") }}
+{{- $_ := unset $nixVolume "ephemeral" }}
+{{- /*
+  init-nix exists to take ownership of a freshly provisioned CSI volume. The
+  node owns this directory, so the entry drops both the container and the root
+  it ran as.
+*/}}
+{{- $initContainers := list }}
+{{- range $container := (dig "initContainers" list $spec) }}
+{{- if ne (dig "name" "" $container) "init-nix" }}
+{{- $initContainers = append $initContainers $container }}
+{{- end }}
+{{- end }}
+{{- $_ := set $spec "initContainers" $initContainers }}
+{{- /*
+  Only a node carrying the store can run these, and the store is what makes
+  one job's work worth anything to the next, so keep them on the same few.
+  An entry's own nodeSelector wins on a shared key.
+*/}}
+{{- $_ := set $spec "nodeSelector" (mergeOverwrite (deepCopy $.Values.nodeStore.selector) (dig "nodeSelector" dict $spec)) }}
+{{- end }}
+
+{{- if and (eq $nixStore "ephemeral") $scaleSet.nixStorageSize }}
 {{- $requests := dig "ephemeral" "volumeClaimTemplate" "spec" "resources" "requests" "" $nixVolume }}
 {{- if not $requests }}
 {{- fail (printf "scaleSets[%d] (%s) sets nixStorageSize, but the \"nix\" volume is not an ephemeral claim with spec.resources.requests. nixStorageSize only sizes an ephemeral volumeClaimTemplate." $i $name) }}
