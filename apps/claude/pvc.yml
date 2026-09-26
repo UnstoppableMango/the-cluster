@@ -10,3 +10,17 @@ spec:
   resources:
     requests:
       storage: 20Gi
+---
+# dockerd's images, layers and build cache. Losing it costs a re-pull.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: docker
+  namespace: claude
+spec:
+  storageClassName: fast-rwo
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi

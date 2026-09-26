@@ -28,6 +28,53 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+        # Only the volume root is regrouped, not every file in dockerd's store.
+        fsGroupChangePolicy: OnRootMismatch
+      initContainers:
+        # dockerd for the docker CLI, compose, buildx, kind and testcontainers.
+        # It runs as root with every capability and no seccomp or AppArmor
+        # filter, which is what dind needs, but hostUsers: false makes all of
+        # it namespaced: root here is an unprivileged uid on gaea, and the
+        # capabilities reach only this pod's namespaces. privileged would
+        # expose the host's devices, so it stays off.
+        - name: dind
+          image: docker:29.8.1-dind@sha256:3f3c01aaaebf7cce837356b688b7c059a4749f10bd7660dec7c58fc454a283f0
+          args:
+            - dockerd
+            - --host=unix:///run/docker/docker.sock
+            - --group=1000
+          restartPolicy: Always
+          startupProbe:
+            exec:
+              command: [docker, --host=unix:///run/docker/docker.sock, info]
+            failureThreshold: 24
+            periodSeconds: 5
+            timeoutSeconds: 5
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+            runAsNonRoot: false
+            allowPrivilegeEscalation: true
+            capabilities:
+              add: ["ALL"]
+            seccompProfile:
+              type: Unconfined
+            appArmorProfile:
+              type: Unconfined
+            # Nested containers mount a /proc of their own, which the masked
+            # default /proc forbids.
+            procMount: Unmasked
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              memory: 16Gi
+          volumeMounts:
+            - name: docker
+              mountPath: /var/lib/docker
+            - name: docker-sock
+              mountPath: /run/docker
       containers:
         - name: claude
           image: ghcr.io/unstoppablemango/dotfiles:5663908
@@ -38,6 +85,9 @@ spec:
           args: ["claude", "remote-control"]
           # Trust is never saved for the home directory itself, so rc needs a subdirectory.
           workingDir: /home/generic/src
+          env:
+            - name: DOCKER_HOST
+              value: unix:///run/docker/docker.sock
           # remote-control exits when stdin closes.
           stdin: true
           tty: true
@@ -56,6 +106,8 @@ spec:
             # This hides the home-manager dotfiles the image ships there.
             - name: home
               mountPath: /home/generic
+            - name: docker-sock
+              mountPath: /run/docker
         # Keeps gh, and git through it, logged in as the GitHub App. Only this
         # container mounts the App's private key; claude sees hour-long tokens.
         - name: github-app-token
@@ -86,6 +138,11 @@ spec:
         - name: home
           persistentVolumeClaim:
             claimName: home
+        - name: docker
+          persistentVolumeClaim:
+            claimName: docker
+        - name: docker-sock
+          emptyDir: {}
         - name: github-app-token
           configMap:
             name: github-app-token
