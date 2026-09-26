@@ -28,7 +28,8 @@ spec:
           # remote-control rejects CLAUDE_CODE_OAUTH_TOKEN (inference-only scope).
           # It reads the full-scope login that `claude auth login` writes to the home volume.
           command: ["claude", "remote-control"]
-          workingDir: /home/generic
+          # Trust is never saved for the home directory itself, so rc needs a subdirectory.
+          workingDir: /home/generic/src
           # remote-control exits when stdin closes.
           stdin: true
           tty: true
