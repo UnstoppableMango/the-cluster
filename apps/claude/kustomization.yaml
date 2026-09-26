@@ -5,6 +5,7 @@ resources:
   - github-app-sealed.yml
   - namespace.yml
   - pvc.yml
+  - rbac.yml
 # Generated so the name carries a content hash: editing the script rolls the
 # pod, where a plain ConfigMap would leave the old one running.
 configMapGenerator:
