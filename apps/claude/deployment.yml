@@ -24,7 +24,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: claude
-          image: ghcr.io/unstoppablemango/dotfiles:4b49f76
+          image: ghcr.io/unstoppablemango/dotfiles:5663908
           # remote-control rejects CLAUDE_CODE_OAUTH_TOKEN (inference-only scope).
           # It reads the full-scope login that `claude auth login` writes to the home volume.
           # args, not command: command would replace the image's entrypoint,
@@ -53,7 +53,7 @@ spec:
         # Keeps gh, and git through it, logged in as the GitHub App. Only this
         # container mounts the App's private key; claude sees hour-long tokens.
         - name: github-app-token
-          image: ghcr.io/unstoppablemango/dotfiles:4b49f76
+          image: ghcr.io/unstoppablemango/dotfiles:5663908
           # command skips the entrypoint on purpose: the claude container already
           # links the home files, and two putter runs would race on its state file.
           command: ["node", "/opt/github-app-token/github-app-token.mjs"]
