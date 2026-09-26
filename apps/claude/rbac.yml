@@ -1,0 +1,100 @@
+# Claude's identity in the cluster: read everything except Secrets. The pod
+# mounts this account's token into the claude container only, so the sidecars
+# hold no API credentials.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: claude
+  namespace: claude
+automountServiceAccountToken: false
+---
+# Namespaced reads. The built-in view role leaves out Secrets, pods/exec,
+# pods/attach, pods/portforward and serviceaccounts/token, and CRDs aggregate
+# their own kinds into it.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: claude-view
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view
+subjects:
+  - kind: ServiceAccount
+    name: claude
+    namespace: claude
+---
+# Cluster-scoped kinds, which view does not cover. Every group is named: a
+# wildcard on the core group would take in Secrets.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: claude-cluster-read
+rules:
+  - apiGroups: [""]
+    resources: [namespaces, nodes, persistentvolumes]
+    verbs: [get, list, watch]
+  - apiGroups: [storage.k8s.io]
+    resources: [csidrivers, csinodes, storageclasses, volumeattachments]
+    verbs: [get, list, watch]
+  - apiGroups: [apiextensions.k8s.io]
+    resources: [customresourcedefinitions]
+    verbs: [get, list, watch]
+  - apiGroups: [apiregistration.k8s.io]
+    resources: [apiservices]
+    verbs: [get, list, watch]
+  - apiGroups: [admissionregistration.k8s.io]
+    resources:
+      - mutatingwebhookconfigurations
+      - validatingadmissionpolicies
+      - validatingadmissionpolicybindings
+      - validatingwebhookconfigurations
+    verbs: [get, list, watch]
+  - apiGroups: [networking.k8s.io]
+    resources: [ingressclasses]
+    verbs: [get, list, watch]
+  - apiGroups: [node.k8s.io]
+    resources: [runtimeclasses]
+    verbs: [get, list, watch]
+  - apiGroups: [scheduling.k8s.io]
+    resources: [priorityclasses]
+    verbs: [get, list, watch]
+  # view omits RBAC objects. They name subjects and rules, never credentials.
+  - apiGroups: [rbac.authorization.k8s.io]
+    resources: [clusterrolebindings, clusterroles, rolebindings, roles]
+    verbs: [get, list, watch]
+  # kubectl top.
+  - apiGroups: [metrics.k8s.io]
+    resources: [nodes, pods]
+    verbs: [get, list]
+  - apiGroups: [cert-manager.io]
+    resources: [clusterissuers]
+    verbs: [get, list, watch]
+  - apiGroups: [cert-manager.k8s.cloudflare.com]
+    resources: [clusteroriginissuers]
+    verbs: [get, list, watch]
+  - apiGroups: [snapshot.storage.k8s.io]
+    resources: [volumesnapshotclasses, volumesnapshotcontents]
+    verbs: [get, list, watch]
+  - apiGroups: [olm.operatorframework.io]
+    resources: [clustercatalogs, clusterextensions]
+    verbs: [get, list, watch]
+  - apiGroups: [pkg.crossplane.io]
+    resources: [deploymentruntimeconfigs, functions, providers]
+    verbs: [get, list, watch]
+  - apiGroups: [aws.upbound.io]
+    resources: [providerconfigs]
+    verbs: [get, list, watch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: claude-cluster-read
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: claude-cluster-read
+subjects:
+  - kind: ServiceAccount
+    name: claude
+    namespace: claude

@@ -22,6 +22,9 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+      # Its token is projected into the claude container alone, since
+      # automounting would hand every sidecar API access too.
+      serviceAccountName: claude
       containers:
         - name: claude
           image: ghcr.io/unstoppablemango/dotfiles:5663908
@@ -50,6 +53,10 @@ spec:
             # This hides the home-manager dotfiles the image ships there.
             - name: home
               mountPath: /home/generic
+            # Where kubectl and client-go look for in-cluster credentials.
+            - name: kube-api-access
+              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              readOnly: true
         # Keeps gh, and git through it, logged in as the GitHub App. Only this
         # container mounts the App's private key; claude sees hour-long tokens.
         - name: github-app-token
@@ -80,6 +87,24 @@ spec:
         - name: home
           persistentVolumeClaim:
             claimName: home
+        # The same three files automounting would provide; kubelet refreshes
+        # the token before it expires.
+        - name: kube-api-access
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: token
+                  expirationSeconds: 3600
+              - configMap:
+                  name: kube-root-ca.crt
+                  items:
+                    - key: ca.crt
+                      path: ca.crt
+              - downwardAPI:
+                  items:
+                    - path: namespace
+                      fieldRef:
+                        fieldPath: metadata.namespace
         - name: github-app-token
           configMap:
             name: github-app-token
