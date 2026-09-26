@@ -1,0 +1,37 @@
+# A writable cgroupfs is only confined when root in the pod is not root on the
+# node, and privileged under a user namespace shares the host's root cgroup.
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: nested-containers
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods", "pods/ephemeralcontainers"]
+  matchConditions:
+    - name: uses-nested-containers
+      expression: object.spec.?runtimeClassName.orValue("") == "nested-containers"
+  validations:
+    - expression: object.spec.?hostUsers.orValue(true) == false
+      message: pods using the nested-containers RuntimeClass must set hostUsers to false
+    - expression: >-
+        object.spec.containers.all(c, !c.?securityContext.?privileged.orValue(false))
+      message: pods using the nested-containers RuntimeClass must not run privileged containers
+    - expression: >-
+        object.spec.?initContainers.orValue([]).all(c, !c.?securityContext.?privileged.orValue(false))
+      message: pods using the nested-containers RuntimeClass must not run privileged init containers
+    - expression: >-
+        object.spec.?ephemeralContainers.orValue([]).all(c, !c.?securityContext.?privileged.orValue(false))
+      message: pods using the nested-containers RuntimeClass must not run privileged ephemeral containers
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: nested-containers
+spec:
+  policyName: nested-containers
+  validationActions: [Deny]
