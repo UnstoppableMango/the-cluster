@@ -28,7 +28,7 @@ spec:
           # remote-control rejects CLAUDE_CODE_OAUTH_TOKEN (inference-only scope).
           # It reads the full-scope login that `claude auth login` writes to the home volume.
           command: ["claude", "remote-control"]
-          workingDir: /home/erik
+          workingDir: /home/generic
           # remote-control exits when stdin closes.
           stdin: true
           tty: true
@@ -43,8 +43,10 @@ spec:
             capabilities:
               drop: ["ALL"]
           volumeMounts:
+            # The image user is generic (uid 1000, HOME=/home/generic).
+            # This hides the home-manager dotfiles the image ships there.
             - name: home
-              mountPath: /home/erik
+              mountPath: /home/generic
       volumes:
         - name: home
           persistentVolumeClaim:
