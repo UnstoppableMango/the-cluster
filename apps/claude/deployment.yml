@@ -30,6 +30,9 @@ spec:
         fsGroup: 1000
         # Only the volume root is regrouped, not every file in dockerd's store.
         fsGroupChangePolicy: OnRootMismatch
+      # Its token is projected into the claude container alone, since
+      # automounting would hand every sidecar API access too.
+      serviceAccountName: claude
       initContainers:
         # dockerd for the docker CLI, compose, buildx, kind and testcontainers.
         # It runs as root with every capability and no seccomp or AppArmor
@@ -108,6 +111,10 @@ spec:
               mountPath: /home/generic
             - name: docker-sock
               mountPath: /run/docker
+            # Where kubectl and client-go look for in-cluster credentials.
+            - name: kube-api-access
+              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              readOnly: true
         # Keeps gh, and git through it, logged in as the GitHub App. Only this
         # container mounts the App's private key; claude sees hour-long tokens.
         - name: github-app-token
@@ -143,6 +150,24 @@ spec:
             claimName: docker
         - name: docker-sock
           emptyDir: {}
+        # The same three files automounting would provide; kubelet refreshes
+        # the token before it expires.
+        - name: kube-api-access
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: token
+                  expirationSeconds: 3600
+              - configMap:
+                  name: kube-root-ca.crt
+                  items:
+                    - key: ca.crt
+                      path: ca.crt
+              - downwardAPI:
+                  items:
+                    - path: namespace
+                      fieldRef:
+                        fieldPath: metadata.namespace
         - name: github-app-token
           configMap:
             name: github-app-token
