@@ -18,9 +18,24 @@ spec:
       registry: ghcr.io # default
       repository: mogenius/renovate-operator # default
       tag: 6.3.0@sha256:eab6fb669412a16365ea038c0c6b0c399b10ae0f4e432b9e42fae7da3cdaaa41
-    # The UI has no auth provider configured, which makes every visitor an
-    # admin, so it stays unexposed (the chart's ingress, route and webhook
-    # defaults are all off). Reach it with kubectl port-forward.
+    # Names the Service renovate-operator for the tunnel rule in
+    # infrastructure/configs/cloudflare-system/cloudflare-operator/tunnel.yml.
+    fullnameOverride: renovate-operator
+    auth:
+      oidc:
+        enabled: true
+        issuerUrl: https://auth.thecluster.io/realms/thecluster
+        clientId: renovate-operator
+        # Connection secret of the Client in keycloak-client.yml.
+        existingSecret: renovate-operator-oidc
+        secretKey: attribute.client_secret
+        # The UI is published through the Cloudflare tunnel rather than the
+        # chart's ingress or route, so the redirect cannot be auto-detected.
+        redirectUrl: https://renovate.thecluster.io/auth/callback
+    # Every account in the thecluster realm is created by hand, so anyone who
+    # can log in is trusted with every RenovateJob.
+    authorization:
+      enabled: false
     policy:
       enabled: true
     # No CPU limit: the controller holds a leader-election lease.

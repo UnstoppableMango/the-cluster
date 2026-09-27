@@ -298,6 +298,10 @@ spec:
   interval: 10m
   prune: true
   wait: true
+  dependsOn:
+    # keycloak-client.yml is a provider-keycloak Client in the thecluster
+    # realm.
+    - name: infra-configs-keycloak
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

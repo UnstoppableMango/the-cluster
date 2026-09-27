@@ -1,0 +1,23 @@
+apiVersion: openidclient.keycloak.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: renovate-operator
+spec:
+  forProvider:
+    realmIdRef:
+      name: thecluster
+    clientId: renovate-operator
+    name: Renovate Operator
+    accessType: CONFIDENTIAL
+    standardFlowEnabled: true
+    directAccessGrantsEnabled: false
+    pkceCodeChallengeMethod: S256
+    validRedirectUris:
+      - https://renovate.thecluster.io/auth/callback
+    webOrigins:
+      - https://renovate.thecluster.io
+  # Keycloak generates the client secret; the provider writes it here as
+  # attribute.client_secret for the HelmRelease to read.
+  writeConnectionSecretToRef:
+    namespace: renovate-operator
+    name: renovate-operator-oidc
