@@ -21,12 +21,21 @@ spec:
     image:
       repository: xpkg.crossplane.io/crossplane/crossplane # default
       tag: v2.4.2
-    provider:
-      packages:
-        - xpkg.crossplane.io/crossplane-contrib/provider-kubernetes:v1.0.0
-        - xpkg.crossplane.io/crossplane-contrib/provider-family-aws:v2.0.0
-        - xpkg.crossplane.io/crossplane-contrib/provider-aws-s3:v2.0.0
-        - xpkg.crossplane.io/crossplane-contrib/provider-aws-ses:v2.0.0
-        - xpkg.crossplane.io/crossplane-contrib/provider-aws-iam:v2.0.0
-        - xpkg.crossplane.io/crossplane-contrib/provider-family-azure:v2.0.0
-        - xpkg.crossplane.io/crossplane-contrib/provider-keycloak:v2.6.0
+    # Providers are declared as Provider objects in
+    # infrastructure/configs/crossplane-system/providers, which can reference a
+    # DeploymentRuntimeConfig for resources. provider.packages cannot.
+    # No CPU limits: both pods hold leader-election leases.
+    resourcesCrossplane:
+      limits:
+        cpu: null
+        memory: 1024Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+    resourcesRBACManager:
+      limits:
+        cpu: null
+        memory: 512Mi
+      requests:
+        cpu: 50m
+        memory: 128Mi

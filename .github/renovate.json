@@ -20,6 +20,11 @@
 			"/^(apps|clusters|infrastructure)/.+\\.ya?ml$/"
 		]
 	},
+	"crossplane": {
+		"managerFilePatterns": [
+			"/^(apps|clusters|infrastructure)/.+\\.ya?ml$/"
+		]
+	},
 	"customManagers": [
 		{
 			"customType": "regex",
