@@ -1,0 +1,12 @@
+apiVersion: realm.keycloak.crossplane.io/v1alpha1
+kind: Realm
+metadata:
+  name: thecluster
+spec:
+  # Users in this realm are created by hand in the admin console, so deleting
+  # this object must not delete the realm and take them with it.
+  deletionPolicy: Orphan
+  forProvider:
+    realm: thecluster
+    enabled: true
+    displayName: thecluster
