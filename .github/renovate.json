@@ -199,6 +199,13 @@
 			"groupName": "arc"
 		},
 		{
+			"matchPackageNames": [
+				"ghcr.io/mogenius/helm-charts/renovate-operator",
+				"ghcr.io/mogenius/renovate-operator"
+			],
+			"groupName": "renovate-operator"
+		},
+		{
 			"description": "Both hercules-ci agents pin the same chart, one per account.",
 			"matchPackageNames": [
 				"hercules-ci-agent",
