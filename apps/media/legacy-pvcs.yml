@@ -18,51 +18,6 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: legacy-48d51b52
-  namespace: media
-spec:
-  storageClassName: ec-cephfs
-  accessModes:
-    - ReadWriteMany
-  volumeMode: Filesystem
-  volumeName: pvc-639475fc-49aa-4368-8a97-b41f3dc818a3
-  resources:
-    requests:
-      storage: 1Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: legacy-546ee57b
-  namespace: media
-spec:
-  storageClassName: ec-cephfs
-  accessModes:
-    - ReadWriteMany
-  volumeMode: Filesystem
-  volumeName: pvc-77c91c0c-50e5-4957-a3e6-4ce91846deba
-  resources:
-    requests:
-      storage: 1Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: legacy-5e2658d2
-  namespace: media
-spec:
-  storageClassName: default-cephfs
-  accessModes:
-    - ReadWriteMany
-  volumeMode: Filesystem
-  volumeName: pvc-1700e5ee-c43b-4dd8-be95-cfef2c281b5b
-  resources:
-    requests:
-      storage: 1Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
   name: legacy-60362a50
   namespace: media
 spec:
@@ -71,21 +26,6 @@ spec:
     - ReadWriteOnce
   volumeMode: Filesystem
   volumeName: pvc-b9225bcb-6e04-4b28-9e91-75b5940b58cd
-  resources:
-    requests:
-      storage: 1Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: legacy-7e86bc67
-  namespace: media
-spec:
-  storageClassName: default-cephfs
-  accessModes:
-    - ReadWriteMany
-  volumeMode: Filesystem
-  volumeName: pvc-6a7587dc-d3b6-4ffe-a82b-df6ccffcb124
   resources:
     requests:
       storage: 1Gi
@@ -123,21 +63,6 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: legacy-960fb57d
-  namespace: media
-spec:
-  storageClassName: ec-cephfs
-  accessModes:
-    - ReadWriteMany
-  volumeMode: Filesystem
-  volumeName: pvc-7b37a458-cd1f-47b5-81be-229019fc1a9d
-  resources:
-    requests:
-      storage: 1Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
   name: legacy-9ed6b73d
   namespace: media
 spec:
@@ -161,21 +86,6 @@ spec:
     - ReadWriteMany
   volumeMode: Filesystem
   volumeName: pvc-fb0dda39-d1a0-4301-933c-781c15957ff3
-  resources:
-    requests:
-      storage: 1Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: legacy-f29db30d
-  namespace: media
-spec:
-  storageClassName: ec-cephfs
-  accessModes:
-    - ReadWriteMany
-  volumeMode: Filesystem
-  volumeName: pvc-c83917ed-3605-4952-91ee-7136781b5d1a
   resources:
     requests:
       storage: 1Gi

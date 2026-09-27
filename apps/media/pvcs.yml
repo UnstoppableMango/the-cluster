@@ -6,9 +6,10 @@ metadata:
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
-  storageClassName: ec-cephfs
+  storageClassName: bulk-rwx
   accessModes:
     - ReadWriteMany
+  volumeName: pvc-77c91c0c-50e5-4957-a3e6-4ce91846deba
   resources:
     requests:
       storage: 20Ti
@@ -18,10 +19,13 @@ kind: PersistentVolumeClaim
 metadata:
   name: movies4k
   namespace: media
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
-  storageClassName: ec-cephfs
+  storageClassName: bulk-rwx
   accessModes:
     - ReadWriteMany
+  volumeName: pvc-639475fc-49aa-4368-8a97-b41f3dc818a3
   resources:
     requests:
       storage: 10Ti
@@ -34,9 +38,10 @@ metadata:
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
-  storageClassName: ec-cephfs
+  storageClassName: bulk-rwx
   accessModes:
     - ReadWriteMany
+  volumeName: pvc-7b37a458-cd1f-47b5-81be-229019fc1a9d
   resources:
     requests:
       storage: 20Ti
@@ -46,10 +51,13 @@ kind: PersistentVolumeClaim
 metadata:
   name: tv4k
   namespace: media
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
-  storageClassName: ec-cephfs
+  storageClassName: bulk-rwx
   accessModes:
     - ReadWriteMany
+  volumeName: pvc-c83917ed-3605-4952-91ee-7136781b5d1a
   resources:
     requests:
       storage: 10Ti
@@ -64,7 +72,8 @@ metadata:
 spec:
   storageClassName: default-cephfs
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
+  volumeName: pvc-6a7587dc-d3b6-4ffe-a82b-df6ccffcb124
   resources:
     requests:
       storage: 10Ti
@@ -79,7 +88,8 @@ metadata:
 spec:
   storageClassName: default-cephfs
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
+  volumeName: pvc-1700e5ee-c43b-4dd8-be95-cfef2c281b5b
   resources:
     requests:
       storage: 5Ti
