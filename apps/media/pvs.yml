@@ -41,16 +41,16 @@ metadata:
     kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   capacity:
-    storage: 1Gi
+    storage: 10Ti
   accessModes:
     - ReadWriteMany
   volumeMode: Filesystem
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: ec-cephfs
+  storageClassName: bulk-rwx
   claimRef:
     apiVersion: v1
     kind: PersistentVolumeClaim
-    name: legacy-48d51b52
+    name: movies4k
     namespace: media
   csi:
     driver: rook-ceph.cephfs.csi.ceph.com
@@ -76,16 +76,16 @@ metadata:
     kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   capacity:
-    storage: 1Gi
+    storage: 20Ti
   accessModes:
     - ReadWriteMany
   volumeMode: Filesystem
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: ec-cephfs
+  storageClassName: bulk-rwx
   claimRef:
     apiVersion: v1
     kind: PersistentVolumeClaim
-    name: legacy-546ee57b
+    name: movies
     namespace: media
   csi:
     driver: rook-ceph.cephfs.csi.ceph.com
@@ -111,7 +111,7 @@ metadata:
     kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   capacity:
-    storage: 1Gi
+    storage: 5Ti
   accessModes:
     - ReadWriteMany
   volumeMode: Filesystem
@@ -120,7 +120,7 @@ spec:
   claimRef:
     apiVersion: v1
     kind: PersistentVolumeClaim
-    name: legacy-5e2658d2
+    name: music
     namespace: media
   csi:
     driver: rook-ceph.cephfs.csi.ceph.com
@@ -183,7 +183,7 @@ metadata:
     kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   capacity:
-    storage: 1Gi
+    storage: 10Ti
   accessModes:
     - ReadWriteMany
   volumeMode: Filesystem
@@ -192,7 +192,7 @@ spec:
   claimRef:
     apiVersion: v1
     kind: PersistentVolumeClaim
-    name: legacy-7e86bc67
+    name: anime
     namespace: media
   csi:
     driver: rook-ceph.cephfs.csi.ceph.com
@@ -292,16 +292,16 @@ metadata:
     kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   capacity:
-    storage: 1Gi
+    storage: 20Ti
   accessModes:
     - ReadWriteMany
   volumeMode: Filesystem
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: ec-cephfs
+  storageClassName: bulk-rwx
   claimRef:
     apiVersion: v1
     kind: PersistentVolumeClaim
-    name: legacy-960fb57d
+    name: tv
     namespace: media
   csi:
     driver: rook-ceph.cephfs.csi.ceph.com
@@ -399,16 +399,16 @@ metadata:
     kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   capacity:
-    storage: 1Gi
+    storage: 10Ti
   accessModes:
     - ReadWriteMany
   volumeMode: Filesystem
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: ec-cephfs
+  storageClassName: bulk-rwx
   claimRef:
     apiVersion: v1
     kind: PersistentVolumeClaim
-    name: legacy-f29db30d
+    name: tv4k
     namespace: media
   csi:
     driver: rook-ceph.cephfs.csi.ceph.com
