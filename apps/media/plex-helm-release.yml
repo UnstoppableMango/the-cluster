@@ -40,10 +40,6 @@ spec:
       options:
         - name: ndots
           value: "0"
-    ingress:
-      enabled: true
-      ingressClassName: nginx
-      url: plex.thecluster.lan
     extraVolumeMounts:
       - name: movies
         mountPath: /mnt/movies
