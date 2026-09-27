@@ -25,18 +25,25 @@ spec:
               subPath: copyparty.conf
             - name: movies
               mountPath: /w/movies
+              readOnly: true
             - name: movies4k
               mountPath: /w/movies4k
+              readOnly: true
             - name: tv
               mountPath: /w/tv
+              readOnly: true
             - name: tv4k
               mountPath: /w/tv4k
+              readOnly: true
             - name: anime
               mountPath: /w/anime
+              readOnly: true
             - name: music
               mountPath: /w/music
+              readOnly: true
             - name: youtube
               mountPath: /w/youtube
+              readOnly: true
           resources:
             requests:
               cpu: 300m
