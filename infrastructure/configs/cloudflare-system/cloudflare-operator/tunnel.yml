@@ -38,6 +38,8 @@ spec:
         service: http://keycloak-http.keycloak.svc:80
       - hostname: knot.thecluster.io
         service: http://knot.knot.svc:5555
+      - hostname: renovate.thecluster.io
+        service: http://renovate-operator.renovate-operator.svc:8081
       # Cloudflare rejects a remote config whose last rule is not a catch-all,
       # and the CRD requires that rule to omit hostname and path.
       - service: http_status:404
