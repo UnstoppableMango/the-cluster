@@ -86,7 +86,9 @@ spec:
           # It reads the full-scope login that `claude auth login` writes to the home volume.
           # args, not command: command would replace the image's entrypoint,
           # which links the Home Manager files into the home volume first.
-          args: ["claude", "remote-control"]
+          # Each session idles at about 0.5Gi with its MCP servers, before any
+          # build it runs; the cap keeps a burst of sessions inside the limit.
+          args: ["claude", "remote-control", "--capacity", "8"]
           # Trust is never saved for the home directory itself, so rc needs a subdirectory.
           workingDir: /home/generic/src
           env:
@@ -95,12 +97,17 @@ spec:
           # remote-control exits when stdin closes.
           stdin: true
           tty: true
+          # Seven sessions measured 1.9Gi at rest. Builds (go, cargo, tsc,
+          # dotnet, nix evaluation) run in this container and take gigabytes
+          # each, and the container is one OOM group: reaching the limit kills
+          # remote-control and every session with it, so the limit is generous
+          # until peaks under load have been measured.
           resources:
             requests:
-              cpu: 100m
-              memory: 512Mi
+              cpu: "2"
+              memory: 4Gi
             limits:
-              memory: 8Gi
+              memory: 48Gi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
