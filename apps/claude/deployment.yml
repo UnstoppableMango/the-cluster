@@ -81,14 +81,16 @@ spec:
               mountPath: /run/docker
       containers:
         - name: claude
-          image: ghcr.io/unstoppablemango/dotfiles:5663908
+          image: ghcr.io/unstoppablemango/dotfiles:1e9dcba
           # remote-control rejects CLAUDE_CODE_OAUTH_TOKEN (inference-only scope).
           # It reads the full-scope login that `claude auth login` writes to the home volume.
           # args, not command: command would replace the image's entrypoint,
           # which links the Home Manager files into the home volume first.
-          # Each session idles at about 0.5Gi with its MCP servers, before any
-          # build it runs; the cap keeps a burst of sessions inside the limit.
-          args: ["claude", "remote-control", "--capacity", "8"]
+          # tini is PID 1 and reaps the orphans sessions leave behind, which
+          # remote-control never does.
+          # Sessions are mostly idle, at about 0.5Gi each with their MCP
+          # servers; the cap keeps a burst of them well inside the limit.
+          args: ["tini", "--", "claude", "remote-control", "--capacity", "16"]
           # Trust is never saved for the home directory itself, so rc needs a subdirectory.
           workingDir: /home/generic/src
           env:
@@ -126,7 +128,7 @@ spec:
         # Keeps gh, and git through it, logged in as the GitHub App. Only this
         # container mounts the App's private key; claude sees hour-long tokens.
         - name: github-app-token
-          image: ghcr.io/unstoppablemango/dotfiles:5663908
+          image: ghcr.io/unstoppablemango/dotfiles:1e9dcba
           # command skips the entrypoint on purpose: the claude container already
           # links the home files, and two putter runs would race on its state file.
           command: ["node", "/opt/github-app-token/github-app-token.mjs"]
