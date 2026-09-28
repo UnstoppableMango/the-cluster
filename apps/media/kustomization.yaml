@@ -15,6 +15,7 @@ resources:
   - plex-config-pvc.yml
   - plex-helm-repository.yml
   - plex-helm-release.yml
+  - plex-httproute.yml
   - tubesync-service.yml
   - tubesync-statefulset.yml
   - tubesync-httproute.yml

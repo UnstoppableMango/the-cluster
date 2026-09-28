@@ -1,0 +1,19 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: plex
+  namespace: media
+spec:
+  parentRefs:
+    - name: nginx
+      namespace: nginx-gateway
+  hostnames:
+    - plex.thecluster.lan
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: plex-plex-media-server
+          port: 32400
