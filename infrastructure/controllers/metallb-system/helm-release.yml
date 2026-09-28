@@ -31,12 +31,18 @@ spec:
       enabled: false
     controller:
       priorityClassName: system-cluster-critical
+      # The controller reconciles every namespace and service in the cluster,
+      # not just the ones holding a LoadBalancer address: 69 namespaces and 68
+      # services against 11 LoadBalancer services and a single IPAddressPool.
+      # At 128Mi it was OOM killed mid-reconcile on a loop, exit 137 with the
+      # log ending on a clean `end reconcile`, so the ceiling was the limit
+      # rather than anything it was doing.
       resources:
         requests:
           cpu: 10m
           memory: 64Mi
         limits:
-          memory: 128Mi
+          memory: 256Mi
     speaker:
       priorityClassName: system-cluster-critical
       # No CPU limit: the speaker answers ARP for every service address, and it
