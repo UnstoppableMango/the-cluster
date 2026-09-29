@@ -17,7 +17,7 @@ spec:
     image:
       registry: ghcr.io # default
       repository: mogenius/renovate-operator # default
-      tag: 6.3.0@sha256:eab6fb669412a16365ea038c0c6b0c399b10ae0f4e432b9e42fae7da3cdaaa41
+      tag: 6.4.0@sha256:e8f023764de47e0c55eb47dadc4a07928f9c286565fcd549ba42df25d7efefc8
     # Names the Service renovate-operator for the tunnel rule in
     # infrastructure/configs/cloudflare-system/cloudflare-operator/tunnel.yml.
     fullnameOverride: renovate-operator
