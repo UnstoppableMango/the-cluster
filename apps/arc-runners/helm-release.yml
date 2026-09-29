@@ -319,6 +319,7 @@ spec:
 
     - name: johnston-dems-mailer
       githubConfigUrl: https://github.com/UnstoppableMango/johnston-dems-mailer
+      minRunners: 3 # API, App, CLI
 
     - name: tdl
       githubConfigUrl: https://github.com/UnstoppableMango/tdl
