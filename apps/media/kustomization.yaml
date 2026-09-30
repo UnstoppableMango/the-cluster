@@ -21,6 +21,7 @@ resources:
   - tubesync-httproute.yml
   - copyparty-configmap.yml
   - copyparty-deployment.yml
+  - copyparty-hists-pvc.yml
   - copyparty-service.yml
   - copyparty-httproute.yml
   - pvs.yml
