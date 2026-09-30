@@ -78,11 +78,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1790618020,
-        "narHash": "sha256-gvCX6baP08+AMqyji/5bqGC96jnb8j0+B+eprascdwY=",
+        "lastModified": 1790692620,
+        "narHash": "sha256-z7L7zKqk+9akPIgyXbhcB2qrsVZADZRr7vAn7eQrpCw=",
         "owner": "unmango",
         "repo": "pkgs",
-        "rev": "e8f5ba5c3aad09b66b09d64d50dff77a6ac68826",
+        "rev": "272f3d1122861a84677d1ea7af9ee955e293a9d2",
         "type": "github"
       },
       "original": {
