@@ -14,8 +14,9 @@ data:
     # and inline comments are OK if there is 2 spaces before the '#'
     [global]
       p: 3923  # listen on ports 8086 and 3939
-      # No e2dsa/e2ts: the index has no persistent volume, so every restart
-      # would rescan the whole library over CephFS.
+      e2dsa  # enable file indexing and filesystem scanning
+      e2ts   # and enable multimedia indexing
+      hist: /cfg/hists  # indexes and thumbnails live on a PVC, since the media is read-only
       z, qr  # and zeroconf and qrcode (you can comma-separate arguments)
 
     # create users:
