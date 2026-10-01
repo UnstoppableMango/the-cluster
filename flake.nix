@@ -26,11 +26,14 @@
       imports = with inputs; [
         systems.flakeModule
         treefmt-nix.flakeModule
-        ./nix
+        ./nix/flake-module.nix
       ];
 
       perSystem =
         { pkgs, system, ... }:
+        let
+          kubelib = inputs.nix-kube-generators.lib { inherit pkgs; };
+        in
         {
           _module.args.pkgs = import inputs.nixpkgs {
             inherit system;
@@ -39,9 +42,7 @@
             ];
           };
 
-          legacyPackages.kubelib = inputs.nix-kube-generators.lib {
-            inherit pkgs;
-          };
+          legacyPackages = { inherit kubelib; };
 
           devShells.default = pkgs.mkShellNoCC {
             packages = with pkgs; [
