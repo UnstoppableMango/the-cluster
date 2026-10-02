@@ -4,10 +4,9 @@ metadata:
   name: db
   namespace: xmage
 spec:
-  storageClassName: unsafe-rbd
+  storageClassName: fast-rwo
   accessModes:
     - ReadWriteOnce
-  volumeName: pvc-4d30eb08-d978-4c4c-97ea-72c0c1d62713
   resources:
     requests:
       storage: 10Gi

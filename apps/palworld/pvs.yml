@@ -1,3 +1,6 @@
+# Pins the pre-migration volume on unsafe-rbd. The statefulset now claims
+# standard-rwo, so this entry is replaced by the copied volume's PV once the
+# migration in docs/game-server-storage.md completes.
 apiVersion: v1
 kind: PersistentVolume
 metadata:
