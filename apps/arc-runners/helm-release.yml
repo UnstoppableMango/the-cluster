@@ -323,6 +323,8 @@ spec:
 
     - name: tdl
       githubConfigUrl: https://github.com/UnstoppableMango/tdl
+      # Stacked PRs rebase together and queue a run per branch.
+      maxRunners: 12
 
     - name: plex-operator
       githubConfigUrl: https://github.com/UnstoppableMango/plex-operator
