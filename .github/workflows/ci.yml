@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: unmango/actions/setup-nix@56abf92ca6c8e241831118a76b7b2ce1d3b8d414 # v1.1.1
+      - uses: unmango/actions/setup-nix@389dda3b9e44477f790e76d5474b700c1bb9b82d # v1.3.0
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
           # cachix_auth_token: ${{ secrets.CACHIX_AUTH_TOKEN }}
