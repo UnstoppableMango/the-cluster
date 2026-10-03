@@ -6,21 +6,22 @@ metadata:
   labels:
     app.kubernetes.io/name: slackerworld
   annotations:
-    metallb.io/loadBalancerIPs: 10.0.69.204
+    metallb.io/loadBalancerIPs: 10.0.69.203
+    metallb.io/allow-shared-ip: palworld
 spec:
   type: LoadBalancer
   selector:
     app.kubernetes.io/name: slackerworld
   ports:
     - name: server
-      port: 8211
+      port: 8221
       targetPort: 8211
       protocol: UDP
     - name: query
-      port: 27015
+      port: 27025
       targetPort: 27015
       protocol: UDP
     - name: rest
-      port: 8212
+      port: 8222
       targetPort: 8212
       protocol: TCP
