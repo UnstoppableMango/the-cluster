@@ -7,17 +7,21 @@ metadata:
     app.kubernetes.io/name: palworld
   annotations:
     metallb.io/loadBalancerIPs: 10.0.69.203
+    metallb.io/allow-shared-ip: palworld
 spec:
+  type: LoadBalancer
   selector:
     app.kubernetes.io/name: palworld
-  type: LoadBalancer
   ports:
     - name: server
       port: 8211
+      targetPort: 8211
       protocol: UDP
     - name: query
       port: 27015
+      targetPort: 27015
       protocol: UDP
     - name: rest
       port: 8212
+      targetPort: 8212
       protocol: TCP
