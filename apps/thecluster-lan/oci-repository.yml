@@ -1,0 +1,13 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: dashboard
+  namespace: thecluster-lan
+spec:
+  url: oci://ghcr.io/unstoppablemango/thecluster.lan/chart
+  interval: 1h
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 0.1.0
