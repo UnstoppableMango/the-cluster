@@ -5,6 +5,7 @@ metadata:
   namespace: velero-system
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: velero
   targetNamespace: velero-system
   chart:

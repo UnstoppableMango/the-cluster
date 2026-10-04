@@ -5,6 +5,7 @@ metadata:
   namespace: cnpg-system
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: cnpg
   targetNamespace: cnpg-system
   chart:

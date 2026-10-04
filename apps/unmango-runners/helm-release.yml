@@ -9,6 +9,7 @@ spec:
     name: gha-runner-scale-set
     namespace: arc-system
   interval: 10m
+  maxHistory: 2
   # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml
   values:
     githubConfigUrl: https://github.com/unmango

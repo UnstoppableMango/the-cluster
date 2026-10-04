@@ -5,6 +5,7 @@ metadata:
   namespace: monitoring
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: kube-prometheus-stack
   targetNamespace: monitoring
   # The CRDs come from the prometheus-operator-crds release in prometheus-operator-crds/, so that

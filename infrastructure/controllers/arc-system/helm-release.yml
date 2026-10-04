@@ -8,6 +8,7 @@ spec:
     kind: OCIRepository
     name: gha-runner-scale-set-controller
   interval: 10m
+  maxHistory: 2
   install:
     crds: Create
   upgrade:

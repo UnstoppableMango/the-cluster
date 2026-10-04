@@ -5,6 +5,7 @@ metadata:
   namespace: knot
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: knot
   targetNamespace: knot
   chart:

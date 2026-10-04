@@ -5,6 +5,7 @@ metadata:
   namespace: coredns-system
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: external-dns
   targetNamespace: coredns-system
   chart:

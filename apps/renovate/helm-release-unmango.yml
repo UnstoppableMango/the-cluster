@@ -5,6 +5,7 @@ metadata:
   namespace: renovate
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: unmango-renovate
   targetNamespace: renovate
   chart:

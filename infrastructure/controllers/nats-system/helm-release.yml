@@ -5,6 +5,7 @@ metadata:
   namespace: nats-system
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: nats
   targetNamespace: nats-system
   chart:

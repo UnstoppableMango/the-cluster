@@ -5,6 +5,7 @@ metadata:
   namespace: thecluster-lan
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: dashboard
   targetNamespace: thecluster-lan
   chartRef:

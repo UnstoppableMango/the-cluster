@@ -65,6 +65,7 @@ spec:
     name: {{ required "chartRef.name is required" $.Values.chartRef.name }}
     namespace: {{ required "chartRef.namespace is required" $.Values.chartRef.namespace }}
   interval: {{ required "interval is required" $.Values.interval }}
+  maxHistory: 2
   values:
     {{- toYaml $values | nindent 4 }}
 {{- end }}
