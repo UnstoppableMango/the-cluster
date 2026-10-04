@@ -401,7 +401,9 @@ spec:
   path: ./infrastructure/controllers/enclave-system
   interval: 10m
   prune: true
-  wait: true
+  # The enclave Kustomization is suspended, and a suspended Kustomization
+  # never reports Ready. Set this back to true when it is unsuspended.
+  wait: false
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
