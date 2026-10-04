@@ -7,6 +7,7 @@ metadata:
   namespace: hercules-ci
 spec:
   interval: 10m
+  maxHistory: 2
   # The agent pulls a large image and attaches a 200Gi RBD volume on a single
   # pinned node, which takes over eight minutes whenever the pod moves. The 5m
   # default fails the upgrade while the rollout is still healthy, and a failure

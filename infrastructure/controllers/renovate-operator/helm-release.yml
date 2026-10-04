@@ -8,6 +8,7 @@ spec:
     kind: OCIRepository
     name: renovate-operator
   interval: 10m
+  maxHistory: 2
   # https://github.com/mogenius/renovate-operator/blob/main/charts/renovate-operator/values.yaml
   values:
     crd:

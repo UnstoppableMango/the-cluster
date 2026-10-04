@@ -5,6 +5,7 @@ metadata:
   namespace: unifi
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: unifi
   targetNamespace: unifi
   chart:

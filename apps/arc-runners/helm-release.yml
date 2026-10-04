@@ -12,6 +12,7 @@ spec:
         name: flux-system
         namespace: flux-system
   interval: 10m
+  maxHistory: 2
   install:
     timeout: 30m
   upgrade:

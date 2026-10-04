@@ -5,6 +5,7 @@ metadata:
   namespace: nginx-gateway
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: nginx-gateway-fabric
   targetNamespace: nginx-gateway
   chartRef:

@@ -5,6 +5,7 @@ metadata:
   namespace: cert-manager
 spec:
   interval: 30m
+  maxHistory: 2
   # A DaemonSet rolls out one node at a time (maxUnavailable: 1, maxSurge: 0)
   # and each node pulls three images, so the 5m default is not enough on a
   # cluster whose node set changes.

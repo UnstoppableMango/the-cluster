@@ -5,6 +5,7 @@ metadata:
   namespace: cloudflare-system
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: cloudflare-operator
   targetNamespace: cloudflare-system
   # The chart is not published anywhere, so it is built from dist/chart in the

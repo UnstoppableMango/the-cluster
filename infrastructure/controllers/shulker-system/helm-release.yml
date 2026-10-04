@@ -5,6 +5,7 @@ metadata:
   namespace: shulker-system
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: shulker
   targetNamespace: shulker-system
   chart:
