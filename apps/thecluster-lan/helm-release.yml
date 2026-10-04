@@ -15,7 +15,7 @@ spec:
     fullnameOverride: dashboard
     image:
       repository: ghcr.io/unstoppablemango/thecluster.lan/dashboard
-      tag: latest@sha256:0b7e03b5ad48aa2517cbfc39dbf995607dfbe6bd6837cf2eef28e812ad8dabfb
+      tag: latest@sha256:73177ee874fa0371a33526174c607e54a53afa7d3cc59184ed68f4141dff3637
     ingress:
       enabled: false
     # Internal only: the nginx Gateway listens on a LAN address, and no
