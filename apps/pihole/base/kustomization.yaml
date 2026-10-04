@@ -6,3 +6,4 @@ resources:
   - secret-sealed.yml
   - helm-release-pihole.yml
   - helm-release-external-dns.yml
+  - pdb.yml
