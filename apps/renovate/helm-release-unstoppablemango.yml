@@ -72,6 +72,11 @@ spec:
             '!UnstoppableMango/openshift-lab',
           ],
           presetCachePersistence: true,
+          // Arguments are constrained because the command runs in a shell
+          // after templating; see .github/renovate.json in the-cluster.
+          allowedCommands: [
+            '^node hack/renovate-fetchurl-hash\\.mjs nix/[\\w./-]+\\.nix [\\w.-]+/[\\w.-]+ v?[\\d.]+$',
+          ],
         };
     cronjob:
       schedule: '*/15 * * * *'

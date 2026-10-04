@@ -50,6 +50,24 @@
 	],
 	"packageRules": [
 		{
+			"description": "The nix regex manager bumps a fetchurl URL but not its hash. The stale hash passes CI wherever the old asset is cached, so recompute it here. The command must match allowedCommands in apps/renovate/helm-release-unstoppablemango.yml.",
+			"matchManagers": [
+				"custom.regex"
+			],
+			"matchFileNames": [
+				"nix/**/*.nix"
+			],
+			"postUpgradeTasks": {
+				"commands": [
+					"node hack/renovate-fetchurl-hash.mjs {{{packageFile}}} {{{depName}}} {{{newVersion}}}"
+				],
+				"fileFilters": [
+					"nix/**/*.nix"
+				],
+				"executionMode": "update"
+			}
+		},
+		{
 			"matchPackageNames": [
 				"cert-manager",
 				"cert-manager/cert-manager"
