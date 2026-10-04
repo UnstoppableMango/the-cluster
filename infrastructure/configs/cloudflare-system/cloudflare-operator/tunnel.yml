@@ -32,6 +32,8 @@ spec:
         service: http://keycloak-http.keycloak.svc:80
       - hostname: knot.thecluster.io
         service: http://knot.knot.svc:5555
+      - hostname: spindle.thecluster.io
+        service: http://spindle.spindle.svc:6555
       - hostname: renovate.thecluster.io
         service: http://renovate-operator.renovate-operator.svc:8081
       # Cloudflare rejects a remote config whose last rule is not a catch-all,

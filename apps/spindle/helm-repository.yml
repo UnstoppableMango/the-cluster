@@ -1,0 +1,8 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: rubxkube
+  namespace: spindle
+spec:
+  url: https://rubxkube.github.io/charts/
+  interval: 1h
