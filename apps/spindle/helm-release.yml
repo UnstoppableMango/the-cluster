@@ -54,6 +54,14 @@ spec:
               failureThreshold: 24
               periodSeconds: 5
               timeoutSeconds: 5
+            # A restart kills every running workflow container, so this only
+            # fires after dockerd stops answering for about 90s.
+            livenessProbe:
+              exec:
+                command: [docker, -H, tcp://127.0.0.1:2375, info]
+              failureThreshold: 3
+              periodSeconds: 30
+              timeoutSeconds: 10
             securityContext:
               runAsUser: 0
               runAsGroup: 0
