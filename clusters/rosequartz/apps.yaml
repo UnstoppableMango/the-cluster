@@ -316,6 +316,26 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: apps-spindle
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/spindle
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # The dind sidecar runs under the nested-containers RuntimeClass, and its
+    # admission policy must exist before the pod is admitted.
+    - name: infra-configs-nested-containers
+    # The chart's PVCs use standard-rwo.
+    - name: infra-configs-rook-ceph-storage
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: apps-media
   namespace: flux-system
 spec:

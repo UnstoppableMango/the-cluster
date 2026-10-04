@@ -1,0 +1,109 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: spindle
+  namespace: spindle
+spec:
+  interval: 10m
+  releaseName: spindle
+  targetNamespace: spindle
+  chart:
+    spec:
+      chart: spindle
+      version: 0.1.2
+      sourceRef:
+        kind: HelmRepository
+        name: rubxkube
+  values:
+    common:
+      variables:
+        nonSecret:
+          # Knots sign their requests for this audience, so it cannot change
+          # once the spindle is registered on the appview.
+          # spindle.thecluster.io reaches the spindle Service through a rule on
+          # the thecluster-io CloudflareTunnel and a matching DnsRecord.
+          SPINDLE_SERVER_HOSTNAME: spindle.thecluster.io
+          SPINDLE_SERVER_OWNER: did:plc:npefy3bubltqewdfhah5i5ef
+          SPINDLE_NIXERY_PIPELINES_MAX_CONCURRENT_WORKFLOWS: 4
+      deployment:
+        # The 18Gi dind ceiling only fits gaea, and the spindle image is amd64.
+        nodeSelector:
+          kubernetes.io/hostname: gaea
+        # Replaces the chart's privileged dind sidecar with the
+        # nested-containers recipe; see docs/nested-containers.md. The
+        # postRenderer below sets the pod-level half of it.
+        additionalContainers: []
+        initContainers:
+          - name: dind
+            image: docker:29.8.1-dind@sha256:3f3c01aaaebf7cce837356b688b7c059a4749f10bd7660dec7c58fc454a283f0
+            # "dockerd" must come first, or the entrypoint adds its own
+            # tcp://0.0.0.0:2375 bind. Loopback only, since workflow code
+            # could reach an unauthenticated Docker API on the pod IP.
+            args:
+              - dockerd
+              - --host=unix:///var/run/docker.sock
+              - --host=tcp://127.0.0.1:2375
+              - --tls=false
+            env:
+              - name: DOCKER_TLS_CERTDIR
+                value: ""
+            restartPolicy: Always
+            startupProbe:
+              exec:
+                command: [docker, -H, tcp://127.0.0.1:2375, info]
+              failureThreshold: 24
+              periodSeconds: 5
+              timeoutSeconds: 5
+            securityContext:
+              runAsUser: 0
+              runAsGroup: 0
+              runAsNonRoot: false
+              allowPrivilegeEscalation: true
+              capabilities:
+                add: ["ALL"]
+              seccompProfile:
+                type: Unconfined
+              appArmorProfile:
+                type: Unconfined
+              # Nested containers mount a /proc of their own, which the masked
+              # default /proc forbids.
+              procMount: Unmasked
+            # Workflow containers are children of this dockerd, so the limit
+            # covers MAX_CONCURRENT_WORKFLOWS x MAX_JOB_MEMORY_MB (4 x 4096).
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 18Gi
+            volumeMounts:
+              - name: docker-data
+                mountPath: /var/lib/docker
+      persistence:
+        volumes:
+          - name: data
+            storageClassName: standard-rwo
+            size: 5Gi
+            pvcClaim: ""
+            containerMount: /var/lib/spindle
+          - name: logs
+            storageClassName: standard-rwo
+            size: 2Gi
+            pvcClaim: ""
+            containerMount: /var/log/spindle
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: spindle
+            patch: |-
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: spindle
+              spec:
+                template:
+                  spec:
+                    hostUsers: false
+                    runtimeClassName: nested-containers
