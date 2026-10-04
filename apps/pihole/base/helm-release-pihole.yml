@@ -92,6 +92,10 @@ metadata:
   namespace: pihole
 spec:
   interval: 10m
+  # Upgrade one resolver at a time. If pihole-a cannot come up on a new tag,
+  # pihole-b stays on the tag it already runs and keeps serving DNS (#4458).
+  dependsOn:
+    - name: pihole-a
   chart:
     spec:
       chart: pihole

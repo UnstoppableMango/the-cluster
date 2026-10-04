@@ -1,0 +1,13 @@
+# Spans both releases, so a drain or eviction cannot take down both resolvers
+# at once. The nodes resolve through them and cannot pull a pihole image while
+# both are down (#4458).
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: pihole
+  namespace: pihole
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: pihole
