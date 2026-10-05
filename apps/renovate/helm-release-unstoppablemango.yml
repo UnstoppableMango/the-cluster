@@ -77,6 +77,8 @@ spec:
           // after templating; see .github/renovate.json in the-cluster.
           allowedCommands: [
             '^node hack/renovate-fetchurl-hash\\.mjs nix/[\\w./-]+\\.nix [\\w.-]+/[\\w.-]+ v?[\\d.]+$',
+            // The gomod2nix preset in UnstoppableMango/renovate-config.
+            '^go run github\\.com/nix-community/gomod2nix@v[\\w.-]+ --dir \\. --outdir [\\w./-]+$',
           ],
         };
     cronjob:
