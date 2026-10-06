@@ -44,6 +44,10 @@ spec:
             '!unmango/pulumi-commandx',
           ],
           presetCachePersistence: true,
+          // The gomod2nix preset in UnstoppableMango/renovate-config.
+          allowedCommands: [
+            '^go run github\\.com/nix-community/gomod2nix@v[\\w.-]+ --dir \\. --outdir [\\w./-]+$',
+          ],
         };
     cronjob:
       schedule: '*/15 * * * *'
