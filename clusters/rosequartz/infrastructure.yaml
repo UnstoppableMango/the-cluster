@@ -111,9 +111,7 @@ spec:
     name: flux-system
   path: ./infrastructure/controllers/multus
   interval: 10m
-  # Deleting the CRD would delete the rook-ceph NetworkAttachmentDefinition
-  # with it, and every OSD with it attached would fail to restart.
-  prune: false
+  prune: true
   wait: true
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1

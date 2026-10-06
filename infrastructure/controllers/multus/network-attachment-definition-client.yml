@@ -1,0 +1,35 @@
+# The NetworkAttachmentDefinition CRD, from the client library that owns it
+# rather than multus's quickstart DaemonSet manifest. The multus binary runs
+# from NixOS on the OSD hosts, so nothing else from upstream is deployed.
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: network-attachment-definition-client
+  namespace: flux-system
+spec:
+  url: https://github.com/k8snetworkplumbingwg/network-attachment-definition-client
+  interval: 1h
+  ref:
+    tag: v1.7.7
+  # artifacts/ also holds a v1beta1 CRD and an example NAD.
+  ignore: |
+    /*
+    !/artifacts/
+    /artifacts/*
+    !/artifacts/networks-crd.yaml
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: network-attachment-definition-crds
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: network-attachment-definition-client
+  path: ./artifacts
+  interval: 10m
+  # Deleting the CRD would delete the rook-ceph NetworkAttachmentDefinition
+  # with it, and every OSD with it attached would fail to restart.
+  prune: false
+  wait: true
