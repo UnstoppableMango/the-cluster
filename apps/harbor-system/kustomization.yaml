@@ -1,8 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  - client-settings-policy.yml
+  - harbor-sealed.yml
   - harbor.yml
   - helm-release.yml
   - namespace.yml
-  - pvs.yml
-  - legacy-pvcs.yml
+  - object-bucket-claim.yml
+  - postgres-cluster.yml
