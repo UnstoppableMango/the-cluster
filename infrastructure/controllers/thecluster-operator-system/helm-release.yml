@@ -1,0 +1,35 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: thecluster-operator
+  namespace: thecluster-operator-system
+spec:
+  interval: 10m
+  maxHistory: 2
+  releaseName: thecluster-operator
+  targetNamespace: thecluster-operator-system
+  # The chart is not published anywhere, so it is built from dist/chart in the
+  # checkout the GitRepository pins.
+  chart:
+    spec:
+      chart: ./dist/chart
+      sourceRef:
+        kind: GitRepository
+        name: thecluster-operator
+  # https://github.com/unmango/thecluster-operator/blob/main/dist/chart/values.yaml
+  values:
+    controllerManager:
+      container:
+        image:
+          repository: ghcr.io/unmango/thecluster-operator
+          # The chart renders repository:tag verbatim, so the digest rides
+          # along on the tag to make the reference immutable.
+          tag: sha-f8da0a7@sha256:3c75af8ebcfe736d0e3f04947f16b0067c1717e99eb3db9a4aacdeb57497d39f
+        resources:
+          requests:
+            cpu: 10m # default
+            memory: 64Mi # default
+          limits:
+            # The manager holds a leader lease, so it gets no CPU limit.
+            cpu: null
+            memory: 128Mi # default

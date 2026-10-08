@@ -1,0 +1,12 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: thecluster-operator
+  namespace: thecluster-operator-system
+spec:
+  url: https://github.com/unmango/thecluster-operator
+  interval: 1h
+  # The operator has no release tags yet, so this pins the merge commit that
+  # the image below was built from. Bump both together.
+  ref:
+    commit: f8da0a73994a046291387532fd0dcddab869acc0

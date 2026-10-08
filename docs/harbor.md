@@ -5,7 +5,7 @@ Image blobs live in the `harbor-registry` bucket and metadata in the `postgres` 
 
 ## Pull-through cache
 
-`apps/harbor-system/proxy-cache` keeps one proxy-cache project per upstream:
+`apps/harbor-system/proxy-cache` declares one `ProxyCache` per upstream, which thecluster-operator turns into a Harbor registry endpoint and a public proxy-cache project of the same name:
 
 | Upstream          | Project     | Pull as                                        |
 | ----------------- | ----------- | ---------------------------------------------- |
@@ -14,13 +14,14 @@ Image blobs live in the `harbor-registry` bucket and metadata in the `postgres` 
 | `quay.io`         | `quay`      | `harbor.thecluster.lan/quay/<org>/<image>`     |
 | `registry.k8s.io` | `k8s`       | `harbor.thecluster.lan/k8s/<image>`            |
 
-A CronJob creates any registry or project that is missing every 30 minutes, including on the first run after Harbor comes up.
-It only adds, so settings changed in the UI stay.
-To run it now: `kubectl -n harbor-system create job --from=cronjob/proxy-cache proxy-cache-now`.
+The operator logs in through the `harbor` Registry object with the sealed admin password.
+It resyncs every ten minutes and puts back anything changed in Harbor's UI, so change a cache in `proxy-caches.yml` rather than in Harbor.
+`kubectl -n harbor-system get proxycaches` shows each one's `Ready` condition and pull prefix.
+Deleting a ProxyCache deletes its project, the images cached in it, and its endpoint.
 
 Nodes do not use those names directly.
 `modules/registry-mirror` in UnstoppableMango/nixos writes a containerd `hosts.toml` per upstream that sends pulls and resolves through the matching project, so manifests keep their upstream image names.
-The project names there and in `proxy-cache.py` have to match.
+The project names there and in `proxy-caches.yml` have to match.
 
 ## Failover
 
@@ -35,6 +36,7 @@ Bypass Harbor entirely when it is answering but wrong, for example serving a bro
    containerd reads the directory on each pull, so no restart is needed.
    The next `clan machines update` puts the directory back.
 2. To remove a single bad cache entry instead, delete the artifact from the project in Harbor's UI and pull again.
+   The operator manages projects and endpoints, not their contents, so it leaves that alone.
 3. For a lasting bypass, drop `../modules/registry-mirror` from `kubelet.extraModules` in the nixos repo's `clan/rosequartz-cluster.nix` and deploy.
 
 To confirm which path a pull took, `crictl pull <image>` on a node and check Harbor's project for the artifact, or watch `journalctl -u containerd` for the mirror host.

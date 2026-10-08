@@ -433,3 +433,17 @@ spec:
   interval: 10m
   prune: true
   wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-thecluster-operator
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/controllers/thecluster-operator-system
+  interval: 10m
+  prune: true
+  wait: true

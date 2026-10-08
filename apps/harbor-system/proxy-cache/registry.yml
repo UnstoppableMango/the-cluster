@@ -1,0 +1,14 @@
+# thecluster-operator configures Harbor through this. It reaches core over the
+# Service rather than the Gateway, so the caches converge without DNS or the
+# wildcard certificate.
+apiVersion: registry.thecluster.io/v1alpha1
+kind: Registry
+metadata:
+  name: harbor
+  namespace: harbor-system
+spec:
+  harbor:
+    url: http://harbor-core.harbor-system.svc
+    passwordSecretRef:
+      name: harbor
+      key: HARBOR_ADMIN_PASSWORD

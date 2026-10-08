@@ -399,3 +399,6 @@ spec:
     # The chart's HTTPRoute attaches to the nginx Gateway in nginx-gateway, and
     # client-settings-policy.yml needs the ClientSettingsPolicy CRD it installs.
     - name: infra-nginx-gateway
+    # proxy-cache/ is Registry and ProxyCache objects, whose CRDs and
+    # controller thecluster-operator installs.
+    - name: infra-thecluster-operator

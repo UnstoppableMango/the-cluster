@@ -1,0 +1,51 @@
+# One Harbor proxy-cache project per upstream, named after the object. The
+# node mirrors in UnstoppableMango/nixos (modules/registry-mirror) map each
+# upstream host to these names, so renaming one here means renaming it there.
+# They are public because containerd pulls anonymously.
+apiVersion: registry.thecluster.io/v1alpha1
+kind: ProxyCache
+metadata:
+  name: dockerhub
+  namespace: harbor-system
+spec:
+  registryRef:
+    name: harbor
+  upstream:
+    type: docker-hub
+    url: https://hub.docker.com
+---
+apiVersion: registry.thecluster.io/v1alpha1
+kind: ProxyCache
+metadata:
+  name: ghcr
+  namespace: harbor-system
+spec:
+  registryRef:
+    name: harbor
+  upstream:
+    type: github-ghcr
+    url: https://ghcr.io
+---
+apiVersion: registry.thecluster.io/v1alpha1
+kind: ProxyCache
+metadata:
+  name: quay
+  namespace: harbor-system
+spec:
+  registryRef:
+    name: harbor
+  upstream:
+    type: quay
+    url: https://quay.io
+---
+apiVersion: registry.thecluster.io/v1alpha1
+kind: ProxyCache
+metadata:
+  name: k8s
+  namespace: harbor-system
+spec:
+  registryRef:
+    name: harbor
+  upstream:
+    type: docker-registry
+    url: https://registry.k8s.io
