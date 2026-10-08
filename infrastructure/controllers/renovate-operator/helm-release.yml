@@ -1,0 +1,33 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: renovate-operator
+  namespace: renovate-operator
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: renovate-operator
+  interval: 10m
+  maxHistory: 2
+  # https://github.com/mogenius/renovate-operator/blob/main/charts/renovate-operator/values.yaml
+  values:
+    crd:
+      # The default "hook" mode applies the CRDs from a kubectl Job; "template"
+      # renders them as ordinary manifests so upgrades apply CRD changes.
+      mode: template
+    image:
+      registry: ghcr.io # default
+      repository: mogenius/renovate-operator # default
+      tag: 6.4.0@sha256:e8f023764de47e0c55eb47dadc4a07928f9c286565fcd549ba42df25d7efefc8
+    # The UI has no auth provider configured, which makes every visitor an
+    # admin, so it stays unexposed (the chart's ingress, route and webhook
+    # defaults are all off). Reach it with kubectl port-forward.
+    policy:
+      enabled: true
+    # No CPU limit: the controller holds a leader-election lease.
+    resources:
+      limits:
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi

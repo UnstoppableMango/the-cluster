@@ -20,6 +20,11 @@
 			"/^(apps|clusters|infrastructure)/.+\\.ya?ml$/"
 		]
 	},
+	"crossplane": {
+		"managerFilePatterns": [
+			"/^(apps|clusters|infrastructure)/.+\\.ya?ml$/"
+		]
+	},
 	"customManagers": [
 		{
 			"customType": "regex",
@@ -44,6 +49,24 @@
 		}
 	],
 	"packageRules": [
+		{
+			"description": "The nix regex manager bumps a fetchurl URL but not its hash. The stale hash passes CI wherever the old asset is cached, so recompute it here. The command must match allowedCommands in apps/renovate/helm-release-unstoppablemango.yml.",
+			"matchManagers": [
+				"custom.regex"
+			],
+			"matchFileNames": [
+				"nix/**/*.nix"
+			],
+			"postUpgradeTasks": {
+				"commands": [
+					"node hack/renovate-fetchurl-hash.mjs {{{packageFile}}} {{{depName}}} {{{newVersion}}}"
+				],
+				"fileFilters": [
+					"nix/**/*.nix"
+				],
+				"executionMode": "update"
+			}
+		},
 		{
 			"matchPackageNames": [
 				"cert-manager",
@@ -197,6 +220,13 @@
 				"ghcr.io/actions/gha-runner-scale-set-controller"
 			],
 			"groupName": "arc"
+		},
+		{
+			"matchPackageNames": [
+				"ghcr.io/mogenius/helm-charts/renovate-operator",
+				"ghcr.io/mogenius/renovate-operator"
+			],
+			"groupName": "renovate-operator"
 		},
 		{
 			"description": "Both hercules-ci agents pin the same chart, one per account.",

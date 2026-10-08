@@ -103,6 +103,20 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: infra-multus
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/controllers/multus
+  interval: 10m
+  prune: true
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: infra-configs-rook-ceph
   namespace: flux-system
 spec:
@@ -115,6 +129,7 @@ spec:
   wait: true
   dependsOn:
     - name: infra-rook-ceph
+    - name: infra-multus
     - name: infra-sealed-secrets
     # The pinkdiamond release renders a PrometheusRule.
     - name: infra-monitoring-crds
@@ -288,6 +303,20 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: infra-renovate-operator
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/controllers/renovate-operator
+  interval: 10m
+  prune: true
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: infra-configs-trust-bundle
   namespace: flux-system
 spec:
@@ -385,6 +414,22 @@ spec:
     kind: GitRepository
     name: flux-system
   path: ./infrastructure/controllers/enclave-system
+  interval: 10m
+  prune: true
+  # The enclave Kustomization is suspended, and a suspended Kustomization
+  # never reports Ready. Set this back to true when it is unsuspended.
+  wait: false
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-configs-nested-containers
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/configs/nested-containers
   interval: 10m
   prune: true
   wait: true

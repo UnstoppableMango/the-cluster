@@ -36,7 +36,7 @@ let
     name = "agones";
     chart = downloadFluxHelmChart {
       releaseNamespace = "agones-system";
-      chartHash = "sha256-zcrJiggq4fNjrvNMfD+eTsBffpUlOKMD/nc68drw2lE=";
+      chartHash = "sha256-T7tU2xghmz7MytJxYtxbZPl1yCwrIvuwekjlgQi/dAk=";
     };
     includeCRDs = true;
   };
@@ -62,7 +62,7 @@ let
     name = "cloudnative-pg";
     chart = downloadFluxHelmChart {
       releaseNamespace = "cnpg-system";
-      chartHash = "sha256-kEFuvG5CsJ/iloIbBKcrDj1Ta0ZRxJ+KJ5LODMjbY8A=";
+      chartHash = "sha256-VWDikb5gw9s35yZYk3BqcojQtEE/b3gdDN6TCcJXzZ4=";
     };
     includeCRDs = true;
   };

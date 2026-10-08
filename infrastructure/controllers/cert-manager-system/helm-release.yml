@@ -5,6 +5,7 @@ metadata:
   namespace: cert-manager
 spec:
   interval: 30m
+  maxHistory: 2
   releaseName: cert-manager
   targetNamespace: cert-manager
   install:

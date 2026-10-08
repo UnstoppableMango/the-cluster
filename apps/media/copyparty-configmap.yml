@@ -16,6 +16,7 @@ data:
       p: 3923  # listen on ports 8086 and 3939
       e2dsa  # enable file indexing and filesystem scanning
       e2ts   # and enable multimedia indexing
+      hist: /cfg/hists  # indexes and thumbnails live on a PVC, since the media is read-only
       z, qr  # and zeroconf and qrcode (you can comma-separate arguments)
 
     # create users:

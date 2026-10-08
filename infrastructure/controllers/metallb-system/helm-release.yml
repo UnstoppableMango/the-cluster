@@ -5,6 +5,7 @@ metadata:
   namespace: metallb-system
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: metallb
   targetNamespace: metallb-system
   chart:
@@ -31,12 +32,19 @@ spec:
       enabled: false
     controller:
       priorityClassName: system-cluster-critical
+      # The controller reconciles every namespace and service in the cluster,
+      # not just the ones holding a LoadBalancer address: 69 namespaces and 68
+      # services against 11 LoadBalancer services and a single IPAddressPool.
+      # It idles at 225Mi and is OOM killed on reconcile bursts above that,
+      # exit 137 with the log ending on a clean `end reconcile`, so the ceiling
+      # is what kills it rather than anything it is doing. The request stays at
+      # the steady figure and the limit leaves room for the burst.
       resources:
         requests:
           cpu: 10m
-          memory: 64Mi
+          memory: 256Mi
         limits:
-          memory: 128Mi
+          memory: 512Mi
     speaker:
       priorityClassName: system-cluster-critical
       # No CPU limit: the speaker answers ARP for every service address, and it

@@ -48,3 +48,5 @@ spec:
     name: thecluster.lan
   dnsNames:
     - "*.thecluster.lan"
+    # A wildcard does not match the apex, which apps/thecluster-lan serves.
+    - thecluster.lan

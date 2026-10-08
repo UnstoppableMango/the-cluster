@@ -1,0 +1,10 @@
+# For pods that run their own container runtime (dockerd, podman, buildkitd,
+# kind). The handler mounts /sys/fs/cgroup read-write, and runc delegates the
+# pod's cgroup to the user namespace's root. admission-policy.yml holds every
+# pod using this class to hostUsers: false. docs/nested-containers.md has the
+# pod recipe and the node configuration behind the handler.
+apiVersion: node.k8s.io/v1
+kind: RuntimeClass
+metadata:
+  name: nested-containers
+handler: runc-cgroup-writable

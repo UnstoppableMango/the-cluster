@@ -5,6 +5,7 @@ metadata:
   namespace: cert-manager
 spec:
   interval: 30m
+  maxHistory: 2
   # A DaemonSet rolls out one node at a time (maxUnavailable: 1, maxSurge: 0)
   # and each node pulls three images, so the 5m default is not enough on a
   # cluster whose node set changes.
@@ -42,20 +43,12 @@ spec:
       requests:
         cpu: 100m
         memory: 128Mi
-    # pik8s4-6 carry the legacy master taint plus a custom unschedulable taint,
-    # so both must be tolerated to land there. This mirrors kube-system/coredns,
-    # the only workload that currently runs on them. The control-plane key is
-    # kept for when the legacy taint is replaced.
-    tolerations:
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
-      - key: unschedulable
-        operator: Exists
-        effect: NoSchedule
+    # No tolerations, so the DaemonSet skips pik8s4-6: they carry the legacy
+    # master taint plus a custom unschedulable one, and tolerating both is the
+    # only way onto them. Nothing scheduled there mounts a csi-driver volume,
+    # and the three containers reserve 120m of CPU and 256Mi per node on
+    # machines whose whole budget is 4 GiB against a kube-apiserver that wants
+    # over 2 of it.
   # The chart's `resources` above covers only the driver container; the two
   # sidecars it renders have no values key at all and would run unsized. The
   # patch is a strategic merge rather than JSON6902 so it keys off the container

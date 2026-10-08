@@ -5,6 +5,7 @@ metadata:
   namespace: monitoring
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: kube-prometheus-stack
   targetNamespace: monitoring
   # The CRDs come from the prometheus-operator-crds release in prometheus-operator-crds/, so that
@@ -17,7 +18,7 @@ spec:
   chart:
     spec:
       chart: kube-prometheus-stack
-      version: 91.5.1
+      version: 91.9.0
       sourceRef:
         kind: HelmRepository
         name: prometheus-community
@@ -55,6 +56,10 @@ spec:
         enabled: true
         storageClassName: ssd-rbd
         size: 10Gi
+      # The RWO volume cannot attach to a surge pod on another node, so a
+      # rolling update never completes.
+      deploymentStrategy:
+        type: Recreate
       resources:
         requests:
           cpu: 50m

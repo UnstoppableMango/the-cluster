@@ -5,6 +5,7 @@ metadata:
   namespace: rook-ceph
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: pinkdiamond
   targetNamespace: rook-ceph
   chart:
@@ -48,6 +49,16 @@ spec:
         enabled: true
         # The gateway terminates TLS, so the mgr serves plain HTTP on 7000.
         ssl: false
+        # Lets the dashboard list alert rules and query metrics.
+        # https://docs.ceph.com/en/squid/mgr/dashboard/#enabling-prometheus-alerting
+        prometheusEndpoint: http://kube-prometheus-stack-prometheus.monitoring.svc:9090
+        prometheusEndpointSSLVerify: false
+      cephConfig:
+        mgr:
+          # Rook has no dashboard field for this. It is the option behind
+          # `ceph dashboard set-alertmanager-api-host`, and lets the dashboard
+          # show active alerts and manage silences.
+          mgr/dashboard/ALERTMANAGER_API_HOST: http://kube-prometheus-stack-alertmanager.monitoring.svc:9093
       mon:
         # Three mons so the quorum survives the loss of any single host.
         # allowMultiplePerNode is false to stop rook colocating the quorum on

@@ -5,12 +5,13 @@ metadata:
   namespace: dex
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: dex
   targetNamespace: dex
   chart:
     spec:
       chart: dex
-      version: 0.24.1
+      version: 0.25.2
       sourceRef:
         kind: HelmRepository
         name: dex

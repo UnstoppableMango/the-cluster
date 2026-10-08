@@ -5,6 +5,7 @@ metadata:
   namespace: deemix
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: deemix
   targetNamespace: deemix
   chart:

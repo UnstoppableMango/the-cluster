@@ -9,6 +9,7 @@ spec:
     name: gha-runner-scale-set
     namespace: arc-system
   interval: 10m
+  maxHistory: 2
   # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml
   values:
     githubConfigUrl: https://github.com/unmango
@@ -16,13 +17,13 @@ spec:
     # Same `runs-on` label the UnstoppableMango repo-level scale sets use. unmango
     # is an organization, so one org-level scale set covers every repo under it.
     runnerScaleSetName: thecluster
-    minRunners: 3
+    minRunners: 6
     # Shares the runner nodes with the 37 repo-level scale sets in
     # apps/arc-runners, which cap at 6 each for the reasons in #4436. Every
     # runner mounts two CSI volumes plus an emptyDir at /var/run, and it is the
     # cluster-wide count of those mounts that broke dind, not the count within
     # one scale set. 30 here alone reproduces the conditions.
-    maxRunners: 6
+    maxRunners: 24
     # 99% the dind template
     # https://github.com/actions/actions-runner-controller/blob/8c84ab2f4267ce61df1f6b2e26a3ca12b2d1e4ca/charts/gha-runner-scale-set/values.yaml#L310
     template:
@@ -40,7 +41,7 @@ spec:
         # an OOM kill of cp and a failed pod. Sized above the copy so the whole
         # thing can sit dirty.
         - name: init-dind-externals
-          image: ghcr.io/unmango/actions-runner:2.337.0@sha256:7871210f6be2fd471a21b199922b9067c0f5da15e31987dd84f29d97690a2a90
+          image: ghcr.io/unmango/actions-runner:2.337.0@sha256:3971e7dcdb0d06146bb83e7860f8c33243c88f576c77b1753bf7b564ebdedbbe
           command: ["cp", "-r", "/home/runner/externals/.", "/home/runner/tmpDir/"]
           resources:
             requests:
@@ -67,7 +68,7 @@ spec:
         # sidecar that kubelet waits on before running any later init container.
         # This one has no reason to wait for dockerd.
         - name: init-nix
-          image: ghcr.io/unmango/actions-runner:2.337.0@sha256:7871210f6be2fd471a21b199922b9067c0f5da15e31987dd84f29d97690a2a90
+          image: ghcr.io/unmango/actions-runner:2.337.0@sha256:3971e7dcdb0d06146bb83e7860f8c33243c88f576c77b1753bf7b564ebdedbbe
           command: [sh, -c, 'chown runner:runner /nix && chmod 00755 /nix']
           securityContext:
             runAsUser: 0
@@ -81,7 +82,7 @@ spec:
             - name: nix
               mountPath: /nix
         - name: dind
-          image: docker:29.8.1-dind@sha256:3f3c01aaaebf7cce837356b688b7c059a4749f10bd7660dec7c58fc454a283f0
+          image: docker:29.8.2-dind@sha256:7dcdfc4a20246236f558175182ccace1eb15a41bd3eb119dd2284f393498b7c1
           args:
             - dockerd
             - --host=unix:///var/run/docker.sock
@@ -121,7 +122,7 @@ spec:
               mountPath: /home/runner/externals
         containers:
         - name: runner
-          image: ghcr.io/unmango/actions-runner:2.337.0@sha256:7871210f6be2fd471a21b199922b9067c0f5da15e31987dd84f29d97690a2a90
+          image: ghcr.io/unmango/actions-runner:2.337.0@sha256:3971e7dcdb0d06146bb83e7860f8c33243c88f576c77b1753bf7b564ebdedbbe
           command: [/home/runner/run.sh]
           env:
             - name: DOCKER_HOST

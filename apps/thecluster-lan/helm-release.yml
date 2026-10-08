@@ -1,0 +1,36 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: dashboard
+  namespace: thecluster-lan
+spec:
+  interval: 10m
+  maxHistory: 2
+  releaseName: dashboard
+  targetNamespace: thecluster-lan
+  chartRef:
+    kind: OCIRepository
+    name: dashboard
+  # https://github.com/UnstoppableMango/thecluster.lan/blob/main/charts/thecluster/values.yaml
+  values:
+    fullnameOverride: dashboard
+    image:
+      repository: ghcr.io/unstoppablemango/thecluster.lan/dashboard
+      tag: latest@sha256:a6eff4036d3421b4342d0d65ead6f7b7fb6c28b7e21e535cda71f8cb0ac52549
+    ingress:
+      enabled: false
+    # Internal only: the nginx Gateway listens on a LAN address, and no
+    # CloudflareTunnel rule points here.
+    httpRoute:
+      enabled: true
+      parentRefs:
+        - name: nginx
+          namespace: nginx-gateway
+      hostnames:
+        - thecluster.lan
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        memory: 128Mi

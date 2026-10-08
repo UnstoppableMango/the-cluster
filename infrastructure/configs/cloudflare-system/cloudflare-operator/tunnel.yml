@@ -21,12 +21,6 @@ spec:
           # remotely configured tunnel. Revisit once the operator passes
           # spec.template volumes through.
           noTlsVerify: true
-          # A +ptional typo in the operator's api types leaves caPool without an
-          # +optional marker, so controller-gen emits it as required and the CRD
-          # rejects any originRequest that omits it. cloudflared never reads a CA
-          # path when noTlsVerify is set, so the empty string is inert. Drop this
-          # line once unmango/cloudflare-operator#198 ships in a pinned tag.
-          caPool: ""
       - hostname: prom.thecluster.io
         service: http://kube-prometheus-stack-grafana.monitoring.svc:80
       - hostname: dex.thecluster.io
@@ -36,7 +30,10 @@ spec:
       # X-Forwarded-Proto the tunnel sets rather than from the connection.
       - hostname: auth.thecluster.io
         service: http://keycloak-http.keycloak.svc:80
-      # Cloudflare rejects a remote config whose last rule is not a catch-all.
-      # The CRD requires hostname, and cloudflared treats "*" as matching all.
-      - hostname: "*"
-        service: http_status:404
+      - hostname: knot.thecluster.io
+        service: http://knot.knot.svc:5555
+      - hostname: spindle.thecluster.io
+        service: http://spindle.spindle.svc:6555
+      # Cloudflare rejects a remote config whose last rule is not a catch-all,
+      # and the CRD requires that rule to omit hostname and path.
+      - service: http_status:404

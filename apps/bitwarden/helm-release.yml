@@ -5,12 +5,13 @@ metadata:
   namespace: bitwarden
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: bitwarden
   targetNamespace: bitwarden
   chart:
     spec:
       chart: self-host
-      version: 2.4.2
+      version: 2.5.1
       sourceRef:
         kind: HelmRepository
         name: bitwarden

@@ -12,8 +12,7 @@ spec:
         name: flux-system
         namespace: flux-system
   interval: 10m
-  # The chart renders a HelmRelease per scale set, and Helm waits on all of
-  # them. A rollout that restarts every child runs well past the 5m default.
+  maxHistory: 2
   install:
     timeout: 30m
   upgrade:
@@ -57,7 +56,7 @@ spec:
             # into an OOM kill of cp and a failed pod. Sized above the copy so
             # the whole thing can sit dirty.
             - name: init-dind-externals
-              image: ghcr.io/unmango/actions-runner:2.337.0@sha256:7871210f6be2fd471a21b199922b9067c0f5da15e31987dd84f29d97690a2a90
+              image: ghcr.io/unmango/actions-runner:2.337.0@sha256:3971e7dcdb0d06146bb83e7860f8c33243c88f576c77b1753bf7b564ebdedbbe
               command: [cp, -r, /home/runner/externals/., /home/runner/tmpDir/]
               resources:
                 requests:
@@ -84,7 +83,7 @@ spec:
             # native sidecar that kubelet waits on before running any later init
             # container. This one has no reason to wait for dockerd.
             - name: init-nix
-              image: ghcr.io/unmango/actions-runner:2.337.0@sha256:7871210f6be2fd471a21b199922b9067c0f5da15e31987dd84f29d97690a2a90
+              image: ghcr.io/unmango/actions-runner:2.337.0@sha256:3971e7dcdb0d06146bb83e7860f8c33243c88f576c77b1753bf7b564ebdedbbe
               command: [sh, -c, 'chown runner:runner /nix && chmod 00755 /nix']
               securityContext:
                 runAsUser: 0
@@ -98,7 +97,7 @@ spec:
                 - name: nix
                   mountPath: /nix
             - name: dind
-              image: docker:29.8.1-dind@sha256:3f3c01aaaebf7cce837356b688b7c059a4749f10bd7660dec7c58fc454a283f0
+              image: docker:29.8.2-dind@sha256:7dcdfc4a20246236f558175182ccace1eb15a41bd3eb119dd2284f393498b7c1
               args:
                 - dockerd
                 - --host=unix:///var/run/docker.sock
@@ -136,7 +135,7 @@ spec:
                   mountPath: /home/runner/externals
           containers:
             - name: runner
-              image: ghcr.io/unmango/actions-runner:2.337.0@sha256:7871210f6be2fd471a21b199922b9067c0f5da15e31987dd84f29d97690a2a90
+              image: ghcr.io/unmango/actions-runner:2.337.0@sha256:3971e7dcdb0d06146bb83e7860f8c33243c88f576c77b1753bf7b564ebdedbbe
               command: [/home/runner/run.sh]
               env:
                 # ncps binary cache, reachable in-cluster only. The image's nix
@@ -319,9 +318,12 @@ spec:
 
     - name: johnston-dems-mailer
       githubConfigUrl: https://github.com/UnstoppableMango/johnston-dems-mailer
+      minRunners: 3 # API, App, CLI
 
     - name: tdl
       githubConfigUrl: https://github.com/UnstoppableMango/tdl
+      # Stacked PRs rebase together and queue a run per branch.
+      maxRunners: 12
 
     - name: plex-operator
       githubConfigUrl: https://github.com/UnstoppableMango/plex-operator

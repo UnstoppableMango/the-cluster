@@ -115,8 +115,6 @@ metadata:
   name: apps-claude
   namespace: flux-system
 spec:
-  # Suspended until ghcr.io/unstoppablemango/dotfiles/container is published.
-  suspend: true
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -129,6 +127,8 @@ spec:
     - name: infra-sealed-secrets
     # pvc.yml binds through storageClassName: fast-rwo.
     - name: infra-configs-rook-ceph-storage
+    # deployment.yml runs dind under runtimeClassName: nested-containers.
+    - name: infra-configs-nested-containers
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -312,3 +312,65 @@ spec:
     - name: infra-configs-metallb
     # The chart's StatefulSet claims its volumes through standard-rwo.
     - name: infra-configs-rook-ceph-storage
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-spindle
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/spindle
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # The dind sidecar runs under the nested-containers RuntimeClass, and its
+    # admission policy must exist before the pod is admitted.
+    - name: infra-configs-nested-containers
+    # The chart's PVCs use standard-rwo.
+    - name: infra-configs-rook-ceph-storage
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-media
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/media
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # private-internet-access-sealed.yml and qbittorrent-sealed.yml need the
+    # SealedSecret CRD.
+    - name: infra-sealed-secrets
+    # plex, qbittorrent and deluge expose LoadBalancer services.
+    - name: infra-configs-metallb
+    # pvs.yml binds through bulk-rwx, default-cephfs and ssd-rbd, and mounts
+    # with the rook-csi secrets in rook-ceph.
+    - name: infra-configs-rook-ceph-storage
+    # Every web UI is an HTTPRoute against the nginx Gateway in nginx-gateway.
+    - name: infra-nginx-gateway
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-thecluster-lan
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/thecluster-lan
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # The chart's HTTPRoute attaches to the nginx Gateway in nginx-gateway.
+    - name: infra-nginx-gateway

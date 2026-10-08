@@ -5,10 +5,11 @@ metadata:
   namespace: pihole
 spec:
   interval: 10m
+  maxHistory: 2
   chart:
     spec:
       chart: external-dns
-      version: 1.22.0
+      version: 1.23.0
       sourceRef:
         kind: HelmRepository
         name: external-dns
@@ -74,10 +75,11 @@ metadata:
   namespace: pihole
 spec:
   interval: 10m
+  maxHistory: 2
   chart:
     spec:
       chart: external-dns
-      version: 1.22.0
+      version: 1.23.0
       sourceRef:
         kind: HelmRepository
         name: external-dns

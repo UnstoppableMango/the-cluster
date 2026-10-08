@@ -5,12 +5,13 @@ metadata:
   namespace: coredns-system
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: coredns-a
   targetNamespace: coredns-system
   chart:
     spec:
       chart: coredns
-      version: 1.47.1
+      version: 1.48.2
       sourceRef:
         kind: HelmRepository
         name: coredns
@@ -85,12 +86,13 @@ metadata:
   namespace: coredns-system
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: coredns-b
   targetNamespace: coredns-system
   chart:
     spec:
       chart: coredns
-      version: 1.47.1
+      version: 1.48.2
       sourceRef:
         kind: HelmRepository
         name: coredns

@@ -5,6 +5,7 @@ metadata:
   namespace: knot
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: knot
   targetNamespace: knot
   chart:
@@ -41,10 +42,10 @@ spec:
         type: LoadBalancer
         annotations:
           metallb.io/loadBalancerIPs: 10.0.69.210
-    # The tunnel controller creates the DNS record and terminates TLS.
+    # knot.thecluster.io reaches the knot Service through a rule on the
+    # thecluster-io CloudflareTunnel and a matching DnsRecord.
     ingress:
-      enabled: true
-      ingressClassName: cloudflare-tunnel
+      enabled: false
     resources:
       requests:
         cpu: 50m

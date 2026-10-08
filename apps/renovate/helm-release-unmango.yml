@@ -5,12 +5,13 @@ metadata:
   namespace: renovate
 spec:
   interval: 10m
+  maxHistory: 2
   releaseName: unmango-renovate
   targetNamespace: renovate
   chart:
     spec:
       chart: renovate
-      version: 46.317.1
+      version: 46.341.0
       sourceRef:
         kind: HelmRepository
         name: renovate
@@ -23,7 +24,7 @@ spec:
     image:
       registry: ghcr.io # default
       repository: renovatebot/renovate # default
-      tag: 44.111.4
+      tag: 44.138.0
     renovate:
       configIsJavaScript: true
       config: |
@@ -43,6 +44,10 @@ spec:
             '!unmango/pulumi-commandx',
           ],
           presetCachePersistence: true,
+          // The gomod2nix preset in UnstoppableMango/renovate-config.
+          allowedCommands: [
+            '^go run github\\.com/nix-community/gomod2nix@v[\\w.-]+ --dir \\. --outdir [\\w./-]+$',
+          ],
         };
     cronjob:
       schedule: '*/15 * * * *'
