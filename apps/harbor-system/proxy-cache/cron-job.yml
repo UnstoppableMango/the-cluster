@@ -1,0 +1,57 @@
+# Keeps the proxy-cache projects in proxy-cache.py present. Harbor has no
+# declarative config for registries or projects, so this calls its API.
+# The script only adds what is missing, so running it on a schedule is how
+# a project deleted by hand comes back, and the first run after Harbor
+# comes up is what creates them.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: proxy-cache
+  namespace: harbor-system
+spec:
+  schedule: "*/30 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 600
+      template:
+        spec:
+          restartPolicy: Never
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
+          containers:
+            - name: proxy-cache
+              image: python:3.14.8-alpine3.24
+              command:
+                - python3
+                - /script/proxy-cache.py
+              env:
+                - name: HARBOR_ADMIN_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: harbor
+                      key: HARBOR_ADMIN_PASSWORD
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+                limits:
+                  memory: 64Mi
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: [ALL]
+              volumeMounts:
+                - name: script
+                  mountPath: /script
+                  readOnly: true
+          volumes:
+            - name: script
+              configMap:
+                name: proxy-cache
