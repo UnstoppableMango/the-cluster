@@ -20,7 +20,7 @@ Two rules shape it:
 
 | Component                                    | Used for                          | Released?                                                                                     |
 | -------------------------------------------- | --------------------------------- | --------------------------------------------------------------------------------------------- |
-| Harbor chart (`goharbor/harbor-helm`)        | Harbor itself                     | Yes, pinned at `1.19.2` (Harbor v2.15.3)                                                      |
+| Harbor chart (`goharbor/harbor-helm`)        | Harbor itself                     | Yes, chart pinned at `1.19.2`; Harbor images overridden to `v2.15.3`                          |
 | `unmango/thecluster-operator`                | Registry and ProxyCache CRDs      | No. No tags, no versioned chart; images are `sha-<short>` and `main` only                     |
 | Harbor Terraform provider (`goharbor/harbor`)| Alternative config surface        | Yes, `v3.12.4` (2026-08-11), releasing every few weeks                                        |
 | `modules/registry-mirror` in UnstoppableMango/nixos | containerd mirrors on nodes  | Not applicable: flake input, deployed with `clan machines update`                             |
@@ -134,7 +134,7 @@ crictl pull docker.io/library/busybox:latest
 
 ### 4. Failover runbook
 
-Already drafted for #4638; it lands with step 2 in `docs/harbor.md`:
+Already drafted for #4638. It only applies once nodes pull through Harbor, so it lands in `docs/harbor.md` with step 3:
 
 - Unreachable Harbor, a Harbor error, or pihole down: containerd falls back to the upstream on its own. Nothing to do beyond slower pulls and upstream rate limits.
 - Harbor answering but wrong (a broken cached manifest): move `/etc/containerd/certs.d` aside on the node, or delete the artifact from the project and pull again.
@@ -143,7 +143,8 @@ Already drafted for #4638; it lands with step 2 in `docs/harbor.md`:
 ### 5. Our own images
 
 - `unmango/containers` `images.yml` and `unmango/charts` `release.yml` push to Harbor as well as ghcr.io and Docker Hub, with a robot account per repository.
-- That robot account and its project are configured the same way as the caches, so this step may need the operator (or provider) to grow robot account support.
+- Harbor refuses pushes to proxy-cache projects, so each repository pushes to a normal project of its own with a push-capable robot account.
+- Those projects and robot accounts should be declared the same way as the caches, so this step may need the operator (or provider) to grow support for normal projects and robot accounts.
 
 ### 6. Offline
 
