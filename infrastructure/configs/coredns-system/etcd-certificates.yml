@@ -19,7 +19,7 @@ spec:
   ipAddresses:
     - 127.0.0.1
   issuerRef:
-    name: thecluster.lan
+    name: cluster-internal
     kind: ClusterIssuer
     group: cert-manager.io
 ---
@@ -36,6 +36,6 @@ spec:
     - key encipherment
     - client auth
   issuerRef:
-    name: thecluster.lan
+    name: cluster-internal
     kind: ClusterIssuer
     group: cert-manager.io

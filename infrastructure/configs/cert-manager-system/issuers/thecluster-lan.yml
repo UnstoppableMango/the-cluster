@@ -1,28 +1,18 @@
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: thecluster.lan
-  namespace: cert-manager
-spec:
-  isCA: true
-  commonName: thecluster.lan
-  subject:
-    countries:
-      - US
-    organizations:
-      - UnMango
-    organizationalUnits:
-      - UnstoppableMango
-  issuerRef:
-    kind: ClusterIssuer
-    name: thecluster.io
-  secretName: thecluster.lan
----
+# Signs the certs browsers see on *.thecluster.lan, from UnMango Private CA 01
+# in UnstoppableMango/pki. That CA chains to the UnMango Root CA G2, so a device
+# that trusts the root trusts these, and its name constraints (thecluster.lan,
+# internal, home.arpa, local, localhost) bound what it can sign.
+# In-cluster service names are outside those constraints and go to
+# cluster-internal instead.
+#
+# private-ca-sealed.yml carries the private CA's cert, the policy CA's cert
+# after it, and the private CA's key, read from the pki Key Vault by
+# hack/pki-ca-secret.sh. Regenerate it with
+#   make infrastructure/configs/cert-manager-system/issuers/private-ca-sealed.yml
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   name: thecluster.lan
-  namespace: cert-manager
 spec:
   ca:
-    secretName: thecluster.lan
+    secretName: private-ca

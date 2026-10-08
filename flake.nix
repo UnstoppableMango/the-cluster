@@ -46,6 +46,7 @@
           devShells.default = pkgs.mkShellNoCC {
             packages = with pkgs; [
               bash # For copilot
+              azure-cli
               crossplane-cli
               git
               nixfmt
@@ -59,7 +60,7 @@
               kubeseal
               nixfmt-tree
               nurl
-              pulumi-bin
+              openssl
               shellcheck
               velero
               watchexec
