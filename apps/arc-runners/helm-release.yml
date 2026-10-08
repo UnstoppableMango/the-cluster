@@ -240,6 +240,11 @@ spec:
     - name: dotfiles
       githubConfigUrl: https://github.com/UnstoppableMango/dotfiles
       minRunners: 1
+      # CI builds full Home Manager closures (electron, ghc, haskell-language-server),
+      # which overflow the default store size. Two runners at 50Gi keep the
+      # fast-rwo ceiling below the six at 20Gi this replaces.
+      maxRunners: 2
+      nixStorageSize: 50Gi
 
     - name: the-cluster
       githubConfigUrl: https://github.com/UnstoppableMango/the-cluster
