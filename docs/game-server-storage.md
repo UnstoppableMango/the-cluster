@@ -47,7 +47,8 @@ So the manifest change alone does nothing.
 Each StatefulSet must be deleted before Flux can recreate it against the new class, and deleting a StatefulSet leaves its PVCs behind.
 
 Deleting the StatefulSet does not delete the claim.
-Deleting the claim is what destroys data, and only on a class whose reclaim policy is `Delete`.
+Deleting the claim is what destroys data, and only when the bound PV's `spec.persistentVolumeReclaimPolicy` is `Delete`.
+That is the PV's own field, which a static or patched PV can set differently from its class, so check the PV rather than the class.
 
 ## Order of operations
 
@@ -75,7 +76,7 @@ kubectl -n velero-system get dataupload --sort-by=.metadata.creationTimestamp | 
 A `Completed` backup and `Completed` DataUploads mean CSI snapshots of rbd volumes and the kopia upload to the `thecluster` location both work.
 If none has completed, stop and fix that first.
 
-None of the game namespaces carry a `backup.thecluster.io/*` label, so no schedule covers them today.
+The schedules select resources by `backup.thecluster.io/*` labels, and no manifest under the five game apps carries one, so no schedule backs up their claims today.
 
 ## Discarded data: slackerworld, necesse, xmage
 
@@ -87,6 +88,19 @@ A one-off backup costs a few minutes and makes "discarded" reversible for a week
 velero backup create discard-game-servers \
   --include-namespaces slackerworld,necesse,xmage \
   --snapshot-move-data --storage-location thecluster --ttl 168h --wait
+velero backup describe discard-game-servers --details
+```
+
+`Phase` must be `Completed`, with one `Completed` DataUpload each for `data-slackerworld-0`, `necesse`, and `db`.
+Stop if any is missing; `--wait` also returns on `PartiallyFailed`.
+
+Confirm the old volumes are `Retain` before deleting their claims:
+
+```sh
+for c in slackerworld/data-slackerworld-0 necesse/necesse xmage/db; do
+  pv=$(kubectl -n "${c%/*}" get pvc "${c#*/}" -o jsonpath='{.spec.volumeName}')
+  echo "$c $pv $(kubectl get pv "$pv" -o jsonpath='{.spec.persistentVolumeReclaimPolicy}')"
+done
 ```
 
 Then delete and recreate:
@@ -108,7 +122,7 @@ flux resume kustomization apps-xmage
 
 `flux resume` reconciles as it resumes, and each call takes one name.
 
-The old volumes on `unsafe-rbd` are `Retain`, so the rbd images outlive the claims and need deleting from the toolbox once the servers come back up.
+With the old volumes `Retain`, the rbd images outlive the claims and need deleting from the toolbox once the servers come back up.
 That is the same cleanup `docs/storage.md` wants before `unsafe-metadata` and `unsafe-data` can go.
 
 ## Preserved data: adventureworld and palworld
@@ -207,12 +221,14 @@ Until step 6 the old image still exists, and the backup holds a copy for 30 days
 To go back to the old volume, scale to zero, delete the new claim, clear the old PV's `claimRef` so it is `Available`, and recreate the claim against it:
 
 ```sh
+flux suspend kustomization "apps-$APP"
 kubectl -n "$APP" scale statefulset "$APP" --replicas=0
 kubectl -n "$APP" delete pvc "data-$APP-0"
 kubectl patch pv "$OLD" --type=json -p '[{"op":"remove","path":"/spec/claimRef"}]'
 ```
 
-The StatefulSet template names `$TO`, so the claim recreated against `$OLD` (with `volumeName: $OLD` and `storageClassName: $FROM`) has to be applied by hand, with Flux suspended, until the manifest is reverted.
+The StatefulSet template names `$TO`, so the claim recreated against `$OLD` (with `volumeName: $OLD` and `storageClassName: $FROM`) has to be applied by hand.
+Keep the Kustomization suspended until the manifest is reverted, or Flux scales the StatefulSet back up and it provisions a fresh claim on `$TO` before `$OLD` is rebound.
 
 ### 6. Clean up
 
