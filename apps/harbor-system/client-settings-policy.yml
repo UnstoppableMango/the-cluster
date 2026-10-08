@@ -1,0 +1,15 @@
+# nginx's default client_max_body_size is 1m, and a docker push sends each
+# layer as one request body, so anything bigger fails with 413. 0 turns the
+# check off for Harbor's route only; every other route keeps the default.
+apiVersion: gateway.nginx.org/v1alpha1
+kind: ClientSettingsPolicy
+metadata:
+  name: harbor
+  namespace: harbor-system
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: harbor-route
+  body:
+    maxSize: "0"

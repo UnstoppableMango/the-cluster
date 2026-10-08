@@ -374,3 +374,28 @@ spec:
   dependsOn:
     # The chart's HTTPRoute attaches to the nginx Gateway in nginx-gateway.
     - name: infra-nginx-gateway
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-harbor-system
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/harbor-system
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # harbor-sealed.yml needs the SealedSecret CRD.
+    - name: infra-sealed-secrets
+    # postgres-cluster.yml is a postgresql.cnpg.io Cluster.
+    - name: infra-cnpg-system
+    # object-bucket-claim.yml claims through storageClassName: bucket, and the
+    # Cluster and the chart's redis and trivy claims provision through fast-rwo.
+    - name: infra-configs-rook-ceph-storage
+    # The chart's HTTPRoute attaches to the nginx Gateway in nginx-gateway, and
+    # client-settings-policy.yml needs the ClientSettingsPolicy CRD it installs.
+    - name: infra-nginx-gateway

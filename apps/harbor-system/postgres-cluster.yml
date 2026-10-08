@@ -1,0 +1,30 @@
+# Harbor keeps projects, users, artifact metadata, scan reports and job logs
+# here; blobs go to the bucket. CNPG generates the harbor role's password into
+# Secret postgres-app, which helm-release.yml hands to Harbor as an existing
+# secret, so there is nothing to seal.
+#
+# Two instances so a node loss fails over instead of waiting on the RBD
+# image to reattach: nodes pull through Harbor once they are pointed at it.
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres
+  namespace: harbor-system
+spec:
+  instances: 2
+  # CNPG applies nothing by default, so without this the postgres pods run
+  # BestEffort. No CPU limit: throttling the primary stalls every pull.
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 512Mi
+  storage:
+    storageClass: fast-rwo
+    size: 10Gi
+  bootstrap:
+    initdb:
+      # The chart's name for Harbor's core database.
+      database: registry
+      owner: harbor

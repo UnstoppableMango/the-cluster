@@ -1,0 +1,16 @@
+# Rook answers this claim with a Secret and a ConfigMap both named
+# harbor-registry in this namespace. helm-release.yml maps the Secret's
+# AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY into the registry containers.
+#
+# The bucket's data pool is erasure coded with an osd failure domain (see
+# docs/storage.md), which suits proxy-cache blobs that can be re-fetched.
+# Images pushed here have no other copy, so anything that cannot be rebuilt
+# needs a replication rule to somewhere else before it depends on this.
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: harbor-registry
+  namespace: harbor-system
+spec:
+  bucketName: harbor-registry
+  storageClassName: bucket

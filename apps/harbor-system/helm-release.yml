@@ -8,6 +8,13 @@ spec:
   maxHistory: 2
   releaseName: harbor
   targetNamespace: harbor-system
+  # The chart, the bucket claim and the CNPG Cluster apply together, and core
+  # crash-loops until Postgres has bootstrapped both instances. That can
+  # outlast Helm's 5m wait, and a failed install is not retried by default.
+  timeout: 15m
+  install:
+    remediation:
+      retries: 3
   chart:
     spec:
       chart: harbor
@@ -15,45 +22,63 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: harbor
-  # https://github.com/goharbor/harbor-helm/blob/v1.17.1/values.yaml
+  # https://github.com/goharbor/harbor-helm/blob/v1.19.2/values.yaml
   values:
+    # The chart renders an HTTPRoute that sends /api/, /service/, /v2/ and /c/
+    # to core and everything else to portal, so no nginx proxy is deployed.
+    # The Gateway's listener terminates TLS with the *.thecluster.lan
+    # wildcard, which is why the host is one label deep: core.harbor.* would
+    # not match it. client-settings-policy.yml lifts the body size limit.
     expose:
-      type: ingress # default
+      type: route
       tls:
-        enabled: true # default
-        certSource: auto # default
-      ingress:
+        enabled: false
+      route:
+        parentRefs:
+          - name: nginx
+            namespace: nginx-gateway
         hosts:
-          core: core.harbor.thecluster.lan
-        className: nginx
-    externalURL: https://core.harbor.thecluster.lan
-    # Hmm... the docs don't match the chart
-    # https://goharbor.io/docs/2.13.0/install-config/harbor-ha-helm/
+          - harbor.thecluster.lan
+    externalURL: https://harbor.thecluster.lan
+    # Both read from harbor-sealed.yml, generated once and never written to
+    # git in the clear. The admin password only seeds the database on first
+    # start; changing it later goes through the UI or API, not this Secret.
+    # secretKey encrypts registry credentials stored in the database, so it
+    # has to outlive every upgrade, and the chart's default is a fixed string.
+    existingSecretAdminPassword: harbor
+    existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
+    existingSecretSecretKey: harbor
     persistence:
       enabled: true # default
+      resourcePolicy: keep # default
       persistentVolumeClaim:
-        registry:
-          storageClass: ec-cephfs
-          accessMode: ReadWriteMany
-          size: 5Gi # default
-        chartmuseum:
-          storageClass: ec-cephfs
-          accessMode: ReadWriteMany
-        jobservice:
-          jobLog:
-            storageClass: ec-cephfs
-            accessMode: ReadWriteMany
-            size: 1Gi # default
+        # Redis holds the job queue and caches, and trivy holds a vulnerability
+        # database it re-downloads. Neither is worth replicating across hosts.
+        redis:
+          storageClass: fast-rwo
+          size: 1Gi # default
         trivy:
-          storageClass: ec-cephfs
-          accessMode: ReadWriteMany
+          storageClass: fast-rwo
           size: 5Gi # default
+      # Blobs go to the harbor-registry bucket that object-bucket-claim.yml
+      # claims. The keys Rook writes are AWS_ACCESS_KEY_ID and
+      # AWS_SECRET_ACCESS_KEY, not the REGISTRY_STORAGE_S3_* names the chart's
+      # existingSecret expects, so the registry containers map them through
+      # extraEnvVars below instead.
       imageChartStorage:
-        type: filesystem # default
-        filesystem:
-          rootdirectory: /storage # default
-    internalTLS:
-      enabled: false # default
+        # Without this the registry answers a blob GET with a redirect to a
+        # presigned URL on the RGW Service, which nothing outside the cluster
+        # can resolve. Disabled, every pull streams through the registry.
+        disableredirect: true
+        type: s3
+        s3:
+          bucket: harbor-registry
+          # RGW does not enforce a region; it is a formality for signing.
+          region: us-east-1
+          # The plain listener. Requests are SigV4-signed, so the secret key
+          # never crosses the wire, and the chart can only add a CA from a
+          # Secret, while thecluster.lan's reaches namespaces as a ConfigMap.
+          regionendpoint: http://rook-ceph-rgw-s3.rook-ceph.svc:80
     portal:
       image:
         repository: goharbor/harbor-portal # default
@@ -61,8 +86,10 @@ spec:
       replicas: 1 # default
       resources:
         requests:
-          cpu: 100m
-          memory: 256Mi
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
       affinity:
         nodeAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -82,15 +109,23 @@ spec:
         requests:
           cpu: 100m
           memory: 256Mi
+        limits:
+          memory: 768Mi
     jobservice:
       image:
         repository: goharbor/harbor-jobservice # default
         tag: v2.15.3
       replicas: 1 # default
+      # The default "file" logger is what needs the jobservice PVC. Job logs
+      # in the database go wherever the database goes.
+      jobLoggers:
+        - database
       resources:
         requests:
-          cpu: 100m
-          memory: 256Mi
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          memory: 512Mi
     registry:
       registry:
         image:
@@ -100,14 +135,50 @@ spec:
           requests:
             cpu: 100m
             memory: 256Mi
+          limits:
+            memory: 1Gi
+        extraEnvVars:
+          - name: REGISTRY_STORAGE_S3_ACCESSKEY
+            valueFrom:
+              secretKeyRef:
+                name: harbor-registry
+                key: AWS_ACCESS_KEY_ID
+          - name: REGISTRY_STORAGE_S3_SECRETKEY
+            valueFrom:
+              secretKeyRef:
+                name: harbor-registry
+                key: AWS_SECRET_ACCESS_KEY
+          # The chart has no value for this. Distribution 3 addresses buckets
+          # by virtual host unless told otherwise, which RGW's Service name
+          # cannot answer, and it reads any storage parameter from the
+          # environment.
+          - name: REGISTRY_STORAGE_S3_FORCEPATHSTYLE
+            value: "true"
       controller:
         image:
           repository: goharbor/harbor-registryctl # default
           tag: v2.15.3
         resources:
           requests:
-            cpu: 100m
+            cpu: 10m
+            memory: 64Mi
+          limits:
             memory: 256Mi
+        # registryctl runs garbage collection against the same bucket, so it
+        # needs the same storage settings as the registry container.
+        extraEnvVars:
+          - name: REGISTRY_STORAGE_S3_ACCESSKEY
+            valueFrom:
+              secretKeyRef:
+                name: harbor-registry
+                key: AWS_ACCESS_KEY_ID
+          - name: REGISTRY_STORAGE_S3_SECRETKEY
+            valueFrom:
+              secretKeyRef:
+                name: harbor-registry
+                key: AWS_SECRET_ACCESS_KEY
+          - name: REGISTRY_STORAGE_S3_FORCEPATHSTYLE
+            value: "true"
       replicas: 1 # default
     trivy:
       enabled: true # default
@@ -115,6 +186,7 @@ spec:
         repository: goharbor/trivy-adapter-photon # default
         tag: v2.15.3
       replicas: 1
+      # Scans are batch work, so throttling is acceptable here.
       resources:
         requests:
           cpu: 200m # default
@@ -122,26 +194,24 @@ spec:
         limits:
           cpu: 1 # default
           memory: 1Gi # default
+    # postgres-cluster.yml. Harbor has no client certificate support, so it
+    # logs in with the password CNPG generates into postgres-app, over TLS.
     database:
-      type: internal # default
-      internal:
-        image:
-          repository: goharbor/harbor-db # default
-          tag: v2.15.3
-        resources:
-          requests:
-            cpu: 100m
-            memory: 256Mi
-        # The chart's `resources` above covers the database container only; this
-        # chowns the data directory before it starts and is otherwise unsized.
-        initContainer:
-          permissions:
-            resources:
-              requests:
-                cpu: 10m
-                memory: 32Mi
-              limits:
-                memory: 64Mi
+      type: external
+      external:
+        host: postgres-rw.harbor-system.svc
+        port: "5432"
+        username: harbor
+        coreDatabase: registry
+        existingSecret: postgres-app
+        # The server certificate chains to a CA CNPG generated, which Harbor
+        # has no way to trust without mounting that CA's key along with it.
+        sslmode: require
+      # The chart's 900 is sized for Harbor's own Postgres. CNPG leaves
+      # max_connections at 100, and each core and exporter pod opens its own
+      # pool, so 900 lets one pod starve the rest and the replication slots.
+      maxOpenConns: 40
+      maxIdleConns: 10
     redis:
       type: internal # default
       internal:
@@ -150,7 +220,9 @@ spec:
           tag: v2.15.1
         resources:
           requests:
-            cpu: 100m
+            cpu: 50m
+            memory: 64Mi
+          limits:
             memory: 256Mi
     exporter:
       image:
@@ -158,5 +230,7 @@ spec:
         tag: v2.15.3
       resources:
         requests:
-          cpu: 100m
+          cpu: 10m
+          memory: 64Mi
+        limits:
           memory: 256Mi
