@@ -5,10 +5,8 @@
 # In-cluster service names are outside those constraints and go to
 # cluster-internal instead.
 #
-# private-ca-sealed.yml carries the private CA's cert, the policy CA's cert
-# after it, and the private CA's key, read from the pki Key Vault by
-# hack/pki-ca-secret.sh. Regenerate it with
-#   make infrastructure/configs/cert-manager-system/issuers/private-ca-sealed.yml
+# private-ca is an ExternalSecret built from the pki Key Vault's private-cert
+# and policy-cert, so a re-issued CA reaches the cluster on its own.
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:

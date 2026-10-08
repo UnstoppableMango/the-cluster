@@ -6,7 +6,6 @@ This file provides guidance to AI agents when working with code in this reposito
 
 Homelab infrastructure-as-code for a single Kubernetes cluster, `rosequartz`, deployed entirely via Flux CD.
 No stacks are defined in Pulumi.
-`hack/pki-ca-secret.sh` reads UnMango Private CA 01 from the `UnstoppableMango/pki` Key Vault (`unmango-pki-kv`) into the stub behind `infrastructure/configs/cert-manager-system/issuers/private-ca-sealed.yml`.
 
 ## Commands
 
@@ -66,6 +65,7 @@ Two ClusterIssuers, split by who has to trust the cert:
   That CA is name-constrained to `thecluster.lan`, `internal`, `home.arpa`, `local`, and `localhost`, so a Service name or `*.svc` cannot come from it.
 - `cluster-internal` signs in-cluster service and client certs from a self-signed CA that never leaves the cluster.
 
+The private CA reaches the cluster through external-secrets: the `pki-keyvault` ClusterSecretStore reads the `UnstoppableMango/pki` Key Vault (`unmango-pki-kv`) as a service principal that can read `private-cert` and `policy-cert` and nothing else, and only the `cert-manager` namespace may use it.
 The `thecluster-lan-ca` Bundle fans both CAs (the root inline, the internal CA from its Secret) out to every namespace as a ConfigMap.
 
 ### Sealing and unsealing
