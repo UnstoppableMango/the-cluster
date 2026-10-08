@@ -40,7 +40,7 @@ spec:
     image:
       registry: docker.gitea.com
       repository: gitea
-      tag: "28.0.0"
+      tag: "28.1.0"
     replicaCount: 1
     strategy:
       type: Recreate
