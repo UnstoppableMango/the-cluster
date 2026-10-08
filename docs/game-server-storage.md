@@ -44,14 +44,52 @@ updates to statefulset spec for fields other than 'replicas', 'ordinals', 'templ
 ```
 
 So the manifest change alone does nothing.
-Each StatefulSet must be deleted before Flux can recreate it against the new class, and deleting a StatefulSet leaves its PVCs behind, which is what makes the copy procedure below possible.
+Each StatefulSet must be deleted before Flux can recreate it against the new class, and deleting a StatefulSet leaves its PVCs behind.
 
 Deleting the StatefulSet does not delete the claim.
 Deleting the claim is what destroys data, and only on a class whose reclaim policy is `Delete`.
 
+## Order of operations
+
+Flux cannot apply the new manifests until each StatefulSet is gone, and a Kustomization with `wait: true` sits failed until then.
+Suspend all five before merging, so nothing is reapplied halfway through a migration:
+
+```sh
+for app in adventureworld palworld slackerworld necesse xmage; do
+  flux suspend kustomization "apps-$app"
+done
+```
+
+Merge, migrate each app below, and resume its Kustomization as the last step of its section.
+
+## Preflight: confirm Velero works
+
+The preserved-data migration below is a Velero backup and restore, so the data mover has to be working before anything is deleted.
+The scheduled backups use the same path (`snapshotMoveData: true` in `infrastructure/configs/velero-system/schedules.yml`), so a recent one completing is the check:
+
+```sh
+velero backup get
+kubectl -n velero-system get dataupload --sort-by=.metadata.creationTimestamp | tail
+```
+
+A `Completed` backup and `Completed` DataUploads mean CSI snapshots of rbd volumes and the kopia upload to the `thecluster` location both work.
+If none has completed, stop and fix that first.
+
+None of the game namespaces carry a `backup.thecluster.io/*` label, so no schedule covers them today.
+
 ## Discarded data: slackerworld, necesse, xmage
 
 The static PV pin and, for the two Deployments, the `volumeName` pin are already removed from the manifests, so each claim provisions fresh.
+
+A one-off backup costs a few minutes and makes "discarded" reversible for a week:
+
+```sh
+velero backup create discard-game-servers \
+  --include-namespaces slackerworld,necesse,xmage \
+  --snapshot-move-data --storage-location thecluster --ttl 168h --wait
+```
+
+Then delete and recreate:
 
 ```sh
 kubectl -n slackerworld delete statefulset slackerworld
@@ -63,150 +101,130 @@ kubectl -n necesse delete pvc necesse
 kubectl -n xmage delete deployment xmage
 kubectl -n xmage delete pvc db
 
-flux reconcile kustomization apps-slackerworld apps-necesse apps-xmage
+flux resume kustomization apps-slackerworld
+flux resume kustomization apps-necesse
+flux resume kustomization apps-xmage
 ```
+
+`flux resume` reconciles as it resumes, and each call takes one name.
 
 The old volumes on `unsafe-rbd` are `Retain`, so the rbd images outlive the claims and need deleting from the toolbox once the servers come back up.
 That is the same cleanup `docs/storage.md` wants before `unsafe-metadata` and `unsafe-data` can go.
 
 ## Preserved data: adventureworld and palworld
 
-Both hold world state worth keeping, so the volume is copied before anything is deleted.
+Both hold world state worth keeping.
+Velero backs the namespace up, the claim is deleted, and Velero restores it under the same name with the new class.
+The data mover writes the restored volume through a fresh claim, so there is no copy Job, no `claimRef` rewrite, and no PV to capture into the repo: the restored claim is an ordinary dynamically provisioned one, and the recreated StatefulSet adopts it by name.
 
-`adventureworld` is the dangerous one: its claim is on `standard-rwo`, whose reclaim policy is `Delete`.
-Deleting that claim destroys the image.
-Pin the volume first and confirm it took.
+Run the steps once per app with these set:
 
-### 1. Stop the server and pin the volume
+| App            | `APP`            | `FROM`         | `TO`           |
+| -------------- | ---------------- | -------------- | -------------- |
+| adventureworld | `adventureworld` | `standard-rwo` | `fast-rwo`     |
+| palworld       | `palworld`       | `unsafe-rbd`   | `standard-rwo` |
 
 ```sh
-kubectl -n adventureworld scale statefulset adventureworld --replicas=0
-PV=$(kubectl -n adventureworld get pvc data-adventureworld-0 -o jsonpath='{.spec.volumeName}')
-kubectl patch pv "$PV" -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'
-kubectl get pv "$PV" -o jsonpath='{.spec.persistentVolumeReclaimPolicy}{"\n"}'
+APP=adventureworld FROM=standard-rwo TO=fast-rwo
+```
+
+Namespace, StatefulSet, and Kustomization names all follow `$APP`, and the claim is `data-$APP-0`.
+
+### 1. Stop the server and pin the old volume
+
+```sh
+kubectl -n "$APP" scale statefulset "$APP" --replicas=0
+kubectl -n "$APP" wait --for=delete pod "$APP-0" --timeout=5m
+OLD=$(kubectl -n "$APP" get pvc "data-$APP-0" -o jsonpath='{.spec.volumeName}')
+kubectl patch pv "$OLD" -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'
+kubectl get pv "$OLD" -o jsonpath='{.spec.persistentVolumeReclaimPolicy}{"\n"}'
 ```
 
 The last line must print `Retain` before continuing.
-palworld's volume is already `Retain` and statically defined in `apps/palworld/pvs.yml`, so it needs the scale to zero only.
+adventureworld's volume is on `standard-rwo`, which reclaims with `Delete`, so without this deleting the claim destroys the image.
+palworld's is already `Retain`; the patch is a no-op there.
 
-### 2. Provision the destination
+Scaling to zero first means the backup captures a world the server is not writing to.
 
-```sh
-kubectl -n adventureworld apply -f - <<'EOF'
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: data-adventureworld-migrate
-  namespace: adventureworld
-spec:
-  storageClassName: fast-rwo
-  accessModes:
-    - ReadWriteOncePod
-  resources:
-    requests:
-      storage: 24Gi
-EOF
-```
-
-For palworld, the same claim with `storageClassName: standard-rwo` and the palworld namespace and names.
-
-### 3. Copy
-
-Both claims are `ReadWriteOncePod`, which restricts each volume to one pod.
-One pod mounting two such volumes is allowed, so a single Job does the copy.
+### 2. Back up
 
 ```sh
-kubectl -n adventureworld apply -f - <<'EOF'
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: migrate-storage
-  namespace: adventureworld
-spec:
-  backoffLimit: 0
-  template:
-    spec:
-      restartPolicy: Never
-      containers:
-        - name: copy
-          image: busybox:1.36
-          command:
-            - sh
-            - -c
-            - set -e; cp -a /src/. /dst/; sync; echo "--- src ---"; du -sh /src; echo "--- dst ---"; du -sh /dst
-          resources:
-            requests:
-              cpu: 100m
-              memory: 64Mi
-            limits:
-              memory: 256Mi
-          volumeMounts:
-            - name: src
-              mountPath: /src
-            - name: dst
-              mountPath: /dst
-      volumes:
-        - name: src
-          persistentVolumeClaim:
-            claimName: data-adventureworld-0
-        - name: dst
-          persistentVolumeClaim:
-            claimName: data-adventureworld-migrate
-EOF
-
-kubectl -n adventureworld logs -f job/migrate-storage
+velero backup create "migrate-$APP" \
+  --include-namespaces "$APP" \
+  --snapshot-move-data --storage-location thecluster --ttl 720h --wait
+velero backup describe "migrate-$APP" --details
 ```
 
-`cp -a` preserves ownership, which matters because the server runs as uid and gid 1000 via `PUID` and `PGID`.
-The two `du -sh` figures at the end must match.
-Treat a mismatch as a failed copy and do not continue.
+`Phase` must be `Completed` and the details must list one DataUpload for `data-$APP-0`, also `Completed`.
+`PartiallyFailed` is a failure here.
 
-### 4. Promote the copy
+### 3. Map the storage class
 
-The StatefulSet expects the claim named `data-<app>-0`, so the new volume has to end up under that name.
-Retain it, release it, and let the recreated claim bind to it by `claimRef`.
+Velero rewrites a restored claim's class through a plugin ConfigMap.
+It applies to every restore while it exists, so it is created for this step and deleted in step 5, and never committed:
 
 ```sh
-NEW=$(kubectl -n adventureworld get pvc data-adventureworld-migrate -o jsonpath='{.spec.volumeName}')
-kubectl patch pv "$NEW" -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'
-kubectl -n adventureworld delete job migrate-storage
-kubectl -n adventureworld delete pvc data-adventureworld-migrate
-kubectl patch pv "$NEW" --type=json -p '[{"op":"remove","path":"/spec/claimRef"}]'
-kubectl patch pv "$NEW" --type=merge -p '{"spec":{"claimRef":{"apiVersion":"v1","kind":"PersistentVolumeClaim","name":"data-adventureworld-0","namespace":"adventureworld"}}}'
+kubectl -n velero-system create configmap change-storage-class \
+  --from-literal="$FROM=$TO"
+kubectl -n velero-system label configmap change-storage-class \
+  velero.io/plugin-config= velero.io/change-storage-class=RestoreItemAction
 ```
 
-Capture the PV for the repo, so the binding survives a rebuild:
+### 4. Swap
 
 ```sh
-kubectl get pv "$NEW" -o yaml \
-  | yq eval 'del(.metadata.uid, .metadata.resourceVersion, .metadata.creationTimestamp,
-               .metadata.annotations."pv.kubernetes.io/provisioned-by", .status)' -
+kubectl -n "$APP" delete statefulset "$APP"
+kubectl -n "$APP" delete pvc "data-$APP-0"
+
+velero restore create "migrate-$APP" \
+  --from-backup "migrate-$APP" \
+  --include-resources persistentvolumeclaims \
+  --wait
+velero restore describe "migrate-$APP" --details
+
+kubectl -n "$APP" get pvc "data-$APP-0" \
+  -o custom-columns=STATUS:.status.phase,CLASS:.spec.storageClassName,VOLUME:.spec.volumeName
 ```
 
-Write that into `apps/adventureworld/pvs.yml` with the `kustomize.toolkit.fluxcd.io/prune: disabled` annotation the other apps use, and add it to the kustomization.
-For palworld, replace the existing `apps/palworld/pvs.yml` rather than adding one.
+The restore must be `Completed` with one `Completed` DataDownload, and the claim must be `Bound` on `$TO`.
+`VOLUME` must differ from `$OLD`.
 
-### 5. Swap
+### 5. Recreate the server
 
 ```sh
-kubectl -n adventureworld delete statefulset adventureworld
-kubectl -n adventureworld delete pvc data-adventureworld-0
-flux reconcile kustomization apps-adventureworld
+kubectl -n velero-system delete configmap change-storage-class
+flux resume kustomization "apps-$APP"
+kubectl -n "$APP" rollout status statefulset "$APP"
 ```
 
-The recreated claim binds to the pinned PV because its `claimRef` already names it.
-Confirm before letting players back on:
+Flux recreates the StatefulSet, whose template now names `$TO`, and its pod mounts the restored claim.
+Join the server and confirm the world loads before letting players back on.
+A world that loads is the only real verification; a completed restore proves the bytes moved, not that the save is intact.
+
+### Rollback
+
+Until step 6 the old image still exists, and the backup holds a copy for 30 days.
+To go back to the old volume, scale to zero, delete the new claim, clear the old PV's `claimRef` so it is `Available`, and recreate the claim against it:
 
 ```sh
-kubectl -n adventureworld get pvc data-adventureworld-0
+kubectl -n "$APP" scale statefulset "$APP" --replicas=0
+kubectl -n "$APP" delete pvc "data-$APP-0"
+kubectl patch pv "$OLD" --type=json -p '[{"op":"remove","path":"/spec/claimRef"}]'
 ```
 
-`STORAGECLASS` must read the new class and `VOLUME` must be the PV captured above.
+The StatefulSet template names `$TO`, so the claim recreated against `$OLD` (with `volumeName: $OLD` and `storageClassName: $FROM`) has to be applied by hand, with Flux suspended, until the manifest is reverted.
 
 ### 6. Clean up
 
-The pre-migration images are `Retain`, so they survive their claims and hold space until deleted from the toolbox.
-adventureworld's old image is in `standard`; palworld's is in `unsafe-data`, and removing it advances the `unsafe-*` pool cleanup.
+Delete the old images only once the servers have run against the new volumes and the worlds load.
+They are `Retain`, so they survive their claims and hold space until then:
 
-Delete them only once the servers have run against the new volumes and the worlds load correctly.
-A world that loads is the only real verification; matching `du` output proves the bytes copied, not that the save is intact.
+```sh
+kubectl delete pv "$OLD"
+```
+
+then remove the rbd image from the toolbox.
+adventureworld's old image is in `standard`; palworld's is in `unsafe-data`, and removing it advances the `unsafe-*` pool cleanup.
+palworld's PV was statically defined in `apps/palworld/pvs.yml`; that file is already gone from the repo, and the PV carried `kustomize.toolkit.fluxcd.io/prune: disabled`, so Flux leaves it for this step rather than deleting it.
+
+The `migrate-*` backups expire on their own after 30 days.
