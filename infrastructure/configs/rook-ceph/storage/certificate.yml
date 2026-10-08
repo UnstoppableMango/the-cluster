@@ -13,7 +13,7 @@ spec:
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer
-    name: thecluster.lan
+    name: cluster-internal
   # Path-style S3 only, so the names are the Service and nothing per bucket.
   dnsNames:
     - rook-ceph-rgw-s3
