@@ -6,7 +6,6 @@ This file provides guidance to AI agents when working with code in this reposito
 
 Homelab infrastructure-as-code for a single Kubernetes cluster, `rosequartz`, deployed entirely via Flux CD.
 No stacks are defined in Pulumi.
-`hack/pki-ca-secret.sh` reads UnMango Private CA 01 from the `UnstoppableMango/pki` Key Vault (`unmango-pki-kv`) into the stub behind `infrastructure/configs/cert-manager-system/issuers/private-ca-sealed.yml`.
 
 ## Commands
 
@@ -61,7 +60,7 @@ The tag carries nothing: every image builds from the nixpkgs commit in `apps/nix
 
 external-secrets (`infrastructure/controllers/external-secrets-system`) pulls Secrets from external stores, and `infra-configs-external-secrets` reconciles the `ClusterSecretStore`s in `infrastructure/configs/external-secrets-system`.
 Give each backend its own store, authenticated by an identity that can read only the secrets its consumers need, and restrict it with `spec.conditions` to the namespaces that use it.
-The store's credentials are the one thing sealed, as a SealedSecret beside the store in `external-secrets-system`.
+Prefer workload identity federation, which needs only a ServiceAccount beside the store; where a backend cannot federate, its credentials are the one thing sealed, as a SealedSecret beside the store in `external-secrets-system`.
 A Flux Kustomization holding an `ExternalSecret` depends on `infra-configs-external-secrets`.
 
 ### Certificates
@@ -72,6 +71,8 @@ Two ClusterIssuers, split by who has to trust the cert:
   That CA is name-constrained to `thecluster.lan`, `internal`, `home.arpa`, `local`, and `localhost`, so a Service name or `*.svc` cannot come from it.
 - `cluster-internal` signs in-cluster service and client certs from a self-signed CA that never leaves the cluster.
 
+The private CA reaches the cluster through external-secrets: the `pki-keyvault` ClusterSecretStore reads the `UnstoppableMango/pki` Key Vault (`unmango-pki-kv`) as a managed identity that can read `private-cert` and `policy-cert` and nothing else, and only the `cert-manager` namespace may use it.
+It authenticates through workload identity federation as the `pki-keyvault-reader` ServiceAccount, so nothing for it is sealed: Entra verifies that account's tokens against rosequartz's public service-account issuer, which the nixos repo sets and the pki repo publishes.
 The `thecluster-lan-ca` Bundle fans both CAs (the root inline, the internal CA from its Secret) out to every namespace as a ConfigMap.
 
 ### Sealing and unsealing

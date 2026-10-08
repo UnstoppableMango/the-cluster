@@ -5,7 +5,6 @@ DOMAIN      := thecluster.io
 NIX_FLAGS ?= --extra-experimental-features pipe-operators
 
 FLUX_SOURCE ?= flux-system
-PKI_VAULT   ?= unmango-pki-kv
 
 # The renovate chart names each CronJob after its release, one per GitHub account.
 RENOVATE_RELEASE ?= unstoppablemango-renovate
@@ -23,11 +22,6 @@ check:
 	nix $(NIX_FLAGS) flake check
 
 update: flake.lock
-
-.PHONY: hack/secrets/infrastructure/configs/cert-manager-system/issuers/private-ca.yml
-hack/secrets/infrastructure/configs/cert-manager-system/issuers/private-ca.yml:
-	@mkdir -p $(@D)
-	PKI_VAULT=$(PKI_VAULT) hack/pki-ca-secret.sh $@
 
 .PHONY: hack/secrets/infrastructure/configs/velero-system/ceph-credentials.yml
 hack/secrets/infrastructure/configs/velero-system/ceph-credentials.yml:

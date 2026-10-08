@@ -2,7 +2,7 @@
 
 ## Repository Overview
 
-This is a homelab infrastructure repository for a single cluster, `rosequartz`, deployed entirely via Kubernetes and Flux CD. No stacks are defined in Pulumi/TypeScript here; `hack/pki-ca-secret.sh` reads the private CA from the external `UnstoppableMango/pki` Key Vault.
+This is a homelab infrastructure repository for a single cluster, `rosequartz`, deployed entirely via Kubernetes and Flux CD. No stacks are defined in Pulumi/TypeScript here.
 
 ## Repository Structure
 
