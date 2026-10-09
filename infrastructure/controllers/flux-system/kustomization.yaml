@@ -1,9 +1,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+# external-snapshotter and gateway-api are applied by Kustomizations of their
+# own (infra-external-snapshotter, infra-gateway-api), so pulling them in here
+# would put the same objects in two prune inventories.
 resources:
-  - ../external-snapshotter
-  - ../gateway-api
-  - ingress.yml
   - network-policy.yml
   - receiver.yml
   - sealed-secrets-httproute.yml

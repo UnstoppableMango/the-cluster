@@ -34,6 +34,10 @@ spec:
         service: http://knot.knot.svc:5555
       - hostname: spindle.thecluster.io
         service: http://spindle.spindle.svc:6555
+      # GitHub push webhooks for the flux-system GitRepository, through the
+      # Receiver in infrastructure/controllers/flux-system.
+      - hostname: flux-webhook.thecluster.io
+        service: http://webhook-receiver.flux-system.svc:80
       # Plain HTTP to the origin: TLS terminates at the Cloudflare edge, which
       # is what the PDS expects of the Caddy it normally sits behind.
       - hostname: pds.thecluster.io

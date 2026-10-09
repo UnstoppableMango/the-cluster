@@ -275,6 +275,27 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: infra-flux
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/controllers/flux-system
+  interval: 10m
+  prune: true
+  wait: true
+  # flux-webhook.thecluster.io reaches the Receiver through a rule on the
+  # thecluster-io CloudflareTunnel, not an Ingress here.
+  dependsOn:
+    # webhook-token-sealed.yml needs the SealedSecret CRD.
+    - name: infra-sealed-secrets
+    # sealed-secrets-httproute.yml is an HTTPRoute against the nginx Gateway.
+    - name: infra-nginx-gateway
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: infra-arc-system
   namespace: flux-system
 spec:
