@@ -1,0 +1,20 @@
+# Built layers and manifests, served straight off this volume by the
+# filesystem backend. Every layer is rebuilt from nixpkgs on a miss, so losing
+# it costs rebuild time and nothing else. The S3 backend was the alternative,
+# but it answers a blob request with a presigned URL to the bucket, and RGW is
+# not reachable from the nodes pulling images.
+#
+# The backend tags each layer with a user.mime_type xattr, which ext4 on RBD
+# supports.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: storage
+  namespace: nixery
+spec:
+  storageClassName: standard-rwo
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
