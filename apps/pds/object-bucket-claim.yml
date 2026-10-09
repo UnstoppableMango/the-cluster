@@ -1,0 +1,16 @@
+# Rook answers this claim with a Secret and a ConfigMap both named pds-blobs in
+# this namespace. helm-release.yml maps the Secret's AWS_ACCESS_KEY_ID and
+# AWS_SECRET_ACCESS_KEY into the PDS container in place of the chart's own
+# secret keys.
+#
+# Blobs are the images and video accounts on this PDS post, and the bucket is
+# their only copy. The data pool is erasure coded with an osd failure domain
+# (see docs/storage.md), so losing zeus or gaea for good can lose them.
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: pds-blobs
+  namespace: pds
+spec:
+  bucketName: pds-blobs
+  storageClassName: bucket

@@ -38,6 +38,10 @@ spec:
       # Receiver in infrastructure/controllers/flux-system.
       - hostname: flux-webhook.thecluster.io
         service: http://webhook-receiver.flux-system.svc:80
+      # Plain HTTP to the origin: TLS terminates at the Cloudflare edge, which
+      # is what the PDS expects of the Caddy it normally sits behind.
+      - hostname: pds.thecluster.io
+        service: http://pds.pds.svc:3000
       # Cloudflare rejects a remote config whose last rule is not a catch-all,
       # and the CRD requires that rule to omit hostname and path.
       - service: http_status:404
