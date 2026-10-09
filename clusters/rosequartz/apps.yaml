@@ -399,3 +399,25 @@ spec:
     # The chart's HTTPRoute attaches to the nginx Gateway in nginx-gateway, and
     # client-settings-policy.yml needs the ClientSettingsPolicy CRD it installs.
     - name: infra-nginx-gateway
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-nixery
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/nixery
+  interval: 10m
+  prune: true
+  wait: true
+  # nix-build substitutes from ncps (apps-nix-system), but that is deliberately
+  # not a dependsOn edge: an unreachable substituter is a warning nix falls
+  # through to cache.nixos.org.
+  dependsOn:
+    # pvc.yml binds through standard-rwo.
+    - name: infra-configs-rook-ceph-storage
+    # httproute.yml is an HTTPRoute against the nginx Gateway in nginx-gateway.
+    - name: infra-nginx-gateway

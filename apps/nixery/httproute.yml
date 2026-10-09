@@ -1,0 +1,21 @@
+# The Gateway's listener terminates TLS with the *.thecluster.lan wildcard,
+# so images pull as nixery.thecluster.lan/<pkg>/<pkg>.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: nixery
+  namespace: nixery
+spec:
+  parentRefs:
+    - name: nginx
+      namespace: nginx-gateway
+  hostnames:
+    - nixery.thecluster.lan
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: nixery
+          port: 8080
