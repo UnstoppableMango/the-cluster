@@ -34,6 +34,10 @@ spec:
         service: http://knot.knot.svc:5555
       - hostname: spindle.thecluster.io
         service: http://spindle.spindle.svc:6555
+      # Plain HTTP to the origin: TLS terminates at the Cloudflare edge, which
+      # is what the PDS expects of the Caddy it normally sits behind.
+      - hostname: pds.thecluster.io
+        service: http://pds.pds.svc:3000
       # Cloudflare rejects a remote config whose last rule is not a catch-all,
       # and the CRD requires that rule to omit hostname and path.
       - service: http_status:404
