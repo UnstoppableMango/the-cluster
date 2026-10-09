@@ -1,0 +1,33 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: k3k
+  namespace: k3k-system
+spec:
+  interval: 10m
+  maxHistory: 2
+  releaseName: k3k
+  targetNamespace: k3k-system
+  chart:
+    spec:
+      chart: k3k
+      version: 1.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: k3k
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+  # https://github.com/rancher/k3k/blob/main/charts/k3k/values.yaml
+  # The chart deploys only the controller. Virtual clusters are Cluster objects
+  # (k3k.io) in a namespace of their own, and their k3s server pods are sized
+  # on the Cluster, not here.
+  values:
+    controller:
+      resources:
+        requests:
+          cpu: 20m
+          memory: 64Mi
+        limits:
+          memory: 256Mi
