@@ -34,6 +34,10 @@ spec:
         service: http://knot.knot.svc:5555
       - hostname: spindle.thecluster.io
         service: http://spindle.spindle.svc:6555
+      # GitHub push webhooks for the flux-system GitRepository, through the
+      # Receiver in infrastructure/controllers/flux-system.
+      - hostname: flux-webhook.thecluster.io
+        service: http://webhook-receiver.flux-system.svc:80
       # Cloudflare rejects a remote config whose last rule is not a catch-all,
       # and the CRD requires that rule to omit hostname and path.
       - service: http_status:404

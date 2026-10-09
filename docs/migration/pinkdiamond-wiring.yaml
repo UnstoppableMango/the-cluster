@@ -106,20 +106,6 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-flux
-  namespace: flux-system
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  path: ./infrastructure/controllers/flux-system
-  interval: 10m
-  prune: true
-  wait: true
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
   name: infra-metallb
   namespace: flux-system
 spec:
@@ -600,20 +586,6 @@ spec:
     kind: GitRepository
     name: flux-system
   path: ./apps/palworld
-  interval: 10m
-  prune: true
-  wait: true
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: apps-pihole
-  namespace: flux-system
-spec:
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  path: ./apps/pihole
   interval: 10m
   prune: true
   wait: true

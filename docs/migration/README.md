@@ -20,10 +20,6 @@ The file disappearing is the migration's done-signal.
 Kustomization names are cluster-scoped in practice, so the same name may already exist in `clusters/rosequartz/` pointing at a different path.
 Compare before copying.
 
-A component that reaches into `infrastructure/controllers/flux-system` needs care: that directory pulls in `../external-snapshotter` and `../gateway-api`, which rosequartz already applies as Kustomizations of their own.
-Applying both would put those objects in two prune inventories.
-Split the shared paths out before porting `infra-flux`.
-
 Sealed secrets are encrypted against the sealed-secrets controller's key.
 rosequartz already decrypts several secrets committed for pinkdiamond, so the key is shared, but confirm the Secret materializes rather than assuming it.
 
