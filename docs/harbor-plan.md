@@ -21,7 +21,7 @@ Two rules shape it:
 | Component                                    | Used for                          | Released?                                                                                     |
 | -------------------------------------------- | --------------------------------- | --------------------------------------------------------------------------------------------- |
 | Harbor chart (`goharbor/harbor-helm`)        | Harbor itself                     | Yes, chart pinned at `1.19.2`; Harbor images overridden to `v2.15.3`                          |
-| `unmango/thecluster-operator`                | Registry and ProxyCache CRDs      | No. No tags, no versioned chart; images are `sha-<short>` and `main` only                     |
+| `unmango/thecluster-operator`                | Registry and ProxyCache CRDs      | No. Release-please is in open #138; no tags yet, images are `sha-<short>` and `main` only     |
 | Harbor Terraform provider (`goharbor/harbor`)| Alternative config surface        | Yes, `v3.12.4` (2026-08-11), releasing every few weeks                                        |
 | `modules/registry-mirror` in UnstoppableMango/nixos | containerd mirrors on nodes  | Not applicable: flake input, deployed with `clan machines update`                             |
 | cairn                                        | kubelet and containerd            | Flake input; containerd config stays at version 2 (see [step 3](#3-node-mirrors))         |
@@ -72,6 +72,9 @@ thecluster-operator's `Registry` and `ProxyCache` already do what step 2 needs: 
 It is also where goal 4 (our own registry and image CRDs) was always going to live.
 
 Costs: we own a Harbor API client and its tests, and every new Harbor feature is code rather than a resource someone else maintains.
+Today that client is about 260 lines of hand-written `net/http` in `internal/harbor`, plus a fake Harbor for envtest.
+Harbor publishes a Swagger 2.0 spec (`api/v2.0/swagger.yaml`), and `github.com/goharbor/go-client` is generated from it (`v0.213.1`, June 2025, tracking Harbor 2.13).
+The operator should move to go-client before it grows normal projects and robot accounts for step 5, rather than extend the hand-written one.
 Until it is released, there is nothing to pin.
 
 `UnstoppableMango/terraform2crd` exists but is an empty repository, so generating CRDs from the Terraform provider is not an option today.
@@ -87,7 +90,7 @@ Until it is released, there is nothing to pin.
 
 ## Recommendation
 
-Release thecluster-operator properly and keep it as the configuration surface.
+Release thecluster-operator properly and keep it as the configuration surface. (Chosen 2026-10-09.)
 
 Goal 4 needs our own CRDs regardless, so the operator is not extra work that tofu-controller would save; it is work that would be duplicated later.
 The Terraform provider is the strongest off-the-shelf option, and the fallback if the operator's scope keeps growing: if we find ourselves reimplementing robot accounts, retention and replication, the operator should drive the provider (or be replaced by it) rather than grow its own client.
@@ -100,10 +103,13 @@ Each step merges and releases before the next one consumes it.
 
 ### 1. Release thecluster-operator
 
-- Add release-please the way `unmango/cloudflare-operator` has it: `release-type: go`, versioning `dist/chart/Chart.yaml` `version` and `appVersion`.
-- Tags `v*.*.*` already drive the semver image tags in `main.yml`; check the image tag the chart renders matches.
-- Publish the chart as an OCI artifact to `ghcr.io/unmango/charts/thecluster-operator`, or keep consuming `dist/chart` from a `GitRepository` pinned by tag, as cloudflare-operator is.
-- Cut `v0.1.0`.
+`unmango/thecluster-operator#138` already adds release-please the way `unmango/cloudflare-operator` has it (`release-type: go`, bumping `dist/chart/Chart.yaml` `version` and `appVersion`), run as thecluster[bot] so the `v*.*.*` tag triggers the semver image build in `main.yml`.
+It also moves the repo onto a Nix devshell, the `thecluster` runners and Kubernetes 1.37 modules.
+
+- #138 branched before #139 and conflicts with it (`README.md` and two generated CRDs), so its CI has not run. Merge `main` into it, regenerate, and land it.
+- Merge the first release PR. The manifest starts at `0.1.0` and `bump-patch-for-minor-pre-major` is set, so that release is most likely `v0.1.1`.
+- Check that the image tag the chart renders matches the released image.
+- Consume `dist/chart` from a `GitRepository` pinned to the tag, as cloudflare-operator is; an OCI chart can come later.
 
 ### 2. Deploy the operator and the caches
 
