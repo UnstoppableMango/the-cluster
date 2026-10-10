@@ -1,0 +1,36 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nvidia-device-plugin
+  namespace: nvidia-device-plugin
+spec:
+  interval: 10m
+  maxHistory: 2
+  releaseName: nvidia-device-plugin
+  targetNamespace: nvidia-device-plugin
+  chart:
+    spec:
+      chart: nvidia-device-plugin
+      version: 0.20.1
+      sourceRef:
+        kind: HelmRepository
+        name: nvidia-device-plugin
+  values:
+    # The plugin reads the GPU through NVML, which the image does not ship.
+    # The class's handler mounts it in from the host, as it does for any GPU
+    # pod. The chart's default affinity already selects on the same
+    # nvidia.com/gpu.present label the class schedules onto.
+    runtimeClassName: nvidia
+    # Not measured yet. The plugin is a small Go daemon that holds an NVML
+    # handle and a gRPC socket, so these are the repo's floors with a limit
+    # well clear of them. No CPU limit: it is the node's only source of
+    # `nvidia.com/gpu`, and kubelet drops the resource if it stops answering.
+    # Top-level rather than under devicePlugin, which this chart version does
+    # not read. GFD, MPS and the config sidecar are all off, so the plugin is
+    # the only container it renders.
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        memory: 128Mi
