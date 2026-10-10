@@ -31,6 +31,11 @@ spec:
     admin:
       existingSecret: pihole
       passwordKey: password
+    # Remote adlists imported into gravity. The chart seeds adlists.list only on
+    # an initial start with an empty gravity DB; on a running instance, add the
+    # URL once via the web UI or `pihole -g` after it lands (see PR notes).
+    adlists:
+      - https://raw.githubusercontent.com/UnstoppableMango/the-cluster/main/apps/pihole/blocklists/samsung-tv.txt
     ftl:
       dhcp_active: "false"
       dns_domain: thecluster.lan
@@ -123,6 +128,11 @@ spec:
     admin:
       existingSecret: pihole
       passwordKey: password
+    # Remote adlists imported into gravity. The chart seeds adlists.list only on
+    # an initial start with an empty gravity DB; on a running instance, add the
+    # URL once via the web UI or `pihole -g` after it lands (see PR notes).
+    adlists:
+      - https://raw.githubusercontent.com/UnstoppableMango/the-cluster/main/apps/pihole/blocklists/samsung-tv.txt
     ftl:
       dhcp_active: "false"
       dns_domain: thecluster.lan

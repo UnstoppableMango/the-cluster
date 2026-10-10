@@ -1,0 +1,30 @@
+# Samsung Smart TV ad + telemetry blocklist
+# Consumed by Pi-hole as a remote adlist (see apps/pihole/base/helm-release-pihole.yml).
+# Exact hostnames only; for subdomain-wildcard coverage use a Pi-hole regex filter instead.
+# Blocking these can also break the Samsung app store and firmware updates by design.
+
+# Samsung ad delivery
+ads.samsungads.com
+samsungads.com
+api.samsungyosemite.com
+samsung-com.112.2o7.net
+
+# ACR / automatic content recognition
+samsungacr.com
+log-config.samsungacr.com
+acr0.samsungcloudsolution.com
+acr1.samsungcloudsolution.com
+
+# Telemetry / analytics / "viewing information"
+log-ingestion.samsungyosemite.com
+lcprd1.samsungcloudsolution.net
+gpm.samsungqbe.com
+configprod10.samsungcloudsolution.com
+nmetrics.samsung.com
+oempprd.samsungcloudsolution.com
+pancake-t2.samsungcloudsolution.com
+
+# Ad / recommendation rails on the home screen
+advertising.samsungrm.net
+samsungrm.net
+otn.samsungcloudsolution.com
