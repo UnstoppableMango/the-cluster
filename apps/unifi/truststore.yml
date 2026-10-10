@@ -10,7 +10,7 @@ spec:
   sources:
     - useDefaultCAs: true
     - secret:
-        name: "thecluster.lan"
+        name: cluster-internal-ca
         key: tls.crt
   target:
     configMap:

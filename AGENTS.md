@@ -5,7 +5,7 @@ This file provides guidance to AI agents when working with code in this reposito
 ## Overview
 
 Homelab infrastructure-as-code for a single Kubernetes cluster, `rosequartz`, deployed entirely via Flux CD.
-No stacks are defined in Pulumi; the only remaining use of Pulumi is `hack/pki-ca-secret.sh`, which pulls the CA out of the external `UnstoppableMango/pki/prod` stack.
+No stacks are defined in Pulumi.
 
 ## Commands
 
@@ -56,6 +56,17 @@ external-secrets (`infrastructure/controllers/external-secrets-system`) pulls Se
 Give each backend its own store, authenticated by an identity that can read only the secrets its consumers need, and restrict it with `spec.conditions` to the namespaces that use it.
 The store's credentials are the one thing sealed, as a SealedSecret beside the store in `external-secrets-system`.
 A Flux Kustomization holding an `ExternalSecret` depends on `infra-configs-external-secrets`.
+
+### Certificates
+
+Two ClusterIssuers, split by who has to trust the cert:
+
+- `thecluster.lan` signs what a browser or LAN device sees, from UnMango Private CA 01 in `UnstoppableMango/pki`, which chains to the UnMango Root CA G2.
+  That CA is name-constrained to `thecluster.lan`, `internal`, `home.arpa`, `local`, and `localhost`, so a Service name or `*.svc` cannot come from it.
+- `cluster-internal` signs in-cluster service and client certs from a self-signed CA that never leaves the cluster.
+
+The private CA reaches the cluster through external-secrets: the `pki-keyvault` ClusterSecretStore reads the `UnstoppableMango/pki` Key Vault (`unmango-pki-kv`) as a service principal that can read `private-cert` and `policy-cert` and nothing else, and only the `cert-manager` namespace may use it.
+The `thecluster-lan-ca` Bundle fans both CAs (the root inline, the internal CA from its Secret) out to every namespace as a ConfigMap.
 
 ### Sealing and unsealing
 
