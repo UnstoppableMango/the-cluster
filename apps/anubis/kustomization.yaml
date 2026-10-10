@@ -1,0 +1,12 @@
+# One Anubis Deployment and Service per protected host, since an instance
+# proxies to a single TARGET. To protect another host, copy grafana.yml with a
+# new name and TARGET, list it here, and point its rule in the thecluster-io
+# CloudflareTunnel at http://<name>.anubis.svc:80.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - anubis-key-sealed.yml
+  - config.yml
+  - grafana.yml
+  - keycloak.yml
+  - namespace.yml

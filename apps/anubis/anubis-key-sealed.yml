@@ -1,0 +1,14 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: anubis-key
+  namespace: anubis
+spec:
+  encryptedData:
+    ED25519_PRIVATE_KEY_HEX: AgCrsWsAqxuyZF32XDwsHNhQgfDX9UTzDhXYUj2vk/g70sR1hYoXgzMKL5W8o6vfEw6Uyfet8S0QZPnt62nUhWXY3vrEMJmgdHpITE/sENT7LhbvnfnRmI+nnzzKMud4nmbTsI2xgoNpWZ9K4LNvPaP9CXkFALmGXXsfHnQpiO+xpeQPD7/qDFSgF55ym3BXy75Nv7EayMUvK4LItK3RbJ4KLvrX+dQIu670MIJ3dFcdrex9Li5MSK+hNZtTHtYw/Pf1yybawKdyYFdEXGP1fpNHPm/ZsWP9nx/gkPTO1maITqgAN9dj121PfkPXp9K4e+udGV2Fm82qt4ACQdTUk1jrI0EirR8HgAGl0ZX/6gDv7zBGxclKw0OxAzUMAf+FMMIVoUkmHlbx4Og6Anicu9Z5ISs3H/QTuGESPkLLga1DxrlHuf0jkMoNWuzakhpcMhJKrLPWE3uG4tGqdr8XiR3Pl+bHC416vBvAbJtG5XnoUpjxkanXZjC9X4aJyvvbZxjBmABTl7XAj+2a1WWDK/LfxzzGawbG0NATQDgMJbTr5cgziUqi8rS8WuwevxIEEFPl9r5WAGXpFhPbXXWuypvssb5dkw7vY4zk2M+aaE4elB2Mpqlyxg7SYmUx7edC2LxicgpDnBw41EGXldIKdi100azmoMG/+xYnHcxDfr/g/xKwgb1WncXzHYi95cTljZMBkrYfzG5MZ0ICBcjHbNt+srIMw5S2VNoLyDjKo3rOFppVSg8XffgsDezr3eFxIotvnjWLWBrNYXZDB961Px1G
+  template:
+    metadata:
+      name: anubis-key
+      namespace: anubis
+    type: Opaque

@@ -21,15 +21,18 @@ spec:
           # remotely configured tunnel. Revisit once the operator passes
           # spec.template volumes through.
           noTlsVerify: true
+      # Browser-facing hosts go through an Anubis instance in apps/anubis,
+      # which proxies to the real service once a client passes its challenge.
       - hostname: prom.thecluster.io
-        service: http://kube-prometheus-stack-grafana.monitoring.svc:80
+        service: http://grafana.anubis.svc:80
       - hostname: dex.thecluster.io
         service: http://dex.dex.svc:5556
       # Plain HTTP to the origin: the keycloakx release runs with
       # proxy.mode xforwarded, so Keycloak takes the scheme from the
-      # X-Forwarded-Proto the tunnel sets rather than from the connection.
+      # X-Forwarded-Proto the tunnel sets rather than from the connection,
+      # which Anubis passes through unchanged along with the Host header.
       - hostname: auth.thecluster.io
-        service: http://keycloak-http.keycloak.svc:80
+        service: http://keycloak.anubis.svc:80
       - hostname: knot.thecluster.io
         service: http://knot.knot.svc:5555
       - hostname: spindle.thecluster.io
