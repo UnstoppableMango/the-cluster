@@ -1,0 +1,8 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: k3k
+  namespace: k3k-system
+spec:
+  url: https://rancher.github.io/k3k
+  interval: 1h
