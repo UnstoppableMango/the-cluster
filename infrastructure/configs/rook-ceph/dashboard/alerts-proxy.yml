@@ -1,0 +1,71 @@
+# Sits between the Ceph dashboard and kube-prometheus-stack so the dashboard
+# lists only Ceph alerts and rules. alerts-proxy.conf has the details.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ceph-dashboard-alerts
+  namespace: rook-ceph
+  labels:
+    app: ceph-dashboard-alerts
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ceph-dashboard-alerts
+  template:
+    metadata:
+      labels:
+        app: ceph-dashboard-alerts
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 101
+        runAsGroup: 101
+      containers:
+        - name: nginx
+          image: nginxinc/nginx-unprivileged:1.30.5-alpine
+          ports:
+            - containerPort: 8080
+              name: http
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: config
+              mountPath: /etc/nginx/conf.d
+              readOnly: true
+            # The pid file and proxy buffers.
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: config
+          configMap:
+            name: ceph-dashboard-alerts
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ceph-dashboard-alerts
+  namespace: rook-ceph
+spec:
+  selector:
+    app: ceph-dashboard-alerts
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
