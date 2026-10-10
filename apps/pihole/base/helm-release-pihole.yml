@@ -31,13 +31,14 @@ spec:
     admin:
       existingSecret: pihole
       passwordKey: password
-    # Remote adlists imported into gravity. The chart seeds adlists.list only on
-    # an initial start with an empty gravity DB; on a running instance, register
-    # the URL once (web UI -> Lists, or the SQLite insert in the PR notes) and
-    # then run `pihole -g`. `pihole -g` alone rebuilds from URLs already in the
-    # DB and will not add this one.
+    # Remote adlist: Perflyst's maintained Smart-TV blocklist, which covers
+    # Samsung ACR/telemetry and other TV vendors and is updated upstream. The
+    # chart seeds adlists.list only on an initial start with an empty gravity
+    # DB; on a running instance, register the URL once (web UI -> Lists, or the
+    # SQLite insert in the PR notes) and then run `pihole -g`. `pihole -g` alone
+    # rebuilds from URLs already in the DB and will not add this one.
     adlists:
-      - https://raw.githubusercontent.com/UnstoppableMango/the-cluster/main/apps/pihole/blocklists/samsung-tv.txt
+      - https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV.txt
     ftl:
       dhcp_active: "false"
       dns_domain: thecluster.lan
@@ -130,13 +131,14 @@ spec:
     admin:
       existingSecret: pihole
       passwordKey: password
-    # Remote adlists imported into gravity. The chart seeds adlists.list only on
-    # an initial start with an empty gravity DB; on a running instance, register
-    # the URL once (web UI -> Lists, or the SQLite insert in the PR notes) and
-    # then run `pihole -g`. `pihole -g` alone rebuilds from URLs already in the
-    # DB and will not add this one.
+    # Remote adlist: Perflyst's maintained Smart-TV blocklist, which covers
+    # Samsung ACR/telemetry and other TV vendors and is updated upstream. The
+    # chart seeds adlists.list only on an initial start with an empty gravity
+    # DB; on a running instance, register the URL once (web UI -> Lists, or the
+    # SQLite insert in the PR notes) and then run `pihole -g`. `pihole -g` alone
+    # rebuilds from URLs already in the DB and will not add this one.
     adlists:
-      - https://raw.githubusercontent.com/UnstoppableMango/the-cluster/main/apps/pihole/blocklists/samsung-tv.txt
+      - https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV.txt
     ftl:
       dhcp_active: "false"
       dns_domain: thecluster.lan
