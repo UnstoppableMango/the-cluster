@@ -36,7 +36,10 @@ spec:
         key: AWS_SECRET_ACCESS_KEY
   workspaceTemplate:
     spec:
-      image: pulumi/pulumi:3.268.0-nonroot
+      # pulumi/pulumi images ship no bun, which is the program's runtime. This
+      # one is built in unmango/containers for the restricted workspace
+      # profile: uid 1000 with a writable HOME.
+      image: ghcr.io/unmango/pulumi:3.255.0-bun
       # Unmeasured starting point: bun install plus the github and gitlab
       # provider plugins. Revisit once a few runs have been observed.
       resources:
@@ -47,29 +50,8 @@ spec:
           memory: 512Mi
       podTemplate:
         spec:
+          # The operator leaves its own init containers unsized.
           initContainers:
-            # The program's runtime is bun, which the pulumi image doesn't
-            # ship. Copy the binary onto the shared volume ahead of the agent.
-            - name: bun
-              image: oven/bun:1.4.3
-              command: ["sh", "-c", "mkdir -p /share/bun && cp /usr/local/bin/bun /share/bun/bun"]
-              securityContext:
-                runAsUser: 1000
-                runAsNonRoot: true
-                allowPrivilegeEscalation: false
-                capabilities:
-                  drop:
-                    - ALL
-              resources:
-                limits:
-                  memory: 64Mi
-                requests:
-                  cpu: 10m
-                  memory: 32Mi
-              volumeMounts:
-                - name: share
-                  mountPath: /share
-            # The operator leaves its own init containers unsized.
             - name: bootstrap
               resources:
                 limits:
@@ -84,10 +66,7 @@ spec:
                 requests:
                   cpu: 10m
                   memory: 64Mi
+          # The CRD requires this list. Naming the operator's own container
+          # merges into it and changes nothing.
           containers:
-            # The image's own PATH with the bun directory in front. Keep in step
-            # with the image tag above.
             - name: pulumi
-              env:
-                - name: PATH
-                  value: /share/bun:/pulumi/bin:/usr/local/share/fnm/aliases/default/bin:/usr/local/share/pyenv/shims:/usr/local/share/pyenv/bin:/usr/local/share/dotnet:/go/bin:/usr/local/go/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
