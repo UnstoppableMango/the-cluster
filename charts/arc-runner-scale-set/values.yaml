@@ -44,7 +44,7 @@ defaults:
         # fewer preserves a directory's setuid and setgid bits; 00755 is what
         # actually clears the setgid.
         - name: init-nix
-          image: ghcr.io/unmango/actions-runner:2.337.0@sha256:3971e7dcdb0d06146bb83e7860f8c33243c88f576c77b1753bf7b564ebdedbbe
+          image: ghcr.io/unmango/actions-runner:2.338.0@sha256:0d00898900c2fca51709d96afed1a0ab0004bd1c6156be75aa173cf39d0d67af
           command: [sh, -c, 'chown runner:runner /nix && chmod 00755 /nix']
           securityContext:
             runAsUser: 0
@@ -64,7 +64,7 @@ defaults:
         # static copies in /usr/local/bin with their store references nuked, so
         # they keep working with the volume over /nix.
         - name: runner
-          image: ghcr.io/unmango/actions-runner:2.337.0@sha256:3971e7dcdb0d06146bb83e7860f8c33243c88f576c77b1753bf7b564ebdedbbe
+          image: ghcr.io/unmango/actions-runner:2.338.0@sha256:0d00898900c2fca51709d96afed1a0ab0004bd1c6156be75aa173cf39d0d67af
           command: [/home/runner/run.sh]
           env:
             # ncps binary cache, reachable in-cluster only. The image's nix is
@@ -168,7 +168,7 @@ scaleSets: []
 #         fsGroup: 1001
 #       containers:
 #         - name: runner
-#           image: ghcr.io/unmango/actions-runner:2.337.0@sha256:3971e7dcdb0d06146bb83e7860f8c33243c88f576c77b1753bf7b564ebdedbbe
+#           image: ghcr.io/unmango/actions-runner:2.338.0@sha256:0d00898900c2fca51709d96afed1a0ab0004bd1c6156be75aa173cf39d0d67af
 #           command: [/home/runner/run.sh]
 #           resources:
 #             requests:
