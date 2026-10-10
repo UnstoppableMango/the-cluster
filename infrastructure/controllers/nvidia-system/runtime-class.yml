@@ -1,0 +1,15 @@
+# For pods that use an NVIDIA GPU. The handler is runc behind
+# nvidia-container-runtime in CDI mode, which mounts the device nodes, driver
+# libraries and nvidia-smi into a container whose NVIDIA_VISIBLE_DEVICES names
+# a GPU. The device plugin sets that variable for each `nvidia.com/gpu` it
+# allocates. docs/gpu.md has the pod recipe and the node configuration.
+apiVersion: node.k8s.io/v1
+kind: RuntimeClass
+metadata:
+  name: nvidia
+handler: nvidia
+# Only apollo defines the handler, and a pod scheduled anywhere else fails to
+# start with "no runtime for nvidia is configured".
+scheduling:
+  nodeSelector:
+    nvidia.com/gpu.present: "true"
