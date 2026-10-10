@@ -1,0 +1,6 @@
+# ClusterSecretStores and the SealedSecrets holding their credentials.
+# Each backend gets its own store and its own narrowly scoped identity; see
+# "External secrets" in AGENTS.md.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources: []
