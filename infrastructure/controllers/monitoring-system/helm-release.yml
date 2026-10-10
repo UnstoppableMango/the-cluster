@@ -152,6 +152,25 @@ spec:
                 requests:
                   storage: 50Gi
     alertmanager:
+      # Only route and receivers are set; helm replaces lists whole, so the
+      # chart's Watchdog route and null receiver are restated.
+      config:
+        route:
+          routes:
+            - receiver: "null"
+              matchers:
+                - alertname = "Watchdog"
+            # Every rule rook ships carries type="ceph_default". The Ceph
+            # dashboard shows what reaches this receiver as notifications.
+            - receiver: ceph-dashboard
+              matchers:
+                - type = "ceph_default"
+        receivers:
+          - name: "null"
+          - name: ceph-dashboard
+            webhook_configs:
+              - url: http://rook-ceph-mgr-dashboard.rook-ceph.svc:7000/api/prometheus_receiver
+                send_resolved: true
       alertmanagerSpec:
         resources:
           requests:
