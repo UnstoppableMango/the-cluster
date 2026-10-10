@@ -82,7 +82,7 @@ spec:
     portal:
       image:
         repository: goharbor/harbor-portal # default
-        tag: v2.15.3
+        tag: v2.15.4
       replicas: 1 # default
       resources:
         requests:
@@ -103,7 +103,7 @@ spec:
     core:
       image:
         repository: goharbor/harbor-core # default
-        tag: v2.15.3
+        tag: v2.15.4
       replicas: 1 # default
       resources:
         requests:
@@ -114,7 +114,7 @@ spec:
     jobservice:
       image:
         repository: goharbor/harbor-jobservice # default
-        tag: v2.15.3
+        tag: v2.15.4
       replicas: 1 # default
       # The default "file" logger is what needs the jobservice PVC. Job logs
       # in the database go wherever the database goes.
@@ -130,7 +130,7 @@ spec:
       registry:
         image:
           repository: goharbor/registry-photon # default
-          tag: v2.15.3
+          tag: v2.15.4
         resources:
           requests:
             cpu: 100m
@@ -157,7 +157,7 @@ spec:
       controller:
         image:
           repository: goharbor/harbor-registryctl # default
-          tag: v2.15.3
+          tag: v2.15.4
         resources:
           requests:
             cpu: 10m
@@ -184,7 +184,7 @@ spec:
       enabled: true # default
       image:
         repository: goharbor/trivy-adapter-photon # default
-        tag: v2.15.3
+        tag: v2.15.4
       replicas: 1
       # Scans are batch work, so throttling is acceptable here.
       resources:
@@ -227,7 +227,7 @@ spec:
     exporter:
       image:
         repository: goharbor/harbor-exporter # default
-        tag: v2.15.3
+        tag: v2.15.4
       resources:
         requests:
           cpu: 10m
