@@ -515,3 +515,17 @@ spec:
     - name: infra-external-secrets
     # Store credentials are SealedSecrets.
     - name: infra-sealed-secrets
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-pulumi-system
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/controllers/pulumi-system
+  interval: 10m
+  prune: true
+  wait: true
