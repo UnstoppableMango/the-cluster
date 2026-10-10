@@ -5,4 +5,3 @@ resources:
   - namespace.yml
   - pvc.yml
   - service.yml
-  - pvs.yml

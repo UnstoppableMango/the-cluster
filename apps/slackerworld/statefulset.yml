@@ -78,7 +78,7 @@ spec:
     - metadata:
         name: data
       spec:
-        storageClassName: unsafe-rbd
+        storageClassName: fast-rwo
         accessModes:
           - ReadWriteOncePod
         resources:
