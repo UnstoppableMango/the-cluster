@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  namespace: anubis
+  labels:
+    app.kubernetes.io/name: anubis
+    app.kubernetes.io/instance: keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: anubis
+      app.kubernetes.io/instance: keycloak
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: anubis
+        app.kubernetes.io/instance: keycloak
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: anubis
+          image: ghcr.io/techarohq/anubis:v1.28.1
+          envFrom:
+            - configMapRef:
+                name: anubis
+            - secretRef:
+                name: anubis-key
+          env:
+            - name: TARGET
+              value: http://keycloak-http.keycloak.svc:80
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 9090
+              name: metrics
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: metrics
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak
+  namespace: anubis
+spec:
+  selector:
+    app.kubernetes.io/name: anubis
+    app.kubernetes.io/instance: keycloak
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
