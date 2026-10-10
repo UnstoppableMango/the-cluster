@@ -468,3 +468,36 @@ spec:
   interval: 10m
   prune: true
   wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-external-secrets
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/controllers/external-secrets-system
+  interval: 10m
+  prune: true
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-configs-external-secrets
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/configs/external-secrets-system
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # The ClusterSecretStore CRD and its validating webhook come from the release.
+    - name: infra-external-secrets
+    # Store credentials are SealedSecrets.
+    - name: infra-sealed-secrets

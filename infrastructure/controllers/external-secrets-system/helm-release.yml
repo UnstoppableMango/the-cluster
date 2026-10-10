@@ -1,0 +1,51 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: external-secrets
+  namespace: external-secrets-system
+spec:
+  interval: 10m
+  maxHistory: 2
+  releaseName: external-secrets
+  targetNamespace: external-secrets-system
+  chart:
+    spec:
+      chart: external-secrets
+      version: 2.12.0
+      sourceRef:
+        kind: HelmRepository
+        name: external-secrets
+  # The chart renders its CRDs as templates behind installCRDs (on by default),
+  # so they upgrade with the release; these policies only cover a crds/ dir.
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+  # https://github.com/external-secrets/external-secrets/blob/main/deploy/charts/external-secrets/values.yaml
+  # The image tag follows the chart's appVersion, which is the chart version, so
+  # a Renovate chart bump moves the controller, webhook and cert-controller together.
+  #
+  # Unmeasured starting points, floored per AGENTS.md; revisit once observed.
+  # No CPU limits: the controller and webhook sit in the path of every
+  # ExternalSecret reconcile and admission request.
+  values:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 256Mi
+    webhook:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
+    certController:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 256Mi

@@ -50,6 +50,13 @@ When a Flux manifest deploys a Helm chart with a companion container image (e.g.
 
 When a Flux manifest requires a Secret, always create a stub under `hack/secrets/` mirroring the path of the sealed secret (e.g. `hack/secrets/infrastructure/configs/crossplane-system/cloudflare-credentials.yml`). Use `stringData` with empty values so the user can populate and seal it. Never commit real credentials. Apply `umask 0177` before creating any file under `hack/secrets/` so it is written with mode 0600 (owner read/write only).
 
+### External secrets
+
+external-secrets (`infrastructure/controllers/external-secrets-system`) pulls Secrets from external stores, and `infra-configs-external-secrets` reconciles the `ClusterSecretStore`s in `infrastructure/configs/external-secrets-system`.
+Give each backend its own store, authenticated by an identity that can read only the secrets its consumers need, and restrict it with `spec.conditions` to the namespaces that use it.
+The store's credentials are the one thing sealed, as a SealedSecret beside the store in `external-secrets-system`.
+A Flux Kustomization holding an `ExternalSecret` depends on `infra-configs-external-secrets`.
+
 ### Sealing and unsealing
 
 `hack/secrets/` mirrors the manifest tree, and the Makefile pattern rules derive one path from the other:
