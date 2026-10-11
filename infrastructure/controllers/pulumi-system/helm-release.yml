@@ -1,0 +1,27 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pulumi-kubernetes-operator
+  namespace: pulumi-system
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: pulumi-kubernetes-operator
+  interval: 10m
+  maxHistory: 2
+  # The Stack, Program, Workspace and Update CRDs ship in the chart's crds/
+  # directory, which helm installs once and never upgrades on its own.
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
+  # https://github.com/pulumi/pulumi-kubernetes-operator/blob/main/deploy/helm/pulumi-operator/values.yaml
+  values:
+    # No CPU limit: the controller holds a leader-election lease. The chart
+    # default sets one equal to the request.
+    resources:
+      limits:
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi

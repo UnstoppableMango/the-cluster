@@ -1,0 +1,72 @@
+# Runs the UnstoppableMango/vcs Pulumi program (GitHub and GitLab repos as code).
+# State lives in the B2 bucket named by the program's Pulumi.yaml, and the
+# provider tokens are passphrase-encrypted in its Pulumi.prod.yaml, so the only
+# credentials here are the bucket key and the passphrase.
+apiVersion: pulumi.com/v1
+kind: Stack
+metadata:
+  name: vcs
+  namespace: vcs
+spec:
+  serviceAccountName: vcs
+  projectRepo: https://github.com/UnstoppableMango/vcs
+  branch: main
+  shallow: true
+  stack: prod
+  refresh: true
+  # vcs's own GitHub Actions workflow still runs `pulumi up` on every push to
+  # main. Preview only until that job is retired, so the two never race for
+  # the stack lock or apply the same change twice.
+  preview: true
+  envRefs:
+    PULUMI_CONFIG_PASSPHRASE:
+      type: Secret
+      secret:
+        name: vcs-pulumi
+        key: PULUMI_CONFIG_PASSPHRASE
+    AWS_ACCESS_KEY_ID:
+      type: Secret
+      secret:
+        name: vcs-pulumi
+        key: AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY:
+      type: Secret
+      secret:
+        name: vcs-pulumi
+        key: AWS_SECRET_ACCESS_KEY
+  workspaceTemplate:
+    spec:
+      # pulumi/pulumi images ship no bun, which is the program's runtime. This
+      # one is built in unmango/containers for the restricted workspace
+      # profile: uid 1000 with a writable HOME.
+      image: ghcr.io/unmango/pulumi:3.255.0-bun
+      # Unmeasured starting point: bun install plus the github and gitlab
+      # provider plugins. Revisit once a few runs have been observed.
+      resources:
+        limits:
+          memory: 1536Mi
+        requests:
+          cpu: 500m
+          memory: 512Mi
+      podTemplate:
+        spec:
+          # The operator leaves its own init containers unsized.
+          initContainers:
+            - name: bootstrap
+              resources:
+                limits:
+                  memory: 64Mi
+                requests:
+                  cpu: 10m
+                  memory: 32Mi
+            - name: fetch
+              resources:
+                limits:
+                  memory: 256Mi
+                requests:
+                  cpu: 10m
+                  memory: 64Mi
+          # The CRD requires this list. Naming the operator's own container
+          # merges into it and changes nothing.
+          containers:
+            - name: pulumi
