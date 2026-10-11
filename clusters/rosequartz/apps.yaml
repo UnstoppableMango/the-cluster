@@ -312,6 +312,8 @@ spec:
     - name: infra-configs-metallb
     # The chart's StatefulSet claims its volumes through standard-rwo.
     - name: infra-configs-rook-ceph-storage
+    # httproute.yml is an HTTPRoute.
+    - name: infra-gateway-api
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -332,6 +334,8 @@ spec:
     - name: infra-configs-nested-containers
     # The chart's PVCs use standard-rwo.
     - name: infra-configs-rook-ceph-storage
+    # httproute.yml is an HTTPRoute.
+    - name: infra-gateway-api
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

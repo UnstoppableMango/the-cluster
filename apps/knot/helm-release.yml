@@ -42,8 +42,8 @@ spec:
         type: LoadBalancer
         annotations:
           metallb.io/loadBalancerIPs: 10.0.69.210
-    # knot.thecluster.io reaches the knot Service through a rule on the
-    # thecluster-io CloudflareTunnel and a matching DnsRecord.
+    # knot.thecluster.io reaches the knot Service through httproute.yml on the
+    # cloudflare Gateway in cloudflare-system.
     ingress:
       enabled: false
     resources:

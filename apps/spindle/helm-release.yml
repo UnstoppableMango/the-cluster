@@ -21,8 +21,8 @@ spec:
         nonSecret:
           # Knots sign their requests for this audience, so it cannot change
           # once the spindle is registered on the appview.
-          # spindle.thecluster.io reaches the spindle Service through a rule on
-          # the thecluster-io CloudflareTunnel and a matching DnsRecord.
+          # spindle.thecluster.io reaches the spindle Service through
+          # httproute.yml on the cloudflare Gateway in cloudflare-system.
           SPINDLE_SERVER_HOSTNAME: spindle.thecluster.io
           SPINDLE_SERVER_OWNER: did:plc:npefy3bubltqewdfhah5i5ef
           SPINDLE_NIXERY_PIPELINES_MAX_CONCURRENT_WORKFLOWS: 4

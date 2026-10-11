@@ -4,3 +4,5 @@ resources:
   - tunnel.yml
   - cloudflared.yml
   - dns-record.yml
+  - gateway-config.yml
+  - gateway.yml
