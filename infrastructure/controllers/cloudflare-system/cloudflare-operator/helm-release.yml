@@ -28,8 +28,19 @@ spec:
         repository: ghcr.io/unmango/cloudflare-operator
         # The chart renders repository:tag verbatim, so the digest rides along
         # on the tag to make the reference immutable.
-        tag: 0.5.0@sha256:79bf970a76d637bc8dd3a203316edde212d34f9dc1932c91ab68511d862d7aed
+        tag: 0.7.0@sha256:2a1b22db75b554d4a98a161a20b96dcc113e07ad3abff64fc2f3b6e52649fd95
     ingressClass:
       enabled: true
       name: cloudflare
       default: false
+    # Gateways of this class get an Envoy proxy and a tunnel of their own, from
+    # the CloudflareGatewayConfig in infrastructure/configs. The class can exist
+    # before the config does; it reports itself unaccepted until then.
+    gatewayClass:
+      enabled: true
+      name: cloudflare
+      parametersRef:
+        group: cloudflare.unmango.dev
+        kind: CloudflareGatewayConfig
+        name: cloudflare
+        namespace: cloudflare-system

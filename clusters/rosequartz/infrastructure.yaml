@@ -387,6 +387,9 @@ spec:
     # This path ships the operator's API token as a SealedSecret, so the CRD has
     # to exist or nothing on it applies.
     - name: infra-sealed-secrets
+    # The manager registers its Gateway controllers only when it finds the
+    # Gateway API CRDs at startup.
+    - name: infra-gateway-api
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -404,6 +407,8 @@ spec:
   # nothing else gates on it.
   dependsOn:
     - name: infra-cloudflare-operator
+    # gateway.yml is a Gateway, so the Gateway API CRDs have to exist.
+    - name: infra-gateway-api
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
