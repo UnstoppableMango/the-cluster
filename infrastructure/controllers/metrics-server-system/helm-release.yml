@@ -21,6 +21,25 @@ spec:
       tag: v0.9.0
     args:
       - --kubelet-certificate-authority=/etc/ssl/kube-root-ca/ca.crt
+    # metrics-server serves the aggregated metrics.k8s.io API, and kubectl
+    # discovers every API group before each command. With one replica, the
+    # node holding it going down makes that APIService unavailable, and every
+    # kubectl invocation errors on discovery until the pod is rescheduled.
+    # Two replicas on different nodes keep the API answering through a single
+    # node failure; the apiserver runs --enable-aggregator-routing, so it
+    # routes to whichever endpoint is ready.
+    replicas: 2
+    podDisruptionBudget:
+      enabled: true
+      minAvailable: 1
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: metrics-server
+            app.kubernetes.io/instance: metrics-server
     # The chart's default requests, spelled out, plus the memory limit it omits.
     # Scrape cost grows with the pod count, so the limit has room over the 45Mi
     # measured. No CPU limit: throttling the scrape loop stalls every HPA and
