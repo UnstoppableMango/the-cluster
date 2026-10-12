@@ -33,3 +33,14 @@ spec:
       enabled: true
       name: cloudflare
       default: false
+    # Gateways of this class get an Envoy proxy and a tunnel of their own, from
+    # the CloudflareGatewayConfig in infrastructure/configs. The class can exist
+    # before the config does; it reports itself unaccepted until then.
+    gatewayClass:
+      enabled: true
+      name: cloudflare
+      parametersRef:
+        group: cloudflare.unmango.dev
+        kind: CloudflareGatewayConfig
+        name: cloudflare
+        namespace: cloudflare-system

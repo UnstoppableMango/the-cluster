@@ -1,0 +1,30 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: cloudflare
+  namespace: cloudflare-system
+spec:
+  gatewayClassName: cloudflare
+  # Each listener's hostname gets a rule on this Gateway's own tunnel and a
+  # CNAME to it, both written by the operator.
+  listeners:
+    - name: knot
+      hostname: knot.thecluster.io
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: knot
+    - name: spindle
+      hostname: spindle.thecluster.io
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: spindle

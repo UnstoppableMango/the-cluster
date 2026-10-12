@@ -5,3 +5,4 @@ resources:
   - master-key-sealed.yml
   - helm-repository.yml
   - helm-release.yml
+  - httproute.yml

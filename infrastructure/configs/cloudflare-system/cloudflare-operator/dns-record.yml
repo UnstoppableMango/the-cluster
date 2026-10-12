@@ -10,8 +10,9 @@ spec:
     cnameRecord:
       type: CNAME
       name: k8s.thecluster.io
-      # status.id of the thecluster-io CloudflareTunnel in tunnel.yml
-      content: 35910fbf-dfeb-4af7-b491-d53c20df9f09.cfargotunnel.com
+      # The thecluster-io CloudflareTunnel in tunnel.yml.
+      tunnelRef:
+        name: thecluster-io
       proxied: true
       ttl: 1
 ---
@@ -27,8 +28,9 @@ spec:
     cnameRecord:
       type: CNAME
       name: prom.thecluster.io
-      # status.id of the thecluster-io CloudflareTunnel in tunnel.yml
-      content: 35910fbf-dfeb-4af7-b491-d53c20df9f09.cfargotunnel.com
+      # The thecluster-io CloudflareTunnel in tunnel.yml.
+      tunnelRef:
+        name: thecluster-io
       proxied: true
       ttl: 1
 ---
@@ -44,8 +46,9 @@ spec:
     cnameRecord:
       type: CNAME
       name: dex.thecluster.io
-      # status.id of the thecluster-io CloudflareTunnel in tunnel.yml
-      content: 35910fbf-dfeb-4af7-b491-d53c20df9f09.cfargotunnel.com
+      # The thecluster-io CloudflareTunnel in tunnel.yml.
+      tunnelRef:
+        name: thecluster-io
       proxied: true
       ttl: 1
 ---
@@ -61,42 +64,9 @@ spec:
     cnameRecord:
       type: CNAME
       name: auth.thecluster.io
-      # status.id of the thecluster-io CloudflareTunnel in tunnel.yml
-      content: 35910fbf-dfeb-4af7-b491-d53c20df9f09.cfargotunnel.com
-      proxied: true
-      ttl: 1
----
-apiVersion: cloudflare.unmango.dev/v1alpha1
-kind: DnsRecord
-metadata:
-  name: knot-thecluster-io
-  namespace: cloudflare-system
-spec:
-  # thecluster.io
-  zoneId: 22f1d42ba0fbe4f924905e1c6597055c
-  record:
-    cnameRecord:
-      type: CNAME
-      name: knot.thecluster.io
-      # status.id of the thecluster-io CloudflareTunnel in tunnel.yml
-      content: 35910fbf-dfeb-4af7-b491-d53c20df9f09.cfargotunnel.com
-      proxied: true
-      ttl: 1
----
-apiVersion: cloudflare.unmango.dev/v1alpha1
-kind: DnsRecord
-metadata:
-  name: spindle-thecluster-io
-  namespace: cloudflare-system
-spec:
-  # thecluster.io
-  zoneId: 22f1d42ba0fbe4f924905e1c6597055c
-  record:
-    cnameRecord:
-      type: CNAME
-      name: spindle.thecluster.io
-      # status.id of the thecluster-io CloudflareTunnel in tunnel.yml
-      content: 35910fbf-dfeb-4af7-b491-d53c20df9f09.cfargotunnel.com
+      # The thecluster-io CloudflareTunnel in tunnel.yml.
+      tunnelRef:
+        name: thecluster-io
       proxied: true
       ttl: 1
 ---
@@ -112,8 +82,9 @@ spec:
     cnameRecord:
       type: CNAME
       name: pds.thecluster.io
-      # status.id of the thecluster-io CloudflareTunnel in tunnel.yml
-      content: 35910fbf-dfeb-4af7-b491-d53c20df9f09.cfargotunnel.com
+      # The thecluster-io CloudflareTunnel in tunnel.yml.
+      tunnelRef:
+        name: thecluster-io
       proxied: true
       ttl: 1
 ---
@@ -129,7 +100,8 @@ spec:
     cnameRecord:
       type: CNAME
       name: flux-webhook.thecluster.io
-      # status.id of the thecluster-io CloudflareTunnel in tunnel.yml
-      content: 35910fbf-dfeb-4af7-b491-d53c20df9f09.cfargotunnel.com
+      # The thecluster-io CloudflareTunnel in tunnel.yml.
+      tunnelRef:
+        name: thecluster-io
       proxied: true
       ttl: 1
