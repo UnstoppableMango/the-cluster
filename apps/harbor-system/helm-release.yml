@@ -79,10 +79,14 @@ spec:
           # never crosses the wire, and the chart can only add a CA from a
           # Secret, while thecluster.lan's reaches namespaces as a ConfigMap.
           regionendpoint: http://rook-ceph-rgw-s3.rook-ceph.svc:80
+    # goharbor publishes amd64-only images, and rosequartz has arm64 workers.
+    # Every component pins its architecture so none lands on a Pi.
     portal:
       image:
         repository: goharbor/harbor-portal # default
         tag: v2.15.4
+      nodeSelector:
+        kubernetes.io/arch: amd64
       replicas: 1 # default
       resources:
         requests:
@@ -104,6 +108,8 @@ spec:
       image:
         repository: goharbor/harbor-core # default
         tag: v2.15.4
+      nodeSelector:
+        kubernetes.io/arch: amd64
       replicas: 1 # default
       resources:
         requests:
@@ -115,6 +121,8 @@ spec:
       image:
         repository: goharbor/harbor-jobservice # default
         tag: v2.15.4
+      nodeSelector:
+        kubernetes.io/arch: amd64
       replicas: 1 # default
       # The default "file" logger is what needs the jobservice PVC. Job logs
       # in the database go wherever the database goes.
@@ -127,6 +135,8 @@ spec:
         limits:
           memory: 512Mi
     registry:
+      nodeSelector:
+        kubernetes.io/arch: amd64
       registry:
         image:
           repository: goharbor/registry-photon # default
@@ -185,6 +195,8 @@ spec:
       image:
         repository: goharbor/trivy-adapter-photon # default
         tag: v2.15.4
+      nodeSelector:
+        kubernetes.io/arch: amd64
       replicas: 1
       # Scans are batch work, so throttling is acceptable here.
       resources:
@@ -218,6 +230,8 @@ spec:
         image:
           repository: goharbor/redis-photon # default
           tag: v2.15.1
+        nodeSelector:
+          kubernetes.io/arch: amd64
         resources:
           requests:
             cpu: 50m
@@ -228,6 +242,8 @@ spec:
       image:
         repository: goharbor/harbor-exporter # default
         tag: v2.15.4
+      nodeSelector:
+        kubernetes.io/arch: amd64
       resources:
         requests:
           cpu: 10m
