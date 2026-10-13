@@ -73,3 +73,22 @@ spec:
               allowedRoutes:
                 namespaces:
                   from: All
+            # Seedvault on the LAN. pihole answers this name with the Gateway's
+            # address, so the phone keeps one URL and skips Cloudflare at home.
+            # The cert is a public one, from the letsencrypt issuer, living
+            # beside the route in seedvault (see the ReferenceGrant there).
+            - name: g10agosdav
+              hostname: g10agosdav.thecluster.io
+              port: 443
+              protocol: HTTPS
+              tls:
+                mode: Terminate
+                certificateRefs:
+                  - name: g10agosdav-tls
+                    namespace: seedvault
+              allowedRoutes:
+                namespaces:
+                  from: Selector
+                  selector:
+                    matchLabels:
+                      kubernetes.io/metadata.name: seedvault

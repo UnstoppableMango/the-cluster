@@ -1,0 +1,31 @@
+# Served by the nginx Gateway's g10agosdav listener on the LAN. It lives here,
+# not in nginx-gateway, so a failed issuance only holds up this app.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: g10agosdav
+  namespace: seedvault
+spec:
+  secretName: g10agosdav-tls
+  dnsNames:
+    - g10agosdav.thecluster.io
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt
+---
+# Lets the nginx Gateway's listener read the Secret above.
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: nginx-gateway-tls
+  namespace: seedvault
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      namespace: nginx-gateway
+  to:
+    - group: ""
+      kind: Secret
+      name: g10agosdav-tls

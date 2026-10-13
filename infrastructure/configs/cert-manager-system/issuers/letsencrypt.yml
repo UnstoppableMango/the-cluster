@@ -1,0 +1,22 @@
+# Publicly trusted certs for hostnames served straight from the LAN Gateway,
+# where clients never pass through Cloudflare's edge. DNS-01 through
+# Cloudflare, so nothing has to be reachable from the internet.
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-account-key
+    solvers:
+      - selector:
+          dnsZones:
+            - thecluster.io
+        dns01:
+          cloudflare:
+            # Needs Zone:DNS:Edit on thecluster.io.
+            apiTokenSecretRef:
+              name: cloudflare-api-token
+              key: api-token

@@ -484,6 +484,15 @@ spec:
   interval: 10m
   prune: true
   wait: true
+  # httproute.yml also attaches to the Cloudflare Gateway. That is not a
+  # dependsOn edge: infra-configs-cloudflare-operator does not wait.
   dependsOn:
+    # accounts-sealed.yml needs the SealedSecret CRD.
+    - name: infra-sealed-secrets
     # The backups claim uses standard-rwo.
     - name: infra-configs-rook-ceph-storage
+    # certificate.yml is issued by the letsencrypt ClusterIssuer.
+    - name: infra-configs-cert-manager
+    # httproute.yml attaches to the nginx Gateway's g10agosdav listener, and
+    # client-settings-policy.yml needs the ClientSettingsPolicy CRD.
+    - name: infra-nginx-gateway

@@ -4,3 +4,6 @@ resources:
   - ca-sealed.yml
   - thecluster.io.yml
   - thecluster-lan.yml
+  - letsencrypt.yml
+  # TODO: cloudflare-api-token-sealed.yml, sealed from
+  # hack/secrets/infrastructure/configs/cert-manager-system/issuers/cloudflare-api-token.yml.
