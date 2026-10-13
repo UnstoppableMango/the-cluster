@@ -1,0 +1,17 @@
+# Seedvault encrypts on the phone, so this only ever holds ciphertext.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: backups
+  namespace: seedvault
+  labels:
+    backup.thecluster.io/schedule: daily
+    backup.thecluster.io/backblaze: 'true'
+    backup.thecluster.io/thecluster: 'true'
+spec:
+  storageClassName: standard-rwo
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 64Gi

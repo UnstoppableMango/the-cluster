@@ -470,3 +470,20 @@ spec:
   dependsOn:
     # anubis-key-sealed.yml needs the SealedSecret CRD.
     - name: infra-sealed-secrets
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-seedvault
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/seedvault
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # The backups claim uses standard-rwo.
+    - name: infra-configs-rook-ceph-storage

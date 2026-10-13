@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: copyparty
+  namespace: seedvault
+spec:
+  # The backups volume is ReadWriteOnce.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: copyparty
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: copyparty
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        # https://github.com/9001/copyparty/tree/hovudstraum/scripts/docker
+        - name: copyparty
+          image: ghcr.io/9001/copyparty-ac:1.20.25
+          ports:
+            - name: http
+              containerPort: 3923
+          volumeMounts:
+            - name: config
+              mountPath: /cfg/copyparty.conf
+              subPath: copyparty.conf
+            - name: accounts
+              mountPath: /cfg/accounts.conf
+              subPath: accounts.conf
+            - name: backups
+              mountPath: /w
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+      volumes:
+        - name: config
+          configMap:
+            name: copyparty
+        - name: accounts
+          secret:
+            secretName: accounts
+        - name: backups
+          persistentVolumeClaim:
+            claimName: backups
