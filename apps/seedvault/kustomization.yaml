@@ -9,5 +9,4 @@ resources:
   - certificate.yml
   - httproute.yml
   - client-settings-policy.yml
-  # TODO: accounts-sealed.yml, sealed from hack/secrets/apps/seedvault/accounts.yml
-  # with `make apps/seedvault/accounts-sealed.yml`. deployment.yml mounts it.
+  - accounts-sealed.yml
