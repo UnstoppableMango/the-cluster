@@ -11,7 +11,7 @@ spec:
   chart:
     spec:
       chart: nats
-      version: 2.15.0
+      version: 2.15.1
       sourceRef:
         kind: HelmRepository
         name: nats
@@ -32,7 +32,7 @@ spec:
     container:
       image:
         repository: nats # default
-        tag: 2.15.0-linux
+        tag: 2.15.1-linux
       merge:
         resources:
           requests:
