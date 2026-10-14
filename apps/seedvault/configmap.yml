@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: copyparty
+  namespace: seedvault
+data:
+  # The image's initcfg sets chdir: /w and includes every *.conf in /cfg, so
+  # accounts.conf from the accounts Secret is read alongside this.
+  copyparty.conf: |
+    [global]
+      p: 3923
+      dav-auth  # always ask WebDAV clients for a password
+
+    [/]
+      .
+      accs:
+        rwmd: seedvault  # read, write, move and delete; nobody else gets in
+      flags:
+        daw  # let PUT overwrite existing files, which WebDAV clients expect

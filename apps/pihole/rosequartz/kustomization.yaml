@@ -20,3 +20,21 @@ patches:
       - op: add
         path: /spec/values/serviceDns/loadBalancerIP
         value: 10.0.69.202
+  # Split horizon for Seedvault: on the LAN, answer its public name with the
+  # nginx Gateway, whose g10agosdav listener holds a Let's Encrypt cert for it.
+  # address= also answers AAAA with no data, so nothing falls back to
+  # Cloudflare's proxied IPv6 address.
+  - target:
+      kind: HelmRelease
+      name: pihole-a
+    patch: |-
+      - op: add
+        path: /spec/values/ftl/misc_dnsmasq_lines
+        value: address=/g10agosdav.thecluster.io/10.0.69.200
+  - target:
+      kind: HelmRelease
+      name: pihole-b
+    patch: |-
+      - op: add
+        path: /spec/values/ftl/misc_dnsmasq_lines
+        value: address=/g10agosdav.thecluster.io/10.0.69.200

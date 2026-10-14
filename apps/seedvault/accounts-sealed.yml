@@ -1,0 +1,14 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: accounts
+  namespace: seedvault
+spec:
+  encryptedData:
+    accounts.conf: AgAwZLMTIY0q+a7LQUm5smt71+HrBKNpEpmEoMBrqrFeTHUxCjHPY+lZHmqrMaINB4TvLMPvIFF2ugOqeI9Hk9z+xIpHGoz9hGK/TbUpwSSz7u8t+AUV/Hl70XKAe91Dw1ktBMsysp5jtXYGKIb518Hclg9j5oxHdNnBfJtUhAyQWOr2K/idytZpVGXYFccGXDW0iozBQ9NVAU8Ues+LpicO3xxfTafYD3M4+6+E1wGrFCsCC48C7ghh3PhrU818a5weXmlnzSeB6oanjy+pGEeYKIso+t4DiNERO2W8+ibqbURNzYCle9t4XATwRD2Akj//166mZed3aV6VS3UtSF4ed0PzYhoL7idY/cUkyR9sawyH9B5o26JaAi7UGQMFPXUch86segi54kLMCTgHrU3am4n+uvUvpwHGhMU9Jw4/3EZJWpYbRCdlShcmd2/IDmesNO38EcTqILtEtu/gj/opxPIchtHxR7Q4txoeT8PlspiqhrlYQHggSZexELBKDjkoA/X1J483fer04iHPv/9QnEkQyhtqs8Wq6E3Z/10VXcGNJkafU3Wi2qCKEBc/Kvi3NQ85UdrsPV8ShIObrhnS0a0U0TmmHcpOphJyTiq/oBvBQvpigjQ+1E1T0zB8umwth8rKuxoA3YsaXZLxOB6JfnEX/IvN7axGnp5ylj9epy8YUKiSGt4Njf7PpwgHMBWU5OlhgOv711TGcKdhZZfSFFraEyD8KVqQMRJEkaHCmagNh8GK9vO2+kkKuP9FvsXYNM8mU9ZfznQ461h3QsLNaQE=
+  template:
+    metadata:
+      name: accounts
+      namespace: seedvault
+    type: Opaque

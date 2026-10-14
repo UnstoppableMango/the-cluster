@@ -4,3 +4,5 @@ resources:
   - ca-sealed.yml
   - thecluster.io.yml
   - thecluster-lan.yml
+  - letsencrypt.yml
+  - cloudflare-api-token-sealed.yml

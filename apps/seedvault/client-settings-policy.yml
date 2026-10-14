@@ -1,0 +1,14 @@
+# nginx defaults to a 1m request body, and Seedvault uploads bigger chunks
+# than that. Through Cloudflare, uploads are capped at 100MB at the edge.
+apiVersion: gateway.nginx.org/v1alpha1
+kind: ClientSettingsPolicy
+metadata:
+  name: copyparty
+  namespace: seedvault
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: copyparty
+  body:
+    maxSize: "0"
