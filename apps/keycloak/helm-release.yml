@@ -20,7 +20,7 @@ spec:
     fullnameOverride: keycloak
     image:
       repository: quay.io/keycloak/keycloak
-      tag: "26.8.0"
+      tag: "26.8.1"
     replicas: 2
     priorityClassName: system-cluster-critical
     command:
