@@ -1,0 +1,25 @@
+# The UnstoppableMango/pki Key Vault. The identity in azure-pki-reader holds
+# Key Vault Secrets User on private-cert and policy-cert alone, so this store
+# cannot reach any other sub-CA's key, and only cert-manager may use it.
+apiVersion: external-secrets.io/v1
+kind: ClusterSecretStore
+metadata:
+  name: pki-keyvault
+spec:
+  conditions:
+    - namespaces:
+        - cert-manager
+  provider:
+    azurekv:
+      vaultUrl: https://unmango-pki-kv.vault.azure.net
+      tenantId: TENANT_ID # TODO: the pki subscription's tenant
+      authType: ServicePrincipal
+      authSecretRef:
+        clientId:
+          name: azure-pki-reader
+          namespace: external-secrets-system
+          key: client-id
+        clientSecret:
+          name: azure-pki-reader
+          namespace: external-secrets-system
+          key: client-secret
