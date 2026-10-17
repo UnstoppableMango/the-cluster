@@ -45,6 +45,23 @@ spec:
       cephVersion:
         image: quay.io/ceph/ceph:v19.2.5
       dataDirHostPath: /var/lib/rook # default value
+      # OSD replication and recovery run over the SFP+ aggregator, which only
+      # gaea, zeus, and apollo are cabled to. With no public selector, the
+      # mons, mgr, mds, rgw, and clients stay on the pod network, and only the
+      # OSD pods get a second interface. OSDs exist on no other host, so no
+      # other node needs multus.
+      #
+      # addressRanges skips rook's CIDR detection, which runs a canary pod
+      # against the network on every reconcile.
+      #
+      # https://rook.io/docs/rook/v1.18/CRDs/Cluster/network-providers/#multus
+      network:
+        provider: multus
+        selectors:
+          cluster: rook-ceph/ceph-cluster
+        addressRanges:
+          cluster:
+            - 10.0.70.0/24
       dashboard:
         enabled: true
         # The gateway terminates TLS, so the mgr serves plain HTTP on 7000.

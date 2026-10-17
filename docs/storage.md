@@ -120,6 +120,28 @@ The autoscaler divides each pool's ratio by the sum of ratios in the CRUSH root,
 | `standard`                        | 0.05                | 7%              |        |
 | metadata pools, `.mgr`, rgw pools | unset               | usage based     |        |
 
+## Cluster network
+
+OSD-to-OSD replication, recovery, and heartbeats use `10.0.70.0/24` on a UniFi SFP+ aggregator that gaea, zeus, and apollo are cabled to.
+Clients, mons, mgr, mds, and rgw stay on the flannel pod network.
+
+The CephCluster sets `network.provider: multus` with only a `cluster` selector, so Rook attaches the `rook-ceph/ceph-cluster` NetworkAttachmentDefinition to OSD pods and to nothing else.
+The NetworkAttachmentDefinition has no `spec.config`.
+multus runs on each OSD host as a host CNI plugin from the nixos repo's `modules/ceph-cluster-network`, and reads a per-host macvlan config named `ceph-cluster` from `/etc/cni/multus/net.d`.
+Each host hands out OSD addresses from its own `host-local` range, so no cluster-wide IPAM is deployed.
+
+| Host   | Host address  | OSD pod range                 |
+| ------ | ------------- | ----------------------------- |
+| zeus   | `10.0.70.10`  | `10.0.70.64`-`10.0.70.95`     |
+| gaea   | `10.0.70.11`  | `10.0.70.96`-`10.0.70.127`    |
+| apollo | `10.0.70.12`  | `10.0.70.128`-`10.0.70.159`   |
+
+Each host holds its address on a macvlan shim (`ceph0`) rather than on the SFP+ port, because a macvlan parent cannot reach its own macvlan children.
+The shim keeps pod-network traffic to a local OSD's cluster address working, which a rollout depends on while some OSDs have restarted onto the cluster network and others have not.
+
+The CephCluster change must not merge until all three hosts are cabled and switched.
+An OSD restarted with `cluster_network` set and no `10.0.70.0/24` interface fails to start.
+
 ## CephFS on the nodes
 
 Every OSD node ships `ceph.ko` and `rbd.ko` in the stock nixpkgs kernel.
