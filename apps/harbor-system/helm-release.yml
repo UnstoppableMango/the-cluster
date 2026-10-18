@@ -24,6 +24,13 @@ spec:
         name: harbor
   # https://github.com/goharbor/harbor-helm/blob/v1.19.2/values.yaml
   values:
+    # The chart names its registry ConfigMap and Secret <fullname>-registry,
+    # and object-bucket-claim.yml makes Rook write a ConfigMap and Secret
+    # named after the claim. At the default fullname both were
+    # harbor-registry, so Rook overwrote the chart's registry config.yml and
+    # the registry crash-looped on an empty mount. The override moves every
+    # chart object to goharbor-*, leaving harbor-registry to Rook.
+    fullnameOverride: goharbor
     # The chart renders an HTTPRoute that sends /api/, /service/, /v2/ and /c/
     # to core and everything else to portal, so no nginx proxy is deployed.
     # The Gateway's listener terminates TLS with the *.thecluster.lan

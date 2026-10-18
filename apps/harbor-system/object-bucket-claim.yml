@@ -1,6 +1,8 @@
 # Rook answers this claim with a Secret and a ConfigMap both named
 # harbor-registry in this namespace. helm-release.yml maps the Secret's
 # AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY into the registry containers.
+# The chart must not render objects with that name, which is why it runs
+# under fullnameOverride: goharbor.
 #
 # The bucket's data pool is erasure coded with an osd failure domain (see
 # docs/storage.md), which suits proxy-cache blobs that can be re-fetched.
