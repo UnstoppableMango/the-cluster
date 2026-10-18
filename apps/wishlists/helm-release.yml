@@ -1,0 +1,64 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: wishlists
+  namespace: wishlists
+spec:
+  interval: 10m
+  maxHistory: 2
+  releaseName: wishlists
+  targetNamespace: wishlists
+  chartRef:
+    kind: OCIRepository
+    name: wishlists
+  # https://github.com/unmango/wishlists/blob/main/charts/wishlists/values.yaml
+  values:
+    fullnameOverride: wishlists
+    app:
+      database:
+        # No password: the wishlists role authenticates with the client
+        # certificate certificate.yml issues, whose CN is the role name. The
+        # host has to be a SAN on postgres-server-cert, because VerifyFull
+        # matches the certificate against it.
+        connectionString: >-
+          Host=postgres-rw.wishlists.svc.cluster.local;Database=wishlists;Username=wishlists;SSL Mode=VerifyFull;Root Certificate=/etc/wishlists/postgres/ca.crt;SSL Certificate=/etc/wishlists/postgres/tls.crt;SSL Key=/etc/wishlists/postgres/tls.key
+      google:
+        existingSecret: wishlists-google
+      allowedEmails:
+        existingSecret: wishlists-allowed-emails
+      # The pod network: requests arrive from the cloudflared pods the
+      # Cloudflare Gateway runs, which set X-Forwarded-For and -Proto.
+      knownNetworks:
+        - 10.42.0.0/16
+    volumes:
+      - name: postgres-cert
+        secret:
+          secretName: wishlists-postgres-cert
+          defaultMode: 0440
+    volumeMounts:
+      - name: postgres-cert
+        mountPath: /etc/wishlists/postgres
+        readOnly: true
+    ingress:
+      enabled: false
+    httpRoute:
+      enabled: true
+      parentRefs:
+        - name: cloudflare
+          namespace: cloudflare-system
+          sectionName: wishlists
+      hostnames:
+        - wishlists.thecluster.io
+      rules:
+        - matches:
+            - path:
+                type: PathPrefix
+                value: /
+    # Not measured yet: an ASP.NET app at rest is around 80Mi. Revisit once
+    # it has run for a while.
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        memory: 384Mi
