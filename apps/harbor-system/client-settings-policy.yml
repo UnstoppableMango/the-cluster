@@ -10,6 +10,6 @@ spec:
   targetRef:
     group: gateway.networking.k8s.io
     kind: HTTPRoute
-    name: harbor-route
+    name: goharbor-route # <fullnameOverride>-route
   body:
     maxSize: "0"
