@@ -21,7 +21,7 @@ spec:
     image:
       registry: ghcr.io # default
       repository: headlamp-k8s/headlamp # default
-      tag: v0.45.0
+      tag: v0.46.0
     ingress:
       enabled: false
     resources:
