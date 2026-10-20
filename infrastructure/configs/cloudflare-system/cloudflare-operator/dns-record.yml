@@ -37,24 +37,6 @@ spec:
 apiVersion: cloudflare.unmango.dev/v1alpha1
 kind: DnsRecord
 metadata:
-  name: dex-thecluster-io
-  namespace: cloudflare-system
-spec:
-  # thecluster.io
-  zoneId: 22f1d42ba0fbe4f924905e1c6597055c
-  record:
-    cnameRecord:
-      type: CNAME
-      name: dex.thecluster.io
-      # The thecluster-io CloudflareTunnel in tunnel.yml.
-      tunnelRef:
-        name: thecluster-io
-      proxied: true
-      ttl: 1
----
-apiVersion: cloudflare.unmango.dev/v1alpha1
-kind: DnsRecord
-metadata:
   name: auth-thecluster-io
   namespace: cloudflare-system
 spec:

@@ -25,8 +25,6 @@ spec:
       # which proxies to the real service once a client passes its challenge.
       - hostname: prom.thecluster.io
         service: http://grafana.anubis.svc:80
-      - hostname: dex.thecluster.io
-        service: http://dex.dex.svc:5556
       # Plain HTTP to the origin: the keycloakx release runs with
       # proxy.mode xforwarded, so Keycloak takes the scheme from the
       # X-Forwarded-Proto the tunnel sets rather than from the connection,
