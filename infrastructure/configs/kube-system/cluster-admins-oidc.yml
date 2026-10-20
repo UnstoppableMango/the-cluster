@@ -1,0 +1,16 @@
+# Members of the cluster-admins group in the thecluster Keycloak realm
+# (UnstoppableMango/iam), as the apiserver's OIDC authenticator presents them:
+# every OIDC group carries an `oidc:` prefix, set in the rosequartz
+# AuthenticationConfiguration in UnstoppableMango/nixos.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: oidc-cluster-admins
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: oidc:cluster-admins
