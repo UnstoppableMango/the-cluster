@@ -33,20 +33,31 @@ spec:
       grafana.ini:
         server:
           # The OAuth callback needs one canonical host, and it has to be the
-          # public one: Dex only redirects back to prom.thecluster.io.
+          # public one: Keycloak only redirects back to prom.thecluster.io.
           root_url: https://prom.thecluster.io
+        auth:
+          # Users first created through Dex carry Dex's subject, so match them
+          # to their Keycloak login by email instead of creating a duplicate.
+          # Keycloak only issues tokens for users declared in
+          # UnstoppableMango/iam, so the email is not attacker-chosen.
+          oauth_allow_insecure_email_lookup: true
         auth.generic_oauth:
           enabled: true
-          name: Dex
+          name: THECLUSTER
           client_id: grafana
           scopes: openid profile email groups
-          auth_url: https://dex.thecluster.io/auth
-          token_url: https://dex.thecluster.io/token
-          api_url: https://dex.thecluster.io/userinfo
+          # The browser follows auth_url, so it is the public host. Grafana
+          # calls the other two itself and goes straight to the service: the
+          # public host sits behind Cloudflare and Anubis.
+          auth_url: https://auth.thecluster.io/realms/thecluster/protocol/openid-connect/auth
+          token_url: http://keycloak-http.keycloak.svc/realms/thecluster/protocol/openid-connect/token
+          api_url: http://keycloak-http.keycloak.svc/realms/thecluster/protocol/openid-connect/userinfo
+          signout_redirect_url: https://auth.thecluster.io/realms/thecluster/protocol/openid-connect/logout?client_id=grafana&post_logout_redirect_uri=https%3A%2F%2Fprom.thecluster.io%2Flogin
           use_pkce: true
-          # Dex refuses anyone outside the unmango org, so every
-          # account that reaches Grafana is an org member.
-          role_attribute_path: "'Admin'"
+          # Groups come from UnstoppableMango/iam. Anyone in neither group is
+          # refused rather than given a default role.
+          role_attribute_path: "contains(groups[*], 'grafana-admins') && 'Admin' || contains(groups[*], 'grafana-viewers') && 'Viewer'"
+          role_attribute_strict: true
       envValueFrom:
         GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET:
           secretKeyRef:
