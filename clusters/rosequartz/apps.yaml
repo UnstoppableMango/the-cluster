@@ -479,3 +479,29 @@ spec:
     # httproute.yml attaches to the nginx Gateway's g10agosdav listener, and
     # client-settings-policy.yml needs the ClientSettingsPolicy CRD.
     - name: infra-nginx-gateway
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-wishlists
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/wishlists
+  interval: 10m
+  prune: true
+  wait: true
+  # The chart's HTTPRoute attaches to the Cloudflare Gateway's wishlists
+  # listener. That is not a dependsOn edge: infra-configs-cloudflare-operator
+  # does not wait.
+  dependsOn:
+    # google-sealed.yml and allowed-emails-sealed.yml need the SealedSecret CRD.
+    - name: infra-sealed-secrets
+    # certificate.yml is namespace-local Issuer and Certificate objects.
+    - name: infra-cert-manager
+    # postgres-cluster.yml is a postgresql.cnpg.io Cluster.
+    - name: infra-cnpg-system
+    # That Cluster provisions through storageClassName: fast-rwo.
+    - name: infra-configs-rook-ceph-storage

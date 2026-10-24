@@ -38,3 +38,13 @@ spec:
           selector:
             matchLabels:
               kubernetes.io/metadata.name: seedvault
+    - name: wishlists
+      hostname: wishlists.thecluster.io
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: wishlists
