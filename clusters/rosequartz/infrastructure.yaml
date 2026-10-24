@@ -211,14 +211,15 @@ spec:
   interval: 10m
   prune: true
   wait: true
-  # The CRDs and sealed-secrets are what the issuers need. Depending on
+  # The CRDs and the private CA's ExternalSecret are what the issuers need. Depending on
   # infra-cert-manager instead would block on the csi-driver release, which is
   # unrelated to issuing. The trust-manager Bundle is deliberately not here: it
   # needs a CRD that only the trust-manager release installs, so it reconciles
   # as infra-configs-trust-bundle below.
   dependsOn:
     - name: infra-cert-manager-crds
-    - name: infra-sealed-secrets
+    # The private CA's Secret is an ExternalSecret against pki-keyvault.
+    - name: infra-configs-external-secrets
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

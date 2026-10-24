@@ -1,0 +1,29 @@
+# UnMango Private CA 01, pulled from the pki Key Vault. private-cert holds the
+# CA's cert and key in one PEM, and policy-cert the intermediate above it, so
+# tls.crt carries the chain up to (not including) the root.
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: private-ca
+  namespace: cert-manager
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: pki-keyvault
+  target:
+    name: private-ca
+    template:
+      type: kubernetes.io/tls
+      data:
+        tls.crt: |
+          {{ .private | filterPEM "CERTIFICATE" }}
+          {{ .policy | filterPEM "CERTIFICATE" }}
+        tls.key: '{{ .private | filterPEM "EC PRIVATE KEY" }}'
+  data:
+    - secretKey: private
+      remoteRef:
+        key: private-cert
+    - secretKey: policy
+      remoteRef:
+        key: policy-cert
