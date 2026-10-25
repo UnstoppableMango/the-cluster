@@ -28,7 +28,7 @@ spec:
         repository: ghcr.io/unmango/cloudflare-operator
         # The chart renders repository:tag verbatim, so the digest rides along
         # on the tag to make the reference immutable.
-        tag: 0.8.0@sha256:96d6bd9d2cb41f2b75a9038f88c421a91b2e5c9b45a84cf966be9302a191928e
+        tag: 0.9.0@sha256:ebc0afe882bd52fe1b0de540368392049d06f0266bc5f03b481626ca1c6485d6
     ingressClass:
       enabled: true
       name: cloudflare
