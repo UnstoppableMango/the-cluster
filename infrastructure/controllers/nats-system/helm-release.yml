@@ -73,7 +73,7 @@ spec:
       container:
         image:
           repository: natsio/nats-box # default
-          tag: 0.20.0
+          tag: 0.20.1
         merge:
           resources:
             requests:
