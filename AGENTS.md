@@ -104,3 +104,17 @@ Give the patch an explicit `target`, so a chart bump that renames the object is 
 Nix flake (`flake.nix`) provides a reproducible devshell, and every tool the Makefile and `hack/` scripts shell out to comes from it.
 They are called by their plain names and resolved off `PATH`, so `make` targets that seal secrets or render charts only work inside the devshell.
 Copy `hack/example.envrc` to `.envrc` for direnv setup, or prefix one-off commands with `nix develop -c`.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in this repo's GitHub Issues, worked with the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five default triage labels, each named after its role. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `CONTEXT.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
