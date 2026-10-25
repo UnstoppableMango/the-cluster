@@ -26,7 +26,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: anubis
-          image: ghcr.io/techarohq/anubis:v1.28.1
+          image: ghcr.io/techarohq/anubis:v1.28.2
           envFrom:
             - configMapRef:
                 name: anubis
