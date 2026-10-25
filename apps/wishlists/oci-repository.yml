@@ -1,0 +1,15 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: wishlists
+  namespace: wishlists
+spec:
+  # Published by the Helm job in unmango/wishlists CI. Its appVersion is the
+  # image tag CI pushes alongside it, so this one pin moves both.
+  url: oci://ghcr.io/unmango/wishlists/wishlists
+  interval: 1h
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 0.1.0

@@ -1,0 +1,45 @@
+# Everything the app stores is in this database: the Marten event store, its
+# projections, and the ASP.NET data protection keys that sign the session
+# cookie. The wishlists role authenticates with the client certificate
+# certificate.yml issues, so there is no credential to seal. CNPG still
+# generates the role's password as Secret postgres-app; nothing reads it, and
+# it survives as the break-glass login over a non-SSL connection.
+#
+# One instance: a household's wishlists are tiny, and a node loss only means
+# waiting for the RBD image to reattach.
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres
+  namespace: wishlists
+spec:
+  instances: 1
+  # CNPG applies nothing by default, so without this the pod runs BestEffort.
+  # Not measured yet; sized from the ncps database, which holds far more.
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 512Mi
+  # certificate.yml issues all four. Serving and client verification share one
+  # CA because the client certificate chains to it.
+  certificates:
+    serverCASecret: postgres-pki-ca
+    serverTLSSecret: postgres-server-cert
+    clientCASecret: postgres-pki-ca
+    replicationTLSSecret: postgres-replication-cert
+  postgresql:
+    # CNPG appends `host all all all scram-sha-256` after this, and the first
+    # match wins, so an SSL connection as wishlists cannot fall back to the
+    # password. The appended line still answers a non-SSL connection, which is
+    # the break-glass path for psql.
+    pg_hba:
+      - hostssl wishlists wishlists all cert
+  storage:
+    storageClass: fast-rwo
+    size: 5Gi
+  bootstrap:
+    initdb:
+      database: wishlists
+      owner: wishlists
