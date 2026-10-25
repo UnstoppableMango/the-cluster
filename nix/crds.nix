@@ -42,8 +42,8 @@ let
   };
 
   cert-manager = fetchurl {
-    url = "https://github.com/cert-manager/cert-manager/releases/download/v1.21.2/cert-manager.crds.yaml";
-    hash = "sha256-Ji/veEeEks01tzobInEGt4AvnAVjYdH1YdBLMtdRM38=";
+    url = "https://github.com/cert-manager/cert-manager/releases/download/v1.21.3/cert-manager.crds.yaml";
+    hash = "sha256-KYELKoTI7gcxp5Z57h39fpPNdQ6wJEVC7sR/qHAPJ0k=";
   };
 
   cert-manager-helm = kubelib.buildHelmChart {
