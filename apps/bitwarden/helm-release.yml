@@ -22,15 +22,22 @@ spec:
       databaseProvider: postgres
       ingress:
         enabled: false
+      # The chart's HTTPRoute carries the prefix rewrites the components
+      # expect (api, attachments, icons, notifications and events are served
+      # from /), which a bare tunnel rule cannot do.
       gateway:
-        enabled: false
+        enabled: true
+        parentRefs:
+          - name: cloudflare
+            namespace: cloudflare-system
+            sectionName: bitwarden
       volumeAccessMode: ReadWriteMany
       email:
         replyToEmail: bitwarden@thecluster.io
         smtpHost: email-smtp.us-east-2.amazonaws.com
         smtpPort: "587"
         smtpSsl: "false"
-    sharedStorageClassName: default-cephfs
+    sharedStorageClassName: standard-rwx
     secrets:
       secretName: bitwarden-secret
     database:

@@ -8,5 +8,3 @@ resources:
   - helm-repository.yml
   - postgres-cluster.yml
   - helm-release.yml
-  - ingress.yml
-  - email-identity.yml

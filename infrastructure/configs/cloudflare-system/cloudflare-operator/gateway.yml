@@ -48,3 +48,23 @@ spec:
           selector:
             matchLabels:
               kubernetes.io/metadata.name: wishlists
+    - name: gitea
+      hostname: gitea.thecluster.io
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: gitea
+    - name: bitwarden
+      hostname: bitwarden.thecluster.io
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: bitwarden

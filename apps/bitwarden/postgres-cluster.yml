@@ -21,7 +21,7 @@ spec:
     pg_hba:
       - hostssl bitwarden bitwarden all cert
   storage:
-    storageClass: ssd-rbd
+    storageClass: fast-rwo
     size: 5Gi
   bootstrap:
     initdb:
