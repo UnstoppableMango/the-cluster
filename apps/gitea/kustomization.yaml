@@ -9,6 +9,4 @@ resources:
   - postgres-cluster.yml
   - helm-release.yml
   - httproute.yml
-  - ingress.yml
   - ssh-service.yml
-  - pvs.yml

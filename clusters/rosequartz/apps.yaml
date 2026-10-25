@@ -505,3 +505,58 @@ spec:
     - name: infra-cnpg-system
     # That Cluster provisions through storageClassName: fast-rwo.
     - name: infra-configs-rook-ceph-storage
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-gitea
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/gitea
+  interval: 10m
+  prune: true
+  wait: true
+  # gitea-public attaches to the Cloudflare Gateway's gitea listener. That is
+  # not a dependsOn edge: infra-configs-cloudflare-operator does not wait.
+  dependsOn:
+    # secret-sealed.yml and pg-credentials-sealed.yml need the SealedSecret CRD.
+    - name: infra-sealed-secrets
+    # certificate.yml is namespace-local Issuer and Certificate objects.
+    - name: infra-cert-manager
+    # postgres-cluster.yml is a postgresql.cnpg.io Cluster.
+    - name: infra-cnpg-system
+    # That Cluster and the chart's repository claim provision through
+    # fast-rwo and standard-rwo.
+    - name: infra-configs-rook-ceph-storage
+    # The gitea route is an HTTPRoute against the nginx Gateway in nginx-gateway.
+    - name: infra-nginx-gateway
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-bitwarden
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/bitwarden
+  interval: 10m
+  prune: true
+  wait: true
+  # The chart's HTTPRoute attaches to the Cloudflare Gateway's bitwarden
+  # listener. That is not a dependsOn edge: infra-configs-cloudflare-operator
+  # does not wait.
+  dependsOn:
+    # secret-sealed.yml and pg-credentials-sealed.yml need the SealedSecret CRD.
+    - name: infra-sealed-secrets
+    # certificate.yml is namespace-local Issuer and Certificate objects.
+    - name: infra-cert-manager
+    # postgres-cluster.yml is a postgresql.cnpg.io Cluster.
+    - name: infra-cnpg-system
+    # That Cluster and the chart's shared claim provision through fast-rwo
+    # and standard-rwx.
+    - name: infra-configs-rook-ceph-storage

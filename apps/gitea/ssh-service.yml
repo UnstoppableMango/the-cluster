@@ -5,7 +5,9 @@ metadata:
   namespace: gitea
   annotations:
     external-dns.alpha.kubernetes.io/hostname: gitea.thecluster.lan
-    metallb.io/loadBalancerIPs: 192.168.1.43
+    # The nginx Gateway's address, shared through lan-gateway, so
+    # gitea.thecluster.lan answers both HTTPS and SSH.
+    metallb.io/loadBalancerIPs: 10.0.69.200
     metallb.io/allow-shared-ip: lan-gateway
 spec:
   type: LoadBalancer

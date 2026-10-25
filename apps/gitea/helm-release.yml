@@ -96,7 +96,7 @@ spec:
       enabled: false
     persistence:
       enabled: true
-      storageClass: unsafe-rbd
+      storageClass: standard-rwo
       size: 20Gi
       accessModes:
         - ReadWriteOnce
