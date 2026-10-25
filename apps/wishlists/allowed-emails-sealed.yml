@@ -1,0 +1,13 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: wishlists-allowed-emails
+  namespace: wishlists
+spec:
+  encryptedData: {}
+  template:
+    metadata:
+      name: wishlists-allowed-emails
+      namespace: wishlists
+    type: Opaque

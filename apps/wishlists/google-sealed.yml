@@ -1,0 +1,13 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: wishlists-google
+  namespace: wishlists
+spec:
+  encryptedData: {}
+  template:
+    metadata:
+      name: wishlists-google
+      namespace: wishlists
+    type: Opaque
