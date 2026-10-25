@@ -5,9 +5,9 @@ metadata:
   name: wishlists-allowed-emails
   namespace: wishlists
 spec:
-  encryptedData: {}
+  encryptedData:
+    emails: AgARww0KbtUiXvLWWD5ZFbjyZ7ljCaGCoL+zYuZ4PcIrCqJ0IhPWuUUa4icMzb4qqQFZhX2zhVJtcKqnWz3cus9Tab8SpNPTf65k6wLilA1zGy9DGANATxaQZkFHuLX2ICKjaM30dDFSD2t+6abOoziHPVk4Om/ETEKXv+IsTbJnowzIz01EJGhsrO6a4/0rJDT6Z7NP6O8m6IEWnlbgT/1NtH3LVwuhtEiuiVDp8/c4Cqn9nC5sVUcwQaLlDUrFjz5Jipf4KEj2wouqD9jWHmbQczdcAmBzPUGXas+Ts/vuKE2qrneY2+uUFLfxQZ7RbWvJ6nmhbtACIKdBHBps/J8iDkLrX6joYzLEpAr6o8d5oUmiAQu5Koc1fYfdwDedygzNicKEOQy5vpUvrKl43J7t414AzxVYbqXKjczeU3h/JuBfuEvYKoTHG/B3e/g4ySciL07m/Ru1q2la+np5xN8YwoCgbkbE9Zm0+hnCPloJU0fe7O9WQT4geI4Nx21fEb9fGFcahegeo+zlNpxPMRIf7HdoR7RaWap4v+upYRH/1swwdc7rFeKdRX3sjlIgnyziwGfnvIdab5ypD06HfHoIT3GNOs3yX2BRsZL9P+YA4jgC3J9mLaIJuxhHH4tNl9rnRsmcPVeAzeW4c6tK90c9oNTDF/8Fkj02QvzzaW5QUMap9UKzT/c+5Iaf0nhh4Pgna3mB7/24KSqHX8EEGQQQzoerzufHMfMoblhzPQV4leaBp80xaXMqMGW+jdelfjwhwgQaQLBKnSjRqwC3XTEHkp/vomgD9LSKGQNKKfXB/ibuYCHoinZEetZcPaDMPNEyLN1aGHf9ZNT9ZB7OfQ==
   template:
     metadata:
       name: wishlists-allowed-emails
       namespace: wishlists
-    type: Opaque
