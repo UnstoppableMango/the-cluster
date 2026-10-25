@@ -42,7 +42,7 @@ spec:
         # it namespaced: root here is an unprivileged uid on gaea, and the
         # capabilities reach only this pod's namespaces.
         - name: dind
-          image: docker:29.9.1-dind@sha256:3e5756e2b6dad6a5f1f5deacf0a19f9eaa2581b76ae092b2d4a118162e1d4d4e
+          image: docker:29.9.2-dind@sha256:9e79b879b177fbd72c34376a3dd3d91747da5db49e1f560f76aea59561471977
           args:
             - dockerd
             - --host=unix:///run/docker/docker.sock
