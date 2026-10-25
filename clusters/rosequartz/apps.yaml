@@ -579,3 +579,22 @@ spec:
     # That Cluster and the chart's shared claim provision through fast-rwo
     # and standard-rwx.
     - name: infra-configs-rook-ceph-storage
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-vcs
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/vcs
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # stack.yml is a pulumi.com/v1 Stack.
+    - name: infra-pulumi-system
+    # external-secret.yml reads through the azure-unstoppablemango-pulumi store.
+    - name: infra-configs-external-secrets
