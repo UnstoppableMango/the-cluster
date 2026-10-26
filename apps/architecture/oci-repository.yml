@@ -1,0 +1,19 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: architecture
+  namespace: architecture
+spec:
+  # Published by the main-branch job in unmango/architecture CI. Its appVersion
+  # is the image tag CI pushes alongside it, so this one pin moves both.
+  url: oci://ghcr.io/unmango/charts/architecture
+  interval: 1h
+  # The package is private. The same dockerconfigjson pulls the chart here and
+  # the site image in the HelmRelease.
+  secretRef:
+    name: ghcr
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 0.1.10
