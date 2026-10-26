@@ -50,7 +50,7 @@ let
     name = "cert-manager";
     chart = downloadFluxHelmChart {
       releaseNamespace = "cert-manager-system";
-      chartHash = "sha256-AsbUc4Q9aVfTmENGPPmjOwC6V6v3MpTN1cKIl8csi10=";
+      chartHash = "sha256-kjGAYWkePhiNrUUdpesTcGa9jlpFk1/gZs8sztLElRw=";
     };
     includeCRDs = true;
     values = {
