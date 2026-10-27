@@ -139,7 +139,8 @@ spec:
       enabled: false
     postgresql-ha:
       enabled: false
-    redis-cluster:
+    # Cache, session, and queue use the redis release above instead.
+    valkey-cluster:
       enabled: false
-    redis:
+    valkey:
       enabled: false
