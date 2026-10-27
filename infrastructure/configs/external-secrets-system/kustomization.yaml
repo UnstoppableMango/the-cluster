@@ -3,4 +3,6 @@
 # "External secrets" in AGENTS.md.
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-resources: []
+resources:
+  - azure-keyvault-credentials-sealed.yml
+  - cluster-secret-store.yml
