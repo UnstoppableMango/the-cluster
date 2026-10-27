@@ -26,7 +26,7 @@ spec:
             kind: Deployment
             replicas: 1
             # renovate: datasource=docker depName=cloudflare/cloudflared
-            version: 2026.10.3
+            version: 2026.10.5
   envoy:
     replicas: 1
     # cloudflared reaches Envoy from inside the cluster.
