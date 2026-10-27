@@ -46,9 +46,26 @@
 				"image:\\s*(?<depName>[^\\s:@]+):(?<currentValue>[^\\s@]+)@(?<currentDigest>sha256:[a-f0-9]{64})"
 			],
 			"datasourceTemplate": "docker"
+		},
+		{
+			"description": "cloudflare-operator's Cloudflared resources take the cloudflared image as a bare `version` field, which no built-in manager reads. A `# renovate:` comment on the line above names the image.",
+			"customType": "regex",
+			"managerFilePatterns": [
+				"/^(apps|clusters|infrastructure)/.+\\.ya?ml$/"
+			],
+			"matchStrings": [
+				"#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)\\s*\\n\\s*version:\\s*\"?(?<currentValue>[^\\s\"]+)\"?"
+			]
 		}
 	],
 	"packageRules": [
+		{
+			"description": "The cloudflare-tunnel-ingress-controller HelmRelease and the cloudflare-operator Cloudflared resources run the same cloudflared image.",
+			"matchPackageNames": [
+				"cloudflare/cloudflared"
+			],
+			"groupName": "cloudflared"
+		},
 		{
 			"description": "The nix regex manager bumps a fetchurl URL but not its hash. The stale hash passes CI wherever the old asset is cached, so recompute it here. The command must match allowedCommands in apps/renovate/helm-release-unstoppablemango.yml.",
 			"matchManagers": [
