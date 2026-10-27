@@ -56,6 +56,20 @@
 			"matchStrings": [
 				"#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)\\s*\\n\\s*version:\\s*\"?(?<currentValue>[^\\s\"]+)\"?"
 			]
+		},
+		{
+			"description": "A Nixery image tag is the nixpkgs commit it builds from (docs/adr/0001-nixery.md), so the tag tracks the nixos-unstable branch head rather than any registry's tag list.",
+			"customType": "regex",
+			"managerFilePatterns": [
+				"/^(apps|clusters|infrastructure)/.+\\.ya?ml$/"
+			],
+			"matchStrings": [
+				"nixery\\.thecluster\\.lan/[^\\s:\"'@]+:(?<currentDigest>[a-f0-9]{40})\\b"
+			],
+			"depNameTemplate": "nixpkgs",
+			"packageNameTemplate": "https://github.com/NixOS/nixpkgs",
+			"currentValueTemplate": "nixos-unstable",
+			"datasourceTemplate": "git-refs"
 		}
 	],
 	"packageRules": [
@@ -343,6 +357,26 @@
 				"quay.io/keycloak/keycloak"
 			],
 			"groupName": "keycloak"
+		},
+		{
+			"description": "Nixery builds whatever a tag names on request and has no tag list, so the docker datasource can never resolve an update for it. The nixpkgs regex manager above owns these refs.",
+			"matchDatasources": [
+				"docker"
+			],
+			"matchPackageNames": [
+				"nixery.thecluster.lan/**"
+			],
+			"enabled": false
+		},
+		{
+			"description": "Every Nixery image moves to the same nixpkgs commit in one PR.",
+			"matchDatasources": [
+				"git-refs"
+			],
+			"matchDepNames": [
+				"nixpkgs"
+			],
+			"groupName": "nixery"
 		}
 	]
 }
