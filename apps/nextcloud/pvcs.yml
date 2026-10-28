@@ -1,0 +1,38 @@
+# Nextcloud's code, config.php and installed apps. Small, and on the fast tier
+# because every request reads PHP from it.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nextcloud-app
+  namespace: nextcloud
+  labels:
+    backup.thecluster.io/schedule: daily
+    backup.thecluster.io/backblaze: 'true'
+    backup.thecluster.io/thecluster: 'true'
+spec:
+  storageClassName: fast-rwo
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 16Gi
+---
+# The household's files. CephFS rather than S3 primary storage, see
+# docs/adr/0002-nextcloud-files-on-cephfs.md. standard-rwx is Retain, so
+# deleting this claim leaves the subvolume behind.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nextcloud-data
+  namespace: nextcloud
+  labels:
+    backup.thecluster.io/schedule: daily
+    backup.thecluster.io/backblaze: 'true'
+    backup.thecluster.io/thecluster: 'true'
+spec:
+  storageClassName: standard-rwx
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Gi

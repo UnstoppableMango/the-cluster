@@ -343,6 +343,23 @@
 				"quay.io/keycloak/keycloak"
 			],
 			"groupName": "keycloak"
+		},
+		{
+			"description": "Nextcloud cannot skip a major version, and the entrypoint runs occ upgrade against whatever image it is handed. One PR per major, never automerged, so each one is taken after a fresh backup.",
+			"matchPackageNames": [
+				"nextcloud",
+				"/^(docker\\.io\\/)?library\\/nextcloud$/"
+			],
+			"groupName": "nextcloud",
+			"separateMultipleMajor": true,
+			"automerge": false
+		},
+		{
+			"matchPackageNames": [
+				"collabora-online",
+				"/^(docker\\.io\\/)?collabora\\/code$/"
+			],
+			"groupName": "collabora"
 		}
 	]
 }

@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Collabora Online for Nextcloud's Office app (richdocuments). A namespace of
+# its own, so a failed issuance or rollout here never holds up Nextcloud.
+resources:
+  - namespace.yml
+  - admin-sealed.yml
+  - certificate.yml
+  - helm-repository.yml
+  - helm-release.yml
+  - httproute.yml

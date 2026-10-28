@@ -1,0 +1,233 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nextcloud
+  namespace: nextcloud
+spec:
+  interval: 10m
+  maxHistory: 2
+  releaseName: nextcloud
+  targetNamespace: nextcloud
+  dependsOn:
+    - name: redis
+      namespace: nextcloud
+  chart:
+    spec:
+      chart: nextcloud
+      version: 9.4.1
+      sourceRef:
+        kind: HelmRepository
+        name: nextcloud
+  # A failed upgrade is not rolled back: by then `occ upgrade` may have
+  # migrated the database, and the old image cannot run against it. Restore
+  # from backup instead, see README.md.
+  upgrade:
+    remediation:
+      retries: 0
+  # https://github.com/nextcloud/helm/blob/main/charts/nextcloud/values.yaml
+  values:
+    image:
+      repository: library/nextcloud
+      flavor: fpm-alpine
+      tag: 35.0.2-fpm-alpine
+    replicaCount: 1
+    nextcloud:
+      host: cloud.thecluster.io
+      # The break-glass admin. Everyone else logs in through Keycloak.
+      existingSecret:
+        enabled: true
+        secretName: nextcloud-admin
+        usernameKey: nextcloud-username
+        passwordKey: nextcloud-password
+        tokenKey: nextcloud-token
+      # The web updater would replace the code under Flux's feet. Upgrades are
+      # an image bump, run by the entrypoint's `occ upgrade`.
+      update: 0
+      datadir: /var/www/html/data
+      strategy:
+        type: Recreate
+      # Installed and enabled on every start, so the list here is the whole
+      # truth about which apps are on. Removing one from the list does not
+      # disable it.
+      hooks:
+        before-starting: |
+          #!/bin/sh
+          set -eu
+          occ() { php /var/www/html/occ "$@"; }
+
+          for app in user_oidc calendar contacts memories previewgenerator richdocuments serverinfo; do
+            occ app:install "$app" >/dev/null 2>&1 || true
+            occ app:enable "$app"
+          done
+
+          # The metrics exporter authenticates with this token.
+          occ config:app:set serverinfo token --value="$NEXTCLOUD_TOKEN"
+
+          # Collabora, in apps/collabora.
+          occ config:app:set richdocuments wopi_url --value=https://office.thecluster.io
+          occ richdocuments:activate-config || true
+
+          # Keycloak. The client is declared in UnstoppableMango/iam, and
+          # nextcloud-oidc stays absent until it is, so this is skipped and the
+          # break-glass admin is the only login.
+          if [ -n "${OIDC_CLIENT_ID:-}" ]; then
+            occ user_oidc:provider keycloak \
+              --clientid="$OIDC_CLIENT_ID" \
+              --clientsecret="$OIDC_CLIENT_SECRET" \
+              --discoveryuri=https://auth.thecluster.io/realms/thecluster/.well-known/openid-configuration \
+              --unique-uid=0 \
+              --mapping-uid=preferred_username \
+              --group-provisioning=1 \
+              --mapping-groups=groups
+          fi
+      configs:
+        thecluster.config.php: |-
+          <?php
+          $CONFIG = array(
+            'trusted_domains' => array(
+              'cloud.thecluster.io',
+              // The metrics exporter, through the Service.
+              'nextcloud.nextcloud.svc.cluster.local',
+            ),
+            'overwriteprotocol' => 'https',
+            'overwrite.cli.url' => 'https://cloud.thecluster.io',
+            // The pod network: requests arrive from the cloudflared pods the
+            // Cloudflare Gateway runs and from the nginx Gateway, both of which
+            // set X-Forwarded-For.
+            'trusted_proxies' => array('10.42.0.0/16'),
+            'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
+            // Wherever cluster DNS sends office.thecluster.io, a resolver that
+            // splits the horizon answers with the LAN Gateway, and Nextcloud
+            // refuses private addresses without this.
+            'allow_local_remote_servers' => true,
+            // postgres-app holds a password, and pg_hba in
+            // postgres-cluster.yml refuses it without TLS.
+            'pgsql_ssl' => array(
+              'mode' => 'verify-full',
+              'rootcert' => '/etc/nextcloud/postgres/ca.crt',
+            ),
+          );
+      extraEnv:
+        - name: NEXTCLOUD_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-admin
+              key: nextcloud-token
+        - name: OIDC_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-oidc
+              key: client-id
+              optional: true
+        - name: OIDC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-oidc
+              key: client-secret
+              optional: true
+      # Only the CA certificate: postgres-server also holds the server's key.
+      extraVolumes:
+        - name: postgres-ca
+          projected:
+            sources:
+              - secret:
+                  name: postgres-server
+                  items:
+                    - key: ca.crt
+                      path: ca.crt
+      extraVolumeMounts:
+        - name: postgres-ca
+          mountPath: /etc/nextcloud/postgres
+          readOnly: true
+    # No measured usage yet. Revisit once there is some, per AGENTS.md. No CPU
+    # limit: php-fpm serves every request, and throttling it is latency.
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        memory: 2Gi
+    # The Gateway speaks HTTP, not FastCGI, so fpm needs nginx beside it. The
+    # chart's config carries the /.well-known redirects CalDAV and CardDAV
+    # discovery depend on.
+    nginx:
+      enabled: true
+      image:
+        repository: library/nginx
+        tag: 1.31.8-alpine
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
+    internalDatabase:
+      enabled: false
+    externalDatabase:
+      enabled: true
+      type: postgresql
+      host: postgres-rw.nextcloud.svc.cluster.local
+      database: nextcloud
+      # Generated by CNPG for the initdb owner.
+      existingSecret:
+        enabled: true
+        secretName: postgres-app
+        usernameKey: username
+        passwordKey: password
+    externalRedis:
+      enabled: true
+      host: redis.nextcloud.svc.cluster.local
+      port: "6379"
+    # The volumes are claims in pvcs.yml, so deleting this release never takes
+    # the data with it.
+    persistence:
+      enabled: true
+      existingClaim: nextcloud-app
+      nextcloudData:
+        enabled: true
+        existingClaim: nextcloud-data
+    # Background jobs every five minutes, plus Preview Generator's incremental
+    # pass so Memories has thumbnails before anyone scrolls to them.
+    cronjob:
+      enabled: true
+      type: cronjob
+      cronjob:
+        schedule: "*/5 * * * *"
+        activeDeadlineSeconds: 3600
+        command:
+          - /bin/sh
+          - -c
+          - php -f /var/www/html/cron.php && php /var/www/html/occ preview:pre-generate
+        # cron.php refuses to run as anyone but the owner of config.php.
+        securityContext:
+          runAsUser: 82
+          runAsGroup: 82
+        # nextcloud-app is ReadWriteOnce, so the job has to land on the node
+        # that already has it attached.
+        affinity:
+          podAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: nextcloud
+                    app.kubernetes.io/component: app
+        resources:
+          requests:
+            cpu: 50m
+            memory: 256Mi
+          limits:
+            memory: 2Gi
+    startupProbe:
+      enabled: true
+    metrics:
+      enabled: true
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          memory: 64Mi
+    prometheus:
+      serviceMonitor:
+        enabled: true

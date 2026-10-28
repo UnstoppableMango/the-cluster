@@ -120,40 +120,6 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: pvc-7084d3a5-1e06-4b87-aef5-b0c0b71062c2
-  namespace: ceph-reclaim
-  labels:
-    thecluster.io/origin-namespace: nextcloud
-spec:
-  storageClassName: unsafe-rbd
-  accessModes:
-    - ReadWriteOnce
-  volumeMode: Filesystem
-  volumeName: pvc-7084d3a5-1e06-4b87-aef5-b0c0b71062c2
-  resources:
-    requests:
-      storage: 50Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: pvc-8fa259f7-9d7a-47a4-9a0d-1916a11885ea
-  namespace: ceph-reclaim
-  labels:
-    thecluster.io/origin-namespace: nextcloud
-spec:
-  storageClassName: unsafe-rbd
-  accessModes:
-    - ReadWriteOnce
-  volumeMode: Filesystem
-  volumeName: pvc-8fa259f7-9d7a-47a4-9a0d-1916a11885ea
-  resources:
-    requests:
-      storage: 50Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
   name: pvc-58896da3-bc87-4211-9fcb-87989f7c8755
   namespace: ceph-reclaim
   labels:

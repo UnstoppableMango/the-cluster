@@ -1,0 +1,146 @@
+# A CA scoped to this database. Chaining it off thecluster.io would put the root
+# in ca.crt, and Postgres would then accept any cluster-issued cert as a client.
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: postgres-selfsigned
+  namespace: nextcloud
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: postgres-ca
+  namespace: nextcloud
+spec:
+  isCA: true
+  commonName: nextcloud-postgres-ca
+  secretName: postgres-ca
+  # CNPG watches a Secret it owns, but cert-manager owns this one, so the
+  # operator only reloads the instances on renewal if this label is present.
+  # Without it a renewed certificate sits in the Secret unread until someone
+  # runs `kubectl cnpg reload`, and the instances keep serving the old one.
+  secretTemplate:
+    labels:
+      cnpg.io/reload: "true"
+  duration: 43800h0m0s # 5y
+  renewBefore: 8760h0m0s # 1y
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: postgres-selfsigned
+  subject:
+    organizations:
+      - unmango
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: postgres
+  namespace: nextcloud
+spec:
+  ca:
+    secretName: postgres-ca
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: postgres-server
+  namespace: nextcloud
+spec:
+  secretName: postgres-server
+  # See the CA above. This is the one that matters most: it renews every
+  # 75 days, and an unreloaded expiry breaks every verify-full client.
+  secretTemplate:
+    labels:
+      cnpg.io/reload: "true"
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: postgres
+  duration: 2160h0m0s # 90d
+  renewBefore: 360h0m0s # 15d
+  commonName: postgres-rw
+  usages:
+    - server auth
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 2048
+    rotationPolicy: Always
+  dnsNames:
+    - postgres-rw
+    - postgres-rw.nextcloud
+    - postgres-rw.nextcloud.svc
+    - postgres-rw.nextcloud.svc.cluster.local
+    - postgres-ro
+    - postgres-ro.nextcloud
+    - postgres-ro.nextcloud.svc
+    - postgres-ro.nextcloud.svc.cluster.local
+    - postgres-r
+    - postgres-r.nextcloud
+    - postgres-r.nextcloud.svc
+    - postgres-r.nextcloud.svc.cluster.local
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: postgres-replication
+  namespace: nextcloud
+spec:
+  secretName: postgres-replication
+  # See the CA above.
+  secretTemplate:
+    labels:
+      cnpg.io/reload: "true"
+  issuerRef:
+    group: cert-manager.io
+    kind: Issuer
+    name: postgres
+  duration: 2160h0m0s # 90d
+  renewBefore: 360h0m0s # 15d
+  # CNPG requires the replication client certificate to be issued to this exact user
+  commonName: streaming_replica
+  usages:
+    - client auth
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 2048
+    rotationPolicy: Always
+---
+# Served by the nginx Gateway's cloud listener on the LAN. It lives here, not in
+# nginx-gateway, so a failed issuance only holds up this app.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cloud
+  namespace: nextcloud
+spec:
+  secretName: cloud-tls
+  dnsNames:
+    - cloud.thecluster.io
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt
+---
+# Lets the nginx Gateway's listener read the Secret above.
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: nginx-gateway-tls
+  namespace: nextcloud
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      namespace: nginx-gateway
+  to:
+    - group: ""
+      kind: Secret
+      name: cloud-tls
