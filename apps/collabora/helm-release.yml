@@ -15,6 +15,23 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: collabora
+  # The chart has no dnsConfig value. ndots:1 for the same reason as in
+  # apps/nextcloud: the names this resolves (cloud.thecluster.io for WOPI
+  # callbacks) are public, and the default ndots:5 walks every cluster search
+  # domain before trying them.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: collabora
+            patch: |-
+              - op: add
+                path: /spec/template/spec/dnsConfig
+                value:
+                  options:
+                    - name: ndots
+                      value: "1"
   # https://github.com/CollaboraOnline/online/blob/master/kubernetes/helm/collabora-online/values.yaml
   values:
     fullnameOverride: collabora

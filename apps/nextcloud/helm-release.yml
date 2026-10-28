@@ -220,6 +220,18 @@ spec:
             memory: 2Gi
     startupProbe:
       enabled: true
+    # The image is Alpine, and musl's resolver walks every search domain in
+    # order and gives up on the first answer that is not NXDOMAIN, so with the
+    # default ndots:5 a name like auth.thecluster.io is tried as
+    # auth.thecluster.io.nextcloud.svc.cluster.local and friends first, and a
+    # SERVFAIL on any of them fails the whole lookup. Every name Nextcloud
+    # resolves has at least one dot, and the in-cluster ones are written fully
+    # qualified, so ndots:1 sends them all straight to the absolute name. The
+    # chart applies this to the CronJob's pods too.
+    dnsConfig:
+      options:
+        - name: ndots
+          value: "1"
     metrics:
       enabled: true
       resources:
