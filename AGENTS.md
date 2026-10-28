@@ -50,6 +50,12 @@ When a Flux manifest deploys a Helm chart with a companion container image (e.g.
 
 When a Flux manifest requires a Secret, always create a stub under `hack/secrets/` mirroring the path of the sealed secret (e.g. `hack/secrets/infrastructure/configs/crossplane-system/cloudflare-credentials.yml`). Use `stringData` with empty values so the user can populate and seal it. Never commit real credentials. Apply `umask 0177` before creating any file under `hack/secrets/` so it is written with mode 0600 (owner read/write only).
 
+### Nixery images
+
+`nixery.thecluster.lan/<pkg>[/<pkg>...]:latest` is fine for tools, jobs and debugging, never for anything the cluster needs to come back up.
+The tag carries nothing: every image builds from the nixpkgs commit in `apps/nixery/deployment.yml`'s `NIXERY_CHANNEL`.
+`docs/adr/0001-nixery.md` has the reasons.
+
 ### External secrets
 
 external-secrets (`infrastructure/controllers/external-secrets-system`) pulls Secrets from external stores, and `infra-configs-external-secrets` reconciles the `ClusterSecretStore`s in `infrastructure/configs/external-secrets-system`.

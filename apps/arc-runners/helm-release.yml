@@ -133,6 +133,12 @@ spec:
                   mountPath: /var/run
                 - name: dind-externals
                   mountPath: /home/runner/externals
+                # Job containers pull through this dockerd, which trusts only
+                # its own image's bundle, not the node's. certs.d scopes the
+                # gateway's CA to Nixery alone.
+                - name: thecluster-lan-ca
+                  mountPath: /etc/docker/certs.d/nixery.thecluster.lan
+                  readOnly: true
           containers:
             - name: runner
               image: ghcr.io/unmango/actions-runner:2.338.0@sha256:0d00898900c2fca51709d96afed1a0ab0004bd1c6156be75aa173cf39d0d67af
@@ -192,6 +198,11 @@ spec:
               emptyDir: {}
             - name: dind-externals
               emptyDir: {}
+            # Published into every namespace by the thecluster-lan-ca Bundle in
+            # infrastructure/configs/cert-manager-system.
+            - name: thecluster-lan-ca
+              configMap:
+                name: thecluster-lan-ca
             - name: work
               ephemeral:
                 volumeClaimTemplate:
