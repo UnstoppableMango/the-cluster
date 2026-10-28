@@ -40,11 +40,13 @@ spec:
               value: filesystem
             - name: STORAGE_PATH
               value: /var/lib/nixery/storage
-            # A channel name is a moving target, so nixery caches nothing
-            # keyed on it and every new tag re-evaluates nixpkgs. Pull by
-            # commit hash as the tag for a reproducible, cached image.
+            # A nixos-unstable commit, bumped by Renovate. With a channel
+            # source nixery ignores the image tag entirely, and it caches a
+            # build only when this value is a full commit hash; a channel
+            # name would re-evaluate nixpkgs on every pull. See
+            # docs/adr/0001-nixery.md.
             - name: NIXERY_CHANNEL
-              value: nixos-unstable
+              value: 3ec636362e1816bc2f0888fa0fa2c69f1bc9e504
             - name: PORT
               value: "8080"
             # nix-build substitutes every store path an image needs before

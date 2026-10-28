@@ -52,7 +52,8 @@ When a Flux manifest requires a Secret, always create a stub under `hack/secrets
 
 ### Nixery images
 
-`nixery.thecluster.lan/<pkg>[/<pkg>...]:<nixpkgs commit>` is fine for tools, jobs and debugging, never for anything the cluster needs to come back up, and the tag is always a full nixpkgs commit.
+`nixery.thecluster.lan/<pkg>[/<pkg>...]:latest` is fine for tools, jobs and debugging, never for anything the cluster needs to come back up.
+The tag carries nothing: every image builds from the nixpkgs commit in `apps/nixery/deployment.yml`'s `NIXERY_CHANNEL`.
 `docs/adr/0001-nixery.md` has the reasons.
 
 ### External secrets

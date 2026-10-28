@@ -58,13 +58,13 @@
 			]
 		},
 		{
-			"description": "A Nixery image tag is the nixpkgs commit it builds from (docs/adr/0001-nixery.md), so the tag tracks the nixos-unstable branch head rather than any registry's tag list.",
+			"description": "Nixery builds every image from the one nixpkgs commit in NIXERY_CHANNEL (docs/adr/0001-nixery.md), so that commit tracks the nixos-unstable branch head.",
 			"customType": "regex",
 			"managerFilePatterns": [
-				"/^(apps|clusters|infrastructure)/.+\\.ya?ml$/"
+				"/^apps/nixery/deployment\\.yml$/"
 			],
 			"matchStrings": [
-				"nixery\\.thecluster\\.lan/[^\\s:\"'@]+:(?<currentDigest>[a-f0-9]{40})\\b"
+				"name: NIXERY_CHANNEL\\s+value: \"?(?<currentDigest>[a-f0-9]{40})\"?"
 			],
 			"depNameTemplate": "nixpkgs",
 			"packageNameTemplate": "https://github.com/NixOS/nixpkgs",
@@ -359,7 +359,7 @@
 			"groupName": "keycloak"
 		},
 		{
-			"description": "Nixery builds whatever a tag names on request and has no tag list, so the docker datasource can never resolve an update for it. The nixpkgs regex manager above owns these refs.",
+			"description": "Nixery builds whatever a path names on request and has no tag list, so the docker datasource can never resolve an update for it. The nixpkgs version behind every Nixery image is NIXERY_CHANNEL, which the nixpkgs regex manager above owns.",
 			"matchDatasources": [
 				"docker"
 			],
@@ -367,16 +367,6 @@
 				"nixery.thecluster.lan/**"
 			],
 			"enabled": false
-		},
-		{
-			"description": "Every Nixery image moves to the same nixpkgs commit in one PR.",
-			"matchDatasources": [
-				"git-refs"
-			],
-			"matchDepNames": [
-				"nixpkgs"
-			],
-			"groupName": "nixery"
 		}
 	]
 }

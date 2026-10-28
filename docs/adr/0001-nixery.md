@@ -10,10 +10,12 @@ Cluster workloads, the ARC runners, and workstations pull from it directly.
   While it is down, a pod whose image is not already cached on its node cannot start.
   Anything the cluster needs to come back up (DNS, storage, the gateway, Flux, auth) keeps pulling from upstream registries, or a Nixery outage would keep the gateway in front of it from starting.
   Nothing enforces this; a reviewer does.
-- **Tags are nixpkgs commits.**
-  A channel name as the tag is a moving target, so Nixery caches nothing keyed on it and every pull re-evaluates nixpkgs.
-  Consumers tag with a full 40-character `nixos-unstable` commit, which builds once and is reproducible.
-  Renovate's `nixpkgs` regex manager moves every such tag to the branch head in one grouped PR.
+- **The server pins nixpkgs, not the tag.**
+  With `NIXERY_CHANNEL` set, Nixery ignores the image tag entirely (`config/pkgsource.go` upstream), and caches a build only when the channel is a full commit hash.
+  So `NIXERY_CHANNEL` is a 40-character `nixos-unstable` commit, every image builds from it, and Renovate's `nixpkgs` regex manager moves it to the branch head.
+  Each bump rebuilds an image on its next pull.
+  Per-image pinning would mean `NIXERY_PKGS_REPO`, a git source that clones nixpkgs into every pod, which is not worth it until two consumers need different nixpkgs.
+  Consumers tag `latest`; the tag carries nothing.
 - **Upstream nixpkgs.**
   Nixery builds from upstream nixpkgs rather than a package set of ours, since nothing yet needs an image nixpkgs cannot produce.
 - **LAN-only, pulled directly.**
