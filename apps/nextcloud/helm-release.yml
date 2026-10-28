@@ -227,7 +227,9 @@ spec:
     # SERVFAIL on any of them fails the whole lookup. Every name Nextcloud
     # resolves has at least one dot, and the in-cluster ones are written fully
     # qualified, so ndots:1 sends them all straight to the absolute name. The
-    # chart applies this to the CronJob's pods too.
+    # chart applies this to the CronJob's pods too. Keep in-cluster names fully
+    # qualified: under ndots:1 musl never searches a name with a dot in it, so
+    # a short `svc.ns` stops resolving here.
     dnsConfig:
       options:
         - name: ndots
