@@ -26,7 +26,7 @@ spec:
     image:
       registry: docker.io # default
       repository: bitnami/sealed-secrets-controller # default
-      tag: 0.40.0
+      tag: 0.41.2
     resources:
       requests:
         cpu: 10m
