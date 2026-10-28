@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# The chart renders only the Nextcloud workload, its CronJob and the metrics
+# exporter. Everything it would otherwise bundle (database, Redis, volumes,
+# routes) is a plain manifest here, so a Nextcloud operator can replace the
+# chart without touching the rest. See unmango/thecluster-operator#156.
+resources:
+  - namespace.yml
+  - admin-sealed.yml
+  - certificate.yml
+  - postgres-cluster.yml
+  - pvcs.yml
+  - redis.yml
+  - helm-repository.yml
+  - helm-release.yml
+  - httproute.yml
+  - client-settings-policy.yml

@@ -1,0 +1,19 @@
+# File locking and the distributed cache. Nothing in it survives a restart or
+# needs to: Nextcloud rebuilds both.
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: redis
+  namespace: nextcloud
+spec:
+  interval: 10m
+  maxHistory: 2
+  releaseName: redis
+  targetNamespace: nextcloud
+  chart:
+    spec:
+      chart: charts/redis
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system

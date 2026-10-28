@@ -1,0 +1,43 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres
+  namespace: nextcloud
+spec:
+  instances: 2
+  # Velero's schedules pick the instance volumes up through these, which CNPG
+  # copies onto every object it creates. A crash-consistent snapshot is a
+  # stopgap until the cluster backs up to object storage through the Barman
+  # Cloud plugin.
+  inheritedMetadata:
+    labels:
+      backup.thecluster.io/schedule: daily
+      backup.thecluster.io/backblaze: 'true'
+      backup.thecluster.io/thecluster: 'true'
+  # CNPG applies nothing by default, so without this the postgres pods run
+  # BestEffort. No CPU limit: throttling the primary stalls every request.
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 1Gi
+  storage:
+    storageClass: fast-rwo
+    size: 10Gi
+  certificates:
+    serverCASecret: postgres-ca
+    serverTLSSecret: postgres-server
+    clientCASecret: postgres-ca
+    replicationTLSSecret: postgres-replication
+  postgresql:
+    # Nextcloud authenticates with the password CNPG generates into
+    # postgres-app, since its config has no clean way to present a client
+    # certificate. CNPG appends `host all all all scram-sha-256` after this,
+    # so rejecting plaintext here is what forces that password over TLS.
+    pg_hba:
+      - hostnossl nextcloud nextcloud all reject
+  bootstrap:
+    initdb:
+      database: nextcloud
+      owner: nextcloud

@@ -92,3 +92,36 @@ spec:
                   selector:
                     matchLabels:
                       kubernetes.io/metadata.name: seedvault
+            # Nextcloud and Collabora on the LAN, the same way as Seedvault
+            # above: pihole answers these names with the Gateway's address, and
+            # each cert is a public one living beside its route.
+            - name: cloud
+              hostname: cloud.thecluster.io
+              port: 443
+              protocol: HTTPS
+              tls:
+                mode: Terminate
+                certificateRefs:
+                  - name: cloud-tls
+                    namespace: nextcloud
+              allowedRoutes:
+                namespaces:
+                  from: Selector
+                  selector:
+                    matchLabels:
+                      kubernetes.io/metadata.name: nextcloud
+            - name: office
+              hostname: office.thecluster.io
+              port: 443
+              protocol: HTTPS
+              tls:
+                mode: Terminate
+                certificateRefs:
+                  - name: office-tls
+                    namespace: collabora
+              allowedRoutes:
+                namespaces:
+                  from: Selector
+                  selector:
+                    matchLabels:
+                      kubernetes.io/metadata.name: collabora

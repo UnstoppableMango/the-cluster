@@ -507,6 +507,63 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: apps-nextcloud
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/nextcloud
+  interval: 10m
+  prune: true
+  wait: true
+  # Office documents open through apps-collabora. That is not a dependsOn
+  # edge: Nextcloud serves everything else without it.
+  # httproute.yml also attaches to the Cloudflare Gateway. That is not a
+  # dependsOn edge either: infra-configs-cloudflare-operator does not wait.
+  dependsOn:
+    # admin-sealed.yml needs the SealedSecret CRD.
+    - name: infra-sealed-secrets
+    # certificate.yml holds namespace-local Issuers for the database, and a
+    # Certificate from the letsencrypt ClusterIssuer for the LAN listener.
+    - name: infra-cert-manager
+    - name: infra-configs-cert-manager
+    # postgres-cluster.yml is a postgresql.cnpg.io Cluster.
+    - name: infra-cnpg-system
+    # The claims use fast-rwo and standard-rwx.
+    - name: infra-configs-rook-ceph-storage
+    # httproute.yml attaches to the nginx Gateway's cloud listener, and
+    # client-settings-policy.yml needs the ClientSettingsPolicy CRD.
+    - name: infra-nginx-gateway
+    # The chart renders a ServiceMonitor for the metrics exporter.
+    - name: infra-monitoring-crds
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps-collabora
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./apps/collabora
+  interval: 10m
+  prune: true
+  wait: true
+  # httproute.yml also attaches to the Cloudflare Gateway. That is not a
+  # dependsOn edge: infra-configs-cloudflare-operator does not wait.
+  dependsOn:
+    # admin-sealed.yml needs the SealedSecret CRD.
+    - name: infra-sealed-secrets
+    # certificate.yml is issued by the letsencrypt ClusterIssuer.
+    - name: infra-configs-cert-manager
+    # httproute.yml attaches to the nginx Gateway's office listener.
+    - name: infra-nginx-gateway
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: apps-wishlists
   namespace: flux-system
 spec:

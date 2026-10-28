@@ -1,0 +1,15 @@
+# nginx defaults to a 1m request body. Clients upload in chunks (10MB from the
+# desktop client, up to 100MB from the web UI), and through Cloudflare a body
+# is capped at 100MB at the edge anyway.
+apiVersion: gateway.nginx.org/v1alpha1
+kind: ClientSettingsPolicy
+metadata:
+  name: nextcloud
+  namespace: nextcloud
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: nextcloud
+  body:
+    maxSize: "0"

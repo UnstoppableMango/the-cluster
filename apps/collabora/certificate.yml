@@ -1,0 +1,31 @@
+# Served by the nginx Gateway's office listener on the LAN. It lives here, not
+# in nginx-gateway, so a failed issuance only holds up this app.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: office
+  namespace: collabora
+spec:
+  secretName: office-tls
+  dnsNames:
+    - office.thecluster.io
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt
+---
+# Lets the nginx Gateway's listener read the Secret above.
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: nginx-gateway-tls
+  namespace: collabora
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      namespace: nginx-gateway
+  to:
+    - group: ""
+      kind: Secret
+      name: office-tls

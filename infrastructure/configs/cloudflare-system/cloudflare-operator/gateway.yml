@@ -68,3 +68,23 @@ spec:
           selector:
             matchLabels:
               kubernetes.io/metadata.name: bitwarden
+    - name: cloud
+      hostname: cloud.thecluster.io
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: nextcloud
+    - name: office
+      hostname: office.thecluster.io
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              kubernetes.io/metadata.name: collabora
