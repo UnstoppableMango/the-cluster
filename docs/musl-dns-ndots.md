@@ -263,9 +263,11 @@ With the pihole module's `thecluster.lan` wildcard, it could also turn `github.c
 
 ### 3. Verify
 
-- Check `/etc/resolv.conf` in a pod: three search entries, `ndots:5`.
+- Check `/etc/resolv.conf` in a fresh `ClusterFirst` pod with no `spec.dnsConfig`: three search entries, `ndots:5`.
+  Some workloads here override ndots (see Pitfalls), so do not pick an arbitrary existing pod.
 - Check that `coredns_autopath_success_total` rises.
-- In an Alpine pod, `time nslookup github.com` should show one query pair in the CoreDNS log, not four.
+- In an Alpine pod, resolve `github.com` through musl's `getaddrinfo(3)`, e.g. `getent hosts github.com`, and check the CoreDNS log: one query pair, not four.
+  Do not use BusyBox `nslookup`: it skips the search list for any name containing a dot, so it never produces the fan-out being measured.
 
 ### 4. the-cluster: only if a namespace still needs it
 
@@ -325,7 +327,8 @@ spec:
   StatefulSet pod names `web-0.web.ns` (two dots) break the same way.
   `web-0.web` (one dot, same namespace) still works.
 - **glibc under low ndots.**
-  Names keep working, but every short in-cluster name leaks one query upstream first: `data.prod.` goes to 1.1.1.1.
+  Names keep working, but a name with at least `ndots` dots is tried as absolute first, so it leaks one query upstream before the search list.
+  Under `ndots:1` that includes `data.prod.`; under `ndots:2` it is `data.prod.svc.` and the like, while `data.prod` is searched first.
 - **Existing overrides.**
   The `deluge` and `qbittorrent` StatefulSets in `apps/media` set `ndots:1`, and `plex` sets `ndots:0`.
   qBittorrent's init container is `python:3.13.3-alpine3.20`.
