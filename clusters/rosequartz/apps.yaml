@@ -55,6 +55,9 @@ spec:
     - name: infra-arc-system
     # thecluster-bot-sealed.yml needs the SealedSecret CRD.
     - name: infra-sealed-secrets
+    # dind mounts ConfigMap thecluster-lan-ca to trust Nixery, and a pod cannot
+    # start on a ConfigMap that is not there.
+    - name: infra-configs-trust-bundle
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -72,6 +75,8 @@ spec:
   dependsOn:
     - name: infra-arc-system
     - name: infra-sealed-secrets
+    # dind mounts ConfigMap thecluster-lan-ca; see apps-arc-runners.
+    - name: infra-configs-trust-bundle
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

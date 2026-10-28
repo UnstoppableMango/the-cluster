@@ -1,7 +1,7 @@
 # nextcloud
 
 Nextcloud for the household at `cloud.thecluster.io`, with Office documents opening in `apps/collabora` at `office.thecluster.io`.
-Both names resolve to the nginx Gateway on the LAN and to the Cloudflare tunnel everywhere else (`docs/adr/0001-nextcloud-one-hostname-split-dns.md`).
+Both names resolve to the nginx Gateway on the LAN and to the Cloudflare tunnel everywhere else (`docs/adr/0002-nextcloud-one-hostname-split-dns.md`).
 
 ## Logging in
 

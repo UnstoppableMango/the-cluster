@@ -56,6 +56,20 @@
 			"matchStrings": [
 				"#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)\\s*\\n\\s*version:\\s*\"?(?<currentValue>[^\\s\"]+)\"?"
 			]
+		},
+		{
+			"description": "Nixery builds every image from the one nixpkgs commit in NIXERY_CHANNEL (docs/adr/0001-nixery.md), so that commit tracks the nixos-unstable branch head.",
+			"customType": "regex",
+			"managerFilePatterns": [
+				"/^apps/nixery/deployment\\.yml$/"
+			],
+			"matchStrings": [
+				"name: NIXERY_CHANNEL\\s+value: \"?(?<currentDigest>[a-f0-9]{40})\"?"
+			],
+			"depNameTemplate": "nixpkgs",
+			"packageNameTemplate": "https://github.com/NixOS/nixpkgs",
+			"currentValueTemplate": "nixos-unstable",
+			"datasourceTemplate": "git-refs"
 		}
 	],
 	"packageRules": [
@@ -343,6 +357,16 @@
 				"quay.io/keycloak/keycloak"
 			],
 			"groupName": "keycloak"
+		},
+		{
+			"description": "Nixery builds whatever a path names on request and has no tag list, so the docker datasource can never resolve an update for it. The nixpkgs version behind every Nixery image is NIXERY_CHANNEL, which the nixpkgs regex manager above owns.",
+			"matchDatasources": [
+				"docker"
+			],
+			"matchPackageNames": [
+				"nixery.thecluster.lan/**"
+			],
+			"enabled": false
 		},
 		{
 			"description": "Nextcloud cannot skip a major version, and the entrypoint runs occ upgrade against whatever image it is handed. One PR per major, never automerged, so each one is taken after a fresh backup.",

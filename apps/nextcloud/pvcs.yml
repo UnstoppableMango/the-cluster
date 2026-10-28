@@ -18,7 +18,7 @@ spec:
       storage: 16Gi
 ---
 # The household's files. CephFS rather than S3 primary storage, see
-# docs/adr/0002-nextcloud-files-on-cephfs.md. standard-rwx is Retain, so
+# docs/adr/0003-nextcloud-files-on-cephfs.md. standard-rwx is Retain, so
 # deleting this claim leaves the subvolume behind.
 apiVersion: v1
 kind: PersistentVolumeClaim
