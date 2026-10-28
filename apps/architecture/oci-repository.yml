@@ -8,10 +8,8 @@ spec:
   # is the image tag CI pushes alongside it, so this one pin moves both.
   url: oci://ghcr.io/unmango/charts/architecture
   interval: 1h
-  # The package is private. The same dockerconfigjson pulls the chart here and
-  # the site image in the HelmRelease.
-  secretRef:
-    name: ghcr
+  # The chart package is public, so Flux and Renovate both read it without
+  # credentials. The site image stays private; see the HelmRelease.
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
