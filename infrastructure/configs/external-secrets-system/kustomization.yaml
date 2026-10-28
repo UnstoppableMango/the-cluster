@@ -6,3 +6,5 @@ kind: Kustomization
 resources:
   - azure-keyvault-credentials-sealed.yml
   - cluster-secret-store.yml
+  - pki-keyvault.yml
+  - pki-keyvault-reader.yml

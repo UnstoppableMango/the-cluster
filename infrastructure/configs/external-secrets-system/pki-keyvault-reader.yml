@@ -1,0 +1,13 @@
+# The identity the pki-keyvault store reads as. Through workload identity
+# federation, this ServiceAccount's tokens are exchanged for the
+# rosequartz-external-secrets managed identity in UnstoppableMango/pki, so
+# nothing about it is sealed. Both IDs are the pki stack's
+# rosequartzExternalSecrets output.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: pki-keyvault-reader
+  namespace: external-secrets-system
+  annotations:
+    azure.workload.identity/client-id: CLIENT_ID # TODO: rosequartzExternalSecrets.clientId
+    azure.workload.identity/tenant-id: cc1862e8-3663-4b04-afb6-da85f96a6111
