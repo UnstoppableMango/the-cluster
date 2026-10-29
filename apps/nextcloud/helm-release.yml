@@ -50,10 +50,25 @@ spec:
       # truth about which apps are on. Removing one from the list does not
       # disable it.
       hooks:
+        # kubelet creates the chart's data/ subPath group-writable and
+        # world-readable, and Nextcloud refuses every request until it is 0770.
+        pre-installation: |
+          #!/bin/sh
+          set -eu
+          chmod 0770 /var/www/html/data
         before-starting: |
           #!/bin/sh
           set -eu
           occ() { php /var/www/html/occ "$@"; }
+
+          # The entrypoint installs only on the first start, so after a failed
+          # install every later start lands here. Say so rather than let the
+          # app loop below fail on it: the install's own error is in the first
+          # container's log and in data/nextcloud.log.
+          if ! occ status --output=json | grep -q '"installed":true'; then
+            echo "Nextcloud is not installed, and the entrypoint will not retry. See apps/nextcloud/README.md." >&2
+            exit 1
+          fi
 
           for app in user_oidc calendar contacts memories previewgenerator richdocuments serverinfo; do
             occ app:install "$app" >/dev/null 2>&1 || true
