@@ -140,6 +140,28 @@ spec:
               name: nextcloud-oidc
               key: client-secret
               optional: true
+      # The chart waits only for the databases it bundles. Without this the
+      # first start raced CNPG, the install found Postgres refusing
+      # connections, and the entrypoint never tried again.
+      extraInitContainers:
+        - name: wait-for-backends
+          image: docker.io/library/busybox:1.37.0
+          command:
+            - /bin/sh
+            - -c
+            - |
+              for backend in postgres-rw.nextcloud.svc.cluster.local:5432 redis.nextcloud.svc.cluster.local:6379; do
+                until nc -z -w 2 "${backend%:*}" "${backend#*:}"; do
+                  echo "waiting for $backend"
+                  sleep 2
+                done
+              done
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 32Mi
       # Only the CA certificate: postgres-server also holds the server's key.
       extraVolumes:
         - name: postgres-ca
