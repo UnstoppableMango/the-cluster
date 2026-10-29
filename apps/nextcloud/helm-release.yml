@@ -50,10 +50,32 @@ spec:
       # truth about which apps are on. Removing one from the list does not
       # disable it.
       hooks:
+        # kubelet creates the chart's data/ subPath group-writable and
+        # world-readable, and Nextcloud refuses every request until it is 0770.
+        pre-installation: |
+          #!/bin/sh
+          set -eu
+          chmod 0770 /var/www/html/data
         before-starting: |
           #!/bin/sh
           set -eu
           occ() { php /var/www/html/occ "$@"; }
+
+          # The entrypoint installs only on the first start, so after a failed
+          # install every later start lands here. Say so rather than let the
+          # app loop below fail on it: the install's own error is in the first
+          # container's log and in data/nextcloud.log.
+          if ! status=$(occ status --output=json); then
+            echo "occ status failed: $status" >&2
+            exit 1
+          fi
+          case "$status" in
+            *'"installed":true'*) ;;
+            *)
+              echo "Nextcloud is not installed, and the entrypoint will not retry. See apps/nextcloud/README.md." >&2
+              exit 1
+              ;;
+          esac
 
           for app in user_oidc calendar contacts memories previewgenerator richdocuments serverinfo; do
             occ app:install "$app" >/dev/null 2>&1 || true
@@ -125,6 +147,29 @@ spec:
               name: nextcloud-oidc
               key: client-secret
               optional: true
+      # The chart waits only for the databases it bundles. Without this the
+      # first start raced CNPG, the install found Postgres refusing
+      # connections, and the entrypoint never tried again.
+      extraInitContainers:
+        - name: wait-for-backends
+          image: docker.io/library/busybox:1.37.0
+          command:
+            - /bin/sh
+            - -c
+            - |
+              # Both in the same pass, so one going away while the other
+              # comes up does not slip through.
+              until nc -z -w 2 postgres-rw.nextcloud.svc.cluster.local 5432 &&
+                nc -z -w 2 redis.nextcloud.svc.cluster.local 6379; do
+                echo "waiting for postgres-rw and redis"
+                sleep 2
+              done
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 32Mi
       # Only the CA certificate: postgres-server also holds the server's key.
       extraVolumes:
         - name: postgres-ca

@@ -1,0 +1,44 @@
+# Empties both Nextcloud claims, for reinstalling after a failed first install.
+# It deletes everything on them, so it is for an instance with nothing in it
+# yet. apps/nextcloud/README.md has the whole sequence; run this only with the
+# HelmRelease suspended and the Deployment at zero.
+#
+#   kubectl apply -f hack/nextcloud-wipe.yml
+#   kubectl -n nextcloud wait --for=jsonpath='{.status.phase}'=Succeeded pod/nextcloud-wipe --timeout=5m
+#   kubectl delete -f hack/nextcloud-wipe.yml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nextcloud-wipe
+  namespace: nextcloud
+spec:
+  restartPolicy: Never
+  containers:
+    - name: wipe
+      image: docker.io/library/busybox:1.37.0
+      command:
+        - /bin/sh
+        - -c
+        - |
+          set -eu
+          find /app -mindepth 1 -maxdepth 1 ! -name lost+found -exec rm -rf {} +
+          find /data -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+          ls -la /app /data
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          memory: 64Mi
+      volumeMounts:
+        - name: app
+          mountPath: /app
+        - name: data
+          mountPath: /data
+  volumes:
+    - name: app
+      persistentVolumeClaim:
+        claimName: nextcloud-app
+    - name: data
+      persistentVolumeClaim:
+        claimName: nextcloud-data
