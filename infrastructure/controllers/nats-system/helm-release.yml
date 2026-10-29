@@ -32,7 +32,7 @@ spec:
     container:
       image:
         repository: nats # default
-        tag: 2.15.1-linux
+        tag: 2.15.2-linux
       merge:
         resources:
           requests:
