@@ -48,19 +48,25 @@ If the install fails, no later start retries it, and the `before-starting` hook 
 The install's error is in the first container's log, and in `data/nextcloud.log` on `nextcloud-data` if it got as far as opening it.
 
 Once the cause is fixed, empty both claims and the database and let the entrypoint install again.
-This deletes everything, so it is only for an instance nobody has used yet:
+This deletes everything, so it is only for an instance nobody has used yet.
+The subshell stops at the first step that fails:
 
 ```sh
-flux -n nextcloud suspend helmrelease nextcloud
-kubectl -n nextcloud scale deploy/nextcloud --replicas=0
-kubectl -n nextcloud patch cronjob nextcloud-cron -p '{"spec":{"suspend":true}}'
-kubectl apply -f hack/nextcloud-wipe.yml
-kubectl -n nextcloud wait --for=jsonpath='{.status.phase}'=Succeeded pod/nextcloud-wipe --timeout=5m
-kubectl delete -f hack/nextcloud-wipe.yml
-kubectl cnpg -n nextcloud psql postgres -- -d nextcloud \
-  -c 'DROP SCHEMA public CASCADE' -c 'CREATE SCHEMA public AUTHORIZATION pg_database_owner'
-kubectl -n nextcloud patch cronjob nextcloud-cron -p '{"spec":{"suspend":false}}'
-kubectl -n nextcloud scale deploy/nextcloud --replicas=1
-flux -n nextcloud resume helmrelease nextcloud
+(
+  set -eu
+  flux -n nextcloud suspend helmrelease nextcloud
+  kubectl -n nextcloud patch cronjob nextcloud-cron -p '{"spec":{"suspend":true}}'
+  kubectl -n nextcloud scale deploy/nextcloud --replicas=0
+  # The app pod and any running cron job both hold the claims.
+  while kubectl -n nextcloud get pods -l 'app.kubernetes.io/name=nextcloud,app.kubernetes.io/component in (app,cronjob)' -o name | grep -q .; do sleep 2; done
+  kubectl apply -f hack/nextcloud-wipe.yml
+  kubectl -n nextcloud wait --for=jsonpath='{.status.phase}'=Succeeded pod/nextcloud-wipe --timeout=5m
+  kubectl delete -f hack/nextcloud-wipe.yml
+  kubectl cnpg -n nextcloud psql postgres -- -d nextcloud -v ON_ERROR_STOP=1 \
+    -c 'DROP SCHEMA public CASCADE' -c 'CREATE SCHEMA public AUTHORIZATION pg_database_owner'
+  kubectl -n nextcloud patch cronjob nextcloud-cron -p '{"spec":{"suspend":false}}'
+  kubectl -n nextcloud scale deploy/nextcloud --replicas=1
+  flux -n nextcloud resume helmrelease nextcloud
+)
 kubectl -n nextcloud logs -f deploy/nextcloud -c nextcloud
 ```

@@ -65,10 +65,17 @@ spec:
           # install every later start lands here. Say so rather than let the
           # app loop below fail on it: the install's own error is in the first
           # container's log and in data/nextcloud.log.
-          if ! occ status --output=json | grep -q '"installed":true'; then
-            echo "Nextcloud is not installed, and the entrypoint will not retry. See apps/nextcloud/README.md." >&2
+          if ! status=$(occ status --output=json); then
+            echo "occ status failed: $status" >&2
             exit 1
           fi
+          case "$status" in
+            *'"installed":true'*) ;;
+            *)
+              echo "Nextcloud is not installed, and the entrypoint will not retry. See apps/nextcloud/README.md." >&2
+              exit 1
+              ;;
+          esac
 
           for app in user_oidc calendar contacts memories previewgenerator richdocuments serverinfo; do
             occ app:install "$app" >/dev/null 2>&1 || true
@@ -150,11 +157,12 @@ spec:
             - /bin/sh
             - -c
             - |
-              for backend in postgres-rw.nextcloud.svc.cluster.local:5432 redis.nextcloud.svc.cluster.local:6379; do
-                until nc -z -w 2 "${backend%:*}" "${backend#*:}"; do
-                  echo "waiting for $backend"
-                  sleep 2
-                done
+              # Both in the same pass, so one going away while the other
+              # comes up does not slip through.
+              until nc -z -w 2 postgres-rw.nextcloud.svc.cluster.local 5432 &&
+                nc -z -w 2 redis.nextcloud.svc.cluster.local 6379; do
+                echo "waiting for postgres-rw and redis"
+                sleep 2
               done
           resources:
             requests:
