@@ -79,6 +79,9 @@ spec:
             '^node hack/renovate-fetchurl-hash\\.mjs nix/[\\w./-]+\\.nix [\\w.-]+/[\\w.-]+ v?[\\d.]+$',
             // The gomod2nix preset in UnstoppableMango/renovate-config.
             '^go run github\\.com/nix-community/gomod2nix@v[\\w.-]+ --dir \\. --outdir [\\w./-]+$',
+            // The nuget2nix preset in UnstoppableMango/renovate-config, as
+            // UnstoppableMango/tdl extends it.
+            '^go run \\./tools/nugetdeps$',
           ],
         };
     cronjob:
