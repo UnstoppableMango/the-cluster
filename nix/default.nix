@@ -23,5 +23,18 @@
         ${packages.validate-flux}/bin/validate-flux --dir ${../.}
         touch $out
       '';
+
+      checks.hack-scripts =
+        let
+          src = lib.fileset.toSource {
+            root = ../hack;
+            fileset = lib.fileset.fileFilter (f: f.hasExt "mjs") ../hack;
+          };
+        in
+        pkgs.runCommand "hack-scripts-check" { nativeBuildInputs = [ pkgs.nodejs ]; } ''
+          cd ${src}
+          node --test '*.test.mjs'
+          touch $out
+        '';
     };
 }
