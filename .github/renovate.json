@@ -99,6 +99,27 @@
 			}
 		},
 		{
+			"description": "nix/crds.nix downloads some HelmRelease charts as fixed-output derivations, reading the version from the HelmRelease but carrying the chartHash itself, so recompute it here. The script skips a chart crds.nix does not download. The command must match allowedCommands in apps/renovate/helm-release-unstoppablemango.yml.",
+			"matchManagers": [
+				"flux"
+			],
+			"matchDatasources": [
+				"helm"
+			],
+			"matchFileNames": [
+				"infrastructure/controllers/*/helm-release.yml"
+			],
+			"postUpgradeTasks": {
+				"commands": [
+					"node hack/renovate-chart-hash.mjs {{{packageFile}}}"
+				],
+				"fileFilters": [
+					"nix/crds.nix"
+				],
+				"executionMode": "update"
+			}
+		},
+		{
 			"matchPackageNames": [
 				"cert-manager",
 				"cert-manager/cert-manager"
