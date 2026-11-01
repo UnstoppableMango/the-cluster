@@ -82,6 +82,8 @@ spec:
             // The nuget2nix preset in UnstoppableMango/renovate-config, as
             // UnstoppableMango/tdl extends it.
             '^go run \\./tools/nugetdeps$',
+            // UnstoppableMango/dotfiles refetches the Claude Code release manifest.
+            '^node overlays/update-claude-code-manifest\\.mjs \\d+\\.\\d+\\.\\d+$',
           ],
         };
     cronjob:
