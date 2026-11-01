@@ -39,7 +39,7 @@ spec:
             fsGroupChangePolicy: OnRootMismatch
           containers:
             - name: store-gc
-              image: alpine/kubectl:1.37.1
+              image: alpine/kubectl:1.37.2
               command:
                 - sh
                 - -c
