@@ -57,8 +57,10 @@ The subshell stops at the first step that fails:
   flux -n nextcloud suspend helmrelease nextcloud
   kubectl -n nextcloud patch cronjob nextcloud-cron -p '{"spec":{"suspend":true}}'
   kubectl -n nextcloud scale deploy/nextcloud --replicas=0
-  # The app pod and any running cron job both hold the claims.
-  while kubectl -n nextcloud get pods -l 'app.kubernetes.io/name=nextcloud,app.kubernetes.io/component in (app,cronjob)' -o name | grep -q .; do sleep 2; done
+  # The app pod and any running cron job both hold the claims. Finished cron
+  # pods stay around for the job history, and hold nothing.
+  while kubectl -n nextcloud get pods -l 'app.kubernetes.io/name=nextcloud,app.kubernetes.io/component in (app,cronjob)' \
+    --field-selector=status.phase!=Succeeded,status.phase!=Failed -o name | grep -q .; do sleep 2; done
   kubectl apply -f hack/nextcloud-wipe.yml
   kubectl -n nextcloud wait --for=jsonpath='{.status.phase}'=Succeeded pod/nextcloud-wipe --timeout=5m
   kubectl delete -f hack/nextcloud-wipe.yml
