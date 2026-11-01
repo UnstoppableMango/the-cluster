@@ -227,18 +227,18 @@ export function narHash(files) {
 	return `sha256-${hash.digest('base64')}`;
 }
 
-const chartBlocks = (src) => src.matchAll(/downloadFluxHelmChart\s*\{[^{}]*\}/g);
+const chartBlocks = (src) => [...src.matchAll(/downloadFluxHelmChart\s*\{[^{}]*\}/g)];
 const namespaceOf = (block) => /releaseNamespace = "([^"]+)";/.exec(block)?.[1];
+const findChartBlock = (src, releaseNamespace) =>
+	chartBlocks(src).find((m) => namespaceOf(m[0]) === releaseNamespace);
 
 // crds.nix with the chartHash of the chart downloaded from releaseNamespace
 // replaced, or null when crds.nix downloads no chart from there.
 export function rewriteChartHash(src, releaseNamespace, hash) {
-	for (const m of chartBlocks(src)) {
-		if (namespaceOf(m[0]) !== releaseNamespace) continue;
-		const block = m[0].replace(/chartHash = "[^"]*";/, `chartHash = "${hash}";`);
-		return src.slice(0, m.index) + block + src.slice(m.index + m[0].length);
-	}
-	return null;
+	const m = findChartBlock(src, releaseNamespace);
+	if (!m) return null;
+	const block = m[0].replace(/chartHash = "[^"]*";/, `chartHash = "${hash}";`);
+	return src.slice(0, m.index) + block + src.slice(m.index + m[0].length);
 }
 
 // The first `key: value` line, as crds.nix's readField reads it.
@@ -278,22 +278,23 @@ async function computeChartHash(releaseNamespace) {
 }
 
 async function main(packageFiles) {
-	let src = await readFile(CRDS, 'utf8');
+	const original = await readFile(CRDS, 'utf8');
 	const namespaces = packageFiles.length
 		? packageFiles.map((f) => basename(dirname(f)))
-		: [...chartBlocks(src)].map((m) => namespaceOf(m[0])).filter(Boolean);
+		: chartBlocks(original).map((m) => namespaceOf(m[0])).filter(Boolean);
 
+	let src = original;
 	for (const ns of namespaces) {
-		if (rewriteChartHash(src, ns, '') === null) {
+		if (!findChartBlock(src, ns)) {
 			console.log(`${ns}: not downloaded by ${CRDS}, skipping`);
 			continue;
 		}
 		src = rewriteChartHash(src, ns, await computeChartHash(ns));
 	}
 
-	await writeFile(CRDS, src);
+	if (src !== original) await writeFile(CRDS, src);
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
 	await main(process.argv.slice(2));
 }
