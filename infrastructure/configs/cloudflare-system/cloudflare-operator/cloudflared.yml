@@ -7,7 +7,7 @@ spec:
   kind: Deployment
   replicas: 1
   # renovate: datasource=docker depName=cloudflare/cloudflared
-  version: 2026.10.5
+  version: 2026.10.7
   config:
     tunnelRef:
       name: thecluster-io
