@@ -28,8 +28,12 @@ spec:
         existingSecret: wishlists-allowed-emails
       # The pod network: requests arrive from the cloudflared pods the
       # Cloudflare Gateway runs, which set X-Forwarded-For and -Proto.
+      # rosequartz runs nixpkgs Kubernetes with flannel, whose pod CIDR is
+      # services.kubernetes.clusterCidr (default 10.1.0.0/16), not k3s's
+      # 10.42.0.0/16. A wrong range makes the app ignore X-Forwarded-Proto
+      # and send Google an http:// redirect URI.
       knownNetworks:
-        - 10.42.0.0/16
+        - 10.1.0.0/16
     volumes:
       - name: postgres-cert
         secret:
