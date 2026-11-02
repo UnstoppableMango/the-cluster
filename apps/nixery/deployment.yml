@@ -46,7 +46,7 @@ spec:
             # name would re-evaluate nixpkgs on every pull. See
             # docs/adr/0001-nixery.md.
             - name: NIXERY_CHANNEL
-              value: 1c89083e451e891152365b799595cf7790a43325
+              value: 0bb2eedc20e4739f29e8045034f2828ad7054f8f
             - name: PORT
               value: "8080"
             # nix-build substitutes every store path an image needs before
