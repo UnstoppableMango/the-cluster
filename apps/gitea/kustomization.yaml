@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - namespace.yml
   - certificate.yml
-  - secret-sealed.yml
+  - credentials-sealed.yml
   - pg-credentials-sealed.yml
   - helm-repository.yml
   - postgres-cluster.yml
