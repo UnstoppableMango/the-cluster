@@ -102,7 +102,7 @@ spec:
         - ReadWriteOnce
     gitea:
       admin:
-        existingSecret: gitea
+        existingSecret: gitea-credentials
       config:
         APP_NAME: The Cluster Gitea
         server:
@@ -134,7 +134,7 @@ spec:
       oauth:
         - name: GitHub
           provider: github
-          existingSecret: gitea
+          existingSecret: gitea-credentials
     postgresql:
       enabled: false
     postgresql-ha:
