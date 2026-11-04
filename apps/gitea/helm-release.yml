@@ -105,6 +105,14 @@ spec:
         existingSecret: gitea-credentials
       config:
         APP_NAME: The Cluster Gitea
+        # New accounts come only through the GitHub OAuth source below; the
+        # sign-up form stays closed, since gitea.thecluster.io is public
+        # through the Cloudflare tunnel. Auto-registration stays off, so an
+        # unknown GitHub identity gets the link-account page and can attach
+        # to an existing local account instead of always minting a new one.
+        service:
+          DISABLE_REGISTRATION: false
+          ALLOW_ONLY_EXTERNAL_REGISTRATION: true
         server:
           DOMAIN: gitea.thecluster.io
           ROOT_URL: https://gitea.thecluster.io
