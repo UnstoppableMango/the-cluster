@@ -28,21 +28,43 @@ Runner pods use the in-cluster Service. The Gateway has an HTTPS-443 listener on
 
 ## Version
 
-`apps/nix-system/deployment.yml` pins `kalbasit/ncps:v0.10.0-rc16`, a release candidate, on purpose.
+`apps/nix-system/deployment.yml` pins `kalbasit/ncps:v0.10.1`, the first stable release that serves cachix paths.
 
 Cachix serves NARs under opaque object keys (`nar/<uuid>.nar.zst`) rather than the hash-named URLs `cache.nixos.org` uses.
 The narinfo `URL:` field is an opaque path by spec, so this is valid upstream behavior, but ncps through v0.9.4 parses that filename as a nix hash and reuses it as its own storage key.
 Every cachix-backed narinfo therefore fails with `invalid nar hash` and returns HTTP 500, and nix treats a 500 as a hard error instead of falling through to the next substituter, so runner builds fail outright.
 See [kalbasit/ncps#1329](https://github.com/kalbasit/ncps/issues/1329).
+The fix landed in `v0.10.0-rc10`, and the cache ran release candidates until stable `v0.10.0` shipped, so do not go back below v0.10.
 
-The fix landed in `v0.10.0-rc10`.
-There is no v0.9 backport and no stable v0.10.0, so the RC is the only release that serves cachix paths.
-
-If the RC misbehaves, the mitigation that does not require downgrading is dropping the cachix upstreams and their `--cache-upstream-public-key` entries, leaving `cache.nixos.org` alone.
+If ncps misbehaves, the mitigation that does not require downgrading is dropping the cachix upstreams and their `--cache-upstream-public-key` entries, leaving `cache.nixos.org` alone.
 ncps then answers those paths from `cache.nixos.org` or 404s, and nix falls through to its own substituters.
 
 v0.10 renamed the serve flags (`--cache-data-path` to `--cache-storage-local`, `--upstream-cache` to `--cache-upstream-url`, `--upstream-public-key` to `--cache-upstream-public-key`) and replaced dbmate with an in-binary migration runner, so the `migrate-database` init container invokes `ncps migrate up`.
 The image carries no `/bin/dbmate`, so the image and the init container command have to move together.
+
+## Partial files
+
+`error: ... HTTP error 200 (curl error: Transferred a partial file)` in a nix log means ncps sent `200` with a `Content-Length` and then closed the connection short of it.
+ncps does that on purpose whenever its own source fails mid-response: the upstream download, the bucket read, a staged part from another replica, or the process itself.
+ncps sends no `Accept-Ranges`, so nix cannot resume and refetches the whole NAR from `cache.nixos.org`; on a large NAR (ghc, the dotnet SDKs) that throws away minutes of transfer.
+
+Three settings in `deployment.yml` exist to stop it, each commented where it is set:
+
+- the liveness probe's `timeoutSeconds` and `failureThreshold`, because a restart cuts every stream on the replica at once;
+- the memory limit with `GOMEMLIMIT` at about 80% of it, for the same reason via the OOM killer and GC thrash;
+- `--cache-cdc-chunk-wait-timeout`, because a replica tailing another's in-flight staging fails the response when the next 8 MiB part is late.
+
+Find which one fired from the restarts, then the logs around the failure time:
+
+```sh
+kubectl -n nix-system get pods -l app=ncps \
+  -o jsonpath='{range .items[*]}{.metadata.name} {.status.containerStatuses[0].restartCount} {.status.containerStatuses[0].lastState.terminated.reason} {.status.containerStatuses[0].lastState.terminated.finishedAt}{"\n"}{end}'
+kubectl -n nix-system get events --field-selector involvedObject.kind=Pod | grep -Ei 'ncps|evict|liveness|oom'
+kubectl -n nix-system logs -l app=ncps --since=48h --prefix \
+  | grep -E 'error writing the response|staging reader|Bytes copied does not match|failed to (download|store)'
+```
+
+A rising restart count with `OOMKilled`, or `Liveness probe failed` events, is a restart; `staging reader: producer stalled` is the part wait; truncations with neither point at the RGW bucket, whose data pool is erasure-coded HDD.
 
 ## Database backup and restore
 
