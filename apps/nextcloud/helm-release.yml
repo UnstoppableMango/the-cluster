@@ -115,8 +115,9 @@ spec:
             'overwrite.cli.url' => 'https://cloud.thecluster.io',
             // The pod network: requests arrive from the cloudflared pods the
             // Cloudflare Gateway runs and from the nginx Gateway, both of which
-            // set X-Forwarded-For.
-            'trusted_proxies' => array('10.42.0.0/16'),
+            // set X-Forwarded-For. rosequartz's pod CIDR (nixos NETWORK.md),
+            // not k3s's 10.42.0.0/16.
+            'trusted_proxies' => array('10.1.0.0/16'),
             'forwarded_for_headers' => array('HTTP_X_FORWARDED_FOR'),
             // Wherever cluster DNS sends office.thecluster.io, a resolver that
             // splits the horizon answers with the LAN Gateway, and Nextcloud
