@@ -48,7 +48,7 @@ spec:
         # rollout the surge pod migrates while its siblings keep serving,
         # which is why a schema change has to stay backward compatible with
         # the previous image for the length of the rollout.
-        - image: kalbasit/ncps:v0.10.0-rc16
+        - image: kalbasit/ncps:v0.10.1
           name: migrate-database
           command:
             - /bin/ncps
@@ -78,7 +78,7 @@ spec:
               value: >-
                 postgres://ncps@postgres-rw.nix-system.svc.cluster.local:5432/ncps?sslmode=verify-full&sslrootcert=/etc/ncps/postgres/ca.crt&sslcert=/etc/ncps/postgres/tls.crt&sslkey=/etc/ncps/postgres/tls.key
       containers:
-        - image: kalbasit/ncps:v0.10.0-rc16
+        - image: kalbasit/ncps:v0.10.1
           name: ncps
           command:
             - /bin/ncps
@@ -109,6 +109,16 @@ spec:
             - --cache-lock-backend=redis
             - --cache-redis-addrs=redis.nix-system.svc.cluster.local:6379
             - --cache-inflight-staging-enabled
+            # A replica serving a NAR another replica is still fetching tails
+            # it from the bucket in 8 MiB parts, and fails the response
+            # mid-body if the next part takes longer than this. The flag is
+            # named for CDC but bounds staging too. At the 30s default a part
+            # fetched upstream under ~280 KB/s, or written slowly to the HDD
+            # pool, cut the stream, and nix cannot resume without Range
+            # support, so it refetched the whole NAR from cache.nixos.org.
+            # Kept under nix's own stalled-download-timeout of 300s so ncps
+            # still reports the stall before nix gives up on its own.
+            - --cache-cdc-chunk-wait-timeout=3m
             # Without a key path ncps generates a key on first start and keeps
             # it in the `config` table of the database, so the identity every
             # consumer trusts would live or die with the database. Mounting it
@@ -180,31 +190,39 @@ spec:
             - name: SSL_CERT_DIR
               value: /etc/ncps/ca:/etc/ssl/certs
             # Lets the Go runtime collect ahead of the cgroup limit instead of
-            # getting OOM-killed mid-NAR.
+            # getting OOM-killed mid-NAR. About 80% of limits.memory, not all
+            # of it: at the full limit the GC runs flat out near the ceiling,
+            # trickling every stream on the replica, and any overshoot is an
+            # OOM kill that cuts them all. Move it with the limit.
             - name: GOMEMLIMIT
-              valueFrom:
-                resourceFieldRef:
-                  resource: limits.memory
+              value: 1600MiB
           ports:
             - containerPort: 8501
               name: http-web
+          # A replica busy streaming NARs can take more than the 1s default
+          # to answer, and a liveness restart drops every transfer it is
+          # serving, which nix sees as several partial files at once. Liveness
+          # only restarts a replica that has stayed unresponsive for a minute.
           readinessProbe:
             httpGet:
               path: /nix-cache-info
               port: http-web
             periodSeconds: 10
+            timeoutSeconds: 5
           livenessProbe:
             httpGet:
               path: /nix-cache-info
               port: http-web
             initialDelaySeconds: 30
             periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
           resources:
             requests:
               cpu: 100m
               memory: 256Mi
             limits:
-              memory: 1Gi
+              memory: 2Gi
           # 8501 is unprivileged, so ncps needs no capabilities.
           securityContext:
             allowPrivilegeEscalation: false
