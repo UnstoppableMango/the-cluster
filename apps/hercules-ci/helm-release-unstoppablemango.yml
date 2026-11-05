@@ -39,9 +39,9 @@ spec:
   values:
     existingSecret: unstoppablemango-hercules-ci-agent
     agent:
-      # 6 tasks x cores 4 = 24 threads, matched by limits.cpu. With the gaea host
-      # agent (nixos clan.nix) at the same size, that leaves about 16 of gaea's 64
-      # threads for the OSDs, the host nix-daemon and the runners.
+      # 6 tasks x cores 4 = 24 threads, matched by limits.cpu. gaea also runs
+      # the sibling pod and both accounts' host agents (nixos clan.nix), so these
+      # budgets add up against its 64 threads. Sized in UnstoppableMango/tdl#1347.
       concurrentTasks: 6
       labels:
         cluster: rosequartz
