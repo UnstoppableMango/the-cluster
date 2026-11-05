@@ -71,8 +71,10 @@ spec:
             - name: VPN_TYPE
               value: wireguard
             # https://github.com/qdm12/gluetun-wiki/blob/main/setup/options/firewall.md
+            # rosequartz's pod and service CIDRs (nixos NETWORK.md), not
+            # k3s's 10.42.0.0/16 and 10.43.0.0/16.
             - name: FIREWALL_OUTBOUND_SUBNETS
-              value: 10.42.0.0/16,10.43.0.0/16
+              value: 10.1.0.0/16,10.0.0.0/24
             - name: FIREWALL_INPUT_PORTS
               value: 8112,6881,58846
           resources:
