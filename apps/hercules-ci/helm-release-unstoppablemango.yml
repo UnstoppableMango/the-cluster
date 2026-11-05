@@ -39,7 +39,10 @@ spec:
   values:
     existingSecret: unstoppablemango-hercules-ci-agent
     agent:
-      concurrentTasks: 8
+      # 6 tasks x cores 4 = 24 threads, matched by limits.cpu. gaea also runs
+      # the sibling pod and both accounts' host agents (nixos clan.nix), so these
+      # budgets add up against its 64 threads. Sized in UnstoppableMango/tdl#1347.
+      concurrentTasks: 6
       labels:
         cluster: rosequartz
         account: unstoppablemango
@@ -64,12 +67,15 @@ spec:
     podSecurityContext:
       fsGroup: 1000
       fsGroupChangePolicy: OnRootMismatch
-    # ncps proxies cache.nixos.org, so it is the only substituter. Listing both
-    # costs two narinfo round trips per path. The tradeoff is that ncps being
-    # down stalls builds rather than slowing them.
+    # ncps proxies cache.nixos.org and is tried first. cache.nixos.org is the
+    # fallback, because ncps truncates some large NARs (toolchains a nixpkgs bump
+    # brings in). With ncps alone a truncated download fails the build; with a
+    # second substituter nix retries the path there. The cost is a second
+    # narinfo round trip for paths ncps misses.
+    # See UnstoppableMango/tdl#1350.
     extraNixConf: |
-      substituters = http://ncps.nix-system.svc.cluster.local:8501
-      extra-trusted-public-keys = ncps.thecluster.lan:pAJGNVSRmG7gCDSOAaiHDxLFUSdys5Pk0XvcJ5803Dw=
+      substituters = http://ncps.nix-system.svc.cluster.local:8501?priority=10 https://cache.nixos.org?priority=40
+      extra-trusted-public-keys = ncps.thecluster.lan:pAJGNVSRmG7gCDSOAaiHDxLFUSdys5Pk0XvcJ5803Dw= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
       # Narinfo lookups are latency-bound, not bandwidth-bound. Default is 25.
       http-connections = 128
       # Nix sees the node's core count, not the pod's CPU quota. Pin builders to
@@ -77,7 +83,7 @@ spec:
       cores = 4
     resources:
       limits:
-        cpu: "32"
+        cpu: "24"
         memory: 64Gi
       requests:
         cpu: "8"
