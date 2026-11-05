@@ -34,6 +34,14 @@ _Avoid_: vault (the name of one store's container), backend
 The program or provider that creates a secret and writes it into the secret store, so no person ever handles the value.
 _Avoid_: owner, source
 
+**Manual producer**:
+A person acting as the producer for a secret that only a web page can issue, such as a GitHub App key; they write it once, through intake or directly into the secret store, and nowhere else.
+_Avoid_: hand-copied, typed in
+
+**Intake**:
+The one path by which a value travels from the view into the secret store: a manual producer files it in Bitwarden, automation moves it into the store, and the intake copy is removed.
+_Avoid_: reverse sync, two-way sync
+
 **Consumer**:
 A workload that reads a secret from the secret store.
 

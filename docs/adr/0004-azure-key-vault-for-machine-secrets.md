@@ -22,3 +22,5 @@ The cluster's identity holds only Key Vault Secrets User.
   An age-encrypted break-glass copy of the secrets a rebuild cannot proceed without (the cluster CA, Rook's mon secret and fsid, the sealed-secrets key, the Cloudflare tunnel credentials and the other backup-critical secrets) is kept as a clan var in nixos, so losing Azure costs time, never data.
 - Workload identity through Entra replaces the sealed service-principal credential once the apiserver signs with the public issuer, and once its ES256 tokens are acceptable to Entra.
 - Bitwarden remains a one-way, human-facing view written from the store; it is never read by a workload.
+- The one exception is intake, decided in #4847: a manual producer may file a secret that only a web page can issue in Bitwarden's `Intake` collection, and the view's automation moves it into the store once and deletes the intake copy.
+  Nothing else in Bitwarden is ever read back, and the automation can write only to the vault that holds manual producers' secrets.
