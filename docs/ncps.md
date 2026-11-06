@@ -64,9 +64,16 @@ kubectl -n nix-system logs -l app=ncps --tail=-1 --since=48h --prefix \
   | grep -E 'error writing the response|staging reader|presence probe timed out|Bytes copied does not match|failed to (download|store)'
 ```
 
+For a pod whose restart count is above 0, the container before the restart kept its own logs, readable while the kubelet still holds them:
+
+```sh
+kubectl -n nix-system logs "$POD" -c ncps --previous --tail=-1 \
+  | grep -E 'error writing the response|staging reader|presence probe timed out|Bytes copied does not match|failed to (download|store)'
+```
+
 `--tail=-1` matters: with a label selector `kubectl logs` keeps only the last 10 lines of each pod, so the grep finds nothing. A replaced pod starts at restart count 0 and takes its logs with it, so check the pods' age against the failure time first.
 
-A rising restart count with `OOMKilled`, or `Liveness probe failed` events, is a restart; `staging reader: producer stalled` is the part wait; `presence probe timed out` is a bucket stat slower than `--cache-storage-stat-timeout`, which ncps answers with a 500 that nix retries; truncations with neither point at the RGW bucket, whose data pool is erasure-coded HDD.
+A rising restart count with `OOMKilled`, or `Liveness probe failed` events, is a restart; `staging reader: producer stalled` is the part wait; `presence probe timed out` is a bucket stat slower than `--cache-storage-stat-timeout`, which ncps answers with a 500 that nix retries; truncations with none of these come from the upstream download or the RGW bucket (erasure-coded HDD), and the error ncps logs at the failure time says which.
 
 ## Database backup and restore
 
