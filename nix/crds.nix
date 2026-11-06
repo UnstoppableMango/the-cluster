@@ -36,7 +36,7 @@ let
     name = "agones";
     chart = downloadFluxHelmChart {
       releaseNamespace = "agones-system";
-      chartHash = "sha256-T7tU2xghmz7MytJxYtxbZPl1yCwrIvuwekjlgQi/dAk=";
+      chartHash = "sha256-RQMD1EKhJrAokPHder2qSqtfYtQ0Ilvc84o9c6qabOU=";
     };
     includeCRDs = true;
   };
