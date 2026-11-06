@@ -119,6 +119,13 @@ spec:
             # Kept under nix's own stalled-download-timeout of 300s so ncps
             # still reports the stall before nix gives up on its own.
             - --cache-cdc-chunk-wait-timeout=3m
+            # Bounds the bucket HEAD ncps makes before serving a NAR, 5s by
+            # default. RGW regularly takes longer than that here, and a stat
+            # that runs out is a 500 to nix or, when ncps is coordinating a
+            # download, a cache miss that refetches a NAR the bucket already
+            # holds. The bound exists for proxies that cut a slow response
+            # mid-body; nothing sits between the runners and ncps.
+            - --cache-storage-stat-timeout=30s
             # Without a key path ncps generates a key on first start and keeps
             # it in the `config` table of the database, so the identity every
             # consumer trusts would live or die with the database. Mounting it
