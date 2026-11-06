@@ -73,7 +73,7 @@ kubectl -n nix-system logs "$POD" -c ncps --previous --tail=-1 \
 
 `--tail=-1` matters: with a label selector `kubectl logs` keeps only the last 10 lines of each pod, so the grep finds nothing. A replaced pod starts at restart count 0 and takes its logs with it, so check the pods' age against the failure time first.
 
-A rising restart count with `OOMKilled`, or `Liveness probe failed` events, is a restart; `staging reader: producer stalled` is the part wait; `presence probe timed out` is a bucket stat slower than `--cache-storage-stat-timeout`, which ncps answers with a 500 that nix retries; truncations with none of these come from the upstream download or the RGW bucket (erasure-coded HDD), and the error ncps logs at the failure time says which.
+A rising restart count with `OOMKilled`, or `Liveness probe failed` events, is a restart; `staging reader: producer stalled` is the part wait; `presence probe timed out` is a bucket stat slower than `--cache-storage-stat-timeout`, which ncps answers with a 500 that nix retries; truncations with none of these come from the upstream download or the RGW bucket, and the error ncps logs at the failure time says which.
 
 ## Database backup and restore
 
@@ -149,13 +149,17 @@ Three pieces, none of them a volume ncps mounts:
 
 | Piece    | Where                                                                                      | Holds                                                   |
 | -------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------- |
-| Bucket   | `ObjectBucketClaim/ncps-cache`, bucket `ncps-cache` on `CephObjectStore/s3` in `rook-ceph` | NAR bodies and in-flight staging parts                  |
+| Bucket   | `ObjectBucketClaim/ncps-cache-fast`, bucket `ncps-cache` on `CephObjectStore/s3-fast` in `rook-ceph` | NAR bodies and in-flight staging parts                  |
 | Postgres | `Cluster/postgres` (CNPG, 2 instances, `ssd-rbd`) in `nix-system`                          | narinfos, the NAR index, `last_accessed_at` for the LRU |
 | Redis    | `Deployment/redis` in `nix-system`, snapshots off, reachable from ncps pods only           | per-hash download locks and the global LRU lock         |
 
-The bucket's data pool is erasure-coded on HDD, which is why serve-during-download uses in-flight staging (`--cache-inflight-staging-enabled`) rather than CDC: CDC serves a NAR as many small chunk reads, and upstream advises against it on high-latency storage.
+The bucket lives on `CephObjectStore/s3-fast`, whose pools are replicated twice on the SSDs, all of which sit in zeus.
+It used to be on `CephObjectStore/s3`, whose data pool is erasure-coded on HDD, until slow OSDs there (170-360ms commit latency, stalled BlueStore reads) cut NAR reads short and nix saw partial files ([UnstoppableMango/tdl#1365](https://github.com/UnstoppableMango/tdl/issues/1365)).
+A zeus outage takes the cache down with it, and nix falls through to its other substituters, which is acceptable only because the cache is regenerable.
 
-The claim's credentials are Secret `ncps-cache`, written by rook, and the endpoint is the secure listener of the RGW Service, `https://rook-ceph-rgw-s3.rook-ceph.svc:443`.
+Serve-during-download uses in-flight staging (`--cache-inflight-staging-enabled`) rather than CDC, a choice made when the bucket was on HDD: CDC serves a NAR as many small chunk reads, and upstream advises against it on high-latency storage.
+
+The claim's credentials are Secret `ncps-cache-fast`, written by rook, and the endpoint is the secure listener of the RGW Service, `https://rook-ceph-rgw-s3-fast.rook-ceph.svc:443`.
 Its certificate comes from ClusterIssuer `thecluster.lan` (`infrastructure/configs/rook-ceph/storage/certificate.yml`), and ncps trusts it through ConfigMap `thecluster-lan-ca`, which the trust-manager Bundle writes into every namespace and the Deployment mounts at `/etc/ncps/ca` with `SSL_CERT_DIR` pointing there.
 Inspect the bucket from the toolbox:
 

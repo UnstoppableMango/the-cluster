@@ -1,14 +1,21 @@
-# Rook answers this claim with a Secret and a ConfigMap both named ncps-cache
-# in this namespace. The Secret carries AWS_ACCESS_KEY_ID and
+# Rook answers this claim with a Secret and a ConfigMap both named
+# ncps-cache-fast in this namespace. The Secret carries AWS_ACCESS_KEY_ID and
 # AWS_SECRET_ACCESS_KEY and is what deployment.yml reads. The ConfigMap
 # carries BUCKET_HOST and BUCKET_PORT, which ncps cannot use directly because
 # it wants a single endpoint URL with a scheme, so the endpoint is spelled
 # out in the deployment instead.
+#
+# fast-bucket is the SSD object store. The claim moved off bucket, whose data
+# is erasure-coded on HDD, after slow OSDs there truncated NAR reads
+# (UnstoppableMango/tdl#1365). A storage class cannot change on a bound
+# claim, so the claim was renamed, and the old one went with its bucket:
+# the cache refills from upstream, and ncps treats the NARs its database
+# still names as misses.
 apiVersion: objectbucket.io/v1alpha1
 kind: ObjectBucketClaim
 metadata:
-  name: ncps-cache
+  name: ncps-cache-fast
   namespace: nix-system
 spec:
   bucketName: ncps-cache
-  storageClassName: ceph-bucket
+  storageClassName: fast-bucket
