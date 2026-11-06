@@ -9,3 +9,4 @@ resources:
   - certificate.yml
   - ceph-object-store.yml
   - ceph-object-store-storage-class.yml
+  - ceph-object-store-fast.yml

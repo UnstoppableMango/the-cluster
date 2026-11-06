@@ -1,0 +1,50 @@
+# An object store on the SSDs, for buckets that serve reads on a request's
+# critical path. CephObjectStore/s3 keeps its data erasure-coded on HDD, and
+# a single slow HDD OSD there stalled ncps's reads long enough for nix to see
+# truncated NARs (UnstoppableMango/tdl#1365).
+#
+# Every SSD sits in zeus, as default-ssd.yml says, so both pools use an osd
+# failure domain and a zeus outage takes this store down. Only regenerable
+# data belongs here: a bucket that refills from somewhere else, never the
+# only copy of anything.
+apiVersion: ceph.rook.io/v1
+kind: CephObjectStore
+metadata:
+  name: s3-fast
+  namespace: rook-ceph
+spec:
+  metadataPool:
+    failureDomain: osd
+    deviceClass: ssd
+    replicated:
+      size: 2
+  dataPool:
+    failureDomain: osd
+    deviceClass: ssd
+    replicated:
+      size: 2
+  preservePoolsOnDelete: false
+  gateway:
+    # TLS only: the one consumer sends bucket credentials, and there is no
+    # Velero-style client here that needs plain HTTP.
+    securePort: 443
+    sslCertificateRef: rgw-s3-fast-tls
+    # Two, so an RGW restart does not take ncps's storage away.
+    instances: 2
+    resources:
+      limits:
+        memory: 1024Mi
+      requests:
+        cpu: 100m
+        memory: 512Mi
+---
+# fast-bucket is the tier name for this store. See docs/storage.md.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: fast-bucket
+provisioner: rook-ceph.ceph.rook.io/bucket
+reclaimPolicy: Delete
+parameters:
+  objectStoreName: s3-fast
+  objectStoreNamespace: rook-ceph

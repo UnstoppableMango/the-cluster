@@ -81,7 +81,7 @@ There is one pattern rule per top-level manifest directory rather than a bare `%
 
 - **Indentation:** 2 spaces in YAML and Nix; tabs elsewhere, per `.editorconfig` and `.dprint.json`
 - **Versions:** chart and image versions are pinned inline in the HelmRelease or manifest and bumped by Renovate.
-- **Storage classes:** a new claim picks a tier class, `fast-rwo`, `standard-rwo`, `standard-rwx`, `bulk-rwx`, or `bucket` for object storage.
+- **Storage classes:** a new claim picks a tier class, `fast-rwo`, `standard-rwo`, `standard-rwx`, `bulk-rwx`, or `bucket` (`fast-bucket` on SSD) for object storage.
   Never `unsafe-rbd`, `ssd-rbd`, `ec-cephfs`, `default-cephfs`, or `ceph-bucket`: those are deprecated aliases kept only because a bound claim's `storageClassName` is immutable.
   Copying an existing manifest carries a deprecated name along with it, so check the class before reusing one.
   The tier says how much loss the claim tolerates and whether the mount is shared; `docs/storage.md` has the pool behind each class and the replacement for each deprecated one.

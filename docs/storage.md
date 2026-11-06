@@ -6,7 +6,7 @@ This document records the pool layout, the StorageClass naming rule, and the pro
 ## StorageClass naming
 
 A StorageClass name is a tier plus an access mode, joined with a hyphen: `fast-rwo`, `standard-rwo`, `standard-rwx`, `bulk-rwx`.
-Object storage is `bucket`.
+Object storage is `bucket`, or `fast-bucket` on the SSDs.
 
 | Tier       | Promise                                        | Cost                         |
 | ---------- | ---------------------------------------------- | ---------------------------- |
@@ -27,6 +27,7 @@ A consumer chooses two things, how much loss it tolerates and whether it needs a
 | `standard-rwx` | `erasure-coded-standard` | CephFS data pool, hdd, replicated 2                   | host                       | Retain  |
 | `bulk-rwx`     | `erasure-coded-data`     | CephFS data pool, hdd, EC 2+1                         | osd                        | Retain  |
 | `bucket`       | `s3.rgw.*`               | rgw, metadata replicated 3 on ssd, data EC 2+1 on hdd | osd                        | Delete  |
+| `fast-bucket`  | `s3-fast.rgw.*`          | rgw, metadata and data replicated 2 on ssd            | osd (every SSD is in zeus) | Delete  |
 
 Pool names differ from class names where the pool predates the naming rule and holds data.
 Ceph cannot rename a pool underneath a Rook CR, and a StorageClass is only a pointer, so the class layer carries the naming and the pool layer keeps history.
