@@ -172,13 +172,22 @@ def main():
                 print("rerun with --apply to delete them", file=sys.stderr)
             return
 
+        # delete_objects reports a key it could not delete in Errors rather than
+        # raising, and that key's rows must stay so the object is not reused.
+        failed = set()
         for i in range(0, len(bad), 1000):
             batch = bad[i : i + 1000]
-            s3.delete_objects(
+            resp = s3.delete_objects(
                 Bucket=BUCKET,
                 Delete={"Objects": [{"Key": key} for _, _, key in batch], "Quiet": True},
             )
-        print(f"deleted {len(bad)} objects", file=sys.stderr)
+            for err in resp.get("Errors", []):
+                failed.add(err["Key"])
+                print(f"delete failed\t{err['Key']}\t{err.get('Code')}", file=sys.stderr)
+        bad = [b for b in bad if b[2] not in failed]
+        print(f"deleted {len(bad)} objects, {len(failed)} failed", file=sys.stderr)
+        if not bad:
+            return
 
     copy = "".join(f"{h}\t{c}\n" for h, c, _ in bad)
     out = psql(
