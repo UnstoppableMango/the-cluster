@@ -14,14 +14,16 @@ metadata:
 spec:
   instances: 2
   # CNPG applies nothing by default, so without this the postgres pods run
-  # BestEffort. Measured at 12m and 137Mi against a narinfo index this size.
+  # BestEffort. Measured at 12m idle, and a working set around 300Mi under CI
+  # load with a sampled peak of 501Mi over a week; the limit is twice that. Every
+  # backend adds to it, which is why deployment.yml caps the ncps pool.
   # No CPU limit: throttling the primary stalls every ncps replica behind it.
   resources:
     requests:
       cpu: 100m
-      memory: 256Mi
+      memory: 320Mi
     limits:
-      memory: 512Mi
+      memory: 1Gi
   # certificate.yml issues all four. Serving and client verification share one
   # CA because the client certificates chain to it, and CNPG reads the chain
   # out of the ca.crt cert-manager writes beside the certificate.
