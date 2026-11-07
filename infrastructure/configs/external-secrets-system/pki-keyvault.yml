@@ -1,0 +1,22 @@
+# The UnstoppableMango/pki Key Vault. Its rosequartz-external-secrets identity
+# holds Key Vault Secrets User on private-cert and policy-cert alone, so this
+# store cannot reach any other sub-CA's key, and only cert-manager may use it.
+#
+# external-secrets requests a token for pki-keyvault-reader itself, with the
+# api://AzureADTokenExchange audience, and Entra checks it against rosequartz's
+# public service-account issuer. No credential for it exists in this repo.
+apiVersion: external-secrets.io/v1
+kind: ClusterSecretStore
+metadata:
+  name: pki-keyvault
+spec:
+  conditions:
+    - namespaces:
+        - cert-manager
+  provider:
+    azurekv:
+      vaultUrl: https://unmango-pki-kv.vault.azure.net
+      authType: WorkloadIdentity
+      serviceAccountRef:
+        name: pki-keyvault-reader
+        namespace: external-secrets-system

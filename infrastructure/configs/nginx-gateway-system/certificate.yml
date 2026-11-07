@@ -12,7 +12,7 @@ spec:
   dnsNames:
     - nginx-gateway-fabric.nginx-gateway.svc
   issuerRef:
-    name: thecluster.io
+    name: cluster-internal
     kind: ClusterIssuer
     group: cert-manager.io
 ---
@@ -30,7 +30,7 @@ spec:
   dnsNames:
     - "*.cluster.local"
   issuerRef:
-    name: thecluster.io
+    name: cluster-internal
     kind: ClusterIssuer
     group: cert-manager.io
 ---

@@ -21,6 +21,6 @@ spec:
     - unifi-mongodb.unifi.svc.cluster.local
     - unifi-mongodb-0.unifi-mongodb.unifi.svc.cluster.local
   issuerRef:
-    name: thecluster.lan
+    name: cluster-internal
     kind: ClusterIssuer
     group: cert-manager.io

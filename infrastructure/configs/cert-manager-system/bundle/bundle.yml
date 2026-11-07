@@ -1,11 +1,31 @@
+# Fanned out as the thecluster-lan-ca ConfigMap in every namespace. It holds
+# both CAs a workload might meet: the UnMango Root CA G2, which *.thecluster.lan
+# chains to through the private CA, and the cluster-internal CA, which signs
+# in-cluster service certs. The root is public and pinned here from
+# UnstoppableMango/pki's certs/ca.pem.
 apiVersion: trust.cert-manager.io/v1alpha1
 kind: Bundle
 metadata:
   name: thecluster-lan-ca
 spec:
   sources:
+    - inLine: |
+        -----BEGIN CERTIFICATE-----
+        MIICMzCCAbqgAwIBAgIUV9BoU9SBjFYfp0NkmI8q3soT/wkwCgYIKoZIzj0EAwMw
+        VzEbMBkGA1UEAwwSVW5NYW5nbyBSb290IENBIEcyMRAwDgYDVQQKDAdVbk1hbmdv
+        MRkwFwYDVQQLDBBVbnN0b3BwYWJsZU1hbmdvMQswCQYDVQQGEwJVUzAgFw0yNjA5
+        MjIxOTU1NDlaGA8yMDUxMDkxNjE5NTU0OVowVzEbMBkGA1UEAwwSVW5NYW5nbyBS
+        b290IENBIEcyMRAwDgYDVQQKDAdVbk1hbmdvMRkwFwYDVQQLDBBVbnN0b3BwYWJs
+        ZU1hbmdvMQswCQYDVQQGEwJVUzB2MBAGByqGSM49AgEGBSuBBAAiA2IABEV85JYF
+        c/SBu5r9mDZ8GEzysXf9U4MSwF/ZEvOEVJYiHRtCxDhtZkXS7/LIfLUyJ/09ffgi
+        hvHfcPSC0HgRi0tcmHrM42N5RUU6cW+qDiytj/nbRgyysE6cBqLyX7SptKNFMEMw
+        EgYDVR0TAQH/BAgwBgEB/wIBAjAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFGq9
+        VDcajZ/XHckuuEaM8FKFwhOYMAoGCCqGSM49BAMDA2cAMGQCMClEuKiaVUM6v997
+        9Dn1M6uk3QSgR7YqUyRujSiY384v1RAj/aNAeWVuHiQb5fNFfwIwTUqQEyrAFltW
+        hOLFFAKSIL/BIoQAdmJccpMhnvKcxfavUFIoPkL4WjROhGJmKvBa
+        -----END CERTIFICATE-----
     - secret:
-        name: "thecluster.lan"
+        name: cluster-internal-ca
         key: tls.crt
   target:
     configMap:
