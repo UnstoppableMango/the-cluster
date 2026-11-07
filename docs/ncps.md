@@ -231,3 +231,33 @@ All three conditions together, so the delete cannot touch a row that is merely r
 Re-signing in place is not an option, however tempting it looks with the key in hand. The fingerprint nix signs covers the references, and those are gone; a signature computed over the gutted row would be a valid signature on a wrong closure.
 
 Deleting the rows orphans their NAR objects, which the LRU cron reclaims once the cache approaches `--cache-max-size`.
+
+## Mislabeled NARs
+
+ncps v0.10.1 has been seen storing zstd bytes under a `.nar.xz` key while the narinfo and the `nar_file` row both say xz.
+nix trusts the narinfo, tries to unpack the body as xz, and fails with `error: input compression not recognized`, followed by `path '...' is required, but there is no substituter that can build it`.
+The object never heals, so every job that substitutes the path fails the same way.
+So far it has hit small paths that only the cachix upstreams hold, which cachix serves as xz: gomod2nix Go modules and npm tarballs.
+The first one found had a `.nar.zst` sibling holding the same bytes: zstd of the uncompressed NAR, which is ncps's own form for a `Compression: none` NAR.
+Which code path writes it is not yet known; the evidence is written up for upstream in the project's `ncps/upstream-issue-xz-object-holds-zstd.md`.
+
+To check one path, fetch it through ncps and compare the first bytes with the narinfo's `Compression:`. xz starts `fd 37 7a 58 5a 00` and zstd `28 b5 2f fd`:
+
+```sh
+kubectl -n nix-system port-forward svc/ncps 8501:8501 & sleep 3
+N=$(curl -s localhost:8501/<store-path-hash>.narinfo); echo "$N" | grep -E '^(URL|Compression|FileSize):'
+curl -s localhost:8501/$(echo "$N" | awk '/^URL:/{print $2}') | head -c6 | od -An -tx1
+kill %1
+```
+
+`hack/ncps-mislabeled-nars.py` checks every xz and zstd object in the bucket the same way, by a ranged read of its first six bytes, and lists the ones that do not match.
+Back the database up first, then run it once to see the list and again with `--apply` to delete them:
+
+```sh
+nix shell nixpkgs#python3Packages.boto3 -c python3 hack/ncps-mislabeled-nars.py
+nix shell nixpkgs#python3Packages.boto3 -c python3 hack/ncps-mislabeled-nars.py --apply
+```
+
+`--apply` deletes each bad object, then its `nar_file` row and the narinfos linked to it, so the next request refetches the path from upstream.
+The objects go first because ncps reuses an object that already exists when it stores a NAR, so a row deleted ahead of its object would be refetched straight back onto the bad bytes.
+Missing and unreadable objects are listed and left alone.
