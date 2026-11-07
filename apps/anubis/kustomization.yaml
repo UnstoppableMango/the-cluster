@@ -10,3 +10,9 @@ resources:
   - grafana.yml
   - keycloak.yml
   - namespace.yml
+configMapGenerator:
+  # The hash suffix restarts the keycloak instance when its policy changes.
+  - name: anubis-keycloak-policy
+    namespace: anubis
+    files:
+      - policy.yaml=keycloak-policy.yaml

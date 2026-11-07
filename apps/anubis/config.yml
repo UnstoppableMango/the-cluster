@@ -16,5 +16,6 @@ data:
   # One pass covers every protected host: the cookie is set on the apex, and
   # every instance signs with the same key from anubis-key-sealed.yml.
   COOKIE_DOMAIN: thecluster.io
-  # No POLICY_FNAME, so the policy is upstream's default botPolicies.yaml:
-  # browser user agents are challenged, other clients and /.well-known pass.
+  # No POLICY_FNAME here, so an instance that sets none of its own gets
+  # upstream's default botPolicies.yaml: browser user agents are challenged,
+  # other clients and /.well-known pass. keycloak.yml sets its own.

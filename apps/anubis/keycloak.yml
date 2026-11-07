@@ -35,6 +35,10 @@ spec:
           env:
             - name: TARGET
               value: http://keycloak-http.keycloak.svc:80
+            # Upstream's default policy plus an allow rule for Keycloak's
+            # machine-to-machine OIDC endpoints; see keycloak-policy.yaml.
+            - name: POLICY_FNAME
+              value: /etc/anubis/policy.yaml
           ports:
             - containerPort: 8080
               name: http
@@ -56,10 +60,18 @@ spec:
               memory: 32Mi
             limits:
               memory: 128Mi
+          volumeMounts:
+            - name: policy
+              mountPath: /etc/anubis
+              readOnly: true
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
               drop: [ALL]
+      volumes:
+        - name: policy
+          configMap:
+            name: anubis-keycloak-policy
 ---
 apiVersion: v1
 kind: Service
