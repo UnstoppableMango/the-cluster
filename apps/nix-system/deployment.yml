@@ -152,6 +152,13 @@ spec:
             # upstream request count to tune against. service-monitor.yml
             # scrapes it.
             - --prometheus-enabled
+            # ncps opens up to 25 connections per replica by default, and every
+            # backend costs the primary memory against the limit in
+            # postgres-cluster.yml. Ten is twice the idle pool a replica keeps.
+            # The DSN cannot carry this: ncps drives pgx through database/sql,
+            # which sends an unknown DSN parameter such as pool_max_conns to
+            # the server as a setting, and the server rejects it.
+            - --cache-database-pool-max-open-conns=10
             # A narinfo miss is fanned out to every healthy upstream in
             # parallel and answered by the first hit, so a stalled upstream
             # costs the whole miss its timeout and holds the per-hash lock that
