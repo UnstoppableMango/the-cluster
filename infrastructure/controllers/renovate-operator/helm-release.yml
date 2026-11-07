@@ -18,7 +18,7 @@ spec:
     image:
       registry: ghcr.io # default
       repository: mogenius/renovate-operator # default
-      tag: 6.7.0@sha256:38ef72e3ccd99bf2aa8788e07362efa1b06fe793e401b86405da53c18939e471
+      tag: 6.8.0@sha256:837ca0d011609f7824c57364498d679b267130669e3cd4f693f94cef7c4addc2
     # The UI has no auth provider configured, which makes every visitor an
     # admin, so it stays unexposed (the chart's ingress, route and webhook
     # defaults are all off). Reach it with kubectl port-forward.
