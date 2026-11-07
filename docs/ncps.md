@@ -251,11 +251,14 @@ kill %1
 ```
 
 `hack/ncps-mislabeled-nars.py` checks every xz and zstd object in the bucket the same way, by a ranged read of its first six bytes, and lists the ones that do not match.
+It needs boto3, and `nix shell nixpkgs#python3Packages.boto3` does not put it on the interpreter's path, so build a Python that has it.
 Back the database up first, then run it once to see the list and again with `--apply` to delete them:
 
 ```sh
-nix shell nixpkgs#python3Packages.boto3 -c python3 hack/ncps-mislabeled-nars.py
-nix shell nixpkgs#python3Packages.boto3 -c python3 hack/ncps-mislabeled-nars.py --apply
+nix shell --impure --expr '(builtins.getFlake "nixpkgs").legacyPackages.${builtins.currentSystem}.python3.withPackages (p: [ p.boto3 ])' \
+  -c python3 hack/ncps-mislabeled-nars.py
+nix shell --impure --expr '(builtins.getFlake "nixpkgs").legacyPackages.${builtins.currentSystem}.python3.withPackages (p: [ p.boto3 ])' \
+  -c python3 hack/ncps-mislabeled-nars.py --apply
 ```
 
 `--apply` deletes each bad object, then its `nar_file` row and the narinfos linked to it, so the next request refetches the path from upstream.

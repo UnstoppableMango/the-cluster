@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Find NAR objects in the ncps bucket whose bytes do not match their extension.
+r"""Find NAR objects in the ncps bucket whose bytes do not match their extension.
 
 ncps v0.10.1 has been seen storing zstd bytes under a `.nar.xz` key while the
 narinfo and nar_file rows say xz. nix then fails the substitution with
@@ -15,8 +15,10 @@ refetched NAR, so a row deleted ahead of its object would come back bad.
 
 Run it from a machine with kubectl access to the cluster:
 
-    nix shell nixpkgs#python3Packages.boto3 -c python3 hack/ncps-mislabeled-nars.py
-    nix shell nixpkgs#python3Packages.boto3 -c python3 hack/ncps-mislabeled-nars.py --apply
+    nix shell --impure --expr '(builtins.getFlake "nixpkgs").legacyPackages.${builtins.currentSystem}.python3.withPackages (p: [ p.boto3 ])' \
+      -c python3 hack/ncps-mislabeled-nars.py
+    nix shell --impure --expr '(builtins.getFlake "nixpkgs").legacyPackages.${builtins.currentSystem}.python3.withPackages (p: [ p.boto3 ])' \
+      -c python3 hack/ncps-mislabeled-nars.py --apply
 
 Back the database up first (docs/ncps.md, "Database backup and restore").
 """
@@ -50,9 +52,10 @@ EXTENSION = {"xz": "xz", "zstd": "zst"}
 
 
 def kubectl(*args, stdin=None):
-    return subprocess.run(
-        ["kubectl", *args], input=stdin, capture_output=True, text=True, check=True
-    ).stdout
+    proc = subprocess.run(["kubectl", *args], input=stdin, capture_output=True, text=True)
+    if proc.returncode != 0:
+        sys.exit(f"kubectl {' '.join(args[:6])} failed:\n{proc.stderr.strip()}")
+    return proc.stdout
 
 
 def psql(primary, sql, stdin=None):
@@ -133,7 +136,7 @@ def main():
     args = parser.parse_args()
 
     primary = kubectl(
-        "-n", NAMESPACE, "get", "cluster", "postgres", "-o", "jsonpath={.status.currentPrimary}"
+        "-n", NAMESPACE, "get", "clusters.postgresql.cnpg.io", "postgres", "-o", "jsonpath={.status.currentPrimary}"
     ).strip()
     rows = [
         line.split("\t")
