@@ -13,11 +13,9 @@ spec:
   branch: main
   shallow: true
   stack: prod
+  # This Stack is the only thing that applies prod; vcs CI only previews.
+  # Refreshing first corrects drift, as CI's `pulumi up --refresh` used to.
   refresh: true
-  # vcs's own GitHub Actions workflow still runs `pulumi up` on every push to
-  # main. Preview only until that job is retired, so the two never race for
-  # the stack lock or apply the same change twice.
-  preview: true
   envRefs:
     PULUMI_CONFIG_PASSPHRASE:
       type: Secret
