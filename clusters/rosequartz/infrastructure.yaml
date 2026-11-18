@@ -334,6 +334,10 @@ spec:
   interval: 10m
   prune: true
   wait: true
+  # plugin-barman-cloud.yml's chart issues its TLS certificates through
+  # cert-manager, and the install fails if they can't be issued.
+  dependsOn:
+    - name: infra-cert-manager
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

@@ -1,0 +1,21 @@
+# Where postgres-cluster.yml archives WAL and base backups through
+# object-store.yml. Rook answers this claim with a Secret and a ConfigMap both
+# named postgres-backups in this namespace, and object-store.yml reads the
+# Secret's AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY, so there is nothing to
+# seal.
+#
+# bucket-retain, not bucket: deleting this claim or pruning apps-wishlists
+# must not delete the backups. A retained bucket outlives its claim, so
+# recreating the claim with the same bucketName gets it back.
+#
+# The data pool is erasure coded across zeus and gaea with an osd failure
+# domain (docs/storage.md), so this copy is not guaranteed to survive losing
+# zeus. The Velero backblaze-daily copy of the volume is the off-site one.
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: postgres-backups
+  namespace: wishlists
+spec:
+  bucketName: wishlists-postgres-backups
+  storageClassName: bucket-retain

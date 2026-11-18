@@ -1,0 +1,40 @@
+# The Barman Cloud plugin's view of object-bucket-claim.yml's bucket.
+# postgres-cluster.yml archives WAL here continuously and scheduled-backup.yml
+# adds a base backup every day, which together allow point-in-time recovery.
+# Plain HTTP to the in-cluster gateway, as harbor and Velero use, so no CA has
+# to be copied into this namespace; the traffic never leaves the cluster.
+#
+# If the first WAL push fails with an x-amz-content-sha256 error, newer boto3
+# needs AWS_REQUEST_CHECKSUM_CALCULATION and AWS_RESPONSE_CHECKSUM_VALIDATION
+# set to when_required in instanceSidecarConfiguration.env.
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: postgres-backups
+  namespace: wishlists
+spec:
+  # The household's lists are tiny, so keep plenty: long enough to cover the
+  # time between something going wrong and anyone noticing.
+  retentionPolicy: 60d
+  configuration:
+    destinationPath: s3://wishlists-postgres-backups/
+    endpointURL: http://rook-ceph-rgw-s3.rook-ceph.svc:80
+    s3Credentials:
+      accessKeyId:
+        name: postgres-backups
+        key: AWS_ACCESS_KEY_ID
+      secretAccessKey:
+        name: postgres-backups
+        key: AWS_SECRET_ACCESS_KEY
+    wal:
+      compression: gzip
+    data:
+      compression: gzip
+  # The sidecar runs in the postgres pod beside the instance.
+  instanceSidecarConfiguration:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 256Mi

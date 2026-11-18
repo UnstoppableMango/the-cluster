@@ -582,9 +582,11 @@ spec:
     - name: infra-sealed-secrets
     # certificate.yml is namespace-local Issuer and Certificate objects.
     - name: infra-cert-manager
-    # postgres-cluster.yml is a postgresql.cnpg.io Cluster.
+    # postgres-cluster.yml is a postgresql.cnpg.io Cluster, and
+    # object-store.yml is an ObjectStore from the Barman Cloud plugin chart.
     - name: infra-cnpg-system
-    # That Cluster provisions through storageClassName: fast-rwo.
+    # That Cluster provisions through storageClassName: fast-rwo, and
+    # object-bucket-claim.yml through bucket-retain.
     - name: infra-configs-rook-ceph-storage
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1

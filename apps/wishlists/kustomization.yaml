@@ -4,6 +4,9 @@ resources:
   - namespace.yml
   - certificate.yml
   - postgres-cluster.yml
+  - object-bucket-claim.yml
+  - object-store.yml
+  - scheduled-backup.yml
   - oci-repository.yml
   - helm-release.yml
   - google-sealed.yml

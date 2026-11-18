@@ -8,6 +8,19 @@ parameters:
   objectStoreName: s3
   objectStoreNamespace: rook-ceph
 ---
+# For object storage that must outlive its claim, such as backups: deleting
+# the ObjectBucketClaim, or pruning the kustomization that holds it, leaves the
+# bucket and its objects in place.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: bucket-retain
+provisioner: rook-ceph.ceph.rook.io/bucket
+reclaimPolicy: Retain
+parameters:
+  objectStoreName: s3
+  objectStoreNamespace: rook-ceph
+---
 # Deprecated: use bucket. Kept while ObjectBucketClaims reference it.
 apiVersion: storage.k8s.io/v1
 kind: StorageClass

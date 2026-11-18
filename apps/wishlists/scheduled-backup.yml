@@ -1,0 +1,19 @@
+# A daily base backup to object-store.yml. WAL alone can't be restored, so
+# point-in-time recovery needs one of these at or before the target time.
+# immediate takes the first one as soon as this lands, rather than waiting
+# for the schedule.
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: postgres-daily
+  namespace: wishlists
+spec:
+  # Six fields, seconds first: 00:30 UTC every day.
+  schedule: '0 30 0 * * *'
+  immediate: true
+  backupOwnerReference: self
+  cluster:
+    name: postgres
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io

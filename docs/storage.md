@@ -20,14 +20,15 @@ A consumer chooses two things, how much loss it tolerates and whether it needs a
 
 ## Classes and pools
 
-| StorageClass   | Pool                     | Type                                                  | Failure domain             | Reclaim |
-| -------------- | ------------------------ | ----------------------------------------------------- | -------------------------- | ------- |
-| `fast-rwo`     | `default-ssd`            | rbd, ssd, replicated 2                                | osd (every SSD is in zeus) | Delete  |
-| `standard-rwo` | `standard`               | rbd, hdd, replicated 2                                | host                       | Delete  |
-| `standard-rwx` | `erasure-coded-standard` | CephFS data pool, hdd, replicated 2                   | host                       | Retain  |
-| `bulk-rwx`     | `erasure-coded-data`     | CephFS data pool, hdd, EC 2+1                         | osd                        | Retain  |
-| `bucket`       | `s3.rgw.*`               | rgw, metadata replicated 3 on ssd, data EC 2+1 on hdd | osd                        | Delete  |
-| `fast-bucket`  | `s3-fast.rgw.*`          | rgw, metadata and data replicated 2 on ssd            | osd (every SSD is in zeus) | Delete  |
+| StorageClass    | Pool                     | Type                                                  | Failure domain             | Reclaim |
+| --------------- | ------------------------ | ----------------------------------------------------- | -------------------------- | ------- |
+| `fast-rwo`      | `default-ssd`            | rbd, ssd, replicated 2                                | osd (every SSD is in zeus) | Delete  |
+| `standard-rwo`  | `standard`               | rbd, hdd, replicated 2                                | host                       | Delete  |
+| `standard-rwx`  | `erasure-coded-standard` | CephFS data pool, hdd, replicated 2                   | host                       | Retain  |
+| `bulk-rwx`      | `erasure-coded-data`     | CephFS data pool, hdd, EC 2+1                         | osd                        | Retain  |
+| `bucket`        | `s3.rgw.*`               | rgw, metadata replicated 3 on ssd, data EC 2+1 on hdd | osd                        | Delete  |
+| `bucket-retain` | `s3.rgw.*`               | the same store as `bucket`                            | osd                        | Retain  |
+| `fast-bucket`   | `s3-fast.rgw.*`          | rgw, metadata and data replicated 2 on ssd            | osd (every SSD is in zeus) | Delete  |
 
 Pool names differ from class names where the pool predates the naming rule and holds data.
 Ceph cannot rename a pool underneath a Rook CR, and a StorageClass is only a pointer, so the class layer carries the naming and the pool layer keeps history.
@@ -37,6 +38,7 @@ Its first data pool, `erasure-coded-default`, is the replicated pool Ceph requir
 
 The shared classes are `Retain` because a shared volume holds a library that took weeks to assemble, and a deleted claim must not take the subvolume with it.
 The block classes are `Delete`; a block volume belongs to one workload and goes with it.
+`bucket-retain` is `bucket` with `Retain`, for buckets that hold backups: deleting the claim must not delete the backups.
 
 ### Deprecated classes
 
