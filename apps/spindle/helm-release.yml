@@ -36,7 +36,7 @@ spec:
         additionalContainers: []
         initContainers:
           - name: dind
-            image: docker:29.9.3-dind@sha256:7bf70dcb85c822e3fa6f2d332143e474b99147b9d7b39102b0cfe8b04a7dd61b
+            image: docker:29.10.0-dind@sha256:4bbc7223f81db790097c6dea42fb93e05b8fead4f0431fbe6ccaba6e8473201c
             # "dockerd" must come first, or the entrypoint adds its own
             # tcp://0.0.0.0:2375 bind. Loopback only, since workflow code
             # could reach an unauthenticated Docker API on the pod IP.
