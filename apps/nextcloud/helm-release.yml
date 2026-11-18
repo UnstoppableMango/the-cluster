@@ -14,7 +14,7 @@ spec:
   chart:
     spec:
       chart: nextcloud
-      version: 9.4.1
+      version: 9.4.5
       sourceRef:
         kind: HelmRepository
         name: nextcloud
@@ -29,7 +29,7 @@ spec:
     image:
       repository: library/nextcloud
       flavor: fpm-alpine
-      tag: 35.0.2-fpm-alpine
+      tag: 35.0.3-fpm-alpine
     replicaCount: 1
     nextcloud:
       host: cloud.thecluster.io
