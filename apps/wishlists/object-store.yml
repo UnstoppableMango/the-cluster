@@ -1,12 +1,3 @@
-# The Barman Cloud plugin's view of object-bucket-claim.yml's bucket.
-# postgres-cluster.yml archives WAL here continuously and scheduled-backup.yml
-# adds a base backup every day, which together allow point-in-time recovery.
-# Plain HTTP to the in-cluster gateway, as harbor and Velero use, so no CA has
-# to be copied into this namespace; the traffic never leaves the cluster.
-#
-# If the first WAL push fails with an x-amz-content-sha256 error, newer boto3
-# needs AWS_REQUEST_CHECKSUM_CALCULATION and AWS_RESPONSE_CHECKSUM_VALIDATION
-# set to when_required in instanceSidecarConfiguration.env.
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
 metadata:
