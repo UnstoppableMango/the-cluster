@@ -334,8 +334,7 @@ spec:
   interval: 10m
   prune: true
   wait: true
-  # plugin-barman-cloud.yml's chart issues its TLS certificates through
-  # cert-manager, and the install fails if they can't be issued.
+  # The barman-cloud plugin chart can't install until cert-manager issues its certificates.
   dependsOn:
     - name: infra-cert-manager
 ---

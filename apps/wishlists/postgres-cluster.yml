@@ -14,19 +14,14 @@ metadata:
   namespace: wishlists
 spec:
   instances: 1
-  # Archives WAL continuously to object-store.yml; scheduled-backup.yml takes
-  # the base backups. A restore keeps the Cluster name postgres, so the
-  # Service and the certificates in certificate.yml still match, and writes
-  # its own archive under a new serverName parameter.
+  # A restore must keep the name postgres (certificate.yml depends on it) and
+  # set a new serverName parameter, or CNPG refuses the non-empty archive.
   plugins:
     - name: barman-cloud.cloudnative-pg.io
       isWALArchiver: true
       parameters:
         barmanObjectName: postgres-backups
-  # CNPG copies these onto every object it creates, which puts the volume in
-  # Velero's backblaze-daily schedule: the only copy that leaves the house.
-  # It is crash-consistent, which Postgres recovers from like a power cut.
-  # The thecluster schedules are left out; the bucket already covers that.
+  # Puts the volume in Velero's backblaze-daily schedule, the off-site copy.
   inheritedMetadata:
     labels:
       backup.thecluster.io/schedule: daily

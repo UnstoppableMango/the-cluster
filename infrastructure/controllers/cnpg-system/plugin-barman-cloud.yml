@@ -1,10 +1,3 @@
-# The Barman Cloud plugin is how CNPG clusters back up to object storage; the
-# in-tree spec.backup.barmanObjectStore has been deprecated since CNPG 1.26.
-# It has to run in the operator's namespace, where the operator discovers it
-# by its Service. The chart issues the plugin's TLS certificates through
-# cert-manager, which is why infra-cnpg-system depends on infra-cert-manager.
-# It also installs the barmancloud.cnpg.io ObjectStore CRD that
-# apps/wishlists/object-store.yml uses.
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:

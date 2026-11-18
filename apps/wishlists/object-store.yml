@@ -4,8 +4,6 @@ metadata:
   name: postgres-backups
   namespace: wishlists
 spec:
-  # The household's lists are tiny, so keep plenty: long enough to cover the
-  # time between something going wrong and anyone noticing.
   retentionPolicy: 60d
   configuration:
     destinationPath: s3://wishlists-postgres-backups/
@@ -21,7 +19,6 @@ spec:
       compression: gzip
     data:
       compression: gzip
-  # The sidecar runs in the postgres pod beside the instance.
   instanceSidecarConfiguration:
     resources:
       requests:
