@@ -1,0 +1,28 @@
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: postgres-backups
+  namespace: wishlists
+spec:
+  retentionPolicy: 60d
+  configuration:
+    destinationPath: s3://wishlists-postgres-backups/
+    endpointURL: http://rook-ceph-rgw-s3.rook-ceph.svc:80
+    s3Credentials:
+      accessKeyId:
+        name: postgres-backups
+        key: AWS_ACCESS_KEY_ID
+      secretAccessKey:
+        name: postgres-backups
+        key: AWS_SECRET_ACCESS_KEY
+    wal:
+      compression: gzip
+    data:
+      compression: gzip
+  instanceSidecarConfiguration:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi
+      limits:
+        memory: 256Mi

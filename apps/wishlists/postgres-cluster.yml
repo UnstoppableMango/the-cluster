@@ -14,6 +14,18 @@ metadata:
   namespace: wishlists
 spec:
   instances: 1
+  # A restore must keep the name postgres (certificate.yml depends on it) and
+  # set a new serverName parameter, or CNPG refuses the non-empty archive.
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: postgres-backups
+  # Puts the volume in Velero's backblaze-daily schedule, the off-site copy.
+  inheritedMetadata:
+    labels:
+      backup.thecluster.io/schedule: daily
+      backup.thecluster.io/backblaze: 'true'
   # CNPG applies nothing by default, so without this the pod runs BestEffort.
   # Not measured yet; sized from the ncps database, which holds far more.
   resources:
