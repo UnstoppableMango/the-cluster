@@ -62,7 +62,7 @@ let
     name = "cloudnative-pg";
     chart = downloadFluxHelmChart {
       releaseNamespace = "cnpg-system";
-      chartHash = "sha256-VWDikb5gw9s35yZYk3BqcojQtEE/b3gdDN6TCcJXzZ4=";
+      chartHash = "sha256-bAXSXQ4UWe2v8eXtUcYbc+LFv5FUpV4vd5vkLVID/Lk=";
     };
     includeCRDs = true;
   };
