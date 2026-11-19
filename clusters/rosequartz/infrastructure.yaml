@@ -272,6 +272,43 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: infra-velero
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/controllers/velero-system
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # The node agent's data mover snapshots through the ceph-rbd VolumeSnapshotClass.
+    - name: infra-configs-rook-ceph-snapshots
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-configs-velero
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/configs/velero-system
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # The chart installs the CRDs these objects use.
+    - name: infra-velero
+    - name: infra-sealed-secrets
+    # object-bucket-claim.yml provisions through bucket-retain.
+    - name: infra-configs-rook-ceph-storage
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: infra-configs-rook-ceph-dashboard
   namespace: flux-system
 spec:

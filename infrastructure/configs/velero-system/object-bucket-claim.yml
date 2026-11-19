@@ -5,4 +5,4 @@ metadata:
   namespace: velero-system
 spec:
   bucketName: velero
-  storageClassName: ceph-bucket
+  storageClassName: bucket-retain
