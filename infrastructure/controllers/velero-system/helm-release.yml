@@ -32,6 +32,9 @@ spec:
                   - key: kubernetes.io/hostname
                     operator: In
                     values: [ zeus, gaea ]
+      # node-agent-config.yml keeps data mover pods on these same nodes.
+      extraArgs:
+        - --node-agent-configmap=node-agent-config
       resources:
         limits:
           cpu: 100m
@@ -72,6 +75,17 @@ spec:
       capabilities:
         drop: [ ALL ]
       readOnlyRootFilesystem: true
+    # The kopia repository writes here when backups expire or are deleted.
+    extraVolumes:
+      - name: udmrepo
+        emptyDir: {}
+      - name: cache
+        emptyDir: {}
+    extraVolumeMounts:
+      - name: udmrepo
+        mountPath: /home/cnb/udmrepo
+      - name: cache
+        mountPath: /home/cnb/.cache
     credentials:
       useSecret: false
     configuration:

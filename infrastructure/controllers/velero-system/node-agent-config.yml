@@ -1,0 +1,19 @@
+# A data mover pod only finds a node agent on the nodes the DaemonSet runs on.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: node-agent-config
+  namespace: velero-system
+data:
+  node-agent-config.json: |
+    {
+      "loadAffinity": [
+        {
+          "nodeSelector": {
+            "matchExpressions": [
+              { "key": "kubernetes.io/hostname", "operator": "In", "values": ["zeus", "gaea"] }
+            ]
+          }
+        }
+      ]
+    }
