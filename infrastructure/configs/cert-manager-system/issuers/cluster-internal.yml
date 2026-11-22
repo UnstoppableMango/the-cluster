@@ -1,0 +1,48 @@
+# The CA for in-cluster service certificates: Service names, *.svc,
+# *.cluster.local, and client certs between workloads. It is self-signed and
+# lives only in the cluster, because those names fall outside the private CA's
+# name constraints, and nothing outside the cluster has a reason to trust them.
+# Workloads trust it through the thecluster-lan-ca Bundle.
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cluster-internal-ca
+  namespace: cert-manager
+spec:
+  isCA: true
+  commonName: THECLUSTER Internal CA
+  subject:
+    countries:
+      - US
+    organizations:
+      - UnMango
+    organizationalUnits:
+      - UnstoppableMango
+  secretName: cluster-internal-ca
+  duration: 87600h # 10y
+  renewBefore: 8760h # 1y
+  privateKey:
+    algorithm: ECDSA
+    size: 384
+    # Keeping the key across a renewal keeps every issued cert verifying
+    # against the copy of the CA a client already holds.
+    rotationPolicy: Never
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: selfsigned
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: cluster-internal
+spec:
+  ca:
+    secretName: cluster-internal-ca

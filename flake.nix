@@ -59,7 +59,6 @@
               kubeseal
               nixfmt-tree
               nurl
-              pulumi-bin
               shellcheck
               velero
               watchexec
