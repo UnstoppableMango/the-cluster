@@ -5,8 +5,8 @@ let
     hash = "sha256-S2CT0keRjHTiGi+ycdruR90I6r/VFaad0Mc+YvM/K/E=";
   };
   flux2Schemas = pkgs.fetchurl {
-    url = "https://github.com/fluxcd/flux2/releases/download/v2.10.0/crd-schemas.tar.gz";
-    hash = "sha256-odZDCdCWXvaB8WHOLSihpYqngjnW9elOpuVWtWdM/vs=";
+    url = "https://github.com/fluxcd/flux2/releases/download/v2.10.1/crd-schemas.tar.gz";
+    hash = "sha256-INuQBZ+U1DQWneJ5460c06Q3jGiO4sImDy7D18qxy+U=";
   };
   # https://github.com/fluxcd/flux2-kustomize-helm-example/blob/main/scripts/validate.sh#L95C1-L100
   crdSchemas = pkgs.runCommand "flux-crd-schemas" { } ''
