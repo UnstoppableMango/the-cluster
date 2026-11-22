@@ -8,8 +8,6 @@ spec:
   template:
     storageLocation: backblaze
     snapshotVolumes: true
-    volumeSnapshotLocations:
-      - backblaze
     snapshotMoveData: true
     datamover: velero
     ttl: 168h0m0s # 7 days
@@ -28,8 +26,6 @@ spec:
   template:
     storageLocation: backblaze
     snapshotVolumes: true
-    volumeSnapshotLocations:
-      - backblaze
     snapshotMoveData: true
     datamover: velero
     ttl: 672h0m0s # 4 weeks
@@ -48,8 +44,6 @@ spec:
   template:
     storageLocation: thecluster
     snapshotVolumes: true
-    volumeSnapshotLocations:
-      - thecluster
     snapshotMoveData: true
     datamover: velero
     ttl: 168h0m0s # 7 days
@@ -68,8 +62,6 @@ spec:
   template:
     storageLocation: thecluster
     snapshotVolumes: true
-    volumeSnapshotLocations:
-      - thecluster
     snapshotMoveData: true
     datamover: velero
     ttl: 672h0m0s # 4 weeks

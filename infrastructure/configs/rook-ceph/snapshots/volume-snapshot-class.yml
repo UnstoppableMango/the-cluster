@@ -2,7 +2,8 @@ apiVersion: snapshot.storage.k8s.io/v1
 kind: VolumeSnapshotClass
 metadata:
   name: ceph-rbd
-  annotations:
+  # Velero selects the class by this label; as an annotation it is ignored.
+  labels:
     velero.io/csi-volumesnapshot-class: "true"
 driver: rook-ceph.rbd.csi.ceph.com
 deletionPolicy: Delete
@@ -15,7 +16,7 @@ apiVersion: snapshot.storage.k8s.io/v1
 kind: VolumeSnapshotClass
 metadata:
   name: ceph-cephfs
-  annotations:
+  labels:
     velero.io/csi-volumesnapshot-class: "true"
 driver: rook-ceph.cephfs.csi.ceph.com
 deletionPolicy: Delete
