@@ -15,12 +15,13 @@ metadata:
 spec:
   instances: 1
   # A restore must keep the name postgres (certificate.yml depends on it) and
-  # set a new serverName parameter, or CNPG refuses the non-empty archive.
+  # bump serverName, or CNPG refuses the non-empty archive.
   plugins:
     - name: barman-cloud.cloudnative-pg.io
       isWALArchiver: true
       parameters:
         barmanObjectName: postgres-backups
+        serverName: postgres-r1
   # Puts the volume in Velero's backblaze-daily schedule, the off-site copy.
   inheritedMetadata:
     labels:
@@ -52,6 +53,14 @@ spec:
     storageClass: fast-rwo
     size: 5Gi
   bootstrap:
-    initdb:
+    recovery:
+      source: origin
       database: wishlists
       owner: wishlists
+  externalClusters:
+    - name: origin
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: postgres-backups
+          serverName: postgres
