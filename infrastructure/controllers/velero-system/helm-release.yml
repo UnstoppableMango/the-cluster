@@ -75,6 +75,9 @@ spec:
     credentials:
       useSecret: false
     configuration:
+      # Without it Velero tries the AWS plugin's native snapshotter on Ceph
+      # volumes and silently backs up no data.
+      features: EnableCSI
       backupStorageLocation: []
       volumeSnapshotLocation: []
       defaultBackupStorageLocation: thecluster
