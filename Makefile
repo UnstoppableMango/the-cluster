@@ -29,11 +29,6 @@ hack/secrets/infrastructure/configs/cert-manager-system/ca.yml:
 	@mkdir -p $(@D)
 	PKI_STACK=$(PKI_STACK) hack/pki-ca-secret.sh $@
 
-.PHONY: hack/secrets/infrastructure/configs/velero-system/ceph-credentials.yml
-hack/secrets/infrastructure/configs/velero-system/ceph-credentials.yml:
-	@mkdir -p $(@D)
-	hack/velero-ceph-credentials.sh $@
-
 # One rule per top-level manifest directory rather than a bare `%-sealed.yml`.
 # GNU make matches a target pattern containing no slash against the file name
 # alone and prepends the target's own directory to the prerequisites, so a bare

@@ -303,6 +303,8 @@ spec:
     # The chart installs the CRDs these objects use.
     - name: infra-velero
     - name: infra-sealed-secrets
+    # ceph-credentials.yml is a SecretStore and ExternalSecret.
+    - name: infra-external-secrets
     # object-bucket-claim.yml provisions through bucket-retain.
     - name: infra-configs-rook-ceph-storage
 ---
