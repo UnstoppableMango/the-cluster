@@ -93,7 +93,7 @@ spec:
       concurrencyPolicy: Forbid
       initContainers:
         - name: github-app-auth
-          image: oven/bun:1.4.4
+          image: oven/bun:1.4.5
           env:
             - name: GITHUB_APP_ID
               valueFrom:
