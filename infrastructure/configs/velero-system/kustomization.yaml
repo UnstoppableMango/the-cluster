@@ -4,6 +4,6 @@ resources:
   - object-bucket-claim.yml
   - backup-storage-location.yml
   - backblaze-credentials-sealed.yml
-  - ceph-credentials-sealed.yml
+  - ceph-credentials.yml
   - schedules.yml
   - volume-snapshot-location.yml

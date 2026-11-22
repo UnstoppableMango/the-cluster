@@ -63,6 +63,9 @@ external-secrets (`infrastructure/controllers/external-secrets-system`) pulls Se
 Give each backend its own store, authenticated by an identity that can read only the secrets its consumers need, and restrict it with `spec.conditions` to the namespaces that use it.
 The store's credentials are the one thing sealed, as a SealedSecret beside the store in `external-secrets-system`.
 A Flux Kustomization holding an `ExternalSecret` depends on `infra-configs-external-secrets`.
+Never seal a credential the cluster already generates, such as an ObjectBucketClaim's keys, even when the consumer needs it in another shape.
+Reshape it in place with a namespace-local `SecretStore` on the `kubernetes` provider, authenticated by a ServiceAccount whose Role can `get` only the source Secret, and an `ExternalSecret` whose `target.template` renders the shape the consumer wants.
+`infrastructure/configs/velero-system/ceph-credentials.yml` is the example; its Kustomization depends on `infra-external-secrets` for the CRDs, since it needs no cluster store.
 
 ### Sealing and unsealing
 
