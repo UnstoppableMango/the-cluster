@@ -17,6 +17,14 @@ spec:
   # Refreshing first corrects drift, as CI's `pulumi up --refresh` used to.
   refresh: true
   envRefs:
+    # Refresh runs the program, so providers read their credentials from
+    # Pulumi.prod.yaml. Without it, refresh configures them from the inputs
+    # saved in state, and after a token rotation every read fails with the old
+    # token before the up that would save the new one.
+    PULUMI_RUN_PROGRAM:
+      type: Literal
+      literal:
+        value: "true"
     PULUMI_CONFIG_PASSPHRASE:
       type: Secret
       secret:
