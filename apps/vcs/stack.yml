@@ -15,7 +15,9 @@ spec:
   stack: prod
   # This Stack is the only thing that applies prod; vcs CI only previews.
   # Refreshing first corrects drift, as CI's `pulumi up --refresh` used to.
-  refresh: true
+  # Off for one up: refresh reads gomod2nix-no-ifd with the revoked token saved
+  # in its state, and only an up saves the new one. Turn back on once applied.
+  refresh: false
   envRefs:
     # Refresh runs the program, so providers read their credentials from
     # Pulumi.prod.yaml. Without it, refresh configures them from the inputs
