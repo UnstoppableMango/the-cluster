@@ -24,7 +24,7 @@ spec:
     image:
       registry: ghcr.io # default
       repository: renovatebot/renovate # default
-      tag: 44.257.9
+      tag: 44.258.0
     renovate:
       configIsJavaScript: true
       config: |
