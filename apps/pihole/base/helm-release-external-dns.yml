@@ -47,6 +47,7 @@ spec:
       - ingress
       - gateway-httproute
     interval: 30m
+    # https://kubernetes-sigs.github.io/external-dns/latest/docs/tutorials/pihole/#arguments
     env:
       - name: EXTERNAL_DNS_PIHOLE_PASSWORD
         valueFrom:
@@ -114,6 +115,7 @@ spec:
       - ingress
       - gateway-httproute
     interval: 30m
+    # https://kubernetes-sigs.github.io/external-dns/latest/docs/tutorials/pihole/#arguments
     env:
       - name: EXTERNAL_DNS_PIHOLE_PASSWORD
         valueFrom:

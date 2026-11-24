@@ -15,6 +15,7 @@ spec:
         app.kubernetes.io/name: copyparty
     spec:
       containers:
+        # https://github.com/9001/copyparty/tree/hovudstraum/scripts/docker
         - name: copyparty
           image: ghcr.io/9001/copyparty-ac:1.20.28
           ports:

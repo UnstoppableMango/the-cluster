@@ -16,6 +16,7 @@ spec:
         kind: HelmRepository
         name: codecentric
   values:
+    # https://github.com/codecentric/helm-charts/tree/master/charts/keycloakx#configuration
     fullnameOverride: keycloak
     image:
       repository: quay.io/keycloak/keycloak

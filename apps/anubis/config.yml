@@ -1,3 +1,4 @@
+# https://anubis.techaro.lol/docs/admin/installation#environment-variables
 # Shared by every instance; an instance sets only TARGET.
 apiVersion: v1
 kind: ConfigMap

@@ -20,6 +20,7 @@ spec:
         runAsGroup: 1000
         fsGroup: 1000
       containers:
+        # https://github.com/9001/copyparty/tree/hovudstraum/scripts/docker
         - name: copyparty
           image: ghcr.io/9001/copyparty-ac:1.20.28
           ports:
