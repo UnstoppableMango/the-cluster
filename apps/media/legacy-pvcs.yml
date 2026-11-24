@@ -1,5 +1,5 @@
-# Claims reserving imported ceph volumes whose original PVC name is unknown.
-# Rename once the volume contents identify the workload it belonged to.
+# Imported ceph volumes whose original PVC name is unknown.
+# TODO: rename once the contents identify the workload.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

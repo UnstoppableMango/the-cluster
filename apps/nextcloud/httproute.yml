@@ -1,7 +1,5 @@
-# One hostname, two ways in: the Cloudflare Gateway's tunnel from anywhere, and
-# the nginx Gateway directly on the LAN, where pihole resolves the name to it.
-# See docs/adr/0002-nextcloud-one-hostname-split-dns.md. Tailscale becomes a
-# third parentRef here, not a third hostname.
+# One hostname: the Cloudflare tunnel from anywhere, the nginx Gateway on the
+# LAN. See docs/adr/0002-nextcloud-one-hostname-split-dns.md.
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:

@@ -51,9 +51,7 @@ spec:
           value: http://deemix:6595
         - name: OAUTH2_PROXY_HTTP_ADDRESS
           value: http://0.0.0.0:4180
-        # NOTE: deemix's external hostname could not be resolved from the stale
-        # Pulumi stack config (no `hosts` config value was set) - verify against
-        # the actual intended hostname before applying.
+        # TODO: confirm the intended hostname.
         - name: OAUTH2_PROXY_REDIRECT_URL
           value: https://deemix.thecluster.io/oauth2/callback
         - name: OAUTH2_PROXY_CODE_CHALLENGE_METHOD
@@ -67,7 +65,7 @@ spec:
         - name: OAUTH2_PROXY_REVERSE_PROXY
           value: "true"
         - name: OAUTH2_PROXY_PASS_USER_HEADERS
-          value: "true" # Not passing them for some reasons...
+          value: "true"
         - name: OAUTH2_PROXY_EMAIL_DOMAINS
           value: "*"
         - name: OAUTH2_PROXY_SKIP_PROVIDER_BUTTON

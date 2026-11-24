@@ -6,43 +6,25 @@ chartRef:
 # Interval applied to all generated HelmReleases
 interval: 10m
 
-# GitHub name every scale set registers under, i.e. the `runs-on` label. The
-# upstream chart derives the AutoscalingRunnerSet object name from this value,
-# so sharing it across scale sets is only safe because each one gets its own
-# namespace — see templates/_helpers.tpl.
+# The `runs-on` label every scale set registers under. Sharing it is safe only
+# because each scale set gets its own namespace; see templates/_helpers.tpl.
 runnerScaleSetName: thecluster
 
-# Defaults merged into every HelmRelease's values block.
-# These are gha-runner-scale-set values — anything valid there works here.
-# namespaceOverride and runnerScaleSetName are set by the chart and cannot be
-# overridden per entry.
+# Defaults merged into every HelmRelease's values block. Any gha-runner-scale-set
+# value works here, except namespaceOverride and runnerScaleSetName, which the
+# chart sets.
 #
-# githubConfigSecret names a Secret this chart does not create. It has to exist
-# in every namespace the chart renders, which is what
-# `make apps/arc-runners/thecluster-bot-sealed.yml` produces.
+# githubConfigSecret must exist in every rendered namespace; see
+# `make apps/arc-runners/thecluster-bot-sealed.yml`.
 defaults:
   githubConfigSecret: thecluster-bot
   template:
     spec:
-      # Makes gid 1001 the group owner of the nix volume below and adds it to
-      # the runner process's supplementary groups. init-nix then hands that
-      # volume to the runner outright; an entry that brings CSI volumes of its
-      # own, as apps/arc-runners does with work, relies on the same setting.
       securityContext:
         fsGroup: 1001
       initContainers:
-        # The image ships /nix as an empty directory owned by the runner, but a
-        # volume mounted over it brings its own ownership. Kubelet leaves a CSI
-        # volume root:fsGroup 2775, and the setgid bit propagates into every
-        # directory nix creates under it, store paths and build directories
-        # alike. Hand the mount to the runner instead, mode 0755, so it matches
-        # the empty /nix the image ships. Not recursive: the volume is ephemeral
-        # and holds only lost+found here. The upstream chart appends these after
-        # the dind ones.
-        #
-        # The mode is five digits because a numeric chmod of four digits or
-        # fewer preserves a directory's setuid and setgid bits; 00755 is what
-        # actually clears the setgid.
+        # A CSI volume comes up root:fsGroup 2775, and the setgid bit leaks into every
+        # store path. Five digits, because a four-digit chmod keeps setgid.
         - name: init-nix
           image: ghcr.io/unmango/actions-runner:2.338.2@sha256:405ea8d424026dc4f4ead3c0e1f3fc425ec7789e99dcf9dd23e4fbcdca827eaa
           command: [sh, -c, 'chown runner:runner /nix && chmod 00755 /nix']
@@ -58,18 +40,10 @@ defaults:
             - name: nix
               mountPath: /nix
       containers:
-        # The image ships /nix empty and its nix.conf sets `store = local`, so
-        # the store and nix's build directory land on whatever is mounted there
-        # rather than on the container's overlayfs. Its nix, gnumake and xz are
-        # static copies in /usr/local/bin with their store references nuked, so
-        # they keep working with the volume over /nix.
         - name: runner
           image: ghcr.io/unmango/actions-runner:2.338.2@sha256:405ea8d424026dc4f4ead3c0e1f3fc425ec7789e99dcf9dd23e4fbcdca827eaa
           command: [/home/runner/run.sh]
           env:
-            # ncps binary cache, reachable in-cluster only. The image's nix is
-            # daemonless, so there is no daemon to gate these against a
-            # trusted-users list and every setting here applies as written.
             - name: NIX_CONFIG
               value: |
                 extra-substituters = http://ncps.nix-system.svc.cluster.local:8501
@@ -77,26 +51,13 @@ defaults:
           volumeMounts:
             - name: work
               mountPath: /home/runner/_work
-            # Left unmounted, nix's build directory is the container's overlayfs
-            # layer, where nix fails to tear down a build directory it just
-            # emptied:
-            #
+            # On the overlayfs layer nix fails to remove build directories:
             #   error: cannot unlink ".../project/.git": Directory not empty
-            #
-            # It bites the derivations that write many small files, treefmt's
-            # `git init && git add .` check being the reliable one.
             - name: nix
               mountPath: /nix
       volumes:
-        # Left unmounted, /home/runner/_work is the container's writable overlay
-        # layer, so a checkout, its build outputs and any docker context land on
-        # the node's root disk unbounded.
-        #
-        # Both halves have to be spelled out because nothing here sets
-        # containerMode. Upstream only falls back to an emptyDir work volume
-        # under containerMode dind or kubernetes, and only its dind runner
-        # container appends the /home/runner/_work mount to a runner that omits
-        # one; the default-mode container passes volumeMounts through as given.
+        # Without a volume, _work lands on the node's root disk unbounded. Upstream adds
+        # one only under containerMode dind or kubernetes.
         - name: work
           ephemeral:
             volumeClaimTemplate:
@@ -106,20 +67,8 @@ defaults:
                 resources:
                   requests:
                     storage: 5Gi
-        # An emptyDir does not work here. Kubelet creates one mode 0777, and nix
-        # refuses a build directory with a world-writable ancestor. A CSI volume
-        # comes up 2775 root:fsGroup, which init-nix then narrows to 0755
-        # runner:runner.
-        #
-        # 20Gi against a measured 8.7Gi and 3712 paths for one full realisation
-        # of the-cluster's devShell; an idle runner holds 20K and a tdl runner
-        # mid-job held 4.2Gi. 10Gi is not enough: pulumi and its provider
-        # plugins run a devShell out of space partway.
-        #
-        # fast-rwo is thin-provisioned, so the request is a ceiling rather than
-        # an allocation, but the ceiling is what a burst multiplies: the fan-out
-        # in #4436 put 39 of these on one node, and 39 of the old 75Gi
-        # overcommits the whole default-ssd pool.
+        # Not an emptyDir: kubelet makes those 0777, and nix refuses a world-writable
+        # ancestor of a build directory.
         - name: nix
           ephemeral:
             volumeClaimTemplate:
@@ -130,28 +79,21 @@ defaults:
                   requests:
                     storage: 20Gi
 
-# One entry per scale set. Each is merged with defaults (entry wins on conflict).
-# Required per entry: name, githubConfigUrl
-# Optional per entry: helmReleaseName (defaults to name), namespace (defaults to
-# arc-<name>, dots and underscores replaced with dashes), nixStorageSize
-# All other gha-runner-scale-set values are valid (minRunners, containerMode, template, etc.)
+# One entry per scale set, merged over defaults (entry wins).
+# Required: name, githubConfigUrl.
+# Optional: helmReleaseName (defaults to name), namespace (defaults to arc-<name>,
+# dots and underscores replaced with dashes), nixStorageSize, and any
+# gha-runner-scale-set value.
 #
-# nixStorageSize sizes the nix volume alone. The merge replaces lists wholesale,
-# so without it an entry needing a different store size restates every volume the
-# defaults declare. The template consumes it; it does not reach rendered values.
+# nixStorageSize sizes the nix volume without restating the volumes list.
 #
-# Careful: mergeOverwrite replaces lists wholesale, so an entry that supplies its
-# own template.spec.containers drops the defaults above, including command, the
-# NIX_CONFIG substituter and the /nix volumeMount; one that supplies its own
-# template.spec.volumes drops the work volume and the nix volume that mount
-# refers to, leaving _work on the container's overlay layer; one that
-# supplies its own template.spec.initContainers drops init-nix. Repeat whichever
-# list you override, resources included, or the entry runs unsized.
+# mergeOverwrite replaces lists wholesale. An entry that supplies
+# template.spec.containers, volumes or initContainers drops the defaults in that
+# list, resources included, so repeat whichever list you override.
 #
-# containerMode: dind renders its own init-dind-externals and dind containers
-# and discards any the values supply, which leaves those two with no resources.
-# Spell the dind wiring out under template.spec instead, as
-# apps/arc-runners/helm-release.yml does.
+# containerMode: dind discards the values' init-dind-externals and dind
+# containers, leaving them unsized. Spell dind out under template.spec instead,
+# as apps/arc-runners/helm-release.yml does.
 scaleSets: []
 # - name: dotfiles
 #   githubConfigUrl: https://github.com/UnstoppableMango/dotfiles

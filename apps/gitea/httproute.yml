@@ -18,8 +18,6 @@ spec:
         - name: gitea-http
           port: 3000
 ---
-# gitea.thecluster.io from anywhere, through the Cloudflare Gateway's gitea
-# listener, which writes the tunnel rule and the CNAME for it.
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:

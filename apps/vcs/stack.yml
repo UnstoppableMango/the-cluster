@@ -1,7 +1,5 @@
-# Runs the UnstoppableMango/vcs Pulumi program (GitHub and GitLab repos as code).
-# State lives in the B2 bucket named by the program's Pulumi.yaml, and the
-# provider tokens are passphrase-encrypted in its Pulumi.prod.yaml, so the only
-# credentials here are the bucket key and the passphrase.
+# Provider tokens are encrypted in the program's Pulumi.prod.yaml, so the only
+# credentials here are the state bucket key and the passphrase.
 apiVersion: pulumi.com/v1
 kind: Stack
 metadata:
@@ -13,14 +11,10 @@ spec:
   branch: main
   shallow: true
   stack: prod
-  # This Stack is the only thing that applies prod; vcs CI only previews.
-  # Refreshing first corrects drift, as CI's `pulumi up --refresh` used to.
+  # The only thing that applies prod; vcs CI only previews.
   refresh: true
   envRefs:
-    # Refresh runs the program, so providers read their credentials from
-    # Pulumi.prod.yaml. Without it, refresh configures them from the inputs
-    # saved in state, and after a token rotation every read fails with the old
-    # token before the up that would save the new one.
+    # Without this, refresh uses the token saved in state, which fails after a rotation.
     PULUMI_RUN_PROGRAM:
       type: Literal
       literal:
@@ -42,12 +36,9 @@ spec:
         key: AWS_SECRET_ACCESS_KEY
   workspaceTemplate:
     spec:
-      # pulumi/pulumi images ship no bun, which is the program's runtime. This
-      # one is built in unmango/containers for the restricted workspace
-      # profile: uid 1000 with a writable HOME.
+      # pulumi/pulumi images ship no bun.
       image: ghcr.io/unmango/pulumi:3.255.0-bun
-      # Unmeasured starting point: bun install plus the github and gitlab
-      # provider plugins. Revisit once a few runs have been observed.
+      # TODO: size from measured runs.
       resources:
         limits:
           memory: 1536Mi
@@ -56,7 +47,6 @@ spec:
           memory: 512Mi
       podTemplate:
         spec:
-          # The operator leaves its own init containers unsized.
           initContainers:
             - name: bootstrap
               resources:
@@ -72,7 +62,6 @@ spec:
                 requests:
                   cpu: 10m
                   memory: 64Mi
-          # The CRD requires this list. Naming the operator's own container
-          # merges into it and changes nothing.
+          # The CRD requires this list; naming the operator's container changes nothing.
           containers:
             - name: pulumi

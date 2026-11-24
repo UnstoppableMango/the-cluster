@@ -14,36 +14,26 @@ spec:
       labels:
         app.kubernetes.io/name: ramworld
     spec:
-      # The save directory is a tmpfs, so the pod cannot move without losing
-      # whatever has not reached the claim yet, and the 18Gi memory limit is
-      # more than the pi nodes have in total.
+      # The tmpfs save directory loses unsynced data on a move, and no Pi has 18Gi.
       nodeSelector:
         kubernetes.io/hostname: gaea
-      # The game saves on rcon shutdown and the sync sidecar mirrors that save
-      # afterwards. The default 30s does not reliably cover both.
+      # Covers the rcon shutdown save plus the sidecar's final sync.
       terminationGracePeriodSeconds: 120
       initContainers:
-        # Seeds the ramdisk from the durable copy of Pal/Saved. A first-ever
-        # start finds it empty and the game generates a new world.
         - name: restore
           image: docker.io/instrumentisto/rsync-ssh:alpine3.23-r3
           command:
             - sh
             - -c
-            # rsync restores ownership from the claim, which is root-owned
-            # before the first sync, so chown afterwards or the game cannot
-            # write as PUID 1000.
+            # The claim is root-owned before the first sync.
             - |
               set -eu
               rsync -a --delete /mirror/ /save/
               chown -R 1000:1000 /save
           securityContext:
             runAsUser: 0
-          # Pages written into a tmpfs are charged to the cgroup that writes
-          # them, so this limit has to cover the whole ramdisk, not just
-          # rsync's file list. A limit below sizeLimit makes restore OOM part
-          # way through seeding. It costs nothing in scheduling: a plain init
-          # container is max()'d against the running containers, not summed.
+          # tmpfs pages are charged to the writer, so this must cover sizeLimit or
+          # restore OOMs. Init container limits are max()'d, not summed.
           resources:
             requests:
               cpu: 10m
@@ -56,18 +46,15 @@ spec:
             - name: data
               mountPath: /mirror
               subPath: palworld/Pal/Saved
-        # A native sidecar, not an ordinary container: kubelet stops ordinary
-        # containers first and sidecars after, so the SIGTERM handler below
-        # runs once the game has already written its shutdown save.
+        # A native sidecar stops after the game, so its SIGTERM handler syncs the
+        # shutdown save.
         - name: sync
           image: docker.io/instrumentisto/rsync-ssh:alpine3.23-r3
           restartPolicy: Always
           command:
             - sh
             - -c
-            # sleep runs in the background and is waited on so a SIGTERM
-            # arriving mid-interval flushes immediately instead of sitting out
-            # the remaining five minutes.
+            # Backgrounded so a SIGTERM mid-interval flushes at once.
             - |
               set -eu
               mirror() { rsync -a --delete /save/ /mirror/; }
@@ -79,10 +66,8 @@ spec:
               done
           securityContext:
             runAsUser: 0
-          # Only reads the ramdisk, whose pages restore already paid for, and
-          # writes to the claim, where page cache is reclaimable. So unlike
-          # restore this does not need to cover sizeLimit. It is a sidecar, so
-          # this limit is summed into the pod.
+          # Unlike restore, this need not cover sizeLimit: it only reads the ramdisk.
+          # Sidecar limits are summed into the pod.
           resources:
             requests:
               cpu: 10m
@@ -149,13 +134,9 @@ spec:
             - name: rest
               containerPort: 8212
               protocol: TCP
-          # No CPU limit: throttling drops server ticks, and
-          # WORKER_THREADS_SERVER already bounds the thread count.
-          # Requests carry over from adventureworld, whose two-player baseline
-          # measured ~3.2 CPU median peaking past 4 on a flat 1.9Gi resident.
-          # The limit is adventureworld's 16Gi plus the ramdisk: a
-          # medium: Memory emptyDir is charged to the pod, so a save directory
-          # that grows toward its sizeLimit would otherwise OOM-kill the game.
+          # No CPU limit: throttling drops server ticks.
+          # Requests follow adventureworld's two-player baseline. The limit is its 16Gi
+          # plus the ramdisk, which is charged to the pod.
           resources:
             requests:
               cpu: "5"
@@ -163,28 +144,18 @@ spec:
             limits:
               memory: 18Gi
           volumeMounts:
-            # The 4.6Gi game install, which steamcmd writes on first boot and
-            # updates in place. It is read-mostly and gains nothing from RAM.
             - name: data
               mountPath: /palworld
               subPath: palworld
-            # Mounted inside the install and shadowing the copy on the claim.
-            # Only this subtree is hot, so only this subtree is a ramdisk.
             - name: save
               mountPath: /palworld/Pal/Saved
       volumes:
-        # The live save directory: the game stalls its tick while it autosaves,
-        # and a tmpfs write does not wait on Ceph. The world is 6Mi today, so
-        # 2Gi is headroom for a session's worth of growth and the rolling
-        # backup subdirectory the game keeps beside it.
+        # The game stalls its tick while it autosaves, and tmpfs does not wait on Ceph.
         - name: save
           emptyDir:
             medium: Memory
             sizeLimit: 2Gi
   volumeClaimTemplates:
-    # Durable storage for both halves: the game install under palworld/, and
-    # the mirror of the ramdisk under palworld/Pal/Saved, which the game
-    # container never sees because the ramdisk is mounted over it.
     - metadata:
         name: data
       spec:

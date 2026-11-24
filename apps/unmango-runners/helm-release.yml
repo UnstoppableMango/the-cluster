@@ -10,36 +10,23 @@ spec:
     namespace: arc-system
   interval: 10m
   maxHistory: 2
-  # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set/values.yaml
   values:
     githubConfigUrl: https://github.com/unmango
     githubConfigSecret: thecluster-bot
-    # Same `runs-on` label the UnstoppableMango repo-level scale sets use. unmango
-    # is an organization, so one org-level scale set covers every repo under it.
     runnerScaleSetName: thecluster
     minRunners: 6
-    # Shares the runner nodes with the 37 repo-level scale sets in
-    # apps/arc-runners, which cap at 6 each for the reasons in #4436. Every
-    # runner mounts two CSI volumes plus an emptyDir at /var/run, and it is the
-    # cluster-wide count of those mounts that broke dind, not the count within
-    # one scale set. 30 here alone reproduces the conditions.
+    # The mount count that broke dind (#4436) is cluster-wide, shared with
+    # apps/arc-runners. 30 here alone reproduces it.
     maxRunners: 24
     # 99% the dind template
     # https://github.com/actions/actions-runner-controller/blob/8c84ab2f4267ce61df1f6b2e26a3ca12b2d1e4ca/charts/gha-runner-scale-set/values.yaml#L310
     template:
       spec:
-        # Makes gid 1001 the group owner of the volumes below and adds it to the
-        # runner process's supplementary groups. The nix volume is then handed to
-        # the runner outright by init-nix; the emptyDirs do not need it, but
-        # fsGroup is pod-scoped and cannot be applied to one volume.
         securityContext:
           fsGroup: 1001
         initContainers:
-        # The copy is about 600 MB of node runtimes. cp itself stays under a
-        # few MB, but the dirty page cache it writes is charged to the
-        # container, and a limit below the copy size turns writeback lag into
-        # an OOM kill of cp and a failed pod. Sized above the copy so the whole
-        # thing can sit dirty.
+        # The dirty page cache of the ~600 MB copy is charged to the container, so a
+        # limit below the copy size OOM-kills cp.
         - name: init-dind-externals
           image: ghcr.io/unmango/actions-runner:2.338.2@sha256:405ea8d424026dc4f4ead3c0e1f3fc425ec7789e99dcf9dd23e4fbcdca827eaa
           command: ["cp", "-r", "/home/runner/externals/.", "/home/runner/tmpDir/"]
@@ -52,21 +39,9 @@ spec:
           volumeMounts:
             - name: dind-externals
               mountPath: /home/runner/tmpDir
-        # The image ships /nix as an empty directory owned by the runner, but a
-        # volume mounted over it brings its own ownership. Kubelet leaves a CSI
-        # volume root:fsGroup 2775, and the setgid bit propagates into every
-        # directory nix creates under it, store paths and build directories
-        # alike. Hand the mount to the runner instead, mode 0755, so it matches
-        # the empty /nix the image ships. Not recursive: the volume is ephemeral
-        # and holds only lost+found here.
-        #
-        # The mode is five digits because a numeric chmod of four digits or
-        # fewer preserves a directory's setuid and setgid bits; 00755 is what
-        # actually clears the setgid.
-        #
-        # Ordered ahead of dind, whose restartPolicy: Always makes it a native
-        # sidecar that kubelet waits on before running any later init container.
-        # This one has no reason to wait for dockerd.
+        # A CSI volume comes up root:fsGroup 2775, and the setgid bit leaks into every
+        # store path. Five digits, because a four-digit chmod keeps setgid.
+        # Ordered ahead of dind, a native sidecar that later init containers wait on.
         - name: init-nix
           image: ghcr.io/unmango/actions-runner:2.338.2@sha256:405ea8d424026dc4f4ead3c0e1f3fc425ec7789e99dcf9dd23e4fbcdca827eaa
           command: [sh, -c, 'chown runner:runner /nix && chmod 00755 /nix']
@@ -101,11 +76,8 @@ spec:
             initialDelaySeconds: 0
             failureThreshold: 24
             periodSeconds: 5
-            # `docker info` round-trips to a dockerd that is still starting, on
-            # a node running every other runner's dind at the same time. The 1s
-            # default counts that as a probe failure, and enough of them restart
-            # the container and add to the load that caused the timeout. 5s is
-            # the whole period between probes.
+            # The 1s default fails while dockerd starts on a loaded node, and the restarts
+            # add to the load.
             timeoutSeconds: 5
           resources:
             requests:
@@ -120,9 +92,8 @@ spec:
               mountPath: /var/run
             - name: dind-externals
               mountPath: /home/runner/externals
-            # Job containers pull through this dockerd, which trusts only its
-            # own image's bundle, not the node's. certs.d scopes the gateway's
-            # CA to Nixery alone.
+            # dockerd trusts only its image's bundle, not the node's. certs.d scopes the
+            # CA to Nixery.
             - name: thecluster-lan-ca
               mountPath: /etc/docker/certs.d/nixery.thecluster.lan
               readOnly: true
@@ -135,21 +106,14 @@ spec:
               value: unix:///var/run/docker.sock
             - name: RUNNER_WAIT_FOR_DOCKER_IN_SECONDS
               value: "120"
-            # actions/setup-dotnet installs to /usr/share/dotnet unless this is
-            # set, and the runner user cannot write there. The image has no
-            # sudo, so point the install at a path the runner owns.
+            # actions/setup-dotnet defaults to /usr/share/dotnet, which the runner cannot write.
             - name: DOTNET_INSTALL_DIR
               value: /home/runner/.dotnet
-            # ncps binary cache, reachable in-cluster only. The image's nix is
-            # daemonless, so there is no daemon to gate these against a
-            # trusted-users list and every setting here applies as written.
             - name: NIX_CONFIG
               value: |
                 extra-substituters = http://ncps.nix-system.svc.cluster.local:8501
                 extra-trusted-public-keys = ncps.thecluster.lan:pAJGNVSRmG7gCDSOAaiHDxLFUSdys5Pk0XvcJ5803Dw=
-          # An idle runner measures ~1m CPU and ~60Mi. Requests cover the idle
-          # floor and a build bursts to the limit; the tradeoff is that requests
-          # no longer cap how many runners land on one node.
+          # An idle runner uses ~1m CPU and ~60Mi. Requests do not cap runners per node.
           resources:
             requests:
               cpu: "1"
@@ -162,18 +126,8 @@ spec:
               mountPath: /home/runner/_work
             - name: dind-sock
               mountPath: /var/run
-            # The image ships /nix empty and its nix.conf sets `store = local`,
-            # so the store, its database, and nix's build directory all land
-            # here. Left unmounted that is the container's overlayfs layer,
-            # where nix fails to tear down a build directory it just emptied:
-            #
+            # On the overlayfs layer nix fails to remove build directories:
             #   error: cannot unlink ".../project/.git": Directory not empty
-            #
-            # It bites the derivations that write many small files, treefmt's
-            # `git init && git add .` check being the reliable one. The image's
-            # nix, gnumake and xz are static copies in /usr/local/bin with their
-            # store references nuked, so they keep working with a volume over
-            # /nix.
             - name: nix
               mountPath: /nix
         volumes:
@@ -183,19 +137,11 @@ spec:
           emptyDir: {}
         - name: dind-externals
           emptyDir: {}
-        # Published into every namespace by the thecluster-lan-ca Bundle in
-        # infrastructure/configs/cert-manager-system.
         - name: thecluster-lan-ca
           configMap:
             name: thecluster-lan-ca
-        # An emptyDir does not work here. Kubelet creates one mode 0777, and nix
-        # refuses a build directory with a world-writable ancestor. A CSI volume
-        # comes up 2775 root:fsGroup, which init-nix then narrows to 0755
-        # runner:runner.
-        #
-        # 20Gi against a measured 8.7Gi for one full realisation of a devShell;
-        # an idle runner holds 20K. Matches apps/arc-runners, which shares these
-        # nodes.
+        # Not an emptyDir: kubelet makes those 0777, and nix refuses a world-writable
+        # ancestor of a build directory.
         - name: nix
           ephemeral:
             volumeClaimTemplate:

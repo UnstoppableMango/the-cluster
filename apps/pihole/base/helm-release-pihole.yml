@@ -13,7 +13,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: pihole
-  # https://artifacthub.io/packages/helm/mojo2600/pihole#values
   values:
     replicaCount: 1
     strategyType: Recreate
@@ -31,12 +30,8 @@ spec:
     admin:
       existingSecret: pihole
       passwordKey: password
-    # Remote adlist: Perflyst's maintained Smart-TV blocklist, which covers
-    # Samsung ACR/telemetry and other TV vendors and is updated upstream. The
-    # chart seeds adlists.list only on an initial start with an empty gravity
-    # DB; on a running instance, register the URL once (web UI -> Lists, or the
-    # SQLite insert in the PR notes) and then run `pihole -g`. `pihole -g` alone
-    # rebuilds from URLs already in the DB and will not add this one.
+    # The chart seeds adlists only into an empty gravity DB. On a running instance,
+    # add the URL in the web UI, then run `pihole -g`.
     adlists:
       - https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV.txt
     ftl:
@@ -44,8 +39,7 @@ spec:
       dns_domain: thecluster.lan
       webserver_domain: pihole-a.thecluster.lan
       webserver_interface_theme: default-darker
-      # external-dns writes records through the FTL config API, which a
-      # read-only FTL rejects outright.
+      # external-dns writes through the FTL config API.
       misc_readonly: "false"
       ntp_ipv4_active: "false"
       ntp_ipv6_active: "false"
@@ -102,8 +96,7 @@ metadata:
 spec:
   interval: 10m
   maxHistory: 2
-  # Upgrade one resolver at a time. If pihole-a cannot come up on a new tag,
-  # pihole-b stays on the tag it already runs and keeps serving DNS (#4458).
+  # One resolver at a time, so pihole-b keeps serving if pihole-a fails (#4458).
   dependsOn:
     - name: pihole-a
   chart:
@@ -113,7 +106,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: pihole
-  # https://artifacthub.io/packages/helm/mojo2600/pihole#values
   values:
     replicaCount: 1
     strategyType: Recreate
@@ -131,12 +123,8 @@ spec:
     admin:
       existingSecret: pihole
       passwordKey: password
-    # Remote adlist: Perflyst's maintained Smart-TV blocklist, which covers
-    # Samsung ACR/telemetry and other TV vendors and is updated upstream. The
-    # chart seeds adlists.list only on an initial start with an empty gravity
-    # DB; on a running instance, register the URL once (web UI -> Lists, or the
-    # SQLite insert in the PR notes) and then run `pihole -g`. `pihole -g` alone
-    # rebuilds from URLs already in the DB and will not add this one.
+    # The chart seeds adlists only into an empty gravity DB. On a running instance,
+    # add the URL in the web UI, then run `pihole -g`.
     adlists:
       - https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV.txt
     ftl:
@@ -144,8 +132,7 @@ spec:
       dns_domain: thecluster.lan
       webserver_domain: pihole-b.thecluster.lan
       webserver_interface_theme: default-darker
-      # external-dns writes records through the FTL config API, which a
-      # read-only FTL rejects outright.
+      # external-dns writes through the FTL config API.
       misc_readonly: "false"
       ntp_ipv4_active: "false"
       ntp_ipv6_active: "false"

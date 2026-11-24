@@ -4,8 +4,7 @@ metadata:
   name: wishlists
   namespace: wishlists
 spec:
-  # Published by the Helm job in unmango/wishlists CI. Its appVersion is the
-  # image tag CI pushes alongside it, so this one pin moves both.
+  # The chart's appVersion is the image tag, so this one pin moves both.
   url: oci://ghcr.io/unmango/wishlists/wishlists
   interval: 1h
   layerSelector:

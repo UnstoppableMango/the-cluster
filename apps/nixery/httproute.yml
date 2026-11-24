@@ -1,5 +1,4 @@
-# The Gateway's listener terminates TLS with the *.thecluster.lan wildcard,
-# so images pull as nixery.thecluster.lan/<pkg>/<pkg>.
+# One label deep so the *.thecluster.lan wildcard matches.
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:

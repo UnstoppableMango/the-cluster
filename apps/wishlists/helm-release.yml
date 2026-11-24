@@ -11,27 +11,20 @@ spec:
   chartRef:
     kind: OCIRepository
     name: wishlists
-  # https://github.com/unmango/wishlists/blob/main/charts/wishlists/values.yaml
   values:
     fullnameOverride: wishlists
     app:
       database:
-        # No password: the wishlists role authenticates with the client
-        # certificate certificate.yml issues, whose CN is the role name. The
-        # host has to be a SAN on postgres-server-cert, because VerifyFull
-        # matches the certificate against it.
+        # Must be a SAN on postgres-server-cert for VerifyFull.
         connectionString: >-
           Host=postgres-rw.wishlists.svc.cluster.local;Database=wishlists;Username=wishlists;SSL Mode=VerifyFull;Root Certificate=/etc/wishlists/postgres/ca.crt;SSL Certificate=/etc/wishlists/postgres/tls.crt;SSL Key=/etc/wishlists/postgres/tls.key
       google:
         existingSecret: wishlists-google
       allowedEmails:
         existingSecret: wishlists-allowed-emails
-      # The pod network: requests arrive from the cloudflared pods the
-      # Cloudflare Gateway runs, which set X-Forwarded-For and -Proto.
-      # rosequartz runs nixpkgs Kubernetes with flannel, whose pod CIDR is
-      # services.kubernetes.clusterCidr (default 10.1.0.0/16), not k3s's
-      # 10.42.0.0/16. A wrong range makes the app ignore X-Forwarded-Proto
-      # and send Google an http:// redirect URI.
+      # The pod network, where cloudflared sends from. rosequartz's flannel pod CIDR
+      # is 10.1.0.0/16, not k3s's 10.42.0.0/16, and a wrong range sends Google an
+      # http:// redirect URI.
       knownNetworks:
         - 10.1.0.0/16
     volumes:
@@ -58,8 +51,7 @@ spec:
             - path:
                 type: PathPrefix
                 value: /
-    # Not measured yet: an ASP.NET app at rest is around 80Mi. Revisit once
-    # it has run for a while.
+    # TODO: size from measured usage.
     resources:
       requests:
         cpu: 10m

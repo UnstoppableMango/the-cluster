@@ -1,5 +1,4 @@
-# The same split horizon as cloud.thecluster.io in apps/nextcloud: browsers
-# load the editor from this name directly, on whichever network they are on.
+# Split horizon, as in apps/nextcloud.
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:

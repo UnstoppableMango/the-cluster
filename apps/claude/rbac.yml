@@ -1,6 +1,4 @@
-# Claude's identity in the cluster: read everything except Secrets. The pod
-# mounts this account's token into the claude container only, so the sidecars
-# hold no API credentials.
+# Read everything except Secrets.
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -8,9 +6,6 @@ metadata:
   namespace: claude
 automountServiceAccountToken: false
 ---
-# Namespaced reads. The built-in view role leaves out Secrets, pods/exec,
-# pods/attach, pods/portforward and serviceaccounts/token, and CRDs aggregate
-# their own kinds into it.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -24,8 +19,8 @@ subjects:
     name: claude
     namespace: claude
 ---
-# Cluster-scoped kinds, which view does not cover. Every group is named: a
-# wildcard on the core group would take in Secrets.
+# view covers no cluster-scoped kinds. Every group is named, since a core
+# group wildcard would take in Secrets.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -59,11 +54,10 @@ rules:
   - apiGroups: [scheduling.k8s.io]
     resources: [priorityclasses]
     verbs: [get, list, watch]
-  # view omits RBAC objects. They name subjects and rules, never credentials.
+  # view omits RBAC objects, which hold no credentials.
   - apiGroups: [rbac.authorization.k8s.io]
     resources: [clusterrolebindings, clusterroles, rolebindings, roles]
     verbs: [get, list, watch]
-  # kubectl top.
   - apiGroups: [metrics.k8s.io]
     resources: [nodes, pods]
     verbs: [get, list]

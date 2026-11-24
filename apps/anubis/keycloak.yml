@@ -35,8 +35,6 @@ spec:
           env:
             - name: TARGET
               value: http://keycloak-http.keycloak.svc:80
-            # Upstream's default policy plus an allow rule for Keycloak's
-            # machine-to-machine OIDC endpoints; see keycloak-policy.yaml.
             - name: POLICY_FNAME
               value: /etc/anubis/policy.yaml
           ports:

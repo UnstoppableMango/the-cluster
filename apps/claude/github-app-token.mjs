@@ -1,17 +1,12 @@
-// Keeps gh logged in as the GitHub App, and so git too: Home Manager's
-// programs.gh makes `gh auth git-credential` the helper for github.com.
-// Installation tokens expire after an hour, so this mints a fresh one ahead
-// of each expiry and writes it where gh reads its login.
+// Keeps gh, and git through `gh auth git-credential`, logged in as the GitHub
+// App, minting a token ahead of each hourly expiry.
 //
-// An installation token covers one account, and the App is installed on
-// several. gh holds the primary installation's token, the one the secret
-// names. Every installation's token is also written to a file named for its
-// account, and git reads each other account's file through a credential entry
-// scoped to https://github.com/<account>. For gh against another account, run
-// it with GH_TOKEN set from that file.
+// gh holds the primary installation's token. Every installation's token is also
+// written to a file named for its account, which git reads through a credential
+// entry scoped to https://github.com/<account>. For gh against another account,
+// set GH_TOKEN from that file.
 //
-// Node rather than a shell script because the image has no openssl or curl,
-// and node:crypto can sign the RS256 JWT the App authenticates with.
+// Node because the image has no openssl or curl.
 import { execFileSync } from "node:child_process";
 import { createPrivateKey, sign } from "node:crypto";
 import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
@@ -92,7 +87,6 @@ function writeCredential(account, tokenFile) {
 	try {
 		gitConfig("--unset-all", key);
 	} catch {
-		// Not set yet.
 	}
 	gitConfig("--add", key, "");
 	gitConfig("--add", key, `!f() { echo username=x-access-token; echo "password=$(cat ${tokenFile})"; }; f`);
@@ -115,8 +109,6 @@ for (;;) {
 	try {
 		const jwt = appJwt();
 		login ??= `${(await github("GET", "/app", jwt)).slug}[bot]`;
-		// Listed every round, so an account the App is newly installed on is
-		// picked up within the hour.
 		const installations = await github("GET", "/app/installations?per_page=100", jwt);
 		let expiry = Infinity;
 		for (const { id, account } of installations) {

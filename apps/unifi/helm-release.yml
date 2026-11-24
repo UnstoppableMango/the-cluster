@@ -19,8 +19,6 @@ spec:
     database:
       existingSecret: mongo-credentials
       tls: true
-    # truststore.yml renders this, the public CAs plus thecluster.lan, which
-    # issued the MongoDB certificate the controller has to validate.
     truststore:
       existingConfigMap: unifi-truststore
       password: changeit
@@ -48,9 +46,8 @@ spec:
           memory: 512Mi
         limits:
           memory: 2Gi
-    # The web UI serves its own self-signed TLS on 8443, so it is exposed here
-    # directly rather than behind the nginx Gateway. UniFi devices sit on
-    # VLAN 1 and reach 8080 and 3478 through pfSense.
+    # The web UI serves self-signed TLS on 8443, so it skips the nginx Gateway.
+    # UniFi devices on VLAN 1 reach 8080 and 3478 through pfSense.
     service:
       type: LoadBalancer
       annotations:
