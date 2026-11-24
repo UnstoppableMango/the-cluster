@@ -182,7 +182,7 @@ spec:
       enabled: true
       image:
         repository: library/nginx
-        tag: 1.31.9-alpine
+        tag: 1.31.10-alpine
       resources:
         requests:
           cpu: 10m
