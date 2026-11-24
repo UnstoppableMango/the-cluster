@@ -75,6 +75,7 @@ spec:
           presetCachePersistence: true,
           // Arguments are constrained because the command runs in a shell
           // after templating; see .github/renovate.json in the-cluster.
+          // Keep this list the same in both Renovate HelmReleases.
           allowedCommands: [
             '^node hack/renovate-fetchurl-hash\\.mjs nix/[\\w./-]+\\.nix [\\w.-]+/[\\w.-]+ v?[\\d.]+$',
             '^node hack/renovate-chart-hash\\.mjs infrastructure/controllers/[\\w.-]+/helm-release\\.yml$',
