@@ -20,6 +20,7 @@ spec:
     crds: Create
   upgrade:
     crds: CreateReplace
+  # https://github.com/bitnami-labs/sealed-secrets/tree/main/helm/sealed-secrets
   values:
     fullnameOverride: sealed-secrets-controller
     image:

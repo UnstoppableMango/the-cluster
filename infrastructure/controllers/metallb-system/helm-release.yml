@@ -19,6 +19,7 @@ spec:
     crds: Create
   upgrade:
     crds: CreateReplace
+  # https://metallb.io/configuration/
   values:
     crds:
       enabled: true

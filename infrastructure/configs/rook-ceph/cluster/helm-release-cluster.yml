@@ -41,6 +41,7 @@ spec:
       cephVersion:
         image: quay.io/ceph/ceph:v19.2.5
       dataDirHostPath: /var/lib/rook
+      # https://rook.io/docs/rook/v1.18/CRDs/Cluster/network-providers/#multus
       # Only gaea, zeus and apollo are cabled to the SFP+ aggregator, and only they
       # run OSDs, so only the OSD pods get the cluster network.
       # addressRanges skips rook's CIDR detection canary pod on every reconcile.
@@ -54,6 +55,7 @@ spec:
       dashboard:
         enabled: true
         ssl: false
+        # https://docs.ceph.com/en/squid/mgr/dashboard/#enabling-prometheus-alerting
         prometheusEndpoint: http://kube-prometheus-stack-prometheus.monitoring.svc:9090
         prometheusEndpointSSLVerify: false
       cephConfig:

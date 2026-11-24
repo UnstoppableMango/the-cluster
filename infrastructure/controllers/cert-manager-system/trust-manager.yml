@@ -15,6 +15,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: jetstack
+  # https://github.com/cert-manager/trust-manager/tree/main/deploy/charts/trust-manager
   values:
     image:
       repository: quay.io/jetstack/trust-manager
