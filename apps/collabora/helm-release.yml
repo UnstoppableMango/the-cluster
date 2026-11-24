@@ -15,10 +15,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: collabora
-  # The chart has no dnsConfig value. ndots:1 for the same reason as in
-  # apps/nextcloud: the names this resolves (cloud.thecluster.io for WOPI
-  # callbacks) are public, and the default ndots:5 walks every cluster search
-  # domain before trying them.
+  # The chart has no dnsConfig value. ndots:1 as in apps/nextcloud.
   postRenderers:
     - kustomize:
         patches:
@@ -38,27 +35,22 @@ spec:
     image:
       repository: docker.io/collabora/code
       tag: 26.04.6.2.1
-    # One replica. A document's editors must all reach the same instance, which
-    # more replicas would need WOPISrc-aware routing for.
+    # More replicas need WOPISrc-aware routing.
     replicaCount: 1
     autoscaling:
       enabled: false
     collabora:
-      # Only Nextcloud may open documents here.
       aliasgroups:
         - host: https://cloud.thecluster.io:443
       server_name: office.thecluster.io
-      # TLS terminates at the Gateway or the Cloudflare edge.
       extra_params: --o:ssl.enable=false --o:ssl.termination=true
-      # The admin console at /browser/dist/admin/admin.html.
       existingSecret:
         enabled: true
         secretName: collabora-admin
         usernameKey: username
         passwordKey: password
-    # No measured usage yet. Revisit once there is some, per AGENTS.md. Each
-    # open document is a forked LibreOffice process, so memory scales with
-    # documents, not users. No CPU limit: rendering is the latency users see.
+    # TODO: size from measured usage. Memory scales with open documents.
+    # No CPU limit: rendering is the latency users see.
     resources:
       requests:
         cpu: 100m

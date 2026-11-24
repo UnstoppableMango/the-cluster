@@ -5,9 +5,7 @@ metadata:
   namespace: keycloak
 spec:
   instances: 2
-  # CNPG applies nothing by default, so without this the postgres pods run
-  # BestEffort. No CPU limit: throttling the primary stalls both Keycloak
-  # replicas behind it.
+  # No CPU limit: throttling the primary stalls both Keycloak replicas.
   resources:
     requests:
       cpu: 100m
@@ -24,7 +22,6 @@ spec:
     replicationTLSSecret: postgres-replication
   postgresql:
     pg_hba:
-      # Keycloak authenticates with a client certificate whose CN is its role name
       - hostssl keycloak keycloak all cert
   bootstrap:
     initdb:

@@ -13,13 +13,11 @@ spec:
     name: architecture
   # https://github.com/unmango/architecture/blob/main/chart/values.yaml
   values:
-    # ghcr.io/unmango/architecture is private; ghcr-sealed.yml holds the token.
     imagePullSecrets:
       - name: ghcr
     ingress:
       enabled: false
-    # Internal only: the model holds hardware and network details, so this
-    # attaches to the LAN nginx Gateway and no CloudflareTunnel rule points here.
+    # LAN only: the model holds hardware and network details.
     httpRoute:
       enabled: true
       parentRefs:
@@ -27,8 +25,7 @@ spec:
           namespace: nginx-gateway
       hostnames:
         - architecture.thecluster.lan
-    # Not measured yet: a static site. The chart's 16Mi request is under the
-    # 32Mi floor.
+    # The chart's 16Mi request is under the 32Mi floor.
     resources:
       requests:
         cpu: 10m

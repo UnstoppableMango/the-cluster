@@ -6,8 +6,7 @@ resources:
   - namespace.yml
   - pvc.yml
   - rbac.yml
-# Generated so the name carries a content hash: editing the script rolls the
-# pod, where a plain ConfigMap would leave the old one running.
+# Hashed so editing the script rolls the pod.
 configMapGenerator:
   - name: github-app-token
     namespace: claude

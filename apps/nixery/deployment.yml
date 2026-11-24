@@ -7,7 +7,7 @@ metadata:
     app: nixery
 spec:
   replicas: 1
-  # storage is ReadWriteOnce, so a surge pod would wait on the attach.
+  # storage is ReadWriteOnce.
   strategy:
     type: Recreate
   selector:
@@ -18,13 +18,10 @@ spec:
       labels:
         app: nixery
     spec:
-      # Each new image evaluates nixpkgs, which is slow on a Pi and only fits
-      # the larger workers' memory. arm64 images are still served from here:
-      # their layers are substituted, not built.
+      # Evaluating nixpkgs needs a large worker. arm64 layers are substituted, not built.
       nodeSelector:
         kubernetes.io/arch: amd64
-      # 1000 is the nixery user the image ships, which owns its Nix store and
-      # database. fsGroup is what lets it write the volume.
+      # 1000 is the image's nixery user, which owns its Nix store.
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
@@ -34,30 +31,21 @@ spec:
         - name: nixery
           image: ghcr.io/unmango/nixery:0-unstable-20260314
           env:
-            # The image defaults to a filesystem backend under its own
-            # writable layer; this points it at the volume.
             - name: NIXERY_STORAGE_BACKEND
               value: filesystem
             - name: STORAGE_PATH
               value: /var/lib/nixery/storage
-            # A nixos-unstable commit, bumped by Renovate. With a channel
-            # source nixery ignores the image tag entirely, and it caches a
-            # build only when this value is a full commit hash; a channel
-            # name would re-evaluate nixpkgs on every pull. See
-            # docs/adr/0001-nixery.md.
+            # Nixery caches builds only for a full commit hash, and ignores the image tag.
+            # See docs/adr/0001-nixery.md.
             - name: NIXERY_CHANNEL
               value: 2786a2a72088ecf32aea5b3ec52099e6a7cff78f
             - name: PORT
               value: "8080"
-            # nix-build substitutes every store path an image needs before
-            # nixery tars it into a layer, so ncps carries most of the traffic
-            # and cache.nixos.org stays the fallback.
             - name: NIX_CONFIG
               value: |
                 extra-substituters = http://ncps.nix-system.svc.cluster.local:8501
                 extra-trusted-public-keys = ncps.thecluster.lan:pAJGNVSRmG7gCDSOAaiHDxLFUSdys5Pk0XvcJ5803Dw=
-            # Seconds a single nix-build may run. Upstream's 60 is too short
-            # for a cold evaluation of nixpkgs plus substituting a closure.
+            # Upstream's 60s is too short for a cold nixpkgs evaluation.
             - name: NIX_TIMEOUT
               value: "300"
           ports:
@@ -78,13 +66,10 @@ spec:
             requests:
               cpu: 100m
               memory: 256Mi
-              # Paths nix-build substitutes land in the image's store on the
-              # container's writable layer, and nothing collects them. The
-              # limit makes kubelet evict and restart the pod, back to the
-              # shipped store, before that fills the node's disk.
+              # Nothing collects substituted paths on the writable layer, so eviction resets
+              # the store before the node's disk fills.
               ephemeral-storage: 5Gi
             limits:
-              # Evaluating nixpkgs peaks around 2Gi.
               memory: 4Gi
               ephemeral-storage: 40Gi
           securityContext:

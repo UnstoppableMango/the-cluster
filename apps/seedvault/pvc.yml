@@ -1,4 +1,3 @@
-# Seedvault encrypts on the phone, so this only ever holds ciphertext.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

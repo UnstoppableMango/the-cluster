@@ -45,11 +45,8 @@ spec:
     strategy:
       type: Recreate
     deployment:
-      # Gitea's [database] section has no SSLCERT/SSLKEY keys, but it reaches
-      # Postgres through lib/pq, whose connector reads these three off the
-      # environment. This list lands on the init containers as well as the
-      # gitea container, which it has to: configure-gitea connects to the
-      # database too.
+      # Gitea has no SSLCERT/SSLKEY settings, but lib/pq reads these from the
+      # environment. The init containers get them too.
       env:
         - name: PGSSLROOTCERT
           value: /etc/gitea/postgres/ca.crt
@@ -58,15 +55,11 @@ spec:
         - name: PGSSLKEY
           value: /etc/gitea/postgres/tls.key
     extraVolumes:
-      # 0440 is load-bearing. lib/pq rejects an sslkey more permissive than
-      # 0640 when it is root-owned, which is what a secret volume under
-      # fsGroup 1000 gives; the chart's 0644 default trips
-      # ErrSSLKeyHasWorldPermissions.
+      # lib/pq rejects a root-owned sslkey looser than 0640.
       - name: postgres-cert
         secret:
           secretName: gitea-postgres-cert
           defaultMode: 0440
-    # Split rather than the deprecated extraVolumeMounts.
     extraContainerVolumeMounts:
       - name: postgres-cert
         mountPath: /etc/gitea/postgres
@@ -75,9 +68,7 @@ spec:
       - name: postgres-cert
         mountPath: /etc/gitea/postgres
         readOnly: true
-    # The chart sizes its init containers and leaves the gitea container empty.
-    # No CPU limit: a clone or a `git gc` is bursty and throttling it stalls the
-    # push that triggered it.
+    # No CPU limit: throttling a clone or `git gc` stalls the push behind it.
     resources:
       requests:
         cpu: 100m
@@ -105,11 +96,8 @@ spec:
         existingSecret: gitea-credentials
       config:
         APP_NAME: The Cluster Gitea
-        # New accounts come only through the GitHub OAuth source below; the
-        # sign-up form stays closed, since gitea.thecluster.io is public
-        # through the Cloudflare tunnel. Auto-registration stays off, so an
-        # unknown GitHub identity gets the link-account page and can attach
-        # to an existing local account instead of always minting a new one.
+        # gitea.thecluster.io is public, so sign-up stays closed. With auto-registration
+        # off, an unknown GitHub identity can link to an existing local account.
         service:
           DISABLE_REGISTRATION: false
           ALLOW_ONLY_EXTERNAL_REGISTRATION: true
@@ -122,12 +110,9 @@ spec:
           START_SSH_SERVER: true
         database:
           DB_TYPE: postgres
-          # A SAN on postgres-server-cert; verify-full matches the certificate
-          # against this host.
+          # Must be a SAN on postgres-server-cert for verify-full.
           HOST: postgres-rw.gitea.svc.cluster.local:5432
           NAME: gitea
-          # No PASSWD: the role authenticates with the client certificate
-          # mounted at /etc/gitea/postgres, whose CN is this user.
           USER: gitea
           SSL_MODE: verify-full
         cache:
@@ -147,7 +132,6 @@ spec:
       enabled: false
     postgresql-ha:
       enabled: false
-    # Cache, session, and queue use the redis release above instead.
     valkey-cluster:
       enabled: false
     valkey:

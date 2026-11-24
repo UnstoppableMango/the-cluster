@@ -18,9 +18,8 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: nextcloud
-  # A failed upgrade is not rolled back: by then `occ upgrade` may have
-  # migrated the database, and the old image cannot run against it. Restore
-  # from backup instead, see README.md.
+  # No rollback: `occ upgrade` may already have migrated the database. Restore
+  # from backup instead; see README.md.
   upgrade:
     remediation:
       retries: 0
@@ -33,25 +32,21 @@ spec:
     replicaCount: 1
     nextcloud:
       host: cloud.thecluster.io
-      # The break-glass admin. Everyone else logs in through Keycloak.
+      # Break-glass admin; everyone else logs in through Keycloak.
       existingSecret:
         enabled: true
         secretName: nextcloud-admin
         usernameKey: nextcloud-username
         passwordKey: nextcloud-password
         tokenKey: nextcloud-token
-      # The web updater would replace the code under Flux's feet. Upgrades are
-      # an image bump, run by the entrypoint's `occ upgrade`.
+      # The web updater would replace the code under Flux.
       update: 0
       datadir: /var/www/html/data
       strategy:
         type: Recreate
-      # Installed and enabled on every start, so the list here is the whole
-      # truth about which apps are on. Removing one from the list does not
-      # disable it.
+      # Removing an app from the before-starting list does not disable it.
       hooks:
-        # kubelet creates the chart's data/ subPath group-writable and
-        # world-readable, and Nextcloud refuses every request until it is 0770.
+        # Nextcloud refuses every request until data/ is 0770.
         pre-installation: |
           #!/bin/sh
           set -eu
@@ -61,10 +56,7 @@ spec:
           set -eu
           occ() { php /var/www/html/occ "$@"; }
 
-          # The entrypoint installs only on the first start, so after a failed
-          # install every later start lands here. Say so rather than let the
-          # app loop below fail on it: the install's own error is in the first
-          # container's log and in data/nextcloud.log.
+          # The entrypoint installs only on first start, so a failed install lands here.
           if ! status=$(occ status --output=json); then
             echo "occ status failed: $status" >&2
             exit 1
@@ -82,16 +74,12 @@ spec:
             occ app:enable "$app"
           done
 
-          # The metrics exporter authenticates with this token.
           occ config:app:set serverinfo token --value="$NEXTCLOUD_TOKEN"
 
-          # Collabora, in apps/collabora.
           occ config:app:set richdocuments wopi_url --value=https://office.thecluster.io
           occ richdocuments:activate-config || true
 
-          # Keycloak. The client is declared in UnstoppableMango/iam, and
-          # nextcloud-oidc stays absent until it is, so this is skipped and the
-          # break-glass admin is the only login.
+          # nextcloud-oidc is absent until UnstoppableMango/iam declares the client.
           if [ -n "${OIDC_CLIENT_ID:-}" ]; then
             occ user_oidc:provider keycloak \
               --clientid="$OIDC_CLIENT_ID" \
@@ -148,9 +136,8 @@ spec:
               name: nextcloud-oidc
               key: client-secret
               optional: true
-      # The chart waits only for the databases it bundles. Without this the
-      # first start raced CNPG, the install found Postgres refusing
-      # connections, and the entrypoint never tried again.
+      # The chart waits only for databases it bundles, and the entrypoint never
+      # retries a failed install.
       extraInitContainers:
         - name: wait-for-backends
           image: docker.io/library/busybox:1.38.0
@@ -158,8 +145,6 @@ spec:
             - /bin/sh
             - -c
             - |
-              # Both in the same pass, so one going away while the other
-              # comes up does not slip through.
               until nc -z -w 2 postgres-rw.nextcloud.svc.cluster.local 5432 &&
                 nc -z -w 2 redis.nextcloud.svc.cluster.local 6379; do
                 echo "waiting for postgres-rw and redis"
@@ -171,7 +156,7 @@ spec:
               memory: 32Mi
             limits:
               memory: 32Mi
-      # Only the CA certificate: postgres-server also holds the server's key.
+      # postgres-server also holds the server's key.
       extraVolumes:
         - name: postgres-ca
           projected:
@@ -185,22 +170,19 @@ spec:
         - name: postgres-ca
           mountPath: /etc/nextcloud/postgres
           readOnly: true
-    # No measured usage yet. Revisit once there is some, per AGENTS.md. No CPU
-    # limit: php-fpm serves every request, and throttling it is latency.
+    # TODO: size from measured usage. No CPU limit: throttling php-fpm is latency.
     resources:
       requests:
         cpu: 100m
         memory: 512Mi
       limits:
         memory: 2Gi
-    # The Gateway speaks HTTP, not FastCGI, so fpm needs nginx beside it. The
-    # chart's config carries the /.well-known redirects CalDAV and CardDAV
-    # discovery depend on.
+    # The Gateway speaks HTTP, not FastCGI.
     nginx:
       enabled: true
       image:
         repository: library/nginx
-        tag: 1.31.9-alpine
+        tag: 1.31.10-alpine
       resources:
         requests:
           cpu: 10m
@@ -214,7 +196,6 @@ spec:
       type: postgresql
       host: postgres-rw.nextcloud.svc.cluster.local
       database: nextcloud
-      # Generated by CNPG for the initdb owner.
       existingSecret:
         enabled: true
         secretName: postgres-app
@@ -224,16 +205,12 @@ spec:
       enabled: true
       host: redis.nextcloud.svc.cluster.local
       port: "6379"
-    # The volumes are claims in pvcs.yml, so deleting this release never takes
-    # the data with it.
     persistence:
       enabled: true
       existingClaim: nextcloud-app
       nextcloudData:
         enabled: true
         existingClaim: nextcloud-data
-    # Background jobs every five minutes, plus Preview Generator's incremental
-    # pass so Memories has thumbnails before anyone scrolls to them.
     cronjob:
       enabled: true
       type: cronjob
@@ -244,12 +221,11 @@ spec:
           - /bin/sh
           - -c
           - php -f /var/www/html/cron.php && php /var/www/html/occ preview:pre-generate
-        # cron.php refuses to run as anyone but the owner of config.php.
+        # cron.php runs only as the owner of config.php.
         securityContext:
           runAsUser: 82
           runAsGroup: 82
-        # nextcloud-app is ReadWriteOnce, so the job has to land on the node
-        # that already has it attached.
+        # nextcloud-app is ReadWriteOnce.
         affinity:
           podAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
@@ -266,16 +242,9 @@ spec:
             memory: 2Gi
     startupProbe:
       enabled: true
-    # The image is Alpine, and musl's resolver walks every search domain in
-    # order and gives up on the first answer that is not NXDOMAIN, so with the
-    # default ndots:5 a name like auth.thecluster.io is tried as
-    # auth.thecluster.io.nextcloud.svc.cluster.local and friends first, and a
-    # SERVFAIL on any of them fails the whole lookup. Every name Nextcloud
-    # resolves has at least one dot, and the in-cluster ones are written fully
-    # qualified, so ndots:1 sends them all straight to the absolute name. The
-    # chart applies this to the CronJob's pods too. Keep in-cluster names fully
-    # qualified: under ndots:1 musl never searches a name with a dot in it, so
-    # a short `svc.ns` stops resolving here.
+    # musl fails the whole lookup on a SERVFAIL from any search domain, so
+    # ndots:1 sends dotted names straight to the absolute name. Keep in-cluster
+    # names fully qualified: a short `svc.ns` stops resolving.
     dnsConfig:
       options:
         - name: ndots

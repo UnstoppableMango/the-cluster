@@ -1,9 +1,5 @@
-# Distributed locks for the ncps replicas: per-hash download locks and the
-# global LRU lock. Nothing is persisted on purpose, and the args below turn
-# off the RDB snapshots the image would otherwise write to the container
-# filesystem. Every lock carries a TTL (5m download, 30m LRU), so a Redis
-# restart costs at most one expired lock window, and a lock that outlived
-# its holder would be worse than a lost one.
+# Locks only, so nothing is persisted. Every lock carries a TTL (5m download,
+# 30m LRU), and a stale lock would be worse than a lost one.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,7 +19,7 @@ spec:
     spec:
       containers:
         - name: redis
-          image: redis:8.10.3-alpine
+          image: redis:8.12.0-alpine
           args:
             - --save
             - ""
@@ -51,8 +47,7 @@ spec:
     - port: 6379
       targetPort: 6379
 ---
-# The image ships without a password and with protected mode off, so this is
-# what keeps the lock keys reachable from the ncps replicas alone.
+# The image has no password and protected mode off.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:

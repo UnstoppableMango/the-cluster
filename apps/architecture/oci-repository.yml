@@ -4,12 +4,9 @@ metadata:
   name: architecture
   namespace: architecture
 spec:
-  # Published by the main-branch job in unmango/architecture CI. Its appVersion
-  # is the image tag CI pushes alongside it, so this one pin moves both.
+  # The chart's appVersion is the image tag, so this one pin moves both.
   url: oci://ghcr.io/unmango/charts/architecture
   interval: 1h
-  # The chart package is public, so Flux and Renovate both read it without
-  # credentials. The site image stays private; see the HelmRelease.
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
