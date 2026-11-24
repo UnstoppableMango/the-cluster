@@ -12,4 +12,5 @@ data:
   # One pass covers every host: the cookie is on the apex, and every instance
   # shares the key.
   COOKIE_DOMAIN: thecluster.io
-  # Unset, so an instance gets upstream's default botPolicies.yaml.
+  # Unset, so an instance gets upstream's default botPolicies.yaml;
+  # keycloak.yml sets its own.
