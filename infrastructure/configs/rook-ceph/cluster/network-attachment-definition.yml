@@ -1,7 +1,5 @@
-# The Ceph cluster network on the SFP+ aggregator. There is no spec.config:
-# each OSD host differs in its parent interface and address range, so multus
-# reads the macvlan config named ceph-cluster from /etc/cni/multus/net.d,
-# written by the nixos repo's modules/ceph-cluster-network.
+# No spec.config: OSD hosts differ, so multus reads the ceph-cluster config
+# that the nixos repo's modules/ceph-cluster-network writes.
 apiVersion: k8s.cni.cncf.io/v1
 kind: NetworkAttachmentDefinition
 metadata:

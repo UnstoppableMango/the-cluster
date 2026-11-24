@@ -20,9 +20,7 @@ spec:
   dependsOn:
     - name: rook-ceph
       namespace: rook-ceph
-  # A CephCluster reports Progressing for as long as any OSD is not ok-to-stop,
-  # which covers every rebalance and backfill. Waiting on it fails the release
-  # for reasons that have nothing to do with whether the release applied.
+  # A CephCluster reports Progressing through every rebalance and backfill.
   install:
     disableWait: true
   upgrade:
@@ -37,24 +35,15 @@ spec:
     cephFileSystems: []
     cephObjectStores: []
     cephClusterSpec:
-      # The 1.18 chart has no top-level cephImage key, so the image belongs
-      # here. It moves to cephImage on the bump to 1.19 or later.
-      #
-      # Squid stops at v19.2.5: Rook 1.18 and older reject v19.2.6 and newer.
+      # Move to the top-level cephImage key on the bump to Rook 1.19.
+      # Squid stops at v19.2.5: Rook 1.18 and older reject newer releases.
       # https://github.com/rook/rook/issues/18203
       cephVersion:
         image: quay.io/ceph/ceph:v19.2.5
-      dataDirHostPath: /var/lib/rook # default value
-      # OSD replication and recovery run over the SFP+ aggregator, which only
-      # gaea, zeus, and apollo are cabled to. With no public selector, the
-      # mons, mgr, mds, rgw, and clients stay on the pod network, and only the
-      # OSD pods get a second interface. OSDs exist on no other host, so no
-      # other node needs multus.
-      #
-      # addressRanges skips rook's CIDR detection, which runs a canary pod
-      # against the network on every reconcile.
-      #
-      # https://rook.io/docs/rook/v1.18/CRDs/Cluster/network-providers/#multus
+      dataDirHostPath: /var/lib/rook
+      # Only gaea, zeus and apollo are cabled to the SFP+ aggregator, and only they
+      # run OSDs, so only the OSD pods get the cluster network.
+      # addressRanges skips rook's CIDR detection canary pod on every reconcile.
       network:
         provider: multus
         selectors:
@@ -64,22 +53,15 @@ spec:
             - 10.0.70.0/24
       dashboard:
         enabled: true
-        # The gateway terminates TLS, so the mgr serves plain HTTP on 7000.
         ssl: false
-        # Lets the dashboard list alert rules and query metrics.
-        # https://docs.ceph.com/en/squid/mgr/dashboard/#enabling-prometheus-alerting
         prometheusEndpoint: http://kube-prometheus-stack-prometheus.monitoring.svc:9090
         prometheusEndpointSSLVerify: false
       cephConfig:
         mgr:
-          # Rook has no dashboard field for this. It is the option behind
-          # `ceph dashboard set-alertmanager-api-host`, and lets the dashboard
-          # show active alerts and manage silences.
+          # Rook has no dashboard field for this; it is
+          # `ceph dashboard set-alertmanager-api-host`.
           mgr/dashboard/ALERTMANAGER_API_HOST: http://kube-prometheus-stack-alertmanager.monitoring.svc:9093
       mon:
-        # Three mons so the quorum survives the loss of any single host.
-        # allowMultiplePerNode is false to stop rook colocating the quorum on
-        # one node, which would leave the mon store on a single disk.
         # https://github.com/rook/rook/blob/0a1dd5e9e619481432cc66347a45072178ca0b48/deploy/examples/cluster.yaml#L51-L52
         count: 3
         allowMultiplePerNode: false
@@ -90,16 +72,9 @@ spec:
         modules:
           - name: rook
             enabled: true
-      # Rook removes an OSD once it is marked out and the data has drained.
       removeOSDsIfOutAndSafeToRemove: true
-      # Only the log collector is overridden; helm merges maps, so mon, mgr,
-      # osd, exporter, and crashcollector keep the chart's defaults. Those look
-      # oversized against an idle cluster, but an OSD wants its core during
-      # recovery and backfill, which is exactly when the reservation matters.
-      #
-      # The log collector is a logrotate loop measuring 0 on every ceph pod, so
-      # the chart's 100m and 100Mi reserved roughly four cores and 3Gi across
-      # the 33 OSDs and the mons, mgr, mds, and rgw.
+      # The log collector is an idle logrotate loop, and the chart default reserves
+      # about four cores and 3Gi across every ceph pod.
       resources:
         logcollector:
           requests:
@@ -111,9 +86,7 @@ spec:
         useAllDevices: false
         useAllNodes: false
         nodes:
-          # Devices are listed by udev path because the sdX names on these
-          # hosts are reassigned across reboots.
-          #
+          # The sdX names on these hosts change across reboots.
           # gaea excludes WDC WD120EDBZ 5QG6HVLF, a zfs_member.
           - name: gaea
             devices:
@@ -154,33 +127,14 @@ spec:
               - name: /dev/disk/by-id/ata-WDC_WD100EMAZ-00WJTA0_2YK17ZXD-part1
           # apollo excludes its boot disk, a Samsung SSD 970 EVO.
           #
-          # ceph-volume classes these as nvme, which no pool selects:
-          # default-ssd takes `default~ssd`. Forcing the ssd class puts them in
-          # the pool behind fast-rwo alongside zeus's SATA SSDs. Through rbd a
-          # write costs a network round trip plus replication, so the device
-          # gap between nvme and sata is well under the protocol overhead and
-          # a separate tier would promise latency it cannot deliver.
+          # ceph-volume classes these as nvme, which no pool selects. Through rbd the
+          # nvme/sata gap is well under the protocol overhead, so they join the ssd pool.
+          # Rook never reclasses an existing OSD; use `ceph osd crush set-device-class`.
           #
-          # Rook applies crushDeviceClass when it creates an OSD and never
-          # reclasses an existing one, so an OSD already created under the nvme
-          # class needs `ceph osd crush set-device-class` from the toolbox.
-          #
-          # apollo holds 31.2 GiB of RAM against gaea's 504 and zeus's 126, and
-          # takes eight OSDs: six 14 TB drives plus these two. The chart's
-          # default osd request is 4Gi, which the scheduler reserves whether or
-          # not the OSD uses it, so eight ask for 33 GiB on a 31.2 GiB host and
-          # the third one never schedules.
-          #
-          # 3Gi fits: 24 GiB of requests against the ~25.3 GiB left after the
-          # csi plugins and the other daemons. osd_memory_target has to stay
-          # under the limit or the OSD is OOM killed at it, and it is set per
-          # host so gaea and zeus keep the 4 GiB default:
-          #
+          # The 4Gi default osd request leaves the third of apollo's eight OSDs
+          # unschedulable on its 31.2 GiB. osd_memory_target must stay under the limit:
           #   ceph config set osd/host:apollo osd_memory_target 2147483648
-          #
-          # This depends on UnstoppableMango/nixos#377 dropping apollo's CI
-          # role. Without it only 11.2 GiB of the host is allocatable and no
-          # request size is small enough.
+          # Needs UnstoppableMango/nixos#377, which drops apollo's CI role.
           - name: apollo
             resources:
               requests:

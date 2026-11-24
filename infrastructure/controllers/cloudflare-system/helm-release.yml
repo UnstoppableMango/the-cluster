@@ -27,9 +27,9 @@ spec:
         apiTokenKey: CLOUDFLARE_API_TOKEN
         tunnelNameKey: CFTIC_TUNNEL_NAME
     ingressClass:
-      name: cloudflare-tunnel # default
-      controllerValue: strrl.dev/cloudflare-tunnel-ingress-controller # default
-      isDefaultClass: false # default
+      name: cloudflare-tunnel
+      controllerValue: strrl.dev/cloudflare-tunnel-ingress-controller
+      isDefaultClass: false
     replicaCount: 2
     image:
       # https://github.com/STRRL/cloudflare-tunnel-ingress-controller/issues/202
@@ -37,14 +37,14 @@ spec:
       tag: 0.1.0
     resources:
       limits:
-        cpu: 100m # default
-        memory: 128Mi # default
+        cpu: 100m
+        memory: 128Mi
       requests:
-        cpu: 100m # default
-        memory: 128Mi # default
+        cpu: 100m
+        memory: 128Mi
     cloudflared:
       image:
-        repository: cloudflare/cloudflared # default
+        repository: cloudflare/cloudflared
         tag: 2026.11.1
       replicaCount: 3
 ---
@@ -61,19 +61,18 @@ spec:
   chartRef:
     kind: OCIRepository
     name: origin-ca-issuer
-  # https://github.com/cloudflare/origin-ca-issuer/blob/trunk/deploy/charts/origin-ca-issuer/values.yaml
   values:
     controller:
       image:
-        repository: cloudflare/origin-ca-issuer # default
+        repository: cloudflare/origin-ca-issuer
         tag: v0.15.1
       resources:
         limits:
-          cpu: '1' # default
-          memory: 512Mi # default
+          cpu: '1'
+          memory: 512Mi
         requests:
-          cpu: '1' # default
-          memory: 512Mi # default
+          cpu: '1'
+          memory: 512Mi
     certmanager:
-      namespace: cert-manager # default
-      serviceAccountName: cert-manager # default
+      namespace: cert-manager
+      serviceAccountName: cert-manager

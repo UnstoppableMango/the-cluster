@@ -3,8 +3,7 @@ kind: Kustomization
 resources:
   - ../base
 patches:
-  # rosequartz sits on 10.0.69.0/24, so the pinkdiamond gateway address is
-  # outside the metallb pool. See configs/metallb-system/rosequartz.
+  # The pinkdiamond gateway address is outside rosequartz's metallb pool.
   - target:
       kind: HelmRelease
       name: nginx-gateway-fabric

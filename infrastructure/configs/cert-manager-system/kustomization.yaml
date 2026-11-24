@@ -2,8 +2,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - issuers
-  # The Bundle needs the trust-manager CRD, which the trust-manager release
-  # installs. Only clusters running trust-manager should take this path; a
-  # cluster that wants issuers without the bundle points at ./issuers and
-  # ./bundle as separate Kustomizations instead.
+  # The Bundle needs trust-manager. Without it, point Kustomizations at ./issuers
+  # and ./bundle separately.
   - bundle

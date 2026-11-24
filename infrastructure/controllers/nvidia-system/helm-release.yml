@@ -16,18 +16,10 @@ spec:
         kind: HelmRepository
         name: nvidia-device-plugin
   values:
-    # The plugin reads the GPU through NVML, which the image does not ship.
-    # The class's handler mounts it in from the host, as it does for any GPU
-    # pod. The chart's default affinity already selects on the same
-    # nvidia.com/gpu.present label the class schedules onto.
+    # The image lacks NVML; the class's handler mounts it from the host.
     runtimeClassName: nvidia
-    # Not measured yet. The plugin is a small Go daemon that holds an NVML
-    # handle and a gRPC socket, so these are the repo's floors with a limit
-    # well clear of them. No CPU limit: it is the node's only source of
-    # `nvidia.com/gpu`, and kubelet drops the resource if it stops answering.
-    # Top-level rather than under devicePlugin, which this chart version does
-    # not read. GFD, MPS and the config sidecar are all off, so the plugin is
-    # the only container it renders.
+    # No CPU limit: kubelet drops `nvidia.com/gpu` if the plugin stops answering.
+    # Top-level, since this chart version ignores devicePlugin.resources.
     resources:
       requests:
         cpu: 10m

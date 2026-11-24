@@ -15,23 +15,21 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: nats
-  # https://github.com/nats-io/k8s/blob/main/helm/charts/nats/values.yaml
   values:
     config:
       nats:
-        port: 4222 # default
+        port: 4222
       websocket:
         enabled: true
-        port: 8080 # default
+        port: 8080
         ingress:
           enabled: true
           hosts: [nats.thecluster.lan]
           className: nginx
-    # The chart patches the rendered containers through `merge`, so resources go
-    # there rather than at the top of each section.
+    # The chart applies resources only through `merge`.
     container:
       image:
-        repository: nats # default
+        repository: nats
         tag: 2.15.3-linux
       merge:
         resources:
@@ -42,7 +40,7 @@ spec:
             memory: 1Gi
     reloader:
       image:
-        repository: natsio/nats-server-config-reloader # default
+        repository: natsio/nats-server-config-reloader
         tag: 0.25.0
       merge:
         resources:
@@ -54,25 +52,25 @@ spec:
     service:
       ports:
         nats:
-          enabled: true # default
+          enabled: true
         leafnodes:
-          enabled: true # default
+          enabled: true
         websocket:
-          enabled: true # default
+          enabled: true
         mqtt:
           enabled: false
         cluster:
-          enabled: false # default
+          enabled: false
         gateway:
-          enabled: false # default
+          enabled: false
         monitor:
-          enabled: false # default
+          enabled: false
         profiling:
-          enabled: false # default
+          enabled: false
     natsBox:
       container:
         image:
-          repository: natsio/nats-box # default
+          repository: natsio/nats-box
           tag: 0.20.2
         merge:
           resources:

@@ -8,15 +8,13 @@ spec:
   maxHistory: 2
   releaseName: cloudflare-operator
   targetNamespace: cloudflare-system
-  # The chart is not published anywhere, so it is built from dist/chart in the
-  # checkout the GitRepository pins.
+  # The chart is unpublished, so it builds from dist/chart.
   chart:
     spec:
       chart: ./dist/chart
       sourceRef:
         kind: GitRepository
         name: cloudflare-operator
-  # https://github.com/unmango/cloudflare-operator/blob/main/dist/chart/values.yaml
   values:
     cloudflare:
       auth:
@@ -26,16 +24,13 @@ spec:
     manager:
       image:
         repository: ghcr.io/unmango/cloudflare-operator
-        # The chart renders repository:tag verbatim, so the digest rides along
-        # on the tag to make the reference immutable.
+        # The chart renders repository:tag verbatim, so the digest rides on the tag.
         tag: 0.9.0@sha256:ebc0afe882bd52fe1b0de540368392049d06f0266bc5f03b481626ca1c6485d6
     ingressClass:
       enabled: true
       name: cloudflare
       default: false
-    # Gateways of this class get an Envoy proxy and a tunnel of their own, from
-    # the CloudflareGatewayConfig in infrastructure/configs. The class can exist
-    # before the config does; it reports itself unaccepted until then.
+    # The class reports itself unaccepted until the CloudflareGatewayConfig exists.
     gatewayClass:
       enabled: true
       name: cloudflare

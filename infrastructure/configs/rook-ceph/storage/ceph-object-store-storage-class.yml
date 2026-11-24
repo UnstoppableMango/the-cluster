@@ -8,7 +8,6 @@ parameters:
   objectStoreName: s3
   objectStoreNamespace: rook-ceph
 ---
-# For backups: deleting the claim keeps the bucket.
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:

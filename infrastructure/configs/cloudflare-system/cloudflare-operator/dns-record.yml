@@ -10,7 +10,6 @@ spec:
     cnameRecord:
       type: CNAME
       name: k8s.thecluster.io
-      # The thecluster-io CloudflareTunnel in tunnel.yml.
       tunnelRef:
         name: thecluster-io
       proxied: true
@@ -28,7 +27,6 @@ spec:
     cnameRecord:
       type: CNAME
       name: prom.thecluster.io
-      # The thecluster-io CloudflareTunnel in tunnel.yml.
       tunnelRef:
         name: thecluster-io
       proxied: true
@@ -46,7 +44,6 @@ spec:
     cnameRecord:
       type: CNAME
       name: auth.thecluster.io
-      # The thecluster-io CloudflareTunnel in tunnel.yml.
       tunnelRef:
         name: thecluster-io
       proxied: true
@@ -64,7 +61,6 @@ spec:
     cnameRecord:
       type: CNAME
       name: pds.thecluster.io
-      # The thecluster-io CloudflareTunnel in tunnel.yml.
       tunnelRef:
         name: thecluster-io
       proxied: true
@@ -82,7 +78,6 @@ spec:
     cnameRecord:
       type: CNAME
       name: flux-webhook.thecluster.io
-      # The thecluster-io CloudflareTunnel in tunnel.yml.
       tunnelRef:
         name: thecluster-io
       proxied: true

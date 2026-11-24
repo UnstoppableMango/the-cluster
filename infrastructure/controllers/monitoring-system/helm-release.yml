@@ -8,9 +8,8 @@ spec:
   maxHistory: 2
   releaseName: kube-prometheus-stack
   targetNamespace: monitoring
-  # The CRDs come from the prometheus-operator-crds release in prometheus-operator-crds/, so that
-  # ServiceMonitors elsewhere can depend on them without waiting on this
-  # release and its Ceph-backed volumes.
+  # CRDs come from prometheus-operator-crds/, so ServiceMonitors elsewhere need
+  # not wait on this release and its Ceph volumes.
   install:
     crds: Skip
   upgrade:
@@ -25,37 +24,31 @@ spec:
   values:
     crds:
       enabled: false
-    # Only prometheus carries the chart's sizing; every other component in the
-    # stack defaults to none. No CPU limits: a scrape or an evaluation cycle
-    # that gets throttled shows up as gaps in the series rather than as load.
+    # No CPU limits: a throttled scrape or evaluation shows up as gaps in the series.
     grafana:
       enabled: true
       grafana.ini:
         server:
-          # The OAuth callback needs one canonical host, and it has to be the
-          # public one: Keycloak only redirects back to prom.thecluster.io.
+          # Keycloak only redirects back to the public host.
           root_url: https://prom.thecluster.io
         auth:
-          # Users first created through Dex carry Dex's subject, so match them
-          # to their Keycloak login by email instead of creating a duplicate.
-          # Keycloak only issues tokens for users declared in
-          # UnstoppableMango/iam, so the email is not attacker-chosen.
+          # Matches users created through Dex to their Keycloak login. Keycloak only
+          # issues tokens for users declared in UnstoppableMango/iam, so the email is
+          # not attacker-chosen.
           oauth_allow_insecure_email_lookup: true
         auth.generic_oauth:
           enabled: true
           name: THECLUSTER
           client_id: grafana
           scopes: openid profile email groups
-          # The browser follows auth_url, so it is the public host. Grafana
-          # calls the other two itself and goes straight to the service: the
-          # public host sits behind Cloudflare and Anubis.
+          # Grafana calls these two directly: the public host sits behind Cloudflare
+          # and Anubis.
           auth_url: https://auth.thecluster.io/realms/thecluster/protocol/openid-connect/auth
           token_url: http://keycloak-http.keycloak.svc/realms/thecluster/protocol/openid-connect/token
           api_url: http://keycloak-http.keycloak.svc/realms/thecluster/protocol/openid-connect/userinfo
           signout_redirect_url: https://auth.thecluster.io/realms/thecluster/protocol/openid-connect/logout?client_id=grafana&post_logout_redirect_uri=https%3A%2F%2Fprom.thecluster.io%2Flogin
           use_pkce: true
-          # Groups come from UnstoppableMango/iam. Anyone in neither group is
-          # refused rather than given a default role.
+          # Anyone in neither group is refused.
           role_attribute_path: "contains(groups[*], 'grafana-admins') && 'Admin' || contains(groups[*], 'grafana-viewers') && 'Viewer'"
           role_attribute_strict: true
       envValueFrom:
@@ -67,8 +60,7 @@ spec:
         enabled: true
         storageClassName: ssd-rbd
         size: 10Gi
-      # The RWO volume cannot attach to a surge pod on another node, so a
-      # rolling update never completes.
+      # The RWO volume cannot attach to a surge pod on another node.
       deploymentStrategy:
         type: Recreate
       resources:
@@ -84,7 +76,6 @@ spec:
             memory: 32Mi
           limits:
             memory: 64Mi
-      # Covers both dashboard and datasource sidecars.
       sidecar:
         resources:
           requests:
@@ -113,8 +104,7 @@ spec:
           memory: 64Mi
         limits:
           memory: 256Mi
-      # The operator injects this sidecar into the Prometheus and Alertmanager
-      # pods; it has no key under prometheus or alertmanager.
+      # The operator injects this sidecar; it has no key under prometheus or alertmanager.
       prometheusConfigReloader:
         resources:
           requests:
@@ -130,8 +120,7 @@ spec:
               memory: 32Mi
             limits:
               memory: 64Mi
-    # etcd, the scheduler, the controller-manager, and kube-proxy run as NixOS
-    # services rather than pods, so these targets would only ever be down.
+    # These run as NixOS services, not pods.
     kubeEtcd:
       enabled: false
     kubeControllerManager:
@@ -142,8 +131,6 @@ spec:
       enabled: false
     prometheus:
       prometheusSpec:
-        # Select monitors and rules from every namespace, not only those
-        # labelled with this release.
         serviceMonitorSelectorNilUsesHelmValues: false
         podMonitorSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false

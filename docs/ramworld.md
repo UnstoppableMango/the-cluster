@@ -24,7 +24,9 @@ A tmpfs is gone when the pod is.
 Three pieces keep the world:
 
 - `save`, an `emptyDir` with `medium: Memory` and a 2Gi `sizeLimit`, mounted at `/palworld/Pal/Saved`.
-- `data`, a `standard-rwo` claim. The game mounts `palworld/` from it as the install; the helper containers mount `palworld/Pal/Saved` from it as the durable copy of the world. The game container never sees that copy, because the ramdisk is mounted over it.
+- `data`, a `standard-rwo` claim.
+  The game mounts `palworld/` from it as the install; the helper containers mount `palworld/Pal/Saved` from it as the durable copy of the world.
+  The game container never sees that copy, because the ramdisk is mounted over it.
 - `restore`, an init container that rsyncs the durable copy into the ramdisk before the game starts, and `sync`, a native sidecar that rsyncs the other way every five minutes and once more on SIGTERM.
 
 `sync` is declared under `initContainers` with `restartPolicy: Always`.

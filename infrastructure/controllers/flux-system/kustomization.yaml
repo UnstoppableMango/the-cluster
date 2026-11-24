@@ -1,8 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-# external-snapshotter and gateway-api are applied by Kustomizations of their
-# own (infra-external-snapshotter, infra-gateway-api), so pulling them in here
-# would put the same objects in two prune inventories.
+# external-snapshotter and gateway-api have Kustomizations of their own;
+# including them here would double their prune inventories.
 resources:
   - network-policy.yml
   - receiver.yml

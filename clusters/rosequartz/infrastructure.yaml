@@ -145,7 +145,6 @@ spec:
     - name: infra-rook-ceph
     - name: infra-multus
     - name: infra-sealed-secrets
-    # The pinkdiamond release renders a PrometheusRule.
     - name: infra-monitoring-crds
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -163,8 +162,6 @@ spec:
   wait: true
   dependsOn:
     - name: infra-configs-rook-ceph
-    # certificate.yml is issued by ClusterIssuer thecluster.lan, and the
-    # object store cannot come up on its secure port without the Secret.
     - name: infra-configs-cert-manager
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -211,11 +208,7 @@ spec:
   interval: 10m
   prune: true
   wait: true
-  # The CRDs and sealed-secrets are what the issuers need. Depending on
-  # infra-cert-manager instead would block on the csi-driver release, which is
-  # unrelated to issuing. The trust-manager Bundle is deliberately not here: it
-  # needs a CRD that only the trust-manager release installs, so it reconciles
-  # as infra-configs-trust-bundle below.
+  # Not infra-cert-manager, which would also block on the unrelated csi-driver.
   dependsOn:
     - name: infra-cert-manager-crds
     - name: infra-sealed-secrets
@@ -266,7 +259,6 @@ spec:
   dependsOn:
     - name: infra-gateway-api
     - name: infra-configs-nginx-gateway
-    # The gateway asks for a specific address, so the pool has to exist first.
     - name: infra-configs-metallb
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -283,7 +275,6 @@ spec:
   prune: true
   wait: true
   dependsOn:
-    # The node agent's data mover snapshots through the ceph-rbd VolumeSnapshotClass.
     - name: infra-configs-rook-ceph-snapshots
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -300,12 +291,9 @@ spec:
   prune: true
   wait: true
   dependsOn:
-    # The chart installs the CRDs these objects use.
     - name: infra-velero
     - name: infra-sealed-secrets
-    # ceph-credentials.yml is a SecretStore and ExternalSecret.
     - name: infra-external-secrets
-    # object-bucket-claim.yml provisions through bucket-retain.
     - name: infra-configs-rook-ceph-storage
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -338,12 +326,8 @@ spec:
   interval: 10m
   prune: true
   wait: true
-  # flux-webhook.thecluster.io reaches the Receiver through a rule on the
-  # thecluster-io CloudflareTunnel, not an Ingress here.
   dependsOn:
-    # webhook-token-sealed.yml needs the SealedSecret CRD.
     - name: infra-sealed-secrets
-    # sealed-secrets-httproute.yml is an HTTPRoute against the nginx Gateway.
     - name: infra-nginx-gateway
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -404,12 +388,8 @@ spec:
   interval: 10m
   prune: true
   wait: true
-  # Fans the thecluster.lan CA out to every namespace as ConfigMap
-  # thecluster-lan-ca. ncps mounts it to trust the RGW certificate.
   dependsOn:
-    # The Bundle CRD comes from the trust-manager release in this directory.
     - name: infra-cert-manager
-    # The source Secret is the CA the issuers Kustomization creates.
     - name: infra-configs-cert-manager
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -426,11 +406,8 @@ spec:
   prune: true
   wait: true
   dependsOn:
-    # This path ships the operator's API token as a SealedSecret, so the CRD has
-    # to exist or nothing on it applies.
     - name: infra-sealed-secrets
-    # The manager registers its Gateway controllers only when it finds the
-    # Gateway API CRDs at startup.
+    # The manager registers its Gateway controllers only if the CRDs exist at startup.
     - name: infra-gateway-api
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -445,11 +422,9 @@ spec:
   path: ./infrastructure/configs/cloudflare-system/cloudflare-operator
   interval: 10m
   prune: true
-  # No wait: the tunnel takes a while to register with Cloudflare's edge and
-  # nothing else gates on it.
+  # The tunnel is slow to register with Cloudflare, and nothing gates on it.
   dependsOn:
     - name: infra-cloudflare-operator
-    # gateway.yml is a Gateway, so the Gateway API CRDs have to exist.
     - name: infra-gateway-api
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -481,9 +456,7 @@ spec:
   wait: true
   dependsOn:
     - name: infra-monitoring-crds
-    # Grafana is published through an HTTPRoute.
     - name: infra-gateway-api
-    # grafana-oidc-sealed.yml needs the SealedSecret CRD.
     - name: infra-sealed-secrets
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -498,8 +471,7 @@ spec:
   path: ./infrastructure/controllers/enclave-system
   interval: 10m
   prune: true
-  # The enclave Kustomization is suspended, and a suspended Kustomization
-  # never reports Ready. Set this back to true when it is unsuspended.
+  # A suspended Kustomization never reports Ready. Set back to true once unsuspended.
   wait: false
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -558,9 +530,7 @@ spec:
   prune: true
   wait: true
   dependsOn:
-    # The ClusterSecretStore CRD and its validating webhook come from the release.
     - name: infra-external-secrets
-    # Store credentials are SealedSecrets.
     - name: infra-sealed-secrets
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1

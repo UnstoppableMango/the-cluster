@@ -9,16 +9,13 @@ spec:
     name: pulumi-kubernetes-operator
   interval: 10m
   maxHistory: 2
-  # The Stack, Program, Workspace and Update CRDs ship in the chart's crds/
-  # directory, which helm installs once and never upgrades on its own.
+  # The CRDs ship in crds/, which helm never upgrades.
   install:
     crds: Create
   upgrade:
     crds: CreateReplace
-  # https://github.com/pulumi/pulumi-kubernetes-operator/blob/main/deploy/helm/pulumi-operator/values.yaml
   values:
-    # No CPU limit: the controller holds a leader-election lease. The chart
-    # default sets one equal to the request.
+    # No CPU limit: the controller holds a leader lease.
     resources:
       limits:
         memory: 256Mi

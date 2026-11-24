@@ -7,14 +7,12 @@ metadata:
     kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   deviceClass: ssd
-  # Every SSD sits in zeus, so a host failure domain cannot place a second
-  # replica. Move to host once a second node carries SSDs.
+  # Every SSD is in zeus. Move to host once a second node carries SSDs.
   failureDomain: osd
   enableCrushUpdates: true
   replicated:
     size: 2
 ---
-# fast-rwo is the tier name for this pool. See docs/storage.md.
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
@@ -34,8 +32,7 @@ parameters:
 reclaimPolicy: Delete
 allowVolumeExpansion: true
 ---
-# Deprecated alias for fast-rwo. Existing claims keep this name because a
-# PVC's storageClassName is immutable; new claims use fast-rwo.
+# Deprecated: use fast-rwo. Kept because a PVC's storageClassName is immutable.
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:

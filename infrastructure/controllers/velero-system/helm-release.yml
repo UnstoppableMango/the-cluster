@@ -16,10 +16,9 @@ spec:
         kind: HelmRepository
         name: vmware-tanzu
         namespace: flux-system
-  # https://github.com/vmware-tanzu/helm-charts/blob/main/charts/velero/values.yaml
   values:
     image:
-      repository: velero/velero # default
+      repository: velero/velero
       tag: v1.19.0
     deployNodeAgent: true
     nodeAgent:
@@ -75,7 +74,6 @@ spec:
       capabilities:
         drop: [ ALL ]
       readOnlyRootFilesystem: true
-    # The kopia repository writes here when backups expire or are deleted.
     extraVolumes:
       - name: udmrepo
         emptyDir: {}
@@ -89,8 +87,7 @@ spec:
     credentials:
       useSecret: false
     configuration:
-      # Without it Velero tries the AWS plugin's native snapshotter on Ceph
-      # volumes and silently backs up no data.
+      # Otherwise Velero uses the AWS snapshotter on Ceph and backs up no data.
       features: EnableCSI
       backupStorageLocation: []
       volumeSnapshotLocation: []

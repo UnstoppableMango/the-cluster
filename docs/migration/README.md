@@ -9,7 +9,8 @@ Every Kustomization in the repo names an explicit `spec.path` and none of them g
 ## Porting a component
 
 1. Find its document: `grep -A20 'name: infra-monitoring' pinkdiamond-wiring.yaml`
-2. Check what it depends on. The `dependsOn` edges are the ordering constraints that were learned the hard way; keep them unless the reason is gone.
+2. Check what it depends on.
+   The `dependsOn` edges are the ordering constraints that were learned the hard way; keep them unless the reason is gone.
 3. Copy the document into `clusters/rosequartz/infrastructure.yaml` (or `apps.yaml`), adjusting paths if the component needs a cluster-scoped overlay.
 4. Delete the document from this file.
 

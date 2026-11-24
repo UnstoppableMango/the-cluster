@@ -15,7 +15,6 @@ spec:
     crds: Create
   upgrade:
     crds: CreateReplace
-  # https://github.com/nginxinc/nginx-gateway-fabric/blob/main/charts/nginx-gateway-fabric/values.yaml
   values:
     fullnameOverride: nginx-gateway-fabric
     nginxGateway:
@@ -27,8 +26,7 @@ spec:
         enable: true
       productTelemetry:
         enable: false
-      # Idles at 7m and 68Mi. No CPU limit: the two replicas hold a leader
-      # election for Gateway API status writes.
+      # No CPU limit: the replicas hold a leader election.
       resources:
         requests:
           cpu: 25m
@@ -43,9 +41,8 @@ spec:
         repository: ghcr.io/nginx/nginx-gateway-fabric/nginx
         tag: 2.9.0
       service:
-        externalTrafficPolicy: Cluster # https://metallb.io/usage/#ip-address-sharing
-      # Measured at 27m and 150Mi serving the cluster's ingress. No CPU limit:
-      # this is the dataplane and throttling it shows up as request latency.
+        externalTrafficPolicy: Cluster # MetalLB shares an address only under Cluster
+      # No CPU limit: this is the dataplane.
       container:
         resources:
           requests:
@@ -73,10 +70,8 @@ spec:
               allowedRoutes:
                 namespaces:
                   from: All
-            # Seedvault on the LAN. pihole answers this name with the Gateway's
-            # address, so the phone keeps one URL and skips Cloudflare at home.
-            # The cert is a public one, from the letsencrypt issuer, living
-            # beside the route in seedvault (see the ReferenceGrant there).
+            # Split horizon: pihole answers this name with the Gateway's address on the LAN.
+            # The cert lives beside the route in seedvault.
             - name: g10agosdav
               hostname: g10agosdav.thecluster.io
               port: 443
@@ -92,9 +87,7 @@ spec:
                   selector:
                     matchLabels:
                       kubernetes.io/metadata.name: seedvault
-            # Nextcloud and Collabora on the LAN, the same way as Seedvault
-            # above: pihole answers these names with the Gateway's address, and
-            # each cert is a public one living beside its route.
+            # Split horizon, as for Seedvault.
             - name: cloud
               hostname: cloud.thecluster.io
               port: 443

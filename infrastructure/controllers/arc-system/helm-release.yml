@@ -13,11 +13,10 @@ spec:
     crds: Create
   upgrade:
     crds: CreateReplace
-  # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set-controller/values.yaml
   values:
     replicaCount: 2
     image:
-      repository: ghcr.io/actions/gha-runner-scale-set-controller # default
+      repository: ghcr.io/actions/gha-runner-scale-set-controller
       tag: 0.15.1@sha256:4b51a20db717b194e2f3fa96cfe2ddcb21602811f79053c75fd1a383517b9f90
     securityContext:
       capabilities:
@@ -25,9 +24,8 @@ spec:
       readOnlyRootFilesystem: true
       runAsNonRoot: true
       runAsUser: 1000
-    # No CPU limit: throttling delays the 5s leader-election lease renewal, and a
-    # lost lease makes the controller exit and re-register every runner scale set
-    # with GitHub, which strands EphemeralRunnerSets on a stale runnerScaleSetId.
+    # No CPU limit: a lost leader lease re-registers every scale set and strands
+    # EphemeralRunnerSets on a stale runnerScaleSetId.
     resources:
       limits:
         memory: 512Mi

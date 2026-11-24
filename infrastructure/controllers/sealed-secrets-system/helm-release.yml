@@ -20,12 +20,11 @@ spec:
     crds: Create
   upgrade:
     crds: CreateReplace
-  # https://github.com/bitnami-labs/sealed-secrets/tree/main/helm/sealed-secrets
   values:
     fullnameOverride: sealed-secrets-controller
     image:
-      registry: docker.io # default
-      repository: bitnami/sealed-secrets-controller # default
+      registry: docker.io
+      repository: bitnami/sealed-secrets-controller
       tag: 0.41.2
     resources:
       requests:

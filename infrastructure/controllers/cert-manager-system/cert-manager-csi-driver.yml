@@ -6,9 +6,7 @@ metadata:
 spec:
   interval: 30m
   maxHistory: 2
-  # A DaemonSet rolls out one node at a time (maxUnavailable: 1, maxSurge: 0)
-  # and each node pulls three images, so the 5m default is not enough on a
-  # cluster whose node set changes.
+  # The DaemonSet rolls out one node at a time, three images each.
   timeout: 15m
   install:
     remediation:
@@ -25,7 +23,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: jetstack
-  # https://github.com/cert-manager/csi-driver/blob/main/deploy/charts/csi-driver/values.yaml
   values:
     image:
       repository: quay.io/jetstack/cert-manager-csi-driver
@@ -43,16 +40,8 @@ spec:
       requests:
         cpu: 100m
         memory: 128Mi
-    # No tolerations, so the DaemonSet skips pik8s4-6: they carry the legacy
-    # master taint plus a custom unschedulable one, and tolerating both is the
-    # only way onto them. Nothing scheduled there mounts a csi-driver volume,
-    # and the three containers reserve 120m of CPU and 256Mi per node on
-    # machines whose whole budget is 4 GiB against a kube-apiserver that wants
-    # over 2 of it.
-  # The chart's `resources` above covers only the driver container; the two
-  # sidecars it renders have no values key at all and would run unsized. The
-  # patch is a strategic merge rather than JSON6902 so it keys off the container
-  # name, which a chart bump cannot reorder out from under it.
+    # No tolerations: pik8s4-6 mount no csi-driver volumes and have no memory to spare.
+  # The two sidecars have no values key. Strategic merge keys off container names.
   postRenderers:
     - kustomize:
         patches:
