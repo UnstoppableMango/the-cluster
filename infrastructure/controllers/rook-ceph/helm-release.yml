@@ -54,12 +54,14 @@ spec:
         - name: host-nix
           mountPath: /nix
           readOnly: true
-      # The chart copies these into the Driver CRs, mapping container names to keys:
-      # csi-rbdplugin and csi-cephfsplugin to plugin, driver-registrar to registrar,
-      # csi-omap-generator to omapGenerator. Any other name sizes nothing, and a list
-      # replaces the chart default wholesale.
+      # The chart copies these into the Driver CRs, translating container names to
+      # CR keys, e.g. csi-rbdplugin and csi-cephfsplugin to plugin, driver-registrar
+      # to registrar. A name with no matching key sizes nothing, and a list replaces
+      # the chart default wholesale. csi-omap-generator has no running container
+      # (enableOMAPGenerator defaults false); it stays so the sizing is ready.
       #
-      # On a chart bump, check the live containers, not `helm show values`:
+      # On a chart bump, and again at 1.19, check the live containers, not
+      # `helm show values`:
       #
       #   kubectl -n rook-ceph get pods \
       #     -o custom-columns='NAME:.metadata.name,C:.spec.containers[*].name' \

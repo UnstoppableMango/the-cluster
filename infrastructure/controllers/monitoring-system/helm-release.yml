@@ -24,6 +24,7 @@ spec:
   values:
     crds:
       enabled: false
+    # Only prometheus carries the chart's sizing; the rest default to none.
     # No CPU limits: a throttled scrape or evaluation shows up as gaps in the series.
     grafana:
       enabled: true

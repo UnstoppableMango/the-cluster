@@ -25,7 +25,8 @@ spec:
       readOnlyRootFilesystem: true
       runAsNonRoot: true
       runAsUser: 1000
-    # No CPU limit: a lost leader lease re-registers every scale set and strands
+    # No CPU limit: throttling delays the 5s lease renewal, and a lost lease makes
+    # the controller exit and re-register every scale set, which strands
     # EphemeralRunnerSets on a stale runnerScaleSetId.
     resources:
       limits:
