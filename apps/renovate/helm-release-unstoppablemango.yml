@@ -19,6 +19,7 @@ spec:
     crds: Create
   upgrade:
     crds: CreateReplace
+  # https://github.com/renovatebot/helm-charts/blob/main/charts/renovate/values.yaml
   values:
     image:
       registry: ghcr.io

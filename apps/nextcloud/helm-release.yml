@@ -23,6 +23,7 @@ spec:
   upgrade:
     remediation:
       retries: 0
+  # https://github.com/nextcloud/helm/blob/main/charts/nextcloud/values.yaml
   values:
     image:
       repository: library/nextcloud

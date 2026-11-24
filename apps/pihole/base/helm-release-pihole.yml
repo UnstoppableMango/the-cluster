@@ -13,6 +13,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: pihole
+  # https://artifacthub.io/packages/helm/mojo2600/pihole#values
   values:
     replicaCount: 1
     strategyType: Recreate
@@ -106,6 +107,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: pihole
+  # https://artifacthub.io/packages/helm/mojo2600/pihole#values
   values:
     replicaCount: 1
     strategyType: Recreate

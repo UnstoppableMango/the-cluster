@@ -29,6 +29,7 @@ spec:
                   options:
                     - name: ndots
                       value: "1"
+  # https://github.com/CollaboraOnline/online/blob/master/kubernetes/helm/collabora-online/values.yaml
   values:
     fullnameOverride: collabora
     image:

@@ -17,6 +17,7 @@ spec:
     crds: Skip
   upgrade:
     crds: Skip
+  # https://github.com/kubernetes-sigs/external-dns/blob/master/charts/external-dns/values.yaml
   values:
     image:
       repository: registry.k8s.io/external-dns/external-dns
@@ -83,6 +84,7 @@ spec:
     crds: Skip
   upgrade:
     crds: Skip
+  # https://github.com/kubernetes-sigs/external-dns/blob/master/charts/external-dns/values.yaml
   values:
     image:
       repository: registry.k8s.io/external-dns/external-dns

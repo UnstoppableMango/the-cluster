@@ -20,6 +20,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: harbor
+  # https://github.com/goharbor/harbor-helm/blob/v1.19.2/values.yaml
   values:
     # At the default fullname the chart's harbor-registry ConfigMap and Secret
     # collide with the ones Rook writes for the bucket claim.

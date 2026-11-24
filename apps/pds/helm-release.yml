@@ -11,6 +11,7 @@ spec:
   chartRef:
     kind: OCIRepository
     name: pds
+  # https://github.com/santisbon/pds/blob/main/charts/pds/values.yaml
   values:
     fullnameOverride: pds
     image:
