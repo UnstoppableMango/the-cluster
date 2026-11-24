@@ -114,14 +114,7 @@ spec:
           # Devices are listed by udev path because the sdX names on these
           # hosts are reassigned across reboots.
           #
-          # gaea excludes three drives:
-          # - SEAGATE DKS2C-H2R0SS 9WM6BY870000C146002X
-          #   (wwn-0x5000c50034622c9b) reports uncorrected read errors that
-          #   leave PGs inconsistent and hold the cluster in HEALTH_ERR, which
-          #   stops rook reconciling the filesystems and pools. It is the drive
-          #   to pull from gaea.
-          # - SEAGATE DKS2C-H2R0SS 9WM7JRGL0000913705M8 reports 0B.
-          # - WDC WD120EDBZ 5QG6HVLF is a zfs_member.
+          # gaea excludes WDC WD120EDBZ 5QG6HVLF, a zfs_member.
           - name: gaea
             devices:
               - name: /dev/disk/by-id/ata-WDC_WD140EDGZ-11B1PA0_9MJ3HJZU-part1
