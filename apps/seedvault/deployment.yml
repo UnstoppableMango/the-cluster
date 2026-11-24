@@ -4,7 +4,6 @@ metadata:
   name: copyparty
   namespace: seedvault
 spec:
-  # The backups volume is ReadWriteOnce.
   strategy:
     type: Recreate
   selector:

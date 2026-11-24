@@ -1,6 +1,5 @@
-# Settings every instance shares, read through envFrom. An instance sets only
-# TARGET on top of these.
 # https://anubis.techaro.lol/docs/admin/installation#environment-variables
+# Shared by every instance; an instance sets only TARGET.
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,13 +8,10 @@ metadata:
 data:
   BIND: ":8080"
   METRICS_BIND: ":9090"
-  # cloudflared is the only thing in front of Anubis, and the X-Forwarded-For
-  # it sends ends in a Cloudflare edge address that Anubis would otherwise take
-  # as the client. Cloudflare puts the real one in CF-Connecting-IP.
+  # cloudflared's X-Forwarded-For ends in a Cloudflare edge address.
   CUSTOM_REAL_IP_HEADER: CF-Connecting-IP
-  # One pass covers every protected host: the cookie is set on the apex, and
-  # every instance signs with the same key from anubis-key-sealed.yml.
+  # One pass covers every host: the cookie is on the apex, and every instance
+  # shares the key.
   COOKIE_DOMAIN: thecluster.io
-  # No POLICY_FNAME here, so an instance that sets none of its own gets
-  # upstream's default botPolicies.yaml: browser user agents are challenged,
-  # other clients and /.well-known pass. keycloak.yml sets its own.
+  # Unset, so an instance gets upstream's default botPolicies.yaml;
+  # keycloak.yml sets its own.

@@ -1,5 +1,5 @@
-# A CA scoped to this database. Chaining it off thecluster.io would put the root
-# in ca.crt, and Postgres would then accept any cluster-issued cert as a client.
+# Scoped to this database: chaining off thecluster.io would make Postgres
+# accept any cluster-issued client cert.
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
@@ -17,10 +17,7 @@ spec:
   isCA: true
   commonName: nextcloud-postgres-ca
   secretName: postgres-ca
-  # CNPG watches a Secret it owns, but cert-manager owns this one, so the
-  # operator only reloads the instances on renewal if this label is present.
-  # Without it a renewed certificate sits in the Secret unread until someone
-  # runs `kubectl cnpg reload`, and the instances keep serving the old one.
+  # CNPG reloads on renewal only for Secrets it owns or that carry this label.
   secretTemplate:
     labels:
       cnpg.io/reload: "true"
@@ -53,8 +50,7 @@ metadata:
   namespace: nextcloud
 spec:
   secretName: postgres-server
-  # See the CA above. This is the one that matters most: it renews every
-  # 75 days, and an unreloaded expiry breaks every verify-full client.
+  # Renews every 75 days, and an unreloaded expiry breaks verify-full clients.
   secretTemplate:
     labels:
       cnpg.io/reload: "true"
@@ -93,7 +89,6 @@ metadata:
   namespace: nextcloud
 spec:
   secretName: postgres-replication
-  # See the CA above.
   secretTemplate:
     labels:
       cnpg.io/reload: "true"
@@ -113,8 +108,8 @@ spec:
     size: 2048
     rotationPolicy: Always
 ---
-# Served by the nginx Gateway's cloud listener on the LAN. It lives here, not in
-# nginx-gateway, so a failed issuance only holds up this app.
+# The cloud listener's certificate lives here so a failed issuance holds up
+# only this app.
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -129,7 +124,6 @@ spec:
     kind: ClusterIssuer
     name: letsencrypt
 ---
-# Lets the nginx Gateway's listener read the Secret above.
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: ReferenceGrant
 metadata:

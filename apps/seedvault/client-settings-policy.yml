@@ -1,5 +1,4 @@
-# nginx defaults to a 1m request body, and Seedvault uploads bigger chunks
-# than that. Through Cloudflare, uploads are capped at 100MB at the edge.
+# Seedvault uploads chunks larger than nginx's 1m default.
 apiVersion: gateway.nginx.org/v1alpha1
 kind: ClientSettingsPolicy
 metadata:

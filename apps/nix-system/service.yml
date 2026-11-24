@@ -1,7 +1,5 @@
-# A ClusterIP rather than a headless Service: nix resolves the substituter
-# once and sticks to the first address it gets, so a headless Service would
-# pin every runner to whichever replica DNS listed first. kube-proxy spreads
-# connections across the ready replicas instead.
+# Not headless: nix sticks to the first address it resolves, which would pin
+# every runner to one replica.
 apiVersion: v1
 kind: Service
 metadata:

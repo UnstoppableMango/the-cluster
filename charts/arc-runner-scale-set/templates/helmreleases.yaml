@@ -45,10 +45,8 @@
 {{- $_ := set $requests "storage" $scaleSet.nixStorageSize }}
 {{- end }}
 ---
-# The githubConfigSecret named in defaults must already exist here. It is sealed
-# cluster-wide once and fanned out across these namespaces by
-# `make apps/arc-runners/thecluster-bot-sealed.yml`, which reads the namespaces
-# back out of this template so the two cannot drift.
+# githubConfigSecret must already exist here. The make target for
+# apps/arc-runners/thecluster-bot-sealed.yml reads the namespaces from this template.
 apiVersion: v1
 kind: Namespace
 metadata:

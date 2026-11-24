@@ -72,3 +72,8 @@ The subshell stops at the first step that fails:
 )
 kubectl -n nextcloud logs -f deploy/nextcloud -c nextcloud
 ```
+
+## Measurements
+
+- Clients upload in chunks: 10MB from the desktop client, up to 100MB from the web UI.
+- Cloudflare caps a request body at 100MB at the edge, so `client-settings-policy.yml` need not allow more.

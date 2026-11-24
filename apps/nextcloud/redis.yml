@@ -1,5 +1,4 @@
-# File locking and the distributed cache. Nothing in it survives a restart or
-# needs to: Nextcloud rebuilds both.
+# Nextcloud rebuilds the locks and cache after a restart.
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:

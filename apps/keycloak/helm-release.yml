@@ -33,7 +33,6 @@ spec:
       mode: xforwarded
     resources:
       limits:
-        # Initial startup needs a bit of heft
         cpu: "4"
         memory: 4Gi
       requests:
@@ -47,13 +46,11 @@ spec:
       port: 5432
       database: keycloak
       username: keycloak
-      # No password: the role authenticates with a client certificate
     dbchecker:
       enabled: true
     extraEnv: |
       - name: KC_HOSTNAME
         value: https://auth.thecluster.io
-      # Appended verbatim to the JDBC URL, so it has to start with '?'
       - name: KC_DB_URL_PROPERTIES
         value: >-
           ?ssl=true&sslmode=verify-full&sslrootcert=/opt/unmango/postgres/certs/ca.crt&sslcert=/opt/unmango/postgres/certs/tls.crt&sslkey=/opt/unmango/postgres/certs/tls.key

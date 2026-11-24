@@ -1,11 +1,4 @@
-# ncps keeps narinfos and the NAR index in this database; only NAR bodies go
-# to the bucket. It authenticates with the client certificate certificate.yml
-# issues, so there is no credential to seal. CNPG still generates the role's
-# password and publishes it as Secret postgres-app; nothing reads it, and it
-# survives as the break-glass login over a non-SSL connection.
-#
-# Two instances so a node loss fails over instead of waiting on the RBD
-# image to reattach. The data is small: metadata for at most 180G of NARs.
+# Two instances so a node loss fails over instead of waiting on an RBD reattach.
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
@@ -13,30 +6,22 @@ metadata:
   namespace: nix-system
 spec:
   instances: 2
-  # CNPG applies nothing by default, so without this the postgres pods run
-  # BestEffort. Measured at 12m idle, and a working set around 300Mi under CI
-  # load with a sampled peak of 501Mi over a week; the limit is twice that. Every
-  # backend adds to it, which is why deployment.yml caps the ncps pool.
-  # No CPU limit: throttling the primary stalls every ncps replica behind it.
+  # Every backend adds memory, which is why deployment.yml caps the ncps pool.
+  # No CPU limit: throttling the primary stalls every ncps replica.
   resources:
     requests:
       cpu: 100m
       memory: 320Mi
     limits:
       memory: 1Gi
-  # certificate.yml issues all four. Serving and client verification share one
-  # CA because the client certificates chain to it, and CNPG reads the chain
-  # out of the ca.crt cert-manager writes beside the certificate.
   certificates:
     serverCASecret: postgres-pki-ca
     serverTLSSecret: postgres-server-cert
     clientCASecret: postgres-pki-ca
     replicationTLSSecret: postgres-replication-cert
   postgresql:
-    # CNPG appends `host all all all scram-sha-256` after this, and the first
-    # match wins, so an SSL connection as ncps can no longer fall back to the
-    # password. The appended line still answers a non-SSL connection, which is
-    # the break-glass path for psql.
+    # CNPG appends `host all all all scram-sha-256` after this, which keeps the
+    # password as a break-glass login over non-SSL only.
     pg_hba:
       - hostssl ncps ncps all cert
   storage:

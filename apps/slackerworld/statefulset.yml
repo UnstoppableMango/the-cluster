@@ -63,8 +63,7 @@ spec:
             - name: rest
               containerPort: 8212
               protocol: TCP
-          # No CPU limit: throttling drops server ticks, and
-          # WORKER_THREADS_SERVER already bounds the thread count.
+          # No CPU limit: throttling drops server ticks.
           resources:
             requests:
               cpu: "4"

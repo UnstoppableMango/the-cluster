@@ -5,7 +5,6 @@ metadata:
   namespace: claude
 spec:
   replicas: 1
-  # One RWO home volume, and one registered remote-control environment.
   strategy:
     type: Recreate
   selector:
@@ -16,11 +15,8 @@ spec:
       labels:
         app.kubernetes.io/name: claude
     spec:
-      # Builds and nix evaluations need the memory headroom only gaea has.
       nodeSelector:
         kubernetes.io/hostname: gaea
-      # Pod uids map to an unprivileged host range, so root in any container
-      # here, including the build daemons, is not root on gaea.
       hostUsers: false
       # dind needs a writable /sys/fs/cgroup; see docs/nested-containers.md.
       runtimeClassName: nested-containers
@@ -30,17 +26,10 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
-        # Only the volume root is regrouped, not every file in dockerd's store.
         fsGroupChangePolicy: OnRootMismatch
-      # Its token is projected into the claude container alone, since
-      # automounting would hand every sidecar API access too.
+      # Projected into the claude container alone, so sidecars get no API access.
       serviceAccountName: claude
       initContainers:
-        # dockerd for the docker CLI, compose, buildx, kind and testcontainers.
-        # It runs as root with every capability and no seccomp or AppArmor
-        # filter, which is what dind needs, but hostUsers: false makes all of
-        # it namespaced: root here is an unprivileged uid on gaea, and the
-        # capabilities reach only this pod's namespaces.
         - name: dind
           image: docker:29.10.0-dind@sha256:4bbc7223f81db790097c6dea42fb93e05b8fead4f0431fbe6ccaba6e8473201c
           args:
@@ -65,8 +54,6 @@ spec:
               type: Unconfined
             appArmorProfile:
               type: Unconfined
-            # Nested containers mount a /proc of their own, which the masked
-            # default /proc forbids.
             procMount: Unmasked
           resources:
             requests:
@@ -82,16 +69,12 @@ spec:
       containers:
         - name: claude
           image: ghcr.io/unstoppablemango/dotfiles:53d4868
-          # remote-control rejects CLAUDE_CODE_OAUTH_TOKEN (inference-only scope).
-          # It reads the full-scope login that `claude auth login` writes to the home volume.
-          # args, not command: command would replace the image's entrypoint,
-          # which links the Home Manager files into the home volume first.
-          # tini is PID 1 and reaps the orphans sessions leave behind, which
-          # remote-control never does.
-          # Sessions are mostly idle, at about 0.5Gi each with their MCP
-          # servers; the cap keeps a burst of them well inside the limit.
+          # remote-control rejects CLAUDE_CODE_OAUTH_TOKEN (inference-only scope), so it
+          # reads the `claude auth login` login on the home volume.
+          # args, not command, to keep the entrypoint that links the Home Manager files.
+          # tini reaps the orphans sessions leave behind.
           args: ["tini", "--", "claude", "remote-control", "--capacity", "16"]
-          # Trust is never saved for the home directory itself, so rc needs a subdirectory.
+          # Trust is never saved for the home directory itself.
           workingDir: /home/generic/src
           env:
             - name: DOCKER_HOST
@@ -99,11 +82,8 @@ spec:
           # remote-control exits when stdin closes.
           stdin: true
           tty: true
-          # Seven sessions measured 1.9Gi at rest. Builds (go, cargo, tsc,
-          # dotnet, nix evaluation) run in this container and take gigabytes
-          # each, and the container is one OOM group: reaching the limit kills
-          # remote-control and every session with it, so the limit is generous
-          # until peaks under load have been measured.
+          # The container is one OOM group, so the limit is generous until peaks under
+          # load are measured.
           resources:
             requests:
               cpu: "2"
@@ -115,22 +95,18 @@ spec:
             capabilities:
               drop: ["ALL"]
           volumeMounts:
-            # The image user is generic (uid 1000, HOME=/home/generic).
-            # This hides the home-manager dotfiles the image ships there.
+            # Hides the home-manager dotfiles the image ships here.
             - name: home
               mountPath: /home/generic
             - name: docker-sock
               mountPath: /run/docker
-            # Where kubectl and client-go look for in-cluster credentials.
             - name: kube-api-access
               mountPath: /var/run/secrets/kubernetes.io/serviceaccount
               readOnly: true
-        # Keeps gh, and git through it, logged in as the GitHub App. Only this
-        # container mounts the App's private key; claude sees hour-long tokens.
+        # Only this container mounts the GitHub App's private key.
         - name: github-app-token
           image: ghcr.io/unstoppablemango/dotfiles:53d4868
-          # command skips the entrypoint on purpose: the claude container already
-          # links the home files, and two putter runs would race on its state file.
+          # command skips the entrypoint: two putter runs would race on its state file.
           command: ["node", "/opt/github-app-token/github-app-token.mjs"]
           resources:
             requests:
@@ -160,8 +136,6 @@ spec:
             claimName: docker
         - name: docker-sock
           emptyDir: {}
-        # The same three files automounting would provide; kubelet refreshes
-        # the token before it expires.
         - name: kube-api-access
           projected:
             sources:
@@ -184,6 +158,4 @@ spec:
         - name: github-app
           secret:
             secretName: github-app
-            # Group-readable: the files are root-owned, and fsGroup is what lets
-            # uid 1000 read them.
             defaultMode: 0440

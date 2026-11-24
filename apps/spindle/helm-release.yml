@@ -19,10 +19,7 @@ spec:
     common:
       variables:
         nonSecret:
-          # Knots sign their requests for this audience, so it cannot change
-          # once the spindle is registered on the appview.
-          # spindle.thecluster.io reaches the spindle Service through
-          # httproute.yml on the cloudflare Gateway in cloudflare-system.
+          # Knots sign requests for this audience, fixed once registered on the appview.
           SPINDLE_SERVER_HOSTNAME: spindle.thecluster.io
           SPINDLE_SERVER_OWNER: did:plc:npefy3bubltqewdfhah5i5ef
           SPINDLE_NIXERY_PIPELINES_MAX_CONCURRENT_WORKFLOWS: 4
@@ -30,16 +27,14 @@ spec:
         # The 18Gi dind ceiling only fits gaea, and the spindle image is amd64.
         nodeSelector:
           kubernetes.io/hostname: gaea
-        # Replaces the chart's privileged dind sidecar with the
-        # nested-containers recipe; see docs/nested-containers.md. The
-        # postRenderer below sets the pod-level half of it.
+        # The nested-containers recipe instead of the chart's privileged sidecar; see
+        # docs/nested-containers.md.
         additionalContainers: []
         initContainers:
           - name: dind
             image: docker:29.10.0-dind@sha256:4bbc7223f81db790097c6dea42fb93e05b8fead4f0431fbe6ccaba6e8473201c
-            # "dockerd" must come first, or the entrypoint adds its own
-            # tcp://0.0.0.0:2375 bind. Loopback only, since workflow code
-            # could reach an unauthenticated Docker API on the pod IP.
+            # "dockerd" first, or the entrypoint adds a tcp://0.0.0.0:2375 bind that
+            # workflow code could reach.
             args:
               - dockerd
               - --host=unix:///var/run/docker.sock
@@ -55,8 +50,7 @@ spec:
               failureThreshold: 24
               periodSeconds: 5
               timeoutSeconds: 5
-            # A restart kills every running workflow container, so this only
-            # fires after dockerd stops answering for about 90s.
+            # A restart kills every running workflow, so allow about 90s.
             livenessProbe:
               exec:
                 command: [docker, -H, tcp://127.0.0.1:2375, info]
@@ -74,11 +68,8 @@ spec:
                 type: Unconfined
               appArmorProfile:
                 type: Unconfined
-              # Nested containers mount a /proc of their own, which the masked
-              # default /proc forbids.
               procMount: Unmasked
-            # Workflow containers are children of this dockerd, so the limit
-            # covers MAX_CONCURRENT_WORKFLOWS x MAX_JOB_MEMORY_MB (4 x 4096).
+            # Covers MAX_CONCURRENT_WORKFLOWS x MAX_JOB_MEMORY_MB (4 x 4096).
             resources:
               requests:
                 cpu: 100m

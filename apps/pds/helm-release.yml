@@ -15,46 +15,28 @@ spec:
   values:
     fullnameOverride: pds
     image:
-      # Upstream publishes only the rolling 0.4 tag and an immutable
-      # sha-<commit> tag per release, so pin the commit of the release.
-      # This is v0.4.5037.
+      # Upstream's only immutable tags are sha-<commit>. This is v0.4.5037.
       tag: sha-ed2dcb8616cd56ceab8e4f34973d2b2c67ea1bd9
     config:
-      # PDS_HOSTNAME, and the server's did:web identity. It cannot change once
-      # accounts exist without migrating every one of them.
-      #
-      # A subdomain rather than the apex, which serves the thecluster.io site.
-      # The cost is that handles under it (you.pds.thecluster.io) are a second
-      # level down, which Cloudflare's Universal SSL wildcard does not cover,
-      # so they cannot resolve over HTTPS. Accounts here take a custom-domain
-      # handle verified by an _atproto TXT record instead.
+      # The server's did:web identity: changing it means migrating every account.
+      # Handles under a subdomain are a second level down, which Cloudflare's
+      # Universal SSL does not cover, so accounts use custom-domain handles.
       hostname: pds.thecluster.io
       inviteRequired: true
-    # S3 is the in-cluster RGW of CephObjectStore/s3, on the plain listener
-    # harbor-system also uses. The bucket comes from object-bucket-claim.yml.
     blobstore:
       bucket: pds-blobs
       endpoint: http://rook-ceph-rgw-s3.rook-ceph.svc:80
       region: us-east-1
       forcePathStyle: true
-    # pds-sealed.yml carries jwt-secret, admin-password and plc-rotation-key.
-    # The chart reads the blobstore keys from this Secret as well; the post
-    # renderer below points them at the claim's Secret instead.
-    #
-    # Back plc-rotation-key up outside the cluster: it signs every did:plc
-    # operation for accounts on this PDS, and losing it freezes their DIDs.
+    # Back plc-rotation-key up outside the cluster: losing it freezes every DID on
+    # this PDS.
     credentials:
       existingSecret: pds
-    # SQLite account and actor stores. Not re-fetchable, so a tier that
-    # survives a host.
     persistence:
       storageClass: standard-rwo
       size: 10Gi
-    # pds.thecluster.io reaches the pds Service through a rule on the
-    # thecluster-io CloudflareTunnel and a matching DnsRecord.
     httpRoute:
       enabled: false
-    # Upstream measures a personal instance at about 135Mi.
     resources:
       requests:
         cpu: 50m
@@ -64,9 +46,7 @@ spec:
   postRenderers:
     - kustomize:
         patches:
-          # Rook writes the bucket credentials as AWS_ACCESS_KEY_ID and
-          # AWS_SECRET_ACCESS_KEY in a Secret named after the claim, not under
-          # the chart's blobstore-* keys in the chart's Secret.
+          # Rook writes the bucket keys as AWS_*, not the chart's blobstore-* keys.
           - target:
               kind: Deployment
               name: pds

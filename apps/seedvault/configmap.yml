@@ -4,8 +4,7 @@ metadata:
   name: copyparty
   namespace: seedvault
 data:
-  # The image's initcfg sets chdir: /w and includes every *.conf in /cfg, so
-  # accounts.conf from the accounts Secret is read alongside this.
+  # The image includes every *.conf in /cfg, so accounts.conf is read too.
   copyparty.conf: |
     [global]
       p: 3923

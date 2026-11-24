@@ -1,7 +1,5 @@
-# Anubis policy for the keycloak instance: upstream's default
-# data/botPolicies.yaml from the Anubis release in keycloak.yml, with one rule
-# added at the top of `bots`. Everything below that rule is upstream's file
-# unchanged, so a bump can be diffed against the new release's copy.
+# Upstream's data/botPolicies.yaml from the Anubis release in keycloak.yml,
+# unchanged below the first rule in `bots`, so a bump can be diffed against it.
 ## Anubis has the ability to let you import snippets of configuration into the main
 ## configuration file. This allows you to break up your config into smaller parts
 ## that get logically assembled into one big file.
@@ -15,12 +13,8 @@
 ## /usr/share/docs/anubis/data or in the tarball you extracted Anubis from.
 
 bots:
-  # Keycloak's OIDC endpoints that programs call rather than browsers:
-  # discovery, signing keys, token exchange, userinfo, introspection and
-  # revocation. kubelogin, the kube-apiserver and Grafana fetch these without a
-  # browser and cannot solve a challenge, and an HTML challenge page in place of
-  # JSON is what broke `kubectl oidc-login`. The authorization and login pages
-  # stay behind the challenge. Listed first so no later rule can catch them.
+  # OIDC endpoints that kubelogin, the kube-apiserver and Grafana call without a
+  # browser, so they cannot solve a challenge. First, so no later rule catches them.
   - name: keycloak-oidc-machine-endpoints
     path_regex: ^/realms/[^/]+/(?:\.well-known/.*|protocol/openid-connect/(?:certs|token|token/introspect|userinfo|revoke))$
     action: ALLOW

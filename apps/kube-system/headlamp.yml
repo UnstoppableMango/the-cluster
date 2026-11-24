@@ -19,8 +19,8 @@ spec:
   # https://github.com/kubernetes-sigs/headlamp/blob/main/charts/headlamp/values.yaml
   values:
     image:
-      registry: ghcr.io # default
-      repository: headlamp-k8s/headlamp # default
+      registry: ghcr.io
+      repository: headlamp-k8s/headlamp
       tag: v0.46.0
     ingress:
       enabled: false
