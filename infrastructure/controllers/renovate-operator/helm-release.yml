@@ -9,6 +9,7 @@ spec:
     name: renovate-operator
   interval: 10m
   maxHistory: 2
+  # https://github.com/mogenius/renovate-operator/blob/main/charts/renovate-operator/values.yaml
   values:
     crd:
       # "template" renders the CRDs as manifests, so upgrades apply them.

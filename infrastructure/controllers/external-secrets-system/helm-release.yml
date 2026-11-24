@@ -20,6 +20,7 @@ spec:
     crds: Create
   upgrade:
     crds: CreateReplace
+  # https://github.com/external-secrets/external-secrets/blob/main/deploy/charts/external-secrets/values.yaml
   # TODO: size from measured usage.
   # No CPU limits: the controller and webhook sit in every reconcile and admission.
   values:

@@ -16,6 +16,7 @@ spec:
         kind: HelmRepository
         name: vmware-tanzu
         namespace: flux-system
+  # https://github.com/vmware-tanzu/helm-charts/blob/main/charts/velero/values.yaml
   values:
     image:
       repository: velero/velero

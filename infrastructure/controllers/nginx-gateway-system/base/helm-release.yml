@@ -15,6 +15,7 @@ spec:
     crds: Create
   upgrade:
     crds: CreateReplace
+  # https://github.com/nginxinc/nginx-gateway-fabric/blob/main/charts/nginx-gateway-fabric/values.yaml
   values:
     fullnameOverride: nginx-gateway-fabric
     nginxGateway:

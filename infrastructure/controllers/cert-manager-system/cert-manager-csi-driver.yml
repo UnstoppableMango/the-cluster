@@ -23,6 +23,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: jetstack
+  # https://github.com/cert-manager/csi-driver/blob/main/deploy/charts/csi-driver/values.yaml
   values:
     image:
       repository: quay.io/jetstack/cert-manager-csi-driver

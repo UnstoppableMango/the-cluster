@@ -19,6 +19,7 @@ spec:
     crds: Create
   upgrade:
     crds: CreateReplace
+  # https://github.com/cloudnative-pg/charts/blob/main/charts/cloudnative-pg/values.yaml
   values:
     image:
       repository: ghcr.io/cloudnative-pg/cloudnative-pg

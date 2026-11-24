@@ -19,6 +19,7 @@ spec:
     crds: Create
   upgrade:
     crds: CreateReplace
+  # https://github.com/cloudnative-pg/charts/blob/main/charts/plugin-barman-cloud/values.yaml
   values:
     resources:
       requests:

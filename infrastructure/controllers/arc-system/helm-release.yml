@@ -13,6 +13,7 @@ spec:
     crds: Create
   upgrade:
     crds: CreateReplace
+  # https://github.com/actions/actions-runner-controller/blob/master/charts/gha-runner-scale-set-controller/values.yaml
   values:
     replicaCount: 2
     image:

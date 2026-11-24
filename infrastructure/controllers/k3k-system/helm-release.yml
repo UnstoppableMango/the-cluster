@@ -19,6 +19,7 @@ spec:
     crds: Create
   upgrade:
     crds: CreateReplace
+  # https://github.com/rancher/k3k/blob/main/charts/k3k/values.yaml
   # Virtual cluster servers are sized on their Cluster objects.
   values:
     controller:

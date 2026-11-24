@@ -15,6 +15,7 @@ spec:
       sourceRef:
         kind: GitRepository
         name: operator-controller
+  # https://github.com/operator-framework/operator-controller/blob/v1.8.0/helm/olmv1/values.yaml
   values:
     options:
       certManager:

@@ -15,6 +15,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: nats
+  # https://github.com/nats-io/k8s/blob/main/helm/charts/nats/values.yaml
   values:
     config:
       nats:
