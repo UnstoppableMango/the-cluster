@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - namespace.yml
   - admin-sealed.yml
+  - oidc-sealed.yml
   - certificate.yml
   - postgres-cluster.yml
   - pvcs.yml
