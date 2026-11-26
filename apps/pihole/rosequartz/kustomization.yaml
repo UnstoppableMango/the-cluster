@@ -21,21 +21,18 @@ patches:
         value: 10.0.69.202
   # Split horizon: on the LAN these names answer with the nginx Gateway.
   # address= also answers AAAA with no data, so nothing falls back to
-  # Cloudflare's IPv6 address. It still forwards HTTPS records, whose ECH key
-  # and h3 hint are Cloudflare's: Chromium then sends ECH to the Gateway and
-  # fails with ERR_ECH_FALLBACK_CERTIFICATE_INVALID. filter-rr drops them;
-  # dnsmasq offers it only for every name. FTL splits array settings on ';'.
+  # Cloudflare's IPv6 address.
   - target:
       kind: HelmRelease
       name: pihole-a
     patch: |-
       - op: add
         path: /spec/values/ftl/misc_dnsmasq_lines
-        value: address=/g10agosdav.thecluster.io/cloud.thecluster.io/office.thecluster.io/10.0.69.200;filter-rr=HTTPS
+        value: address=/g10agosdav.thecluster.io/cloud.thecluster.io/office.thecluster.io/10.0.69.200
   - target:
       kind: HelmRelease
       name: pihole-b
     patch: |-
       - op: add
         path: /spec/values/ftl/misc_dnsmasq_lines
-        value: address=/g10agosdav.thecluster.io/cloud.thecluster.io/office.thecluster.io/10.0.69.200;filter-rr=HTTPS
+        value: address=/g10agosdav.thecluster.io/cloud.thecluster.io/office.thecluster.io/10.0.69.200
