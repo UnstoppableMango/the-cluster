@@ -28,7 +28,7 @@ spec:
           image: quay.io/operator-framework/catalogd:v1.12.0
     deployments:
       templateSpec:
-        # k3s sets node-role.kubernetes.io/control-plane=true; chart default expects empty string
+        # k3s sets node-role.kubernetes.io/control-plane=true; the chart expects "".
         nodeSelector:
           kubernetes.io/os: linux
           node-role.kubernetes.io/control-plane: "true"

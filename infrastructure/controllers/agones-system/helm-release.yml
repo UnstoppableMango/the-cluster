@@ -49,8 +49,7 @@ spec:
             memory: 128Mi
           limits:
             memory: 256Mi
-  # The pre-delete hook job has no values key. The target is a selector, so a
-  # chart bump that renames the job leaves this a no-op rather than a failure.
+  # The pre-delete hook job has no values key.
   postRenderers:
     - kustomize:
         patches:

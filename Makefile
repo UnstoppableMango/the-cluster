@@ -29,24 +29,18 @@ hack/secrets/infrastructure/configs/cert-manager-system/ca.yml:
 	@mkdir -p $(@D)
 	PKI_STACK=$(PKI_STACK) hack/pki-ca-secret.sh $@
 
-# One rule per top-level manifest directory rather than a bare `%-sealed.yml`.
-# GNU make matches a target pattern containing no slash against the file name
-# alone and prepends the target's own directory to the prerequisites, so a bare
-# pattern looks for infrastructure/<ns>/hack/secrets/secret.yml and never fires.
-# A slash in the pattern makes it match the whole path, which is what the
-# `flux/%-sealed.yml` shape used to get for free.
+# One rule per top-level directory: make matches a slashless pattern against
+# the file name alone, so a bare `%-sealed.yml` looks for the stub in the wrong
+# directory.
 define seal
 kubeseal --format=yaml --cert=$| \
 --secret-file $< --sealed-secret-file $@
 endef
 
-# $* drops the top-level directory, which differs per rule, so the stub path is
-# derived from the sealed file instead: hack/secrets/ mirrors the manifest tree.
+# $* drops the top-level directory, so derive the stub from the sealed file.
 STUB = hack/secrets/$(patsubst %-sealed.yml,%.yml,$<)
 
-# head -1 because a sealed file may hold one document per namespace, as
-# apps/arc-runners/thecluster-bot-sealed.yml does. They all carry the same
-# secret, so the first one is as good as any.
+# A fanned-out sealed file holds one copy of the secret per namespace.
 define unseal
 @mkdir -p $(dir $(STUB))
 @umask 0177; \
@@ -56,21 +50,15 @@ kubectl get secret \
 -o yaml > $(STUB); chmod 0600 $(STUB)
 endef
 
-# Without this a sealed secret built on the way to a -unseal target counts as an
-# intermediate file, and make deletes it afterwards.
+# Otherwise make deletes a sealed file built on the way to -unseal.
 .PRECIOUS: apps/%-sealed.yml infrastructure/%-sealed.yml
 
-# Overrides the pattern rule below: one scale set per namespace means the runner
-# credentials have to land in every one of them, so this secret is fanned out
-# rather than sealed once. More specific rules win in make, so listing it here is
-# enough to take over.
+# Overrides the pattern rule: the runner credentials are fanned out to every
+# scale set namespace.
 ARC_RUNNER_CHART := charts/arc-runner-scale-set
 
-# Prerequisites are only the inputs that determine the rendered Namespace list.
-# Sealing is randomized, so anything else here rewrites the ciphertext of all 37
-# documents for no change. values.yaml is excluded because its `scaleSets` is
-# empty and the release file always supplies its own. Templates are named rather
-# than globbed so a new one is a deliberate choice here.
+# Only the inputs that determine the Namespace list, since resealing rewrites
+# every document. Templates are named so a new one is a deliberate choice.
 apps/arc-runners/thecluster-bot-sealed.yml: hack/secrets/apps/arc-runners/thecluster-bot.yml \
 		apps/arc-runners/helm-release.yml \
 		$(ARC_RUNNER_CHART)/templates/helmreleases.yaml \

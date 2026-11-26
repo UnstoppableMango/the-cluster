@@ -5,40 +5,26 @@ metadata:
   namespace: cloudflare-system
 spec:
   accountId: 265a046434c952eeecb9710cfd76617c
-  # Remotely managed, so the ingress rules below are pushed to the Zero Trust
-  # dashboard rather than written to a config file on the origin.
   configSource: cloudflare
   config:
     ingress:
       - hostname: k8s.thecluster.io
         service: https://kubernetes.default.svc
         originRequest:
-          # Verifying instead would mean originServerName: kubernetes.default.svc
-          # (which the api-server certificate does carry as a SAN) plus caPool
-          # pointing at the cluster CA in kube-root-ca.crt. cloudflare-operator
-          # cannot mount that file: the only volumeMount it gives the cloudflared
-          # container is /etc/cloudflared for a local config.yml, and this is a
-          # remotely configured tunnel. Revisit once the operator passes
-          # spec.template volumes through.
+          # Verifying needs caPool from kube-root-ca.crt, and the operator mounts nothing
+          # into cloudflared. TODO: revisit once it passes spec.template volumes through.
           noTlsVerify: true
-      # Browser-facing hosts go through an Anubis instance in apps/anubis,
-      # which proxies to the real service once a client passes its challenge.
+      # Browser-facing hosts go through apps/anubis.
       - hostname: prom.thecluster.io
         service: http://grafana.anubis.svc:80
-      # Plain HTTP to the origin: the keycloakx release runs with
-      # proxy.mode xforwarded, so Keycloak takes the scheme from the
-      # X-Forwarded-Proto the tunnel sets rather than from the connection,
-      # which Anubis passes through unchanged along with the Host header.
+      # Keycloak takes the scheme from X-Forwarded-Proto (proxy.mode xforwarded),
+      # which Anubis passes through.
       - hostname: auth.thecluster.io
         service: http://keycloak.anubis.svc:80
-      # GitHub push webhooks for the flux-system GitRepository, through the
-      # Receiver in infrastructure/controllers/flux-system.
       - hostname: flux-webhook.thecluster.io
         service: http://webhook-receiver.flux-system.svc:80
-      # Plain HTTP to the origin: TLS terminates at the Cloudflare edge, which
-      # is what the PDS expects of the Caddy it normally sits behind.
       - hostname: pds.thecluster.io
         service: http://pds.pds.svc:3000
-      # Cloudflare rejects a remote config whose last rule is not a catch-all,
-      # and the CRD requires that rule to omit hostname and path.
+      # Cloudflare requires a final catch-all rule, and the CRD requires it to omit
+      # hostname and path.
       - service: http_status:404

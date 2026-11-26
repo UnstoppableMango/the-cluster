@@ -1,14 +1,7 @@
 #!/usr/bin/env bash
 # Seal a secret once with cluster-wide scope and emit one SealedSecret per
-# namespace the arc-runner-scale-set chart renders.
-#
-# The AutoscalingRunnerSet CRD takes githubConfigSecret as a bare name, so the
-# secret has to exist in the same namespace as every scale set. The chart gives
-# each scale set its own namespace, so the namespace list is read back out of
-# `helm template` rather than restated here.
-#
-# Cluster-wide scope is what makes one ciphertext valid in all of them; a
-# strict-scoped ciphertext only unseals in the namespace it was sealed against.
+# namespace the arc-runner-scale-set chart renders, since githubConfigSecret is
+# a bare name. The namespaces come from `helm template`.
 set -euo pipefail
 
 if [ "$#" -ne 4 ]; then
@@ -41,8 +34,7 @@ if [ -z "$namespaces" ]; then
 	exit 1
 fi
 
-# Sealing is randomized, so seal once and reuse the ciphertext. Sealing per
-# namespace would churn every key in this file on every regeneration.
+# Sealing is randomized; one ciphertext keeps regenerations from churning every document.
 kubeseal --format=yaml --cert="$SEALED_SECRETS_CERT" --scope cluster-wide \
 	--secret-file "$secret_file" --sealed-secret-file "$workdir/sealed.yml"
 

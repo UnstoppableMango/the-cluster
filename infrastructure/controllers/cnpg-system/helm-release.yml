@@ -22,7 +22,7 @@ spec:
   # https://github.com/cloudnative-pg/charts/blob/main/charts/cloudnative-pg/values.yaml
   values:
     image:
-      repository: ghcr.io/cloudnative-pg/cloudnative-pg # default
+      repository: ghcr.io/cloudnative-pg/cloudnative-pg
       tag: 1.30.2
     resources:
       requests:

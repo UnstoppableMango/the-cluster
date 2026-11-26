@@ -5,7 +5,8 @@ This is the plan for turning it into something the cluster depends on, and the r
 
 Two rules shape it:
 
-- Configuration is declarative. A custom script has to justify itself.
+- Configuration is declarative.
+  A custom script has to justify itself.
 - Everything the feature consumes ships as a proper release, pinned by version and bumped by Renovate.
   A bare commit or a moving tag is not a release.
 
@@ -90,7 +91,8 @@ Until it is released, there is nothing to pin.
 
 ## Recommendation
 
-Release thecluster-operator properly and keep it as the configuration surface. (Chosen 2026-10-09.)
+Release thecluster-operator properly and keep it as the configuration surface.
+(Chosen 2026-10-09.)
 
 Goal 4 needs our own CRDs regardless, so the operator is not extra work that tofu-controller would save; it is work that would be duplicated later.
 The Terraform provider is the strongest off-the-shelf option, and the fallback if the operator's scope keeps growing: if we find ourselves reimplementing robot accounts, retention and replication, the operator should drive the provider (or be replaced by it) rather than grow its own client.
@@ -106,8 +108,10 @@ Each step merges and releases before the next one consumes it.
 `unmango/thecluster-operator#138` already adds release-please the way `unmango/cloudflare-operator` has it (`release-type: go`, bumping `dist/chart/Chart.yaml` `version` and `appVersion`), run as thecluster[bot] so the `v*.*.*` tag triggers the semver image build in `main.yml`.
 It also moves the repo onto a Nix devshell, the `thecluster` runners and Kubernetes 1.37 modules.
 
-- #138 branched before #139 and conflicts with it (`README.md` and two generated CRDs), so its CI has not run. Merge `main` into it, regenerate, and land it.
-- Merge the first release PR. The manifest starts at `0.1.0` and `bump-patch-for-minor-pre-major` is set, so that release is most likely `v0.1.1`.
+- #138 branched before #139 and conflicts with it (`README.md` and two generated CRDs), so its CI has not run.
+  Merge `main` into it, regenerate, and land it.
+- Merge the first release PR.
+  The manifest starts at `0.1.0` and `bump-patch-for-minor-pre-major` is set, so that release is most likely `v0.1.1`.
 - Check that the image tag the chart renders matches the released image.
 - Consume `dist/chart` from a `GitRepository` pinned to the tag, as cloudflare-operator is; an OCI chart can come later.
 
@@ -140,9 +144,11 @@ crictl pull docker.io/library/busybox:latest
 
 ### 4. Failover runbook
 
-Already drafted for #4638. It only applies once nodes pull through Harbor, so it lands in `docs/harbor.md` with step 3:
+Already drafted for #4638.
+It only applies once nodes pull through Harbor, so it lands in `docs/harbor.md` with step 3:
 
-- Unreachable Harbor, a Harbor error, or pihole down: containerd falls back to the upstream on its own. Nothing to do beyond slower pulls and upstream rate limits.
+- Unreachable Harbor, a Harbor error, or pihole down: containerd falls back to the upstream on its own.
+  Nothing to do beyond slower pulls and upstream rate limits.
 - Harbor answering but wrong (a broken cached manifest): move `/etc/containerd/certs.d` aside on the node, or delete the artifact from the project and pull again.
 - A lasting bypass: drop `../modules/registry-mirror` from `kubelet.extraModules` and deploy.
 

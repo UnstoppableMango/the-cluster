@@ -12,19 +12,16 @@ spec:
   # https://github.com/mogenius/renovate-operator/blob/main/charts/renovate-operator/values.yaml
   values:
     crd:
-      # The default "hook" mode applies the CRDs from a kubectl Job; "template"
-      # renders them as ordinary manifests so upgrades apply CRD changes.
+      # "template" renders the CRDs as manifests, so upgrades apply them.
       mode: template
     image:
-      registry: ghcr.io # default
-      repository: mogenius/renovate-operator # default
+      registry: ghcr.io
+      repository: mogenius/renovate-operator
       tag: 6.10.0@sha256:a7f7e7448a5f5c8ea91f56566b940754fe1fe46447c75d375eacf4ced12e6655
-    # The UI has no auth provider configured, which makes every visitor an
-    # admin, so it stays unexposed (the chart's ingress, route and webhook
-    # defaults are all off). Reach it with kubectl port-forward.
+    # The UI has no auth, so every visitor is an admin. Use kubectl port-forward.
     policy:
       enabled: true
-    # No CPU limit: the controller holds a leader-election lease.
+    # No CPU limit: the controller holds a leader lease.
     resources:
       limits:
         memory: 256Mi

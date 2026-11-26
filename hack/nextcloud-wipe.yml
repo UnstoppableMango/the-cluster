@@ -1,7 +1,6 @@
 # Empties both Nextcloud claims, for reinstalling after a failed first install.
-# It deletes everything on them, so it is for an instance with nothing in it
-# yet. apps/nextcloud/README.md has the whole sequence; run this only with the
-# HelmRelease suspended and the Deployment at zero.
+# Run only with the HelmRelease suspended and the Deployment at zero; see
+# apps/nextcloud/README.md.
 #
 #   kubectl apply -f hack/nextcloud-wipe.yml
 #   kubectl -n nextcloud wait --for=jsonpath='{.status.phase}'=Succeeded pod/nextcloud-wipe --timeout=5m

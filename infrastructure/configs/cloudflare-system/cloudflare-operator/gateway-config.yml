@@ -4,13 +4,10 @@ metadata:
   name: cloudflare
   namespace: cloudflare-system
 spec:
-  # Each Gateway of the cloudflare class gets a tunnel of its own, named after
-  # it in its namespace, whose rules send the Gateway's hostnames to its Envoy.
   template:
     spec:
       accountId: 265a046434c952eeecb9710cfd76617c
       configSource: cloudflare
-      # The tunnel owns a proxied CNAME to itself for every listener hostname.
       dns:
         # thecluster.io
         zoneId: 22f1d42ba0fbe4f924905e1c6597055c
@@ -29,7 +26,6 @@ spec:
             version: 2026.11.2
   envoy:
     replicas: 1
-    # cloudflared reaches Envoy from inside the cluster.
     serviceType: ClusterIP
     resources:
       requests:

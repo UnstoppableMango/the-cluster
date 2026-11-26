@@ -20,9 +20,7 @@ spec:
   upgrade:
     crds: CreateReplace
   # https://github.com/rancher/k3k/blob/main/charts/k3k/values.yaml
-  # The chart deploys only the controller. Virtual clusters are Cluster objects
-  # (k3k.io) in a namespace of their own, and their k3s server pods are sized
-  # on the Cluster, not here.
+  # Virtual cluster servers are sized on their Cluster objects.
   values:
     controller:
       resources:

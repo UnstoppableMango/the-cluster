@@ -21,10 +21,12 @@ Read a cachix cache's key from `https://app.cachix.org/api/v1/cache/<name>` rath
 
 Reached two ways:
 
-- `http://ncps.nix-system.svc.cluster.local:8501` from inside the cluster. This is what the ARC runners use.
+- `http://ncps.nix-system.svc.cluster.local:8501` from inside the cluster.
+  This is what the ARC runners use.
 - `https://ncps.thecluster.lan` from the LAN, through the nginx Gateway.
 
-Runner pods use the in-cluster Service. The Gateway has an HTTPS-443 listener only, and its certificate comes from the private `thecluster.lan` ClusterIssuer that pods do not trust, so the LAN hostname is not usable from inside.
+Runner pods use the in-cluster Service.
+The Gateway has an HTTPS-443 listener only, and its certificate comes from the private `thecluster.lan` ClusterIssuer that pods do not trust, so the LAN hostname is not usable from inside.
 
 ## Version
 
@@ -71,7 +73,8 @@ kubectl -n nix-system logs "$POD" -c ncps --previous --tail=-1 \
   | grep -E 'error writing the response|staging reader|presence probe timed out|Bytes copied does not match|failed to (download|store)'
 ```
 
-`--tail=-1` matters: with a label selector `kubectl logs` keeps only the last 10 lines of each pod, so the grep finds nothing. A replaced pod starts at restart count 0 and takes its logs with it, so check the pods' age against the failure time first.
+`--tail=-1` matters: with a label selector `kubectl logs` keeps only the last 10 lines of each pod, so the grep finds nothing.
+A replaced pod starts at restart count 0 and takes its logs with it, so check the pods' age against the failure time first.
 
 A rising restart count with `OOMKilled`, or `Liveness probe failed` events, is a restart; `staging reader: producer stalled` is the part wait; `presence probe timed out` is a bucket stat slower than `--cache-storage-stat-timeout`, which ncps answers with a 500 that nix retries; truncations with none of these come from the upstream download or the RGW bucket, and the error ncps logs at the failure time says which.
 
@@ -115,7 +118,8 @@ A restored database that references a NAR the bucket no longer holds presents as
 
 ## Signing key
 
-ncps signs the narinfos it serves. The key name derives from `--cache-hostname`, so it is always `ncps.thecluster.lan:...`.
+ncps signs the narinfos it serves.
+The key name derives from `--cache-hostname`, so it is always `ncps.thecluster.lan:...`.
 
 `--cache-secret-key-path=/etc/ncps/cache.key` points at `apps/nix-system/signing-key-sealed.yml`, so **git holds the key, every replica signs with it, and a rebuilt database keeps the same identity**.
 Without that flag ncps generates a key on first start and stores it in the `config` table of the database under key `secret_key`, in nix `name:base64` format, which makes the identity every consumer trusts depend on the database surviving.
@@ -169,9 +173,13 @@ kubectl -n rook-ceph exec deploy/rook-ceph-tools -- radosgw-admin bucket stats -
 
 `--cache-max-size=180G` is the only bound on the cache; the bucket has no quota.
 
-It only works paired with `--cache-lru-schedule`, which registers the cron that enforces it. A max size alone is inert and says nothing about it; a schedule alone fails to start with `ErrCacheMaxSizeRequired`. Removing one silently disables the other, so treat them as a single setting.
+It only works paired with `--cache-lru-schedule`, which registers the cron that enforces it.
+A max size alone is inert and says nothing about it; a schedule alone fails to start with `ErrCacheMaxSizeRequired`.
+Removing one silently disables the other, so treat them as a single setting.
 
-A run under the ceiling costs the LRU lock and a sum of `file_size` over `nar_files`. A run that has to evict holds the LRU lock for as long as it takes, ordered by `last_accessed_at`, deleting the NAR and its narinfo together. Only one replica runs it, and the others keep serving.
+A run under the ceiling costs the LRU lock and a sum of `file_size` over `nar_files`.
+A run that has to evict holds the LRU lock for as long as it takes, ordered by `last_accessed_at`, deleting the NAR and its narinfo together.
+Only one replica runs it, and the others keep serving.
 
 ### The retained RBD volume
 
@@ -191,15 +199,22 @@ To fall back to it, restore `apps/nix-system/statefulset.yml`, `pvc.yml`, and `p
 ## If the bucket or the database is lost
 
 1. The signing key comes from the sealed secret, so it is unchanged and no consumer needs re-keying.
-2. The cache itself is regenerable, so there is nothing to restore. It refills from upstream on demand. A lost bucket with a surviving database presents as cache misses that ncps refetches; a lost database with a surviving bucket leaves orphaned NARs that nothing reclaims, so delete and recreate the claim alongside it.
+2. The cache itself is regenerable, so there is nothing to restore.
+   It refills from upstream on demand.
+   A lost bucket with a surviving database presents as cache misses that ncps refetches; a lost database with a surviving bucket leaves orphaned NARs that nothing reclaims, so delete and recreate the claim alongside it.
 
-Regenerable holds only because `--cache-allow-put-verb` is unset, so nothing can push a locally-built path in and every path ncps holds is re-fetchable from one of the five upstreams. Enabling PUT would make the bucket the only copy of whatever was uploaded, and this section would stop being true.
+Regenerable holds only because `--cache-allow-put-verb` is unset, so nothing can push a locally-built path in and every path ncps holds is re-fetchable from one of the five upstreams.
+Enabling PUT would make the bucket the only copy of whatever was uploaded, and this section would stop being true.
 
-`--cache-sign-narinfo=false` sidesteps the key by passing upstream signatures through untouched, but check what the clients trust before reaching for it. Passthrough means a narinfo arrives carrying only its origin's signature, so every client needs all five upstream keys, not just `cache.nixos.org-1`, which is the only one nix trusts by default. The runners are configured with the ncps key alone, so they would reject every cachix-sourced path. The other cost is that ncps can no longer serve locally-built paths.
+`--cache-sign-narinfo=false` sidesteps the key by passing upstream signatures through untouched, but check what the clients trust before reaching for it.
+Passthrough means a narinfo arrives carrying only its origin's signature, so every client needs all five upstream keys, not just `cache.nixos.org-1`, which is the only one nix trusts by default.
+The runners are configured with the ncps key alone, so they would reject every cachix-sourced path.
+The other cost is that ncps can no longer serve locally-built paths.
 
 ## Unsigned narinfos
 
-Narinfos are rows in the database, not objects: `narinfos` holds the fields, with `narinfo_signatures`, `narinfo_references` and `narinfo_nar_files` hanging off it. Only the NAR bodies are objects in the bucket.
+Narinfos are rows in the database, not objects: `narinfos` holds the fields, with `narinfo_signatures`, `narinfo_references` and `narinfo_nar_files` hanging off it.
+Only the NAR bodies are objects in the bucket.
 
 A migration that drops a row's signatures, its references and its link to a NAR file while leaving hash and store path behind produces a row that still answers a request and never heals: ncps prefers its own copy and never re-asks upstream.
 The upgrade from v0.9.4 to `v0.10.0-rc16` did exactly that to every sqlite row that predated it.
@@ -214,7 +229,8 @@ kubectl -n nix-system exec "$PRIMARY" -c postgres -- psql ncps -c \
    where not exists (select 1 from narinfo_signatures s where s.narinfo_id = n.id);"
 ```
 
-The repair is to delete them so the next request refetches from upstream. Back the database up first, as above:
+The repair is to delete them so the next request refetches from upstream.
+Back the database up first, as above:
 
 ```sh
 kubectl -n nix-system exec "$PRIMARY" -c postgres -- psql ncps -c "
@@ -228,7 +244,8 @@ DELETE FROM narinfos WHERE id IN (
 
 All three conditions together, so the delete cannot touch a row that is merely reference-free: a path with no dependencies is ordinary.
 
-Re-signing in place is not an option, however tempting it looks with the key in hand. The fingerprint nix signs covers the references, and those are gone; a signature computed over the gutted row would be a valid signature on a wrong closure.
+Re-signing in place is not an option, however tempting it looks with the key in hand.
+The fingerprint nix signs covers the references, and those are gone; a signature computed over the gutted row would be a valid signature on a wrong closure.
 
 Deleting the rows orphans their NAR objects, which the LRU cron reclaims once the cache approaches `--cache-max-size`.
 

@@ -1,7 +1,5 @@
-# multus runs as a host CNI plugin on the OSD hosts and authenticates with the
-# kubelet's client certificate. The Node authorizer already lets it read and
-# update the status of pods bound to its node; this adds the
-# NetworkAttachmentDefinitions it resolves each pod's networks from.
+# multus authenticates as the kubelet, and the Node authorizer does not cover
+# NetworkAttachmentDefinitions.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:

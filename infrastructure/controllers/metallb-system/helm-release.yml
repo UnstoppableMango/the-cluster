@@ -23,22 +23,13 @@ spec:
   values:
     crds:
       enabled: true
-    # The chart ships frr-k8s as the default BGP backend: a five-container
-    # DaemonSet on every node plus a statuscleaner Deployment. Every address
-    # here is announced over L2 (see infrastructure/configs/metallb-system,
-    # which holds an L2Advertisement and no BGPPeer), so none of that is
-    # reached. Re-enable this to speak BGP.
+    # Every address is announced over L2. Re-enable this to speak BGP.
     frrk8s:
       enabled: false
     controller:
       priorityClassName: system-cluster-critical
-      # The controller reconciles every namespace and service in the cluster,
-      # not just the ones holding a LoadBalancer address: 69 namespaces and 68
-      # services against 11 LoadBalancer services and a single IPAddressPool.
-      # It idles at 225Mi and is OOM killed on reconcile bursts above that,
-      # exit 137 with the log ending on a clean `end reconcile`, so the ceiling
-      # is what kills it rather than anything it is doing. The request stays at
-      # the steady figure and the limit leaves room for the burst.
+      # The controller reconciles every service in the cluster and is OOM killed
+      # on bursts above its 225Mi idle.
       resources:
         requests:
           cpu: 10m
@@ -47,9 +38,7 @@ spec:
           memory: 512Mi
     speaker:
       priorityClassName: system-cluster-critical
-      # No CPU limit: the speaker answers ARP for every service address, and it
-      # was measured at 132m during a burst against a 2m idle baseline.
-      # Throttling it drops replies and the address goes dark.
+      # No CPU limit: a throttled speaker drops ARP replies and addresses go dark.
       resources:
         requests:
           cpu: 50m

@@ -15,19 +15,14 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: external-secrets
-  # The chart renders its CRDs as templates behind installCRDs (on by default),
-  # so they upgrade with the release; these policies only cover a crds/ dir.
+  # The chart's CRDs are templates, so they upgrade with the release.
   install:
     crds: Create
   upgrade:
     crds: CreateReplace
   # https://github.com/external-secrets/external-secrets/blob/main/deploy/charts/external-secrets/values.yaml
-  # The image tag follows the chart's appVersion, which is the chart version, so
-  # a Renovate chart bump moves the controller, webhook and cert-controller together.
-  #
-  # Unmeasured starting points, floored per AGENTS.md; revisit once observed.
-  # No CPU limits: the controller and webhook sit in the path of every
-  # ExternalSecret reconcile and admission request.
+  # TODO: size from measured usage.
+  # No CPU limits: the controller and webhook sit in every reconcile and admission.
   values:
     resources:
       requests:

@@ -92,8 +92,7 @@ The Kubernetes DNS debugging page tells anyone on Alpine 3.17 or earlier to move
 
 `resolv.conf(5)` says a name with at least `ndots` dots is tried as an absolute name first, and the search list follows if that fails.
 The default ndots is 1, the cap is 15, and A and AAAA go out in parallel unless `single-request` is set.
-([man7 resolv.conf(5)](https://man7.org/linux/man-pages/man5/resolv.conf.5.html))
-So under a low ndots, glibc still resolves `svc.ns`: it asks upstream for the absolute name first and wastes one query.
+([man7 resolv.conf(5)](https://man7.org/linux/man-pages/man5/resolv.conf.5.html)) So under a low ndots, glibc still resolves `svc.ns`: it asks upstream for the absolute name first and wastes one query.
 musl fails it outright.
 
 ## What Kubernetes does
@@ -182,9 +181,11 @@ All references are to kubernetes `v1.37.1`, the minor rosequartz pins (`versions
   - The README documents a wrong-namespace race when a pod IP is reused before the watch catches up.
   - hostNetwork pods are indexed under the node IP, since `ToPod` copies `status.podIPs` ([object/pod.go](https://github.com/coredns/coredns/blob/master/plugin/kubernetes/object/pod.go)).
     Their namespace may be guessed wrong.
-    The query then fails `firstInSearchPath` and passes through untouched, so the cost is no speedup, not a wrong answer. This is inferred from the source.
+    The query then fails `firstInSearchPath` and passes through untouched, so the cost is no speedup, not a wrong answer.
+    This is inferred from the source.
 - `pods verified` also changes `a-b-c-d.<ns>.pod.cluster.local` answers: they are now only returned for real pods in that namespace.
-  Nothing in the-cluster appears to rely on the insecure form. **Unverified**: this was grepped only for `pod.cluster.local`.
+  Nothing in the-cluster appears to rely on the insecure form.
+  **Unverified**: this was grepped only for `pod.cluster.local`.
 - Whether kube-proxy preserves pod source IPs on the way to the kube-dns ClusterIP is **unverified** for rosequartz (flannel + nixpkgs kube-proxy).
   `coredns_autopath_success_total` answers it once metrics are on.
 
@@ -333,7 +334,8 @@ spec:
   The `deluge` and `qbittorrent` StatefulSets in `apps/media` set `ndots:1`, and `plex` sets `ndots:0`.
   qBittorrent's init container is `python:3.13.3-alpine3.20`.
   Any musl container in those pods cannot resolve `svc.ns` names.
-  They appear to use only external names today. That was checked by grep only.
+  They appear to use only external names today.
+  That was checked by grep only.
 - **NODATA and wildcards stop musl early.**
   A search candidate that answers NOERROR, including a wildcard zone, ends a musl lookup with that answer or with `EAI_NODATA`.
   Never add a search domain with a wildcard behind it.

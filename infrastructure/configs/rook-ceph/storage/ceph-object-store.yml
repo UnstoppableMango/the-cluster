@@ -19,14 +19,10 @@ spec:
   allowUsersInNamespaces:
     - velero-system
   gateway:
-    # Both listeners. 80 is what an ObjectBucketClaim reports in its ConfigMap
-    # and what Velero's backup location uses; 443 carries the certificate
-    # from certificate.yml and is what ncps sends its bucket credentials to.
+    # 80 is what ObjectBucketClaims report and Velero uses.
     port: 80
     securePort: 443
     sslCertificateRef: rgw-s3-tls
-    # ncps serves every NAR from this gateway and Velero backs up through it,
-    # so a single instance restarting takes both offline.
     instances: 2
     resources:
       limits:

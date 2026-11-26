@@ -10,8 +10,8 @@
 let
   fluxSrc = callPackage ./src.nix { };
 
-  # kubelib.fromYAML parses in a derivation, which is import-from-derivation.
-  # These manifests hold each key once, so the first `key: value` line is it.
+  # kubelib.fromYAML would be import-from-derivation. These manifests hold each
+  # key once.
   readField =
     path: key:
     let

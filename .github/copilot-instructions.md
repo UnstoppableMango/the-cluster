@@ -2,7 +2,8 @@
 
 ## Repository Overview
 
-This is a homelab infrastructure repository for a single cluster, `rosequartz`, deployed entirely via Kubernetes and Flux CD. No stacks are defined in Pulumi/TypeScript here; the only remaining use of Pulumi is `hack/pki-ca-secret.sh`, which reads an external stack.
+This is a homelab infrastructure repository for a single cluster, `rosequartz`, deployed entirely via Kubernetes and Flux CD.
+No stacks are defined in Pulumi/TypeScript here; the only remaining use of Pulumi is `hack/pki-ca-secret.sh`, which reads an external stack.
 
 ## Repository Structure
 
@@ -32,7 +33,8 @@ No container images are built here; the non-upstream images this repo deploys co
 
 - Use `make` commands defined in the `Makefile` for common tasks
 - Format code: `make fmt` (`nix fmt`)
-- Check before pushing: `make check` (`nix flake check`). This is the only CI job: it runs the treefmt formatting check plus `validate-flux`, which is kubeconform in strict mode against pinned Flux CRD schemas.
+- Check before pushing: `make check` (`nix flake check`).
+  This is the only CI job: it runs the treefmt formatting check plus `validate-flux`, which is kubeconform in strict mode against pinned Flux CRD schemas.
 
 ## Dependencies
 

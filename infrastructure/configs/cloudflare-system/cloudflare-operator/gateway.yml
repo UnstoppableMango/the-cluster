@@ -5,8 +5,6 @@ metadata:
   namespace: cloudflare-system
 spec:
   gatewayClassName: cloudflare
-  # Each listener's hostname gets a rule on this Gateway's own tunnel and a
-  # CNAME to it, both written by the operator.
   listeners:
     - name: knot
       hostname: knot.thecluster.io

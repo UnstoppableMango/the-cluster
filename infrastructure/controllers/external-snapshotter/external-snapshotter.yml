@@ -38,8 +38,7 @@ spec:
   wait: true
   dependsOn:
     - name: external-snapshotter-crds
-  # Upstream ships the Deployment with no resources, and the path is theirs, so
-  # a patch here is the only place to add them. It idles at 1m and 17Mi.
+  # Upstream's Deployment has no resources, and the path is theirs.
   patches:
     - target:
         kind: Deployment

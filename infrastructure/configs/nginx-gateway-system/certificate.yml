@@ -1,4 +1,4 @@
-# Control plane server cert; DNS name = <releaseName>.nginx-gateway.svc
+# DNS name must be <releaseName>.nginx-gateway.svc.
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -16,7 +16,6 @@ spec:
     kind: ClusterIssuer
     group: cert-manager.io
 ---
-# Agent cert for NGINX data plane
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -34,7 +33,6 @@ spec:
     kind: ClusterIssuer
     group: cert-manager.io
 ---
-# Wildcard cert for Gateway listeners
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -48,5 +46,5 @@ spec:
     name: thecluster.lan
   dnsNames:
     - "*.thecluster.lan"
-    # A wildcard does not match the apex, which apps/thecluster-lan serves.
+    # A wildcard does not match the apex.
     - thecluster.lan

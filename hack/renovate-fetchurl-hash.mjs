@@ -1,6 +1,5 @@
-// Renovate postUpgradeTask: the nix regex manager in .github/renovate.json
-// bumps a fetchurl URL but cannot recompute its hash. Rewrite the `hash` that
-// follows each bumped URL with the SRI hash of the new release asset.
+// Renovate postUpgradeTask: rewrites the `hash` after each fetchurl URL the nix
+// regex manager bumped, since Renovate cannot compute it.
 //
 // Usage: node hack/renovate-fetchurl-hash.mjs <file> <owner/repo> <version>
 

@@ -6,7 +6,7 @@ metadata:
 spec:
   url: https://github.com/unmango/enclave
   interval: 1h
-  # Upstream has no tags yet. Pin ref.tag at the first release.
+  # TODO: pin ref.tag at the first release.
   ref:
     branch: main
 ---
@@ -28,7 +28,7 @@ spec:
   images:
     - name: enclave
       newName: ghcr.io/unmango/enclave
-  # The manager holds a leader lease, so the upstream CPU limit comes off.
+  # The manager holds a leader lease.
   patches:
     - target:
         kind: Deployment

@@ -1,18 +1,12 @@
-// Renovate postUpgradeTask: nix/crds.nix downloads some Flux HelmRelease
-// charts as fixed-output derivations, reading repo, chart and version from the
-// manifests but carrying each chartHash itself. Renovate bumps the version, so
-// recompute the matching chartHash here.
+// Renovate postUpgradeTask: recomputes the chartHash nix/crds.nix pins for a
+// HelmRelease whose version Renovate bumped.
 //
-// chartHash is the NAR hash of `helm pull --untar`'s output (kubelib's
-// downloadHelmChart), not the sha256 of the .tgz, so this expands the archive
-// the way helm does and hashes the result the way nix does. The Renovate image
-// has neither helm nor nix.
+// chartHash is the NAR hash of `helm pull --untar`'s output, not the sha256 of
+// the .tgz. The Renovate image has neither helm nor nix.
 //
 // Usage: node hack/renovate-chart-hash.mjs [<helm-release.yml>...]
 //
-// Each argument is a HelmRelease under infrastructure/controllers/<namespace>/;
-// a namespace crds.nix does not download is skipped. With no arguments, every
-// chart crds.nix downloads is recomputed.
+// With no arguments, every chart crds.nix downloads is recomputed.
 
 import { createHash } from 'node:crypto';
 import { readFile, writeFile } from 'node:fs/promises';
@@ -27,9 +21,8 @@ const unquote = (s) => s.trim().replace(/^(['"])(.*)\1$/, '$2');
 const indentOf = (line) => line.length - line.trimStart().length;
 
 // The url and digest of one chart version in a helm repository's index.yaml.
-// A line scanner rather than a YAML parser, since the Renovate image gives a
-// repository script no node_modules; it reads the block-style YAML that helm
-// and chart-releaser write.
+// A line scanner, since the Renovate image gives a repository script no
+// node_modules.
 export function chartUrl(index, repo, chart, version) {
 	const lines = index.split('\n');
 	const start = lines.findIndex((l) => /^entries:\s*$/.test(l));
@@ -115,12 +108,9 @@ function paxRecords(data) {
 	return records;
 }
 
-// The files of a chart archive, keyed by path inside the chart directory, as
-// helm's archive.LoadArchiveFiles and chartutil.Expand lay them out on disk:
-// directories and extension headers skipped, the first path component
-// stripped, a leading UTF-8 BOM trimmed, and a later entry overwriting an
-// earlier one at the same path. Every entry, links included, becomes a regular
-// file holding the entry's data.
+// The files of a chart archive as helm's chartutil.Expand lays them out: first
+// path component stripped, a leading UTF-8 BOM trimmed, later entries winning,
+// and links written as regular files.
 export function chartFiles(tgz) {
 	const buf = gunzipSync(tgz);
 	const files = new Map();

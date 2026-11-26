@@ -27,10 +27,7 @@ spec:
       enabled: true
       minAvailable: 1
     enableCertificateOwnerRef: true
-    # Each of the four components defaults to no resources, which leaves the
-    # whole of cert-manager BestEffort and first in line for eviction. All four
-    # idle at 1m CPU and 12-44Mi. No CPU limits: the controller and cainjector
-    # renew a leader lease, and throttling one costs the lease.
+    # No CPU limits: the controller and cainjector hold leader leases.
     resources:
       requests:
         cpu: 10m

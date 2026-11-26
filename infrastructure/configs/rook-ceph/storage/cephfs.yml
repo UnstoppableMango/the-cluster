@@ -1,6 +1,5 @@
-# The replicated filesystem is being folded into erasure-coded, which
-# carries both a replicated (standard) and an erasure-coded (data) pool.
-# It stays until every subvolume has been copied across. See docs/storage.md.
+# TODO: remove once every subvolume is copied to the erasure-coded filesystem.
+# See docs/storage.md.
 apiVersion: ceph.rook.io/v1
 kind: CephFilesystem
 metadata:
@@ -26,9 +25,7 @@ spec:
   metadataServer:
     activeCount: 1
     activeStandby: true
-    # An MDS caches dentries in memory and grows with the working set; the
-    # active one here was measured at 644Mi. Nothing defaults these, so without
-    # the block the MDS pods run BestEffort.
+    # The MDS grows with its cached working set.
     resources:
       requests:
         cpu: 100m
@@ -71,14 +68,12 @@ spec:
     replicated:
       size: 2
   dataPools:
-    # Ceph requires a replicated default data pool when an erasure-coded
-    # pool is attached. Nothing provisions against it.
+    # Ceph requires a replicated default data pool beside an erasure-coded one.
     - name: default
       deviceClass: hdd
       failureDomain: osd
       replicated:
         size: 2
-    # standard-rwx: survives a host.
     - name: standard
       deviceClass: hdd
       failureDomain: host
@@ -88,10 +83,8 @@ spec:
       parameters:
         target_size_ratio: "0.2"
         bulk: "true"
-    # bulk-rwx. failureDomain stays osd here even after the pool moves to a
-    # host-domain CRUSH rule: Rook re-applies the erasure code profile on every
-    # reconcile and Ceph refuses a changed profile. The rule is swapped in Ceph
-    # instead; see docs/storage.md.
+    # Stays osd after the move to a host-domain CRUSH rule: Ceph refuses a changed
+    # erasure code profile, so the rule is swapped in Ceph. See docs/storage.md.
     - name: data
       deviceClass: hdd
       failureDomain: osd
