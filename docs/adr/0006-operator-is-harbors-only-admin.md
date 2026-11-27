@@ -1,7 +1,7 @@
 # thecluster-operator is Harbor's only admin and the producer of its credentials
 
 thecluster-operator is the one thing that configures Harbor and the one thing that holds Harbor admin rights.
-Other programs, including Pulumi programs like mve, never get a Harbor credential that can create anything.
+Other programs, including Pulumi programs, never get a Harbor credential that can create anything.
 They request a Registry credential by declaring a CR, in this repo through Flux or with pulumi-kubernetes where they already have cluster access, and the operator writes the result into a Harbor vault that control-plane creates, as the producer ADR 0004 requires.
 
 A credential names one project in its own namespace and `pull` or `push`; nobody gets delete.
@@ -16,5 +16,5 @@ The operator logs in as a system-level robot, filed once through intake by a man
 ## Consequences
 
 - Our own images arrive as public Replicas pulled from `ghcr.io/unmango`, so CI holds no Harbor credential and nodes and workloads need no pull secret.
-  Credentials exist only for private projects and for Pushers such as mve.
+  Credentials exist only for private projects and for Pushers.
 - The operator needs Key Vault Secrets Officer on the Harbor vault, the only vault it can write to.

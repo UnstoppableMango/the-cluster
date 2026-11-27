@@ -161,7 +161,7 @@ Decided 2026-11-27 in [ADR 0005](adr/0005-harbor-sign-in-through-keycloak.md) an
 - A `Replica` CR keeps a public project per upstream we publish to, starting with `ghcr.io/unmango`, on a scheduled pull rule.
   `unmango/containers` and `unmango/charts` CI stays as it is: GitHub-hosted runners cannot reach `harbor.thecluster.lan`, and with Replicas they do not need to.
 - Project and Registry credential CRs, with the operator writing each credential into a Harbor vault from control-plane.
-  The first request is mve's: an `mve` namespace holding its private project and a `push` credential, which its Pulumi program reads with `azure-native`'s `getSecret`.
+  A Pusher outside the cluster gets a namespace holding its private project and a `push` credential, and its Pulumi program reads the credential with `azure-native`'s `getSecret`.
 - These CRs move the operator onto `goharbor/go-client` first, as the research above recommends.
 
 ### 6. Offline
