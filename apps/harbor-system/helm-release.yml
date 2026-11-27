@@ -102,6 +102,31 @@ spec:
           memory: 256Mi
         limits:
           memory: 768Mi
+      # ADR 0005. Not core.configureUserSettings: the chart copies that into its own
+      # Secret, which cannot reference the client secret. The secret is alphanumeric,
+      # so it needs no JSON escaping.
+      extraEnvVars:
+        - name: OIDC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: harbor-oidc
+              key: client-secret
+        - name: CONFIG_OVERWRITE_JSON
+          value: >-
+            {
+            "auth_mode": "oidc_auth",
+            "oidc_name": "Keycloak",
+            "oidc_endpoint": "https://auth.thecluster.io/realms/thecluster",
+            "oidc_client_id": "harbor",
+            "oidc_client_secret": "$(OIDC_CLIENT_SECRET)",
+            "oidc_scope": "openid,profile,email,offline_access",
+            "oidc_user_claim": "preferred_username",
+            "oidc_groups_claim": "groups",
+            "oidc_group_filter": "^harbor-",
+            "oidc_admin_group": "harbor-admins",
+            "oidc_auto_onboard": true,
+            "oidc_verify_cert": true
+            }
     jobservice:
       image:
         repository: goharbor/harbor-jobservice

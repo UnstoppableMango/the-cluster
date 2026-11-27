@@ -7,4 +7,5 @@ resources:
   - helm-release.yml
   - namespace.yml
   - object-bucket-claim.yml
+  - oidc-sealed.yml
   - postgres-cluster.yml
