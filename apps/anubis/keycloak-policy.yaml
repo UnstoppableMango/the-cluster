@@ -1,5 +1,5 @@
 # Upstream's data/botPolicies.yaml from the Anubis release in keycloak.yml,
-# unchanged below the first rule in `bots`, so a bump can be diffed against it.
+# unchanged below the keycloak-* rules at the top of `bots`, so a bump can be diffed against it.
 ## Anubis has the ability to let you import snippets of configuration into the main
 ## configuration file. This allows you to break up your config into smaller parts
 ## that get logically assembled into one big file.
@@ -17,6 +17,12 @@ bots:
   # browser, so they cannot solve a challenge. First, so no later rule catches them.
   - name: keycloak-oidc-machine-endpoints
     path_regex: ^/realms/[^/]+/(?:\.well-known/.*|protocol/openid-connect/(?:certs|token|token/introspect|userinfo|revoke))$
+    action: ALLOW
+
+  # The admin REST API, called by the iam Pulumi program. Keycloak checks the bearer
+  # token; the browser admin console under /admin/master/console stays challenged.
+  - name: keycloak-admin-api
+    path_regex: ^/admin/(?:realms/.*|serverinfo)$
     action: ALLOW
 
   # You can import the entire default config with this macro:
