@@ -102,11 +102,9 @@ spec:
           memory: 256Mi
         limits:
           memory: 768Mi
-      # OIDC settings, applied at every start (ADR 0005). They replace
-      # core.configureUserSettings, which the chart writes into a Secret of its own
-      # and so cannot carry the client secret; the env var is expanded from the one
-      # before it instead. The secret is alphanumeric, so it needs no JSON escaping.
-      # Harbor refuses to switch auth_mode once a user other than admin exists.
+      # ADR 0005. Not core.configureUserSettings: the chart copies that into its own
+      # Secret, which cannot reference the client secret. The secret is alphanumeric,
+      # so it needs no JSON escaping.
       extraEnvVars:
         - name: OIDC_CLIENT_SECRET
           valueFrom:
