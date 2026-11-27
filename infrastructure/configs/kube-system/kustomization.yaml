@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - cluster-admin-public.yml
   - cluster-admins-oidc.yml
+  - unstoppablemango-oidc.yml
