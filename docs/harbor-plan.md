@@ -152,11 +152,17 @@ It only applies once nodes pull through Harbor, so it lands in `docs/harbor.md` 
 - Harbor answering but wrong (a broken cached manifest): move `/etc/containerd/certs.d` aside on the node, or delete the artifact from the project and pull again.
 - A lasting bypass: drop `../modules/registry-mirror` from `kubelet.extraModules` and deploy.
 
-### 5. Our own images
+### 5. Our own images and credentials
 
-- `unmango/containers` `images.yml` and `unmango/charts` `release.yml` push to Harbor as well as ghcr.io and Docker Hub, with a robot account per repository.
-- Harbor refuses pushes to proxy-cache projects, so each repository pushes to a normal project of its own with a push-capable robot account.
-- Those projects and robot accounts should be declared the same way as the caches, so this step may need the operator (or provider) to grow support for normal projects and robot accounts.
+Decided 2026-11-27 in [ADR 0005](adr/0005-harbor-sign-in-through-keycloak.md) and [ADR 0006](adr/0006-operator-is-harbors-only-admin.md); `CONTEXT.md` has the terms.
+
+- Switch Harbor to OIDC through a `harbor` client in UnstoppableMango/iam before anyone but `admin` has an account.
+- Replace the operator's `admin` login with a system robot filed through intake, and move `admin` into Key Vault as break-glass.
+- A `Replica` CR keeps a public project per upstream we publish to, starting with `ghcr.io/unmango`, on a scheduled pull rule.
+  `unmango/containers` and `unmango/charts` CI stays as it is: GitHub-hosted runners cannot reach `harbor.thecluster.lan`, and with Replicas they do not need to.
+- Project and Registry credential CRs, with the operator writing each credential into a Harbor vault from control-plane.
+  The first request is mve's: an `mve` namespace holding its private project and a `push` credential, which its Pulumi program reads with `azure-native`'s `getSecret`.
+- These CRs move the operator onto `goharbor/go-client` first, as the research above recommends.
 
 ### 6. Offline
 
