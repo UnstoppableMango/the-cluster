@@ -56,7 +56,7 @@ _Avoid_: backup (which also means Velero and CNPG backups)
 ### Images
 
 **Registry**:
-Harbor, the one place the cluster pulls container images and OCI charts from.
+Harbor, the place the cluster pulls container images and OCI charts from, falling back to the upstream only while Harbor is unreachable.
 _Avoid_: mirror (that is one project kind), cache
 
 **Proxy cache**:

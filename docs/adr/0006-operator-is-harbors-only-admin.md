@@ -1,11 +1,15 @@
 # thecluster-operator is Harbor's only admin and the producer of its credentials
 
-thecluster-operator is the one thing that configures Harbor and the one thing that holds Harbor admin rights.
+thecluster-operator is the only program that holds Harbor admin rights, and it declares Harbor's registries, projects, replication and robots.
+Harbor's global settings, such as the OIDC configuration in [0005](0005-harbor-sign-in-through-keycloak.md), come from the chart's `core.configureUserSettings` instead, because Harbor never grants configuration permissions to a robot.
+People get admin rights only through the `harbor-admins` group.
 Other programs, including Pulumi programs, never get a Harbor credential that can create anything.
 They request a Registry credential by declaring a CR, in this repo through Flux or with pulumi-kubernetes where they already have cluster access, and the operator writes the result into a Harbor vault that control-plane creates, as the producer ADR 0004 requires.
 
 A credential names one project in its own namespace and `pull` or `push`; nobody gets delete.
-It is a Harbor robot that expires after 90 days, and the operator refreshes its secret at 60, which readers never notice because they read from the store.
+It is a Harbor robot that expires after 90 days.
+At day 60 the operator creates its replacement and writes the new secret into the store, and the old robot stays valid until it expires, so readers have 30 days to pick up the new value.
+If the write fails the operator retries and reports it in the CR's conditions, and the old robot keeps working meanwhile.
 The operator logs in as a system-level robot, filed once through intake by a manual producer, so its access can be revoked without touching `admin`.
 
 ## Considered options
