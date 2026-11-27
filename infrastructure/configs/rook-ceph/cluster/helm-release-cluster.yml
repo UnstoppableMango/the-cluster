@@ -63,6 +63,11 @@ spec:
           # Rook has no dashboard field for this; it is
           # `ceph dashboard set-alertmanager-api-host`.
           mgr/dashboard/ALERTMANAGER_API_HOST: http://kube-prometheus-stack-alertmanager.monitoring.svc:9093
+        # Without discard the consumer SATA SSDs never learn about freed space, and
+        # their garbage collection degrades as if they were full. HDDs ignore it.
+        osd:
+          bdev_enable_discard: "true"
+          bdev_async_discard_threads: "1"
       mon:
         # https://github.com/rook/rook/blob/0a1dd5e9e619481432cc66347a45072178ca0b48/deploy/examples/cluster.yaml#L51-L52
         count: 3
