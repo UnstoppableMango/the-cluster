@@ -152,7 +152,7 @@ spec:
                 volumeClaimTemplate:
                   spec:
                     accessModes: [ReadWriteOnce]
-                    storageClassName: fast-rwo
+                    storageClassName: standard-rwo
                     resources:
                       requests:
                         storage: 5Gi
@@ -163,7 +163,7 @@ spec:
                 volumeClaimTemplate:
                   spec:
                     accessModes: [ReadWriteOnce]
-                    storageClassName: fast-rwo
+                    storageClassName: standard-rwo
                     resources:
                       requests:
                         storage: 20Gi

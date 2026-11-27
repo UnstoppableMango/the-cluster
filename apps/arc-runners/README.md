@@ -13,4 +13,8 @@ These numbers size the runner template in `helm-release.yml`, and `apps/unmango-
 - Unbounded fan-out put 39 runners on one node (#4436).
   At the former 75Gi nix volume, 39 of them overcommit the whole default-ssd pool.
   runc's `openat2` gives up after a 2ms retry deadline while the mount table changes, which is what broke dind.
-- dotfiles runs two runners at 50Gi, which keeps the fast-rwo ceiling below six at 20Gi.
+- dotfiles runs two runners at 50Gi.
+- The `work` and `nix` volumes use `standard-rwo`, not `fast-rwo`.
+  On 2026-11-27 the runners filled the SSD tier, about 2 TB usable: one OSD reached its full ratio, and every pool on it stopped taking writes.
+  Deleting an RBD image needs writes too, so the volumes of finished runners could not be deleted, and 163 of them piled up in two days.
+  The HDD pool has over 100 TiB free, so runner churn cannot fill it.
