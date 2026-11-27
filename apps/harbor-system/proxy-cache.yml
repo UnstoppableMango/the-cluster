@@ -1,0 +1,61 @@
+# Reconciled by thecluster-operator; docs/harbor.md has how to inspect them.
+apiVersion: registry.thecluster.io/v1alpha1
+kind: Registry
+metadata:
+  name: harbor
+  namespace: harbor-system
+spec:
+  harbor:
+    # In-cluster, so the operator depends on neither the Gateway nor DNS.
+    url: http://goharbor-core.harbor-system.svc
+    passwordSecretRef:
+      name: harbor
+      key: HARBOR_ADMIN_PASSWORD
+---
+apiVersion: registry.thecluster.io/v1alpha1
+kind: ProxyCache
+metadata:
+  name: dockerhub
+  namespace: harbor-system
+spec:
+  registryRef:
+    name: harbor
+  upstream:
+    type: docker-hub
+    url: https://hub.docker.com
+---
+apiVersion: registry.thecluster.io/v1alpha1
+kind: ProxyCache
+metadata:
+  name: ghcr
+  namespace: harbor-system
+spec:
+  registryRef:
+    name: harbor
+  upstream:
+    type: github-ghcr
+    url: https://ghcr.io
+---
+apiVersion: registry.thecluster.io/v1alpha1
+kind: ProxyCache
+metadata:
+  name: quay
+  namespace: harbor-system
+spec:
+  registryRef:
+    name: harbor
+  upstream:
+    type: quay
+    url: https://quay.io
+---
+apiVersion: registry.thecluster.io/v1alpha1
+kind: ProxyCache
+metadata:
+  name: k8s
+  namespace: harbor-system
+spec:
+  registryRef:
+    name: harbor
+  upstream:
+    type: docker-registry
+    url: https://registry.k8s.io

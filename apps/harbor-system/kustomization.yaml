@@ -8,4 +8,5 @@ resources:
   - namespace.yml
   - object-bucket-claim.yml
   - oidc-sealed.yml
+  - proxy-cache.yml
   - postgres-cluster.yml

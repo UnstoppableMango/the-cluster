@@ -190,6 +190,13 @@
 		},
 		{
 			"matchPackageNames": [
+				"unmango/thecluster-operator",
+				"ghcr.io/unmango/thecluster-operator"
+			],
+			"groupName": "thecluster-operator"
+		},
+		{
+			"matchPackageNames": [
 				"xpkg.crossplane.io/crossplane/crossplane",
 				"crossplane"
 			],
