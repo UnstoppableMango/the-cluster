@@ -1,7 +1,7 @@
 # thecluster-operator is the only program with Harbor admin rights and the producer of its credentials
 
 thecluster-operator is the only program that holds Harbor admin rights, and it declares Harbor's registries, projects, replication and robots.
-Harbor's global settings, such as the OIDC configuration in [0005](0005-harbor-sign-in-through-keycloak.md), come from the chart's `core.configureUserSettings` instead, because Harbor never grants configuration permissions to a robot.
+Harbor's global settings, such as the OIDC configuration in [0005](0005-harbor-sign-in-through-keycloak.md), come from Harbor core's `CONFIG_OVERWRITE_JSON` in the HelmRelease instead, because Harbor never grants configuration permissions to a robot.
 People get admin rights only through the `harbor-admins` group.
 Other programs, including Pulumi programs, never get a Harbor credential that can create anything.
 They request a Registry credential by declaring a CR, in this repo through Flux or with pulumi-kubernetes where they already have cluster access, and the operator writes the result into a Harbor vault that control-plane creates, as the producer ADR 0004 requires.

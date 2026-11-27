@@ -102,6 +102,33 @@ spec:
           memory: 256Mi
         limits:
           memory: 768Mi
+      # OIDC settings, applied at every start (ADR 0005). They replace
+      # core.configureUserSettings, which the chart writes into a Secret of its own
+      # and so cannot carry the client secret; the env var is expanded from the one
+      # before it instead. The secret is alphanumeric, so it needs no JSON escaping.
+      # Harbor refuses to switch auth_mode once a user other than admin exists.
+      extraEnvVars:
+        - name: OIDC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: harbor-oidc
+              key: client-secret
+        - name: CONFIG_OVERWRITE_JSON
+          value: >-
+            {
+            "auth_mode": "oidc_auth",
+            "oidc_name": "Keycloak",
+            "oidc_endpoint": "https://auth.thecluster.io/realms/thecluster",
+            "oidc_client_id": "harbor",
+            "oidc_client_secret": "$(OIDC_CLIENT_SECRET)",
+            "oidc_scope": "openid,profile,email,offline_access",
+            "oidc_user_claim": "preferred_username",
+            "oidc_groups_claim": "groups",
+            "oidc_group_filter": "^harbor-",
+            "oidc_admin_group": "harbor-admins",
+            "oidc_auto_onboard": true,
+            "oidc_verify_cert": true
+            }
     jobservice:
       image:
         repository: goharbor/harbor-jobservice
