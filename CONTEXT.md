@@ -52,3 +52,25 @@ _Avoid_: mirror, sync
 **Break-glass copy**:
 An offline, encrypted copy of the secrets a rebuild cannot proceed without, kept outside the cluster and the secret store.
 _Avoid_: backup (which also means Velero and CNPG backups)
+
+### Images
+
+**Registry**:
+Harbor, the one place the cluster pulls container images and OCI charts from.
+_Avoid_: mirror (that is one project kind), cache
+
+**Proxy cache**:
+A registry project that fetches an upstream image the first time someone asks for it and keeps it.
+_Avoid_: mirror, pull-through
+
+**Replica**:
+A registry project the registry fills itself on a schedule from an upstream we publish to, such as `ghcr.io/unmango`, so nobody pushes to it.
+_Avoid_: push target, copy
+
+**Puller**:
+Anything that reads from the registry: a node, a workload, or someone in the household.
+_Avoid_: consumer (that means a workload reading the secret store), client
+
+**Pusher**:
+Anything that writes to the registry. Replicas leave the registry with few or none.
+_Avoid_: publisher (CI publishes to ghcr.io, not to the registry)
