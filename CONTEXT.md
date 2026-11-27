@@ -64,7 +64,7 @@ A registry project that fetches an upstream image the first time someone asks fo
 _Avoid_: mirror, pull-through
 
 **Replica**:
-A registry project the registry fills itself on a schedule from an upstream we publish to, such as `ghcr.io/unmango`, so nobody pushes to it.
+A public registry project the registry fills itself on a schedule from an upstream we publish to, such as `ghcr.io/unmango`, so nobody pushes to it and nobody needs a credential to pull it.
 _Avoid_: push target, copy
 
 **Puller**:
@@ -74,3 +74,7 @@ _Avoid_: consumer (that means a workload reading the secret store), client
 **Pusher**:
 Anything that writes to the registry. Replicas leave the registry with few or none.
 _Avoid_: publisher (CI publishes to ghcr.io, not to the registry)
+
+**Registry credential**:
+A login scoped to one registry project, issued only because someone declared a request for it, and written by the registry's producer into the secret store.
+_Avoid_: robot account (Harbor's mechanism for it), pull secret, token
