@@ -10,6 +10,8 @@ A credential names one project in its own namespace and `pull` or `push`; nobody
 It is a Harbor robot that expires after 90 days.
 At day 60 the operator creates its replacement and writes the new secret into the store, and the old robot stays valid until it expires, so readers have 30 days to pick up the new value.
 If the write fails the operator retries and reports it in the CR's conditions, and the old robot keeps working meanwhile.
+In-cluster readers reload through an ExternalSecret with a one-hour refresh interval, and a Pulumi program on its next run, so a write that lands late only shortens that 30-day window.
+The operator does not delete the old robot before the write succeeds, and a write still failing a week before the old robot expires is what pages.
 The operator logs in as a system-level robot, filed once through intake by a manual producer, so its access can be revoked without touching `admin`.
 
 ## Considered options
