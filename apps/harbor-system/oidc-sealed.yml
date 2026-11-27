@@ -1,0 +1,13 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: harbor-oidc
+  namespace: default
+spec:
+  encryptedData:
+    client-secret: AgAERJ6KoXwySe/ILQNlQPr1JJInMF3oRtMtR9VxlsLKYUNdVNWCzzMtCK1YQR9Lp5v7MtuiGdO0FJdGCqaHncBrjTrkJzqLbRP7ijwvy9x8KBiIp31I+VrMb8n5q3QqHN6XvlGONO9BBoT8vM7pOyAvKvfnUaky6Ogm3TlxY21HC3/aVXds9GaKFNqibjc+thomPWC85UyRRZ5lenN4BTWWv6W6OcFjW2MMdcqBnTftKhJ6DQB0IiDRXFPA+PgRnMZVf9gvMYqhsIkjxLjCw7wcFDniffFMIfab9I3ZoLEfz1/0uGELQFoJHI1JdhRAUrgLXihh9Psx2eNdOGkaA6C9zLxnLtSbEI2DQzNqK6GAxEt6i7BGUvICXAfXFboPlgSjwm9MWWDN1xBNF7V1N1ji9s06HJnPtbxi6nDTEQ9JpK7/w3rHuMH1jVRiHcLrtogP8Nqn1WUBCHhb9HZdgB8x/gFMaFK6ZuuSgKOw9JZSFeOpLQd01+886pH0yUJgdT+BFLzK36XINKBM8sAMeX/P//MfpTghzEqmaat759af0h4bA2J8ajbs1VobcxzAvBsuWLUXQ4jnayIbGR8EuXG9pIZQSrxyBm4zI8i+IQhgIH/0PXLrA21F8ZS71L8acRlCOpv9p6iUtQBrsIfexhl/03s2Rd7AKIv/Y22atuguLWdNfyVnZcUwYtg4k9VwxQgS32+qolMPZ5W8DlZYaOXkeI2mCDy6+J8+m63fpG+2hZ4tj+IkB2pvkqIhG1I4bfM=
+  template:
+    metadata:
+      name: harbor-oidc
+      namespace: default
