@@ -1,4 +1,4 @@
-# thecluster-operator is Harbor's only admin and the producer of its credentials
+# thecluster-operator is the only program with Harbor admin rights and the producer of its credentials
 
 thecluster-operator is the only program that holds Harbor admin rights, and it declares Harbor's registries, projects, replication and robots.
 Harbor's global settings, such as the OIDC configuration in [0005](0005-harbor-sign-in-through-keycloak.md), come from the chart's `core.configureUserSettings` instead, because Harbor never grants configuration permissions to a robot.
