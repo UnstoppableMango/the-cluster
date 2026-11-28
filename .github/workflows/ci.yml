@@ -30,20 +30,3 @@ jobs:
       - env:
           NEEDS: ${{ toJSON(needs) }}
         run: jq -e 'all(.[]; .result == "success" or .result == "skipped")' <<<"$NEEDS"
-
-  # Required until the ruleset switches to `required` (#4953).
-  flake-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - uses: unmango/actions/setup-nix@e8bbcbd12a2c521c5cb36957c00a7a8f4fe2e766 # v2.0.0
-        with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
-          # cachix_auth_token: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          extra_nix_config: |
-            extra-experimental-features = nix-command flakes pipe-operators
-
-      - uses: DeterminateSystems/magic-nix-cache-action@84c0677f58dcedf3b91f8223ce36a9ea5b3c84b7 # v15
-
-      - run: nix flake check
