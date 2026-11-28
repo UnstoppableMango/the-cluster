@@ -2,6 +2,8 @@
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": [
 		"github>UnstoppableMango/renovate-config",
+		"github>UnstoppableMango/renovate-config:nix",
+		"github>UnstoppableMango/renovate-config:nix-deploys",
 		":approveMajorUpdates"
 	],
 	"ignorePaths": [
@@ -206,8 +208,7 @@
 				"ghcr.io/renovatebot/renovate",
 				"renovate"
 			],
-			"groupName": "renovate",
-			"automerge": true
+			"groupName": "renovate"
 		},
 		{
 			"matchPackageNames": [

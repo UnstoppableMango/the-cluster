@@ -1,6 +1,9 @@
 {
   description = "THECLUSTER";
 
+  # Also set here so evaluating from a fresh checkout or CI needs no nix.conf.
+  nixConfig.extra-experimental-features = [ "pipe-operators" ];
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
@@ -16,6 +19,14 @@
       inputs.flake-parts.follows = "flake-parts";
       inputs.systems.follows = "systems";
     };
+
+    mynix = {
+      url = "github:unstoppablemango/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.systems.follows = "systems";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+    };
   };
 
   outputs =
@@ -26,6 +37,7 @@
       imports = with inputs; [
         systems.flakeModule or { }
         treefmt-nix.flakeModule
+        mynix.flakeModules.ci
         ./nix
       ];
 
