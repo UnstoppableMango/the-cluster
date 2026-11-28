@@ -331,6 +331,8 @@ spec:
     - name: infra-cnpg-system
     - name: infra-configs-rook-ceph-storage
     - name: infra-nginx-gateway
+    # Registry and ProxyCache CRDs.
+    - name: infra-thecluster-operator
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization

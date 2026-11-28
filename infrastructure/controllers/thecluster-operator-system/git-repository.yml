@@ -1,0 +1,10 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: thecluster-operator
+  namespace: thecluster-operator-system
+spec:
+  url: https://github.com/unmango/thecluster-operator
+  interval: 1h
+  ref:
+    tag: v0.1.3

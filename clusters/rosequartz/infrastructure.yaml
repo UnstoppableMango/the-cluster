@@ -395,6 +395,23 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: infra-thecluster-operator
+  namespace: flux-system
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./infrastructure/controllers/thecluster-operator-system
+  interval: 10m
+  prune: true
+  wait: true
+  dependsOn:
+    # The Repository controller watches AutoscalingRunnerSets and exits if the CRD is missing.
+    - name: infra-arc-system
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: infra-cloudflare-operator
   namespace: flux-system
 spec:
