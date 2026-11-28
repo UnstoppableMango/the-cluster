@@ -40,6 +40,8 @@ Its first data pool, `erasure-coded-default`, is the replicated pool Ceph requir
 
 The shared classes are `Retain` because a shared volume holds a library that took weeks to assemble, and a deleted claim must not take the subvolume with it.
 The block classes are `Delete`; a block volume belongs to one workload and goes with it.
+They enable `object-map` and `fast-diff` so that deleting an image removes only the objects it wrote: without them, `rbd rm` visits every possible object, and a 50Gi image takes minutes to delete on HDD.
+These features apply only to images created after the class gained them.
 `bucket-retain` is `bucket` with `Retain`, for buckets that hold backups: deleting the claim must not delete the backups.
 
 ### Scratch
