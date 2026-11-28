@@ -17,8 +17,8 @@ make check      # nix flake check
 dprint fmt      # JSON, Markdown, and TOML only; not wired into make fmt or CI
 ```
 
-`make check` is the CI gate (`.github/workflows/ci.yml` runs `nix flake check` and nothing else).
-It runs the treefmt formatting check plus `checks.validate-flux`, which is kubeconform in strict mode against pinned Flux and flux-operator CRD schemas (`nix/validate.nix`).
+`make check` is what CI builds: Hercules builds the checks and packages through `mynix.flakeModules.ci`, and the `required` job in `.github/workflows/ci.yml` waits for it through `unmango/ci`'s `nix-ci.yml`.
+`make check` runs the treefmt formatting check plus `checks.validate-flux`, which is kubeconform in strict mode against pinned Flux and flux-operator CRD schemas (`nix/validate.nix`).
 It also runs `checks.hack-scripts`, the `node --test` suites beside the Renovate post-upgrade scripts in `hack/` (`node --test 'hack/*.test.mjs'` runs them directly).
 Run it before pushing manifest changes.
 
