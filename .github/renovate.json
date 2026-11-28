@@ -2,6 +2,8 @@
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": [
 		"github>UnstoppableMango/renovate-config",
+		"github>UnstoppableMango/renovate-config:nix",
+		"github>UnstoppableMango/renovate-config:nix-deploys",
 		":approveMajorUpdates"
 	],
 	"ignorePaths": [
@@ -73,6 +75,16 @@
 		}
 	],
 	"packageRules": [
+		{
+			"description": "git-refs gives NIXERY_CHANNEL no release timestamp, so the nix preset's minimumReleaseAge would hold it forever.",
+			"matchFileNames": [
+				"apps/nixery/deployment.yml"
+			],
+			"matchDatasources": [
+				"git-refs"
+			],
+			"minimumReleaseAgeBehaviour": "timestamp-optional"
+		},
 		{
 			"description": "The cloudflare-tunnel-ingress-controller HelmRelease and the cloudflare-operator Cloudflared resources run the same cloudflared image.",
 			"matchPackageNames": [
@@ -206,8 +218,7 @@
 				"ghcr.io/renovatebot/renovate",
 				"renovate"
 			],
-			"groupName": "renovate",
-			"automerge": true
+			"groupName": "renovate"
 		},
 		{
 			"matchPackageNames": [
