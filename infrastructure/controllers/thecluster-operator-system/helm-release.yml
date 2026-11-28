@@ -22,7 +22,7 @@ spec:
         image:
           repository: ghcr.io/unmango/thecluster-operator
           # The chart renders repository:tag verbatim, so the digest rides on the tag.
-          tag: 0.1.3@sha256:0000000000000000000000000000000000000000000000000000000000000000
+          tag: 0.1.3@sha256:08d8a3c1543a2ab27b98df4605d622c5fb7268180bb4cade47703d88dd8d2601
         # It holds the leader lease, so no CPU limit.
         resources:
           requests:
