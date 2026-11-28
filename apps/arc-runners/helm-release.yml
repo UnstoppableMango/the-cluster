@@ -32,6 +32,18 @@ spec:
       # _helpers.tpl when bumping gha-runner-scale-set.
       template:
         spec:
+          runtimeClassName: nested-containers
+          hostUsers: false
+          # A job can still reach the shared kernel. gaea holds attic's signing key and the
+          # builder VM's agent tokens, so an escaped job must not land there.
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: kubernetes.io/hostname
+                        operator: NotIn
+                        values: [gaea]
           securityContext:
             fsGroup: 1001
           initContainers:
@@ -76,7 +88,17 @@ spec:
                 - name: DOCKER_GROUP_GID
                   value: "123"
               securityContext:
-                privileged: true
+                runAsUser: 0
+                runAsGroup: 0
+                runAsNonRoot: false
+                allowPrivilegeEscalation: true
+                capabilities:
+                  add: ["ALL"]
+                seccompProfile:
+                  type: Unconfined
+                appArmorProfile:
+                  type: Unconfined
+                procMount: Unmasked
               restartPolicy: Always
               startupProbe:
                 exec:
@@ -94,6 +116,9 @@ spec:
                 limits:
                   memory: 4Gi
               volumeMounts:
+                # overlay2 cannot stack on the container's overlay rootfs in a user namespace.
+                - name: docker
+                  mountPath: /var/lib/docker
                 - name: work
                   mountPath: /home/runner/_work
                 - name: dind-sock
@@ -140,6 +165,8 @@ spec:
                 - name: nix
                   mountPath: /nix
           volumes:
+            - name: docker
+              emptyDir: {}
             - name: dind-sock
               emptyDir: {}
             - name: dind-externals
