@@ -1,0 +1,32 @@
+apiVersion: ceph.rook.io/v1
+kind: CephBlockPool
+metadata:
+  name: scratch
+  namespace: rook-ceph
+spec:
+  # Worn and DRAM-less SSDs run until they fail. Only this pool maps PGs onto
+  # the class, so a dying drive cannot slow the other tiers.
+  deviceClass: scratch
+  failureDomain: osd
+  enableCrushUpdates: true
+  replicated:
+    size: 2
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: scratch-rwo
+provisioner: rook-ceph.rbd.csi.ceph.com
+parameters:
+  clusterID: rook-ceph
+  pool: scratch
+  imageFormat: "2"
+  imageFeatures: layering
+  csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+  csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+  csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+reclaimPolicy: Delete
+allowVolumeExpansion: true
