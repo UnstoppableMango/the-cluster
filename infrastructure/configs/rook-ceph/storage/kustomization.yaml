@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - mgr-pool.yml
   - default-ssd.yml
+  - scratch.yml
   - standard.yml
   - unsafe.yml
   - cephfs.yml

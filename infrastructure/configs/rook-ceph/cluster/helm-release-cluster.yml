@@ -125,6 +125,9 @@ spec:
               - name: /dev/disk/by-id/ata-WDC_WDS500G2B0A-00SM50_20039C803025-part1
               - name: /dev/disk/by-id/ata-WDC_WDS500G2B0A-00SM50_20036F805874-part1
               - name: /dev/disk/by-id/ata-WDC_WDS500G2B0A-00SM50_20037A804297-part1
+              - name: /dev/disk/by-id/ata-CT500MX500SSD1_1908E1EC87CF
+                config:
+                  crushDeviceClass: scratch
               - name: /dev/disk/by-id/ata-WDC_WD100EMAZ-00WJTA0_JEGW1P6N-part1
               - name: /dev/disk/by-id/ata-WDC_WD100EMAZ-00WJTA0_JEGUJN4N-part1
               - name: /dev/disk/by-id/ata-WDC_WD100EMAZ-00WJTA0_JEGW15JN-part1

@@ -13,6 +13,7 @@ Object storage is `bucket`, or `fast-bucket` on the SSDs.
 | `fast`     | SSD latency, survives a disk                   | 2x                           |
 | `standard` | Survives a host                                | 2x (3x with three OSD hosts) |
 | `bulk`     | Cheap capacity for data that can be re-fetched | 1.5x, erasure coded          |
+| `scratch`  | SSD latency on drives run until they fail      | 2x                           |
 
 The name never mentions the medium, protocol, or redundancy scheme.
 Those are pool properties, and pools change under a class without the class being renamed.
@@ -24,6 +25,7 @@ A consumer chooses two things, how much loss it tolerates and whether it needs a
 | --------------- | ------------------------ | ----------------------------------------------------- | -------------------------- | ------- |
 | `fast-rwo`      | `default-ssd`            | rbd, ssd, replicated 2                                | osd (every SSD is in zeus) | Delete  |
 | `standard-rwo`  | `standard`               | rbd, hdd, replicated 2                                | host                       | Delete  |
+| `scratch-rwo`   | `scratch`                | rbd, scratch, replicated 2                            | osd                        | Delete  |
 | `standard-rwx`  | `erasure-coded-standard` | CephFS data pool, hdd, replicated 2                   | host                       | Retain  |
 | `bulk-rwx`      | `erasure-coded-data`     | CephFS data pool, hdd, EC 2+1                         | osd                        | Retain  |
 | `bucket`        | `s3.rgw.*`               | rgw, metadata replicated 3 on ssd, data EC 2+1 on hdd | osd                        | Delete  |
@@ -39,6 +41,16 @@ Its first data pool, `erasure-coded-default`, is the replicated pool Ceph requir
 The shared classes are `Retain` because a shared volume holds a library that took weeks to assemble, and a deleted claim must not take the subvolume with it.
 The block classes are `Delete`; a block volume belongs to one workload and goes with it.
 `bucket-retain` is `bucket` with `Retain`, for buckets that hold backups: deleting the claim must not delete the backups.
+
+### Scratch
+
+`scratch-rwo` is for volumes a workload throws away anyway, such as CI runner work and nix volumes.
+Its pool sits on SSDs that are past their rated endurance or have no DRAM cache, each listed with `crushDeviceClass: scratch`, and they run until they fail.
+Only the `scratch` pool selects that device class, so a slow or dying drive slows no other tier.
+
+Replicated 2 survives one dead drive, which is then replaced without an outage.
+A second failure before recovery finishes breaks every volume in the pool, because RBD stripes each image across all of its placement groups.
+With a single scratch OSD the pool runs undersized, and Ceph reports it as degraded until a second drive joins.
 
 ### Deprecated classes
 
