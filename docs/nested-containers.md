@@ -1,8 +1,12 @@
 # Nested containers
 
-The `nested-containers` RuntimeClass is for pods that run their own container runtime: dockerd, podman, buildkitd, kind.
+The `nested-containers` RuntimeClass is for pods that run their own container runtime: dockerd, podman, buildkitd.
 It replaces `privileged: true` for that purpose.
 The pod runs in a user namespace, so root inside it, including the nested runtime, is an unprivileged uid on the node.
+
+The nested runtime can start only unprivileged containers.
+A `--privileged` one needs a read-write `/sys`, and the kernel will not mount one inside the pod's read-only `/sys`, so kind and buildx's `docker-container` driver fail.
+Run those on a hosted runner.
 
 The manifests are in `infrastructure/configs/nested-containers/`.
 
