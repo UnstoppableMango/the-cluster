@@ -18,7 +18,7 @@ let
       lines = lib.splitString "\n" (builtins.readFile "${fluxSrc}/infrastructure/controllers/${path}");
       matches = map (builtins.match "[[:space:]]*${key}: ([^[:space:]#]+).*") lines;
     in
-    lib.findFirst (m: m != null) (throw "no ${key} in ${path}") matches |> builtins.head;
+    builtins.head (lib.findFirst (m: m != null) (throw "no ${key} in ${path}") matches);
 
   downloadFluxHelmChart =
     { chartHash, releaseNamespace }:

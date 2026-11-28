@@ -1,9 +1,6 @@
 {
   description = "THECLUSTER";
 
-  # Also set here so evaluating from a fresh checkout or CI needs no nix.conf.
-  nixConfig.extra-experimental-features = [ "pipe-operators" ];
-
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
